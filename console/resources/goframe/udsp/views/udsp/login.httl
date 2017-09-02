@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${title}</title>
+
+    <script type="text/javascript">
+        window.v_contextPath = "${basePath}";
+    </script>
+    <link rel="stylesheet" href="${basePath}/s/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="${basePath}/s/css/bootstrap-theme.min.css"/>
+
+    <!--[if lte IE 9]>
+    <script src="${basePath}/s/js/lib/html5shiv.min.js"></script>
+    <script src="${basePath}/s/js/lib/respond.min.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="${basePath}/s/js/require/require.js"></script>
+    <style type="text/css">
+        .vertical-offset-100 {
+            padding-top: 100px;
+        }
+        body{
+            background: url("${basePath}/s/img/login/bg.png") no-repeat center center;
+            background-repeat: no-repeat;
+            background-attachment:fixed;
+            background-size:cover;
+            -moz-background-size:cover;
+            overflow: hidden;
+        }
+        .topbar {
+            /*background: #0C61A2;height: 48px;*/
+            padding: 0 10px;
+            /*color: white;*/
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-static-top" style="border-radius: 0;">
+    <div class="topbar">
+        <img alt="HexInfo" src="${appIcon}" /><span style="line-height: 48px;"> ${title}</span>
+    </div>
+</nav>
+<div class="container">
+    <!--#set(String userId = session.userId)-->
+    <!--#set(String password = session.password)-->
+    <!--#set(String isRemember = session.isRemember)-->
+    <div class="row vertical-offset-100">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">登录</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="loginForm" accept-charset="UTF-8" role="form" method="post">
+                        <fieldset>
+                            <label>用户名:</label>
+
+                            <div class="form-group">
+                                <input placeholder="请输入登录用户名" id="userId" name="userId" type="text" class="form-control" value="${userId}">
+                            </div>
+                            <label>密码:</label>
+
+                            <div class="form-group">
+                                <input placeholder="请输入登录密码" id="password" name="password" type="password" value="${password}"
+                                       class="form-control">
+                            </div>
+
+                            <div id="msgPanel" data-dismiss="alert" class="alert alert-danger" role="alert"
+                                 style="display: none;">
+                                <p id="msgBody"/>
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
+                                    <!--#if(isRemember=="1")-->
+                                    <input id="remember" name="remember" type="checkbox" checked="checked">记住用户名
+                                    <!--#end-->
+                                    <!--#if(isRemember!="1")-->
+                                    <input id="remember" name="remember" type="checkbox">记住用户名
+                                    <!--#end-->
+                                </label>
+                            </div>
+                            <hr/>
+                            <input id="btnLogin" type="submit" value="登录" class="btn btn-lg btn-primary btn-block">
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    requirejs.config({
+        baseUrl: "${basePath}/s/js",
+        paths: {
+            jquery: "jquery/jquery-1.11.3.min",
+            bootstrap: 'bootstrap/bootstrap.min',
+            gf: "app/gf"
+        },
+        map: {
+            '*': {
+                'css': 'require/css'
+            }
+        },
+        shim: {
+            bootstrap:{
+                deps:['jquery']
+            }
+        }
+    });
+
+    require(['jquery', 'gf','bootstrap'], function ($, gf,bootstrap) {
+        function showMessage(msg){
+            $("#msgBody").text(msg);
+            $("#msgPanel").show();
+        }
+
+        function checkInput() {
+            var userId= $("#userId").val();
+            var pwd = $("#password").val();
+
+            if(!userId){
+                showMessage('请输入用户名!');
+                return null;
+            }
+
+            if(!pwd){
+                showMessage('请输入密码!');
+                return null;
+            }
+
+            var remember = '0';
+            var rememberDom = document.getElementById('remember');
+            if(rememberDom && rememberDom.checked){
+                remember = '1';
+            }
+
+            return {userId:userId, password:pwd, isRemember:remember};
+        }
+
+
+        $("#loginForm").submit(function () {
+            var user = checkInput();
+            if (!user){
+                return false;
+            }
+
+            gf.api.login(user, function (resp) {
+                if (resp.status){
+                    window.location='${basePath}/goframe/';
+                }else{
+                    showMessage(resp.message);
+                }
+            });
+
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

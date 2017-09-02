@@ -1,0 +1,18 @@
+.panel-toolbar{
+    background-color: #f8fafe;
+    padding:5px;
+    border:1px solid #bbb;
+}
+.panel-query{
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #bbb;
+    border-top: 0px;
+}
+.panel-toolbar table{
+    table-layout:fixed;word-break:break-all;
+}
+
+.panel-query table{
+    table-layout:fixed;word-break:break-all;
+}

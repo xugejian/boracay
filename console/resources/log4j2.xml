@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <properties>
+        <property name="LOG_HOME">./logs</property>
+        <property name="FILE_NAME">goframe</property>
+    </properties>
+
+    <Appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %C{1}.%M - %msg%n"/>
+        </Console>
+
+        <RollingFile name="Goframe" fileName="${LOG_HOME}/goframe.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level[%L] %C{1}.%M - %m %ex%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <RollingFile name="UDSP" fileName="${LOG_HOME}/udsp.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level[%L] %C{1}.%M - %m %ex%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Goframe"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+
+        <logger name="com.hex.bigdata.udsp" level="info" additivity="false">
+            <AppenderRef ref="UDSP"/>
+            <AppenderRef ref="Console"/>
+        </logger>
+
+        <!-- 输出带参数值的SQL语句 -->
+        <logger name="log4jdbc.log4j2" level="info" additivity="false">
+            <MarkerFilter marker="LOG4JDBC_NON_STATEMENT" onMatch="DENY" onMismatch="NEUTRAL" />
+            <appender-ref ref="Console" />
+        </logger>
+
+    </Loggers>
+</Configuration>
