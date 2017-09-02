@@ -1,0 +1,187 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(content)-->
+<div style="padding: 5px 5px 0px 5px;">
+    <div id="form1" method="post">
+        <input name="pkId" class="nui-hidden"/>
+        <input name="delFlg" class="nui-hidden"/>
+        <input name="crtUser" class="nui-hidden"/>
+        <input name="crtTime" class="nui-hidden"/>
+        <input name="uptUser" class="nui-hidden"/>
+        <input name="uptTime" class="nui-hidden"/>
+        <table style="width:100%;height:100%;" cellpadding="5px,0px,5px,0px" class="nui-form-table">
+            <tr>
+                <th class="nui-form-label"><label for="cnName">厂商名称：</label></th>
+                <td >
+                    <input id="cnName" name="cnName" class="nui-textbox" style="width: 99%" readonly="true"
+                           vtype="maxLength:64" />
+                </td>
+                <th class="nui-form-label"><label for="name">英文简称：</label></th>
+                <td >
+                    <input id="name" name="name" class="nui-textbox" style="width: 99%" readonly="true"
+                           vtype="maxLength:64" onvalidation="nameValidation"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="nui-form-label"><label for="principal">调用链接：</label></th>
+                <td colspan="3">
+                    <input id="httpUrl" name="httpUrl" class="nui-textbox" style="width:99%"  vtype="url"
+                           vtype="maxLength:256" readonly="true"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="nui-form-label"><label for="principal">负责人姓名：</label></th>
+                <td>
+                    <input id="principal" name="principal" class="nui-textbox" style="width:99%"
+                           vtype="maxLength:256" readonly="true"/>
+                </td>
+                <th class="nui-form-label"><label for="mobile">负责人手机号：</label></th>
+                <td>
+                    <input id="mobile" name="mobile" class="nui-textbox" style="width:99%"
+                           vtype="maxLength:256" readonly="true"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="nui-form-label"><label for="note">备注：</label></th>
+                <td colspan="3">
+                    <input name="note" id="note" class="nui-textarea" style="height:60px; width:99%;"
+                           vtype="maxLength:4000" readonly="true"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="nui-form-label"><label for="crtUser">创建者：</label></th>
+                <td >
+                    <input id="crtUser" name="crtUser" class="nui-textbox" style="width:99%" readonly="true"/>
+                </td>
+                <th class="nui-form-label"><label for="crtTime">创建时间：</label></th>
+                <td >
+                    <input id="crtTime" name="crtTime" class="nui-textbox" style="width:99%" readonly="true"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="nui-form-label"><label for="uptUser">更新者：</label></th>
+                <td >
+                    <input id="uptUser" name="uptUser" class="nui-textbox" style="width:99%" readonly="true"/>
+                </td>
+                <th class="nui-form-label"><label for="uptTime">更新时间：</label></th>
+                <td >
+                    <input id="uptTime" name="uptTime" class="nui-textbox" style="width:99%" readonly="true"/>
+                </td>
+            </tr>
+        </table>
+
+        <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
+            <a class="nui-button" style="" iconCls="icon-save" onclick="save">保存</a>
+            <span style="display:inline-block;width:25px;"></span>
+            <a class="nui-button" style="" iconCls="icon-cancel" onclick="cancel">返回</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var form1;
+    var originName;
+
+    /**
+     * 按需加载资源文件
+     */
+    require(['jquery', 'nui'], function ($, nui) {
+        nui.parse();
+        form1 = new nui.Form("#form1");
+        setData();
+    });
+
+
+    /**
+     * 读取详情
+     */
+    function setData() {
+        $.ajax({
+            url: "${basePath}/mm/contractor/select/${pkId}",
+            type: 'POST',
+            cache: false,
+            contentType: 'application/json',
+            success: function (text) {
+                if (text.data != null) {
+                    var obj = nui.decode(text.data);
+                    form1.setData(obj);
+                    form1.setChanged(false);
+                    originName = obj.name;
+                }
+            }
+        });
+    }
+
+    /**
+     * 保存
+     */
+    function save() {
+        var saveData = form1.getData(true, true);
+        if (!saveData) {
+            return;
+        }
+        var json = nui.encode(saveData);
+        // --发送信息--
+        $.ajax({
+            url: "${basePath}/mm/contractor/update",
+            type: 'POST',
+            data: json,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.status == true) {
+                    nui.alert(result.message);
+                    CloseWindow("success");
+                } else {
+                    nui.alert(result.message, "系统提示", function (action) {
+                        if (action == "ok" || action == "close") {
+                            CloseWindow("failed");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 名称变化时触发检查
+     */
+    function nameValidation(e) {
+        if (e.isValid) {
+            //新名称与原来的名称比较
+            if (originName == e.value) {
+                return;
+            }
+            if (checkPattern(e.value) == false) {
+                e.errorText = "只能包含字母、数字、下划线，且以字母开头";
+                e.isValid = false;
+            }
+            var result = isExist(e.value);
+            if (result.status) {
+                e.errorText = "名称已存在";
+                e.isValid = false;
+            }
+        }
+    }
+
+
+    /**
+     * 检查是否满足字母、数字、下划线，且以字母开头
+     */
+    function checkPattern(v) {
+        var re = new RegExp("^[A-Za-z][A-Za-z0-9_]{0,63}$");
+        if (re.test(v)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 返回
+     */
+    function cancel() {
+        CloseWindow("onCancel");
+    }
+
+</script>
+<!--#end-->

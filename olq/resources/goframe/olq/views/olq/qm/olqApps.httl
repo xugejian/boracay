@@ -1,0 +1,337 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(head)-->
+<link rel="stylesheet" href="${basePath}/s/css/udsp.css"/>
+<link rel="stylesheet" href="${basePath}/s/css/font-awesome.css"/>
+<!--#end-->
+
+<!--#macro(content)-->
+<style type="text/css">
+    #btnQuery > span {
+        width: 100px;
+    }
+</style>
+
+<div class="nui-toolbar">
+
+    <div class="panel-toolbar">
+        <table style="width:100%">
+            <tr>
+                <td style="white-space:nowrap;">
+                    <a class="nui-button" id="pull" iconCls="icon-search" onclick="moreOption">搜索︽</a>
+                    <a class="nui-button" id="push" iconCls="icon-search" onclick="moreOption">搜索︾</a>
+                </td>
+                <td style="text-align: center;"><B id="dsDesc"></B></td>
+                <td style="text-align: right;width: 80px;">默认LIMIT数：</td>
+                <td style="text-align: right;width: 80px;">
+                <input name="defaultNum" id="defaultNum" class="nui-textbox" style="width:99%"
+                value="200" vtype="range:1,10000" required="true"/>
+                </td>
+                <td style="text-align: right;width: 60px;">应用名称：</td>
+                <td style="text-align: right;">
+                    <div id="appId" class="nui-combobox" style="width:98%;" popupWidth="400" textField="name"
+                         valueField="pkId"
+                         url="${basePath}/olq/app/selectAll" dataField="data" name="appId" multiSelect="false"
+                         emptyText="请选择数据源" required="true" onvaluechanged="appIdChanged">
+                        <div property="columns">
+                            <div header="名称" field="name"></div>
+                            <div header="说明" field="describe"></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        </div>
+
+        <div class="panel-query search-condition" style="display:none;" id="query">
+            <div class="list">
+                <div id="form1">
+                    <!-- 搜索栏 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="nui-fit" style="height: 100px;" id="gridSpace">
+
+</div>
+
+<form id="downForm" action="${basePath}/http/inner/download" method="get">
+    <input id="filePath" name="filePath" type="hidden"/>
+</form>
+
+<script type="text/javascript">
+    var appIdObj;
+    var grid1;
+    var dsData;
+
+    /**
+     * 按需加载资源文件
+     */
+    require(['jquery', 'nui'], function ($, nui) {
+        nui.parse();
+        appIdObj = nui.get("appId");
+        $("#pull").hide();
+        $.post("${basePath}/olq/app/selectAll", {}, function (result) {
+            //debugger;
+            appIdObj.setData(result.data);
+            dsData = result.data[0]
+            appIdObj.select(0);
+        });
+    });
+
+    /**
+     * 数据源值变化时触发
+     */
+    function appIdChanged(e) {
+        var appId = e.source.value;
+        var appInfoDto = getAppInfo(appId);
+        var appParams = appInfoDto.params;
+        //debugger;
+        $("#dsDesc").text(e.selected.describe);
+
+        //--搜索栏动态生成--
+        var form1 = $("#form1");
+        form1.empty();
+        var formHtml = getFormHtml(appParams);
+        //console.warn(formHtml);
+        form1.append(formHtml);
+        nui.parse();
+    }
+
+    /**
+     * 获取Form动态的HTML
+     */
+    function getFormHtml(appParams) {
+        //debugger;
+        var count = 0;
+        var html = "<table style='width:100%'>";
+        $.each(appParams, function (_index, record) {
+            var name = record.paramName;
+            var describe = record.paramDesc;
+            var isNeed = record.isNeed == "1" ? false : true;
+            var defaultVal = record.defaultValue ? record.defaultValue : "";
+
+            var tdHtml = "<td class='tit roleLabel' style='width: 100px;text-align: right'>" + describe + "：</td>"
+                    + "<td class='roleText' style='width: 25%'>"
+                    + "<input name='" + name + "' class='nui-textbox' style='width:98%;' value='" + defaultVal + "' required='" + isNeed + "'/>"
+                    + "</td>";
+            count++;
+            if (count % 4 == 1) {
+                html += "<tr>" + tdHtml;
+            } else if (count % 4 == 0) {
+                html += tdHtml + "</tr>";
+            } else {
+                html += tdHtml;
+            }
+        });
+        if (count % 4 != 0) {
+            html += "</tr>";
+        }
+        html += "<tr>"
+        + "<td colspan='8' align='center'>"
+        + "#if(hasPermission('OLQ.qm.testapp.search'))"
+        + "<input class='nui-button' iconCls='icon-search' text='查询' onclick='search'/>"
+        + "#end"
+        + "<span style='display:inline-block;width:25px;'></span>"
+        + "<input class='nui-button' iconCls='icon-reset' text='重置' onclick='onFormReset(\"form1\")'/>"
+        + "<span style='display:inline-block;width:25px;'></span>"
+        + "#if(hasPermission('OLQ.qm.testapp.download'))"
+        + "<input class='nui-button' iconCls='icon-download' text='下载' onclick='download'/>"
+        + "#end"
+        + "</td>"
+        + "</tr>"
+        + "</table>";
+        //console.warn(html);
+        return html;
+    }
+
+    /**
+     * 获取数据源信息
+     */
+    function getAppInfo(appId) {
+        var data;
+        $.ajax({
+            url: "${basePath}/olq/app/select/" + appId,
+            type: 'POST',
+            cache: false,
+            async: false,
+            contentType: 'apllication/json',
+            success: function (result) {
+                data = result.data;
+            }
+        });
+        return data;
+    }
+
+    /**
+     * 搜索按钮转换
+     */
+    function moreOption() {
+        $("#push").toggle();
+        $("#pull").toggle();
+        $("#query").toggle();
+        nui.layout(document.body);
+    }
+
+
+    /**
+     * 搜索
+     */
+    function search() {
+        if (!appIdObj.value) {
+            nui.alert("请先选择联机查询应用!");
+            return;
+        }
+        //debugger;
+        var form1 = new nui.Form("#form1");
+        form1.validate();
+        if (form1.isValid() == false) return;
+        var sendData={};
+        var data = form1.getData(true, true);
+        sendData.appId = appIdObj.value;
+        sendData.data = data;
+        refreshGrid(sendData);
+    }
+
+    /**
+     * 填充新的数据到列表
+     */
+    function refreshGrid(data) {
+        intGridColumns({});
+        grid1.loading("正在加载，请稍等...");
+        //debugger;
+        var page = {};
+        page.pageIndex = 0;
+        page.pageSize = nui.get("defaultNum").value;
+        var json = nui.encode({
+            "appType": "OLQ_APP",
+            "appId": data.appId,
+            "type": "sync",
+            "entity": "start",
+            "data": data.data,
+            "page":page
+        });
+        //debugger;
+        $.ajax({
+            url: "${basePath}/http/inner/consume",
+            data: json,
+            cache: false,
+            async: false,
+            type: 'POST',
+            contentType: 'application/json',
+            success: function (response) {
+                if (response.status != "SUCCESS") {
+                    showMessage(response.message);
+                    grid1.unmask();
+                    return;
+                }
+                var records = response.records;
+                //console.warn(records);
+                var columns = new Array();
+                columns[0] = {
+                    header: "序号",
+                    type: "indexColumn",
+                    headerAlign: "center",
+                    width: 30
+                };
+                var i = 1;
+                if (records && records.length >= 1) {
+                    for (var key in records[0]) {
+                        columns[i] = {
+                            field: key,
+                            header: key,
+                            headerAlign: "center",
+                            allowSort: true
+                        };
+                        i++;
+                    }
+                }
+                //console.warn(columns);
+                intGridColumns(columns);
+                grid1.setData(records);
+                grid1.unmask();
+            }
+        });
+    }
+
+    /**
+     * 初始化datagrid columns
+     */
+    function intGridColumns(colsData) {
+        var baseHtml = "<div id='datagrid1' class='nui-datagrid' style='width:100%;height:100%;'" +
+                "allowResize='false' showPager='false' multiSelect='true' allowCellSelect='false' sortMode='client' >";
+        baseHtml += "<div property='columns'>";
+        $.each(colsData, function (_index, record) {
+            if ("indexColumn" == record.type && "序号" == record.header) {
+                baseHtml += "<div type='" + record.type + "' width='" + record.width + "' headerAlign='" + record.headerAlign + "'>" + record.header + "</div>";
+            } else {
+                baseHtml += "<div field='" + record.field + "' headerAlign='" + record.headerAlign + "' allowSort='" + record.allowSort + "'>" + record.header + "</div>";
+            }
+        });
+        baseHtml += "</div></div>";
+        $("#gridSpace").html(baseHtml);
+        nui.parse();
+        grid1 = nui.get("datagrid1");
+    }
+
+    /**
+     * 显示提示信息
+     */
+    function showMessage(message) {
+        nui.open({
+            url: "${basePath}/goframe/p/udsp.message",
+            title: "提示消息",
+            width: 600,
+            height: 560,
+            onload: function () {
+                var iframe = this.getIFrameEl();
+                iframe.contentWindow.SetData(message);
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    /**
+     * 下载
+     */
+    function download() {
+        if (!appIdObj.value) {
+            nui.alert("请先选择联机查询应用!");
+            return;
+        }
+        var form1 = new nui.Form("#form1");
+        form1.validate();
+        if (form1.isValid() == false) return;
+        var data = form1.getData(true, true);
+
+        var json = nui.encode({
+            "appType": "OLQ_APP",
+            "appId": appIdObj.value,
+            "type": "async",
+            "entity": "start",
+            "data": data
+        });
+        form1.loading("正在下载中,请稍等...");
+        $.ajax({
+            url: "${basePath}/http/inner/async/consume",
+            type: 'POST',
+            data: json,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.status == "true" || result.status == true) {
+                    $("#filePath").val(result.message);
+                    $("#downForm").submit();
+                } else {
+                    showMessage(result.message);
+                }
+                form1.unmask();
+            }
+        });
+    }
+</script>
+
+<!--#end-->

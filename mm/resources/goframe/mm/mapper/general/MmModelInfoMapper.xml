@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.mm.dao.ModelInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.mm.model.ModelInfo" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="VER_NOTE" property="verNote" jdbcType="VARCHAR" />
+    <result column="VER_NUM" property="verNum" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="NOTE" property="note" jdbcType="VARCHAR" />
+    <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
+    <result column="CRT_USER" property="crtUser" jdbcType="VARCHAR" />
+    <result column="CRT_TIME" property="crtTime" jdbcType="VARCHAR" />
+    <result column="UPT_USER" property="uptUser" jdbcType="VARCHAR" />
+    <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR" />
+    <result column="CONTRACTOR" property="contractor" jdbcType="VARCHAR" />
+    <result column="MODEL_TYPE" property="modelType" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="FullResultMap" type="com.hex.bigdata.udsp.mm.dto.ModelInfoView" extends="BaseResultMap">
+
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from MM_MODEL_INFO
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.mm.model.ModelInfo" >
+    insert into MM_MODEL_INFO (PK_ID, NAME, DESCRIBE, 
+      VER_NOTE, VER_NUM, STATUS, 
+      NOTE, DEL_FLG, CRT_USER, 
+      CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR,MODEL_TYPE)
+    values (#{pkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR},
+      #{verNote,jdbcType=VARCHAR}, #{verNum,jdbcType=VARCHAR}, #{status,jdbcType=CHAR},
+      #{note,jdbcType=VARCHAR}, #{delFlg,jdbcType=CHAR}, #{crtUser,jdbcType=VARCHAR},
+      #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR},
+      #{contractor,jdbcType=VARCHAR},#{modelType,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.mm.model.ModelInfo" >
+    update MM_MODEL_INFO
+    set NAME = #{name,jdbcType=VARCHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      VER_NOTE = #{verNote,jdbcType=VARCHAR},
+      VER_NUM = #{verNum,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR},
+      NOTE = #{note,jdbcType=VARCHAR},
+      DEL_FLG = #{delFlg,jdbcType=CHAR},
+      CRT_USER = #{crtUser,jdbcType=VARCHAR},
+      CRT_TIME = #{crtTime,jdbcType=VARCHAR},
+      UPT_USER = #{uptUser,jdbcType=VARCHAR},
+      UPT_TIME = #{uptTime,jdbcType=VARCHAR},
+      CONTRACTOR = #{contractor,jdbcType=VARCHAR},
+      MODEL_TYPE = #{modelType,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, NAME, DESCRIBE, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER, 
+    CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR,MODEL_TYPE
+    from MM_MODEL_INFO
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, NAME, DESCRIBE, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER, 
+    CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR
+    from MM_MODEL_INFO
+    where DEL_FLG = '0'
+  </select>
+
+  <select id="selectByName" resultMap="BaseResultMap" >
+    select PK_ID, NAME, DESCRIBE, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER,
+    CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR
+    from MM_MODEL_INFO
+    where DEL_FLG = '0'
+    and NAME = #{name,jdbcType=VARCHAR}
+  </select>
+  <!-- 逻辑删除-->
+  <update id="deleteByPrimaryKeyFake" parameterType="java.lang.String"  >
+    update MM_MODEL_INFO
+    set DEL_FLG = '1'
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectPage" resultMap="FullResultMap" parameterType="com.hex.bigdata.udsp.mm.dto.ModelInfoView">
+    select mmi.PK_ID, mmi.NAME, mmi.DESCRIBE, mmi.VER_NOTE, mmi.VER_NUM, mmi.STATUS,
+    mmi.NOTE, mmi.DEL_FLG, mmi.CRT_USER,
+    mmi.CRT_TIME, mmi.UPT_USER, mmi.UPT_TIME,mc.cn_name AS CONTRACTOR,mmi.MODEL_TYPE
+    from udsp.MM_MODEL_INFO mmi
+    left join udsp.mm_contractor mc
+    on mmi.contractor = mc.pk_id
+    where mmi.DEL_FLG = '0'
+    <if test="name!='' and name!=null ">and mmi.NAME like '%'||#{name}||'%'</if>
+    <if test="describe!='' and describe!=null ">and mmi.DESCRIBE like '%'||#{describe}||'%'</if>
+    <if test="verNote!='' and verNote!=null ">and mmi.VER_NOTE =#{verNote}</if>
+    <if test="status!='' and status!=null ">and mmi.STATUS = #{status}</if>
+    <if test="note!='' and note!=null ">and mmi.NOTE = #{note}</if>
+    <if test="crtTimeStart!=null and crtTimeStart!='' ">and mmi.CRT_TIME >= #{crtTimeStart}</if>
+    <if test="crtTimeEnd!=null and crtTimeEnd!='' ">and #{crtTimeEnd} >= mmi.CRT_TIME</if>
+    <if test="uptTimeStart!=null and uptTimeStart!='' ">and mmi.UPT_TIME >= #{uptTimeStart}</if>
+    <if test="uptTimeEnd!=null and uptTimeEnd!='' ">and #{uptTimeEnd} >= mmi.UPT_TIME</if>
+    <if test="crtUser!='' and crtUser!=null ">and mmi.CRT_USER like '%'||#{crtUser}||'%'</if>
+    <if test="uptUser!='' and uptUser!=null ">and mmi.UPT_USER like '%'||#{uptUser}||'%'</if>
+    <if test="contractor!='' and contractor!=null ">and mc.pk_id = #{contractor}</if>
+    order by mmi.UPT_TIME desc, mmi.CRT_TIME desc, NAME asc
+  </select>
+
+  <select id="selectByContractorId" resultMap="BaseResultMap" >
+    select PK_ID, NAME, DESCRIBE, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER,
+    CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR
+    from MM_MODEL_INFO
+    where DEL_FLG = '0' AND CONTRACTOR = #{contractorId,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

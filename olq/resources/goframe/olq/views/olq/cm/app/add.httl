@@ -1,0 +1,435 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(content)-->
+<div style="padding: 5px 5px 0px 5px;">
+    <div id="form1" method="post">
+        <fieldset style="border:dotted 1px #227EA0;">
+            <legend><span style="font-weight: bold">基础栏</span></legend>
+            <table style="width:100%;height:100%;" cellpadding="5px,0px,5px,0px" class="nui-form-table">
+                <tr>
+                    <th class="nui-form-label"><label for="name">名称：</label></th>
+                    <td>
+                        <input id="name" name="name" class="nui-textbox" style="width: 97%" required="true"
+                               vtype="maxLength:64" onvalidation="nameValidation"/>
+                    </td>
+                    <th class="nui-form-label"><label for="olqDsId">数据源：</label></th>
+                    <td>
+                        <div id="olqDsId" class="nui-combobox" style="width:97%;" popupWidth="400" textField="name"
+                             valueField="pkId"
+                             url="${basePath}/olq/app/dslist" dataField="data" name="olqDsId" multiSelect="false"
+                             required="true">
+                            <div property="columns">
+                                <div header="名称" field="name"></div>
+                                <div header="说明" field="describe"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="nui-form-label"><label for="describe">说明：</label></th>
+                    <td colspan="3">
+                        <input id="describe" name="describe" class="nui-textbox" style="width:99%" required="true"
+                               vtype="maxLength:256"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="nui-form-label"><label for="olqSql">查询SQL：</label></th>
+                    <td colspan="3">
+                        <input name="olqSql" id="olqSql" class="nui-textarea" style="height:120px; width:99%;"
+                               required="true"
+                               emptyText="sql支持使用占位符。占位符使用说明: sql语句中使用\${name}，参数解析的时候会把占位符解析成name，即\${name}=>name"
+                               vtype="maxLength:4000"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="nui-form-label"><label for="note">备注：</label></th>
+                    <td colspan="3">
+                        <input name="note" id="note" class="nui-textarea" style="height:60px; width:99%;"
+                               vtype="maxLength:4000"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset style="border:dotted 1px #227EA0;">
+            <legend><span style="font-weight: bold">参数栏</span></legend>
+            <div style="padding: 5px 5px 0px 5px;">
+                <div class="nui-toolbar" style="border-bottom: 0;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="text-align: left;">
+                                <b>SQL参数配置</b>
+                            </td>
+                            <td style="text-align: right;">
+                                <a class="nui-button" iconCls="icon-add" onclick="identify"
+                                   id="identify">查询SQL中的占位符参数识别</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="nui-fit" style="height:200px; padding: 0px 5px 0px 5px;">
+                <div id="datagrid1" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
+                     idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
+                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true">
+                    <div property="columns">
+                        <div type="checkcolumn" headerAlign="center" width="5"></div>
+                        <div type="indexcolumn" headerAlign="center" width="8">位置</div>
+                        <div name="paramName" field="paramName" headerAlign="center" allowSort="true" readonly="true"
+                             width="30">名称
+                        </div>
+
+                        <div name="paramDesc" field="paramDesc" headerAlign="center" allowSort="true" width="40">说明
+                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                        </div>
+                        <div name="defaultValue" field="defaultValue" headerAlign="center" allowSort="true" width="30">
+                            默认值
+                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                        </div>
+
+                        <div type="checkboxcolumn" name="isNeed" field="isNeed" trueValue="0" falseValue="1" value="0"
+                             headerAlign="center" allowSort="true" width="8">必填
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
+            <a class="nui-button" style="" iconCls="icon-save" onclick="save" id="saveButton">保存</a>
+            <span style="display:inline-block;width:25px;"></span>
+            <a class="nui-button" style="" iconCls="icon-cancel" onclick="cancel">返回</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var form1;
+    var grid1;
+    var olqDsIdObj;
+    var olqSqlObj;
+    var identifyObj;
+    /**
+     * 按需加载资源文件
+     */
+    require(['jquery', 'nui'], function ($, nui) {
+        nui.parse();
+        form1 = new nui.Form("#form1");
+        grid1 = nui.get("datagrid1");
+        olqDsIdObj = nui.get("olqDsId");
+        olqSqlObj = nui.get("olqSql");
+        identifyObj = nui.get("identify");
+        $.post("${basePath}/olq/app/dslist", {}, function (result) {
+            olqDsIdObj.setData(result);
+        });
+    });
+
+    /**
+     * 从SQL语句中获取占位参数，并把占位参数放置到参数列表
+     */
+    function identify() {
+        var olqSql = olqSqlObj.getValue();
+        if (olqSql == '' || olqSql == null) {
+            nui.alert("请先输入查询SQL");
+            return;
+        }
+        var result = identifyParams(olqSql);
+        debugger;
+        if (result.code != '1') {
+            nui.alert(result.message);
+            return;
+        }
+
+        //清除rows
+        grid1.clearRows();
+        //识别的row加入到grid中
+        grid1.addRows(result.params);
+    }
+
+    /**
+     * 识别占位参数，返回参数名称数组
+     */
+    function identifyParams(olqSql) {
+        var result = {};
+        var params = [];
+        var list = olqSql.match(/\\$\{(\w{1,})\}+/g);
+        debugger;
+        if (list == null || list.length == 0) {
+            result.code = '2';
+            result.params = params;
+            result.message = '不存在占位符参数';
+            return result;
+        }
+        var itemNames = "";
+        $.each(list, function (index, item) {
+            item = item.trim();
+            var itemName = item.substr(item.indexOf("{") + 1, item.lastIndexOf("}") - 2);
+            //console.log(itemName);
+            if (itemName == '') {
+                result.code = '0';
+                result.params = params;
+                result.message = '占位符参数名称为空';
+                return result;
+            }
+            debugger;
+            //参数去重
+            if (itemNames.indexOf(itemName) == -1) {
+                itemNames = itemNames + itemName + "|";
+                params.push({"paramName": itemName});
+            }
+        });
+
+
+        result.params = params;
+        result.code = '1';
+        return result;
+    }
+
+    /**
+     * 检查占位符SQL语句与datagrid参数
+     */
+    function checkPlaceholderParamAndDataGrid() {
+        var checkResult = {};
+        //获取SQL占位符参数
+        var olqSql = olqSqlObj.getValue();
+        var result = identifyParams(olqSql);
+        if (result.code == '0') {
+            nui.alert(result.message);
+            checkResult.status = 0;
+            return checkResult;
+        }
+        var placeHolderParams = result.params;
+        var phParamArray = new Array();
+        $.each(placeHolderParams, function (_index, record) {
+            phParamArray.push(record.paramName);
+        });
+        //获取datagrid参数
+        var paramsData = grid1.getData(true, true);
+
+        //比较长度
+        //a、如果长度都为零，则返回
+        if (paramsData.length == 0 && placeHolderParams.length == 0) {
+            checkResult.status = 1;
+            return checkResult;
+        }
+        //b、有一个长度大于零,且不相等
+        if ((paramsData.length > 0 || placeHolderParams.length > 0) && paramsData.length != placeHolderParams.length) {
+            nui.alert("占位符参数个数与参数栏参数个数不一致，请检查！");
+            checkResult.status = 0;
+            return checkResult;
+        }
+        //比较具体参数名称
+        var compareFlg = true;
+        $.each(paramsData, function (_index, record) {
+            debugger;
+            if ($.inArray(record.paramName, phParamArray) == -1) {
+                compareFlg = false;
+            }
+        });
+        if (!compareFlg) {
+            checkResult.status = 0;
+            nui.alert("占位符参数与参数栏参数名称不一致，请检查！");
+            return checkResult;
+        }
+        //通过检查则获取
+        //判断是否有占位符参数存在，有则获取占位符参数并且进行检查
+        var paramsData = getParamsData();
+        if (paramsData == null) {
+            checkResult.status = 0;
+            return checkResult;
+        }
+        checkResult.paramsData = paramsData;
+        checkResult.status = 2;
+        return checkResult;
+    }
+
+    /**
+     * 保存
+     */
+    function save() {
+        //检查占位符SQL语句与datagrid参数
+        var checkResult = checkPlaceholderParamAndDataGrid();
+        if (checkResult.status == 0) {
+            return;
+        }
+        var infoData = getBaseData();
+        if (!infoData) {
+            return;
+        }
+        var saveData = {
+            "olqApplication": infoData,
+            "params": checkResult.paramsData
+        }
+        var json = nui.encode(saveData);
+        // --发送信息--
+        form1.loading("正在保存中,请稍等...");
+        //禁用保存按钮
+        nui.get("saveButton").disable();
+        $.ajax({
+            url: "${basePath}/olq/app/insert",
+            type: 'POST',
+            data: json,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.status == true) {
+                    nui.alert(result.message);
+                    CloseWindow("success");
+                } else {
+                    nui.alert(result.message, "系统提示", function (action) {
+                        if (action == "ok" || action == "close") {
+                            CloseWindow("failed");
+                        }
+                    });
+                }
+                form1.unmask();
+                //解除保存按钮禁用
+                nui.get("saveButton").enable();
+            }
+        });
+    }
+
+
+    /**
+     * 获取基础数据
+     */
+    function getBaseData() {
+        form1.validate();
+        if (form1.isValid() == false) {
+            return;
+        }
+        var baseData = form1.getData(true, true);
+        return baseData;
+    }
+
+    /**
+     * 获取配置参数数据
+     */
+    function getParamsData() {
+        var status = true;
+        var paramsData = grid1.getData(true, true);
+        if (paramsData == null || paramsData.length == 0) {
+            nui.alert("【占位符参数】的信息不能为空!");
+            return;
+        }
+        $.each(paramsData, function (_index, record) {
+            record.seq = grid1.indexOf(record) + 1;
+            if (record.paramName == null || record.paramName == "") {
+                nui.alert("【占位符参数】的位置" + record.seq + "：【名称】不能为空!");
+                status = false;
+                return false;
+            }
+            if (checkParams(record.paramName) == false) {
+                nui.alert("【占位符参数】的位置" + record.seq + "：【名称】只能包含字母、数字、点、下划线，且以字母开头!");
+                status = false;
+                return false;
+            }
+            if (record.paramDesc == null || record.paramDesc == "") {
+                nui.alert("【占位符参数】的位置" + record.seq + "：【参数说明】不能为空!");
+                status = false;
+                return false;
+            }
+        });
+        if (!status) {
+            return;
+        }
+        // 检查参数重复
+        if (checkRepetition(paramsData)) {
+            nui.alert("【占位符参数】中存在重复【名称】，请检查后再提交！");
+            return;
+        }
+        return paramsData;
+    }
+
+    /**
+     * 检查参数列表是否重复
+     */
+    function checkRepetition(paramsData) {
+        //算法1、遍历
+        var repetFlg = false;
+        $.each(paramsData, function (_index, record) {
+            var repetCount = 0;
+            $.each(paramsData, function (i, item) {
+                if (record.paramName == item.paramName) {
+                    repetCount++;
+                }
+            });
+            if (repetCount > 1) {
+                repetFlg = true;
+            }
+        });
+        //算法2、构造Map类型集合，以record.name为key，插入到map集合中，
+        //集合中长度小于原来的长度,则存在重复
+        return repetFlg;
+    }
+
+
+    /**
+     * 名称变化时触发检查
+     */
+    function nameValidation(e) {
+        if (e.isValid) {
+            if (checkPattern(e.value) == false) {
+                e.errorText = "只能包含字母、数字、下划线，且以字母开头";
+                e.isValid = false;
+            }
+            var result = isExist(e.value);
+            if (result.status) {
+                e.errorText = "名称已存在";
+                e.isValid = false;
+            }
+        }
+    }
+
+    /**
+     * 检查是否满足字母、数字、下划线，且以字母开头
+     */
+    function checkPattern(v) {
+        var re = new RegExp("^[A-Za-z][A-Za-z0-9_]{0,63}$");
+        if (re.test(v)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 检查是否满足字母、数字、点、下划线，且以字母开头
+     * 检查占位符参数
+     */
+    function checkParams(v) {
+        var re = new RegExp("^[A-Za-z][A-Za-z\.0-9_]{0,128}$");
+        if (re.test(v)) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * 检查是否存在
+     */
+    function isExist(value) {
+        //debugger;
+        var result = "";
+        $.ajax({
+            url: "${basePath}/olq/app/checkName/" + value,
+            type: 'POST',
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (text) {
+                result = text;
+            }
+        });
+        return result;
+    }
+
+    /**
+     * 返回
+     */
+    function cancel() {
+        CloseWindow("onCancel");
+    }
+
+</script>
+<!--#end-->

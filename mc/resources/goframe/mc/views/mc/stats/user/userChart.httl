@@ -1,0 +1,115 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(head)-->
+<title>用户管理</title>
+<link rel="stylesheet" href="${basePath}/s/css/udsp.css"/>
+<link rel="stylesheet" href="${basePath}/s/css/font-awesome.css"/>
+<!--#end-->
+
+<!--#macro(content)-->
+<style type="text/css">
+	#btnQuery > span {
+		width: 100px;
+	}
+</style>
+<div class="nui-toolbar">
+
+	<div class="panel-toolbar">
+		<table style="width:100%">
+			<tr>
+				<td style="white-space:nowrap;">
+					<a class="nui-button" id="pull" iconCls="icon-search" onclick="moreOption">搜索︽</a>
+					<a class="nui-button" id="push" iconCls="icon-search" onclick="moreOption">搜索︾</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="panel-query search-condition" style="display:none;" id="query">
+		<div class="list">
+			<div id="form1">
+				<table style="width:100%">
+					<tr>
+						<td class="tit roleLabel" style="width: 100px;text-align: right">登录用户名：</td>
+						<td class="roleText" style="width: 25%">
+							<input class="nui-textbox" style="width: 100%;" name="userId"/>
+						</td>
+						<td class="tit roleLabel" style="width: 100px;text-align: right">员工姓名：</td>
+						<td class="roleText" style="width: 25%">
+							<input class="nui-textbox" style="width: 100%;" name="userName"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6" align="center">
+							<input class="nui-button" iconCls="icon-search" text="查询" onclick="search"/>
+							<span style="display:inline-block;width:25px;"></span>
+							<input class="nui-button" iconCls="icon-reset" text="重置" onclick="onFormReset('form1')"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<div class="nui-fit">
+	<div id="datagrid1" class="nui-datagrid" style="width:100%;height:100%;" idField="id"
+		 url="${basePath}/mc/stats/user/charts/selectUserStatis?appId=${appId}"
+		 sizeList=[5,10,20,50,100] multiSelect="true" pageSize="10">
+		<div property="columns" >
+			<div type="checkcolumn"></div>
+			<div field="userId" headerAlign="center">登录用户名：</div>
+			<div field="userName" headerAlign="center">员工姓名</div>
+			<div field="requestTotalCount" headerAlign="center" allowSort="true" >请求次数</div>
+			<div field="requestSuccessCount" headerAlign="center" allowSort="true">请求成功次数</div>
+			<div field="requestFailedCount" headerAlign="center" allowSort="true">请求失败次数</div>
+			<div name="invoke" headerAlign="center" align="center" allowSort="true" renderer="invokeRenderer">调用情况</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var grid;
+	require(['jquery', 'nui'], function ($, nui) {
+		nui.parse();
+		grid = nui.get("datagrid1");
+		$("#pull").hide();
+		grid.load();
+	});
+
+	/**
+	 * 搜索按钮转换
+	 */
+	function moreOption() {
+		$("#push").toggle();
+		$("#pull").toggle();
+		$("#query").toggle();
+		nui.layout(document.body);
+	}
+
+	function search(){
+		var form = new nui.Form("#form1");
+		var data = form.getData(true,true);
+		grid.load(data);
+	}
+
+	function reset(){
+		var form = new nui.Form("#form1");
+		form.reset();
+	}
+	/**
+	 * 服务调用渲染
+	 * @param e
+	 * @returns {string}
+	 */
+	function invokeRenderer(e){
+		return "<a href='#' class='underline' onclick='openServiceStatis(\"${basePath}/goframe/p/mc.stats.user.charts?userName="+e.row.userId+"\",\""+e.row.userId+"\",\""+e.row.userName+"用户调用统计\","+true+")'><img src='${basePath}/s/img/collapse.gif' title='服务名称对应服务调用信息' alt=''></a>";
+	}
+
+	function openServiceStatis(url, code, name, closeable){
+		window.parent.showTab(url, code, name, closeable,null,null,null,null);
+	}
+
+</script>
+<!--#end-->

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.common.dao.ComDatasourceMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.common.model.ComDatasource" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="NOTE" property="note" jdbcType="VARCHAR" />
+    <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
+    <result column="CRT_USER" property="crtUser" jdbcType="VARCHAR" />
+    <result column="CRT_TIME" property="crtTime" jdbcType="VARCHAR" />
+    <result column="UPT_USER" property="uptUser" jdbcType="VARCHAR" />
+    <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR" />
+    <result column="IMPL_CLASS" property="implClass" jdbcType="VARCHAR" />
+    <result column="MODEL" property="model" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from COM_DATASOURCE
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <update id="deleteByPrimaryKeyFake" parameterType="java.lang.String" >
+    update COM_DATASOURCE set DEL_FLG = '1' where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.common.model.ComDatasource" >
+    insert into COM_DATASOURCE (PK_ID, NAME, DESCRIBE, 
+      TYPE, NOTE, DEL_FLG, CRT_USER, 
+      CRT_TIME, UPT_USER, UPT_TIME, 
+      IMPL_CLASS, MODEL)
+    values (#{pkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{delFlg,jdbcType=CHAR}, #{crtUser,jdbcType=VARCHAR}, 
+      #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, 
+      #{implClass,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.common.model.ComDatasource" >
+    update COM_DATASOURCE
+    set NAME = #{name,jdbcType=VARCHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      NOTE = #{note,jdbcType=VARCHAR},
+      DEL_FLG = #{delFlg,jdbcType=CHAR},
+      CRT_USER = #{crtUser,jdbcType=VARCHAR},
+      CRT_TIME = #{crtTime,jdbcType=VARCHAR},
+      UPT_USER = #{uptUser,jdbcType=VARCHAR},
+      UPT_TIME = #{uptTime,jdbcType=VARCHAR},
+      IMPL_CLASS = #{implClass,jdbcType=VARCHAR},
+      MODEL = #{model,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
+    UPT_TIME, IMPL_CLASS, MODEL
+    from COM_DATASOURCE
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
+    UPT_TIME, IMPL_CLASS, MODEL
+    from COM_DATASOURCE
+  </select>
+  <select id="select" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.common.dto.ComDatasourceView" >
+    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    UPT_TIME, IMPL_CLASS, MODEL
+    from COM_DATASOURCE
+    where DEL_FLG = '0'
+    <if test="pkId!='' and pkId!=null ">and PK_ID = #{pkId}</if>
+    <if test="name!='' and name!=null ">and NAME like '%' || #{name} || '%'</if>
+    <if test="describe!='' and describe!=null ">and DESCRIBE like '%' || #{describe} || '%'</if>
+    <if test="note!='' and note!=null ">and NOTE like '%' || #{note} || '%'</if>
+    <if test="type!='' and type!=null ">and TYPE = #{type}</if>
+    <if test="crtTimeStart!=null and crtTimeStart!='' ">and CRT_TIME >= #{crtTimeStart}</if>
+    <if test="crtTimeEnd!=null and crtTimeEnd!='' ">and #{crtTimeEnd} >= CRT_TIME</if>
+    <if test="uptTimeStart!=null and uptTimeStart!='' ">and UPT_TIME >= #{uptTimeStart}</if>
+    <if test="uptTimeEnd!=null and uptTimeEnd!='' ">and #{uptTimeEnd} >= UPT_TIME</if>
+    <if test="crtUser!='' and crtUser!=null ">and CRT_USER like '%' || #{crtUser} || '%'</if>
+    <if test="uptUser!='' and uptUser!=null ">and UPT_USER like '%' || #{uptUser} || '%'</if>
+    <if test="implClass!='' and implClass!=null ">and IMPL_CLASS like '%' #{implClass} || '%'</if>
+    <if test="model!='' and model!=null ">and MODEL = #{model}</if>
+    order by UPT_TIME desc, CRT_TIME desc, NAME asc
+  </select>
+  <select id="selectByModelAndName" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.common.model.ComDatasource" >
+    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    UPT_TIME, IMPL_CLASS, MODEL
+    from COM_DATASOURCE
+    where DEL_FLG = '0'
+    and MODEL = #{model,jdbcType=VARCHAR}
+    and NAME = #{name,jdbcType=VARCHAR}
+  </select>
+</mapper>

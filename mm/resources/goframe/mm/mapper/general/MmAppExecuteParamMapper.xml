@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.mm.dao.ExecuteParamMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.mm.model.MmAppExecuteParam" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="SEQ" property="seq" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="IS_NEED" property="isNeed" jdbcType="CHAR" />
+    <result column="DEFAULT_VAL" property="defaultVal" jdbcType="VARCHAR" />
+    <result column="APP_ID" property="appId" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from MM_APPLICATION_EXECUTE_PARAM
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.mm.model.MmAppExecuteParam" >
+    insert into MM_APPLICATION_EXECUTE_PARAM (PK_ID, SEQ, NAME, 
+      DESCRIBE, IS_NEED, DEFAULT_VAL,APP_ID
+      )
+    values (#{pkId,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, 
+      #{describe,jdbcType=VARCHAR}, #{isNeed,jdbcType=CHAR}, #{defaultVal,jdbcType=VARCHAR},
+       #{appId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.mm.model.MmAppExecuteParam" >
+    update MM_APPLICATION_EXECUTE_PARAM
+    set SEQ = #{seq,jdbcType=DECIMAL},
+      NAME = #{name,jdbcType=VARCHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      IS_NEED = #{isNeed,jdbcType=CHAR},
+      DEFAULT_VAL = #{defaultVal,jdbcType=VARCHAR},
+      APP_ID=#{appId,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, SEQ, NAME, DESCRIBE, IS_NEED, DEFAULT_VAL,APP_ID
+    from MM_APPLICATION_EXECUTE_PARAM
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, SEQ, NAME, DESCRIBE, IS_NEED, DEFAULT_VAL,APP_ID
+    from MM_APPLICATION_EXECUTE_PARAM
+  </select>
+
+  <select id="selectListByFkId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select maep.PK_ID, maep.SEQ, maep.NAME, maep.DESCRIBE,maep.APP_ID,maep.IS_NEED,maep.DEFAULT_VAL
+    from MM_APPLICATION_EXECUTE_PARAM maep
+    where APP_ID = #{fkId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteListByFkId" parameterType="java.lang.String" >
+    delete from MM_APPLICATION_EXECUTE_PARAM
+     where APP_ID = #{fkId,jdbcType=VARCHAR}
+  </delete>
+</mapper>

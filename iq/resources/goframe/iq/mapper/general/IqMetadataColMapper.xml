@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.iq.dao.IqMetadataColMapper">
+    <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.iq.model.IqMetadataCol">
+        <id column="PK_ID" property="pkId" jdbcType="VARCHAR"/>
+        <result column="MD_ID" property="mdId" jdbcType="VARCHAR"/>
+        <result column="SEQ" property="seq" jdbcType="DECIMAL"/>
+        <result column="NAME" property="name" jdbcType="VARCHAR"/>
+        <result column="DESCRIBE" property="describe" jdbcType="VARCHAR"/>
+        <result column="TYPE" property="type" jdbcType="CHAR"/>
+        <result column="LENGTH" property="length" jdbcType="VARCHAR"/>
+        <result column="NOTE" property="note" jdbcType="VARCHAR"/>
+        <result column="COL_TYPE" property="colType" jdbcType="VARCHAR"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from IQ_METADATA_COLUMN
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.hex.bigdata.udsp.iq.model.IqMetadataCol">
+    insert into IQ_METADATA_COLUMN (PK_ID, MD_ID, SEQ, 
+      NAME, DESCRIBE, TYPE, 
+      LENGTH, NOTE, COL_TYPE)
+    values (#{pkId,jdbcType=VARCHAR}, #{mdId,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, 
+      #{name,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, #{type,jdbcType=CHAR}, 
+      #{length,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{colType,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.iq.model.IqMetadataCol">
+    update IQ_METADATA_COLUMN
+    set MD_ID = #{mdId,jdbcType=VARCHAR},
+      SEQ = #{seq,jdbcType=DECIMAL},
+      NAME = #{name,jdbcType=VARCHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=CHAR},
+      LENGTH = #{length,jdbcType=VARCHAR},
+      NOTE = #{note,jdbcType=VARCHAR},
+      COL_TYPE = #{colType,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select PK_ID, MD_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, NOTE, COL_TYPE
+    from IQ_METADATA_COLUMN
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select PK_ID, MD_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, NOTE, COL_TYPE
+    from IQ_METADATA_COLUMN
+  </select>
+    <select id="select" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.iq.model.IqMetadataCol">
+        select PK_ID, MD_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, NOTE, COL_TYPE
+        from IQ_METADATA_COLUMN
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="pkId!='' and pkId!=null ">and PK_ID = #{pkId}</if>
+            <if test="mdId!='' and mdId!=null ">and MD_ID = #{mdId}</if>
+            <if test="name!='' and name!=null ">and NAME like '%'||#{name}||'%'</if>
+            <if test="describe!='' and describe!=null ">and DESCRIBE like '%'||#{describe}||'%'</if>
+            <if test="note!='' and note!=null ">and NOTE like '%'||#{note}||'%'</if>
+            <if test="type!='' and type!=null ">and TYPE = #{type}</if>
+            <if test="length!='' and length!=null ">and LENGTH = #{length}</if>
+            <if test="seq!='' and seq!=null ">and SEQ = #{seq}</if>
+            <if test="colType!='' and colType!=null ">and COL_TYPE = #{colType}</if>
+        </trim>
+        order by SEQ asc
+    </select>
+    <delete id="deleteByMdId" parameterType="java.lang.String">
+    delete from IQ_METADATA_COLUMN
+    where MD_ID = #{mdId,jdbcType=VARCHAR}
+    </delete>
+
+    <select id="selectAppPkIdsByMdid" resultType="java.lang.String" parameterType="java.lang.String">
+        select IQ.PK_ID from IQ_APPLICATION IQ
+        where  IQ.MD_ID = #{mdId,jdbcType=VARCHAR}
+        and DEL_FLG = '0'
+    </select>
+</mapper>

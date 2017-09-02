@@ -1,0 +1,287 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(head)-->
+<link rel="stylesheet" href="${basePath}/s/css/udsp.css"/>
+<link rel="stylesheet" href="${basePath}/s/css/font-awesome.css"/>
+<!--#end-->
+
+<!--#macro(content)-->
+<style type="text/css">
+    #btnQuery > span {
+        width: 100px;
+    }
+</style>
+
+<div class="nui-toolbar">
+
+    <div class="panel-toolbar">
+        <table style="width:100%">
+            <tr>
+                <td style="white-space:nowrap;">
+                    <a class="nui-button" id="pull" iconCls="icon-search" onclick="moreOption">搜索︽</a>
+                    <a class="nui-button" id="push" iconCls="icon-search" onclick="moreOption">搜索︾</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="panel-query search-condition" style="display:none;" id="query">
+        <div class="list">
+            <div id="form1">
+                <!-- 搜索栏 -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="nui-fit" style="height: 100px;">
+    <div id="datagrid1" class="nui-datagrid" style="width:100%;height:100%;" sortMode="client"
+         url="${basePath}/http/datagrid/consume" idField="pkId" allowResize="false" dataField="data"
+         onpreload="checkError"
+         sizeList="[10,20,50,100,200,500,1000]" pageSize="20" multiSelect="true" allowCellSelect="false">
+        <!-- 列表栏 -->
+    </div>
+</div>
+
+<form id="downForm" action="${basePath}/http/inner/download" method="get">
+    <input id="filePath" name="filePath" type="hidden"/>
+</form>
+
+<script type="text/javascript">
+    var appId;
+
+    /**
+     * 按需加载资源文件
+     */
+    require(['jquery', 'nui'], function ($, nui) {
+        nui.parse();
+        $("#pull").hide();
+
+        $.post("${basePath}/iq/app/selectByName/${name}", {}, function (result) {
+            if (!result.data) {
+                nui.alert("错误的应用名称：${name}，请联系管理员！");
+                return;
+            }
+            appId = result.data.pkId;
+
+            //--搜索栏动态生成--
+            var form1 = $("#form1");
+            form1.empty();
+            var formHtml = getFormHtml(appId);
+            //console.warn(formHtml);
+            form1.append(formHtml);
+
+            //--列表栏动态生成--
+            var grid1 = nui.get("datagrid1");
+            grid1.clearRows();
+            var gridColumns = getGridColumns(appId);
+            //console.warn(gridColumns);
+            grid1.set({columns: gridColumns});
+
+            nui.parse();
+        });
+    });
+
+
+    /**
+     * 搜索按钮转换
+     */
+    function moreOption() {
+        $("#push").toggle();
+        $("#pull").toggle();
+        $("#query").toggle();
+        nui.layout(document.body);
+    }
+
+    /**
+     *数据渲染前检查是否报错
+     */
+    function checkError() {
+        var grid1 = nui.get("datagrid1");
+        var resultObject = grid1._dataSource._resultObject;
+        debugger;
+        if ((resultObject.data == null || resultObject.data.length == 0) && (resultObject.message != "" && resultObject.message != null && resultObject.message != "执行成功")) {
+            nui.alert(resultObject.message);
+        }
+        return;
+    }
+
+    /**
+     * 获取Form动态的HTML
+     */
+    function getFormHtml(appId) {
+        var queryCols = getQueryCols(appId);
+        //console.warn(queryCols);
+        var count = 0;
+        var html = "<table style='width:100%'>";
+        $.each(queryCols, function (_index, record) {
+            //console.warn(record);
+            var seq = record.seq;
+            var name = record.name;
+            var describe = record.describe;
+            var type = record.type;
+            var label = record.label;
+            var stats = record.stats;
+            var length = record.length;
+            var isNeed = record.isNeed == "1" ? false : true;
+            var defaultVal = record.defaultVal ? record.defaultVal : "";
+            var operator = record.operator;
+            var isOfferOut = record.isOfferOut;
+            var tdHtml = "<td class='tit roleLabel' style='width: 100px;text-align: right'>" + describe + "：</td>"
+                    + "<td class='roleText' style='width: 25%'>"
+                    + "<input name='" + label + "' class='nui-textbox' style='width:98%;' value='" + defaultVal + "' required='" + isNeed + "' emptyText='进行\"" + operator + "\"匹配'/>"
+                    + "</td>";
+            count++;
+            if (count % 4 == 1) {
+                html += "<tr>" + tdHtml;
+            } else if (count % 4 == 0) {
+                html += tdHtml + "</tr>";
+            } else {
+                html += tdHtml;
+            }
+        });
+        if (count % 4 != 0) {
+            html += "</tr>";
+        }
+        html += "<tr>"
+        + "<td colspan='8' align='center'>"
+        + "#if(hasPermission('IQ.qm.app.search'))"
+        + "<input class='nui-button' iconCls='icon-search' text='查询' onclick='search'/>"
+        + "#end"
+        + "<span style='display:inline-block;width:25px;'></span>"
+        + "<input class='nui-button' iconCls='icon-reset' text='重置' onclick='onFormReset(\"form1\")'/>"
+        + "<span style='display:inline-block;width:25px;'></span>"
+        + "#if(hasPermission('IQ.qm.app.download'))"
+        + "<input class='nui-button' iconCls='icon-download' text='下载' onclick='download'/>"
+        + "#end"
+        + "</td>"
+        + "</tr>"
+        + "</table>";
+        //console.warn(html);
+        return html;
+    }
+
+    /**
+     * 获取Grid动态的列信息
+     */
+    function getGridColumns(appId) {
+        var returnCols = getReturnCols(appId);
+        //console.warn(returnCols);
+        var columns = new Array();
+        columns[0] = {
+            header: "序号",
+            type: "indexColumn",
+            width: 30
+        };
+        var i = 1;
+        $.each(returnCols, function (_index, record) {
+            //console.warn(record);
+            var seq = record.seq;
+            var name = record.name;
+            var describe = record.describe;
+            var type = record.type;
+            var label = record.label;
+            var stats = record.stats;
+            var length = record.length;
+            columns[i] = {
+                field: label,
+                header: describe,
+                headerAlign: "center",
+                allowSort: true
+            };
+            i++;
+        });
+        return columns;
+    }
+
+    /**
+     * 获取查询字段信息(同步)
+     */
+    function getQueryCols(appId) {
+        var data;
+        $.ajax({
+            url: "${basePath}/iq/app/query/col/selectByAppId/" + appId,
+            type: 'POST',
+            cache: false,
+            async: false,
+            contentType: 'apllication/json',
+            success: function (result) {
+                data = result.data;
+            }
+        });
+        return data;
+    }
+
+    /**
+     * 获取返回字段信息(同步)
+     */
+    function getReturnCols(appId) {
+        var data;
+        $.ajax({
+            url: "${basePath}/iq/app/return/col/selectByAppId/" + appId,
+            type: 'POST',
+            cache: false,
+            async: false,
+            contentType: 'apllication/json',
+            success: function (result) {
+                data = result.data;
+            }
+        });
+        return data;
+    }
+
+    /**
+     * 搜索
+     */
+    function search() {
+        var form1 = new nui.Form("#form1");
+        form1.validate();
+        if (form1.isValid() == false) return;
+        var grid1 = nui.get("datagrid1");
+        var data = form1.getData(true, true);
+        grid1.load({
+            "appType": "IQ",
+            "appId": appId,
+            "type": "sync",
+            "entity": "start",
+            "data": data
+        });
+    }
+
+    /**
+     * 下载
+     */
+    function download() {
+        var form1 = new nui.Form("#form1");
+        form1.validate();
+        if (form1.isValid() == false) return;
+        var data = form1.getData(true, true);
+        var json = nui.encode({
+            "appType": "IQ",
+            "appId": appId,
+            "type": "async",
+            "entity": "start",
+            "data": data
+        });
+        var grid1 = nui.get("datagrid1");
+        grid1.loading("正在下载中,请稍等...");
+        $.ajax({
+            url: "${basePath}/http/inner/async/consume",
+            type: 'POST',
+            data: json,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.status == "true" || result.status == true) {
+                    $("#filePath").val(result.message);
+                    $("#downForm").submit();
+                } else {
+                    nui.alert(result.message, "系统提示");
+                }
+                grid1.unmask();
+            }
+        });
+    }
+</script>
+
+<!--#end-->

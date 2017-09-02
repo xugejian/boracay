@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.rts.dao.RtsMatedataColMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.rts.model.RtsMatedataCol" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="MD_ID" property="mdId" jdbcType="VARCHAR" />
+    <result column="SEQ" property="seq" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from RTS_METADATA_COLUMN
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.rts.model.RtsMatedataCol" >
+    insert into RTS_METADATA_COLUMN (PK_ID, MD_ID, SEQ, 
+      NAME, DESCRIBE,TYPE)
+    values (#{pkId,jdbcType=VARCHAR}, #{mdId,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, 
+      #{name,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.rts.model.RtsMatedataCol" >
+    update RTS_METADATA_COLUMN
+    set MD_ID = #{mdId,jdbcType=VARCHAR},
+      SEQ = #{seq,jdbcType=DECIMAL},
+      NAME = #{name,jdbcType=VARCHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, MD_ID, SEQ, NAME, DESCRIBE,TYPE
+    from RTS_METADATA_COLUMN
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, MD_ID, SEQ, NAME, DESCRIBE,TYPE
+    from RTS_METADATA_COLUMN
+  </select>
+  <select id="selectPage" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rts.model.RtsMatedataCol">
+    select PK_ID, MD_ID, SEQ, NAME, DESCRIBE,TYPE
+    from RTS_METADATA_COLUMN
+    <where>
+      <if test="mdId!='' and mdId!=null ">MD_ID =#{mdId,jdbcType=VARCHAR}</if>
+      <if test="name!='' and name!=null "> and NAME like '%'||#{name}||'%'</if>
+      <if test="describe!='' and describe!=null "> and DESCRIBE like '%'||#{describe}||'%'</if>
+    </where>
+    order by SEQ asc
+  </select>
+
+  <delete id="deleteByMdId" parameterType="java.lang.String" >
+    delete from RTS_METADATA_COLUMN
+    where MD_ID = #{mdId,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="selectByMdId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select PK_ID, MD_ID, SEQ, NAME, DESCRIBE,TYPE
+    from RTS_METADATA_COLUMN
+    WHERE MD_ID =#{mdId,jdbcType=VARCHAR}
+    order by SEQ asc
+  </select>
+
+  <select id="selectByProducerPkid" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select m.*
+    from RTS_PRODUCRER_CONFIG p
+    LEFT JOIN RTS_METADATA_COLUMN m
+    on m.MD_ID = p.MD_ID
+    where p.PK_ID = #{appId,jdbcType=VARCHAR}
+    order by m.SEQ asc
+  </select>
+</mapper>

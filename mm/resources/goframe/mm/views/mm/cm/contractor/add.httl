@@ -1,0 +1,262 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(content)-->
+<div style="padding: 5px 5px 0px 5px;">
+    <div id="form1" method="post">
+            <table style="width:100%;height:100%;" cellpadding="5px,0px,5px,0px" class="nui-form-table">
+                <tr>
+                    <th class="nui-form-label"><label for="cnName">厂商名称：</label></th>
+                    <td >
+                        <input id="cnName" name="cnName" class="nui-textbox" style="width: 99%" required="true"
+                               vtype="maxLength:64" />
+                    </td>
+                    <th class="nui-form-label"><label for="name">英文简称：</label></th>
+                    <td >
+                        <input id="name" name="name" class="nui-textbox" style="width: 99%" required="true"
+                               vtype="maxLength:64" onvalidation="nameValidation"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="nui-form-label"><label for="principal">调用链接：</label></th>
+                    <td colspan="3">
+                        <input id="httpUrl" name="httpUrl" class="nui-textbox" style="width:99%" required="true" vtype="url"
+                               vtype="maxLength:256"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="nui-form-label"><label for="principal">负责人姓名：</label></th>
+                    <td>
+                        <input id="principal" name="principal" class="nui-textbox" style="width:99%" required="true"
+                               vtype="maxLength:256"/>
+                    </td>
+                    <th class="nui-form-label"><label for="mobile">负责人手机号：</label></th>
+                    <td>
+                        <input id="mobile" name="mobile" class="nui-textbox" style="width:99%" required="true"  onvalidation="checkPhoneNumber"
+                               vtype="maxLength:256"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="nui-form-label"><label for="principal">ftp登陆密码：</label></th>
+                    <td>
+                        <input id="ftpPassword" name="ftpPassword" class="nui-password" style="width:99%" required="true"
+                               vtype="maxLength:256"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="nui-form-label"><label for="note">备注：</label></th>
+                    <td colspan="3">
+                        <input name="note" id="note" class="nui-textarea" style="height:60px; width:99%;"
+                               vtype="maxLength:4000"/>
+                    </td>
+                </tr>
+            </table>
+        <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
+            <a class="nui-button" style="" iconCls="icon-save" onclick="save" id="saveButton">保存</a>
+            <span style="display:inline-block;width:25px;"></span>
+            <a class="nui-button" style="" iconCls="icon-cancel" onclick="cancel">返回</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var form1;
+    var grid1;
+    var dsType;
+    /**
+     * 按需加载资源文件
+     */
+    require(['jquery', 'nui'], function ($, nui) {
+        nui.parse();
+        form1 = new nui.Form("#form1");
+        grid1 = nui.get("datagrid1");
+    });
+
+    /**
+     * 选中
+     */
+    function selected() {
+        var rows = grid1.getSelecteds();
+        if (rows.length == 1) {
+            nui.get("remove").enable();
+            nui.get("moveUp").enable();
+            nui.get("moveDown").enable();
+        } else if (rows.length == 0) {
+            nui.get("remove").disable();
+            nui.get("moveUp").disable();
+            nui.get("moveDown").disable();
+        } else {
+            nui.get("remove").enable();
+            nui.get("moveUp").enable();
+            nui.get("moveDown").enable();
+        }
+    }
+
+    /**
+     * 参数名称变化时触发
+     */
+    function propsNameChanged(e) {
+        // --同一行的值和说明变化--
+        var selected = e.selected;
+        var row = grid1.getSelected();
+        row.describe = selected.dictName;
+        row.value = selected.filter;
+    }
+
+    /**
+     * 添加
+     */
+    function add() {
+        var rows = grid1.getData(true, true);
+        var length = rows.length;
+        var newRow = {name: "New Row"};
+        grid1.addRow(newRow, length);
+    }
+
+    /**
+     * 批量添加
+     */
+    function adds() {
+        nui.open({
+            url: "${basePath}/goframe/p/rts.cm.ds.multi?dictTypeId=RTS_PRODUCER_PROPS_" + dsType,
+            title: "批量选择配置参数",
+            width: 650,
+            height: 380,
+            onload: function () {
+                var data = grid1.getData(true, true);
+                var iframe = this.getIFrameEl();
+                var props = [];
+                if (data.length > 0) {
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        props.push({"name": data[i].name, "value": data[i].value, "describe": data[i].describe});
+                    }
+                }
+                iframe.contentWindow.SetData(props);
+            },
+            ondestroy: function (action) {
+                if (action == "success") {
+                    var iframe = this.getIFrameEl();
+                    var result = iframe.contentWindow.GetData();
+                    result = nui.clone(result);
+                    grid1.addRows(result);
+                }
+            }
+        });
+    }
+
+    /**
+     * 删除
+     */
+    function remove() {
+        var rows = grid1.getSelecteds();
+        if (rows.length > 0) {
+            grid1.removeRows(rows, true);
+        } else {
+            nui.alert("请至少选中一条记录!");
+        }
+    }
+
+    /**
+     * 保存
+     */
+    function save() {
+        var saveData = form1.getData(true, true);
+        if (!saveData) {
+            return;
+        }
+        var json = nui.encode(saveData);
+        // --发送信息--
+        form1.loading("正在保存中,请稍等...");
+        //禁用保存按钮
+        nui.get("saveButton").disable();
+        $.ajax({
+            url: "${basePath}/mm/contractor/insert",
+            type: 'POST',
+            data: json,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.status == true) {
+                    nui.alert(result.message);
+                    CloseWindow("success");
+                } else {
+                    nui.alert(result.message, "系统提示", function (action) {
+                        if (action == "ok" || action == "close") {
+                            CloseWindow("failed");
+                        }
+                    });
+                }
+                form1.unmask();
+                //解除保存按钮禁用
+                nui.get("saveButton").enable();
+            }
+        });
+    }
+
+    /**
+     * 名称变化时触发检查
+     */
+    function nameValidation(e) {
+        if (e.isValid) {
+            if (checkPattern(e.value) == false) {
+                e.errorText = "只能包含字母、数字、下划线，且以字母开头";
+                e.isValid = false;
+            }
+            var result = isExist(e.value);
+            if (result.status) {
+                e.errorText = "名称已存在";
+                e.isValid = false;
+            }
+        }
+    }
+
+
+    /**
+     * 检查是否满足字母、数字、下划线，且以字母开头
+     */
+    function checkPattern(v) {
+        var re = new RegExp("^[A-Za-z][A-Za-z0-9_]{0,63}$");
+        if (re.test(v)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 检查是否存在
+     */
+    function isExist(value) {
+        debugger;
+        var result = "";
+        $.ajax({
+            url: "${basePath}/mm/contractor/checkName/" + value,
+            type: 'POST',
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (text) {
+                result = text;
+            }
+        });
+        return result;
+    }
+
+    /**
+     * 返回
+     */
+    function cancel() {
+        CloseWindow("onCancel");
+    }
+
+    /**
+     * 检查手机号是否合法
+     * @param e
+     */
+    function checkPhoneNumber(e){
+        var reg=/^[1][3-8][0-9]{9}$/;
+        if (!reg.test(e.value)) {
+            e.errorText = "手机号格式错误";
+            e.isValid = false;
+        }
+    }
+</script>
+<!--#end-->

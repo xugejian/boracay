@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+    <classPathEntry location="../lib/jdbc/ojdbc6.jar" />
+
+    <context id="context1"  targetRuntime="MyBatis3Simple"><!--&lt;!&ndash;  targetRuntime="MyBatis3Simple" &ndash;&gt;-->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+            <property name="suppressDate" value="true" />
+        </commentGenerator>
+
+        <jdbcConnection driverClass="oracle.jdbc.OracleDriver" connectionURL="jdbc:oracle:thin:@//10.1.97.3:1521/hadoop" userId="dcp" password="dcp" />
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+        <javaModelGenerator targetPackage="com.hex.bigdata.udsp.mc.model" targetProject="src">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="false" />
+        </javaModelGenerator>
+        <sqlMapGenerator targetPackage="goframe.mc.mapper.general" targetProject="resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+        <javaClientGenerator targetPackage="com.hex.bigdata.udsp.mc.dao" targetProject="src" type="XMLMAPPER">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <table tableName="MC_CONSUME_LOG" domainObjectName="McConsumeLog"/>
+        <table tableName="MC_CURRENT" domainObjectName="McCurrent"/>
+
+  </context>
+</generatorConfiguration>

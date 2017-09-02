@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+    <classPathEntry location="../lib/jdbc/ojdbc6.jar" />
+
+    <context id="context1"  targetRuntime="MyBatis3Simple"><!--&lt;!&ndash;  targetRuntime="MyBatis3Simple" &ndash;&gt;-->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+            <property name="suppressDate" value="true" />
+        </commentGenerator>
+
+        <jdbcConnection driverClass="oracle.jdbc.OracleDriver" connectionURL="jdbc:oracle:thin:@//dev.goupwith.com:1521/zctggl" userId="dcp" password="shhex20160903" />
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+        <javaModelGenerator targetPackage="com.hex.bigdata.udsp.rts.model" targetProject="src">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="false" />
+        </javaModelGenerator>
+        <sqlMapGenerator targetPackage="goframe.rts.mapper.general" targetProject="resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+        <javaClientGenerator targetPackage="com.hex.bigdata.udsp.rts.dao" targetProject="src" type="XMLMAPPER">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!--<table tableName="IQ_APPLICATION" domainObjectName="IQApplication"/>-->
+        <table tableName="RTS_CUSTOMER_CONFIG" domainObjectName="RtsCustomerConfig"/>
+        <table tableName="RTS_DATASOURCE" domainObjectName="RtsDatasource"/>
+        <table tableName="RTS_METADATA" domainObjectName="RtsMatedata"/>
+        <table tableName="RTS_METADATA_COLUMN" domainObjectName="RtsMetadataCol"/>
+        <table tableName="RTS_PRODUCRER_CONFIG" domainObjectName="RtsProducerConfig"/>
+  </context>
+</generatorConfiguration>

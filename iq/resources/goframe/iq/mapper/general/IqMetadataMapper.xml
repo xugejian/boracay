@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.iq.dao.IqMetadataMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.iq.model.IqMetadata" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="DS_ID" property="dsId" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="NOTE" property="note" jdbcType="VARCHAR" />
+    <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
+    <result column="CRT_USER" property="crtUser" jdbcType="VARCHAR" />
+    <result column="CRT_TIME" property="crtTime" jdbcType="VARCHAR" />
+    <result column="UPT_USER" property="uptUser" jdbcType="VARCHAR" />
+    <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR" />
+    <result column="TB_NAME" property="tbName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="IqMetadataView" type="com.hex.bigdata.udsp.iq.dto.IqMetadataView" extends="BaseResultMap">
+    <result column="DS_NAME" property="dsName" jdbcType="VARCHAR" />
+    <result column="DS_DESC" property="dsDesc" jdbcType="VARCHAR" />
+    <result column="DS_TYPE" property="dsType" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from IQ_METADATA
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <update id="deleteByPrimaryKeyFake" parameterType="java.lang.String" >
+    update IQ_METADATA set DEL_FLG = '1' where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.iq.model.IqMetadata" >
+    insert into IQ_METADATA (PK_ID, DS_ID, NAME,
+      DESCRIBE, NOTE, DEL_FLG, 
+      CRT_USER, CRT_TIME, UPT_USER, 
+      UPT_TIME, TB_NAME)
+    values (#{pkId,jdbcType=VARCHAR}, #{dsId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{describe,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{delFlg,jdbcType=CHAR}, 
+      #{crtUser,jdbcType=VARCHAR}, #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, 
+      #{uptTime,jdbcType=VARCHAR}, #{tbName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.iq.model.IqMetadata" >
+    update IQ_METADATA
+    set DS_ID = #{dsId,jdbcType=VARCHAR},
+      NAME = #{name,jdbcType=VARCHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      NOTE = #{note,jdbcType=VARCHAR},
+      DEL_FLG = #{delFlg,jdbcType=CHAR},
+      CRT_USER = #{crtUser,jdbcType=VARCHAR},
+      CRT_TIME = #{crtTime,jdbcType=VARCHAR},
+      UPT_USER = #{uptUser,jdbcType=VARCHAR},
+      UPT_TIME = #{uptTime,jdbcType=VARCHAR},
+      TB_NAME = #{tbName,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
+    UPT_TIME, TB_NAME
+    from IQ_METADATA
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
+    UPT_TIME, TB_NAME
+    from IQ_METADATA
+    where DEL_FLG = '0'
+  </select>
+  <select id="select" resultMap="IqMetadataView" parameterType="com.hex.bigdata.udsp.iq.dto.IqMetadataView" >
+    select md.PK_ID, md.DS_ID, md.NAME, md.DESCRIBE, md.NOTE, md.DEL_FLG, md.CRT_USER, md.CRT_TIME, md.UPT_USER,
+    md.UPT_TIME, md.TB_NAME, ds.NAME as DS_NAME, ds.TYPE as DS_TYPE, ds.DESCRIBE as DS_DESC
+    from IQ_METADATA md
+    left join COM_DATASOURCE ds
+    on md.DS_ID = ds.PK_ID
+    where md.DEL_FLG = '0'
+    <if test="pkId!='' and pkId!=null ">and md.PK_ID = #{pkId}</if>
+    <if test="name!='' and name!=null ">and md.NAME like '%'||#{name}||'%'</if>
+    <if test="describe!='' and describe!=null ">and md.DESCRIBE like '%'||#{describe}||'%'</if>
+    <if test="note!='' and note!=null ">and md.NOTE like '%'||#{note}||'%'</if>
+    <if test="dsId!='' and dsId!=null ">and md.DS_ID = #{dsId}</if>
+    <if test="crtTimeStart!=null and crtTimeStart!='' ">and md.CRT_TIME >= #{crtTimeStart}</if>
+    <if test="crtTimeEnd!=null and crtTimeEnd!='' ">and #{crtTimeEnd} >= md.CRT_TIME</if>
+    <if test="uptTimeStart!=null and uptTimeStart!='' ">and md.UPT_TIME >= #{uptTimeStart}</if>
+    <if test="uptTimeEnd!=null and uptTimeEnd!='' ">and #{uptTimeEnd} >= md.UPT_TIME</if>
+    <if test="crtUser!='' and crtUser!=null ">and md.CRT_USER like '%'||#{crtUser}||'%'</if>
+    <if test="uptUser!='' and uptUser!=null ">and md.UPT_USER like '%'||#{uptUser}||'%'</if>
+    <if test="tbName!='' and tbName!=null ">and md.TB_NAME = #{tbName}</if>
+    order by md.UPT_TIME desc, md.CRT_TIME desc, md.NAME asc
+  </select>
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    UPT_TIME, TB_NAME
+    from IQ_METADATA
+    where DEL_FLG = '0'
+    and NAME = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectListByDsid" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    UPT_TIME, TB_NAME
+    from IQ_METADATA
+    where DEL_FLG = '0'
+    and DS_ID = #{dsId,jdbcType=VARCHAR}
+  </select>
+</mapper>

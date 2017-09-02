@@ -1,0 +1,697 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(head)-->
+<link rel="stylesheet" href="${basePath}/s/css/udsp.css"/>
+<link rel="stylesheet" href="${basePath}/s/css/font-awesome.css"/>
+<!--#end-->
+
+<!--#macro(content)-->
+<style type="text/css">
+    #btnQuery > span {
+        width: 100px;
+    }
+</style>
+
+<div class="nui-toolbar">
+    <div id="form1" class="panel-toolbar">
+        <table style="width:100%">
+            <tr>
+                <td style="white-space:nowrap;">
+                    <B>图表</B>
+                    <span style="display:inline-block;width:25px;"></span>
+                    <a checkOnClick="true" groupName="interval" class="mini-button"
+                       plain="true" oncheckedchanged="onCheckedChanged2">
+                        <span id="intervalStr">30分钟</span> 在 <span id="datetimeStr">2017-03-23 12:23</span> 之前</a>
+                    </a>
+                </td>
+                <td style="text-align: right;">
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="30" oncheckedchanged="onCheckedChanged" checked="true">30分钟</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="60" oncheckedchanged="onCheckedChanged">1小时</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="120" oncheckedchanged="onCheckedChanged">2小时</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="360" oncheckedchanged="onCheckedChanged">6小时</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="720" oncheckedchanged="onCheckedChanged">12小时</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="1440" oncheckedchanged="onCheckedChanged">1天</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="10080" oncheckedchanged="onCheckedChanged">7天</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="43200" oncheckedchanged="onCheckedChanged">30天</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="nui-fit" style="height: auto;">
+        <table style="width:100%" cellpadding="10px,5px,10px,5px">
+            <tr>
+                <td style="height:300px;width:49%;">
+                    <div id="chart1" style="height:100%;width:100%;"></div>
+                </td>
+            </tr>
+            <tr>
+                <td style="height:300px;width:49%;" colspan="2">
+                    <div id="chart2" style="height:100%;width:100%;"></div>
+                </td>
+            </tr>
+            <tr>
+                <td style="height:300px;width:49%;" colspan="2">
+                    <div id="userServiceNameChar" style="height:100%;width:100%;"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var echarts;
+    var chart1;
+    var serviceName;
+    var userName;
+    var char2;
+    var userServiceNameChar;
+    /**
+     * 按需加载资源文件
+     */
+    require(['echarts', 'jquery', 'nui'], function (ec, $, nui) {
+        serviceName = "${serviceName}";
+        userName = "${userName}"
+        console.log(serviceName);
+        nui.parse();
+        echarts = ec;
+        chart1 = ec.init(document.getElementById('chart1'));
+        char2 = ec.init(document.getElementById('chart2'));
+        userServiceNameChar = ec.init(document.getElementById('userServiceNameChar'));
+    });
+
+    /**
+     * 时间间隔点击时触发
+     * @param e
+     */
+    function onCheckedChanged(e) {
+        var btn = e.sender;
+        var checked = btn.getChecked();
+        if (checked) {
+            btn.checked = false;
+            var interval = btn.getValue();
+            var text = btn.getText();
+            var datetime = nui.formatDate(new Date(getNowTime()), "yyyy-MM-dd HH:mm");
+            $("#intervalStr").text(text);
+            $("#datetimeStr").text(datetime);
+
+            var form1 = new nui.Form("#form1");
+            form1.loading("正在加载中,请稍等...");
+            // 1、时间维度-分结果状态的消费统计
+            optionChart1(datetime, interval);
+            // 2、服务-时间维度-调用统计
+            optionChart2(datetime, interval);
+            //3、服务维度-分结果状态的消费统计
+            optionUserServiceNameChar(datetime, interval);
+            setTimeout(function () {
+                form1.unmask();
+            }, 1000);
+        }
+    }
+
+    /**
+     * 自定义时间间隔点击时触发
+     */
+    function onCheckedChanged2(e) {
+        var btn = e.sender;
+        var checked = btn.getChecked();
+        if (checked) {
+            btn.checked = false;
+            nui.open({
+                url: "${basePath}/goframe/p/mc.stats.interval",
+                title: "自定义时间间隔",
+                width: 350,
+                height: 300,
+                onload: function () {
+                },
+                ondestroy: function (action) {
+                    if (action == "success") {
+                        var data = this.getIFrameEl().contentWindow.GetData();
+                        //console.warn(data);
+                        var interval = (new Date(data.timeEnd) - new Date(data.timeStart)) / 60000;
+                        var text = "30分钟";
+                        if (interval < 60) {
+                            text = interval + "分钟";
+                        } else if (interval < 1440) {
+                            text = (interval / 60).toFixed(2) + "小时";
+                        } else {
+                            text = (interval / 1440).toFixed(2) + "天";
+                        }
+                        var datetime = data.timeEnd;
+                        $("#intervalStr").text(text);
+                        $("#datetimeStr").text(datetime);
+
+                        var form1 = new nui.Form("#form1");
+                        form1.loading("正在加载中,请稍等...");
+                        // 1、时间维度-分结果状态的消费统计
+                        optionChart1(datetime, interval);
+                        // 2、服务-时间维度-调用统计
+                        optionChart2(datetime, interval);
+                        //3、服务维度-分结果状态的消费统计
+                        optionUserServiceNameChar(datetime, interval);
+                        setTimeout(function () {
+                            form1.unmask();
+                        }, 1000);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 时间维度-分结果状态的消费统计
+     */
+    function optionChart1(datetime, interval) {
+        if(serviceName == null || serviceName == ""){
+            serviceName = "${serviceName}";
+        }
+        if(userName == null || userName == ""){
+            userName = "${userName}"
+        }
+        var xData = [];
+        var yData1 = []; // 成功Array
+        var yData2 = []; // 失败Array
+        var dataMap1 = {}; // 成功Map
+        var dataMap2 = {}; // 失败Map
+        var befDatetime = new Date(new Date(datetime).getTime() - interval * 60000);
+        //var name = "时间（分）";
+        var milli = 60000;
+        var format = "yyyy-MM-dd HH:mm";
+        var len = 30;
+        debugger;
+        var url = "${basePath}/mc/stats/user/charts/chart1Minute?userName="+userName+"&datetime=" + datetime + "&interval=" + interval;
+        if (interval <= 360) { // 数据粒度：分钟
+            //name = "时间（分）";
+            milli = 60000;
+            format = "yyyy-MM-dd HH:mm";
+            len = interval;
+            url = "${basePath}/mc/stats/user/charts/chart1Minute?userName="+userName+"&datetime=" + datetime + "&interval=" + interval;
+        } else if (interval <= 2880) { // 数据粒度：小时
+            //name = "时间（时）";
+            milli = 3600000;
+            format = "yyyy-MM-dd HH";
+            len = Math.ceil(interval / 60);
+            url = "${basePath}/mc/stats/user/charts/chart1Hour?userName="+userName+"&datetime=" + datetime + "&interval=" + interval;
+        } else { // 数据粒度：天
+            //name = "时间（日）";
+            milli = 86400000;
+            format = "yyyy-MM-dd";
+            len = Math.ceil(interval / 1440);
+            url = "${basePath}/mc/stats/user/charts/chart1Day?userName="+userName+"&datetime=" + datetime + "&interval=" + interval;
+        }
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.datetime;
+                    if (record.status == '0')
+                        dataMap1[key] = getVal(dataMap1, key, record.countNum);
+                    else if (record.status == '1')
+                        dataMap2[key] = getVal(dataMap2, key, record.countNum);
+                });
+                for (var i = 0; i < len; i++) {
+                    var dt = nui.formatDate(new Date(befDatetime.getTime() + (i+1) * milli), format);
+                    xData[i] = dt;
+                    yData1[i] = getNum(dataMap1, dt);
+                    yData2[i] = getNum(dataMap2, dt);
+                }
+                var option = {
+                    title: {
+                        text: '时间维度-分结果状态的消费统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['成功状态', '失败状态']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    dataZoom: {
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis: [
+                        {
+                            //name: name,
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（次）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '成功状态',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '失败状态',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    chart1 = echarts.init(document.getElementById('chart1'));
+                    chart1.clear();
+                    chart1.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+    // 2、服务-时间维度-调用统计
+    function optionChart2(datetime, interval){
+        if (serviceName == null || serviceName == "") {
+            serviceName = "${serviceName}";
+        }
+        var xData = [];
+        var dataMaps = {};//数据集合
+        var yDatas = [];
+        var serviceNameArray;
+        var logServiceNameArray;
+        var befDatetime = new Date(new Date(datetime).getTime() - interval * 60000);
+        //var name = "时间（分）";
+        var milli = 60000;
+        var format = "yyyy-MM-dd HH:mm";
+        var len = 30;
+        //debugger;
+        var url = "${basePath}/mc/stats/user/charts/serviceTimeMinute?userName=" + userName + "&datetime=" + datetime + "&interval=" + interval;
+        if (interval <= 360) { // 数据粒度：分钟
+            //name = "时间（分）";
+            milli = 60000;
+            format = "yyyy-MM-dd HH:mm";
+            len = interval;
+            url = "${basePath}/mc/stats/user/charts/serviceTimeMinute?userName=" + userName + "&datetime=" + datetime + "&interval=" + interval;
+        } else if (interval <= 2880) { // 数据粒度：小时
+            //name = "时间（时）";
+            milli = 3600000;
+            format = "yyyy-MM-dd HH";
+            len = Math.ceil(interval / 60);
+            url = "${basePath}/mc/stats/user/charts/serviceTimeHour?userName=" + userName + "&datetime=" + datetime + "&interval=" + interval;
+        } else { // 数据粒度：天
+            //name = "时间（日）";
+            milli = 86400000;
+            format = "yyyy-MM-dd";
+            len = Math.ceil(interval / 1440);
+            url = "${basePath}/mc/stats/user/charts/serviceTimeDay?userName=" + userName + "&datetime=" + datetime + "&interval=" + interval;
+        }
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                //用户信息遍历出来
+                serviceNameArray = new Array();
+                var serviceObjects = getServiceByUserName();
+                debugger;
+                console.log(serviceObjects);
+                $.each(serviceObjects, function (_index, record) {
+                    var serviceName = record.serviceName;
+                    if (!serviceNameArray.contains(serviceName)) {
+                        serviceNameArray.push(serviceName);
+                    }
+                });
+                $.each(data, function (_index, record) {
+                    var key = record.datetime;
+                    var serviceKey = record.serviceName;
+                    if (!serviceNameArray.contains(serviceKey)) {
+                        serviceNameArray.push(serviceKey);
+                    }
+                    var dataMap = getDataMap(dataMaps, serviceKey);
+                    dataMap[key] = getVal(dataMap, key, record.countNum);
+                    dataMaps[serviceKey] = dataMap;
+                });
+                for (var i = 0; i < len; i++) {
+                    var dt = nui.formatDate(new Date(befDatetime.getTime() + (i + 1) * milli), format);
+                    xData[i] = dt;
+                    for (var j = 0; j < serviceNameArray.length; j++) {
+                        var serviceName = serviceNameArray[j];
+                        var yDataArray = yDatas[j];
+                        if (!yDataArray) {
+                            yDataArray = [];
+                        }
+                        debugger;
+                        var dataMap = getDataMap(dataMaps, serviceName);
+                        yDataArray[i] = getNum(dataMap, dt);
+                        yDatas[j] = yDataArray;
+                    }
+                }
+                var option = {
+                    title: {
+                        text: '服务-时间维度的消费统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    dataZoom: {
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（次）',
+                            type: 'value'
+                        }
+                    ],
+                    noDataLoadingOption: {
+                        text: "暂无数据",
+                        effect: "bubble",
+                        effectOption: {
+                            effect: {
+                                n: 0
+                            }
+                        }
+                    }
+                };
+                var series = [];
+                if (serviceNameArray.length == 0) {
+                    var serie = getSeries("", "");
+                    series.push(serie);
+                    var noDataLoadingOption = {};
+                    noDataLoadingOption.text = "用户未关联服务-暂无数据";
+                    noDataLoadingOption.effect = "bubble";
+                    option.noDataLoadingOption = noDataLoadingOption;
+                }
+                for (var i = 0; i < serviceNameArray.length; i++) {
+                    var serie = getSeries(serviceNameArray[i], yDatas[i]);
+                    debugger;
+                    series.push(serie);
+                }
+                console.log(series);
+                option.series = series;
+                option.legend.data = serviceNameArray;
+                setTimeout(function () {
+                    chart1 = echarts.init(document.getElementById('chart2'));
+                    chart1.clear();
+                    chart1.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+    function getSeries(name, data) {
+        var serie = {};
+        serie.name = name;
+        serie.type = "line";
+        serie.stack = "总量";
+        var areaStyle = {};
+        areaStyle.type = "default";
+        var normal = {};
+        normal.areaStyle = areaStyle;
+        var itemStyle = {};
+        itemStyle.normal = normal;
+        serie.itemStyle = itemStyle;
+        serie.data = data;
+        return serie;
+    }
+
+    function getServiceByUserName() {
+        var rcUserServiceView = {};
+        rcUserServiceView.userId = userName;
+        var json = nui.encode(rcUserServiceView);
+        var serviceObjects;
+        $.ajax({
+            url: "${basePath}/rc/userService/selectServicesByUserName",
+            type: 'POST',
+            data: json,
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (text) {
+                serviceObjects = text.data;
+            }
+        });
+        return serviceObjects;
+    }
+
+    function getDataMap(map, key) {
+        var dataMap = map[key];
+        if (!dataMap) {
+            dataMap = {};
+        }
+        return dataMap;
+    }
+
+    function getNum(map, key) {
+        var num = map[key];
+        if (!num) num = 0;
+        return num;
+    }
+
+    function getVal(map, key, num) {
+        var val = map[key];
+        if (val)
+            val += num;
+        else
+            val = num;
+        return val;
+    }
+
+    //3、服务维度-分结果状态的消费统计
+    function optionUserServiceNameChar(datetime, interval){
+        var xData = [];
+        var yData1 = []; // 成功Array
+        var yData2 = []; // 失败Array
+        var dataMap1 = {}; // 成功Map
+        var dataMap2 = {}; // 失败Map
+        $.ajax({
+            url: "${basePath}/mc/stats/user/charts/userServiceNameChar?userName=" + userName + "&datetime=" + datetime + "&interval=" + interval,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.serviceName;
+                    if (record.status == '0') {
+                        dataMap1[key] = getVal(dataMap1, key, record.countNum);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                    } else if (record.status == '1') {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, record.countNum);
+                    }
+                });
+                var i = 0;
+                for (var key in dataMap1) {
+                    xData[i] = key;
+                    yData1[i] = getNum(dataMap1, key);
+                    yData2[i] = getNum(dataMap2, key);
+                    i++;
+                }
+                var option = {
+                    title: {
+                        text: '服务维度-分结果状态的消费统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['成功状态', '失败状态']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（次）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '成功状态',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '失败状态',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    userServiceNameChar = echarts.init(document.getElementById('userServiceNameChar'));
+                    userServiceNameChar.clear();
+                    userServiceNameChar.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+
+    /**
+     * 获取服务器当前日期时间
+     */
+    function getNowTime() {
+        var nowtime = nui.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+        $.ajax({
+            url: "${basePath}/mc/stats/charts/nowtime",
+            type: 'POST',
+            data: {},
+            async: false,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                nowtime = result.data;
+            }
+        });
+        //console.log(nowtime);
+        return nowtime;
+    }
+</script>
+<!--#end-->

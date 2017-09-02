@@ -1,0 +1,1158 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(head)-->
+<link rel="stylesheet" href="${basePath}/s/css/udsp.css"/>
+<link rel="stylesheet" href="${basePath}/s/css/font-awesome.css"/>
+<!--#end-->
+
+<!--#macro(content)-->
+<style type="text/css">
+    #btnQuery > span {
+        width: 100px;
+    }
+</style>
+
+<div class="nui-toolbar">
+    <div id="form1" class="panel-toolbar">
+        <table style="width:100%">
+            <tr>
+                <td style="white-space:nowrap;">
+                    <B>图表</B>
+                    <span style="display:inline-block;width:25px;"></span>
+                    <a checkOnClick="true" groupName="interval" class="mini-button"
+                       plain="true" oncheckedchanged="onCheckedChanged2">
+                        <span id="intervalStr">30分钟</span> 在 <span id="datetimeStr">2017-03-23 12:23</span> 之前</a>
+                    </a>
+                </td>
+                <td style="text-align: right;">
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="30" oncheckedchanged="onCheckedChanged" checked="true">30分钟</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="60" oncheckedchanged="onCheckedChanged">1小时</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="120" oncheckedchanged="onCheckedChanged">2小时</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="360" oncheckedchanged="onCheckedChanged">6小时</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="720" oncheckedchanged="onCheckedChanged">12小时</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="1440" oncheckedchanged="onCheckedChanged">1天</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="10080" oncheckedchanged="onCheckedChanged">7天</a>
+                    <a checkOnClick="true" groupName="interval" class="nui-button"
+                       plain="true" value="43200" oncheckedchanged="onCheckedChanged">30天</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="nui-fit" style="height: auto;">
+        <table style="width:100%" cellpadding="10px,5px,10px,5px">
+            <tr>
+                <td style="height:300px;width:49%;">
+                    <div id="chart1" style="height:100%;width:100%;"></div>
+                </td>
+                <td style="height:300px;width:49%;">
+                    <div id="chart2" style="height:100%;width:100%;"></div>
+                </td>
+            </tr>
+            <tr>
+                <td style="height:300px;width:49%;">
+                    <div id="chart3" style="height:100%;width:100%;"></div>
+                </td>
+                <td style="height:300px;width:49%;">
+                    <div id="chart4" style="height:100%;width:100%;"></div>
+                </td>
+            </tr>
+            <tr>
+                <td style="height:300px;width:49%;">
+                    <div id="chart5" style="height:100%;width:100%;"></div>
+                </td>
+                <td style="height:300px;width:49%;">
+                    <div id="chart6" style="height:100%;width:100%;"></div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    var echarts;
+    var chart1;
+    var chart2;
+    var chart3;
+    var chart4;
+    var chart5;
+    var chart6;
+
+    /**
+     * 按需加载资源文件
+     */
+    require(['echarts', 'jquery', 'nui'], function (ec, $, nui) {
+        nui.parse();
+        echarts = ec;
+        chart1 = ec.init(document.getElementById('chart1'));
+        chart2 = ec.init(document.getElementById('chart2'));
+        chart3 = ec.init(document.getElementById('chart3'));
+        chart4 = ec.init(document.getElementById('chart4'));
+        chart5 = ec.init(document.getElementById('chart5'));
+        chart6 = ec.init(document.getElementById('chart6'));
+    });
+
+    /**
+     * 时间间隔点击时触发
+     * @param e
+     */
+    function onCheckedChanged(e) {
+        var btn = e.sender;
+        var checked = btn.getChecked();
+        if (checked) {
+            btn.checked = false;
+            var interval = btn.getValue();
+            var text = btn.getText();
+            var datetime = nui.formatDate(new Date(getNowTime()), "yyyy-MM-dd HH:mm");
+            $("#intervalStr").text(text);
+            $("#datetimeStr").text(datetime);
+
+            var form1 = new nui.Form("#form1");
+            form1.loading("正在加载中,请稍等...");
+            // 1、时间维度-分结果状态的消费统计
+            optionChart1(datetime, interval);
+            // 2、时间维度-分应用类型的消费统计
+            optionChart2(datetime, interval);
+            // 3、用户维度-分结果状态的消费统计
+            optionChart3(datetime, interval);
+            // 4、用户维度-分应用类型的消费统计
+            optionChart4(datetime, interval);
+            // 5、服务维度-分结果状态的消费统计
+            optionChart5(datetime, interval);
+            // 6、服务维度-分应用类型的消费统计
+            optionChart6(datetime, interval);
+            setTimeout(function () {
+                form1.unmask();
+            }, 1000);
+        }
+    }
+
+    /**
+     * 自定义时间间隔点击时触发
+     */
+    function onCheckedChanged2(e) {
+        var btn = e.sender;
+        var checked = btn.getChecked();
+        if (checked) {
+            btn.checked = false;
+            nui.open({
+                url: "${basePath}/goframe/p/mc.stats.interval",
+                title: "自定义时间间隔",
+                width: 350,
+                height: 300,
+                onload: function () {
+                },
+                ondestroy: function (action) {
+                    if (action == "success") {
+                        var data = this.getIFrameEl().contentWindow.GetData();
+                        //console.warn(data);
+                        var interval = (new Date(data.timeEnd) - new Date(data.timeStart)) / 60000;
+                        var text = "30分钟";
+                        if (interval < 60) {
+                            text = interval + "分钟";
+                        } else if (interval < 1440) {
+                            text = (interval / 60).toFixed(2) + "小时";
+                        } else {
+                            text = (interval / 1440).toFixed(2) + "天";
+                        }
+                        var datetime = data.timeEnd;
+                        $("#intervalStr").text(text);
+                        $("#datetimeStr").text(datetime);
+
+                        var form1 = new nui.Form("#form1");
+                        form1.loading("正在加载中,请稍等...");
+                        // 1、时间维度-分结果状态的消费统计
+                        optionChart1(datetime, interval);
+                        // 2、时间维度-分应用类型的消费统计
+                        optionChart2(datetime, interval);
+                        // 3、用户维度-分结果状态的消费统计
+                        optionChart3(datetime, interval);
+                        // 4、用户维度-分应用类型的消费统计
+                        optionChart4(datetime, interval);
+                        // 5、服务维度-分结果状态的消费统计
+                        optionChart5(datetime, interval);
+                        // 6、服务维度-分应用类型的消费统计
+                        optionChart6(datetime, interval);
+                        setTimeout(function () {
+                            form1.unmask();
+                        }, 1000);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 时间维度-分结果状态的消费统计
+     */
+    function optionChart1(datetime, interval) {
+        var xData = [];
+        var yData1 = []; // 成功Array
+        var yData2 = []; // 失败Array
+        var dataMap1 = {}; // 成功Map
+        var dataMap2 = {}; // 失败Map
+        var befDatetime = new Date(new Date(datetime).getTime() - interval * 60000);
+        //var name = "时间（分）";
+        var milli = 60000;
+        var format = "yyyy-MM-dd HH:mm";
+        var len = 30;
+        var url = "${basePath}/mc/stats/charts/chart1Minute?datetime=" + datetime + "&interval=" + interval;
+        if (interval <= 360) { // 数据粒度：分钟
+            //name = "时间（分）";
+            milli = 60000;
+            format = "yyyy-MM-dd HH:mm";
+            len = interval;
+            url = "${basePath}/mc/stats/charts/chart1Minute?datetime=" + datetime + "&interval=" + interval;
+        } else if (interval <= 2880) { // 数据粒度：小时
+            //name = "时间（时）";
+            milli = 3600000;
+            format = "yyyy-MM-dd HH";
+            len = Math.ceil(interval / 60);
+            url = "${basePath}/mc/stats/charts/chart1Hour?datetime=" + datetime + "&interval=" + interval;
+        } else { // 数据粒度：天
+            //name = "时间（日）";
+            milli = 86400000;
+            format = "yyyy-MM-dd";
+            len = Math.ceil(interval / 1440);
+            url = "${basePath}/mc/stats/charts/chart1Day?datetime=" + datetime + "&interval=" + interval;
+        }
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.datetime;
+                    if (record.status == '0')
+                        dataMap1[key] = getVal(dataMap1, key, record.countNum);
+                    else if (record.status == '1')
+                        dataMap2[key] = getVal(dataMap2, key, record.countNum);
+                });
+                for (var i = 0; i < len; i++) {
+                    var dt = nui.formatDate(new Date(befDatetime.getTime() + (i+1) * milli), format);
+                    xData[i] = dt;
+                    yData1[i] = getNum(dataMap1, dt);
+                    yData2[i] = getNum(dataMap2, dt);
+                }
+                var option = {
+                    title: {
+                        text: '时间维度-分结果状态的消费统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['成功状态', '失败状态']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    dataZoom: {
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis: [
+                        {
+                            //name: name,
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（次）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '成功状态',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '失败状态',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    chart1 = echarts.init(document.getElementById('chart1'));
+                    chart1.clear();
+                    chart1.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+    /**
+     * 时间维度-分应用类型的消费统计
+     */
+    function optionChart2(datetime, interval) {
+        var xData = [];
+        var yData1 = []; // IQ Array
+        var yData2 = []; // OLQ Array
+        var yData3 = []; // MM Array
+        var yData4 = []; // RTS_PRODUCER Array
+        var yData5 = []; // RTS_CONSUMER Array
+        var dataMap1 = {}; // IQ Map
+        var dataMap2 = {}; // OLQ Map
+        var dataMap3 = {}; // MM Map
+        var dataMap4 = {}; // RTS_PRODUCER Map
+        var dataMap5 = {}; // RTS_CONSUMER Map
+        var befDatetime = new Date(new Date(datetime).getTime() - interval * 60000);
+        //var name = "时间（分）";
+        var milli = 60000;
+        var format = "yyyy-MM-dd HH:mm";
+        var len = 30;
+        var url = "${basePath}/mc/stats/charts/chart2Minute?datetime=" + datetime + "&interval=" + interval;
+        if (interval <= 360) { // 数据粒度：分钟
+            //name = "时间（分）";
+            milli = 60000;
+            format = "yyyy-MM-dd HH:mm";
+            len = interval;
+            url = "${basePath}/mc/stats/charts/chart2Minute?datetime=" + datetime + "&interval=" + interval;
+        } else if (interval <= 2880) { // 数据粒度：小时
+            //name = "时间（时）";
+            milli = 3600000;
+            format = "yyyy-MM-dd HH";
+            len = Math.ceil(interval / 60);
+            url = "${basePath}/mc/stats/charts/chart2Hour?datetime=" + datetime + "&interval=" + interval;
+        } else { // 数据粒度：天
+            //name = "时间（日）";
+            milli = 86400000;
+            format = "yyyy-MM-dd";
+            len = Math.ceil(interval / 1440);
+            url = "${basePath}/mc/stats/charts/chart2Day?datetime=" + datetime + "&interval=" + interval;
+        }
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.datetime;
+                    if ('IQ' == record.appType)
+                        dataMap1[key] = getVal(dataMap1, key, record.countNum);
+                    else if ('OLQ' == record.appType)
+                        dataMap2[key] = getVal(dataMap2, key, record.countNum);
+                    else if ('MM' == record.appType)
+                        dataMap3[key] = getVal(dataMap3, key, record.countNum);
+                    else if ('RTS_PRODUCER' == record.appType)
+                        dataMap4[key] = getVal(dataMap4, key, record.countNum);
+                    else if ('RTS_CONSUMER' == record.appType)
+                        dataMap5[key] = getVal(dataMap5, key, record.countNum);
+                });
+                for (var i = 0; i < len; i++) {
+                    var dt = nui.formatDate(new Date(befDatetime.getTime() + (i+1) * milli), format);
+                    xData[i] = dt;
+                    yData1[i] = getNum(dataMap1, dt);
+                    yData2[i] = getNum(dataMap2, dt);
+                    yData3[i] = getNum(dataMap3, dt);
+                    yData4[i] = getNum(dataMap4, dt);
+                    yData5[i] = getNum(dataMap5, dt);
+                }
+                var option = {
+                    title: {
+                        text: '时间维度-分应用类型的消费统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    dataZoom: {
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis:[
+                        {
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ]
+                    ,
+                    yAxis: [
+                        {
+                            name: '消费数（次）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '交互查询',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '联机查询',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        },
+                        {
+                            name: '模型管理',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData3
+                        },
+                        {
+                            name: '实时流-生产者',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData4
+                        },
+                        {
+                            name: '实时流-消费者',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData5
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    chart2 = echarts.init(document.getElementById('chart2'));
+                    chart2.clear();
+                    chart2.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+    /**
+     * 用户维度-分结果状态的消费统计
+     */
+    function optionChart3(datetime, interval) {
+        var xData = [];
+        var yData1 = []; // 成功Array
+        var yData2 = []; // 失败Array
+        var dataMap1 = {}; // 成功Map
+        var dataMap2 = {}; // 失败Map
+        $.ajax({
+            url: "${basePath}/mc/stats/charts/chart3?datetime=" + datetime + "&interval=" + interval,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.userName;
+                    if (record.status == '0') {
+                        dataMap1[key] = getVal(dataMap1, key, record.countNum);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                    } else if (record.status == '1') {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, record.countNum);
+                    }
+                });
+                var i = 0;
+                for (var key in dataMap1) {
+                    xData[i] = key;
+                    yData1[i] = getNum(dataMap1, key);
+                    yData2[i] = getNum(dataMap2, key);
+                    i++;
+                }
+                var option = {
+                    title: {
+                        text: '用户维度-分结果状态的消费统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['成功状态', '失败状态']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（次）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '成功状态',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '失败状态',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    chart3 = echarts.init(document.getElementById('chart3'));
+                    chart3.clear();
+                    chart3.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+    /**
+     * 用户维度-分应用类型的消费统计
+     */
+    function optionChart4(datetime, interval) {
+        var xData = [];
+        var yData1 = []; // IQ Array
+        var yData2 = []; // OLQ Array
+        var yData3 = []; // MM Array
+        var yData4 = []; // RTS_PRODUCER Array
+        var yData5 = []; // RTS_CONSUMER Array
+        var dataMap1 = {}; // IQ Map
+        var dataMap2 = {}; // OLQ Map
+        var dataMap3 = {}; // MM Map
+        var dataMap4 = {}; // RTS_PRODUCER Map
+        var dataMap5 = {}; // RTS_CONSUMER Map
+        $.ajax({
+            url: "${basePath}/mc/stats/charts/chart4?datetime=" + datetime + "&interval=" + interval,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.userName;
+                    if ('IQ' == record.appType) {
+                        dataMap1[key] = getVal(dataMap1, key, record.countNum);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap3[key] = getVal(dataMap3, key, 0);
+                        dataMap4[key] = getVal(dataMap4, key, 0);
+                        dataMap5[key] = getVal(dataMap5, key, 0);
+                    } else if ('OLQ' == record.appType) {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, record.countNum);
+                        dataMap3[key] = getVal(dataMap3, key, 0);
+                        dataMap4[key] = getVal(dataMap4, key, 0);
+                        dataMap5[key] = getVal(dataMap5, key, 0);
+                    } else if ('MM' == record.appType) {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap3[key] = getVal(dataMap3, key, record.countNum);
+                        dataMap4[key] = getVal(dataMap4, key, 0);
+                        dataMap5[key] = getVal(dataMap5, key, 0);
+                    } else if ('RTS_PRODUCER' == record.appType) {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap4[key] = getVal(dataMap4, key, record.countNum);
+                        dataMap5[key] = getVal(dataMap5, key, 0);
+                    } else if ('RTS_CONSUMER' == record.appType) {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap3[key] = getVal(dataMap3, key, 0);
+                        dataMap5[key] = getVal(dataMap5, key, record.countNum);
+                    }
+                });
+                var i = 0;
+                for (var key in dataMap1) {
+                    xData[i] = key;
+                    yData1[i] = getNum(dataMap1, key);
+                    yData2[i] = getNum(dataMap2, key);
+                    yData3[i] = getNum(dataMap3, key);
+                    yData4[i] = getNum(dataMap4, key);
+                    yData5[i] = getNum(dataMap5, key);
+                    i++;
+                }
+                var option = {
+                    title: {
+                        text: '用户维度-分应用类型的消费统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（次）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '交互查询',
+                            type: 'bar',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '联机查询',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        },
+                        {
+                            name: '模型管理',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData3
+                        },
+                        {
+                            name: '实时流-生产者',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData4
+                        },
+                        {
+                            name: '实时流-消费者',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData5
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    chart4 = echarts.init(document.getElementById('chart4'));
+                    chart4.clear();
+                    chart4.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+    /**
+     * 服务名维度-分结果状态的消费统计
+     */
+    function optionChart5(datetime, interval) {
+        var xData = [];
+        var yData1 = []; // 成功Array
+        var yData2 = []; // 失败Array
+        var dataMap1 = {}; // 成功Map
+        var dataMap2 = {}; // 失败Map
+        $.ajax({
+            url: "${basePath}/mc/stats/charts/chart5?datetime=" + datetime + "&interval=" + interval,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.serviceName;
+                    if (record.status == '0') {
+                        dataMap1[key] = getVal(dataMap1, key, record.countNum);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                    } else if (record.status == '1') {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, record.countNum);
+                    }
+                });
+                var i = 0;
+                for (var key in dataMap1) {
+                    xData[i] = key;
+                    yData1[i] = getNum(dataMap1, key);
+                    yData2[i] = getNum(dataMap2, key);
+                    i++;
+                }
+                var option = {
+                    title: {
+                        text: '服务名维度-分结果状态的消费统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['成功状态', '失败状态']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（次）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '成功状态',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '失败状态',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    chart5 = echarts.init(document.getElementById('chart5'));
+                    chart5.clear();
+                    chart5.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+    /**
+     * 应用类型维度-分结果状态的消费统计
+     */
+    function optionChart6(datetime, interval) {
+        var xData = [];
+        var yData1 = []; // 成功Array
+        var yData2 = []; // 失败Array
+        var dataMap1 = {}; // 成功Map
+        var dataMap2 = {}; // 失败Map
+        $.ajax({
+            url: "${basePath}/mc/stats/charts/chart6?datetime=" + datetime + "&interval=" + interval,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.appType;
+                    if (record.status == '0') {
+                        dataMap1[key] = getVal(dataMap1, key, record.countNum);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                    } else if (record.status == '1') {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, record.countNum);
+                    }
+                });
+                xData = ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者'];
+
+                yData1[0] = getNum(dataMap1, "IQ");
+                yData1[1] = getNum(dataMap1, "OLQ");
+                yData1[2] = getNum(dataMap1, "MM");
+                yData1[3] = getNum(dataMap1, "RTS_PRODUCER");
+                yData1[4] = getNum(dataMap1, "RTS_CONSUMER");
+
+                yData2[0] = getNum(dataMap2, "IQ");
+                yData2[1] = getNum(dataMap2, "OLQ");
+                yData2[2] = getNum(dataMap2, "MM");
+                yData2[3] = getNum(dataMap2, "RTS_PRODUCER");
+                yData2[4] = getNum(dataMap2, "RTS_CONSUMER");
+
+                var option = {
+                    title: {
+                        text: '应用类型维度-分结果状态的消费统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['成功状态', '失败状态']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: true,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（次）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '成功状态',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '失败状态',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    chart6 = echarts.init(document.getElementById('chart6'));
+                    chart6.clear();
+                    chart6.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+    /**
+     * 获取服务器当前日期时间
+     */
+    function getNowTime() {
+        var nowtime = nui.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+        $.ajax({
+            url: "${basePath}/mc/stats/charts/nowtime",
+            type: 'POST',
+            data: {},
+            async: false,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                nowtime = result.data;
+            }
+        });
+        //console.log(nowtime);
+        return nowtime;
+    }
+
+    function getNum(map, key) {
+        var num = map[key];
+        if (!num) num = 0;
+        return num;
+    }
+
+    function getVal(map, key, num) {
+        var val = map[key];
+        if (val)
+            val += num;
+        else
+            val = num;
+        return val;
+    }
+</script>
+<!--#end-->

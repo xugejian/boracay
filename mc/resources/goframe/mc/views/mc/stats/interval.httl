@@ -1,0 +1,108 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(content)-->
+<div style="padding-left:5px;padding-right:5px;">
+    <div class="list">
+        <div id="form1">
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <!-- 左边列表 -->
+                    <td>
+                        <h4 style="margin:0;line-height:22px;font-size:12px;">从：</h4>
+                        <input id="timeStart" name="timeStart" class="nui-datepicker" allowInput="false"
+                               showTodayButton="true" showOkButton="false" showClearButton="true" required="true"
+                               showTime="true" format="yyyy-MM-dd H:mm" timeFormat="H:mm" style="width: 98%"/>
+                    </td>
+                    <!-- 右边列表 -->
+                    <td>
+                        <h4 style="margin:0;line-height:22px;font-size:12px;">到：</h4>
+                        <input id="timeEnd" name="timeEnd" class="nui-datepicker" allowInput="false"
+                               showTodayButton="true" showOkButton="false" showClearButton="true" required="true"
+                               showTime="true" format="yyyy-MM-dd H:mm" timeFormat="H:mm" style="width: 98%"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 按钮区 -->
+<div class="nui-toolbar" style="text-align:center;padding-top:100px;padding-bottom:5px;" borderStyle="border:0;">
+    <a class="nui-button" style="" iconCls="icon-save" onclick="save">保存</a>
+    <span style="display:inline-block;width:25px;"></span>
+    <a class="nui-button" style="" iconCls="icon-cancel" onclick="cancel">返回</a>
+</div>
+
+<script type="text/javascript">
+    var timeStartObj;
+    var timeEndObj;
+    /**
+     * 按需加载资源文件
+     */
+    require(['jquery', 'nui'], function ($, nui) {
+        nui.parse();
+        timeStartObj = nui.get("timeStart");
+        timeEndObj = nui.get("timeEnd");
+        var nowDate = new Date(getNowTime());
+        var beforeDate = new Date(nowDate.getTime() - 30*60*1000);
+        timeStartObj.setValue(nui.formatDate(beforeDate, "yyyy-MM-dd HH:mm"));
+        timeEndObj.setValue(nui.formatDate(nowDate, "yyyy-MM-dd HH:mm"));
+    });
+
+    /**
+     * 父页面调用：获取数据
+     */
+    function GetData() {
+        var form1 = new nui.Form("#form1");
+        var data = form1.getData(true, true);
+        return data;
+    }
+
+    /**
+     * 保存
+     */
+    function save(e) {
+        var form1 = new nui.Form("#form1");
+        form1.validate();
+        if (form1.isValid() == false) return;
+        var data = form1.getData(true, true);
+        if(new Date(data.timeEnd).getTime() - new Date(data.timeStart).getTime() <= 0
+            || new Date(data.timeEnd).getTime() - new Date(getNowTime()).getTime() > 0 ){
+            nui.alert("请选择正确的时间间隔!");
+            return;
+        }
+        CloseWindow("success");
+    }
+
+    /**
+     * 返回
+     */
+    function cancel() {
+        CloseWindow("onCancel");
+    }
+
+    /**
+     * 获取服务器当前日期时间
+     */
+    function getNowTime() {
+        var nowtime = nui.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+        $.ajax({
+            url: "${basePath}/mc/stats/charts/nowtime",
+            type: 'POST',
+            data: {},
+            async: false,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                nowtime = result.data;
+            }
+        });
+        //console.log(nowtime);
+        return nowtime;
+    }
+</script>
+<!--#end-->

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.mm.dao.ContractorMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.mm.model.Contractor" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="CN_NAME" property="cnName" jdbcType="VARCHAR" />
+    <result column="HTTP_URL" property="httpUrl" jdbcType="VARCHAR" />
+    <result column="PRINCIPAL" property="principal" jdbcType="VARCHAR" />
+    <result column="MOBILE" property="mobile" jdbcType="VARCHAR" />
+    <result column="NOTE" property="note" jdbcType="VARCHAR" />
+    <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
+    <result column="CRT_USER" property="crtUser" jdbcType="VARCHAR" />
+    <result column="CRT_TIME" property="crtTime" jdbcType="VARCHAR" />
+    <result column="UPT_USER" property="uptUser" jdbcType="VARCHAR" />
+    <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR" />
+    <result column="EXTEND_FIELD1" property="extendField1" jdbcType="VARCHAR" />
+    <result column="EXTEND_FIELD2" property="extendField2" jdbcType="VARCHAR" />
+    <result column="FTP_PASSWORD" property="ftpPassword" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from MM_CONTRACTOR
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.mm.model.Contractor" >
+    insert into MM_CONTRACTOR (PK_ID, NAME,CN_NAME,HTTP_URL,
+      PRINCIPAL, MOBILE, NOTE, 
+      DEL_FLG, CRT_USER, CRT_TIME, 
+      UPT_USER, UPT_TIME, EXTEND_FIELD1, 
+      EXTEND_FIELD2,FTP_PASSWORD)
+    values (#{pkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{cnName,jdbcType=VARCHAR}, #{httpUrl,jdbcType=VARCHAR},
+      #{principal,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+      #{delFlg,jdbcType=CHAR}, #{crtUser,jdbcType=VARCHAR}, #{crtTime,jdbcType=VARCHAR}, 
+      #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, #{extendField1,jdbcType=VARCHAR}, 
+      #{extendField2,jdbcType=VARCHAR} ,#{ftpPassword,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.mm.model.Contractor" >
+    update MM_CONTRACTOR
+    set NAME = #{name,jdbcType=VARCHAR},
+      CN_NAME = #{cnName,jdbcType=VARCHAR},
+      HTTP_URL = #{httpUrl,jdbcType=VARCHAR},
+      PRINCIPAL = #{principal,jdbcType=VARCHAR},
+      MOBILE = #{mobile,jdbcType=VARCHAR},
+      NOTE = #{note,jdbcType=VARCHAR},
+      DEL_FLG = #{delFlg,jdbcType=CHAR},
+      CRT_USER = #{crtUser,jdbcType=VARCHAR},
+      CRT_TIME = #{crtTime,jdbcType=VARCHAR},
+      UPT_USER = #{uptUser,jdbcType=VARCHAR},
+      UPT_TIME = #{uptTime,jdbcType=VARCHAR},
+      EXTEND_FIELD1 = #{extendField1,jdbcType=VARCHAR},
+      EXTEND_FIELD2 = #{extendField2,jdbcType=VARCHAR},
+      FTP_PASSWORD = #{ftpPassword,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
+    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2,FTP_PASSWORD
+    from MM_CONTRACTOR
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
+    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2,FTP_PASSWORD
+    from MM_CONTRACTOR
+  </select>
+
+  <!-- 根据姓名查询-->
+  <select id="selectByName" resultMap="BaseResultMap" >
+    select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
+    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2,FTP_PASSWORD
+    from MM_CONTRACTOR
+    where DEL_FLG = '0'
+    and NAME = #{name,jdbcType=VARCHAR}
+  </select>
+  <!-- 逻辑删除-->
+  <update id="deleteByPrimaryKeyFake" parameterType="java.lang.String"  >
+    update MM_CONTRACTOR
+    set DEL_FLG = '1'
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <!--分页查询-->
+  <select id="selectPage" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mm.dto.ContractorView">
+    select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
+    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2,FTP_PASSWORD
+    from MM_CONTRACTOR
+    where DEL_FLG = '0'
+    <if test="name!='' and name!=null ">and NAME like '%'||#{name}||'%'</if>
+    <if test="cnName!='' and cnName!=null ">and CN_NAME like '%'||#{cnName}||'%'</if>
+    <if test="principal!='' and principal!=null ">and PRINCIPAL like '%'||#{principal}||'%'</if>
+    <if test="httpUrl!='' and httpUrl!=null ">and HTTP_URL like '%'||#{httpUrl}||'%'</if>
+    <if test="note!='' and note!=null ">and NOTE  like '%'||#{note}||'%'</if>
+    <if test="crtTimeStart!=null and crtTimeStart!='' ">and CRT_TIME >= #{crtTimeStart}</if>
+    <if test="crtTimeEnd!=null and crtTimeEnd!='' ">and #{crtTimeEnd} >= CRT_TIME</if>
+    <if test="uptTimeStart!=null and uptTimeStart!='' ">and UPT_TIME >= #{uptTimeStart}</if>
+    <if test="uptTimeEnd!=null and uptTimeEnd!='' ">and #{uptTimeEnd} >= UPT_TIME</if>
+    <if test="crtUser!='' and crtUser!=null ">and CRT_USER like '%'||#{crtUser}||'%'</if>
+    <if test="uptUser!='' and uptUser!=null ">and UPT_USER like '%'||#{uptUser}||'%'</if>
+    order by UPT_TIME desc, CRT_TIME desc, NAME asc
+  </select>
+
+</mapper>

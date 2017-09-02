@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.mc.dao.McConsumeLogMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.mc.model.McConsumeLog" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="SERVICE_NAME" property="serviceName" jdbcType="VARCHAR" />
+    <result column="REQUEST_CONTENT" property="requestContent" jdbcType="VARCHAR" />
+    <result column="REQUEST_START_TIME" property="requestStartTime" jdbcType="VARCHAR" />
+    <result column="REQUEST_END_TIME" property="requestEndTime" jdbcType="VARCHAR" />
+    <result column="RUN_START_TIME" property="runStartTime" jdbcType="VARCHAR" />
+    <result column="RUN_END_TIME" property="runEndTime" jdbcType="VARCHAR" />
+    <result column="RESPONSE_CONTENT" property="responseContent" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="APP_TYPE" property="appType" jdbcType="VARCHAR" />
+    <result column="REQUEST_TYPE" property="requestType" jdbcType="CHAR" />
+    <result column="APP_NAME" property="appName" jdbcType="VARCHAR" />
+
+    <result column="ERROR_CODE" property="errorCode" jdbcType="VARCHAR" />
+    <result column="MESSAGE" property="message" jdbcType="VARCHAR" />
+    <result column="SYNC_TYPE" property="syncType" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from MC_CONSUME_LOG
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.mc.model.McConsumeLog" >
+    insert into MC_CONSUME_LOG (PK_ID, USER_NAME, SERVICE_NAME,
+      REQUEST_CONTENT, REQUEST_START_TIME, REQUEST_END_TIME, 
+      RUN_START_TIME, RUN_END_TIME, RESPONSE_CONTENT, 
+      STATUS, APP_TYPE, REQUEST_TYPE, APP_NAME,ERROR_CODE,MESSAGE,SYNC_TYPE)
+    values (#{pkId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{serviceName,jdbcType=VARCHAR},
+      #{requestContent,jdbcType=VARCHAR}, #{requestStartTime,jdbcType=VARCHAR}, #{requestEndTime,jdbcType=VARCHAR}, 
+      #{runStartTime,jdbcType=VARCHAR}, #{runEndTime,jdbcType=VARCHAR}, #{responseContent,jdbcType=VARCHAR}, 
+      #{status,jdbcType=CHAR},#{appType,jdbcType=VARCHAR},#{requestType,jdbcType=CHAR}, #{appName,jdbcType=VARCHAR}
+      ,#{errorCode,jdbcType=VARCHAR},#{message,jdbcType=CHAR}, #{syncType,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.mc.model.McConsumeLog" >
+    update MC_CONSUME_LOG
+    set USER_NAME = #{userName,jdbcType=VARCHAR},
+      SERVICE_NAME = #{serviceName,jdbcType=VARCHAR},
+      REQUEST_CONTENT = #{requestContent,jdbcType=VARCHAR},
+      REQUEST_START_TIME = #{requestStartTime,jdbcType=VARCHAR},
+      REQUEST_END_TIME = #{requestEndTime,jdbcType=VARCHAR},
+      RUN_START_TIME = #{runStartTime,jdbcType=VARCHAR},
+      RUN_END_TIME = #{runEndTime,jdbcType=VARCHAR},
+      RESPONSE_CONTENT = #{responseContent,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR},
+      APP_TYPE = #{appType,jdbcType=VARCHAR},
+      REQUEST_TYPE = #{requestType,jdbcType=CHAR},
+      APP_NAME = #{appName,jdbcType=VARCHAR},
+      ERROR_CODE = #{errorCode,jdbcType=VARCHAR},
+      MESSAGE = #{message,jdbcType=VARCHAR},
+      SYNC_TYPE = #{syncType,jdbcType=VARCHAR}
+
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, USER_NAME, SERVICE_NAME, REQUEST_CONTENT, REQUEST_START_TIME, REQUEST_END_TIME,
+    RUN_START_TIME, RUN_END_TIME, RESPONSE_CONTENT, STATUS, APP_TYPE, REQUEST_TYPE, APP_NAME,ERROR_CODE,
+    MESSAGE,SYNC_TYPE
+    from MC_CONSUME_LOG
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, USER_NAME, SERVICE_NAME, REQUEST_CONTENT, REQUEST_START_TIME, REQUEST_END_TIME,
+    RUN_START_TIME, RUN_END_TIME, RESPONSE_CONTENT, STATUS, APP_TYPE, REQUEST_TYPE, APP_NAME,ERROR_CODE,
+    MESSAGE,SYNC_TYPE
+    from MC_CONSUME_LOG
+  </select>
+  <select id="select" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McConsumeLogView" >
+    select PK_ID, USER_NAME, SERVICE_NAME, REQUEST_CONTENT, REQUEST_START_TIME, REQUEST_END_TIME,
+    RUN_START_TIME, RUN_END_TIME, RESPONSE_CONTENT, STATUS, APP_TYPE, REQUEST_TYPE, APP_NAME,ERROR_CODE,MESSAGE,SYNC_TYPE
+    from MC_CONSUME_LOG
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="pkId!='' and pkId!=null ">and PK_ID = #{pkId}</if>
+      <if test="userName!='' and userName!=null ">and USER_NAME like '%' || #{userName} || '%'</if>
+      <if test="serviceName!='' and serviceName!=null ">and SERVICE_NAME like '%'|| #{serviceName} || '%'</if>
+      <if test="requestContent!='' and requestContent!=null ">and REQUEST_CONTENT like '%' || #{requestContent} || '%'</if>
+      <if test="requestStartTimeStart!=null and requestStartTimeStart!='' ">and REQUEST_START_TIME >= #{requestStartTimeStart}</if>
+      <if test="requestStartTimeEnd!=null and requestStartTimeEnd!='' ">and #{requestStartTimeEnd} >= REQUEST_START_TIME</if>
+      <if test="requestEndTimeStart!=null and requestEndTimeStart!='' ">and REQUEST_END_TIME >= #{requestEndTimeStart}</if>
+      <if test="requestEndTimeEnd!=null and requestEndTimeEnd!='' ">and #{requestEndTimeEnd} >= REQUEST_END_TIME</if>
+      <if test="runStartTimeStart!=null and runStartTimeStart!='' ">and RUN_START_TIME >= #{runStartTimeStart}</if>
+      <if test="runStartTimeEnd!=null and runStartTimeEnd!='' ">and #{runStartTimeEnd} >= RUN_START_TIME</if>
+      <if test="runEndTimeStart!=null and runEndTimeStart!='' ">and RUN_END_TIME >= #{runEndTimeStart}</if>
+      <if test="runEndTimeEnd!=null and runEndTimeEnd!='' ">and #{runEndTimeEnd} >= RUN_END_TIME</if>
+      <if test="responseContent!='' and responseContent!=null ">and RESPONSE_CONTENT like '%'|| #{responseContent} || '%'</if>
+      <if test="status!='' and status!=null ">and STATUS = #{status}</if>
+      <if test="errorCode!='' and errorCode!=null ">and ERROR_CODE = #{errorCode}</if>
+      <if test="appType!='' and appType!=null ">and APP_TYPE = #{appType}</if>
+      <if test="requestType!='' and requestType!=null ">and REQUEST_TYPE = #{requestType}</if>
+      <if test="appName!='' and appName!=null ">and APP_NAME like '%'|| #{appName} || '%'</if>
+    </trim>
+    order by REQUEST_END_TIME desc, RUN_END_TIME desc,
+    REQUEST_START_TIME desc, RUN_START_TIME desc,
+    USER_NAME asc, APP_NAME asc, SERVICE_NAME asc
+  </select>
+</mapper>

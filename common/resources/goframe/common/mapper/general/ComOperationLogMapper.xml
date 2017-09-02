@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.common.dao.ComOperationLogMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.common.model.ComOperationLog" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="ACTION_TYPE" property="actionType" jdbcType="CHAR" />
+    <result column="ACTION_URL" property="actionUrl" jdbcType="VARCHAR" />
+    <result column="ACTION_USER" property="actionUser" jdbcType="VARCHAR" />
+    <result column="ACTION_TIME" property="actionTime" jdbcType="VARCHAR" />
+    <result column="ACTION_CONTENT" property="actionContent" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from COM_OPERATION_LOG
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.common.model.ComOperationLog" >
+    insert into COM_OPERATION_LOG (PK_ID, ACTION_TYPE, ACTION_URL,
+      ACTION_USER, ACTION_TIME, ACTION_CONTENT
+      )
+    values (#{pkId,jdbcType=VARCHAR}, #{actionType,jdbcType=CHAR}, #{actionUrl,jdbcType=VARCHAR},
+      #{actionUser,jdbcType=VARCHAR}, #{actionTime,jdbcType=VARCHAR}, #{actionContent,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.common.model.ComOperationLog" >
+    update COM_OPERATION_LOG
+    set ACTION_TYPE = #{actionType,jdbcType=CHAR},
+      ACTION_URL = #{actionUrl,jdbcType=VARCHAR},
+      ACTION_USER = #{actionUser,jdbcType=VARCHAR},
+      ACTION_TIME = #{actionTime,jdbcType=VARCHAR},
+      ACTION_CONTENT = #{actionContent,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, ACTION_TYPE, ACTION_URL, ACTION_USER, ACTION_TIME, ACTION_CONTENT
+    from COM_OPERATION_LOG
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, ACTION_TYPE, ACTION_URL, ACTION_USER, ACTION_TIME, ACTION_CONTENT
+    from COM_OPERATION_LOG
+  </select>
+  <select id="select" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.common.dto.ComOperationLogView" >
+    select PK_ID, ACTION_TYPE, ACTION_URL, ACTION_USER, ACTION_TIME, ACTION_CONTENT
+    from COM_OPERATION_LOG
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="pkId!='' and pkId!=null ">and PK_ID = #{pkId}</if>
+      <if test="actionType!='' and actionType!=null ">and ACTION_TYPE = #{actionType}</if>
+      <if test="actionUrl!='' and actionUrl!=null ">and ACTION_URL like '%' || #{actionUrl} || '%'</if>
+      <if test="actionUser!='' and actionUser!=null ">and ACTION_USER like '%' || #{actionUser} || '%'</if>
+      <if test="actionTimeStart!=null and actionTimeStart!='' ">and ACTION_TIME >= #{actionTimeStart}</if>
+      <if test="actionTimeEnd!=null and actionTimeEnd!='' ">and #{actionTimeEnd} >= ACTION_TIME</if>
+      <if test="actionContent!='' and actionContent!=null ">and ACTION_CONTENT like '%'|| #{actionContent} || '%'</if>
+    </trim>
+    order by ACTION_TIME desc, ACTION_USER asc, ACTION_TYPE asc, ACTION_URL asc
+  </select>
+</mapper>

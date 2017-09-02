@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.common.dao.ComPropertiesMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.common.model.ComProperties" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="FK_ID" property="fkId" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="VALUE" property="value" jdbcType="VARCHAR" />
+    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from COM_PROPERTIES
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.common.model.ComProperties" >
+    insert into COM_PROPERTIES (PK_ID, FK_ID, NAME, 
+      VALUE, DESCRIBE)
+    values (#{pkId,jdbcType=VARCHAR}, #{fkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{value,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.common.model.ComProperties" >
+    update COM_PROPERTIES
+    set FK_ID = #{fkId,jdbcType=VARCHAR},
+      NAME = #{name,jdbcType=VARCHAR},
+      VALUE = #{value,jdbcType=VARCHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, FK_ID, NAME, VALUE, DESCRIBE
+    from COM_PROPERTIES
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, FK_ID, NAME, VALUE, DESCRIBE
+    from COM_PROPERTIES
+  </select>
+  <select id="selectByFkId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select PK_ID, FK_ID, NAME, VALUE, DESCRIBE
+    from COM_PROPERTIES
+    where FK_ID = #{fkId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByFkId" parameterType="java.lang.String" >
+    delete from COM_PROPERTIES
+    where FK_ID = #{fkId,jdbcType=VARCHAR}
+  </delete>
+</mapper>
