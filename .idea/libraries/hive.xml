@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="hive">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/hive" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/hive" recursive="false" />
+  </library>
+</component>

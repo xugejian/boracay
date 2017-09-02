@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="redis">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/redis" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/redis" recursive="false" />
+  </library>
+</component>

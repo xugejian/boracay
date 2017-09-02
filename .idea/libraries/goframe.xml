@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="goframe">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/goframe" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/goframe" recursive="false" />
+  </library>
+</component>
