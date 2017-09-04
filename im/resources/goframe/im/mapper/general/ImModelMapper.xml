@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.im.dao.ImModelMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.im.model.ImModel" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="S_DS_ID" property="sDsId" jdbcType="VARCHAR" />
+    <result column="S_TB_NAME" property="sTbName" jdbcType="VARCHAR" />
+    <result column="T_MD_ID" property="tMdId" jdbcType="VARCHAR" />
+    <result column="NOTE" property="note" jdbcType="VARCHAR" />
+    <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
+    <result column="CRT_USER" property="crtUser" jdbcType="VARCHAR" />
+    <result column="CRT_TIME" property="crtTime" jdbcType="VARCHAR" />
+    <result column="UPT_USER" property="uptUser" jdbcType="VARCHAR" />
+    <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="CHAR" />
+    <result column="BUILD_MODE" property="buildMode" jdbcType="CHAR" />
+    <result column="UPDATE_MODE" property="updateMode" jdbcType="CHAR" />
+    <result column="UPDATE_KEY" property="updateKey" jdbcType="CHAR" />
+    <result column="S_TEXT" property="sText" jdbcType="CLOB" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from IM_MODEL
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.im.model.ImModel" >
+    insert into IM_MODEL (PK_ID, NAME, DESCRIBE, 
+      S_DS_ID, S_TB_NAME, T_MD_ID, 
+      NOTE, DEL_FLG, CRT_USER, 
+      CRT_TIME, UPT_USER, UPT_TIME, 
+      TYPE, BUILD_MODE, UPDATE_MODE, 
+      UPDATE_KEY, S_TEXT)
+    values (#{pkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, 
+      #{sDsId,jdbcType=VARCHAR}, #{sTbName,jdbcType=VARCHAR}, #{tMdId,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{delFlg,jdbcType=CHAR}, #{crtUser,jdbcType=VARCHAR}, 
+      #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, 
+      #{type,jdbcType=CHAR}, #{buildMode,jdbcType=CHAR}, #{updateMode,jdbcType=CHAR}, 
+      #{updateKey,jdbcType=CHAR}, #{sText,jdbcType=CLOB})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.im.model.ImModel" >
+    update IM_MODEL
+    set NAME = #{name,jdbcType=VARCHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      S_DS_ID = #{sDsId,jdbcType=VARCHAR},
+      S_TB_NAME = #{sTbName,jdbcType=VARCHAR},
+      T_MD_ID = #{tMdId,jdbcType=VARCHAR},
+      NOTE = #{note,jdbcType=VARCHAR},
+      DEL_FLG = #{delFlg,jdbcType=CHAR},
+      CRT_USER = #{crtUser,jdbcType=VARCHAR},
+      CRT_TIME = #{crtTime,jdbcType=VARCHAR},
+      UPT_USER = #{uptUser,jdbcType=VARCHAR},
+      UPT_TIME = #{uptTime,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=CHAR},
+      BUILD_MODE = #{buildMode,jdbcType=CHAR},
+      UPDATE_MODE = #{updateMode,jdbcType=CHAR},
+      UPDATE_KEY = #{updateKey,jdbcType=CHAR},
+      S_TEXT = #{sText,jdbcType=CLOB}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, NAME, DESCRIBE, S_DS_ID, S_TB_NAME, T_MD_ID, NOTE, DEL_FLG, CRT_USER, 
+    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE, UPDATE_KEY, S_TEXT
+    from IM_MODEL
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, NAME, DESCRIBE, S_DS_ID, S_TB_NAME, T_MD_ID, NOTE, DEL_FLG, CRT_USER, 
+    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE, UPDATE_KEY, S_TEXT
+    from IM_MODEL
+  </select>
+</mapper>

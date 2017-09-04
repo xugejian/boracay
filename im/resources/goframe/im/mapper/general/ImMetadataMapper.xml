@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.im.dao.ImMetadataMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.im.model.ImMetadata" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="DS_ID" property="dsId" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="NOTE" property="note" jdbcType="VARCHAR" />
+    <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
+    <result column="CRT_USER" property="crtUser" jdbcType="VARCHAR" />
+    <result column="CRT_TIME" property="crtTime" jdbcType="VARCHAR" />
+    <result column="UPT_USER" property="uptUser" jdbcType="VARCHAR" />
+    <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR" />
+    <result column="TB_NAME" property="tbName" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="TYPE" property="type" jdbcType="CHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from IM_METADATA
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.im.model.ImMetadata" >
+    insert into IM_METADATA (PK_ID, DS_ID, NAME, 
+      DESCRIBE, NOTE, DEL_FLG, 
+      CRT_USER, CRT_TIME, UPT_USER, 
+      UPT_TIME, TB_NAME, STATUS, 
+      TYPE)
+    values (#{pkId,jdbcType=VARCHAR}, #{dsId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{describe,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{delFlg,jdbcType=CHAR}, 
+      #{crtUser,jdbcType=VARCHAR}, #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, 
+      #{uptTime,jdbcType=VARCHAR}, #{tbName,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
+      #{type,jdbcType=CHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.im.model.ImMetadata" >
+    update IM_METADATA
+    set DS_ID = #{dsId,jdbcType=VARCHAR},
+      NAME = #{name,jdbcType=VARCHAR},
+      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      NOTE = #{note,jdbcType=VARCHAR},
+      DEL_FLG = #{delFlg,jdbcType=CHAR},
+      CRT_USER = #{crtUser,jdbcType=VARCHAR},
+      CRT_TIME = #{crtTime,jdbcType=VARCHAR},
+      UPT_USER = #{uptUser,jdbcType=VARCHAR},
+      UPT_TIME = #{uptTime,jdbcType=VARCHAR},
+      TB_NAME = #{tbName,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR},
+      TYPE = #{type,jdbcType=CHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
+    UPT_TIME, TB_NAME, STATUS, TYPE
+    from IM_METADATA
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
+    UPT_TIME, TB_NAME, STATUS, TYPE
+    from IM_METADATA
+  </select>
+</mapper>
