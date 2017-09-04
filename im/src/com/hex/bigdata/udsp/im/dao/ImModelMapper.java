@@ -1,16 +1,41 @@
 package com.hex.bigdata.udsp.im.dao;
 
+import com.hex.bigdata.udsp.common.dao.base.SyncMapper;
 import com.hex.bigdata.udsp.im.model.ImModel;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-public interface ImModelMapper {
-    int deleteByPrimaryKey(String pkId);
+@Repository
+public class ImModelMapper extends SyncMapper<ImModel> {
 
-    int insert(ImModel record);
+    @Override
+    protected boolean insertExe(ImModel imModel) {
+        return false;
+    }
 
-    ImModel selectByPrimaryKey(String pkId);
+    @Override
+    protected boolean updateExe(ImModel imModel) {
+        return false;
+    }
 
-    List<ImModel> selectAll();
+    @Override
+    protected boolean deleteExe(String id) {
+        return false;
+    }
 
-    int updateByPrimaryKey(ImModel record);
+    @Override
+    protected ImModel selectExe(String id) {
+        return null;
+    }
+
+    @Override
+    protected boolean deleteListExe(String id) {
+        return false;
+    }
+
+    @Override
+    protected List<ImModel> selectListExe(String id) {
+        return null;
+    }
 }
