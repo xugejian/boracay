@@ -19,10 +19,10 @@ public class SolrModel extends Model {
         super(propertyMap);
     }
 
-    public String getCollection() {
-        String value = getProperty("solr.collection").getValue();
+    public String getCollectionName() {
+        String value = getProperty("solr.collection.name").getValue();
         if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("solr.collection不能为空");
+            throw new IllegalArgumentException("solr.collection.name不能为空");
         return value;
     }
 }
