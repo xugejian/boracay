@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Created by hj on 2017-9-5.
  */
@@ -24,6 +26,12 @@ public class ImMetadataColService extends BaseService {
             return pkId;
         }
         return "";
+    }
+
+    public List<ImMetadataCol> select(String mdId) {
+        ImMetadataCol imMetadataCol = new ImMetadataCol();
+        imMetadataCol.setMdId(mdId);
+        return imMetadataColMapper.select(imMetadataCol);
     }
 }
 

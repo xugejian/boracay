@@ -46,6 +46,32 @@ public class ImMetadataController {
         return new PageListResult(list, page);
     }
 
+    @RequestMapping({"/select/{pkId}"})
+    @ResponseBody
+    public MessageResult selectByPkId(@PathVariable("pkId") String pkId) {
+        boolean status = true;
+        String message = "查询成功";
+        ImMetadata imMetadata = null;
+        if (StringUtils.isBlank(pkId)) {
+            status = false;
+            message = "请求参数为空";
+        } else {
+            try {
+                imMetadata = imMetadataService.select(pkId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = false;
+                message = "系统异常：" + e;
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.error(message);
+        }
+        return new MessageResult(status, message, imMetadata);
+    }
+
     @RequestMapping({"/insert"})
     @ResponseBody
     public MessageResult insert(@RequestBody ImMetadataDto imMetadataDto) {

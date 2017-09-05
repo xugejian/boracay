@@ -51,4 +51,9 @@
     select PK_ID, MD_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, NOTE, INDEXED, PRIMARY, STORED
     from IM_METADATA_COLUMN
   </select>
+  <select id="select" resultMap="BaseResultMap">
+    select PK_ID, MD_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, NOTE, INDEXED, PRIMARY, STORED
+    from IM_METADATA_COLUMN
+    where MD_ID = #{mdId,jdbcType=VARCHAR}
+  </select>
 </mapper>

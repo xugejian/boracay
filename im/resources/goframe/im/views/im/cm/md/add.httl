@@ -31,11 +31,10 @@ ${extends("/goframe/function_layout.httl")}
                         <!--<input id="dsId" name="dsId" class="nui-combobox" valueField="pkId" textField="name" allowInput="true"
                                dataField="data" url="${basePath}/com/ds/select?model=${model}" style="width:97%" required="true"/>-->
                     </td>
-
                     <th class="nui-form-label"></th>
                     <td >
                         <div id="type" name="type" onvaluechanged="setSaveButton" class="nui-radiobuttonlist" repeatItems="2" repeatLayout="table" repeatDirection="horizontal"
-                             textField="text" valueField="id" value="cn" data="[{'id':'0','text':'内表'},{'id':'1','text':'外表'}]" value='0' required="true">
+                             textField="text" valueField="id" value="0" data="[{'id':'0','text':'内表'},{'id':'1','text':'外表'}]" required="true">
                         </div>
                     </td>
                 </tr>
@@ -518,6 +517,7 @@ ${extends("/goframe/function_layout.httl")}
             nui.alert("【配置参数】中存在重复【名称】，请检查后再提交！");
             return;
         }
+        //todo solr 参数合理性检查
         return propsData;
     }
 

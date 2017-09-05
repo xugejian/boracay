@@ -63,6 +63,10 @@ public class ImMetadataService extends BaseService {
         return imMetadataMapper.select(imMetadataView, page);
     }
 
+    public ImMetadata select(String pkId) {
+        return imMetadataMapper.select(pkId);
+    }
+
     @Transactional
     public boolean delete(String pkId) {
         return imMetadataMapper.delete(pkId);
