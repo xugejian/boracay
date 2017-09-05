@@ -30,11 +30,11 @@ public class Datasource extends Base {
     private Map<String, Property> propertyMap;
 
     public Datasource(List<Property> properties) {
-        this.setProperties(properties);
+        super(properties);
     }
 
     public Datasource(Map<String, Property> propertieMap) {
-        this.setPropertyMap(propertieMap);
+        super(propertieMap);
     }
 
     public Datasource(ComDatasource comDatasource, List<ComProperties> comPropertieList) {

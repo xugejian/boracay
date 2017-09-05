@@ -14,6 +14,17 @@ public class Base {
 
     private Map<String, Property> propertyMap; // 配置参数Map
 
+    public Base() {
+    }
+
+    public Base(List<Property> properties) {
+        this.properties = properties;
+    }
+
+    public Base(Map<String, Property> propertyMap) {
+        this.propertyMap = propertyMap;
+    }
+
     public Property getProperty(String key) {
         Property property = this.propertyMap.get(key);
         if (property == null) {
