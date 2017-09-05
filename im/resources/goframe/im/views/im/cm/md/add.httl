@@ -49,13 +49,12 @@ ${extends("/goframe/function_layout.httl")}
 
         <fieldset style="border:dotted 1px #227EA0;">
             <legend><span style="font-weight: bold">字段栏</span></legend>
-
             <div style="padding: 5px 5px 0px 5px;">
                 <div class="nui-toolbar" style="border-bottom: 0;">
                     <table style="width: 100%;">
                         <tr>
                             <td style="text-align: left;">
-                                <b>查询字段</b>
+                                <b>字段信息</b>
                             </td>
                             <td style="text-align: right;">
                                 <a class="nui-button" iconCls="icon-add" onclick="add1">添加</a>
@@ -99,51 +98,51 @@ ${extends("/goframe/function_layout.httl")}
                     </div>
                 </div>
             </div>
+        </fieldset>
 
+        <fieldset style="border:dotted 1px #227EA0;">
+            <legend><span style="font-weight: bold">配置栏</span></legend>
             <div style="padding: 5px 5px 0px 5px;">
                 <div class="nui-toolbar" style="border-bottom: 0;">
                     <table style="width: 100%;">
                         <tr>
                             <td style="text-align: left;">
-                                <b>返回字段</b>
+                                <b>配置参数</b>
                             </td>
                             <td style="text-align: right;">
-                                <a class="nui-button" iconCls="icon-add" onclick="add2">添加</a>
-                                <a class="nui-button" iconCls="icon-remove" onclick="remove2" enabled="false"
-                                   id="remove2">删除</a>
+                                <a class="nui-button" iconCls="icon-add" onclick="add">添加</a>
+                                <a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>
+                                <a class="nui-button" iconCls="icon-remove" onclick="remove" enabled="false"
+                                   id="remove">删除</a>
                                 <span class="separator"></span>
-                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp2" enabled="false"
-                                   id="moveUp2">上移</a>
-                                <a class="nui-button" iconCls="icon-download" onclick="moveDown2" enabled="false"
-                                   id="moveDown2">下移</a>
+                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp" enabled="false"
+                                   id="moveUp">上移</a>
+                                <a class="nui-button" iconCls="icon-download" onclick="moveDown" enabled="false"
+                                   id="moveDown">下移</a>
                             </td>
                         </tr>
                     </table>
                 </div>
             </div>
             <div class="nui-fit" style="height:200px; padding: 0px 5px 0px 5px;">
-                <div id="datagrid2" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
+                <div id="datagrid" class="nui-datagrid" style="width:100%; height: 100%;"
                      idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
-                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected2">
+                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected">
                     <div property="columns">
                         <div type="checkcolumn" headerAlign="center" width="5"></div>
                         <div type="indexcolumn" headerAlign="center" width="8">位置</div>
-                        <div field="name" headerAlign="center" allowSort="true" width="30">名称<font
+                        <div name="name" field="name" headerAlign="center" allowSort="true"
+                             width="30">名称<font color="#FF0000">（必填）</font>
+                            <input name="propsName" property="editor" class="nui-combobox"
+                                   textField="dictId" valueField="dictId" allowInput="true"
+                                   onbeforeshowpopup="propsNameBeforeShowPopup" vtype="maxLength:256" required="true"
+                                   onvaluechanged="propsNameChanged" onvalidation="propsNameValidation"/>
+                        </div>
+                        <div name="value" field="value" headerAlign="center" allowSort="true" width="30">数值<font
                                 color="#FF0000">（必填）</font>
-                            <input property="editor" class="nui-textbox" vtype="maxLength:64"
-                                   onvalidation="colNameValidation2"/>
+                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
                         </div>
-                        <div field="describe" headerAlign="center" allowSort="true" width="30">说明<font color="#FF0000">（必填）</font>
-                            <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
-                        </div>
-                        <div field="colType" headerAlign="center" allowSort="true" width="20">类型
-                            <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
-                                   dictTypeId="IQ_MD_COL_DATA_TYPE" value="STRING" vtype="maxLength:32"/>
-                        </div>
-                        <div field="length" headerAlign="center" allowSort="true" width="15">长度
-                            <input property="editor" class="nui-textbox" vtype="maxLength:32"/>
-                        </div>
-                        <div field="note" headerAlign="center" allowSort="true" width="30">备注
+                        <div name="describe" field="describe" headerAlign="center" allowSort="true" width="40">说明
                             <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
                         </div>
                     </div>
