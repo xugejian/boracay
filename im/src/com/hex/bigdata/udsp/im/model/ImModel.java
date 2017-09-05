@@ -9,8 +9,6 @@ public class ImModel {
 
     private String sDsId;
 
-    private String sTbName;
-
     private String tMdId;
 
     private String note;
@@ -32,8 +30,6 @@ public class ImModel {
     private String updateMode;
 
     private String updateKey;
-
-    private String sText;
 
     public String getPkId() {
         return pkId;
@@ -65,14 +61,6 @@ public class ImModel {
 
     public void setsDsId(String sDsId) {
         this.sDsId = sDsId;
-    }
-
-    public String getsTbName() {
-        return sTbName;
-    }
-
-    public void setsTbName(String sTbName) {
-        this.sTbName = sTbName;
     }
 
     public String gettMdId() {
@@ -161,13 +149,5 @@ public class ImModel {
 
     public void setUpdateKey(String updateKey) {
         this.updateKey = updateKey;
-    }
-
-    public String getsText() {
-        return sText;
-    }
-
-    public void setsText(String sText) {
-        this.sText = sText;
     }
 }

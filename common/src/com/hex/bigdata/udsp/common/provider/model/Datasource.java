@@ -2,6 +2,7 @@ package com.hex.bigdata.udsp.common.provider.model;
 
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
+import com.hex.bigdata.udsp.common.util.PropertyUtil;
 import com.hex.goframe.util.Util;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 /**
  * Created by junjiem on 2017-3-2.
  */
-public class Datasource {
+public class Datasource extends Base {
     private String name;
 
     private String describe;
@@ -42,7 +43,7 @@ public class Datasource {
         this.describe = comDatasource.getDescribe();
         this.note = comDatasource.getNote();
         this.implClass = comDatasource.getImplClass();
-        this.properties = convertToPropertyList(comPropertieList);
+        this.properties = PropertyUtil.convertToPropertyList(comPropertieList);
         if (this.propertyMap == null)
             this.propertyMap = new HashMap<String, Property>();
         for (Property property : this.properties) {
@@ -56,27 +57,6 @@ public class Datasource {
 
     public void setImplClass(String implClass) {
         this.implClass = implClass;
-    }
-
-    public Property getProperty(String key) {
-        Property property = this.propertyMap.get(key);
-        if (property == null) {
-            property = new Property();
-        }
-        return property;
-    }
-
-    public Map<String, Property> getPropertyMap() {
-        return propertyMap;
-    }
-
-    public void setPropertyMap(Map<String, Property> propertieMap) {
-        this.propertyMap = propertieMap;
-        if (this.properties == null)
-            this.properties = new ArrayList<Property>();
-        for (Map.Entry<String, Property> entry : propertieMap.entrySet()) {
-            properties.add(entry.getValue());
-        }
     }
 
     public String getId() {
@@ -121,34 +101,4 @@ public class Datasource {
         this.note = note;
     }
 
-    public List<Property> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(List<Property> properties) {
-        this.properties = properties;
-        if (this.propertyMap == null)
-            this.propertyMap = new HashMap<String, Property>();
-        for (Property property : properties) {
-            this.propertyMap.put(property.getName(), property);
-        }
-    }
-
-    /**
-     * ComProperties类型转换为Property类型
-     *
-     * @param comProperties
-     * @return
-     */
-    private static List<Property> convertToPropertyList(List<ComProperties> comProperties) {
-        List<Property> propertyList = new ArrayList<>();
-        for (ComProperties item : comProperties) {
-            Property property = new Property();
-            property.setName(item.getName());
-            property.setValue(item.getValue());
-            property.setDescribe(item.getDescribe());
-            propertyList.add(property);
-        }
-        return propertyList;
-    }
 }
