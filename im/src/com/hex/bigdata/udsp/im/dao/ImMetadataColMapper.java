@@ -11,7 +11,7 @@ public class ImMetadataColMapper extends SyncMapper<ImMetadataCol> {
 
     @Override
     protected boolean insertExe(ImMetadataCol imMetadataCol) {
-        return false;
+        return sqlSessionTemplate.insert("com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.insert", imMetadataCol) == 1;
     }
 
     @Override

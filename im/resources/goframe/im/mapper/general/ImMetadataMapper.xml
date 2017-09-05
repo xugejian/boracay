@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.im.model.ImMetadata" >
     <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
     <result column="DS_ID" property="dsId" jdbcType="VARCHAR" />
+    <result column="DS_NAME" property="dsName" jdbcType="VARCHAR" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
     <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
     <result column="NOTE" property="note" jdbcType="VARCHAR" />
@@ -20,6 +21,9 @@
     delete from IM_METADATA
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </delete>
+  <update id="deleteByPrimaryKeyFake" parameterType="java.lang.String" >
+    update IM_METADATA set DEL_FLG = '1' where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.im.model.ImMetadata" >
     insert into IM_METADATA (PK_ID, DS_ID, NAME, 
       DESCRIBE, NOTE, DEL_FLG, 
@@ -58,5 +62,31 @@
     select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
     UPT_TIME, TB_NAME, STATUS, TYPE
     from IM_METADATA
+  </select>
+  <select id="select" resultMap="BaseResultMap" >
+    select A.PK_ID, A.DS_ID, A.NAME, A.DESCRIBE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
+    A.UPT_TIME, A.TB_NAME, A.STATUS, A.TYPE, B.NAME AS DS_NAME
+    from IM_METADATA A
+    left join com_datasource B
+    on A.DS_ID = B.PK_ID
+    where A.DEL_FLG = '0'
+    <if test="pkId!='' and pkId!=null ">and A.PK_ID = #{pkId}</if>
+    <if test="name!='' and name!=null ">and A.NAME like '%' || #{name} || '%'</if>
+    <if test="describe!='' and describe!=null ">and A.DESCRIBE like '%' || #{describe} || '%'</if>
+    <if test="note!='' and note!=null ">and A.NOTE like '%' || #{note} || '%'</if>
+    <if test="type!='' and type!=null ">and A.TYPE = #{type}</if>
+    <if test="crtTimeStart!=null and crtTimeStart!='' ">and A.CRT_TIME >= #{crtTimeStart}</if>
+    <if test="crtTimeEnd!=null and crtTimeEnd!='' ">and #{crtTimeEnd} >= A.CRT_TIME</if>
+    <if test="uptTimeStart!=null and uptTimeStart!='' ">and A.UPT_TIME >= #{uptTimeStart}</if>
+    <if test="uptTimeEnd!=null and uptTimeEnd!='' ">and #{uptTimeEnd} >= A.UPT_TIME</if>
+    <if test="crtUser!='' and crtUser!=null ">and A.CRT_USER like '%' || #{crtUser} || '%'</if>
+    <if test="uptUser!='' and uptUser!=null ">and A.UPT_USER like '%' || #{uptUser} || '%'</if>
+  </select>
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    UPT_TIME, TB_NAME, STATUS, TYPE
+    from IM_METADATA
+    where DEL_FLG = '0'
+    and NAME = #{name,jdbcType=VARCHAR}
   </select>
 </mapper>
