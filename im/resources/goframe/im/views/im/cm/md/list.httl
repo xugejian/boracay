@@ -46,15 +46,15 @@ ${extends("/goframe/function_layout.httl")}
                         <td class="roleText" style="width: 25%">
                             <input name="name" class="nui-textbox" style="width:98%;"/>
                         </td>
+                        <td class="tit roleLabel" style="width: 100px;text-align: right">说明：</td>
+                        <td class="roleText" style="width: 25%">
+                            <input name="describe" class="nui-textbox" style="width:98%;"/>
+                        </td>
                         <td class="tit roleLabel" style="width: 100px;text-align: right">数据源：</td>
                         <td class="roleText" style="width: 25%">
                             <input id="dsId" name="dsId" class="nui-combobox" textField="name" valueField="pkId"
                                    dataField="data" url="${basePath}/com/ds/select?model=${model}" allowInput="true"
                                    showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>
-                        </td>
-                        <td class="tit roleLabel" style="width: 100px;text-align: right">说明：</td>
-                        <td class="roleText" style="width: 25%">
-                            <input name="describe" class="nui-textbox" style="width:98%;"/>
                         </td>
                     </tr>
                     <tr>
