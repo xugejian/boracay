@@ -11,11 +11,18 @@ ${extends("/goframe/function_layout.httl")}
                         <input id="name" name="name" class="nui-textbox" style="width: 97%" required="true"
                                vtype="maxLength:64" onvalidation="nameValidation"/>
                     </td>
+                    <th class="nui-form-label"><label for="describe">说明：</label></th>
+                    <td >
+                        <input id="describe" name="describe" class="nui-textbox" style="width:99%" required="true"
+                               vtype="maxLength:256"/>
+                    </td>
+                </tr>
+                <tr>
                     <th class="nui-form-label"><label for="dsId">数据源：</label></th>
                     <td>
 
-                        <div id="dsId" class="nui-combobox" style="width:97%;"  popupWidth="400" textField="name" valueField="pkId"
-                             url="${basePath}/com/ds/select?model=${model}" dataField="data" name="dsId" multiSelect="false"  required="true">
+                        <div id="dsId" class="nui-combobox" style="width:97%;"  popupWidth="400" textField="name" valueField="pkId" onvaluechanged="typeChanged"
+                             url="${basePath}/com/ds/select?model=${model}&imDsTypeDictId=IM_DS_TARGET_TYPE" dataField="data" name="dsId" multiSelect="false"  required="true">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -24,17 +31,18 @@ ${extends("/goframe/function_layout.httl")}
                         <!--<input id="dsId" name="dsId" class="nui-combobox" valueField="pkId" textField="name" allowInput="true"
                                dataField="data" url="${basePath}/com/ds/select?model=${model}" style="width:97%" required="true"/>-->
                     </td>
+                    <th class="nui-form-label"></th>
+                    <td >
+                        <div id="type" name="type" onvaluechanged="onvaluechangedType" class="nui-radiobuttonlist" repeatItems="2" repeatLayout="table" repeatDirection="horizontal"
+                             textField="text" valueField="id" value="0" data="[{'id':'0','text':'内表'},{'id':'1','text':'外表'}]" required="true">
+                        </div>
+                    </td>
                 </tr>
                 <tr>
-                    <th class="nui-form-label"><label for="describe">说明：</label></th>
-                    <td >
-                        <input id="describe" name="describe" class="nui-textbox" style="width:99%" required="true"
-                               vtype="maxLength:256"/>
-                    </td>
                     <th class="nui-form-label"><label for="tbName">表名：</label></th>
                     <td >
-                        <input id="tbName" name="tbName" class="nui-textbox" style="width:99%" required="true"
-                               vtype="maxLength:64"/>
+                        <input id="tbName" name="tbName" class="nui-textbox" style="width:97%" required="true"
+                               vtype="maxLength:64" onblur="setCols"/>
                     </td>
                 </tr>
                 <tr>
@@ -85,7 +93,7 @@ ${extends("/goframe/function_layout.httl")}
                         <div field="describe" headerAlign="center" allowSort="true" width="30">说明<font color="#FF0000">（必填）</font>
                             <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
                         </div>
-                        <div field="colType" headerAlign="center" allowSort="true" width="20">类型
+                        <div field="type" headerAlign="center" allowSort="true" width="20">类型
                             <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
                                    dictTypeId="IQ_MD_COL_DATA_TYPE" value="STRING" vtype="maxLength:32"/>
                         </div>
@@ -93,7 +101,16 @@ ${extends("/goframe/function_layout.httl")}
                             <input property="editor" class="nui-textbox" vtype="maxLength:32"/>
                         </div>
                         <div field="note" headerAlign="center" allowSort="true" width="30">备注
-                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                            <input property="editor" class="nui-textarea" vtype="maxLength:4000"/>
+                        </div>
+                        <div type="checkboxcolumn"  field="indexed" trueValue="0" falseValue="1"
+                             headerAlign="center" allowSort="true" width="8">索引
+                        </div>
+                        <div type="checkboxcolumn"  field="primary" trueValue="0" falseValue="1"
+                             headerAlign="center" allowSort="true" width="8">主键
+                        </div>
+                        <div type="checkboxcolumn"  field="stored" trueValue="0" falseValue="1"
+                             headerAlign="center" allowSort="true" width="8">存储
                         </div>
                     </div>
                 </div>
@@ -110,14 +127,14 @@ ${extends("/goframe/function_layout.httl")}
                                 <b>配置参数</b>
                             </td>
                             <td style="text-align: right;">
-                                <a class="nui-button" iconCls="icon-add" onclick="add">添加</a>
+                                <a class="nui-button" iconCls="icon-add" onclick="add2">添加</a>
                                 <a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>
-                                <a class="nui-button" iconCls="icon-remove" onclick="remove" enabled="false"
+                                <a class="nui-button" iconCls="icon-remove" onclick="remove2" enabled="false"
                                    id="remove">删除</a>
                                 <span class="separator"></span>
-                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp" enabled="false"
+                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp2" enabled="false"
                                    id="moveUp">上移</a>
-                                <a class="nui-button" iconCls="icon-download" onclick="moveDown" enabled="false"
+                                <a class="nui-button" iconCls="icon-download" onclick="moveDown2" enabled="false"
                                    id="moveDown">下移</a>
                             </td>
                         </tr>
@@ -125,7 +142,7 @@ ${extends("/goframe/function_layout.httl")}
                 </div>
             </div>
             <div class="nui-fit" style="height:200px; padding: 0px 5px 0px 5px;">
-                <div id="datagrid" class="nui-datagrid" style="width:100%; height: 100%;"
+                <div id="datagrid2" class="nui-datagrid" style="width:100%; height: 100%;"
                      idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
                      showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected">
                     <div property="columns">
@@ -151,7 +168,8 @@ ${extends("/goframe/function_layout.httl")}
         </fieldset>
 
         <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
-            <a class="nui-button" style="" iconCls="icon-save" onclick="save" id="saveButton">保存</a>
+            <a class="nui-button" style="display: none;" iconCls="icon-save" onclick="save" id="saveButton">保存</a>
+            <a class="nui-button" style="" iconCls="icon-save" onclick="saveAndCreate" id="saveAndCreateButton">保存并创建</a>
             <span style="display:inline-block;width:25px;"></span>
             <a class="nui-button" style="" iconCls="icon-cancel" onclick="cancel">返回</a>
         </div>
@@ -253,13 +271,14 @@ ${extends("/goframe/function_layout.httl")}
     function add1() {
         var rows = grid1.getData(true, true);
         var length = rows.length;
-        var newRow = {colType: "STRING"};
+        var newRow = {type: "STRING", indexed:"1", primary:"1", stored:"0"};
         grid1.addRow(newRow, length);
     }
+
     function add2() {
         var rows = grid2.getData(true, true);
         var length = rows.length;
-        var newRow = {colType: "STRING"};
+        var newRow = {};
         grid2.addRow(newRow, length);
     }
 
@@ -287,6 +306,10 @@ ${extends("/goframe/function_layout.httl")}
      * 保存
      */
     function save() {
+        form1.validate();
+        if (form1.isValid() == false) {
+            return;
+        }
         var saveData = getSaveData();
         if (!saveData) {
             return;
@@ -320,6 +343,44 @@ ${extends("/goframe/function_layout.httl")}
         });
     }
 
+    //todo 创建
+    function saveAndCreate(){
+        form1.validate();
+        if (form1.isValid() == false) {
+            return;
+        }
+        var saveData = getSaveData();
+        if (!saveData) {
+            return;
+        }
+        var json = nui.encode(saveData);
+        //禁用保存按钮
+        nui.get("saveAndCreateButton").disable();
+        // --发送信息--
+        form1.loading("正在保存中,请稍等...");
+        $.ajax({
+            url: "${basePath}/im/md/insert",
+            type: 'POST',
+            data: json,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.status == true) {
+                    nui.alert(result.message);
+                    CloseWindow("success");
+                } else {
+                    nui.alert(result.message, "系统提示", function (action) {
+                        if (action == "ok" || action == "close") {
+//                            CloseWindow("failed");
+                        }
+                    });
+                }
+                form1.unmask();
+                //解除保存按钮禁用
+                nui.get("saveAndCreateButton").enable();
+            }
+        });
+    }
     /**
      * 获取需要保存的数据
      */
@@ -328,18 +389,18 @@ ${extends("/goframe/function_layout.httl")}
         if (!baseData) {
             return;
         }
-        var queryColsData = getQueryColsData();
-        if (!queryColsData) {
+        var colsData = getColsData();
+        if (!colsData) {
             return;
         }
-        var returnColsData = getReturnColsData();
-        if (!returnColsData) {
+        var propsData = getPropsData();
+        if (!propsData) {
             return;
         }
         var saveData = {
-            "iqMetadata": baseData,
-            "iqMetadataQueryColList": queryColsData,
-            "iqMetadataReturnColList": returnColsData
+            "imMetadata": baseData,
+            "imMetadataColList": colsData,
+            "comPropertiesList": propsData
         };
         return saveData;
     }
@@ -348,64 +409,60 @@ ${extends("/goframe/function_layout.httl")}
      * 获取基础数据
      */
     function getBaseData() {
-        form1.validate();
-        if (form1.isValid() == false) {
-            return;
-        }
         var baseData = form1.getData(true, true);
         return baseData;
     }
 
     /**
-     * 获取查询字段数据
+     * 获取字段数据
      */
-    function getQueryColsData() {
+    function getColsData() {
         var status = true;
-        var queryColsData = grid1.getData(true, true);
-        if (queryColsData == null || queryColsData.length == 0) {
-            nui.alert("【查询字段】的信息不能为空!");
+        var colsData = grid1.getData(true, true);
+        if (colsData == null || colsData.length == 0) {
+            nui.alert("【字段】的信息不能为空!");
             return;
         }
-        $.each(queryColsData, function (_index, record) {
+        $.each(colsData, function (_index, record) {
             record.seq = grid1.indexOf(record) + 1;
             if (record.name == null || record.name == "") {
-                nui.alert("【查询字段】的位置" + record.seq + "：【名称】不能为空!");
+                nui.alert("【字段】的位置" + record.seq + "：【名称】不能为空!");
                 status = false;
                 return false;
             }
             if (checkPattern(record.name) == false) {
-                nui.alert("【查询字段】的位置" + record.seq + "：【名称】只能包含字母、数字、下划线，且以字母开头!");
+                nui.alert("【字段】的位置" + record.seq + "：【名称】只能包含字母、数字、下划线，且以字母开头!");
                 status = false;
                 return false;
             }
             if (record.describe == null || record.describe == "") {
-                nui.alert("【查询字段】的位置" + record.seq + "：【说明】不能为空!");
+                nui.alert("【字段】的位置" + record.seq + "：【说明】不能为空!");
                 status = false;
                 return false;
             }
-            if (record.colType == null || record.colType == "") {
-                nui.alert("【查询字段】的位置" + record.seq + "：【类型】不能为空!");
+            if (record.type == null || record.type == "") {
+                nui.alert("【字段】的位置" + record.seq + "：【类型】不能为空!");
                 status = false;
                 return false;
             }
-            if(record.colType == "CHAR" || record.colType == "VARCHAR" ||  record.colType == "DECIMAL"){
+            if(record.type == "CHAR" || record.type == "VARCHAR" ||  record.type == "DECIMAL"){
                 if(record.length == null || record.length == "") {
-                    nui.alert("【查询字段】的位置" + record.seq + "：【长度】不能为空!");
+                    nui.alert("【字段】的位置" + record.seq + "：【长度】不能为空!");
                     status = false;
                     return false;
                 }
-                if(record.colType == "DECIMAL") {
+                if(record.type == "DECIMAL") {
                     var re = new RegExp("^[1-9][0-9]{0,1},?[0-9]{0,2}$");
                     if (!re.test(record.length)) {
-                        nui.alert("【查询字段】的位置" + record.seq + "：【长度】错误!");
+                        nui.alert("【字段】的位置" + record.seq + "：【长度】错误!");
                         status = false;
                         return false;
                     }
                 }
-                if(record.colType == "CHAR" || record.colType == "VARCHAR"){
+                if(record.type == "CHAR" || record.type == "VARCHAR"){
                     var re = new RegExp("^[1-9][0-9]{0,3}$");
                     if (!re.test(record.length)) {
-                        nui.alert("【查询字段】的位置" + record.seq + "：【长度】错误!");
+                        nui.alert("【字段】的位置" + record.seq + "：【长度】错误!");
                         status = false;
                         return false;
                     }
@@ -416,78 +473,52 @@ ${extends("/goframe/function_layout.httl")}
             return;
         }
         // 检查参数重复
-        if (checkRepetition(queryColsData)) {
-            nui.alert("【查询字段】中存在重复【名称】，请检查后再提交！");
+        if (checkRepetition(colsData)) {
+            nui.alert("【字段】中存在重复【名称】，请检查后再提交！");
             return;
         }
-        return queryColsData;
+        return colsData;
     }
 
     /**
-     * 获取返回字段数据
+     * 获取配置参数数据
      */
-    function getReturnColsData() {
+    function getPropsData() {
         var status = true;
-        var returnColsData = grid2.getData(true, true);
-        if (returnColsData == null || returnColsData.length == 0) {
-            nui.alert("【返回字段】的信息不能为空!");
+        var propsData = grid2.getData(true, true);
+        var type = nui.get("type").getValue();
+        if (type==0 && (propsData == null || propsData.length == 0)){
+            nui.alert("【配置参数】的信息不能为空!");
             return;
         }
-        $.each(returnColsData, function (_index, record) {
+        $.each(propsData, function (_index, record) {
             record.seq = grid2.indexOf(record) + 1;
             if (record.name == null || record.name == "") {
-                nui.alert("【返回字段】的位置" + record.seq + "：【名称】不能为空!");
+                nui.alert("【配置参数】的位置" + record.seq + "：【名称】不能为空!");
                 status = false;
                 return false;
             }
-            if (checkPattern(record.name) == false) {
-                nui.alert("【返回字段】的位置" + record.seq + "：【名称】只能包含字母、数字、下划线，且以字母开头!");
+            if (checkPropsName(record.name) == false) {
+                nui.alert("【配置参数】的位置" + record.seq + "：【名称】只能包含字母、数字、下划线、点、中划线，且以字母开头!");
                 status = false;
                 return false;
             }
-            if (record.describe == null || record.describe == "") {
-                nui.alert("【返回字段】的位置" + record.seq + "：【说明】不能为空!");
+            if (record.value == null || record.value == "") {
+                nui.alert("【配置参数】的位置" + record.seq + "：【数值】不能为空!");
                 status = false;
                 return false;
-            }
-            if (record.colType == null || record.colType == "") {
-                nui.alert("【返回字段】的位置" + record.seq + "：【类型】不能为空!");
-                status = false;
-                return false;
-            }
-            if(record.colType == "CHAR" || record.colType == "VARCHAR" ||  record.colType == "DECIMAL"){
-                if(record.length == null || record.length == "") {
-                    nui.alert("【返回字段】的位置" + record.seq + "：【长度】不能为空!");
-                    status = false;
-                    return false;
-                }
-                if(record.colType == "DECIMAL") {
-                    var re = new RegExp("^[1-9][0-9]{0,1},?[0-9]{0,2}$");
-                    if (!re.test(record.length)) {
-                        nui.alert("【返回字段】的位置" + record.seq + "：【长度】错误!");
-                        status = false;
-                        return false;
-                    }
-                }
-                if(record.colType == "CHAR" || record.colType == "VARCHAR"){
-                    var re = new RegExp("^[1-9][0-9]{0,3}$");
-                    if (!re.test(record.length)) {
-                        nui.alert("【返回字段】的位置" + record.seq + "：【长度】错误!");
-                        status = false;
-                        return false;
-                    }
-                }
             }
         });
         if (!status) {
             return;
         }
         // 检查参数重复
-        if (checkRepetition(returnColsData)) {
-            nui.alert("【返回字段】中存在重复【名称】，请检查后再提交！");
+        if (checkRepetition(propsData)) {
+            nui.alert("【配置参数】中存在重复【名称】，请检查后再提交！");
             return;
         }
-        return returnColsData;
+        //todo solr 参数合理性检查
+        return propsData;
     }
 
     /**
@@ -546,7 +577,7 @@ ${extends("/goframe/function_layout.httl")}
     function isExist(value) {
         var result = "";
         $.ajax({
-            url: "${basePath}/iq/md/checkName/" + value,
+            url: "${basePath}/im/md/checkName/" + value,
             type: 'POST',
             cache: false,
             async: false,
@@ -587,6 +618,150 @@ ${extends("/goframe/function_layout.httl")}
     function moveDown2() {
         var rows = grid2.getSelecteds();
         grid2.moveDown(rows);
+    }
+
+    /**
+     * 类型值变化时触发
+     */
+    function typeChanged(e) {
+        count = 0;
+        // --配置信息变化--
+        grid2.clearRows();
+        var dsId = nui.get("dsId").getValue();
+        $.post("${basePath}/goframe/dict/getDictData?dictTypeId=${model}_MD_PROPS_" + getDsTypeByPkId(dsId), {}, function (data) {
+            var props = [];
+            if (data.length > 0) {
+                for (var i = 0, len = data.length; i < len; i++) {
+                    props.push({
+                        "name": data[i].dictId,
+                        "value": data[i].filter,
+                        "describe": data[i].dictName
+                    });
+                }
+            }
+            grid2.addRows(props);
+        });
+    }
+
+    /**
+     *  根据pkId获取数据源类型
+     */
+    function getDsTypeByPkId(dsId) {
+        var result = "";
+        $.ajax({
+            url: "${basePath}/com/ds/select/" + dsId,
+            type: 'POST',
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (text) {
+                if(text.data){
+                    result = text.data.type;
+                }
+            }
+        });
+        return result;
+    }
+
+     function onvaluechangedType(){
+         setSaveButton();
+         setCols();
+     }
+
+    /**
+     *  根据内外表控制保持按钮
+     */
+    function setSaveButton(){
+        var type = nui.get("type").getValue();
+        if(type==0){
+            nui.get("saveAndCreateButton").show();
+            nui.get("saveButton").hide();
+        }else{
+            nui.get("saveButton").show();
+            nui.get("saveAndCreateButton").hide();
+        }
+    }
+
+    /**
+     * 设置外表字段信息
+     */
+    function setCols(){
+        var type = nui.get("type").getValue();
+        if(type==0){
+            return;
+        }
+        var dsId = nui.get("dsId").getValue();
+        if(!dsId){
+            alert("请选择数据源！");
+            return;
+        }
+        var tbName = nui.get("tbName").getValue();
+        if(!tbName){
+            alert("请输入表名！"); //todo 需要验证表是否存在
+            return;
+        }
+        var json = nui.encode({"dsId":dsId,"tbName":tbName});
+        $.ajax({
+            url: "${basePath}/im/md/getCloumnInfo",
+            type: 'POST',
+            data: json,
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (text) {
+                if(text.data){
+                    result = text.data.type;
+                }
+            }
+        });
+        //todo 获取字段信息
+    }
+
+    /**
+     * 批量添加
+     */
+    function adds() {
+        var dsId = nui.get("dsId").getValue();
+        if(!dsId){
+            alert("请先选择数据源");
+            return;
+        }
+        nui.open({
+            url: "${basePath}/goframe/p/com.ds.multi?dictTypeId=${model}_DS_PROPS_" + getDsTypeByPkId(dsId),
+            title: "批量添加",
+            width: 650,
+            height: 380,
+            onload: function () {
+                var data = grid2.getData(true, true);
+                var iframe = this.getIFrameEl();
+                var props = [];
+                if (data.length > 0) {
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        props.push({"name": data[i].name});
+                    }
+                }
+                iframe.contentWindow.SetData(props);
+            },
+            ondestroy: function (action) {
+                if (action == "success") {
+                    var iframe = this.getIFrameEl();
+                    var result = iframe.contentWindow.GetData();
+                    result = nui.clone(result);
+                    grid2.addRows(result);
+                }
+            }
+        });
+    }
+
+    /**
+     * 检查是否满足字母、数字、下划线、点、中划线，且以字母开头
+     */
+    function checkPropsName(v) {
+        var re = new RegExp("^[A-Za-z][A-Za-z0-9_\.\-]{0,256}$");
+        if (re.test(v)) {
+            return true;
+        }
+        return false;
     }
 </script>
 <!--#end-->
