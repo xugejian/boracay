@@ -3,15 +3,16 @@ package com.hex.bigdata.udsp.im.provider.util;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -118,5 +119,64 @@ public class JdbcUtil {
             }
         }
         return rs;
+    }
+
+    public static List<MetadataCol> getColumns(JdbcDatasource datasource, String sql) {
+        List<MetadataCol> metadataCols = null;
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = JdbcUtil.getConnection(datasource);
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            ResultSetMetaData md = rs.getMetaData();
+            int columnCount = md.getColumnCount();
+            metadataCols = new ArrayList<>();
+            if (columnCount >= 1) {
+                for (int i = 1; i <= columnCount; i++) {
+                    logger.debug("-----------------------------------------------------------");
+                    logger.debug("getCatalogName:" + md.getCatalogName(i));
+                    logger.debug("getSchemaName:" + md.getSchemaName(i));
+                    logger.debug("getTableName:" + md.getTableName(i));
+                    logger.debug("getColumnClassName:" + md.getColumnClassName(i));
+                    logger.debug("getColumnName:" + md.getColumnName(i));
+                    logger.debug("getColumnLabel:" + md.getColumnLabel(i));
+                    logger.debug("getColumnDisplaySize:" + md.getColumnDisplaySize(i));
+                    logger.debug("getColumnType:" + md.getColumnType(i));
+                    logger.debug("getColumnTypeName:" + md.getColumnTypeName(i));
+                    logger.debug("getPrecision:" + md.getPrecision(i));
+                    logger.debug("getScale:" + md.getScale(i));
+
+                    // TODO ......
+
+                }
+            }
+        } catch (SQLException e) {
+            logger.warn(e.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return metadataCols;
     }
 }

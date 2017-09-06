@@ -17,8 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -28,65 +27,6 @@ import java.util.List;
 public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
     private static Logger logger = LogManager.getLogger(HiveProvider.class);
 
-    private List<MetadataCol> getColumns(HiveDatasource datasource, String sql) {
-        List<MetadataCol> metadataCols = null;
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            conn = JdbcUtil.getConnection(datasource);
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(sql);
-            ResultSetMetaData md = rs.getMetaData();
-            int columnCount = md.getColumnCount();
-            metadataCols = new ArrayList<>();
-            if (columnCount >= 1) {
-                for (int i = 1; i <= columnCount; i++) {
-                    logger.debug("-----------------------------------------------------------");
-                    logger.debug("getCatalogName:" + md.getCatalogName(i));
-                    logger.debug("getSchemaName:" + md.getSchemaName(i));
-                    logger.debug("getTableName:" + md.getTableName(i));
-                    logger.debug("getColumnClassName:" + md.getColumnClassName(i));
-                    logger.debug("getColumnName:" + md.getColumnName(i));
-                    logger.debug("getColumnLabel:" + md.getColumnLabel(i));
-                    logger.debug("getColumnDisplaySize:" + md.getColumnDisplaySize(i));
-                    logger.debug("getColumnType:" + md.getColumnType(i));
-                    logger.debug("getColumnTypeName:" + md.getColumnTypeName(i));
-                    logger.debug("getPrecision:" + md.getPrecision(i));
-                    logger.debug("getScale:" + md.getScale(i));
-
-                    // TODO ......
-
-                }
-            }
-        } catch (SQLException e) {
-            logger.warn(e.getMessage());
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return metadataCols;
-    }
-
     @Override
     public List<MetadataCol> columnInfo(Model model) {
         Datasource datasource = model.getDatasource();
@@ -94,7 +34,7 @@ public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
         HiveModel hiveModel = new HiveModel(datasource.getPropertyMap());
         String sql = JdbcUtil.getCloumnInfoSql(hiveModel);
         if (sql == null) return null;
-        return getColumns(hiveDatasource, sql);
+        return JdbcUtil.getColumns(hiveDatasource, sql);
     }
 
     @Override
@@ -103,7 +43,7 @@ public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = "SELECT * FROM " + fullTbName + " WHERE 1=0";
-        return getColumns(hiveDatasource, sql);
+        return JdbcUtil.getColumns(hiveDatasource, sql);
     }
 
     @Override
