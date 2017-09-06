@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseConnectionPoolFactory;
+import com.hex.bigdata.udsp.im.provider.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
