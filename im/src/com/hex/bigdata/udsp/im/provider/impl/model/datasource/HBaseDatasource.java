@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.impl.model;
+package com.hex.bigdata.udsp.im.provider.impl.model.datasource;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
@@ -10,16 +10,13 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public class SolrHBaseDatasource extends Datasource {
-    private String zkQuorum;
-    private String zkPort;
-    private String solrServers;
+public class HBaseDatasource extends Datasource {
 
-    public SolrHBaseDatasource(List<Property> properties) {
+    public HBaseDatasource(List<Property> properties) {
         super(properties);
     }
 
-    public SolrHBaseDatasource(Map<String, Property> propertieMap) {
+    public HBaseDatasource(Map<String, Property> propertieMap) {
         super(propertieMap);
     }
 
@@ -34,13 +31,6 @@ public class SolrHBaseDatasource extends Datasource {
         String value = getProperty("hbase.zk.port").getValue();
         if (StringUtils.isBlank(value))
             throw new IllegalArgumentException("hbase.zk.port不能为空");
-        return value;
-    }
-
-    public String getSolrServers() {
-        String value = getProperty("solr.servers").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("solr.servers不能为空");
         return value;
     }
 }
