@@ -83,13 +83,13 @@ public class HBaseProvider implements RealtimeTargetProvider, BatchTargetProvide
     }
 
     @Override
-    public void create() {
-
+    public boolean create(Metadata metadata) {
+        return true;
     }
 
     @Override
-    public void drop() {
-
+    public boolean drop(Metadata metadata) {
+        return true;
     }
 
     @Override

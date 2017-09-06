@@ -8,17 +8,18 @@ import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.lang3.StringUtils;
+import com.hex.bigdata.udsp.im.provider.util.HiveSqlUtil;
+import com.hex.bigdata.udsp.im.provider.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.provider.util.model.FileFormat;
+import com.hex.bigdata.udsp.im.provider.util.model.RowFormat;
+import com.hex.bigdata.udsp.im.provider.util.model.TableColumn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by JunjieM on 2017-9-5.
@@ -26,64 +27,6 @@ import java.util.Map;
 @Component("com.hex.bigdata.udsp.im.provider.impl.HiveProvider")
 public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
     private static Logger logger = LogManager.getLogger(HiveProvider.class);
-    private static Map<String, BasicDataSource> dataSourcePool;
-
-    private synchronized BasicDataSource getDataSource(HiveDatasource datasource) {
-        String dsId = datasource.getId();
-        if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<String, BasicDataSource>();
-        }
-        BasicDataSource dataSource = dataSourcePool.get(dsId);
-        if (dataSource == null) {
-            dataSource = new BasicDataSource();
-
-            //Class.forName(datasource.getDriverClass());
-            if (StringUtils.isNotBlank(datasource.getDriverClass()))
-                dataSource.setDriverClassName(datasource.getDriverClass());
-            if (StringUtils.isNotBlank(datasource.getJdbcUrl()))
-                dataSource.setUrl(datasource.getJdbcUrl());
-            if (StringUtils.isNotBlank(datasource.getUsername()))
-                dataSource.setUsername(datasource.getUsername());
-            if (StringUtils.isNotBlank(datasource.getPassword()))
-                dataSource.setPassword(datasource.getPassword());
-            if (StringUtils.isNotBlank(datasource.getInitialSize()))
-                dataSource.setInitialSize(Integer.valueOf(datasource.getInitialSize()));// 数据库初始化时，创建的连接个数
-            if (StringUtils.isNotBlank(datasource.getMinIdle()))
-                dataSource.setMinIdle(Integer.valueOf(datasource.getMinIdle()));// 最小空闲连接数
-            if (StringUtils.isNotBlank(datasource.getMaxIdle()))
-                dataSource.setMaxIdle(Integer.valueOf(datasource.getMaxIdle()));// 数据库最大连接数
-            if (StringUtils.isNotBlank(datasource.getMaxActive()))
-                dataSource.setMaxActive(Integer.valueOf(datasource.getMaxActive()));// 设置最大并发数
-            if (StringUtils.isNotBlank(datasource.getMaxWait()))
-                dataSource.setMaxWait(Integer.valueOf(datasource.getMaxWait()));// 最长等待时间，单位毫秒
-            if (StringUtils.isNotBlank(datasource.getValidationQuery()))
-                dataSource.setValidationQuery(datasource.getValidationQuery()); // 验证链接的SQL语句，必须能返回一行及以上数据
-            if (StringUtils.isNotBlank(datasource.getValidationQueryTimeout()))
-                dataSource.setValidationQueryTimeout(Integer.valueOf(datasource.getValidationQueryTimeout())); // 自动验证连接的时间
-            if (StringUtils.isNotBlank(datasource.getTimeBetweenEvictionRunsMillis()))
-                dataSource.setTimeBetweenEvictionRunsMillis(Integer.valueOf(datasource.getTimeBetweenEvictionRunsMillis())); // N毫秒检测一次是否有死掉的线程
-            if (StringUtils.isNotBlank(datasource.getMinEvictableIdleTimeMillis()))
-                dataSource.setMinEvictableIdleTimeMillis(Integer.valueOf(datasource.getMinEvictableIdleTimeMillis()));// 空闲连接N毫秒中后释放
-            if (StringUtils.isNotBlank(datasource.getTestWhileIdle()))
-                dataSource.setTestWhileIdle(Boolean.valueOf(datasource.getTestWhileIdle()));
-            if (StringUtils.isNotBlank(datasource.getTestOnBorrow()))
-                dataSource.setTestOnBorrow(Boolean.valueOf(datasource.getTestOnBorrow()));
-            if (StringUtils.isNotBlank(datasource.getTestOnReturn()))
-                dataSource.setTestOnReturn(Boolean.valueOf(datasource.getTestOnReturn()));
-
-            dataSourcePool.put(dsId, dataSource);
-        }
-        return dataSource;
-    }
-
-    private Connection getConnection(HiveDatasource datasource) throws SQLException {
-        Connection conn = null;
-        BasicDataSource dataSource = getDataSource(datasource);
-        if (dataSource != null) {
-            conn = dataSource.getConnection();
-        }
-        return conn;
-    }
 
     private List<MetadataCol> getColumns(HiveDatasource datasource, String sql) {
         List<MetadataCol> metadataCols = null;
@@ -91,7 +34,7 @@ public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            conn = getConnection(datasource);
+            conn = JdbcUtil.getConnection(datasource);
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
             ResultSetMetaData md = rs.getMetaData();
@@ -118,6 +61,28 @@ public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
             }
         } catch (SQLException e) {
             logger.warn(e.getMessage());
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return metadataCols;
     }
@@ -127,24 +92,9 @@ public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
         Datasource datasource = model.getDatasource();
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         HiveModel hiveModel = new HiveModel(datasource.getPropertyMap());
-        String sql = getCloumnInfoSql(hiveModel);
+        String sql = JdbcUtil.getCloumnInfoSql(hiveModel);
         if (sql == null) return null;
         return getColumns(hiveDatasource, sql);
-    }
-
-    private String getCloumnInfoSql(HiveModel hiveModel) {
-        String dbName = hiveModel.getDatabaseName();
-        String tbName = hiveModel.getTableName();
-        String sql = hiveModel.getSql();
-        if (StringUtils.isBlank(sql)) {
-            if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName))
-                sql = "SELECT * FROM " + dbName + "." + tbName + " WHERE 1=0";
-            else
-                return null;
-        } else {
-            sql = "select * from (" + sql + ") udsp_view WHERE 1=0";
-        }
-        return sql;
     }
 
     @Override
@@ -157,13 +107,32 @@ public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
     }
 
     @Override
-    public void create() {
-
+    public boolean create(Metadata metadata) throws SQLException {
+        Datasource datasource = metadata.getDatasource();
+        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
+        String fullTbName = metadata.getTbName();
+        String tableComment = metadata.getDescribe();
+        List<TableColumn> columns = null;
+        List<TableColumn> partitions = null;
+        boolean isExternal = false;
+        boolean ifNotExists = false;
+        RowFormat rowFormat = null;
+        String fileFormat = FileFormat.HIVE_FILE_FORMAT_PARQUET;
+        String sql = HiveSqlUtil.createTable(isExternal, ifNotExists, fullTbName,
+                columns, tableComment, partitions, rowFormat, fileFormat);
+        int status = JdbcUtil.getExecuteUpdateStatus(hiveDatasource, sql);
+        return status == 1 ? true : false;
     }
 
     @Override
-    public void drop() {
-
+    public boolean drop(Metadata metadata) throws SQLException {
+        Datasource datasource = metadata.getDatasource();
+        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
+        String fullTbName = metadata.getTbName();
+        boolean ifExists = false;
+        String sql = HiveSqlUtil.dropTable(ifExists, fullTbName);
+        int status = JdbcUtil.getExecuteUpdateStatus(hiveDatasource, sql);
+        return status == 1 ? true : false;
     }
 
     @Override
@@ -175,4 +144,5 @@ public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
     public String inputSQL() {
         return null;
     }
+
 }

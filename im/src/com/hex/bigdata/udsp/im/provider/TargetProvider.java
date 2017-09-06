@@ -3,6 +3,7 @@ package com.hex.bigdata.udsp.im.provider;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ public interface TargetProvider extends Provider {
 
     List<MetadataCol> columnInfo(Metadata metadata);
 
-    void create();
+    boolean create(Metadata metadata) throws Exception;
 
-    void drop();
+    boolean drop(Metadata metadata) throws Exception;
 }
