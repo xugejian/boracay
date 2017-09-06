@@ -4,8 +4,8 @@ import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.impl.model.HiveModel;
-import com.hex.bigdata.udsp.im.provider.impl.model.OracleDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.OracleDatasource;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
@@ -13,6 +13,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
+@Component("com.hex.bigdata.udsp.im.provider.impl.OracleProvider")
 public class OracleProvider implements BatchSourceProvider, BatchTargetProvider, RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(OracleProvider.class);
     private static Map<String, BasicDataSource> dataSourcePool;
@@ -126,6 +128,12 @@ public class OracleProvider implements BatchSourceProvider, BatchTargetProvider,
         Datasource datasource = model.getDatasource();
         OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         HiveModel hiveModel = new HiveModel(datasource.getPropertyMap());
+        String sql = getCloumnInfoSql(hiveModel);
+        if (sql == null) return null;
+        return getColumns(oracleDatasource, sql);
+    }
+
+    private String getCloumnInfoSql(HiveModel hiveModel) {
         String dbName = hiveModel.getDatabaseName();
         String tbName = hiveModel.getTableName();
         String sql = hiveModel.getSql();
@@ -134,8 +142,10 @@ public class OracleProvider implements BatchSourceProvider, BatchTargetProvider,
                 sql = "SELECT * FROM " + dbName + "." + tbName + " WHERE 1=0";
             else
                 return null;
+        } else {
+            sql = "select * from (" + sql + ") udsp_view WHERE 1=0";
         }
-        return getColumns(oracleDatasource, sql);
+        return sql;
     }
 
     @Override

@@ -15,5 +15,4 @@ public interface TargetProvider extends Provider {
     void create();
 
     void drop();
-
 }

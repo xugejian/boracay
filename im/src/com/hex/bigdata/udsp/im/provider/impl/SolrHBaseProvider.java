@@ -4,8 +4,7 @@ import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseConnectionPoolFactory;
-import com.hex.bigdata.udsp.im.provider.impl.model.SolrDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.SolrHBaseDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +14,7 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +27,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
+@Component("com.hex.bigdata.udsp.im.provider.impl.SolrHBaseProvider")
 public class SolrHBaseProvider implements RealtimeTargetProvider, BatchTargetProvider {
 
     static {

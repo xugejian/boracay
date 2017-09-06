@@ -5,8 +5,8 @@ import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.factory.SolrConnectionPoolFactory;
-import com.hex.bigdata.udsp.im.provider.impl.model.SolrDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.SolrModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
@@ -14,6 +14,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServer;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
+@Component("com.hex.bigdata.udsp.im.provider.impl.SolrProvider")
 public class SolrProvider implements BatchSourceProvider, BatchTargetProvider, RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
     private static Map<String, SolrConnectionPoolFactory> dataSourcePool;
