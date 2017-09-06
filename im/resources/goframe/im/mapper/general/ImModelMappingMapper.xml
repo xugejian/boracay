@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.im.dao.ImModelMappingMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.im.model.ImModelMapping" >
+    <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
+    <result column="MODEL_ID" property="modelId" jdbcType="VARCHAR" />
+    <result column="SEQ" property="seq" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="COL_ID" property="colId" jdbcType="VARCHAR" />
+    <result column="NOTE" property="note" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from IM_MODEL_MAPPING
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.im.model.ImModelMapping" >
+    insert into IM_MODEL_MAPPING (PK_ID, MODEL_ID, SEQ, 
+      NAME, COL_ID, NOTE)
+    values (#{pkId,jdbcType=VARCHAR}, #{modelId,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, 
+      #{name,jdbcType=VARCHAR}, #{colId,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.im.model.ImModelMapping" >
+    update IM_MODEL_MAPPING
+    set MODEL_ID = #{modelId,jdbcType=VARCHAR},
+      SEQ = #{seq,jdbcType=DECIMAL},
+      NAME = #{name,jdbcType=VARCHAR},
+      COL_ID = #{colId,jdbcType=VARCHAR},
+      NOTE = #{note,jdbcType=VARCHAR}
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE
+    from IM_MODEL_MAPPING
+    where PK_ID = #{pkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE
+    from IM_MODEL_MAPPING
+  </select>
+</mapper>
