@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.provider;
+package com.hex.bigdata.udsp.im.provider;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.provider.impl.model;
+package com.hex.bigdata.udsp.im.provider.impl.model;
 
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public class HiveDatasource extends Datasource {
+public class OracleDatasource extends Datasource {
     private String driverClass;
     private String jdbcUrl;
     private String username;
@@ -33,8 +33,8 @@ public class HiveDatasource extends Datasource {
     public String getDriverClass() {
         String value = getProperty("driver.class").getValue();
         if (StringUtils.isBlank(value))
-            value = "org.apache.hive.jdbc.HiveDriver";
-         return value;
+            value = "oracle.jdbc.OracleDriver";
+        return value;
     }
 
     public String getJdbcUrl() {
@@ -100,15 +100,15 @@ public class HiveDatasource extends Datasource {
         return getProperty("test.on.return").getValue();
     }
 
-    public HiveDatasource(List<Property> properties) {
+    public OracleDatasource(List<Property> properties) {
         super(properties);
     }
 
-    public HiveDatasource(Map<String, Property> propertieMap) {
+    public OracleDatasource(Map<String, Property> propertieMap) {
         super(propertieMap);
     }
 
-    public HiveDatasource(ComDatasource comDatasource, List<ComProperties> comPropertieList) {
+    public OracleDatasource(ComDatasource comDatasource, List<ComProperties> comPropertieList) {
         super(comDatasource, comPropertieList);
     }
 }

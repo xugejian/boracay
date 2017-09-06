@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.provider.impl.model;
+package com.hex.bigdata.udsp.im.provider.impl.model;
 
 /**
  * Created by JunjieM on 2017-9-5.
