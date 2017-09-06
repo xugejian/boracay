@@ -13,22 +13,6 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class MysqlDatasource extends Datasource {
-    private String driverClass;
-    private String jdbcUrl;
-    private String username;
-    private String password;
-    private String initialSize;
-    private String minIdle;
-    private String maxIdle;
-    private String maxWait;
-    private String maxActive;
-    private String validationQueryTimeout;
-    private String timeBetweenEvictionRunsMillis;
-    private String minEvictableIdleTimeMillis;
-    private String validationQuery;
-    private String testWhileIdle;
-    private String testOnBorrow;
-    private String testOnReturn;
 
     public String getDriverClass() {
         String value = getProperty("driver.class").getValue();
