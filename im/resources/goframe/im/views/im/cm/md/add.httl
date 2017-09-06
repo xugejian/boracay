@@ -22,7 +22,7 @@ ${extends("/goframe/function_layout.httl")}
                     <td>
 
                         <div id="dsId" class="nui-combobox" style="width:97%;"  popupWidth="400" textField="name" valueField="pkId" onvaluechanged="typeChanged"
-                             url="${basePath}/com/ds/select?model=${model}" dataField="data" name="dsId" multiSelect="false"  required="true">
+                             url="${basePath}/com/ds/select?model=${model}&imDsTypeDictId=IM_DS_TARGET_TYPE" dataField="data" name="dsId" multiSelect="false"  required="true">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -33,7 +33,7 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                     <th class="nui-form-label"></th>
                     <td >
-                        <div id="type" name="type" onvaluechanged="setSaveButton" class="nui-radiobuttonlist" repeatItems="2" repeatLayout="table" repeatDirection="horizontal"
+                        <div id="type" name="type" onvaluechanged="onvaluechangedType" class="nui-radiobuttonlist" repeatItems="2" repeatLayout="table" repeatDirection="horizontal"
                              textField="text" valueField="id" value="0" data="[{'id':'0','text':'内表'},{'id':'1','text':'外表'}]" required="true">
                         </div>
                     </td>
@@ -42,7 +42,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="tbName">表名：</label></th>
                     <td >
                         <input id="tbName" name="tbName" class="nui-textbox" style="width:97%" required="true"
-                               vtype="maxLength:64"/>
+                               vtype="maxLength:64" onblur="setCols"/>
                     </td>
                 </tr>
                 <tr>
@@ -663,6 +663,11 @@ ${extends("/goframe/function_layout.httl")}
         return result;
     }
 
+     function onvaluechangedType(){
+         setSaveButton();
+         setCols();
+     }
+
     /**
      *  根据内外表控制保持按钮
      */
@@ -680,14 +685,35 @@ ${extends("/goframe/function_layout.httl")}
     /**
      * 设置外表字段信息
      */
-    function setFields(){
-        var dsId = nui.get("dsId").getValue();
+    function setCols(){
         var type = nui.get("type").getValue();
-        var tbName = nui.get("tbName").getValue();
-        if(!dsId || !type || !tbName ){
-            form1.validate();
+        if(type==0){
             return;
         }
+        var dsId = nui.get("dsId").getValue();
+        if(!dsId){
+            alert("请选择数据源！");
+            return;
+        }
+        var tbName = nui.get("tbName").getValue();
+        if(!tbName){
+            alert("请输入表名！"); //todo 需要验证表是否存在
+            return;
+        }
+        var json = nui.encode({"dsId":dsId,"tbName":tbName});
+        $.ajax({
+            url: "${basePath}/im/md/getCloumnInfo",
+            type: 'POST',
+            data: json,
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (text) {
+                if(text.data){
+                    result = text.data.type;
+                }
+            }
+        });
         //todo 获取字段信息
     }
 

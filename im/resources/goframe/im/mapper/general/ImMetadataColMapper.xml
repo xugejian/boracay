@@ -54,6 +54,19 @@
   <select id="select" resultMap="BaseResultMap">
     select PK_ID, MD_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, NOTE, INDEXED, PRIMARY, STORED
     from IM_METADATA_COLUMN
-    where MD_ID = #{mdId,jdbcType=VARCHAR}
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="pkId!='' and pkId!=null ">and PK_ID = #{pkId}</if>
+      <if test="mdId!='' and mdId!=null ">and MD_ID = #{mdId}</if>
+      <if test="name!='' and name!=null ">and NAME like '%'||#{name}||'%'</if>
+      <if test="describe!='' and describe!=null ">and DESCRIBE like '%'||#{describe}||'%'</if>
+      <if test="note!='' and note!=null ">and NOTE like '%'||#{note}||'%'</if>
+      <if test="type!='' and type!=null ">and TYPE = #{type}</if>
+      <if test="length!='' and length!=null ">and LENGTH = #{length}</if>
+      <if test="seq!='' and seq!=null ">and SEQ = #{seq}</if>
+      <if test="indexed!='' and indexed!=null ">and INDEXED = #{indexed}</if>
+      <if test="primary!='' and primary!=null ">and PRIMARY = #{primary}</if>
+      <if test="stored!='' and stored!=null ">and STORED = #{stored}</if>
+    </trim>
+    order by SEQ asc
   </select>
 </mapper>

@@ -1,13 +1,19 @@
 package com.hex.bigdata.udsp.im.service;
 
 import com.hex.bigdata.udsp.common.model.ComDatasource;
+import com.hex.bigdata.udsp.common.model.ComProperties;
+import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
-import com.hex.bigdata.udsp.im.dao.ImMetadataColMapper;
+import com.hex.bigdata.udsp.common.util.PropertyUtil;
 import com.hex.bigdata.udsp.im.dao.ImMetadataMapper;
 import com.hex.bigdata.udsp.im.model.ImMetadata;
 import com.hex.bigdata.udsp.im.model.ImMetadataCol;
-import com.hex.bigdata.udsp.im.model.ImMetadataDto;
-import com.hex.bigdata.udsp.im.model.ImMetadataView;
+import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
+import com.hex.bigdata.udsp.im.dto.ImMetadataView;
+import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.Util;
@@ -16,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,8 +35,11 @@ public class ImMetadataService extends BaseService {
     @Autowired
     private ImMetadataColService imMetadataColService;
     @Autowired
+    private ComDatasourceService comDatasourceService;
+    @Autowired
     private ComPropertiesService comPropertiesService;
-
+    @Autowired
+    private ImProviderService imProviderService;
     @Transactional
     public String insert(ImMetadata imMetadata) {
         String pkId = Util.uuid();
@@ -59,7 +69,7 @@ public class ImMetadataService extends BaseService {
         return pkId;
     }
 
-    public List<ImMetadata> select(ImMetadataView imMetadataView, Page page) {
+    public List<ImMetadataView> select(ImMetadataView imMetadataView, Page page) {
         return imMetadataMapper.select(imMetadataView, page);
     }
 
@@ -87,6 +97,22 @@ public class ImMetadataService extends BaseService {
 
     public boolean checkName(String name) {
         return imMetadataMapper.selectByName(name) != null;
+    }
+
+    public List<ImMetadataCol> getCloumnInfo(String dsId, String tbName){
+        //todo 验证
+        ComDatasource comDatasource = comDatasourceService.select(dsId);
+        List<ComProperties> comProperties = comPropertiesService.selectByFkId(dsId);
+        Datasource datasource = new Datasource(comDatasource, comProperties);
+//        List<Property> properties = PropertyUtil.convertToPropertyList(comProperties);
+//        datasource.setProperties(properties);
+        List<Property> prop = new ArrayList<>();
+        Metadata metadata = new Metadata(prop);
+        metadata.setType("1");
+        metadata.setTbName(tbName);
+        metadata.setDatasource(datasource);
+        List<MetadataCol> list = imProviderService.getCloumnInfo(metadata);
+        return null;
     }
 }
 

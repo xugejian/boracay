@@ -11,12 +11,14 @@ import com.hex.goframe.model.GFDict;
 import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by JunjieM on 2017-9-6.
  */
+@Service
 public class ImProviderService {
 
     @Autowired

@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.im.model.ImMetadata" >
     <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
     <result column="DS_ID" property="dsId" jdbcType="VARCHAR" />
-    <result column="DS_NAME" property="dsName" jdbcType="VARCHAR" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
     <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
     <result column="NOTE" property="note" jdbcType="VARCHAR" />
@@ -16,6 +15,12 @@
     <result column="TB_NAME" property="tbName" jdbcType="VARCHAR" />
     <result column="STATUS" property="status" jdbcType="CHAR" />
     <result column="TYPE" property="type" jdbcType="CHAR" />
+  </resultMap>
+
+  <resultMap id="ImMetadataView" type="com.hex.bigdata.udsp.im.dto.ImMetadataView" extends="BaseResultMap">
+    <result column="DS_NAME" property="dsName" jdbcType="VARCHAR" />
+    <result column="DS_DESC" property="dsDesc" jdbcType="VARCHAR" />
+    <result column="DS_TYPE" property="dsType" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from IM_METADATA
@@ -63,9 +68,9 @@
     UPT_TIME, TB_NAME, STATUS, TYPE
     from IM_METADATA
   </select>
-  <select id="select" resultMap="BaseResultMap" >
+  <select id="select" resultMap="ImMetadataView" >
     select A.PK_ID, A.DS_ID, A.NAME, A.DESCRIBE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
-    A.UPT_TIME, A.TB_NAME, A.STATUS, A.TYPE, B.NAME AS DS_NAME
+    A.UPT_TIME, A.TB_NAME, A.STATUS, A.TYPE, B.NAME AS DS_NAME, B.TYPE as DS_TYPE, B.DESCRIBE as DS_DESC
     from IM_METADATA A
     left join com_datasource B
     on A.DS_ID = B.PK_ID

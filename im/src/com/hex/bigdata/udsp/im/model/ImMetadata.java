@@ -5,8 +5,6 @@ public class ImMetadata {
 
     private String dsId;
 
-    private String dsName;
-
     private String name;
 
     private String describe;
@@ -131,13 +129,5 @@ public class ImMetadata {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public String getDsName() {
-        return dsName;
-    }
-
-    public void setDsName(String dsName) {
-        this.dsName = dsName;
     }
 }

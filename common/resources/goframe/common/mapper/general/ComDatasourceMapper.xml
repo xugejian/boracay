@@ -76,8 +76,8 @@
     <if test="uptUser!='' and uptUser!=null ">and A.UPT_USER like '%' || #{uptUser} || '%'</if>
     <if test="implClass!='' and implClass!=null ">and A.IMPL_CLASS like '%' #{implClass} || '%'</if>
     <if test="model!='' and model!=null ">and A.MODEL = #{model}</if>
-    <if test="model=='IM'">
-      and exists (select 1 from t_gf_dict b where b.dict_type_id = 'IM_DS_TARGET_TYPE' and A.type = b.dict_id)
+    <if test="model=='IM' and imDsTypeDictId!='' and imDsTypeDictId!=null">
+      and exists (select 1 from t_gf_dict b where b.dict_type_id = #{imDsTypeDictId} and A.type = b.dict_id)
     </if>
     order by UPT_TIME desc, CRT_TIME desc, NAME asc
   </select>

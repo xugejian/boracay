@@ -1,11 +1,11 @@
 package com.hex.bigdata.udsp.im.controller;
 
 
-import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.model.ImMetadata;
-import com.hex.bigdata.udsp.im.model.ImMetadataDto;
-import com.hex.bigdata.udsp.im.model.ImMetadataView;
+import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
+import com.hex.bigdata.udsp.im.dto.ImMetadataView;
+import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.service.ImMetadataService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -36,7 +36,7 @@ public class ImMetadataController {
     @ResponseBody
     public PageListResult page(ImMetadataView imMetadataView, Page page) {
         logger.debug("select search=" + JSONUtil.parseObj2JSON(imMetadataView) + " page=" + JSONUtil.parseObj2JSON(page));
-        List<ImMetadata> list = null;
+        List<ImMetadataView> list = null;
         try {
             list = imMetadataService.select(imMetadataView, page);
         } catch (Exception e) {
@@ -141,6 +141,37 @@ public class ImMetadataController {
                     status = false;
                     message = "检查完成，名称不存在！";
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = false;
+                message = "系统异常：" + e.getMessage();
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.error(message);
+        }
+        return new MessageResult(status, message);
+    }
+
+    @RequestMapping({"/getCloumnInfo"})
+    @ResponseBody
+    public MessageResult getCloumnInfo(@RequestBody ImMetadata imMetadata) {
+        boolean status = true;
+        String message = "获取外表字段信息成功！";
+        String dsId = imMetadata.getDsId();
+        String tbName = imMetadata.getTbName();
+        if (StringUtils.isBlank(dsId) || StringUtils.isBlank(tbName)) {
+            status = false;
+            message = "请求参数为空";
+        } else {
+            try {
+                imMetadataService.getCloumnInfo(dsId, tbName);
+//                if (!imMetadataService.getCloumnInfo(dsId, tbName)) {
+//                    status = false;
+//                    message = "获取外表字段信息失败！";
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
                 status = false;

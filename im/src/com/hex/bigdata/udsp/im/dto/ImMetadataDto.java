@@ -1,7 +1,8 @@
-package com.hex.bigdata.udsp.im.model;
+package com.hex.bigdata.udsp.im.dto;
 
-import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.model.ComProperties;
+import com.hex.bigdata.udsp.im.model.ImMetadata;
+import com.hex.bigdata.udsp.im.model.ImMetadataCol;
 
 import java.util.List;
 
