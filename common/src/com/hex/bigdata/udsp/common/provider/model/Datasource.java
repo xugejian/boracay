@@ -25,29 +25,25 @@ public class Datasource extends Base {
 
     private String implClass;
 
-    private List<Property> properties; // 配置参数集合
-
-    private Map<String, Property> propertyMap;
-
     public Datasource(List<Property> properties) {
-        this.setProperties(properties);
+        super(properties);
     }
 
     public Datasource(Map<String, Property> propertieMap) {
-        this.setPropertyMap(propertieMap);
+        super(propertieMap);
     }
 
     public Datasource(ComDatasource comDatasource, List<ComProperties> comPropertieList) {
-        this.name = comDatasource.getName();
-        this.type = comDatasource.getType();
-        this.describe = comDatasource.getDescribe();
-        this.note = comDatasource.getNote();
-        this.implClass = comDatasource.getImplClass();
-        this.properties = PropertyUtil.convertToPropertyList(comPropertieList);
-        if (this.propertyMap == null)
-            this.propertyMap = new HashMap<String, Property>();
-        for (Property property : this.properties) {
-            this.propertyMap.put(property.getName(), property);
+        name = comDatasource.getName();
+        type = comDatasource.getType();
+        describe = comDatasource.getDescribe();
+        note = comDatasource.getNote();
+        implClass = comDatasource.getImplClass();
+        properties = PropertyUtil.convertToPropertyList(comPropertieList);
+        if (propertyMap == null)
+            propertyMap = new HashMap<>();
+        for (Property property : properties) {
+            propertyMap.put(property.getName(), property);
         }
     }
 
@@ -57,14 +53,6 @@ public class Datasource extends Base {
 
     public void setImplClass(String implClass) {
         this.implClass = implClass;
-    }
-
-    public String getId() {
-        StringBuffer sb = new StringBuffer();
-        for (Property property : properties) {
-            sb.append(property.getName() + "=" + property.getValue() + "\n");
-        }
-        return Util.MD5(sb.toString());
     }
 
     public String getName() {

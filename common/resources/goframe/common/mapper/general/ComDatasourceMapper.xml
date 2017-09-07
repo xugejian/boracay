@@ -59,31 +59,34 @@
     from COM_DATASOURCE
   </select>
   <select id="select" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.common.dto.ComDatasourceView" >
-    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, IMPL_CLASS, MODEL
-    from COM_DATASOURCE
-    where DEL_FLG = '0'
-    <if test="pkId!='' and pkId!=null ">and PK_ID = #{pkId}</if>
-    <if test="name!='' and name!=null ">and NAME like '%' || #{name} || '%'</if>
-    <if test="describe!='' and describe!=null ">and DESCRIBE like '%' || #{describe} || '%'</if>
-    <if test="note!='' and note!=null ">and NOTE like '%' || #{note} || '%'</if>
-    <if test="type!='' and type!=null ">and TYPE = #{type}</if>
-    <if test="crtTimeStart!=null and crtTimeStart!='' ">and CRT_TIME >= #{crtTimeStart}</if>
-    <if test="crtTimeEnd!=null and crtTimeEnd!='' ">and #{crtTimeEnd} >= CRT_TIME</if>
-    <if test="uptTimeStart!=null and uptTimeStart!='' ">and UPT_TIME >= #{uptTimeStart}</if>
-    <if test="uptTimeEnd!=null and uptTimeEnd!='' ">and #{uptTimeEnd} >= UPT_TIME</if>
-    <if test="crtUser!='' and crtUser!=null ">and CRT_USER like '%' || #{crtUser} || '%'</if>
-    <if test="uptUser!='' and uptUser!=null ">and UPT_USER like '%' || #{uptUser} || '%'</if>
-    <if test="implClass!='' and implClass!=null ">and IMPL_CLASS like '%' #{implClass} || '%'</if>
-    <if test="model!='' and model!=null ">and MODEL = #{model}</if>
+    select A.PK_ID, A.NAME, A.DESCRIBE, A.TYPE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
+    A.UPT_TIME, A.IMPL_CLASS, A.MODEL
+    from COM_DATASOURCE A
+    where A.DEL_FLG = '0'
+    <if test="pkId!='' and pkId!=null ">and A.PK_ID = #{pkId}</if>
+    <if test="name!='' and name!=null ">and A.NAME like '%' || #{name} || '%'</if>
+    <if test="describe!='' and describe!=null ">and A.DESCRIBE like '%' || #{describe} || '%'</if>
+    <if test="note!='' and note!=null ">and A.NOTE like '%' || #{note} || '%'</if>
+    <if test="type!='' and type!=null ">and A.TYPE = #{type}</if>
+    <if test="crtTimeStart!=null and crtTimeStart!='' ">and A.CRT_TIME >= #{crtTimeStart}</if>
+    <if test="crtTimeEnd!=null and crtTimeEnd!='' ">and #{crtTimeEnd} >= A.CRT_TIME</if>
+    <if test="uptTimeStart!=null and uptTimeStart!='' ">and A.UPT_TIME >= #{uptTimeStart}</if>
+    <if test="uptTimeEnd!=null and uptTimeEnd!='' ">and #{uptTimeEnd} >= A.UPT_TIME</if>
+    <if test="crtUser!='' and crtUser!=null ">and A.CRT_USER like '%' || #{crtUser} || '%'</if>
+    <if test="uptUser!='' and uptUser!=null ">and A.UPT_USER like '%' || #{uptUser} || '%'</if>
+    <if test="implClass!='' and implClass!=null ">and A.IMPL_CLASS like '%' #{implClass} || '%'</if>
+    <if test="model!='' and model!=null ">and A.MODEL = #{model}</if>
+    <if test="model=='IM' and imDsTypeDictId!='' and imDsTypeDictId!=null">
+      and exists (select 1 from t_gf_dict b where b.dict_type_id = #{imDsTypeDictId} and A.type = b.dict_id)
+    </if>
     order by UPT_TIME desc, CRT_TIME desc, NAME asc
   </select>
   <select id="selectByModelAndName" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.common.model.ComDatasource" >
-    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, IMPL_CLASS, MODEL
-    from COM_DATASOURCE
-    where DEL_FLG = '0'
-    and MODEL = #{model,jdbcType=VARCHAR}
-    and NAME = #{name,jdbcType=VARCHAR}
+    select A.PK_ID, A.NAME, A.DESCRIBE, A.TYPE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
+    A.UPT_TIME, A.IMPL_CLASS, A.MODEL
+    from COM_DATASOURCE A
+    where A.DEL_FLG = '0'
+    and A.MODEL = #{model,jdbcType=VARCHAR}
+    and A.NAME = #{name,jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -312,7 +312,7 @@ ${extends("/goframe/function_layout.httl")}
             return;
         }
         nui.open({
-            url: "${basePath}/goframe/p/iq.cm.md.info/?pkId=" + row.pkId + "&model=${model}",
+            url: "${basePath}/goframe/p/im.cm.md.info/?pkId=" + row.pkId + "&model=${model}",
             title: "详情-" + row.describe,
             width: 800,
             height: 500,
