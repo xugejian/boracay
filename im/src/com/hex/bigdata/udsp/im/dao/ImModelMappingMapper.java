@@ -1,17 +1,22 @@
 package com.hex.bigdata.udsp.im.dao;
 
 import com.hex.bigdata.udsp.common.dao.base.SyncMapper;
+import com.hex.bigdata.udsp.im.dto.ImModelView;
+import com.hex.bigdata.udsp.im.model.ImModel;
 import com.hex.bigdata.udsp.im.model.ImModelMapping;
+import com.hex.goframe.model.Page;
+import com.hex.goframe.util.Util;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class ImModelMappingMapper  extends SyncMapper<ImModelMapping> {
 
     @Override
     protected boolean insertExe(ImModelMapping imModelMapping) {
-        return false;
+        return sqlSessionTemplate.insert("com.hex.bigdata.udsp.im.dao.ImModelMappingMapper.insert",imModelMapping) == 1;
     }
 
     @Override
@@ -37,5 +42,20 @@ public class ImModelMappingMapper  extends SyncMapper<ImModelMapping> {
     @Override
     protected List<ImModelMapping> selectListExe(String id) {
         return null;
+    }
+
+    public boolean insertModelMappings(String pkId, List<ImModelMapping> imModelMappings) {
+
+        String imModelMappingId;
+        for(ImModelMapping imModelMapping : imModelMappings){
+            imModelMappingId = Util.uuid();
+            imModelMapping.setModelId(pkId);
+            imModelMapping.setPkId(imModelMappingId);
+            //一个失败则视为失败
+            if(!insert(imModelMappingId,imModelMapping)){
+                return false;
+            }
+        }
+        return true;
     }
 }

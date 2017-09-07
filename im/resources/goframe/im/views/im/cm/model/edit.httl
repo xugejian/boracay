@@ -11,11 +11,11 @@ ${extends("/goframe/function_layout.httl")}
                         <input id="name" name="name" class="nui-textbox" style="width: 97%" required="true"
                                vtype="maxLength:64" onvalidation="nameValidation"/>
                     </td>
-                        <th class="nui-form-label"><label for="sDsId">数据源：</label></th>
+                    <th class="nui-form-label"><label for="sDsId">数据源：</label></th>
                     <td>
 
                         <div  class="nui-combobox" style="width:97%;" id="sDsId"  popupWidth="400" textField="name" valueField="pkId" type="type"
-                             url="${basePath}/com/ds/selectAllSrc" dataField="data" name="sDsId" multiSelect="false"  required="true" onvaluechanged="srcSourceChange">
+                              url="${basePath}/com/ds/selectAllSrc" dataField="data" name="sDsId" multiSelect="false"  required="true" onvaluechanged="srcSourceChange">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -51,19 +51,17 @@ ${extends("/goframe/function_layout.httl")}
                 <tr id="updateType" style="display:none">
                     <th class="nui-form-label"><label for="updateMode">更新策略：</label></th>
                     <td>
-                        <input id="updateMode" name="updateMode" class="nui-dictcombobox" textField="dictName" valueField="dictId" style="width:70%;"
-                               dictTypeId="IM_MODEL_UPDATE_TYPE" multiSelect="false"  required="false"/>
-                        <!--<div id="updateMode" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="dictName" valueField="dictId"
-                             url="${basePath}/goframe/dict/getDictData?dictTypeId=IM_MODEL_UPDATE_TYPE"  name="updateMode" multiSelect="false"  required="false" onvaluechanged="targetSourceChange">
+                        <div id="updateMode" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="dictName" valueField="dictId"
+                             url="${basePath}/goframe/dict/getDictData?dictTypeId=IM_MODEL_UPDATE_TYPE"  name="updateMode" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
                             <div property="columns">
                                 <div header="说明" field="dictName"></div>
                             </div>
-                        </div>-->
+                        </div>
                     </td>
                     <th class="nui-form-label"><label for="updateKey">更新主键：</label></th>
                     <td>
                         <div id="updateKey" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
-                             url="${basePath}/com/ds/select" dataField="data" name="updateKey" multiSelect="false"  required="true" >
+                             url="${basePath}/com/ds/select" dataField="data" name="updateKey" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -74,15 +72,12 @@ ${extends("/goframe/function_layout.httl")}
                 <tr id="buildType" style="display:none">
                     <th class="nui-form-label"><label for="buildMode">构建策略：</label></th>
                     <td colspan="3">
-
-                        <input id="buildMode" name="buildMode" class="nui-dictcombobox" textField="dictName" valueField="dictId" style="width:70%;"
-                               dictTypeId="IM_MODEL_BUILD_TYPE" multiSelect="false"  required="false"/>
-                        <!--<div id="buildMode" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="dictName" valueField="dictId"
+                        <div id="buildMode" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="dictName" valueField="dictId"
                              url="${basePath}/goframe/dict/getDictData?dictTypeId=IM_MODEL_BUILD_TYPE"  name="buildMode" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
                             <div property="columns">
                                 <div header="说明" field="dictName"></div>
                             </div>
-                        </div>-->
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -148,8 +143,8 @@ ${extends("/goframe/function_layout.httl")}
                         </div>
                         <div field="colId" headerAlign="center" allowSort="true" width="20">目标字段名称
                             <input name="colName" property="editor" class="nui-combobox"
-                               textField="name" valueField="name" allowInput="true" dataField="data"
-                               onbeforeshowpopup="targetMateColumn" vtype="maxLength:64" required="true"/>
+                                   textField="name" valueField="name" allowInput="true" dataField="data"
+                                   onbeforeshowpopup="targetMateColumn" vtype="maxLength:64" required="true"/>
                         </div>
                         <div field="note" headerAlign="center" allowSort="true" width="30">备注
                             <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
@@ -234,9 +229,6 @@ ${extends("/goframe/function_layout.httl")}
     var srcDsModel;
     var targetDsModel;
     var targetSourceId;
-    var updateModeObject;
-    var updateKeyObject;
-    var buildModeObject;
 
     /**
      * 按需加载资源文件
@@ -249,11 +241,21 @@ ${extends("/goframe/function_layout.httl")}
         grid4 = nui.get("datagrid4");
         srcDsModel = nui.get("sDsId");
         targetDsModel = nui.get("tDsId");
-        updateModeObject = nui.get("updateMode");
-        updateKeyObject = nui.get("updateKey");
-        buildModeObject = nui.get("buildMode");
+
+        //加载数据
+        loadDate();
     });
 
+    function loadDate(){
+        //加载基础栏数据
+
+        //加载参数栏数据
+
+        //加载字段映射栏数据
+
+        //加载字段过滤栏数据
+
+    }
 
     //源数据源改变时改变参数列表
     function srcSourceChange(){
@@ -276,16 +278,13 @@ ${extends("/goframe/function_layout.httl")}
             grid1.addRows(cols);
         });
 
-        //判断数据源实时非实时来判断显示跟新策略还是构建策略并清空原来数据
+        //判断数据源实时非实时来判断显示跟新策略还是构建策略
         $.post("${basePath}/com/ds/checkSourceType/"+srcDsModel.value, {}, function (data) {
             if(data.data == true){
                 $("#updateType").css("display","table-row");
                 $("#buildType").css("display","none");
-                buildModeObject.setValue("");
             }else{
                 $("#updateType").css("display","none");
-                updateModeObject.setValue("");
-                updateKeyObject.setValue("");
                 $("#buildType").css("display","table-row");
             }
         });
@@ -388,7 +387,7 @@ ${extends("/goframe/function_layout.httl")}
         });
 
     }
-    
+
     function getSaveData() {
         var baseData = getBaseData();
         if (!baseData) {
@@ -414,12 +413,12 @@ ${extends("/goframe/function_layout.httl")}
         };
         return saveData;
     }
-    
+
     function getBaseData() {
-       /* form1.validate();
-        if (form1.isValid() == false) {
-            return;
-        }*/
+        /* form1.validate();
+         if (form1.isValid() == false) {
+         return;
+         }*/
         var baseData = form1.getData(true, true);
         return baseData;
     }
@@ -467,12 +466,12 @@ ${extends("/goframe/function_layout.httl")}
         //字段过滤栏清空
         grid4.clearRows();
         //更新目标元数据id
-        targetSourceId = targetDsModel.value();
+        targetSourceId = targetDsModel.value;
 
         //字段映射栏对应的目标字段全部制空
         var date = grid2.getData(true, true);
         if(date == null || date.length == 0){
-             return;
+            return;
         }
         var cols = [];
         // TODO 遍历目标字段栏信息，将目标字段内容制空
@@ -484,22 +483,14 @@ ${extends("/goframe/function_layout.httl")}
 
     //获取目标元数据字段
     function targetMateColumn(e){
-        // TODO --下拉选项变化--
-        e.source.load("${basePath}/im/md/col/select/" + targetSourceId);
+        // --下拉选项变化--
+        e.source.load("${basePath}/iq/md/col/select/" + targetSourceId);
     }
 
     //过滤字段发生变化时
     function colNameChanged1(){
-        // --同一行的说明、长度和别名变化--
-        var selected = e.selected;
-        var row = grid1.getSelected();
-        row.describe = selected.describe;
-        row.length = selected.length;
-        row.label = selected.name;
-        row.type = selected.type;
-        row.operator = "==";
-        row.isNeed = "0";
-        row.defaultValue = ""
+        // TODO 说明长度类型跟着变化，其他内容制空
+
     }
 </script>
 <!--#end-->
