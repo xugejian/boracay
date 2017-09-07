@@ -2,9 +2,11 @@ package com.hex.bigdata.udsp.im.provider.model;
 
 import com.hex.bigdata.udsp.common.provider.model.Base;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.provider.model.Property;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JunjieM on 2017-9-5.
@@ -25,6 +27,14 @@ public class Metadata extends Base {
     private Datasource datasource; // 数据源
 
     private List<MetadataCol> metadataCols; // 字段集合
+
+    public Metadata(List<Property> properties) {
+        super(properties);
+    }
+
+    public Metadata(Map<String, Property> propertyMap) {
+        super(propertyMap);
+    }
 
     public String getStatus() {
         if (StringUtils.isBlank(status))
@@ -57,6 +67,8 @@ public class Metadata extends Base {
     }
 
     public String getName() {
+        if (StringUtils.isBlank(name))
+            throw new IllegalArgumentException("name不能为空");
         return name;
     }
 
@@ -91,6 +103,8 @@ public class Metadata extends Base {
     }
 
     public List<MetadataCol> getMetadataCols() {
+        if (metadataCols == null || metadataCols.size() == 0)
+            throw new IllegalArgumentException("metadataCols不能为空");
         return metadataCols;
     }
 

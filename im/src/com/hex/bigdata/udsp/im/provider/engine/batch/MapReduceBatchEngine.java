@@ -1,7 +1,5 @@
 package com.hex.bigdata.udsp.im.provider.engine.batch;
 
-import com.hex.bigdata.udsp.im.provider.engine.batch.BatchEngine;
-
 /**
  * Created by JunjieM on 2017-9-4.
  */

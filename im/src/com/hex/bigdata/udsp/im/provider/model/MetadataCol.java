@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.model;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -12,7 +13,7 @@ public class MetadataCol {
 
     private String describe;
 
-    private String type;
+    private DataType type;
 
     private String length;
 
@@ -52,13 +53,13 @@ public class MetadataCol {
         this.describe = describe;
     }
 
-    public String getType() {
+    public DataType getType() {
         if (type == null)
             throw new IllegalArgumentException("type不能为空");
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(DataType type) {
         this.type = type;
     }
 

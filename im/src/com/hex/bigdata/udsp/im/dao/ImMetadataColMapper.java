@@ -11,7 +11,7 @@ public class ImMetadataColMapper extends SyncMapper<ImMetadataCol> {
 
     @Override
     protected boolean insertExe(ImMetadataCol imMetadataCol) {
-        return false;
+        return sqlSessionTemplate.insert("com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.insert", imMetadataCol) == 1;
     }
 
     @Override
@@ -31,11 +31,16 @@ public class ImMetadataColMapper extends SyncMapper<ImMetadataCol> {
 
     @Override
     protected boolean deleteListExe(String id) {
-        return false;
+        return sqlSessionTemplate.delete("com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.deleteByMdId", id) >= 0;
     }
 
     @Override
     protected List<ImMetadataCol> selectListExe(String id) {
         return null;
+    }
+
+    public List<ImMetadataCol> select(ImMetadataCol imMetadataCol) {
+        return sqlSessionTemplate.selectList(
+                "com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.select", imMetadataCol);
     }
 }
