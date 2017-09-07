@@ -35,6 +35,28 @@ public abstract class BaseJdbcSqlHelper extends BaseHelper implements JdbcSqlHel
         return null;
     }
 
+    public String getCurrentDbName() throws SQLException {
+        String sql = this.getCurrentDbNameSql();
+        if (StringUtils.isEmpty(sql)) {
+            return null;
+        }
+        return getCurrentDbName(this.conn, sql);
+    }
+
+    private String getCurrentDbName(Connection conn, String sql) throws SQLException {
+        return JdbcUtil.execSqlAndConvertRs2List(conn, sql, new Function<ResultSet, String>() {
+            @Override
+            public String call(ResultSet rs) throws SQLException {
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int count = rsmd.getColumnCount();
+                if (count >= 1) {
+                    return rs.getString(1);
+                }
+                return null;
+            }
+        }).get(0);
+    }
+
     public List<Database> getDatabases() throws SQLException {
         String sql = this.getDatabasesSql();
         if (StringUtils.isEmpty(sql)) {

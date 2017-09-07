@@ -16,6 +16,11 @@ public class OracleJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
+    public String getCurrentDbNameSql() {
+        return "select database_name from v$database";
+    }
+
+    @Override
     public String getColumnTypeSql() {
         return null;
     }

@@ -28,6 +28,10 @@ public abstract class BaseJdbcApiHelper extends BaseHelper implements JdbcApiHel
         ParameterUtil.notNull(this.dbmd, "It is not support jdbc metadata api to get Metadata info! dbType=" + this.getDbType());
     }
 
+    public String getCurrentDbName() throws SQLException {
+        return null;
+    }
+
     public List<ColumnType> getColumnTypes() throws SQLException {
         ResultSet rs = this.dbmd.getTypeInfo();
         ParameterUtil.notNull(rs, "It is not support jdbc metadata api to get ColumnType meta info! dbType=" + this.getDbType());
@@ -44,7 +48,7 @@ public abstract class BaseJdbcApiHelper extends BaseHelper implements JdbcApiHel
                 int count = rsmd.getColumnCount();
                 for (int i = 1; i <= count; i++) {
                     String columnName = rsmd.getColumnName(i);
-                    if (Constant.COL_TYPE_NAME.equals(columnName)) {
+                    if (Constant.TYPE_NAME.equals(columnName)) {
                         typeName = rs.getString(i);
                     } else if (Constant.PRECISION.equals(columnName)) {
                         try {

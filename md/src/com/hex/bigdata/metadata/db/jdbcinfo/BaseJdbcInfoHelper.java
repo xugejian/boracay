@@ -23,13 +23,38 @@ public abstract class BaseJdbcInfoHelper extends BaseHelper implements JdbcInfoH
         this.conn = conn;
     }
 
+    public String getCurrentDbName() throws SQLException {
+        String sql = this.getCurrentDbNameSql();
+        if (StringUtils.isEmpty(sql)) {
+            return null;
+        }
+        return getCurrentDbName(this.conn, sql);
+    }
+
+    private String getCurrentDbName(Connection conn, String sql) throws SQLException {
+        return JdbcUtil.execSqlAndConvertRs2List(conn, sql, new Function<ResultSet, String>() {
+            @Override
+            public String call(ResultSet rs) throws SQLException {
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int count = rsmd.getColumnCount();
+                if (count >= 1) {
+                    return rs.getString(1);
+                }
+                return null;
+            }
+        }).get(0);
+    }
+
     @Override
     public List<Database> getDatabases() throws SQLException {
         String sql = this.getDatabasesSql();
         if (StringUtils.isEmpty(sql)) {
             return null;
         }
+        return getDatabases(this.conn, sql);
+    }
 
+    private List<Database> getDatabases(Connection conn, String sql) throws SQLException {
         return JdbcUtil.execSqlAndConvertRs2List(conn, sql, new Function<ResultSet, Database>() {
             @Override
             public Database call(ResultSet rs) throws SQLException {
@@ -53,6 +78,10 @@ public abstract class BaseJdbcInfoHelper extends BaseHelper implements JdbcInfoH
         if (StringUtils.isEmpty(sql)) {
             return null;
         }
+        return getTables(this.conn, sql);
+    }
+
+    private List<Table> getTables(Connection conn, String sql) throws SQLException {
         return JdbcUtil.execSqlAndConvertRs2List(conn, sql, new Function<ResultSet, Table>() {
             @Override
             public Table call(ResultSet rs) throws SQLException {
@@ -76,8 +105,12 @@ public abstract class BaseJdbcInfoHelper extends BaseHelper implements JdbcInfoH
         if (StringUtils.isEmpty(sql)) {
             return null;
         }
+        return getColumns(this.conn, sql);
+    }
+
+    private List<Column> getColumns(Connection conn, String sql) throws SQLException {
         List<Column> list = new ArrayList<Column>();
-        Statement stmt = this.conn.createStatement();
+        Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -139,4 +172,5 @@ public abstract class BaseJdbcInfoHelper extends BaseHelper implements JdbcInfoH
             JdbcUtil.close(stmt);
         }
     }
+
 }

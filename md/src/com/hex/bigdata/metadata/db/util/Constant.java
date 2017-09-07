@@ -40,6 +40,8 @@ public class Constant {
     public final static String COL_PK_SEQ = "COL_PK_SEQ"; // 主键字段位置
     public final static String COL_PF_SEQ = "COL_PF_SEQ"; // 分区字段位置
 
+    public final static String COL_TYPE_NAME = "TYPE_NAME"; // 类型名称
+
     /**
      * MetaInfo
      */
@@ -61,8 +63,7 @@ public class Constant {
     public final static String IS_NULLABLE = "IS_NULLABLE"; // Column是否允许为空
     public final static String KEY_SEQ = "KEY_SEQ"; // 主键字段位置
 
-    public final static String COL_TYPE_NAME = "TYPE_NAME";
-    public final static String PRECISION = "PRECISION";
+    public final static String PRECISION = "PRECISION"; // 精度
     public final static String CREATE_PARAMS = "CREATE_PARAMS";
     public final static String MINIMUM_SCALE = "MINIMUM_SCALE";
     public final static String MAXIMUM_SCALE = "MAXIMUM_SCALE";

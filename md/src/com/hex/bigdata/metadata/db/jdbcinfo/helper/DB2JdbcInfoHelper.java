@@ -21,6 +21,11 @@ public class DB2JdbcInfoHelper extends BaseJdbcInfoHelper {
     }
 
     @Override
+    public String getCurrentDbNameSql() {
+        return null;
+    }
+
+    @Override
     public String getDatabasesSql() {
         return null;
     }

@@ -22,18 +22,24 @@ public class HiveJdbcInfoHelper extends BaseJdbcInfoHelper {
     }
 
     @Override
+    public String getCurrentDbNameSql() {
+        // 无法获取当前数据库名称
+        return null;
+    }
+
+    @Override
     public String getDatabasesSql() {
         return "show databases";
     }
 
     @Override
     public String getTablesSql(String dbName) {
-        return "show tables in " + dbName;
+        return "show tables in `" + dbName + "`";
     }
 
     @Override
     public String getColumnsSql(String dbName, String tbName) {
-        return "select * from " + dbName + "." + tbName + " where 1=0";
+        return "select * from `" + dbName + "`.`" + tbName + "` where 1=0";
     }
 
     @Override

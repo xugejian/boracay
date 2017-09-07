@@ -14,6 +14,11 @@ public class PgsqlJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
+    public String getCurrentDbNameSql() {
+        return null;
+    }
+
+    @Override
     public String getColumnTypeSql() {
         return null;
     }

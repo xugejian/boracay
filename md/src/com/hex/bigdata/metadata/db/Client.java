@@ -1,6 +1,7 @@
 package com.hex.bigdata.metadata.db;
 
 import com.hex.bigdata.metadata.db.model.Column;
+import com.hex.bigdata.metadata.db.model.ColumnType;
 import com.hex.bigdata.metadata.db.model.Database;
 import com.hex.bigdata.metadata.db.model.Table;
 import com.hex.bigdata.metadata.db.util.DBType;
@@ -12,7 +13,7 @@ import java.util.List;
  * Created by junjiem on 2016-6-23.
  */
 public interface Client {
-    String getDbName();
+    String getCurrentDbName() throws SQLException;
 
     Helper getHelper(DBType dbType) throws SQLException;
 
@@ -35,6 +36,8 @@ public interface Client {
     public Database getDatabase(String dbName) throws SQLException;
 
     public Database getDatabase() throws SQLException;
+
+    public List<ColumnType> getColumnTypes() throws SQLException;
 
     void close();
 

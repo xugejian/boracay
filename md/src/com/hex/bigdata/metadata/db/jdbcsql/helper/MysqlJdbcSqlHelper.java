@@ -16,6 +16,11 @@ public class MysqlJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
+    public String getCurrentDbNameSql() {
+        return "select database()";
+    }
+
+    @Override
     public String getColumnTypeSql() {
         return null;
     }

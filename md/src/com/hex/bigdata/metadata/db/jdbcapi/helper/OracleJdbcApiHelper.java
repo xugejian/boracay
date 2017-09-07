@@ -18,21 +18,40 @@ public class OracleJdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     /**
-     * 这里其实拿到的是Oracle Users
+     * 实际拿到的是Oracle Users List
+     *
      * @param dbmd
      * @return
      * @throws SQLException
      */
     @Override
     public ResultSet getDatabasesResultSet(DatabaseMetaData dbmd) throws SQLException {
-        return dbmd.getSchemas();
+        //return dbmd.getCatalogs(); // 拿到的都是[]
+        return dbmd.getSchemas(); // 这个拿到的是Oracle User List
     }
 
+    /**
+     * 这里的dbName是Oracle User Name
+     *
+     * @param dbmd
+     * @param dbName Oracle用户名称
+     * @return
+     * @throws SQLException
+     */
     @Override
     public ResultSet getTablesResultSet(DatabaseMetaData dbmd, String dbName) throws SQLException {
         return dbmd.getTables(null, dbName, null, new String[]{"TABLE", "VIEW"});
     }
 
+    /**
+     * 这里的dbName是Oracle User Name
+     *
+     * @param dbmd
+     * @param dbName Oracle用户名称
+     * @param tbName
+     * @return
+     * @throws SQLException
+     */
     @Override
     public ResultSet getColumnsResultSet(DatabaseMetaData dbmd, String dbName, String tbName) throws SQLException {
         return dbmd.getColumns(null, dbName, tbName, null);

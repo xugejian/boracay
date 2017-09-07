@@ -24,4 +24,6 @@ public interface Helper {
     Table getTable(String dbName, String tbName) throws SQLException;
 
     Database getDatabase(String dbName) throws SQLException;
+
+    String getCurrentDbName() throws SQLException;
 }

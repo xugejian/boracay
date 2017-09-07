@@ -5,12 +5,14 @@ import com.hex.bigdata.metadata.db.Helper;
 /**
  * Created by junjiem on 2016-6-21.
  */
-public interface JdbcSqlHelper extends Helper{
-     String getColumnTypeSql();
+public interface JdbcSqlHelper extends Helper {
+    String getCurrentDbNameSql();
 
-     String getDatabasesSql();
+    String getColumnTypeSql();
 
-     String getTablesSql(String dbName);
+    String getDatabasesSql();
 
-     String getColumnsSql(String dbName, String tbName);
+    String getTablesSql(String dbName);
+
+    String getColumnsSql(String dbName, String tbName);
 }

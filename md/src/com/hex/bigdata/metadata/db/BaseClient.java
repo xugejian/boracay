@@ -1,10 +1,12 @@
 package com.hex.bigdata.metadata.db;
 
 import com.hex.bigdata.metadata.db.model.Column;
+import com.hex.bigdata.metadata.db.model.ColumnType;
 import com.hex.bigdata.metadata.db.model.Database;
 import com.hex.bigdata.metadata.db.model.Table;
 import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.metadata.db.util.JdbcUtil;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,7 +25,10 @@ public abstract class BaseClient implements Client {
     }
 
     @Override
-    public String getDbName() {
+    public String getCurrentDbName() throws SQLException {
+        if (this.currDbName == null) {
+            return helper.getCurrentDbName();
+        }
         return this.currDbName;
     }
 
@@ -43,11 +48,9 @@ public abstract class BaseClient implements Client {
         return helper.getColumns(dbName, tbName);
     }
 
-    ;
-
     @Override
     public List<Column> getColumns(String tbName) throws SQLException {
-        return this.getColumns(this.getDbName(), tbName);
+        return this.getColumns(this.getCurrentDbName(), tbName);
     }
 
     @Override
@@ -55,11 +58,9 @@ public abstract class BaseClient implements Client {
         return helper.getTables(dbName);
     }
 
-    ;
-
     @Override
     public List<Table> getTables() throws SQLException {
-        return this.getTables(this.getDbName());
+        return this.getTables(this.getCurrentDbName());
     }
 
     @Override
@@ -67,11 +68,9 @@ public abstract class BaseClient implements Client {
         return helper.getTable(dbName, tbName);
     }
 
-    ;
-
     @Override
     public Table getTable(String tbName) throws SQLException {
-        return this.getTable(this.getDbName(), tbName);
+        return this.getTable(this.getCurrentDbName(), tbName);
     }
 
     @Override
@@ -81,7 +80,12 @@ public abstract class BaseClient implements Client {
 
     @Override
     public Database getDatabase() throws SQLException {
-        return helper.getDatabase(this.getDbName());
+        return helper.getDatabase(this.getCurrentDbName());
+    }
+
+    @Override
+    public List<ColumnType> getColumnTypes() throws SQLException {
+        return helper.getColumnTypes();
     }
 
     @Override

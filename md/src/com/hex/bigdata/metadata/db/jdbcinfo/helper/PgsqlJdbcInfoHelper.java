@@ -21,6 +21,11 @@ public class PgsqlJdbcInfoHelper extends BaseJdbcInfoHelper {
     }
 
     @Override
+    public String getCurrentDbNameSql() {
+        return null;
+    }
+
+    @Override
     public String getDatabasesSql() {
         return null;
     }

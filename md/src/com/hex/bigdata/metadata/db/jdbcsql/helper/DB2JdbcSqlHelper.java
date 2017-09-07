@@ -15,6 +15,11 @@ public class DB2JdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
+    public String getCurrentDbNameSql() {
+        return null;
+    }
+
+    @Override
     public String getColumnTypeSql() {
         return null;
     }
