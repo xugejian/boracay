@@ -48,7 +48,23 @@ public class OracleProvider extends JdbcWrapper implements BatchSourceProvider, 
 
     @Override
     protected MetadataCol getMetadataColBySql(ResultSetMetaData md, int i) throws SQLException {
-        return null;
+        logger.debug("-----------------------------------------------------------");
+        logger.debug("getCatalogName:" + md.getCatalogName(i));
+        logger.debug("getSchemaName:" + md.getSchemaName(i));
+        logger.debug("getTableName:" + md.getTableName(i));
+        logger.debug("getColumnClassName:" + md.getColumnClassName(i));
+        logger.debug("getColumnName:" + md.getColumnName(i));
+        logger.debug("getColumnLabel:" + md.getColumnLabel(i));
+        logger.debug("getColumnDisplaySize:" + md.getColumnDisplaySize(i));
+        logger.debug("getColumnType:" + md.getColumnType(i));
+        logger.debug("getColumnTypeName:" + md.getColumnTypeName(i));
+        logger.debug("getPrecision:" + md.getPrecision(i));
+        logger.debug("getScale:" + md.getScale(i));
+
+        MetadataCol metadataCol = new MetadataCol();
+        // TODO ...
+
+        return metadataCol;
     }
 
     @Override

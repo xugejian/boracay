@@ -1,20 +1,14 @@
 package com.hex.bigdata.udsp.im.provider.util.model;
 
-/**
- * Impala表属性
- * 
- * @author junjiem
- * 
- */
-public class TblProperties {
+public class TblProperty {
 	private String key;
 	private String value;
 
-	public TblProperties() {
+	public TblProperty() {
 		super();
 	}
 
-	public TblProperties(String key, String value) {
+	public TblProperty(String key, String value) {
 		super();
 		this.key = key;
 		this.value = value;
