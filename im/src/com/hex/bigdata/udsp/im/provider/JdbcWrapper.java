@@ -1,8 +1,10 @@
-package com.hex.bigdata.udsp.im.provider.util;
+package com.hex.bigdata.udsp.im.provider;
 
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.OracleDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.OracleModel;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -16,28 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by JunjieM on 2017-9-6.
+ * Created by JunjieM on 2017-9-7.
  */
-public class JdbcUtil {
-    private static Logger logger = LogManager.getLogger(JdbcUtil.class);
+public abstract class JdbcWrapper extends TargetWrapper {
+    private static Logger logger = LogManager.getLogger(JdbcWrapper.class);
     private static Map<String, BasicDataSource> dataSourcePool;
 
-    public static String getCloumnInfoSql(HiveModel hiveModel) {
-        String dbName = hiveModel.getDatabaseName();
-        String tbName = hiveModel.getTableName();
-        String sql = hiveModel.getSql();
-        if (StringUtils.isBlank(sql)) {
-            if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName))
-                sql = "SELECT * FROM " + dbName + "." + tbName + " WHERE 1=0";
-            else
-                return null;
-        } else {
-            sql = "SELECT * FROM (" + sql + ") UDSP_VIEW WHERE 1=0";
-        }
-        return sql;
-    }
-
-    public static synchronized BasicDataSource getDataSource(JdbcDatasource datasource) {
+    protected synchronized BasicDataSource getDataSource(JdbcDatasource datasource) {
         String dsId = datasource.getId();
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<String, BasicDataSource>();
@@ -85,21 +72,36 @@ public class JdbcUtil {
         return dataSource;
     }
 
-    public static Connection getConnection(JdbcDatasource datasource) throws SQLException {
+    protected Connection getConnection(JdbcDatasource datasource) throws SQLException {
         Connection conn = null;
-        BasicDataSource dataSource = JdbcUtil.getDataSource(datasource);
+        BasicDataSource dataSource = getDataSource(datasource);
         if (dataSource != null) {
             conn = dataSource.getConnection();
         }
         return conn;
     }
 
-    public static int getExecuteUpdateStatus(HiveDatasource hiveDatasource, String updateSql) throws SQLException {
+    protected List<MetadataCol> getColumnInfo(JdbcDatasource datasource, JdbcModel model) {
+        String dbName = model.getDatabaseName();
+        String tbName = model.getTableName();
+        String sql = model.getSql();
+        if (StringUtils.isNotBlank(sql)) {
+            sql = "SELECT * FROM (" + sql + ") UDSP_VIEW WHERE 1=0";
+            return getMetadataColsBySql(datasource, sql);
+        }
+        if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
+            String fullTbName = dbName + "." + tbName;
+            return getMetadataColsByTbName(datasource, fullTbName);
+        }
+        return null;
+    }
+
+    protected int getExecuteUpdateStatus(JdbcDatasource datasource, String updateSql) throws SQLException {
         Connection conn = null;
         Statement stmt = null;
         int rs = 0;
         try {
-            conn = JdbcUtil.getConnection(hiveDatasource);
+            conn = getConnection(datasource);
             stmt = conn.createStatement();
             rs = stmt.executeUpdate(updateSql);
         } finally {
@@ -121,13 +123,32 @@ public class JdbcUtil {
         return rs;
     }
 
-    public static List<MetadataCol> getColumns(JdbcDatasource datasource, String sql) {
+    protected List<MetadataCol> getMetadataColsByTbName(JdbcDatasource datasource, String fullTbName) {
+        String sql = getSqlByTbName(fullTbName);
         List<MetadataCol> metadataCols = null;
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            conn = JdbcUtil.getConnection(datasource);
+            conn = getConnection(datasource);
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            metadataCols = getMetadataColsByTbName(rs);
+        } catch (SQLException e) {
+            logger.warn(e.getMessage());
+        } finally {
+            close(conn, stmt, rs);
+        }
+        return metadataCols;
+    }
+
+    protected List<MetadataCol> getMetadataColsBySql(JdbcDatasource datasource, String sql) {
+        List<MetadataCol> metadataCols = null;
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection(datasource);
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
             ResultSetMetaData md = rs.getMetaData();
@@ -135,48 +156,44 @@ public class JdbcUtil {
             metadataCols = new ArrayList<>();
             if (columnCount >= 1) {
                 for (int i = 1; i <= columnCount; i++) {
-                    logger.debug("-----------------------------------------------------------");
-                    logger.debug("getCatalogName:" + md.getCatalogName(i));
-                    logger.debug("getSchemaName:" + md.getSchemaName(i));
-                    logger.debug("getTableName:" + md.getTableName(i));
-                    logger.debug("getColumnClassName:" + md.getColumnClassName(i));
-                    logger.debug("getColumnName:" + md.getColumnName(i));
-                    logger.debug("getColumnLabel:" + md.getColumnLabel(i));
-                    logger.debug("getColumnDisplaySize:" + md.getColumnDisplaySize(i));
-                    logger.debug("getColumnType:" + md.getColumnType(i));
-                    logger.debug("getColumnTypeName:" + md.getColumnTypeName(i));
-                    logger.debug("getPrecision:" + md.getPrecision(i));
-                    logger.debug("getScale:" + md.getScale(i));
-
-                    // TODO ......
-
+                    metadataCols.add(getMetadataColBySql(md, i));
                 }
             }
         } catch (SQLException e) {
             logger.warn(e.getMessage());
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            close(conn, stmt, rs);
         }
         return metadataCols;
     }
+
+    private void close(Connection conn, Statement stmt, ResultSet rs) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    protected abstract MetadataCol getMetadataColBySql(ResultSetMetaData md, int i) throws SQLException;
+
+    protected abstract List<MetadataCol> getMetadataColsByTbName(ResultSet rs) throws SQLException;
+
+    protected abstract String getSqlByTbName(String fullTbName);
 }
