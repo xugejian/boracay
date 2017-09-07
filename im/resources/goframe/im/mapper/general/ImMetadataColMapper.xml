@@ -18,6 +18,10 @@
     delete from IM_METADATA_COLUMN
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </delete>
+  <delete id="deleteByMdId" parameterType="java.lang.String" >
+    delete from IM_METADATA_COLUMN
+    where MD_ID = #{mdId,jdbcType=VARCHAR}
+  </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.im.model.ImMetadataCol" >
     insert into IM_METADATA_COLUMN (PK_ID, MD_ID, SEQ, 
       NAME, DESCRIBE, TYPE, 

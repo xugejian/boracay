@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,12 +54,77 @@ public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, B
 
     @Override
     protected List<MetadataCol> getMetadataColsByTbName(ResultSet rs) throws SQLException {
-        return null;
+        List<MetadataCol> metadataCols = new ArrayList<>();
+        short i = 0;
+        while (rs.next()){
+            MetadataCol metadataCol = new MetadataCol();
+            metadataCol.setSeq(i++);
+            metadataCol.setName(rs.getString("Field"));
+            String type =rs.getString("Type");
+            metadataCol.setType(getColType(type.split("\\(")[0]));
+            metadataCol.setLength(getColLength(type));
+            metadataCol.setDescribe(rs.getString("Comment"));
+            if("PRI".equals(rs.getString("Key"))){
+                metadataCol.setPrimary(true);
+            }else{
+                metadataCol.setPrimary(false);
+            }
+            metadataCol.setStored(true);
+            metadataCol.setIndexed(false);
+            metadataCols.add(metadataCol);
+        }
+        return metadataCols;
+    }
+
+    public static String getColLength(String type){
+        if(type.indexOf("(") == -1){
+            return null;
+        }else{
+            return type.substring(type.indexOf("(")+1, type.indexOf(")"));
+        }
+    }
+
+    public static DataType getColType(String type){
+        type = type.toUpperCase();
+        DataType dataType = null;
+        switch (type){
+            case "VARCHAR":
+                dataType = DataType.VARCHAR;
+                break;
+            case "BLOB":
+            case "TEXT":
+                dataType = DataType.STRING;
+                break;
+            case "DECIMAL":
+                dataType = DataType.DECIMAL;
+                break;
+            case "CHAR":
+                dataType = DataType.CHAR;
+                break;
+            case "INT":
+                dataType = DataType.INT;
+                break;
+            case "BIGINT":
+                dataType = DataType.BIGINT;
+                break;
+            case "TINYINT":
+                dataType = DataType.TINYINT;
+                break;
+            case "DOUBLE":
+                dataType = DataType.DOUBLE;
+                break;
+            case "TIMESTAMP":
+                dataType = DataType.TIMESTAMP;
+                break;
+            default:
+                dataType = null;
+        }
+        return dataType;
     }
 
     @Override
     protected String getSqlByTbName(String fullTbName) {
-        return null;
+        return "show full columns from "+ fullTbName;
     }
 
     @Override

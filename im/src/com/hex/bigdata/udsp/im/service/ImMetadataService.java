@@ -69,6 +69,28 @@ public class ImMetadataService extends BaseService {
         return pkId;
     }
 
+    @Transactional
+    public boolean update(ImMetadataDto imMetadataDto) {
+        ImMetadata imMetadata = imMetadataDto.getImMetadata();
+        String pkId = imMetadata.getPkId();
+        if (!imMetadataMapper.update(pkId, imMetadata)) {
+            return false;
+        }
+        if (!comPropertiesService.deleteByFkId(pkId)) {
+            return false;
+        }
+        comPropertiesService.insertList(pkId, imMetadataDto.getComPropertiesList());
+        if (!imMetadataColService.deleteByMdId(pkId)) {
+            return false;
+        }
+        List<ImMetadataCol> imMetadataCols = imMetadataDto.getImMetadataColList();
+        for(ImMetadataCol imMetadataCol : imMetadataCols){
+            imMetadataCol.setMdId(pkId);
+            imMetadataColService.insert(imMetadataCol);
+        }
+        return true;
+    }
+
     public List<ImMetadataView> select(ImMetadataView imMetadataView, Page page) {
         return imMetadataMapper.select(imMetadataView, page);
     }
@@ -99,20 +121,22 @@ public class ImMetadataService extends BaseService {
         return imMetadataMapper.selectByName(name) != null;
     }
 
-    public List<ImMetadataCol> getCloumnInfo(String dsId, String tbName){
+    public List<MetadataCol> getCloumnInfo(String dsId, String tbName){
         //todo 验证
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectByFkId(dsId);
         Datasource datasource = new Datasource(comDatasource, comProperties);
-//        List<Property> properties = PropertyUtil.convertToPropertyList(comProperties);
-//        datasource.setProperties(properties);
         List<Property> prop = new ArrayList<>();
         Metadata metadata = new Metadata(prop);
         metadata.setType("1");
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
         List<MetadataCol> list = imProviderService.getCloumnInfo(metadata);
-        return null;
+        return list;
+    }
+
+    public boolean create(){
+        return false;
     }
 }
 

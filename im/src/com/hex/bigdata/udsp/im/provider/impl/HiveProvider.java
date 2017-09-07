@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
@@ -70,20 +71,69 @@ public class HiveProvider extends JdbcWrapper implements BatchSourceProvider, Ba
 
     @Override
     protected List<MetadataCol> getMetadataColsByTbName(ResultSet rs) throws SQLException {
-        ResultSetMetaData md = rs.getMetaData();
-        int columnCount = md.getColumnCount();
+        short i = 0;
         List<MetadataCol> metadataCols = new ArrayList<>();
-        if (columnCount >= 1) {
-            for (int i = 1; i <= columnCount; i++) {
-                metadataCols.add(getMetadataColBySql(md, i));
-            }
+        while (rs.next()){
+            MetadataCol metadataCol = new MetadataCol();
+            metadataCol.setSeq(i++);
+            metadataCol.setName(rs.getString("col_name"));
+            String type =rs.getString("data_type");
+            metadataCol.setType(getColType(type.split("\\(")[0]));
+//            metadataCol.setLength();
+            metadataCol.setDescribe(rs.getString("comment"));
+            metadataCols.add(metadataCol);
         }
         return metadataCols;
     }
 
+    public static DataType getColType(String type){
+        type = type.toUpperCase();
+        DataType dataType = null;
+        switch (type){
+            case "VARCHAR":
+                dataType = DataType.VARCHAR;
+                break;
+            case "STRING":
+                dataType = DataType.STRING;
+                break;
+            case "DECIMAL":
+                dataType = DataType.DECIMAL;
+                break;
+            case "CHAR":
+                dataType = DataType.CHAR;
+                break;
+            case "FLOAT":
+                dataType = DataType.FLOAT;
+                break;
+            case "DOUBLE":
+                dataType = DataType.DOUBLE;
+                break;
+            case "TIMESTAMP":
+            case "DATE":
+                dataType = DataType.TIMESTAMP;
+                break;
+            case "INT":
+                dataType = DataType.INT;
+                break;
+            case "BIGINT":
+                dataType = DataType.BIGINT;
+                break;
+            case "TINYINT":
+                dataType = DataType.TINYINT;
+                break;
+            case "SMALLINT":
+                dataType = DataType.SMALLINT;
+                break;
+            default:
+                dataType = null;
+        }
+        return dataType;
+    }
+
     @Override
     protected String getSqlByTbName(String fullTbName) {
-        return "SELECT * FROM " + fullTbName + " WHERE 1=0";
+//        "SELECT * FROM " + fullTbName + " WHERE 1=0";
+        return "describe " + fullTbName;
     }
 
     @Override
