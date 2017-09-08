@@ -1,11 +1,9 @@
 package com.hex.bigdata.udsp.im.provider.engine.batch;
 
 /**
- * Created by JunjieM on 2017-9-4.
+ * Created by JunjieM on 2017-9-8.
  */
-public class MapReduceBatchEngine implements BatchEngine {
-
-
+public class HiveBatchEngine implements BatchEngine {
     @Override
     public void insertInto() {
 

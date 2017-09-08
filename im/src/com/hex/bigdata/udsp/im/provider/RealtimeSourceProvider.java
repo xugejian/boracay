@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public interface RealtimeSourceProvider extends SourceProvider {
+public interface RealtimeSourceProvider extends SourceProvider, RealtimeProvider {
 
     List<Map<String, String>> inputData();
 

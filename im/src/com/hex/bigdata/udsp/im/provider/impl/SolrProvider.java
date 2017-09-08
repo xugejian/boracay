@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.SolrWrapper;
+import com.hex.bigdata.udsp.im.provider.wrapper.SolrWrapper;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
@@ -41,8 +41,18 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
+    public boolean createSchema(Metadata metadata) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean dropSchema(Metadata metadata) throws Exception {
+        return false;
+    }
+
+    @Override
     public List<MetadataCol> columnInfo(Model model) {
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
         SolrModel solrModel = new SolrModel(datasource.getPropertyMap());
         String collectionName = solrModel.getCollectionName();
@@ -67,22 +77,12 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public boolean createTable(Metadata metadata) throws Exception {
+    public boolean createEngineSchema(Metadata metadata) throws Exception {
         return false;
     }
 
     @Override
-    public boolean createHiveTable(Metadata metadata) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean dropTable(Metadata metadata) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean dropHiveTable(Metadata metadata) throws Exception {
+    public boolean dropEngineSchema(Metadata metadata) throws Exception {
         return false;
     }
 }

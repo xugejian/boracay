@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider;
+package com.hex.bigdata.udsp.im.provider.wrapper;
 
 import com.hex.bigdata.udsp.im.provider.factory.SolrConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class SolrWrapper extends TargetWrapper{
+public abstract class SolrWrapper {
     private static Logger logger = LogManager.getLogger(SolrWrapper.class);
     private static Map<String, SolrConnectionPoolFactory> dataSourcePool;
 

@@ -3,6 +3,8 @@ package com.hex.bigdata.udsp.im.provider.model;
 import com.hex.bigdata.udsp.common.provider.model.Base;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.im.constant.ModelStatus;
+import com.hex.bigdata.udsp.im.constant.ModelType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -18,7 +20,9 @@ public class Model extends Base {
 
     private String note;
 
-    private String type; // 类型（1：批量 2：实时）
+    private ModelType type; // 类型（1：批量 2：实时）
+
+    private ModelStatus status; // 状态（1：未建，2：已建）
 
     private String buildMode; // 构建策略（1：增量，2：全量）
 
@@ -26,9 +30,11 @@ public class Model extends Base {
 
     private List<MetadataCol> updateKeys; // 更新键值集合
 
-    private Datasource datasource; // 源的数据源
+    private Datasource sourceDatasource; // 源的数据源
 
-    private Metadata metadata; // 目标的元数据
+    private Metadata targetMetadata; // 目标的元数据
+
+    private Datasource engineDatasource; // 引擎的数据源
 
     private List<ModelMapping> modelMappings; // 字段映射集合
 
@@ -68,14 +74,24 @@ public class Model extends Base {
         this.note = note;
     }
 
-    public String getType() {
-        if (StringUtils.isBlank(type))
+    public ModelType getType() {
+        if (type == null)
             throw new IllegalArgumentException("type不能为空");
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ModelType type) {
         this.type = type;
+    }
+
+    public ModelStatus getStatus() {
+        if (status == null)
+            throw new IllegalArgumentException("status不能为空");
+        return status;
+    }
+
+    public void setStatus(ModelStatus status) {
+        this.status = status;
     }
 
     public String getBuildMode() {
@@ -94,24 +110,32 @@ public class Model extends Base {
         this.updateMode = updateMode;
     }
 
-    public Datasource getDatasource() {
-        if (datasource == null)
-            throw new IllegalArgumentException("datasource不能为空");
-        return datasource;
+    public Datasource getSourceDatasource() {
+        if (sourceDatasource == null)
+            throw new IllegalArgumentException("sourceDatasource不能为空");
+        return sourceDatasource;
     }
 
-    public void setDatasource(Datasource datasource) {
-        this.datasource = datasource;
+    public void setSourceDatasource(Datasource sourceDatasource) {
+        this.sourceDatasource = sourceDatasource;
     }
 
-    public Metadata getMetadata() {
-        if (metadata == null)
-            throw new IllegalArgumentException("metadata不能为空");
-        return metadata;
+    public Metadata getTargetMetadata() {
+        if (targetMetadata == null)
+            throw new IllegalArgumentException("targetMetadata不能为空");
+        return targetMetadata;
     }
 
-    public void setMetadata(Metadata metadata) {
-        this.metadata = metadata;
+    public void setTargetMetadata(Metadata targetMetadata) {
+        this.targetMetadata = targetMetadata;
+    }
+
+    public Datasource getEngineDatasource() {
+        return engineDatasource;
+    }
+
+    public void setEngineDatasource(Datasource engineDatasource) {
+        this.engineDatasource = engineDatasource;
     }
 
     public List<ModelMapping> getModelMappings() {

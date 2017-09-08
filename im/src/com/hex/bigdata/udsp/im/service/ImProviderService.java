@@ -42,7 +42,7 @@ public class ImProviderService {
     }
 
     public List<MetadataCol> getCloumnInfo(Model model) {
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         String implClass = getImplClass(datasource);
         SourceProvider provider = (SourceProvider) WebApplicationContextUtil.getBean(implClass);
         return provider.columnInfo(model);

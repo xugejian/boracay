@@ -3,7 +3,7 @@ package com.hex.bigdata.udsp.im.provider.impl;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.SolrHBaseWrapper;
+import com.hex.bigdata.udsp.im.provider.wrapper.SolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
@@ -48,6 +48,16 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
+    public boolean createSchema(Metadata metadata) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean dropSchema(Metadata metadata) throws Exception {
+        return false;
+    }
+
+    @Override
     public String outputSQL() {
         return null;
     }
@@ -58,22 +68,12 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
-    public boolean createTable(Metadata metadata) throws Exception {
+    public boolean createEngineSchema(Metadata metadata) throws Exception {
         return false;
     }
 
     @Override
-    public boolean createHiveTable(Metadata metadata) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean dropTable(Metadata metadata) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean dropHiveTable(Metadata metadata) throws Exception {
+    public boolean dropEngineSchema(Metadata metadata) throws Exception {
         return false;
     }
 }
