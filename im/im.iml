@@ -18,5 +18,6 @@
     <orderEntry type="library" name="kafka" level="project" />
     <orderEntry type="library" name="solr" level="project" />
     <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="md" />
   </component>
 </module>

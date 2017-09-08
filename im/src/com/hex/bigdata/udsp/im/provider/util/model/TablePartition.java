@@ -1,11 +1,5 @@
 package com.hex.bigdata.udsp.im.provider.util.model;
 
-/**
- * Impala分区
- * 
- * @author junjiem
- * 
- */
 public class TablePartition {
 	private String colName;
 	private String colValue;
