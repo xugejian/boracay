@@ -108,6 +108,7 @@ public class ImMetadataController {
     public MessageResult insertAndCreate(@RequestBody ImMetadataDto imMetadataDto) {
         boolean status = true;
         String message = "保存并创建成功";
+        String pkId = "";
         if (imMetadataDto == null) {
             status = false;
             message = "请求参数为空";
@@ -116,6 +117,8 @@ public class ImMetadataController {
                 if (StringUtils.isBlank(imMetadataService.insert(imMetadataDto)) && imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
                     status = false;
                     message = "保存并创建失败";
+                }else{
+                    pkId = imMetadataDto.getImMetadata().getPkId();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -128,7 +131,7 @@ public class ImMetadataController {
         } else {
             logger.info(message);
         }
-        return new MessageResult(status, message);
+        return new MessageResult(status, message,pkId);
     }
 
     @RequestMapping({"/updateAndCreate"})

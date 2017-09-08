@@ -65,7 +65,7 @@ ${extends("/goframe/function_layout.httl")}
                                 <b>字段信息</b>
                             </td>
                             <td style="text-align: right;">
-                                <a class="nui-button" iconCls="icon-add" onclick="add1">添加</a>
+                                <a class="nui-button" iconCls="icon-add" onclick="addColumn">添加</a>
                                 <a class="nui-button" iconCls="icon-remove" onclick="remove1" enabled="false"
                                    id="remove1">删除</a>
                                 <span class="separator"></span>
@@ -127,7 +127,7 @@ ${extends("/goframe/function_layout.httl")}
                                 <b>配置参数</b>
                             </td>
                             <td style="text-align: right;">
-                                <a class="nui-button" iconCls="icon-add" onclick="add2">添加</a>
+                                <a class="nui-button" iconCls="icon-add" onclick="add2()">添加</a>
                                 <a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>
                                 <a class="nui-button" iconCls="icon-remove" onclick="remove2" enabled="false"
                                    id="remove">删除</a>
@@ -266,7 +266,7 @@ ${extends("/goframe/function_layout.httl")}
     /**
      * 添加
      */
-    function add1() {
+    function addColumn() {
         var rows = grid1.getData(true, true);
         var length = rows.length;
         var newRow = {type: "STRING", indexed:"1", primary:"1", stored:"0"};
@@ -326,11 +326,13 @@ ${extends("/goframe/function_layout.httl")}
             success: function (result) {
                 if (result.status == true) {
                     nui.alert(result.message);
-                    "${fromModel}";
-                    if(){
-
+                    var fromModel = "${fromModel}";
+                    if(fromModel == "true"){
+                        alert("进入"+result.data);
+                        CloseWindow(result.data);
+                    }else{
+                        CloseWindow("success");
                     }
-                    CloseWindow("success");
                 } else {
                     nui.alert(result.message, "系统提示", function (action) {
                         if (action == "ok" || action == "close") {
@@ -368,7 +370,13 @@ ${extends("/goframe/function_layout.httl")}
             success: function (result) {
                 if (result.status == true) {
                     nui.alert(result.message);
-                    CloseWindow("success");
+                    var fromModel = "${fromModel}";
+                    if(fromModel == "true"){
+                        alert("进入"+result.data);
+                        CloseWindow(result.data);
+                    }else{
+                        CloseWindow("success");
+                    }
                 } else {
                     nui.alert(result.message, "系统提示", function (action) {
                         if (action == "ok" || action == "close") {
