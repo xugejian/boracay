@@ -16,7 +16,8 @@
     <result column="TYPE" property="type" jdbcType="CHAR" />
     <result column="BUILD_MODE" property="buildMode" jdbcType="CHAR" />
     <result column="UPDATE_MODE" property="updateMode" jdbcType="CHAR" />
-    <result column="UPDATE_KEY" property="updateKey" jdbcType="CHAR" />
+    <result column="E_DS_ID" property="eDsId" jdbcType="VARCHAR"/>
+    <result column="STATUS" property="status" jdbcType="CHAR" />
   </resultMap>
 
   <resultMap id="ImModelView" type="com.hex.bigdata.udsp.im.dto.ImModelView" extends="BaseResultMap">
@@ -33,14 +34,12 @@
       S_DS_ID, T_MD_ID,
       NOTE, DEL_FLG, CRT_USER, 
       CRT_TIME, UPT_USER, UPT_TIME, 
-      TYPE, BUILD_MODE, UPDATE_MODE, 
-      UPDATE_KEY)
+      TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS)
     values (#{pkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, 
       #{sDsId,jdbcType=VARCHAR},#{tMdId,jdbcType=VARCHAR},
       #{note,jdbcType=VARCHAR}, #{delFlg,jdbcType=CHAR}, #{crtUser,jdbcType=VARCHAR}, 
       #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, 
-      #{type,jdbcType=CHAR}, #{buildMode,jdbcType=CHAR}, #{updateMode,jdbcType=CHAR}, 
-      #{updateKey,jdbcType=CHAR})
+      #{type,jdbcType=CHAR}, #{buildMode,jdbcType=CHAR}, #{updateMode,jdbcType=CHAR},#{eDsId,jdbcType=VARCHAR},#{status,jdbcType=CHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.im.model.ImModel" >
     update IM_MODEL
@@ -57,24 +56,25 @@
       TYPE = #{type,jdbcType=CHAR},
       BUILD_MODE = #{buildMode,jdbcType=CHAR},
       UPDATE_MODE = #{updateMode,jdbcType=CHAR},
-      UPDATE_KEY = #{updateKey,jdbcType=CHAR},
+      E_DS_ID = #{eDsId,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR}
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
-    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE, UPDATE_KEY
+    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
-    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE, UPDATE_KEY
+    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
   </select>
 
   <select id="selectPage" resultMap="ImModelView" parameterType="com.hex.bigdata.udsp.im.dto.ImModelView">
       select IM.PK_ID, IM.NAME, IM.DESCRIBE, IM.S_DS_ID, IM.T_MD_ID, IM.NOTE, IM.DEL_FLG, IM.CRT_USER,
-    IM.CRT_TIME, IM.UPT_USER, IM.UPT_TIME, IM.TYPE, IM.BUILD_MODE, IM.UPDATE_MODE, IM.UPDATE_KEY,CD.NAME SDSNAME,IMM.NAME  TDSNAME
+    IM.CRT_TIME, IM.UPT_USER, IM.UPT_TIME, IM.TYPE, IM.BUILD_MODE, IM.UPDATE_MODE,IM.E_DS_ID,IM.STATUS,CD.NAME SDSNAME,IMM.NAME  TDSNAME
     from IM_MODEL IM
     left join COM_DATASOURCE CD
     on CD.PK_ID = IM.S_DS_ID

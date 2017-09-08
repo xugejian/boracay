@@ -11,7 +11,7 @@ public class ImModelFilterColMapper  extends SyncMapper<ImModelFilterCol> {
 
     @Override
     protected boolean insertExe(ImModelFilterCol imModelFilterCol) {
-        return sqlSessionTemplate.insert("com.hex.bigdata.udsp.im.dao.insert",imModelFilterCol) == 1;
+        return sqlSessionTemplate.insert("com.hex.bigdata.udsp.im.dao.ImModelFilterColMapper.insert",imModelFilterCol) == 1;
     }
 
     @Override

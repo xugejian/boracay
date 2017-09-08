@@ -326,13 +326,11 @@ ${extends("/goframe/function_layout.httl")}
             success: function (result) {
                 if (result.status == true) {
                     nui.alert(result.message);
-                    //判断是否从交互建模那边传过来的
-                    var type = "${fromModel}";
-                    if(type == true){
-                        CloseWindow(result.data);
-                    }else{
-                        CloseWindow("success");
+                    "${fromModel}";
+                    if(){
+
                     }
+                    CloseWindow("success");
                 } else {
                     nui.alert(result.message, "系统提示", function (action) {
                         if (action == "ok" || action == "close") {

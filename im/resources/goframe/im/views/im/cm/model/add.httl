@@ -32,7 +32,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="tMdId">目标元数据：</label></th>
                     <td >
                         <div id="tMdId" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
-                             url="${basePath}/com/ds/select" dataField="data" name="tMdId" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
+                             url="${basePath}/im/md/page?pageSize=100" dataField="data" name="tMdId" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -77,12 +77,18 @@ ${extends("/goframe/function_layout.httl")}
 
                         <input id="buildMode" name="buildMode" class="nui-dictcombobox" textField="dictName" valueField="dictId" style="width:70%;"
                                dictTypeId="IM_MODEL_BUILD_TYPE" multiSelect="false"  required="false"/>
-                        <!--<div id="buildMode" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="dictName" valueField="dictId"
-                             url="${basePath}/goframe/dict/getDictData?dictTypeId=IM_MODEL_BUILD_TYPE"  name="buildMode" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
+                    </td>
+                </tr>
+                <tr id="eDsModel" style="display:none">
+                    <th class="nui-form-label"><label for="buildMode">引擎数据源：</label></th>
+                    <td colspan="3">
+                        <div id="eDsId" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
+                             url="${basePath}/com/ds/selectAllSrc" dataField="data" name="eDsId" multiSelect="true"  required="true">
                             <div property="columns">
-                                <div header="说明" field="dictName"></div>
+                                <div header="名称" field="name"></div>
+                                <div header="说明" field="describe"></div>
                             </div>
-                        </div>-->
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -108,6 +114,7 @@ ${extends("/goframe/function_layout.httl")}
                         </div>
                         <div field="value" headerAlign="center" allowSort="true" width="20">内容
                             <input property="editor" class="nui-textarea" vtype="maxLength:4000"/>
+                        </div>
                         </div>
                         <div field="note" headerAlign="center" allowSort="true" width="30">备注
                             <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
@@ -146,10 +153,20 @@ ${extends("/goframe/function_layout.httl")}
                         <div field="name" headerAlign="center" allowSort="true" width="30">源字段名称</font>
                             <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
                         </div>
-                        <div field="colId" headerAlign="center" allowSort="true" width="20">目标字段名称
+                        <div field="colId" headerAlign="center" allowSort="true" width="30">目标字段名称
                             <input name="colName" property="editor" class="nui-combobox"
-                               textField="name" valueField="name" allowInput="true" dataField="data"
+                               textField="name" valueField="pkId" allowInput="true" dataField="data"
                                onbeforeshowpopup="targetMateColumn" vtype="maxLength:64" required="true"/>
+                        </div>
+                        <div field="type" headerAlign="center" allowSort="true" width="10">类型
+                            <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
+                                   dictTypeId="IQ_MD_COL_DATA_TYPE" value="STRING" vtype="maxLength:32"/>
+                        </div>
+                        <div field="length" headerAlign="center" allowSort="true" width="10">长度
+                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                        </div>
+                        <div field="describe" headerAlign="center" allowSort="true" width="30">描述
+                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
                         </div>
                         <div field="note" headerAlign="center" allowSort="true" width="30">备注
                             <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
@@ -185,10 +202,11 @@ ${extends("/goframe/function_layout.httl")}
                         <div type="indexcolumn" headerAlign="center" width="8">位置</div>
                         <div field="name" headerAlign="center" allowSort="true" width="30">字段名称<font
                                 color="#FF0000">（必填）</font>
-                            <input name="colName" property="editor" class="nui-combobox"
+                            <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
+                            <!--<input name="colName" property="editor" class="nui-combobox"
                                    textField="name" valueField="name" allowInput="true" dataField="data"
-                                   onbeforeshowpopup="targetMateColumn" vtype="maxLength:64" required="true"
-                                   onvaluechanged="colNameChanged1"/>
+                                   onbeforeshowpopup="targetFilterColumn" vtype="maxLength:64" required="true"
+                                   onvaluechanged="colNameChanged1"/>-->
                         </div>
                         <div field="describe" headerAlign="center" allowSort="true" width="30">说明</font>
                             <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
@@ -237,6 +255,9 @@ ${extends("/goframe/function_layout.httl")}
     var updateModeObject;
     var updateKeyObject;
     var buildModeObject;
+    var srcSourceType;
+
+    var filterCols = [];
 
     /**
      * 按需加载资源文件
@@ -248,7 +269,7 @@ ${extends("/goframe/function_layout.httl")}
         grid2 = nui.get("datagrid2");
         grid4 = nui.get("datagrid4");
         srcDsModel = nui.get("sDsId");
-        targetDsModel = nui.get("tDsId");
+        targetDsModel = nui.get("tMdId");
         updateModeObject = nui.get("updateMode");
         updateKeyObject = nui.get("updateKey");
         buildModeObject = nui.get("buildMode");
@@ -260,6 +281,7 @@ ${extends("/goframe/function_layout.httl")}
         //将参数配置栏和字段映射栏重置
         grid1.clearRows();
         grid2.clearRows();
+        filterCols = [];
         var cols = [];
         //将参数配置栏自动输入
         $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
@@ -282,11 +304,15 @@ ${extends("/goframe/function_layout.httl")}
                 $("#updateType").css("display","table-row");
                 $("#buildType").css("display","none");
                 buildModeObject.setValue("");
+                $("#eDsModel").css("display","none");
+                srcSourceType = "2";
             }else{
                 $("#updateType").css("display","none");
                 updateModeObject.setValue("");
                 updateKeyObject.setValue("");
                 $("#buildType").css("display","table-row");
+                $("#eDsModel").css("display","table-row");
+                srcSourceType = "1";
             }
         });
     }
@@ -296,18 +322,24 @@ ${extends("/goframe/function_layout.httl")}
     function lodaMapping(){
         //清楚原来配置  ---是否必要！！！
         grid2.clearRows();
-        var cols = [];
-        $.post("${basePath}/", {}, function (data) {
+        //可过滤字段制空
+        filterCols = [];
+        var json = nui.encode({"dsId":"e3ef337e3153453b9b98f1736195a35b","tbName":"UDSP.IM_MODEL"});
+        $.post("${basePath}/im/md/getCloumnInfo", json, function (data) {
             //对data内容解析加载到grid2中
             for(var i = 0, len = data.length; i < len; i++){
-                cols.push({
+                filterCols.push({
                     // TODO 解析到的data中字段名填充进去
-                    "name": "",
+                    "name": data.name,
                     "colId": "",
-                    "note":""
+                    "note":data.note,
+                    "describe":data.describe,
+                    "length":data.length,
+                    "type":data.type
                 });
-            }
-            grid2.addRows(cols);
+            };
+            //字段映射加进去
+            grid2.addRows(filterCols);
         });
     }
 
@@ -390,6 +422,7 @@ ${extends("/goframe/function_layout.httl")}
     }
     
     function getSaveData() {
+        // TODO 数据校验
         var baseData = getBaseData();
         if (!baseData) {
             return;
@@ -406,6 +439,11 @@ ${extends("/goframe/function_layout.httl")}
         if (!imModelFilterCols) {
             return;
         }
+        //修改其删除状态
+        baseData.delFlg = "0";
+        //修改其对应的是非实时
+        baseData.type = srcSourceType;
+        baseData.status = "1";
         var saveData = {
             "imModel": baseData,
             "imModelMappings": imModelMappings,
@@ -416,10 +454,6 @@ ${extends("/goframe/function_layout.httl")}
     }
     
     function getBaseData() {
-       /* form1.validate();
-        if (form1.isValid() == false) {
-            return;
-        }*/
         var baseData = form1.getData(true, true);
         return baseData;
     }
@@ -431,11 +465,17 @@ ${extends("/goframe/function_layout.httl")}
 
     function getModelMappings(){
         var modelMappings = grid2.getData(true, true);
+        $.each(modelMappings, function (_index, record) {
+            record.seq = grid2.indexOf(record) + 1;
+        });
         return modelMappings;
     }
 
     function getImModelFilterCols(){
         var modelFilterCols = grid4.getData(true, true);
+        $.each(modelFilterCols, function (_index, record) {
+            record.seq = grid4.indexOf(record) + 1;
+        })
         return modelFilterCols;
     }
 
@@ -447,7 +487,7 @@ ${extends("/goframe/function_layout.httl")}
     //添加目标元数据
     function addTarget(){
         nui.open({
-            url: "${basePath}/goframe/p/im.cm.md.add",
+            url: "${basePath}/goframe/p/im.cm.md.add?fromModel=true",
             title: "添加",
             width: 800,
             height: 600,
@@ -464,28 +504,39 @@ ${extends("/goframe/function_layout.httl")}
 
     //目标元数据变化时
     function targetSourceChange(){
-        //字段过滤栏清空
-        grid4.clearRows();
         //更新目标元数据id
-        targetSourceId = targetDsModel.value();
+        targetSourceId = targetDsModel.value;
 
         //字段映射栏对应的目标字段全部制空
-        var date = grid2.getData(true, true);
-        if(date == null || date.length == 0){
+        var data = grid2.getData(true, true);
+        if(data == null || data.length == 0){
              return;
         }
         var cols = [];
-        // TODO 遍历目标字段栏信息，将目标字段内容制空
-        $.each(date, function (_index, record) {
-
+        //设置可下拉的目标字段信息
+        $.each(data, function (_index, record) {
+            data[_index].colId = "";
         })
-        grid2.addRows(cols);
+        grid2.clearRows();
+        grid2.addRows(data);
+    }
+
+    //过滤字段可选内容
+    function targetFilterColumn(e){
+        e.source.load(filterCols);
     }
 
     //获取目标元数据字段
     function targetMateColumn(e){
-        // TODO --下拉选项变化--
-        e.source.load("${basePath}/im/md/col/select/" + targetSourceId);
+        $.ajax({
+            url: "${basePath}/im/md/col/select/" + targetSourceId,
+            type: 'POST',
+            cache: false,
+            contentType: 'application/json',
+            success: function (data) {
+                    e.source.load(data.data);
+            }
+        });
     }
 
     //过滤字段发生变化时

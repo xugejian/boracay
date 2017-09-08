@@ -145,9 +145,9 @@ ${extends("/goframe/function_layout.httl")}
             <div type="checkcolumn" width="20"></div>
             <div field="name" headerAlign="center" allowSort="true">名称</div>
             <div field="describe" headerAlign="center" allowSort="true">说明</div>
-            <div field="tDsName" headerAlign="center" allowSort="true" renderer="dsRenderer">目标元数据</div>
-            <div field="type" headerAlign="center" allowSort="true" renderer="dsRenderer">类型</div>
-            <div field="sDsName" headerAlign="center" allowSort="true" renderer="dsRenderer">源数据源</div>
+            <div field="tDsName" headerAlign="center" allowSort="true">目标元数据</div>
+            <div field="type" headerAlign="center" allowSort="true" renderer="ImModelTypeRenderer">类型</div>
+            <div field="sDsName" headerAlign="center" allowSort="true">源数据源</div>
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
             <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat">更新时间</div>
             <div field="note" headerAlign="center" allowSort="true">备注</div>
@@ -163,6 +163,10 @@ ${extends("/goframe/function_layout.httl")}
     var uploadFileStatus;
     var fileIndex = 0;
 
+
+    function ImModelTypeRenderer(e) {
+        return nui.getDictText("IM_MODEL_TYPE", e.row.type);
+    }
     /**
      * 按需加载资源文件
      */

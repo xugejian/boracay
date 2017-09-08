@@ -3,13 +3,14 @@ package com.hex.bigdata.udsp.im.model;
 
 import com.hex.bigdata.udsp.common.model.ComProperties;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 交互建模视图
  * Created by jintian on 2017/9/6.
  */
-public class ImModelViews {
+public class ImModelViews implements Serializable {
     //模型
     private ImModel imModel;
     //关系映射表

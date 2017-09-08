@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.im.model;
 
-public class ImModel {
+import java.io.Serializable;
+
+public class ImModel implements Serializable {
     private String pkId;
 
     private String name;
@@ -30,6 +32,10 @@ public class ImModel {
     private String updateMode;
 
     private String updateKey;
+
+    private String eDsId;
+
+    private String status;
 
     public String getPkId() {
         return pkId;
@@ -149,5 +155,21 @@ public class ImModel {
 
     public void setUpdateKey(String updateKey) {
         this.updateKey = updateKey;
+    }
+
+    public String geteDsId() {
+        return eDsId;
+    }
+
+    public void seteDsId(String eDsId) {
+        this.eDsId = eDsId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

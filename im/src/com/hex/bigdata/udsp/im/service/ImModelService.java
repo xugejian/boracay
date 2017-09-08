@@ -4,14 +4,18 @@ import com.hex.bigdata.udsp.common.dao.ComPropertiesMapper;
 import com.hex.bigdata.udsp.im.dao.ImModelFilterColMapper;
 import com.hex.bigdata.udsp.im.dao.ImModelMapper;
 import com.hex.bigdata.udsp.im.dao.ImModelMappingMapper;
+import com.hex.bigdata.udsp.im.dao.ImModelUpdateKeyMapper;
 import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.ImModel;
 import com.hex.bigdata.udsp.im.model.ImModelFilterCol;
+import com.hex.bigdata.udsp.im.model.ImModelUpdateKey;
 import com.hex.bigdata.udsp.im.model.ImModelViews;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.util.Util;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +39,10 @@ public class ImModelService {
     @Autowired
     private ComPropertiesMapper comPropertiesMapper;
 
+    @Autowired
+    private ImModelUpdateKeyMapper imModelUpdateKeyMapper;
+
+    @Transactional
     public boolean insert(ImModelViews imModelViews){
         String pkId = Util.uuid();
         ImModel model = imModelViews.getImModel();
@@ -51,9 +59,26 @@ public class ImModelService {
         if(!comPropertiesMapper.insertModelComProperties(pkId,imModelViews.getComPropertiesList())){
             return false;
         }
+        //添加更新字段
+        String updateKeys = model.getUpdateKey();
+        if(StringUtils.isNotBlank(updateKeys)){
+            String[] updateKeyArray = updateKeys.split(",");
+            String updateKeyId;
+            for(String updateKey : updateKeyArray){
+                ImModelUpdateKey imModelUpdateKey = new ImModelUpdateKey();
+                updateKeyId = Util.uuid();
+                //设置插入的ID
+                imModelUpdateKey.setPkId(updateKeyId);
+                imModelUpdateKey.setModelId(pkId);
+                imModelUpdateKey.setColId(updateKey);
+                imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey);
+                return false;
+            }
+        }
         return true;
     }
 
+    @Transactional
     public boolean update(ImModelViews imModelViews) {
         ImModel model = imModelViews.getImModel();
         //获取模型主键
@@ -82,6 +107,7 @@ public class ImModelService {
 
         for(ImModel imModel : imModels){
             imModel.setDelFlg("1");
+            // 进行逻辑删除
             if(!imModelMapper.update(imModel.getPkId(),imModel)){
                 return false;
             }

@@ -405,6 +405,10 @@ ${extends("/goframe/function_layout.httl")}
         if (!imModelFilterCols) {
             return;
         }
+        //修改其删除状态
+        baseData.constructor
+        //修改其对应的是非实时
+
         var saveData = {
             "imModel": baseData,
             "imModelMappings": imModelMappings,
@@ -446,7 +450,7 @@ ${extends("/goframe/function_layout.httl")}
     //添加目标元数据
     function addTarget(){
         nui.open({
-            url: "${basePath}/goframe/p/im.cm.md.add",
+            url: "${basePath}/goframe/p/im.cm.md.add?fromModel=true",
             title: "添加",
             width: 800,
             height: 600,

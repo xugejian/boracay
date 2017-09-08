@@ -11,7 +11,7 @@ public class ImModelUpdateKeyMapper extends SyncMapper<ImModelUpdateKey> {
 
     @Override
     protected boolean insertExe(ImModelUpdateKey imModelUpdateKey) {
-        return false;
+        return sqlSessionTemplate.insert("com.hex.bigdata.udsp.im.dao.ImModelUpdateKeyMapper.insert",imModelUpdateKey) == 1;
     }
 
     @Override
