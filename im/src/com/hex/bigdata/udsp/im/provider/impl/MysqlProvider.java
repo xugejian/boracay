@@ -31,7 +31,7 @@ public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, B
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
         MysqlModel mysqlModel = new MysqlModel(model.getPropertyMap());
         return getColumnInfo(mysqlDatasource, mysqlModel);

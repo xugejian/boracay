@@ -34,7 +34,7 @@ public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvide
     @Override
     public List<MetadataCol> columnInfo(Model model) {
         List<MetadataCol> metadataCols = null;
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         List<Property> propertyList = datasource.getProperties();
         int consumerTimeoutMs = 1000;
         for (Property property : propertyList) {

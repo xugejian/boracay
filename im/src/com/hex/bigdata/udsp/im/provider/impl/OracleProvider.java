@@ -32,7 +32,7 @@ public class OracleProvider extends JdbcWrapper implements BatchSourceProvider, 
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         OracleModel oracleModel = new OracleModel(model.getPropertyMap());
         return getColumnInfo(oracleDatasource, oracleModel);

@@ -33,7 +33,7 @@ public class HiveProvider extends JdbcWrapper implements BatchSourceProvider, Ba
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         HiveModel hiveModel = new HiveModel(model.getPropertyMap());
         return getColumnInfo(hiveDatasource, hiveModel);

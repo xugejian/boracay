@@ -42,7 +42,7 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
         SolrModel solrModel = new SolrModel(datasource.getPropertyMap());
         String collectionName = solrModel.getCollectionName();
