@@ -1,7 +1,9 @@
 package com.hex.bigdata.udsp.im.provider.util;
 
 import com.hex.bigdata.udsp.im.provider.util.model.RowFormat;
+import com.hex.bigdata.udsp.im.provider.util.model.SerDeProperty;
 import com.hex.bigdata.udsp.im.provider.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.util.model.TblProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -44,10 +46,73 @@ public class HiveSqlUtil {
         return "DROP TABLE" + getIfExists(ifExists) + " " + tableName;
     }
 
+    /**
+     * @param isExternal
+     * @param ifNotExists
+     * @param tableName
+     * @param columns
+     * @param tableComment
+     * @param partitions
+     * @param storageHandlerClass
+     * @param serDeProperties
+     * @param tblProperties
+     * @return
+     */
+    public static String createStorageHandlerTable(boolean isExternal, boolean ifNotExists,
+                                                   String tableName, List<TableColumn> columns, String tableComment,
+                                                   List<TableColumn> partitions, String storageHandlerClass,
+                                                   List<SerDeProperty> serDeProperties, List<TblProperty> tblProperties) {
+        return "CREATE" + getExternal(isExternal) + " TABLE"
+                + getIfNotExists(ifNotExists) + " " + tableName
+                + getColumns(columns) + getTableComment(tableComment)
+                + getPartitions(partitions)
+                + getStoredBy(storageHandlerClass)
+                + getSerDeProperties(serDeProperties)
+                + getTblProperties(tblProperties);
+    }
+
+    private static String getStoredBy(String storageHandlerClass) {
+        return "\n STORED BY '" + storageHandlerClass + "'";
+    }
+
+    private static String getSerDeProperties(List<SerDeProperty> serDeProperties) {
+        String sql = "";
+        SerDeProperty property = null;
+        if (serDeProperties != null && serDeProperties.size() != 0) {
+            sql = "\n WITH SERDEPROPERTIES (";
+            for (int i = 0; i < serDeProperties.size(); i++) {
+                property = serDeProperties.get(i);
+                if (i == 0)
+                    sql += "\n'" + property.getKey() + "' = '" + property.getValue() + "'";
+                else
+                    sql += "\n ,'" + property.getKey() + "' = '" + property.getValue() + "'";
+            }
+            sql += "\n)";
+        }
+        return sql;
+    }
+
+    private static String getTblProperties(List<TblProperty> tblPropertiess) {
+        String sql = "";
+        TblProperty property = null;
+        if (tblPropertiess != null && tblPropertiess.size() != 0) {
+            sql = "\n TBLPROPERTIES (";
+            for (int i = 0; i < tblPropertiess.size(); i++) {
+                property = tblPropertiess.get(i);
+                if (i == 0)
+                    sql += "\n'" + property.getKey() + "' = '" + property.getValue() + "'";
+                else
+                    sql += "\n ,'" + property.getKey() + "' = '" + property.getValue() + "'";
+            }
+            sql += "\n)";
+        }
+        return sql;
+    }
+
     private static String getFileFormat(String fileFormat) {
         String sql = "";
         if (fileFormat != null && !fileFormat.trim().equals("")) {
-            sql = " STORED AS " + fileFormat;
+            sql = "\n STORED AS " + fileFormat;
         }
         return sql;
     }
@@ -83,7 +148,7 @@ public class HiveSqlUtil {
         String dataType = "";
         String colComment = "";
         if (columns != null && columns.size() != 0) {
-            sql = " (";
+            sql = "\n (";
             for (int i = 0; i < columns.size(); i++) {
                 column = columns.get(i);
                 colName = column.getColName();
@@ -91,16 +156,16 @@ public class HiveSqlUtil {
                 colComment = column.getColComment();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
                     if (i == 0) {
-                        sql += colName + " " + dataType;
+                        sql += "\n" + colName + " " + dataType;
                     } else {
-                        sql += ", " + colName + " " + dataType;
+                        sql += "\n, " + colName + " " + dataType;
                     }
                     if (StringUtils.isNoneBlank(colComment)) {
                         sql += " COMMENT '" + colComment + "'";
                     }
                 }
             }
-            sql += ")";
+            sql += "\n)";
         }
         return sql;
     }
@@ -108,7 +173,7 @@ public class HiveSqlUtil {
     private static String getTableComment(String tableComment) {
         String sql = "";
         if (tableComment != null && !tableComment.trim().equals("")) {
-            sql = " COMMENT '" + tableComment + "'";
+            sql = "\n COMMENT '" + tableComment + "'";
         }
         return sql;
     }
@@ -116,7 +181,7 @@ public class HiveSqlUtil {
     private static String getPartitions(List<TableColumn> partitions) {
         String sql = "";
         if (partitions != null && partitions.size() != 0) {
-            sql = " PARTITIONED BY " + getColumns(partitions);
+            sql = "\n PARTITIONED BY " + getColumns(partitions);
         }
         return sql;
     }
@@ -124,7 +189,7 @@ public class HiveSqlUtil {
     private static String getRowFormat(RowFormat rowFormat) {
         String sql = "";
         if (rowFormat != null) {
-            sql = " ROW FORMAT DELIMITED";
+            sql = "\n ROW FORMAT DELIMITED";
             String fieldsTerminated = rowFormat.getFieldsTerminated();
             String fieldsEscaped = rowFormat.getFieldsEscaped();
             String linesTerminated = rowFormat.getLinesTerminated();

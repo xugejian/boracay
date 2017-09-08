@@ -1,11 +1,5 @@
 package com.hex.bigdata.udsp.im.provider.util.model;
 
-/**
- * Impala字段
- * 
- * @author junjiem
- * 
- */
 public class TableColumn {
 	private String colName; // 字段名
 	private String dataType; // 类型
