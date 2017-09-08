@@ -14,6 +14,7 @@ import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.util.OracleSqlUtil;
 import com.hex.bigdata.udsp.im.provider.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -153,8 +154,9 @@ public class OracleProvider extends JdbcWrapper implements BatchSourceProvider, 
         OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = null;
+        List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());;
         String sql = OracleSqlUtil.createTable(fullTbName, columns, tableComment);
+        logger.info(sql);
         int status = getExecuteUpdateStatus(oracleDatasource, sql);
         return status == 1 ? true : false;
     }

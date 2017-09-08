@@ -13,6 +13,7 @@ import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.util.MysqlSqlUtil;
 import com.hex.bigdata.udsp.im.provider.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -133,7 +134,7 @@ public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, B
         MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = null;
+        List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
         boolean ifNotExists = false;
         String sql = MysqlSqlUtil.createTable(ifNotExists, fullTbName, columns, tableComment);
         int status = getExecuteUpdateStatus(mysqlDatasource, sql);
@@ -160,7 +161,7 @@ public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, B
     @Override
     public boolean dropHiveTable(Metadata metadata) {
         // TODO ...
-        return false;
+        return true;
     }
 
     @Override

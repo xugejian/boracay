@@ -53,7 +53,13 @@ public class ImProviderService {
         String implClass = getImplClass(datasource);
         TargetProvider provider = (TargetProvider) WebApplicationContextUtil.getBean(implClass);
         return provider.create(metadata);
+    }
 
+    public boolean dropTable(Metadata metadata) throws Exception {
+        Datasource datasource = metadata.getDatasource();
+        String implClass = getImplClass(datasource);
+        TargetProvider provider = (TargetProvider) WebApplicationContextUtil.getBean(implClass);
+        return provider.drop(metadata);
     }
 
 }

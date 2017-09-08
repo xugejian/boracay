@@ -150,6 +150,7 @@ ${extends("/goframe/function_layout.httl")}
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
             <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat">更新时间</div>
             <div field="note" headerAlign="center" allowSort="true">备注</div>
+            <div field="operate" headerAlign="center" align="center" allowSort="true" renderer="setOperation">操作</div>
         </div>
     </div>
 </div>
@@ -196,19 +197,28 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     /**
-     * 选中
+     * 选中  type 0内 1外  status 1未建 2已建
      */
     function selected() {
         var rows = grid1.getSelecteds();
         if (rows.length == 1) {
-            nui.get("edit").enable();
-            nui.get("remove").enable();
+            rows[0].type == 0 && rows[0].status == 2 ? nui.get("remove").disable(): nui.get("remove").enable();
+            rows[0].type == 0 && rows[0].status == 2 ? nui.get("edit").disable(): nui.get("edit").enable();
         } else if (rows.length == 0) {
             nui.get("edit").disable();
             nui.get("remove").disable();
         } else {
             nui.get("edit").disable();
-            nui.get("remove").enable();
+            var canRemove = true;
+            $.each(rows, function (i, val){
+                if(val.type == 0 && val.status == 2){
+                    canRemove = false;
+                    return;
+                }
+            });
+            if(canRemove){
+                nui.get("remove").enable();
+            }
         }
     }
 
@@ -464,6 +474,60 @@ ${extends("/goframe/function_layout.httl")}
                     nui.alert("导出Excel失败", "系统提示");
                 }
                 grid1.unmask();
+            }
+        });
+    }
+
+    function setOperation(e) {
+        if(e.row.type == 1){//0 内表 1 外表
+            return null;
+        }
+        if(e.row.status == 1){ //1 未建 2 已建
+           return "<a href=\"javascript:;\" onclick=\"createTable('" + e.row.pkId + "')\">建表</a>";
+        }
+        if(e.row.status == 2){ //1 未建 2 已建
+            return "<a href=\"javascript:;\" onclick=\"dropTable('" + e.row.pkId + "')\">删表</a>";
+        }
+    }
+
+    function dropTable(pkId) {
+        grid1.loading("正在删除中,请稍等...");
+        $.ajax({
+            url: "${basePath}/im/md/dropTable/"+pkId,
+            type: 'POST',
+            data:null,
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.status == true) {
+                    nui.alert(result.message);
+                } else {
+                    nui.alert(result.message, "系统提示");
+                }
+                grid1.unmask();
+                grid1.load();
+            }
+        });
+    }
+
+    function createTable(pkId) {
+        grid1.loading("正在创建中,请稍等...");
+        $.ajax({
+            url: "${basePath}/im/md/createTable/"+pkId,
+            type: 'POST',
+            data:null,
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.status == true) {
+                    nui.alert(result.message);
+                } else {
+                    nui.alert(result.message, "系统提示")
+                }
+                grid1.unmask();
+                grid1.load();
             }
         });
     }

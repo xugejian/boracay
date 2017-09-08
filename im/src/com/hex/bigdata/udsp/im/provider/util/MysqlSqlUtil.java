@@ -23,6 +23,8 @@ public class MysqlSqlUtil {
                                      List<TableColumn> columns, String tableComment) {
         return "CREATE TABLE " + getIfNotExists(ifNotExists) + " " + tableName
                 + getColumns(columns) + getTableComment(tableComment);
+
+
     }
 
     /**
@@ -67,8 +69,14 @@ public class MysqlSqlUtil {
                 colComment = column.getColComment();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
                     if (i == 0) {
+                        if("VARCHAR".equals(dataType)){
+                            dataType += "("+ column.getLength()+")";
+                        }
                         sql += colName + " " + dataType;
                     } else {
+                        if("VARCHAR".equals(dataType)){
+                            dataType += "("+ column.getLength()+")";
+                        }
                         sql += ", " + colName + " " + dataType;
                     }
                     if (StringUtils.isNoneBlank(colComment)) {
@@ -78,6 +86,7 @@ public class MysqlSqlUtil {
             }
             sql += ")";
         }
+        sql = sql.replaceAll("STRING","BLOB");
         return sql;
     }
 

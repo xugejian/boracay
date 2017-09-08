@@ -40,7 +40,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"></th>
                     <td >
                         <div id="type" name="type" onvaluechanged="onvaluechangedType"  class="nui-radiobuttonlist" repeatItems="2" repeatLayout="table" repeatDirection="horizontal"
-                             textField="text" valueField="id" value="cn" data="[{'id':'0','text':'内表'},{'id':'1','text':'外表'}]" value='0' required="true">
+                             textField="text" valueField="id" data="[{'id':'0','text':'内表'},{'id':'1','text':'外表'}]" value='0' required="true">
                         </div>
                     </td>
                 </tr>
@@ -385,9 +385,9 @@ ${extends("/goframe/function_layout.httl")}
         //禁用保存按钮
         nui.get("saveAndCreateButton").disable();
         // --发送信息--
-        form1.loading("正在保存中,请稍等...");
+        form1.loading("正在创建中,请稍等...");
         $.ajax({
-            url: "${basePath}/im/md/update",
+            url: "${basePath}/im/md/updateAndCreate",
             type: 'POST',
             data: json,
             cache: false,
@@ -704,6 +704,7 @@ ${extends("/goframe/function_layout.httl")}
      *  根据内外表控制保持按钮
      */
     function setSaveButton(){
+        debugger;
         var type = nui.get("type").getValue();
         if(type==0){
             nui.get("saveAndCreateButton").show();
