@@ -3,7 +3,7 @@ package com.hex.bigdata.udsp.im.provider.impl;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
-import com.hex.bigdata.udsp.im.provider.JdbcWrapper;
+import com.hex.bigdata.udsp.im.provider.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.OracleDatasource;
@@ -13,7 +13,6 @@ import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.util.OracleSqlUtil;
 import com.hex.bigdata.udsp.im.provider.util.model.TableColumn;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -44,6 +43,28 @@ public class OracleProvider extends JdbcWrapper implements BatchSourceProvider, 
         OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         return getMetadataColsByTbName(oracleDatasource, fullTbName);
+    }
+
+    @Override
+    public boolean createSchema(Metadata metadata) throws Exception {
+        Datasource datasource = metadata.getDatasource();
+        OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
+        String fullTbName = metadata.getTbName();
+        String tableComment = metadata.getDescribe();
+        List<TableColumn> columns = null;
+        String sql = OracleSqlUtil.createTable(fullTbName, columns, tableComment);
+        int status = getExecuteUpdateStatus(oracleDatasource, sql);
+        return status == 1 ? true : false;
+    }
+
+    @Override
+    public boolean dropSchema(Metadata metadata) throws Exception {
+        Datasource datasource = metadata.getDatasource();
+        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
+        String fullTbName = metadata.getTbName();
+        String sql = OracleSqlUtil.dropTable(fullTbName);
+        int status = getExecuteUpdateStatus(hiveDatasource, sql);
+        return status == 1 ? true : false;
     }
 
     @Override
@@ -78,40 +99,6 @@ public class OracleProvider extends JdbcWrapper implements BatchSourceProvider, 
     }
 
     @Override
-    public boolean createTable(Metadata metadata) throws SQLException {
-        Datasource datasource = metadata.getDatasource();
-        OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
-        String fullTbName = metadata.getTbName();
-        String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = null;
-        String sql = OracleSqlUtil.createTable(fullTbName, columns, tableComment);
-        int status = getExecuteUpdateStatus(oracleDatasource, sql);
-        return status == 1 ? true : false;
-    }
-
-    @Override
-    public boolean createHiveTable(Metadata metadata) {
-        // TODO ...
-        return false;
-    }
-
-    @Override
-    public boolean dropTable(Metadata metadata) throws SQLException {
-        Datasource datasource = metadata.getDatasource();
-        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
-        String fullTbName = metadata.getTbName();
-        String sql = OracleSqlUtil.dropTable(fullTbName);
-        int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 1 ? true : false;
-    }
-
-    @Override
-    public boolean dropHiveTable(Metadata metadata) {
-        // TODO ...
-        return false;
-    }
-
-    @Override
     public String inputSQL() {
         return null;
     }
@@ -124,5 +111,15 @@ public class OracleProvider extends JdbcWrapper implements BatchSourceProvider, 
     @Override
     public void outputData() {
 
+    }
+
+    @Override
+    public boolean createEngineSchema(Metadata metadata) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean dropEngineSchema(Metadata metadata) throws Exception {
+        return false;
     }
 }

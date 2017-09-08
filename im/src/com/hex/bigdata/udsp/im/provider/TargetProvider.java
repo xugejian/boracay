@@ -13,7 +13,8 @@ public interface TargetProvider extends Provider {
 
     List<MetadataCol> columnInfo(Metadata metadata);
 
-    boolean create(Metadata metadata) throws Exception;
+    boolean createSchema(Metadata metadata) throws Exception;
 
-    boolean drop(Metadata metadata) throws Exception;
+    boolean dropSchema(Metadata metadata) throws Exception;
+
 }
