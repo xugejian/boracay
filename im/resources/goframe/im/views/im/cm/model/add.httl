@@ -495,7 +495,23 @@ ${extends("/goframe/function_layout.httl")}
             },
             ondestroy: function (action) {
                 //将目标元数据id映射添加到目标元数据中
-                targetDsModel.setValue(action);
+                $.ajax({
+                    url: "${basePath}/im/md/page?pageSize=100",
+                    type: 'POST',
+                    cache: false,
+                    async:false,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        targetDsModel.load(data.data);
+                    }
+                });
+                var k = 0;
+                for(;k < targetDsModel.data.length ;k++){
+                    if(targetDsModel.data[k].pkId == action){
+                        break;
+                    }
+                }
+                targetDsModel.select(k);
                 //更新全局变量目标元数据的id
                 targetSourceId = action;
             }

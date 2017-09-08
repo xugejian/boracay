@@ -328,7 +328,6 @@ ${extends("/goframe/function_layout.httl")}
                     nui.alert(result.message);
                     var fromModel = "${fromModel}";
                     if(fromModel == "true"){
-                        alert("进入"+result.data);
                         CloseWindow(result.data);
                     }else{
                         CloseWindow("success");
@@ -372,7 +371,6 @@ ${extends("/goframe/function_layout.httl")}
                     nui.alert(result.message);
                     var fromModel = "${fromModel}";
                     if(fromModel == "true"){
-                        alert("进入"+result.data);
                         CloseWindow(result.data);
                     }else{
                         CloseWindow("success");
