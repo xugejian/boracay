@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
-import com.hex.bigdata.udsp.im.provider.HBaseWrapper;
+import com.hex.bigdata.udsp.im.provider.wrapper.HBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
@@ -25,6 +25,16 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     }
 
     @Override
+    public boolean createSchema(Metadata metadata) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean dropSchema(Metadata metadata) throws Exception {
+        return false;
+    }
+
+    @Override
     public String outputSQL() {
         return null;
     }
@@ -35,22 +45,12 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public boolean createTable(Metadata metadata) throws Exception {
+    public boolean createEngineSchema(Metadata metadata) throws Exception {
         return false;
     }
 
     @Override
-    public boolean createHiveTable(Metadata metadata) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean dropTable(Metadata metadata) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean dropHiveTable(Metadata metadata) throws Exception {
+    public boolean dropEngineSchema(Metadata metadata) throws Exception {
         return false;
     }
 }

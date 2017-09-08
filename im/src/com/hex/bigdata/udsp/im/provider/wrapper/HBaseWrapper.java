@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider;
+package com.hex.bigdata.udsp.im.provider.wrapper;
 
 import com.hex.bigdata.udsp.im.provider.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class HBaseWrapper extends TargetWrapper {
+public abstract class HBaseWrapper {
     static {
         // 解决winutils.exe不存在的问题
         try {

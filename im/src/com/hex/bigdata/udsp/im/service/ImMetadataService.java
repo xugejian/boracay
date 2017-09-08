@@ -14,6 +14,7 @@ import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
 import com.hex.bigdata.udsp.im.dto.ImMetadataView;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.util.ImUtil;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.Util;
@@ -44,7 +45,10 @@ public class ImMetadataService extends BaseService {
     public String insert(ImMetadata imMetadata) {
         String pkId = Util.uuid();
         imMetadata.setPkId(pkId);
-        imMetadata.setStatus("1"); //1未建 2以建
+        if("1".equals(imMetadata.getType())){
+            imMetadata.setStatus("2"); //外表状态为已建
+        }
+        imMetadata.setStatus("1"); //1未建 2已建
         if (imMetadataMapper.insert(imMetadata.getPkId(), imMetadata)) {
             return pkId;
         }
@@ -135,8 +139,34 @@ public class ImMetadataService extends BaseService {
         return list;
     }
 
-    public boolean create(){
-        return false;
+    @Transactional
+    public boolean createTable(String pkId) throws Exception {
+        ImMetadata imMetadata = this.select(pkId);
+        imMetadata.setStatus("2"); //状态为已建
+        return imProviderService.createTable(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
+    }
+
+    @Transactional
+    public boolean dropTable(String pkId) throws Exception {
+        ImMetadata imMetadata = this.select(pkId);
+        imMetadata.setStatus("1"); //状态为未建
+        return  imProviderService.dropTable(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
+    }
+
+    public Metadata getMetadata(String pkId){
+        ImMetadata imMetadata = this.select(pkId);
+        String dsId = imMetadata.getDsId();
+        ComDatasource comDatasource = comDatasourceService.select(dsId);
+        List<ComProperties> comProperties = comPropertiesService.selectByFkId(dsId);
+        Datasource datasource = new Datasource(comDatasource, comProperties);
+        List<Property> prop = PropertyUtil.convertToPropertyList(comPropertiesService.selectByFkId(pkId));
+        Metadata metadata = new Metadata(prop);
+        metadata.setType(imMetadata.getType());
+        metadata.setTbName(imMetadata.getTbName());
+        metadata.setMetadataCols(ImUtil.convertToMetadataColList(imMetadataColService.select(pkId)));
+        metadata.setDescribe(imMetadata.getDescribe());
+        metadata.setDatasource(datasource);
+        return metadata;
     }
 }
 

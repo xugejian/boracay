@@ -1,11 +1,5 @@
 package com.hex.bigdata.udsp.im.provider.util.model;
 
-/**
- * Impala行信息
- * 
- * @author junjiem
- * 
- */
 public class RowFormat {
 	public static final String IMPALA_FIELDS_TERMINATED_DEFAULT = "\\t";
 	public static final String IMPALA_FIELDS_TERMINATED_OTHER = "\\007";

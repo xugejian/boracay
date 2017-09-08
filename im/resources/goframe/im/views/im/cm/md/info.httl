@@ -33,7 +33,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"></th>
                     <td >
                         <div id="type" name="type" onvaluechanged="setSaveButton" class="nui-radiobuttonlist" repeatItems="2" repeatLayout="table" repeatDirection="horizontal"
-                             textField="text" valueField="id" value="cn" data="[{'id':'0','text':'内表'},{'id':'1','text':'外表'}]" value='0' readonly="true">
+                             textField="text" valueField="id" data="[{'id':'0','text':'内表'},{'id':'1','text':'外表'}]" value='0' readonly="true">
                         </div>
                     </td>
                 </tr>

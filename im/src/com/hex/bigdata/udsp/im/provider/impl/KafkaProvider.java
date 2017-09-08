@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.im.provider.KafkaWrapper;
+import com.hex.bigdata.udsp.im.provider.wrapper.KafkaWrapper;
 import com.hex.bigdata.udsp.im.provider.RealtimeSourceProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KafkaDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
@@ -34,7 +34,7 @@ public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvide
     @Override
     public List<MetadataCol> columnInfo(Model model) {
         List<MetadataCol> metadataCols = null;
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         List<Property> propertyList = datasource.getProperties();
         int consumerTimeoutMs = 1000;
         for (Property property : propertyList) {

@@ -42,7 +42,7 @@ public class ImProviderService {
     }
 
     public List<MetadataCol> getCloumnInfo(Model model) {
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         String implClass = getImplClass(datasource);
         SourceProvider provider = (SourceProvider) WebApplicationContextUtil.getBean(implClass);
         return provider.columnInfo(model);
@@ -53,7 +53,13 @@ public class ImProviderService {
         String implClass = getImplClass(datasource);
         TargetProvider provider = (TargetProvider) WebApplicationContextUtil.getBean(implClass);
         return provider.create(metadata);
+    }
 
+    public boolean dropTable(Metadata metadata) throws Exception {
+        Datasource datasource = metadata.getDatasource();
+        String implClass = getImplClass(datasource);
+        TargetProvider provider = (TargetProvider) WebApplicationContextUtil.getBean(implClass);
+        return provider.drop(metadata);
     }
 
 }

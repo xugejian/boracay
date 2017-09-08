@@ -43,7 +43,7 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.im.model.ImMetadata" >
     update IM_METADATA
-    set DS_ID = #{dsId,jdbcType=VARCHAR},
+      set DS_ID = #{dsId,jdbcType=VARCHAR},
       NAME = #{name,jdbcType=VARCHAR},
       DESCRIBE = #{describe,jdbcType=VARCHAR},
       NOTE = #{note,jdbcType=VARCHAR},

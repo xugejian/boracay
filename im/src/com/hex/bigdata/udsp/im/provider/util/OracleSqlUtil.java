@@ -20,7 +20,7 @@ public class OracleSqlUtil {
      */
     public static String createTable(String tableName, List<TableColumn> columns, String tableComment) {
         String sql = "CREATE TABLE " + tableName + getColumns(columns) + ";";
-        sql += commentTable(tableName, tableComment) + ";";
+        sql += "\n" + commentTable(tableName, tableComment) + ";";
         TableColumn column = null;
         String colName = "";
         String colComment = "";
@@ -30,7 +30,7 @@ public class OracleSqlUtil {
                 colName = column.getColName();
                 colComment = column.getColComment();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(colComment)) {
-                    sql += commentColumn(tableName, colName, colComment) + ";";
+                    sql += "\n" + commentColumn(tableName, colName, colComment) + ";";
                 }
             }
         }
@@ -63,7 +63,7 @@ public class OracleSqlUtil {
         String dataType = "";
         String colComment = "";
         if (columns != null && columns.size() != 0) {
-            sql = " (";
+            sql = "\n (";
             for (int i = 0; i < columns.size(); i++) {
                 column = columns.get(i);
                 colName = column.getColName();
@@ -71,16 +71,16 @@ public class OracleSqlUtil {
                 colComment = column.getColComment();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
                     if (i == 0) {
-                        sql += colName + " " + dataType;
+                        sql += "\n" + colName + " " + dataType;
                     } else {
-                        sql += ", " + colName + " " + dataType;
+                        sql += "\n, " + colName + " " + dataType;
                     }
                     if (StringUtils.isNoneBlank(colComment)) {
                         sql += " COMMENT '" + colComment + "'";
                     }
                 }
             }
-            sql += ")";
+            sql += "\n)";
         }
         return sql;
     }

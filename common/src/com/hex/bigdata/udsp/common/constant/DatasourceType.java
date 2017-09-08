@@ -9,7 +9,8 @@ package com.hex.bigdata.udsp.common.constant;
 public enum DatasourceType {
     IQ("交互查询", "IQ"),
     OLQ("联机查询", "OLQ"),
-    RTS("实时流", "RTS");
+    RTS("实时流", "RTS"),
+    IM("交互建模", "IM");
 
     private String value;
     private String name;

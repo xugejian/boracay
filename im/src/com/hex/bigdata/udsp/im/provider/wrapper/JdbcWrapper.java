@@ -1,10 +1,7 @@
-package com.hex.bigdata.udsp.im.provider;
+package com.hex.bigdata.udsp.im.provider.wrapper;
 
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.OracleDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.OracleModel;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +17,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class JdbcWrapper extends TargetWrapper {
+public abstract class JdbcWrapper{
     private static Logger logger = LogManager.getLogger(JdbcWrapper.class);
     private static Map<String, BasicDataSource> dataSourcePool;
 

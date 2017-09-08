@@ -59,7 +59,7 @@ public class MysqlSqlUtil {
         String dataType = "";
         String colComment = "";
         if (columns != null && columns.size() != 0) {
-            sql = " (";
+            sql = "\n (";
             for (int i = 0; i < columns.size(); i++) {
                 column = columns.get(i);
                 colName = column.getColName();
@@ -67,24 +67,31 @@ public class MysqlSqlUtil {
                 colComment = column.getColComment();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
                     if (i == 0) {
-                        sql += colName + " " + dataType;
+                        if("VARCHAR".equals(dataType)){
+                            dataType += "("+ column.getLength()+")";
+                        }
+                        sql += "\n" + colName + " " + dataType;
                     } else {
-                        sql += ", " + colName + " " + dataType;
+                        if("VARCHAR".equals(dataType)){
+                            dataType += "("+ column.getLength()+")";
+                        }
+                        sql += "\n, " + colName + " " + dataType;
                     }
                     if (StringUtils.isNoneBlank(colComment)) {
                         sql += " COMMENT '" + colComment + "'";
                     }
                 }
             }
-            sql += ")";
+            sql += "\n)";
         }
+        sql = sql.replaceAll("STRING","BLOB");
         return sql;
     }
 
     private static String getTableComment(String tableComment) {
         String sql = "";
         if (tableComment != null && !tableComment.trim().equals("")) {
-            sql = " COMMENT '" + tableComment + "'";
+            sql = "\n COMMENT '" + tableComment + "'";
         }
         return sql;
     }

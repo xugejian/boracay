@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
-import com.hex.bigdata.udsp.im.provider.JdbcWrapper;
+import com.hex.bigdata.udsp.im.provider.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
@@ -14,7 +14,6 @@ import com.hex.bigdata.udsp.im.provider.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.util.model.FileFormat;
 import com.hex.bigdata.udsp.im.provider.util.model.RowFormat;
 import com.hex.bigdata.udsp.im.provider.util.model.TableColumn;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ public class HiveProvider extends JdbcWrapper implements BatchSourceProvider, Ba
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
-        Datasource datasource = model.getDatasource();
+        Datasource datasource = model.getSourceDatasource();
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         HiveModel hiveModel = new HiveModel(model.getPropertyMap());
         return getColumnInfo(hiveDatasource, hiveModel);
@@ -46,6 +45,35 @@ public class HiveProvider extends JdbcWrapper implements BatchSourceProvider, Ba
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         return getMetadataColsByTbName(hiveDatasource, fullTbName);
+    }
+
+    @Override
+    public boolean createSchema(Metadata metadata) throws Exception {
+        Datasource datasource = metadata.getDatasource();
+        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
+        String fullTbName = metadata.getTbName();
+        String tableComment = metadata.getDescribe();
+        List<TableColumn> columns = null;
+        List<TableColumn> partitions = null;
+        boolean isExternal = false;
+        boolean ifNotExists = false;
+        RowFormat rowFormat = null;
+        String fileFormat = FileFormat.HIVE_FILE_FORMAT_PARQUET;
+        String sql = HiveSqlUtil.createTable(isExternal, ifNotExists, fullTbName,
+                columns, tableComment, partitions, rowFormat, fileFormat);
+        int status = getExecuteUpdateStatus(hiveDatasource, sql);
+        return status == 1 ? true : false;
+    }
+
+    @Override
+    public boolean dropSchema(Metadata metadata) throws Exception {
+        Datasource datasource = metadata.getDatasource();
+        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
+        String fullTbName = metadata.getTbName();
+        boolean ifExists = false;
+        String sql = HiveSqlUtil.dropTable(ifExists, fullTbName);
+        int status = getExecuteUpdateStatus(hiveDatasource, sql);
+        return status == 1 ? true : false;
     }
 
     @Override
@@ -137,47 +165,6 @@ public class HiveProvider extends JdbcWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public boolean createTable(Metadata metadata) throws SQLException {
-        Datasource datasource = metadata.getDatasource();
-        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
-        String fullTbName = metadata.getTbName();
-        String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = null;
-        List<TableColumn> partitions = null;
-        boolean isExternal = false;
-        boolean ifNotExists = false;
-        RowFormat rowFormat = null;
-        String fileFormat = FileFormat.HIVE_FILE_FORMAT_PARQUET;
-        String sql = HiveSqlUtil.createTable(isExternal, ifNotExists, fullTbName,
-                columns, tableComment, partitions, rowFormat, fileFormat);
-        int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 1 ? true : false;
-    }
-
-    @Override
-    public boolean createHiveTable(Metadata metadata) {
-        // 无需创建外链表
-        return true;
-    }
-
-    @Override
-    public boolean dropTable(Metadata metadata) throws SQLException {
-        Datasource datasource = metadata.getDatasource();
-        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
-        String fullTbName = metadata.getTbName();
-        boolean ifExists = false;
-        String sql = HiveSqlUtil.dropTable(ifExists, fullTbName);
-        int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 1 ? true : false;
-    }
-
-    @Override
-    public boolean dropHiveTable(Metadata metadata) {
-        // 无需删除外链表
-        return true;
-    }
-
-    @Override
     public String outputSQL() {
         return null;
     }
@@ -185,5 +172,15 @@ public class HiveProvider extends JdbcWrapper implements BatchSourceProvider, Ba
     @Override
     public String inputSQL() {
         return null;
+    }
+
+    @Override
+    public boolean createEngineSchema(Metadata metadata) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean dropEngineSchema(Metadata metadata) throws Exception {
+        return false;
     }
 }
