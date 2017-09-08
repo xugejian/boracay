@@ -1,6 +1,6 @@
-package com.hex.bigdata.udsp.im.provider.wrapper;
+package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
-import com.hex.bigdata.udsp.im.provider.factory.HBaseConnectionPoolFactory;
+import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.hadoop.hbase.client.HConnection;

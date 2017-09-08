@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.wrapper.SolrWrapper;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrWrapper;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
@@ -77,12 +77,12 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public boolean createEngineSchema(Metadata metadata) throws Exception {
+    public boolean createEngineSchema(Model model) throws Exception {
         return false;
     }
 
     @Override
-    public boolean dropEngineSchema(Metadata metadata) throws Exception {
+    public boolean dropEngineSchema(Model model) throws Exception {
         return false;
     }
 }

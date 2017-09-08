@@ -1,6 +1,6 @@
-package com.hex.bigdata.udsp.im.provider.util;
+package com.hex.bigdata.udsp.im.provider.impl.util;
 
-import com.hex.bigdata.udsp.im.provider.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -8,52 +8,48 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-6.
  */
-public class OracleSqlUtil {
+public class MysqlSqlUtil {
 
     /**
      * 创建表
      *
+     * @param ifNotExists
      * @param tableName
      * @param columns
      * @param tableComment
      * @return
      */
-    public static String createTable(String tableName, List<TableColumn> columns, String tableComment) {
-        String sql = "CREATE TABLE " + tableName + getColumns(columns) + ";";
-        sql += "\n" + commentTable(tableName, tableComment) + ";";
-        TableColumn column = null;
-        String colName = "";
-        String colComment = "";
-        if (columns != null && columns.size() != 0) {
-            for (int i = 0; i < columns.size(); i++) {
-                column = columns.get(i);
-                colName = column.getColName();
-                colComment = column.getColComment();
-                if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(colComment)) {
-                    sql += "\n" + commentColumn(tableName, colName, colComment) + ";";
-                }
-            }
-        }
-        return sql;
+    public static String createTable(boolean ifNotExists, String tableName,
+                                     List<TableColumn> columns, String tableComment) {
+        return "CREATE TABLE " + getIfNotExists(ifNotExists) + " " + tableName
+                + getColumns(columns) + getTableComment(tableComment);
     }
 
     /**
      * 删除表
      *
+     * @param ifExists
      * @param tableName
      * @return
      */
-    public static String dropTable(String tableName) {
-        return "DROP TABLE " + tableName;
+    public static String dropTable(boolean ifExists, String tableName) {
+        return "DROP TABLE" + getIfExists(ifExists) + " " + tableName;
     }
 
-
-    public static String commentColumn(String tableName, String colName, String colComment) {
-        return "COMMENT ON COLUMN " + tableName + "." + colName + " IS '" + colComment + "'";
+    private static String getIfExists(boolean ifExists) {
+        String sql = "";
+        if (ifExists) {
+            sql = " IF EXISTS";
+        }
+        return sql;
     }
 
-    public static String commentTable(String tableName, String tableComment) {
-        return "COMMENT ON TABLE " + tableName + " IS '" + tableComment + "'";
+    private static String getIfNotExists(boolean ifNotExists) {
+        String sql = "";
+        if (ifNotExists) {
+            sql = " IF NOT EXISTS";
+        }
+        return sql;
     }
 
     private static String getColumns(List<TableColumn> columns) {
@@ -81,6 +77,14 @@ public class OracleSqlUtil {
                 }
             }
             sql += "\n)";
+        }
+        return sql;
+    }
+
+    private static String getTableComment(String tableComment) {
+        String sql = "";
+        if (tableComment != null && !tableComment.trim().equals("")) {
+            sql = "\n COMMENT '" + tableComment + "'";
         }
         return sql;
     }

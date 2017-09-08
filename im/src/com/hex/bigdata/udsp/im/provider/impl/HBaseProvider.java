@@ -1,10 +1,11 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
-import com.hex.bigdata.udsp.im.provider.wrapper.HBaseWrapper;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.HBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.provider.model.Model;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -45,12 +46,12 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public boolean createEngineSchema(Metadata metadata) throws Exception {
+    public boolean createEngineSchema(Model model) throws Exception {
         return false;
     }
 
     @Override
-    public boolean dropEngineSchema(Metadata metadata) throws Exception {
+    public boolean dropEngineSchema(Model model) throws Exception {
         return false;
     }
 }

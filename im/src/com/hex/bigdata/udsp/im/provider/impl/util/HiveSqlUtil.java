@@ -1,9 +1,9 @@
-package com.hex.bigdata.udsp.im.provider.util;
+package com.hex.bigdata.udsp.im.provider.impl.util;
 
-import com.hex.bigdata.udsp.im.provider.util.model.RowFormat;
-import com.hex.bigdata.udsp.im.provider.util.model.SerDeProperty;
-import com.hex.bigdata.udsp.im.provider.util.model.TableColumn;
-import com.hex.bigdata.udsp.im.provider.util.model.TblProperty;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.RowFormat;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.SerDeProperty;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

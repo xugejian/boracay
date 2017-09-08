@@ -1,48 +1,40 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
+import com.hex.bigdata.metadata.db.ClientFactory;
+import com.hex.bigdata.metadata.db.model.Column;
+import com.hex.bigdata.metadata.db.util.AcquireType;
+import com.hex.bigdata.metadata.db.util.DBType;
+import com.hex.bigdata.metadata.db.util.JdbcUtil;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
-import com.hex.bigdata.udsp.im.provider.wrapper.JdbcWrapper;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.MysqlDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MysqlModel;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.provider.util.MysqlSqlUtil;
-import com.hex.bigdata.udsp.im.provider.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.MysqlSqlUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by JunjieM on 2017-9-5.
  */
 @Component("com.hex.bigdata.udsp.im.provider.impl.MysqlProvider")
-public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, BatchTargetProvider, RealtimeTargetProvider {
+public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(MysqlProvider.class);
-
-    @Override
-    public List<MetadataCol> columnInfo(Model model) {
-        Datasource datasource = model.getSourceDatasource();
-        MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
-        MysqlModel mysqlModel = new MysqlModel(model.getPropertyMap());
-        return getColumnInfo(mysqlDatasource, mysqlModel);
-    }
-
-    @Override
-    public List<MetadataCol> columnInfo(Metadata metadata) {
-        Datasource datasource = metadata.getDatasource();
-        MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
-        String fullTbName = metadata.getTbName();
-        return getMetadataColsByTbName(mysqlDatasource, fullTbName);
-    }
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
@@ -69,7 +61,32 @@ public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, B
     }
 
     @Override
-    protected MetadataCol getMetadataColBySql(ResultSetMetaData md, int i) throws SQLException {
+    public String inputSQL() {
+        return null;
+    }
+
+    @Override
+    public String outputSQL() {
+        return null;
+    }
+
+    @Override
+    public void outputData() {
+
+    }
+
+    @Override
+    public boolean createEngineSchema(Model model) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean dropEngineSchema(Model model) throws Exception {
+        return false;
+    }
+
+    @Override
+    protected MetadataCol getMetadataCols(ResultSetMetaData md, int i) throws SQLException {
         logger.debug("-----------------------------------------------------------");
         logger.debug("getCatalogName:" + md.getCatalogName(i));
         logger.debug("getSchemaName:" + md.getSchemaName(i));
@@ -90,37 +107,28 @@ public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, B
     }
 
     @Override
-    protected List<MetadataCol> getMetadataColsByTbName(ResultSet rs) throws SQLException {
-        return null;
-    }
+    protected List<MetadataCol> getMetadataCols(Connection conn, String dbName, String tbName) throws SQLException {
+        List<MetadataCol> metadataCols = null;
+        // 方式一：通过JDBCAPI方式获取字段信息
+        // 通过JDBC的API接口获取，可以拿到字段名、类型、长度、注释、主键、索引、分区等信息
+        List<Column> columns = ClientFactory.createMetaClient(AcquireType.JDBCAPI, DBType.HIVE, conn)
+                .getColumns(dbName, tbName);
+//        // 方式二：通过JDBCINFO方式获取字段信息
+//        // 通过select * from dbName.tbName获取，只能拿到字段名、类型、长度等信息
+//        List<Column> columns = ClientFactory.createMetaClient(AcquireType.JDBCINFO, DBType.HIVE, conn)
+//                .getColumns(dbName, tbName);
+//        // 方式三：通过JDBCAPI方式获取字段信息
+//        // 查询元数据表，可以获取最为详细的字段信息
+//        List<Column> columns = ClientFactory.createMetaClient(AcquireType.JDBCSQL, DBType.HIVE, conn)
+//                .getColumns(dbName, tbName);
+        metadataCols = new ArrayList<>();
+        MetadataCol mdCol = null;
+        for (Column col : columns) {
+            mdCol = new MetadataCol();
+            // TODO ...
 
-    @Override
-    protected String getSqlByTbName(String fullTbName) {
-        return null;
-    }
-
-    @Override
-    public String inputSQL() {
-        return null;
-    }
-
-    @Override
-    public String outputSQL() {
-        return null;
-    }
-
-    @Override
-    public void outputData() {
-
-    }
-
-    @Override
-    public boolean createEngineSchema(Metadata metadata) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean dropEngineSchema(Metadata metadata) throws Exception {
-        return false;
+            metadataCols.add(mdCol);
+        }
+        return metadataCols;
     }
 }

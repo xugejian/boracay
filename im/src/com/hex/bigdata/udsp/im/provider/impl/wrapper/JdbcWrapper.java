@@ -1,8 +1,19 @@
-package com.hex.bigdata.udsp.im.provider.wrapper;
+package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
+import com.hex.bigdata.metadata.db.ClientFactory;
+import com.hex.bigdata.metadata.db.model.Column;
+import com.hex.bigdata.metadata.db.util.AcquireType;
+import com.hex.bigdata.metadata.db.util.DBType;
+import com.hex.bigdata.metadata.db.util.JdbcUtil;
+import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
+import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MysqlModel;
+import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.provider.model.Model;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +28,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class JdbcWrapper{
+public abstract class JdbcWrapper implements BatchSourceProvider, BatchTargetProvider {
     private static Logger logger = LogManager.getLogger(JdbcWrapper.class);
     private static Map<String, BasicDataSource> dataSourcePool;
 
@@ -78,17 +89,48 @@ public abstract class JdbcWrapper{
         return conn;
     }
 
-    protected List<MetadataCol> getColumnInfo(JdbcDatasource datasource, JdbcModel model) {
+    @Override
+    public List<MetadataCol> columnInfo(Model model) {
+        Datasource datasource = model.getSourceDatasource();
+        JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
+        MysqlModel mysqlModel = new MysqlModel(model.getPropertyMap());
+        return getColumnInfo(jdbcDatasource, mysqlModel);
+    }
+
+    @Override
+    public List<MetadataCol> columnInfo(Metadata metadata) {
+        Datasource datasource = metadata.getDatasource();
+        JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
+        String fullTbName = metadata.getTbName();
+        String dbName = fullTbName.split(".")[0];
+        String tbName = fullTbName.split(".")[1];
+        return getMetadataCols(jdbcDatasource, dbName, tbName);
+    }
+
+    private List<MetadataCol> getMetadataCols(JdbcDatasource datasource, String dbName, String tbName) {
+        List<MetadataCol> metadataCols = null;
+        Connection conn = null;
+        try {
+            conn = getConnection(datasource);
+            metadataCols = getMetadataCols(conn, dbName, tbName);
+        } catch (SQLException e) {
+            logger.warn(e.getMessage());
+        } finally {
+            JdbcUtil.close(conn);
+        }
+        return metadataCols;
+    }
+
+    private List<MetadataCol> getColumnInfo(JdbcDatasource datasource, JdbcModel model) {
         String dbName = model.getDatabaseName();
         String tbName = model.getTableName();
         String sql = model.getSql();
         if (StringUtils.isNotBlank(sql)) {
             sql = "SELECT * FROM (" + sql + ") UDSP_VIEW WHERE 1=0";
-            return getMetadataColsBySql(datasource, sql);
+            return getMetadataCols(datasource, sql);
         }
         if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
-            String fullTbName = dbName + "." + tbName;
-            return getMetadataColsByTbName(datasource, fullTbName);
+            return getMetadataCols(datasource, dbName, tbName);
         }
         return null;
     }
@@ -102,44 +144,13 @@ public abstract class JdbcWrapper{
             stmt = conn.createStatement();
             rs = stmt.executeUpdate(updateSql);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            JdbcUtil.close(stmt);
+            JdbcUtil.close(conn);
         }
         return rs;
     }
 
-    protected List<MetadataCol> getMetadataColsByTbName(JdbcDatasource datasource, String fullTbName) {
-        String sql = getSqlByTbName(fullTbName);
-        List<MetadataCol> metadataCols = null;
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            conn = getConnection(datasource);
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(sql);
-            metadataCols = getMetadataColsByTbName(rs);
-        } catch (SQLException e) {
-            logger.warn(e.getMessage());
-        } finally {
-            close(conn, stmt, rs);
-        }
-        return metadataCols;
-    }
-
-    protected List<MetadataCol> getMetadataColsBySql(JdbcDatasource datasource, String sql) {
+    protected List<MetadataCol> getMetadataCols(JdbcDatasource datasource, String sql) {
         List<MetadataCol> metadataCols = null;
         Connection conn = null;
         Statement stmt = null;
@@ -153,7 +164,7 @@ public abstract class JdbcWrapper{
             metadataCols = new ArrayList<>();
             if (columnCount >= 1) {
                 for (int i = 1; i <= columnCount; i++) {
-                    metadataCols.add(getMetadataColBySql(md, i));
+                    metadataCols.add(getMetadataCols(md, i));
                 }
             }
         } catch (SQLException e) {
@@ -165,32 +176,12 @@ public abstract class JdbcWrapper{
     }
 
     private void close(Connection conn, Statement stmt, ResultSet rs) {
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        JdbcUtil.close(rs);
+        JdbcUtil.close(stmt);
+        JdbcUtil.close(conn);
     }
 
-    protected abstract MetadataCol getMetadataColBySql(ResultSetMetaData md, int i) throws SQLException;
+    protected abstract MetadataCol getMetadataCols(ResultSetMetaData md, int i) throws SQLException;
 
-    protected abstract List<MetadataCol> getMetadataColsByTbName(ResultSet rs) throws SQLException;
-
-    protected abstract String getSqlByTbName(String fullTbName);
+    protected abstract List<MetadataCol> getMetadataCols(Connection conn, String dbName, String tbName) throws SQLException;
 }

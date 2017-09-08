@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.wrapper;
+package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KafkaDatasource;
 import kafka.consumer.Consumer;

@@ -1,6 +1,6 @@
-package com.hex.bigdata.udsp.im.provider.wrapper;
+package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
-import com.hex.bigdata.udsp.im.provider.factory.SolrConnectionPoolFactory;
+import com.hex.bigdata.udsp.im.provider.impl.factory.SolrConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;

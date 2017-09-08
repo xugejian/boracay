@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.im.provider.wrapper.KafkaWrapper;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.KafkaWrapper;
 import com.hex.bigdata.udsp.im.provider.RealtimeSourceProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KafkaDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
