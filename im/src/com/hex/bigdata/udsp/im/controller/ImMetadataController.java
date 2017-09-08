@@ -78,12 +78,14 @@ public class ImMetadataController {
     public MessageResult insert(@RequestBody ImMetadataDto imMetadataDto) {
         boolean status = true;
         String message = "添加成功";
+        String pkId = "";
         if (imMetadataDto == null) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
-                if (StringUtils.isBlank(imMetadataService.insert(imMetadataDto))) {
+                pkId = imMetadataService.insert(imMetadataDto);
+                if (StringUtils.isBlank(pkId)) {
                     status = false;
                     message = "添加失败";
                 }
@@ -98,7 +100,7 @@ public class ImMetadataController {
         } else {
             logger.info(message);
         }
-        return new MessageResult(status, message);
+        return new MessageResult(status, message,pkId);
     }
 
     @RequestMapping({"/insertAndCreate"})
