@@ -45,4 +45,8 @@ public class ImModelMapper extends SyncMapper<ImModel> {
     public List<ImModelView> selectPage(ImModelView imModelView, Page page) {
         return sqlSessionTemplate.selectList("com.hex.bigdata.udsp.im.dao.ImModelMapper.selectPage",imModelView,page.toPageBounds());
     }
+
+    public ImModel selectByName(String modelName) {
+        return  sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.selectByName",modelName);
+    }
 }

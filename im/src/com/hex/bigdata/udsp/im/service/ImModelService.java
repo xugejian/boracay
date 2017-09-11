@@ -43,21 +43,21 @@ public class ImModelService {
     private ImModelUpdateKeyMapper imModelUpdateKeyMapper;
 
     @Transactional
-    public boolean insert(ImModelViews imModelViews){
+    public boolean insert(ImModelViews imModelViews) throws Exception{
         String pkId = Util.uuid();
         ImModel model = imModelViews.getImModel();
         model.setPkId(pkId);
         if (!imModelMapper.insert(pkId, model)) {
-            return  false;
+            throw new RuntimeException("保存配置栏基础信息异常");
         }
         if(!imModelFilterColMapper.insertFilterCols(pkId,imModelViews.getImModelFilterCols())){
-            return false;
+            throw new RuntimeException("保存过滤字段异常");
         }
         if(!imModelMappingMapper.insertModelMappings(pkId,imModelViews.getImModelMappings())){
-            return false;
+            throw new RuntimeException("保存映射字段异常");
         }
         if(!comPropertiesMapper.insertModelComProperties(pkId,imModelViews.getComPropertiesList())){
-            return false;
+            throw new RuntimeException("保存参数配置栏信息异常");
         }
         //添加更新字段
         String updateKeys = model.getUpdateKey();
@@ -79,28 +79,29 @@ public class ImModelService {
     }
 
     @Transactional
-    public boolean update(ImModelViews imModelViews) {
+    public boolean update(ImModelViews imModelViews) throws Exception{
         ImModel model = imModelViews.getImModel();
         //获取模型主键
         String pkId = model.getPkId();
         if (!imModelMapper.update(pkId, model)) {
-            return  false;
+            //添加运行时异常，使事务回滚
+            throw new RuntimeException("更新配置栏基础信息异常");
         }
 
         if(!imModelFilterColMapper.deleteList(pkId) ||!imModelFilterColMapper.insertFilterCols(pkId,imModelViews.getImModelFilterCols())){
-            return false;
+            throw new RuntimeException("更新过滤字段异常");
         }
 
         if(!imModelMappingMapper.deleteList(pkId) || !imModelMappingMapper.insertModelMappings(pkId,imModelViews.getImModelMappings())){
-            return false;
+            throw new RuntimeException("更新映射字段异常");
         }
 
         if(!comPropertiesMapper.deleteList(pkId) || !comPropertiesMapper.insertModelComProperties(pkId,imModelViews.getComPropertiesList())){
-            return false;
+            throw new RuntimeException("更新参数配置栏信息异常");
         }
 
         if(!imModelUpdateKeyMapper.deleteList(pkId)){
-            return false;
+            throw new RuntimeException("更新更新主键异常1");
         }
         //添加更新字段
         String updateKeys = model.getUpdateKey();
@@ -115,7 +116,7 @@ public class ImModelService {
                 imModelUpdateKey.setModelId(pkId);
                 imModelUpdateKey.setColId(updateKey);
                 imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey);
-                return false;
+                throw new RuntimeException("更新更新主键异常2");
             }
         }
         return true;
@@ -126,13 +127,14 @@ public class ImModelService {
         return imModelMapper.selectPage(imModelView,page);
     }
 
-    public boolean delete(ImModel[] imModels) {
+    public boolean delete(ImModel[] imModels) throws Exception {
 
         for(ImModel imModel : imModels){
             imModel.setDelFlg("1");
             // 进行逻辑删除
             if(!imModelMapper.update(imModel.getPkId(),imModel)){
-                return false;
+                //跑出异常，进行回滚
+                throw new RuntimeException("删除失败,删除失败的模型名称为：" + imModel.getName());
             }
         }
         return true;
@@ -140,5 +142,9 @@ public class ImModelService {
 
     public ImModel selectByPkId(String pkId) {
         return imModelMapper.select(pkId);
+    }
+
+    public ImModel selectByName(String modelName) {
+        return imModelMapper.selectByName(modelName);
     }
 }

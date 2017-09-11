@@ -46,7 +46,7 @@ public class ImModelController {
             }
         }catch (Exception e){
             result = false;
-            message = "报错失败，错误信息：" + e.getMessage();
+            message = "保存失败，失败信息：" + e.getMessage();
             log.error("交互建模数据插入失败，失败数据为："+ JSONUtil.parseObj2JSON(imModelViews)+";错误信息："+e.getMessage());
         }
         return new MessageResult(result,message);
@@ -67,7 +67,7 @@ public class ImModelController {
             }
         }catch (Exception e){
             result = false;
-            message = "报错失败，错误信息：" + e.getMessage();
+            message = "更新失败，失败信息：" + e.getMessage();
             log.error("交互建模数据更新失败，失败数据为："+ JSONUtil.parseObj2JSON(imModelViews)+";错误信息："+e.getMessage());
         }
         return new MessageResult(result,message);
@@ -99,7 +99,7 @@ public class ImModelController {
             }
         }catch (Exception e){
             result = false;
-            message = "报错失败，错误信息：" + e.getMessage();
+            message = "删除失败，错误信息：" + e.getMessage();
         }
         return new MessageResult(result,message);
     }
@@ -113,5 +113,28 @@ public class ImModelController {
     public ImModel selectByPkId(@PathVariable String pkId){
 
         return  imModelService.selectByPkId(pkId);
+    }
+
+    /**
+     * 通过名称检查模型名称是否已存在
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("checkExist/{modelName}")
+    public MessageResult checkExist(@PathVariable String modelName){
+        boolean status = true;
+        boolean result = false;
+        String message = "模型名称不存在";
+        try{
+            if(imModelService.selectByName(modelName) != null){
+                result = true;
+                message = "模型名称存在";
+            }
+        }catch(Exception e){
+            status = false;
+            message = "检查模型名称是否存在失败";
+            log.error("根据模型名称查询模型是否存在失败！模型名称为：" + modelName + ";错误信息：" + e.getMessage());
+        }
+        return new MessageResult(status,message,result);
     }
 }

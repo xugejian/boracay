@@ -63,7 +63,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="updateKey">更新主键：</label></th>
                     <td>
                         <div id="updateKey" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
-                             url="${basePath}/com/ds/select" dataField="data" name="updateKey" multiSelect="false"  required="true" >
+                             url="${basePath}/com/ds/select" dataField="data" name="updateKey" multiSelect="false"  required="false" >
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -83,7 +83,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="buildMode">引擎数据源：</label></th>
                     <td colspan="3">
                         <div id="eDsId" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
-                             url="${basePath}/com/ds/selectAllSrc" dataField="data" name="eDsId" multiSelect="true"  required="true">
+                             url="${basePath}/com/ds/selectAllSrc" dataField="data" name="eDsId" multiSelect="true"  required="false">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -97,6 +97,19 @@ ${extends("/goframe/function_layout.httl")}
     <div>
         <fieldset style="border:dotted 1px #227EA0;">
             <legend><span style="font-weight: bold">配置栏</span></legend>
+            <div style="padding: 5px 5px 0px 5px;">
+                <div class="nui-toolbar" style="border-bottom: 0;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="text-align: right;">
+                                <a class="nui-button" iconCls="icon-add" onclick="addComProperties">添加</a>
+                                <a class="nui-button" iconCls="icon-remove" onclick="removeComProperties" enabled="false"
+                                   id="removeComProperties">删除</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             <div class="nui-fit" style="height:150px; padding: 0px 5px 0px 5px;">
                 <div id="datagrid1" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
                      idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
@@ -106,14 +119,15 @@ ${extends("/goframe/function_layout.httl")}
                         <div type="indexcolumn" headerAlign="center" width="8">位置</div>
                         <div field="name" headerAlign="center" allowSort="true" width="30">名称<font
                                 color="#FF0000">（必填）</font>
-                            <input property="editor" class="nui-textbox" vtype="maxLength:64"
-                                   onvalidation="colNameValidation1"/>
+                            <input name="comPropertie" property="editor" class="nui-combobox"
+                                   textField="name" valueField="name" allowInput="true"
+                                   onbeforeshowpopup="comPropertiesName" vtype="maxLength:64" required="true"/>
                         </div>
-                        <div field="describe" headerAlign="center" allowSort="true" width="30">说明<font color="#FF0000">（必填）</font>
+                        <div field="describe" headerAlign="center" allowSort="true" width="30">说明
                             <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
                         </div>
-                        <div field="value" headerAlign="center" allowSort="true" width="20">内容
-                            <input property="editor" class="nui-textarea" vtype="maxLength:4000"/>
+                        <div field="value" headerAlign="center" allowSort="true" width="20">内容<font color="#FF0000">（必填）</font>
+                            <input property="editor" class="nui-textarea" vtype="maxLength:4000" required="true"/>
                         </div>
                     </div>
                     <div field="note" headerAlign="center" allowSort="true" width="30">备注
@@ -256,9 +270,9 @@ ${extends("/goframe/function_layout.httl")}
     var updateKeyObject;
     var buildModeObject;
     var srcSourceType;
-
+    var modelName;
     var filterCols = [];
-
+    var cols;
     /**
      * 按需加载资源文件
      */
@@ -284,7 +298,8 @@ ${extends("/goframe/function_layout.httl")}
 
             form1.setData(data);
             form1.setChanged(false);
-
+            //初始化模型名称
+            modelName = data.name;
             //判断是否实时
             if(data.type == "2"){
                 $("#updateType").css("display","table-row");
@@ -325,7 +340,7 @@ ${extends("/goframe/function_layout.httl")}
         grid1.clearRows();
         grid2.clearRows();
         filterCols = [];
-        var cols = [];
+        cols = [];
         //将参数配置栏自动输入
         $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
             if (data.length > 0) {
@@ -497,6 +512,11 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function getBaseData() {
+        //基础信息栏数据校验
+        form1.validate();
+        if (form1.isValid() == false) {
+            return false;
+        }
         var baseData = form1.getData(true, true);
         return baseData;
     }
@@ -611,6 +631,49 @@ ${extends("/goframe/function_layout.httl")}
         row.operator = "==";
         row.isNeed = "0";
         row.defaultValue = ""
+    }
+
+    //名称校验
+    function nameValidation(e) {
+        if (e.isValid) {
+            if (checkPattern(e.value) == false) {
+                e.errorText = "只能包含字母、数字、下划线，且以字母开头";
+                e.isValid = false;
+            }
+
+            //如果和开始名称不一样则检查名称
+            if(e.value != modelName){
+                $.ajax({
+                    url: "${basePath}/im/md/checkExist/" + e.value,
+                    type: 'POST',
+                    cache: false,
+                    async:false,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        //状态成功并信息是是的
+                        if(data.status = true && data.data == true){
+                            e.errorText = "名称已存在";
+                            e.isValid = false;
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * 检查是否满足字母、数字、下划线，且以字母开头
+     */
+    function checkPattern(v) {
+        var re = new RegExp("^[A-Za-z][A-Za-z0-9_]{0,63}$");
+        if (re.test(v)) {
+            return true;
+        }
+        return false;
+    }
+    
+    function comPropertiesName(e) {
+        e.source.load(cols);
     }
 </script>
 <!--#end-->

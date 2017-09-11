@@ -63,6 +63,7 @@
     CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
     where PK_ID = #{pkId,jdbcType=VARCHAR}
+    and DEL_FLG = '0'
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
@@ -90,5 +91,13 @@
     <if test="crtTimeEnd != null and crtTimeEnd != ''">and #{crtTimeEnd} >= IM.CRT_TIME </if>
     <if test="uptTimeStart != null and uptTimeStart != ''">and IM.UPT_TIME >= #{uptTimeStart} </if>
     <if test="uptTimeEnd != null and uptTimeEnd != ''">and #{uptTimeEnd} >= IM.UPT_TIME </if>
+  </select>
+
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+      select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
+    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
+    from IM_MODEL
+    where NAME = #{modelName,jdbcType=VARCHAR}
+    and DEL_FLG = '0'
   </select>
 </mapper>
