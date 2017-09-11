@@ -31,7 +31,6 @@ public class ImProviderService {
         return provider.columnInfo(metadata);
     }
 
-
     public List<MetadataCol> getCloumnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
         SourceProvider provider = getSourceProvider(datasource);
@@ -40,43 +39,39 @@ public class ImProviderService {
 
     public boolean createEngineSchema(Model model) throws Exception {
         boolean status = false;
-
         Datasource sDs = model.getSourceDatasource();
         String sDsType = sDs.getType();
         Datasource tDs = model.getTargetMetadata().getDatasource();
         String tDsType = tDs.getType();
-
+        // 创建sDsType的Hive关联表
         BatchProvider sBatchProvider = getBatchProvider(sDs);
         status = sBatchProvider.createEngineSchema(model);
-
+        // 如果sDsType和tDsType一致则退出
         if (sDsType.equals(tDsType) || !status) {
             return status;
         }
-
+        // 创建tDsType的Hive关联表
         BatchProvider tBatchProvider = getBatchProvider(tDs);
         status = tBatchProvider.createEngineSchema(model);
-
         return status;
     }
 
     public boolean dropEngineSchema(Model model) throws Exception {
         boolean status = false;
-
         Datasource sDs = model.getSourceDatasource();
         String sDsType = sDs.getType();
         Datasource tDs = model.getTargetMetadata().getDatasource();
         String tDsType = tDs.getType();
-
+        // 删除sDsType的Hive关联表
         BatchProvider sBatchProvider = getBatchProvider(sDs);
         status = sBatchProvider.dropEngineSchema(model);
-
+        // 如果sDsType和tDsType一致则退出
         if (sDsType.equals(tDsType) || !status) {
             return status;
         }
-
+        // 删除tDsType的Hive关联表
         BatchProvider tBatchProvider = getBatchProvider(tDs);
         status = tBatchProvider.dropEngineSchema(model);
-
         return status;
     }
 

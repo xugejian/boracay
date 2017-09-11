@@ -32,28 +32,31 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
-        // HBase无法获取字段信息
+        // HBase无法获取字段信息，返回null
         return null;
     }
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
+        // TODO ...
         return false;
     }
 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
+        // TODO ...
         return false;
     }
 
     @Override
     public String outputSQL() {
+        // TODO ...
         return null;
     }
 
     @Override
     public void outputData() {
-
+        // TODO ...
     }
 
     @Override
