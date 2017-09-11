@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class HBaseWrapper {
+public abstract class HBaseWrapper extends Wrapper {
     static {
         // 解决winutils.exe不存在的问题
         try {

@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class SolrWrapper {
+public abstract class SolrWrapper extends Wrapper {
     private static Logger logger = LogManager.getLogger(SolrWrapper.class);
     private static Map<String, SolrConnectionPoolFactory> dataSourcePool;
 

@@ -44,18 +44,16 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         String tableComment = metadata.getDescribe();
         List<TableColumn> columns = null;
         String sql = OracleSqlUtil.createTable(fullTbName, columns, tableComment);
-        int status = getExecuteUpdateStatus(oracleDatasource, sql);
-        return status == 1 ? true : false;
+        return executeUpdate(oracleDatasource, sql) == 1 ? true : false;
     }
 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
         Datasource datasource = metadata.getDatasource();
-        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
+        OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = OracleSqlUtil.dropTable(fullTbName);
-        int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 1 ? true : false;
+        return executeUpdate(oracleDatasource, sql) == 1 ? true : false;
     }
 
     @Override

@@ -1,9 +1,5 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
-import com.hex.bigdata.metadata.db.ClientFactory;
-import com.hex.bigdata.metadata.db.model.Column;
-import com.hex.bigdata.metadata.db.util.AcquireType;
-import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.metadata.db.util.JdbcUtil;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
@@ -28,9 +24,11 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class JdbcWrapper implements BatchSourceProvider, BatchTargetProvider {
+public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider, BatchTargetProvider {
     private static Logger logger = LogManager.getLogger(JdbcWrapper.class);
     private static Map<String, BasicDataSource> dataSourcePool;
+
+    protected static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.jdbc.JdbcStorageHandler";
 
     protected synchronized BasicDataSource getDataSource(JdbcDatasource datasource) {
         String dsId = datasource.getId();
@@ -102,8 +100,15 @@ public abstract class JdbcWrapper implements BatchSourceProvider, BatchTargetPro
         Datasource datasource = metadata.getDatasource();
         JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
-        String dbName = fullTbName.split(".")[0];
-        String tbName = fullTbName.split(".")[1];
+        String[] strs = fullTbName.split(DATABASE_AND_TABLE_SEP);
+        String dbName = null;
+        String tbName = null;
+        if (strs.length == 1) {
+            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
+        } else if (strs.length == 2) {
+            dbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
+            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[1];
+        }
         return getMetadataCols(jdbcDatasource, dbName, tbName);
     }
 
@@ -135,7 +140,7 @@ public abstract class JdbcWrapper implements BatchSourceProvider, BatchTargetPro
         return null;
     }
 
-    protected int getExecuteUpdateStatus(JdbcDatasource datasource, String updateSql) throws SQLException {
+    protected int executeUpdate(JdbcDatasource datasource, String updateSql) throws SQLException {
         Connection conn = null;
         Statement stmt = null;
         int rs = 0;
@@ -150,7 +155,7 @@ public abstract class JdbcWrapper implements BatchSourceProvider, BatchTargetPro
         return rs;
     }
 
-    protected List<MetadataCol> getMetadataCols(JdbcDatasource datasource, String sql) {
+    protected List<MetadataCol> getMetadataCols(JdbcDatasource datasource, String querySql) {
         List<MetadataCol> metadataCols = null;
         Connection conn = null;
         Statement stmt = null;
@@ -158,7 +163,7 @@ public abstract class JdbcWrapper implements BatchSourceProvider, BatchTargetPro
         try {
             conn = getConnection(datasource);
             stmt = conn.createStatement();
-            rs = stmt.executeQuery(sql);
+            rs = stmt.executeQuery(querySql);
             ResultSetMetaData md = rs.getMetaData();
             int columnCount = md.getColumnCount();
             metadataCols = new ArrayList<>();

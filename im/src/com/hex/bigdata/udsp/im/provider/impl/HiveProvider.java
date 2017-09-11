@@ -4,27 +4,26 @@ import com.hex.bigdata.metadata.db.ClientFactory;
 import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
-import com.hex.bigdata.metadata.db.util.JdbcUtil;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.constant.DatasourceType;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.metadata.HiveMetadata;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
+import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.*;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.RowFormat;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,16 +87,11 @@ public class HiveProvider extends JdbcWrapper {
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = null;
-        List<TableColumn> partitions = null;
-        boolean isExternal = false;
-        boolean ifNotExists = false;
-        RowFormat rowFormat = null;
+        List<TableColumn> columns = null; // TODO ...
         String fileFormat = FileFormat.HIVE_FILE_FORMAT_PARQUET;
-        String sql = HiveSqlUtil.createTable(isExternal, ifNotExists, fullTbName,
-                columns, tableComment, partitions, rowFormat, fileFormat);
-        int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 1 ? true : false;
+        String sql = HiveSqlUtil.createTable(false, false, fullTbName,
+                columns, tableComment, null, null, fileFormat);
+        return executeUpdate(hiveDatasource, sql) == 1 ? true : false;
     }
 
     @Override
@@ -105,10 +99,8 @@ public class HiveProvider extends JdbcWrapper {
         Datasource datasource = metadata.getDatasource();
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
-        boolean ifExists = false;
-        String sql = HiveSqlUtil.dropTable(ifExists, fullTbName);
-        int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 1 ? true : false;
+        String sql = HiveSqlUtil.dropTable(false, fullTbName);
+        return executeUpdate(hiveDatasource, sql) == 1 ? true : false;
     }
 
     @Override
@@ -126,18 +118,82 @@ public class HiveProvider extends JdbcWrapper {
         boolean status = false;
         Datasource sDs = model.getSourceDatasource();
         String sDsType = sDs.getType();
+        Metadata md = model.getTargetMetadata();
+        Datasource tDs = md.getDatasource();
+        String tDsType = tDs.getType();
+        Datasource eDs = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
+        String id = model.getId();
         // 作为源
         if (DatasourceType.HIVE.getValue().equals(sDsType)) {
-            // TODO ...
-
+            HiveModel hiveModel = new HiveModel(model.getPropertyMap());
+            String fullTbName = hiveModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + hiveModel.getTableName();
+            String tableName = getSourceTableName(hiveModel.getDatabaseName(), hiveModel.getTableName(), id);
+            List<ModelMapping> modelMappings = model.getModelMappings();
+            List<TableColumn> columns = new ArrayList<>();
+            for (ModelMapping mapping : modelMappings) {
+                String dataType = "";
+                // TODO ...
+                columns.add(new TableColumn(mapping.getName(), dataType, mapping.getDescribe()));
+            }
+            List<TblProperty> tblProperties = new ArrayList<>();
+            HiveDatasource hiveDs = new HiveDatasource(sDs.getPropertyMap());
+            tblProperties.add(new TblProperty("mapred.jdbc.driver.class", hiveDs.getDriverClass()));
+            tblProperties.add(new TblProperty("mapred.jdbc.url", hiveDs.getJdbcUrl()));
+            if (StringUtils.isNotBlank(hiveDs.getUsername())) {
+                tblProperties.add(new TblProperty("mapred.jdbc.username", hiveDs.getUsername()));
+            }
+            if (StringUtils.isNotBlank(hiveDs.getPassword())) {
+                tblProperties.add(new TblProperty("mapred.jdbc.password", hiveDs.getPassword()));
+            }
+            tblProperties.add(new TblProperty("mapred.jdbc.input.table.name", fullTbName));
+            tblProperties.add(new TblProperty("mapred.jdbc.output.table.name", fullTbName));
+            tblProperties.add(new TblProperty("mapred.jdbc.hive.lazy.split", "false"));
+            String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
+                    columns, "源的Hive引擎表", null,
+                    HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, tblProperties);
+            status = executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+            if (!status) return status;
         }
-        Datasource tDs = model.getTargetMetadata().getDatasource();
-        String tDsType = tDs.getType();
         // 作为目标
         if (DatasourceType.HIVE.getValue().equals(tDsType)) {
-            // TODO ...
+            HiveMetadata hiveMd = new HiveMetadata(md.getPropertyMap());
+            String tableName = getTargetTableName(hiveMd.getTbName(), id);
+            List<TableColumn> columns = null; // TODO ...
+            List<TblProperty> tblProperties = null; // TODO ...
+            String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
+                    columns, "目标的Hive引擎表", null,
+                    HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, tblProperties);
+            status = executeUpdate(eHiveDs, sql) >= 0 ? true : false;
         }
         return status;
+    }
+
+    private String getSourceTableName(String dbName, String tbName, String id) {
+        String tableName = HIVE_ENGINE_SOURCE_TABLE_PREFIX + id;
+        if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
+            tableName = HIVE_ENGINE_SOURCE_TABLE_PREFIX + dbName + HIVE_ENGINE_TABLE_SEP + tbName + HIVE_ENGINE_TABLE_SEP + id;
+        }
+        return tableName;
+    }
+
+    private String getTargetTableName(String fullTbName, String id) {
+        String[] strs = fullTbName.split(DATABASE_AND_TABLE_SEP);
+        String dbName = null;
+        String tbName = null;
+        if (strs.length == 1) {
+            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
+        } else if (strs.length == 2) {
+            dbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
+            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[1];
+        }
+        String tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + id;
+        if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
+            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + dbName + HIVE_ENGINE_TABLE_SEP + tbName + HIVE_ENGINE_TABLE_SEP + id;
+        } else if (StringUtils.isNotBlank(tbName)) {
+            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + tbName + HIVE_ENGINE_TABLE_SEP + id;
+        }
+        return tableName;
     }
 
     @Override
@@ -145,15 +201,26 @@ public class HiveProvider extends JdbcWrapper {
         boolean status = false;
         Datasource sDs = model.getSourceDatasource();
         String sDsType = sDs.getType();
+        Metadata md = model.getTargetMetadata();
+        Datasource tDs = md.getDatasource();
+        String tDsType = tDs.getType();
+        Datasource eDs = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
+        String id = model.getId();
         // 作为源
         if (DatasourceType.HIVE.getValue().equals(sDsType)) {
-            // TODO ...
+            HiveModel hiveModel = new HiveModel(model.getPropertyMap());
+            String tableName = getSourceTableName(hiveModel.getDatabaseName(), hiveModel.getTableName(), id);
+            String sql = HiveSqlUtil.dropTable(true, tableName);
+            status = executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+            if (!status) return status;
         }
-        Datasource tDs = model.getTargetMetadata().getDatasource();
-        String tDsType = tDs.getType();
         // 作为目标
         if (DatasourceType.HIVE.getValue().equals(tDsType)) {
-            // TODO ...
+            HiveMetadata hiveMd = new HiveMetadata(md.getPropertyMap());
+            String tableName = getTargetTableName(hiveMd.getTbName(), id);
+            String sql = HiveSqlUtil.dropTable(true, tableName);
+            status = executeUpdate(eHiveDs, sql) >= 0 ? true : false;
         }
         return status;
     }

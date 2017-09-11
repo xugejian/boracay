@@ -4,10 +4,6 @@ public class TblProperty {
 	private String key;
 	private String value;
 
-	public TblProperty() {
-		super();
-	}
-
 	public TblProperty(String key, String value) {
 		super();
 		this.key = key;

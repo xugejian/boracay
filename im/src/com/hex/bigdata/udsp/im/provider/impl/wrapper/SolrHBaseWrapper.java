@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class SolrHBaseWrapper {
+public abstract class SolrHBaseWrapper extends Wrapper {
     static {
         // 解决winutils.exe不存在的问题
         try {
