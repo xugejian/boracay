@@ -168,8 +168,8 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         String id = model.getId();
         // 作为源
         if (dsType.getValue().equals(sDsType)) {
-            HiveModel hiveModel = new HiveModel(model.getPropertyMap());
-            String tableName = getSourceTableName(hiveModel.getDatabaseName(), hiveModel.getTableName(), id);
+            JdbcModel jdbcModel = new JdbcModel(model.getPropertyMap());
+            String tableName = getSourceTableName(jdbcModel.getDatabaseName(), jdbcModel.getTableName(), id);
             String sql = HiveSqlUtil.dropTable(true, tableName);
             status = JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
             if (!status) return status;
@@ -236,6 +236,8 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         String tableName = HIVE_ENGINE_SOURCE_TABLE_PREFIX + id;
         if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
             tableName = HIVE_ENGINE_SOURCE_TABLE_PREFIX + dbName + HIVE_ENGINE_TABLE_SEP + tbName + HIVE_ENGINE_TABLE_SEP + id;
+        } else if (StringUtils.isNotBlank(tbName)) {
+            tableName = HIVE_ENGINE_SOURCE_TABLE_PREFIX + tbName + HIVE_ENGINE_TABLE_SEP + id;
         }
         return tableName;
     }
