@@ -59,7 +59,7 @@ public class TDJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.TD.getValue();
     }
 }

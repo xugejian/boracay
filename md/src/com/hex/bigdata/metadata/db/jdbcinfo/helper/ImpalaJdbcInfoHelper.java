@@ -17,7 +17,7 @@ public class ImpalaJdbcInfoHelper extends BaseJdbcInfoHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.IMPALA.getValue();
     }
 

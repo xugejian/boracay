@@ -38,7 +38,7 @@ public class PgsqlJdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.PGSQL.getValue();
     }
 }

@@ -1,16 +1,22 @@
-package com.hex.bigdata.udsp.im.constant;
+package com.hex.bigdata.udsp.im.provider.constant;
 
 /**
  * Created by JunjieM on 2017-9-8.
  */
-public enum MetadataStatus {
-    CREATED("已创建", "CREATED"),
-    NO_CREATED("未创建", "NO_CREATED");
+public enum DatasourceType {
+    HIVE("HIVE", "HIVE"),
+    IMPALA("IMPALA", "IMPALA"),
+    ORACLE("ORACLE", "ORACLE"),
+    MYSQL("MYSQL", "MYSQL"),
+    SOLR("SOLR", "SOLR"),
+    KAFKA("KAFKA", "KAFKA"),
+    HBASE("HBASE", "HBASE"),
+    SOLR_HBASE("SOLR_HBASE", "SOLR_HBASE");
 
     private String value;
     private String name;
 
-    private MetadataStatus(String name, String value) {
+    private DatasourceType(String name, String value) {
         this.value = value;
         this.name = name;
     }

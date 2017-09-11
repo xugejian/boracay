@@ -38,7 +38,7 @@ public class DB2JdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.DB2.getValue();
     }
 }

@@ -5,6 +5,7 @@ import com.hex.bigdata.metadata.db.model.ColumnType;
 import com.hex.bigdata.metadata.db.model.Database;
 import com.hex.bigdata.metadata.db.model.Table;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Created by junjiem on 2016-6-21.
  */
 public interface Helper {
+    String getDbType();
 
     List<ColumnType> getColumnTypes() throws SQLException;
 

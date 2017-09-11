@@ -39,7 +39,7 @@ public class MysqlJdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.MYSQL.getValue();
     }
 }

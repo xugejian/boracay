@@ -108,7 +108,7 @@ public class ImMetadataService extends BaseService {
 //        datasource.setProperties(properties);
         List<Property> prop = new ArrayList<>();
         Metadata metadata = new Metadata(prop);
-        metadata.setType("1");
+        //metadata.setType("1");
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
         List<MetadataCol> list = imProviderService.getCloumnInfo(metadata);

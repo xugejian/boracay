@@ -70,7 +70,7 @@ public class OracleJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.ORACLE.getValue();
     }
 }

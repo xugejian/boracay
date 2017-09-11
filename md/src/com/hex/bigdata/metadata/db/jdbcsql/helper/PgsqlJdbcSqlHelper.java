@@ -39,7 +39,7 @@ public class PgsqlJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.PGSQL.getValue();
     }
 }

@@ -37,7 +37,7 @@ public class MysqlJdbcInfoHelper extends BaseJdbcInfoHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.MYSQL.getValue();
     }
 

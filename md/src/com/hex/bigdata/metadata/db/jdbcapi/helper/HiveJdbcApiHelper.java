@@ -37,7 +37,7 @@ public class HiveJdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.HIVE.getValue();
     }
 }

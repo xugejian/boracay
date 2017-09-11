@@ -21,7 +21,31 @@ public abstract class BaseClient implements Client {
 
     public BaseClient(Connection conn, DBType dbType) throws SQLException {
         this.conn = conn;
-        this.helper = getHelper(dbType);
+        this.helper = createHelper(dbType);
+    }
+
+    public String getCurrDbName() {
+        return currDbName;
+    }
+
+    public void setCurrDbName(String currDbName) {
+        this.currDbName = currDbName;
+    }
+
+    public Connection getConn() {
+        return conn;
+    }
+
+    public void setConn(Connection conn) {
+        this.conn = conn;
+    }
+
+    public Helper getHelper() {
+        return helper;
+    }
+
+    public void setHelper(Helper helper) {
+        this.helper = helper;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.hex.bigdata.metadata.db.jdbcinfo;
 
 import com.hex.bigdata.metadata.db.BaseClient;
+import com.hex.bigdata.metadata.db.Helper;
 import com.hex.bigdata.metadata.db.jdbcinfo.helper.*;
 import com.hex.bigdata.metadata.db.util.DBType;
 
@@ -16,7 +17,7 @@ public class JdbcInfoClient extends BaseClient {
     }
 
     @Override
-    public BaseJdbcInfoHelper getHelper(DBType dbType) {
+    public BaseJdbcInfoHelper createHelper(DBType dbType) {
         BaseJdbcInfoHelper helper = null;
         if (DBType.MYSQL == dbType) {
             helper = new MysqlJdbcInfoHelper(this.conn);
