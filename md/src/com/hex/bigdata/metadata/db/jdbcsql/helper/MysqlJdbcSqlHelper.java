@@ -67,7 +67,7 @@ public class MysqlJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.MYSQL.getValue();
     }
 }

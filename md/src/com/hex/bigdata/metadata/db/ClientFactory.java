@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * Created by junjiem on 2016-6-23.
  */
 public class ClientFactory {
-    public static Client createMetaClient(AcquireType acquireType, DBType dbType, Connection conn) throws SQLException {
+    public static BaseClient createMetaClient(AcquireType acquireType, DBType dbType, Connection conn) throws SQLException {
         if (AcquireType.JDBCSQL == acquireType) {
             return new JdbcSqlClient(conn, dbType);
         } else if (AcquireType.JDBCAPI == acquireType) {

@@ -1,16 +1,16 @@
-package com.hex.bigdata.udsp.im.constant;
+package com.hex.bigdata.udsp.im.provider.constant;
 
 /**
  * Created by JunjieM on 2017-9-8.
  */
-public enum MetadataType {
-    EXTERNAL("外部", "EXTERNAL"),
-    INTERIOR("内部", "INTERIOR");
+public enum MetadataStatus {
+    CREATED("已创建", "CREATED"),
+    NO_CREATED("未创建", "NO_CREATED");
 
     private String value;
     private String name;
 
-    private MetadataType(String name, String value) {
+    private MetadataStatus(String name, String value) {
         this.value = value;
         this.name = name;
     }

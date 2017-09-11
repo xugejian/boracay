@@ -17,7 +17,7 @@ public class HiveJdbcInfoHelper extends BaseJdbcInfoHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.HIVE.getValue();
     }
 

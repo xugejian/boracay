@@ -38,7 +38,7 @@ public class ImpalaJdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.IMPALA.getValue();
     }
 }

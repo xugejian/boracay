@@ -37,7 +37,7 @@ public class AS400JdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.AS400.getValue();
     }
 }

@@ -59,7 +59,7 @@ public class DB2JdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.DB2.getValue();
     }
 }

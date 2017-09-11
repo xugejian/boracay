@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.factory;
+package com.hex.bigdata.udsp.im.provider.impl.factory;
 
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;

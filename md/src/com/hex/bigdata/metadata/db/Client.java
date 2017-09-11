@@ -15,7 +15,7 @@ import java.util.List;
 public interface Client {
     String getCurrentDbName() throws SQLException;
 
-    Helper getHelper(DBType dbType) throws SQLException;
+    Helper createHelper(DBType dbType) throws SQLException;
 
     Client use(String dbName);
 

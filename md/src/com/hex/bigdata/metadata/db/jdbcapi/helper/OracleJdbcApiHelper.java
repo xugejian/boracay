@@ -63,7 +63,7 @@ public class OracleJdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.ORACLE.getValue();
     }
 }

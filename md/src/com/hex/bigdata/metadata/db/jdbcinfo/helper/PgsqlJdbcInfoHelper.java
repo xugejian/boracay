@@ -2,6 +2,7 @@ package com.hex.bigdata.metadata.db.jdbcinfo.helper;
 
 import com.hex.bigdata.metadata.db.jdbcinfo.BaseJdbcInfoHelper;
 import com.hex.bigdata.metadata.db.model.ColumnType;
+import com.hex.bigdata.metadata.db.util.DBType;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,11 +14,6 @@ import java.util.List;
 public class PgsqlJdbcInfoHelper extends BaseJdbcInfoHelper {
     public PgsqlJdbcInfoHelper(Connection conn) {
         super(conn);
-    }
-
-    @Override
-    protected String getDbType() {
-        return null;
     }
 
     @Override
@@ -38,6 +34,11 @@ public class PgsqlJdbcInfoHelper extends BaseJdbcInfoHelper {
     @Override
     public String getColumnsSql(String dbName, String tbName) {
         return null;
+    }
+
+    @Override
+    public String getDbType() {
+        return DBType.PGSQL.getValue();
     }
 
     @Override
