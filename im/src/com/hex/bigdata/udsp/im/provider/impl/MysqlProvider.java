@@ -167,7 +167,6 @@ public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, B
         return "show full columns from "+ fullTbName;
     }
 
-    @Override
     public boolean createTable(Metadata metadata) throws SQLException {
         Datasource datasource = metadata.getDatasource();
         MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
@@ -180,7 +179,6 @@ public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, B
         return status == 1 ? true : false;
     }
 
-    @Override
     public boolean createHiveTable(Metadata metadata) {
         // TODO ...
         return false;
@@ -196,7 +194,6 @@ public class MysqlProvider extends JdbcWrapper implements BatchSourceProvider, B
         return null;
     }
 
-    @Override
     public boolean dropHiveTable(Metadata metadata) {
         // TODO ...
         return true;

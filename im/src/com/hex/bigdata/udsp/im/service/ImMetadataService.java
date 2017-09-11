@@ -7,6 +7,7 @@ import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.PropertyUtil;
+import com.hex.bigdata.udsp.im.constant.MetadataType;
 import com.hex.bigdata.udsp.im.dao.ImMetadataMapper;
 import com.hex.bigdata.udsp.im.model.ImMetadata;
 import com.hex.bigdata.udsp.im.model.ImMetadataCol;
@@ -132,7 +133,7 @@ public class ImMetadataService extends BaseService {
         Datasource datasource = new Datasource(comDatasource, comProperties);
         List<Property> prop = new ArrayList<>();
         Metadata metadata = new Metadata(prop);
-        metadata.setType("1");
+        metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
         List<MetadataCol> list = imProviderService.getCloumnInfo(metadata);
@@ -161,12 +162,17 @@ public class ImMetadataService extends BaseService {
         Datasource datasource = new Datasource(comDatasource, comProperties);
         List<Property> prop = PropertyUtil.convertToPropertyList(comPropertiesService.selectByFkId(pkId));
         Metadata metadata = new Metadata(prop);
-        metadata.setType(imMetadata.getType());
+        metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(imMetadata.getTbName());
         metadata.setMetadataCols(ImUtil.convertToMetadataColList(imMetadataColService.select(pkId)));
         metadata.setDescribe(imMetadata.getDescribe());
         metadata.setDatasource(datasource);
         return metadata;
+    }
+
+    public List<ImMetadata> selectAll() {
+
+        return imMetadataMapper.selectAll();
     }
 }
 

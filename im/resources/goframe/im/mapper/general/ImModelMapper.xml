@@ -49,8 +49,6 @@
       T_MD_ID = #{tMdId,jdbcType=VARCHAR},
       NOTE = #{note,jdbcType=VARCHAR},
       DEL_FLG = #{delFlg,jdbcType=CHAR},
-      CRT_USER = #{crtUser,jdbcType=VARCHAR},
-      CRT_TIME = #{crtTime,jdbcType=VARCHAR},
       UPT_USER = #{uptUser,jdbcType=VARCHAR},
       UPT_TIME = #{uptTime,jdbcType=VARCHAR},
       TYPE = #{type,jdbcType=CHAR},

@@ -28,8 +28,8 @@ public class ImModelMapper extends SyncMapper<ImModel> {
     }
 
     @Override
-    protected ImModel selectExe(String id) {
-        return null;
+    protected ImModel selectExe(String pkId) {
+        return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.selectByPrimaryKey",pkId);
     }
 
     @Override

@@ -186,7 +186,6 @@ public class OracleProvider extends JdbcWrapper implements BatchSourceProvider, 
                 "  where COLS.table_name = upper('"+ fullTbName+"')";
     }
 
-    @Override
     public boolean createTable(Metadata metadata) throws SQLException {
         Datasource datasource = metadata.getDatasource();
         OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
@@ -199,7 +198,6 @@ public class OracleProvider extends JdbcWrapper implements BatchSourceProvider, 
         return status == 1 ? true : false;
     }
 
-    @Override
     public boolean createHiveTable(Metadata metadata) {
         // TODO ...
         return false;

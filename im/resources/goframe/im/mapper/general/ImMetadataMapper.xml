@@ -67,6 +67,7 @@
     select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
     UPT_TIME, TB_NAME, STATUS, TYPE
     from IM_METADATA
+    where DEL_FLG = '0'
   </select>
   <select id="select" resultMap="ImMetadataView" >
     select A.PK_ID, A.DS_ID, A.NAME, A.DESCRIBE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,

@@ -32,7 +32,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="tMdId">目标元数据：</label></th>
                     <td >
                         <div id="tMdId" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
-                             url="${basePath}/im/md/page?pageSize=100" dataField="data" name="tMdId" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
+                             url="${basePath}/im/md/selectAll" dataField="data" name="tMdId" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -494,9 +494,9 @@ ${extends("/goframe/function_layout.httl")}
             onload: function () {
             },
             ondestroy: function (action) {
-                //将目标元数据id映射添加到目标元数据中
+                //重新加载下
                 $.ajax({
-                    url: "${basePath}/im/md/page?pageSize=100",
+                    url: "${basePath}/im/md/selectAll",
                     type: 'POST',
                     cache: false,
                     async:false,
@@ -511,6 +511,7 @@ ${extends("/goframe/function_layout.httl")}
                         break;
                     }
                 }
+                //将目标元数据id映射添加到目标元数据中
                 targetDsModel.select(k);
                 //更新全局变量目标元数据的id
                 targetSourceId = action;

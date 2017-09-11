@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -52,13 +53,18 @@ public class ImModelController {
     }
 
     @ResponseBody
-    @RequestMapping("update")
-    public MessageResult update(@RequestBody ImModelViews imModelViews){
+    @RequestMapping("update/{pkId}")
+    public MessageResult update(@RequestBody ImModelViews imModelViews,@PathVariable String pkId){
         log.debug("更新交互建模数据为："+ JSONUtil.parseObj2JSON(imModelViews));
         boolean result = true;
         String message = "更新成功";
         try{
-            result = imModelService.update(imModelViews);;
+            //设置pkId
+            imModelViews.getImModel().setPkId(pkId);
+            result = imModelService.update(imModelViews);
+            if(!result){
+                message = "更新失败！";
+            }
         }catch (Exception e){
             result = false;
             message = "报错失败，错误信息：" + e.getMessage();
@@ -96,5 +102,16 @@ public class ImModelController {
             message = "报错失败，错误信息：" + e.getMessage();
         }
         return new MessageResult(result,message);
+    }
+
+    /**
+     * 通过主键获取交互建模基础信息
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("selectByPkId/{pkId}")
+    public ImModel selectByPkId(@PathVariable String pkId){
+
+        return  imModelService.selectByPkId(pkId);
     }
 }

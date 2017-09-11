@@ -35,13 +35,13 @@ public class ImModelMappingMapper  extends SyncMapper<ImModelMapping> {
     }
 
     @Override
-    protected boolean deleteListExe(String id) {
-        return false;
+    protected boolean deleteListExe(String mid) {
+        return sqlSessionTemplate.delete("com.hex.bigdata.udsp.im.dao.ImModelMappingMapper.deleteByMid",mid) >= 0 ;
     }
 
     @Override
-    protected List<ImModelMapping> selectListExe(String id) {
-        return null;
+    protected List<ImModelMapping> selectListExe(String mid) {
+        return sqlSessionTemplate.selectList("com.hex.bigdata.udsp.im.dao.ImModelMappingMapper.selectByMid",mid);
     }
 
     public boolean insertModelMappings(String pkId, List<ImModelMapping> imModelMappings) {

@@ -86,14 +86,37 @@ public class ImModelService {
         if (!imModelMapper.update(pkId, model)) {
             return  false;
         }
-        if(!imModelFilterColMapper.updateList(pkId,imModelViews.getImModelFilterCols())){
+
+        if(!imModelFilterColMapper.deleteList(pkId) ||!imModelFilterColMapper.insertFilterCols(pkId,imModelViews.getImModelFilterCols())){
             return false;
         }
-        if(!imModelMappingMapper.insertModelMappings(pkId,imModelViews.getImModelMappings())){
+
+        if(!imModelMappingMapper.deleteList(pkId) || !imModelMappingMapper.insertModelMappings(pkId,imModelViews.getImModelMappings())){
             return false;
         }
-        if(!comPropertiesMapper.insertModelComProperties(pkId,imModelViews.getComPropertiesList())){
+
+        if(!comPropertiesMapper.deleteList(pkId) || !comPropertiesMapper.insertModelComProperties(pkId,imModelViews.getComPropertiesList())){
             return false;
+        }
+
+        if(!imModelUpdateKeyMapper.deleteList(pkId)){
+            return false;
+        }
+        //添加更新字段
+        String updateKeys = model.getUpdateKey();
+        if(StringUtils.isNotBlank(updateKeys)){
+            String[] updateKeyArray = updateKeys.split(",");
+            String updateKeyId;
+            for(String updateKey : updateKeyArray){
+                ImModelUpdateKey imModelUpdateKey = new ImModelUpdateKey();
+                updateKeyId = Util.uuid();
+                //设置插入的ID
+                imModelUpdateKey.setPkId(updateKeyId);
+                imModelUpdateKey.setModelId(pkId);
+                imModelUpdateKey.setColId(updateKey);
+                imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey);
+                return false;
+            }
         }
         return true;
     }
@@ -113,5 +136,9 @@ public class ImModelService {
             }
         }
         return true;
+    }
+
+    public ImModel selectByPkId(String pkId) {
+        return imModelMapper.select(pkId);
     }
 }

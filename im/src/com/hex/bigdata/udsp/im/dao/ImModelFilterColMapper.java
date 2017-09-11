@@ -30,13 +30,13 @@ public class ImModelFilterColMapper  extends SyncMapper<ImModelFilterCol> {
     }
 
     @Override
-    protected boolean deleteListExe(String id) {
-        return false;
+    protected boolean deleteListExe(String mid) {
+        return sqlSessionTemplate.delete("com.hex.bigdata.udsp.im.dao.ImModelFilterColMapper.deleteByMid",mid) >= 0;
     }
 
     @Override
-    protected List<ImModelFilterCol> selectListExe(String id) {
-        return null;
+    protected List<ImModelFilterCol> selectListExe(String mid) {
+        return sqlSessionTemplate.selectList("com.hex.bigdata.udsp.im.dao.ImModelFilterColMapper.selectByMid",mid);
     }
 
     public boolean insertFilterCols(String pkId, List<ImModelFilterCol> imModelFilterCols) {

@@ -30,8 +30,8 @@ public class ImModelUpdateKeyMapper extends SyncMapper<ImModelUpdateKey> {
     }
 
     @Override
-    protected boolean deleteListExe(String id) {
-        return false;
+    protected boolean deleteListExe(String mid) {
+        return sqlSessionTemplate.delete("com.hex.bigdata.udsp.im.dao.ImModelUpdateKeyMapper.deleteByMid",mid) >= 0 ;
     }
 
     @Override

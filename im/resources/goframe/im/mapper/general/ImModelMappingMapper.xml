@@ -33,12 +33,24 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE
     from IM_MODEL_MAPPING
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE
     from IM_MODEL_MAPPING
   </select>
+
+  <select id="selectByMid" parameterType="java.lang.String" resultMap="BaseResultMap" >
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE
+    from IM_MODEL_MAPPING
+    where MODEL_ID = #{mid}
+     ORDER BY SEQ
+  </select>
+
+  <delete id="deleteByMid" parameterType="java.lang.String">
+    delete FROM  IM_MODEL_MAPPING
+    where MODEL_ID = #{mid}
+  </delete>
 </mapper>
