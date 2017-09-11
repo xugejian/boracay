@@ -132,20 +132,17 @@ public class HiveProvider extends JdbcWrapper {
             List<ModelMapping> modelMappings = model.getModelMappings();
             List<TableColumn> columns = new ArrayList<>();
             for (ModelMapping mapping : modelMappings) {
-                String dataType = "";
-                // TODO ...
+                String dataType = ""; // TODO ...  mapping.getType()、 mapping.getLength()
                 columns.add(new TableColumn(mapping.getName(), dataType, mapping.getDescribe()));
             }
             List<TblProperty> tblProperties = new ArrayList<>();
             HiveDatasource hiveDs = new HiveDatasource(sDs.getPropertyMap());
             tblProperties.add(new TblProperty("mapred.jdbc.driver.class", hiveDs.getDriverClass()));
             tblProperties.add(new TblProperty("mapred.jdbc.url", hiveDs.getJdbcUrl()));
-            if (StringUtils.isNotBlank(hiveDs.getUsername())) {
+            if (StringUtils.isNotBlank(hiveDs.getUsername()))
                 tblProperties.add(new TblProperty("mapred.jdbc.username", hiveDs.getUsername()));
-            }
-            if (StringUtils.isNotBlank(hiveDs.getPassword())) {
+            if (StringUtils.isNotBlank(hiveDs.getPassword()))
                 tblProperties.add(new TblProperty("mapred.jdbc.password", hiveDs.getPassword()));
-            }
             tblProperties.add(new TblProperty("mapred.jdbc.input.table.name", fullTbName));
             tblProperties.add(new TblProperty("mapred.jdbc.output.table.name", fullTbName));
             tblProperties.add(new TblProperty("mapred.jdbc.hive.lazy.split", "false"));
@@ -158,42 +155,32 @@ public class HiveProvider extends JdbcWrapper {
         // 作为目标
         if (DatasourceType.HIVE.getValue().equals(tDsType)) {
             HiveMetadata hiveMd = new HiveMetadata(md.getPropertyMap());
-            String tableName = getTargetTableName(hiveMd.getTbName(), id);
-            List<TableColumn> columns = null; // TODO ...
-            List<TblProperty> tblProperties = null; // TODO ...
+            String fullTbName = hiveMd.getTbName();
+            String tableName = getTargetTableName(fullTbName, id);
+            List<ModelMapping> modelMappings = model.getModelMappings();
+            List<TableColumn> columns = new ArrayList<>();
+            for (ModelMapping mapping : modelMappings) {
+                MetadataCol metadataCol = mapping.getMetadataCol();
+                String dataType = ""; // TODO ...  metadataCol.getType()、 metadataCol.getLength()
+                columns.add(new TableColumn(metadataCol.getName(), dataType, metadataCol.getDescribe()));
+            }
+            List<TblProperty> tblProperties = new ArrayList<>();
+            HiveDatasource hiveDs = new HiveDatasource(tDs.getPropertyMap());
+            tblProperties.add(new TblProperty("mapred.jdbc.driver.class", hiveDs.getDriverClass()));
+            tblProperties.add(new TblProperty("mapred.jdbc.url", hiveDs.getJdbcUrl()));
+            if (StringUtils.isNotBlank(hiveDs.getUsername()))
+                tblProperties.add(new TblProperty("mapred.jdbc.username", hiveDs.getUsername()));
+            if (StringUtils.isNotBlank(hiveDs.getPassword()))
+                tblProperties.add(new TblProperty("mapred.jdbc.password", hiveDs.getPassword()));
+            tblProperties.add(new TblProperty("mapred.jdbc.input.table.name", fullTbName));
+            tblProperties.add(new TblProperty("mapred.jdbc.output.table.name", fullTbName));
+            tblProperties.add(new TblProperty("mapred.jdbc.hive.lazy.split", "false"));
             String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                     columns, "目标的Hive引擎表", null,
                     HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, tblProperties);
             status = executeUpdate(eHiveDs, sql) >= 0 ? true : false;
         }
         return status;
-    }
-
-    private String getSourceTableName(String dbName, String tbName, String id) {
-        String tableName = HIVE_ENGINE_SOURCE_TABLE_PREFIX + id;
-        if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
-            tableName = HIVE_ENGINE_SOURCE_TABLE_PREFIX + dbName + HIVE_ENGINE_TABLE_SEP + tbName + HIVE_ENGINE_TABLE_SEP + id;
-        }
-        return tableName;
-    }
-
-    private String getTargetTableName(String fullTbName, String id) {
-        String[] strs = fullTbName.split(DATABASE_AND_TABLE_SEP);
-        String dbName = null;
-        String tbName = null;
-        if (strs.length == 1) {
-            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
-        } else if (strs.length == 2) {
-            dbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
-            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[1];
-        }
-        String tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + id;
-        if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
-            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + dbName + HIVE_ENGINE_TABLE_SEP + tbName + HIVE_ENGINE_TABLE_SEP + id;
-        } else if (StringUtils.isNotBlank(tbName)) {
-            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + tbName + HIVE_ENGINE_TABLE_SEP + id;
-        }
-        return tableName;
     }
 
     @Override

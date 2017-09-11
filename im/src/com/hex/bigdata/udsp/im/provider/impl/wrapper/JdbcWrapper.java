@@ -180,10 +180,37 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         return metadataCols;
     }
 
-    private void close(Connection conn, Statement stmt, ResultSet rs) {
+    protected void close(Connection conn, Statement stmt, ResultSet rs) {
         JdbcUtil.close(rs);
         JdbcUtil.close(stmt);
         JdbcUtil.close(conn);
+    }
+
+    protected String getSourceTableName(String dbName, String tbName, String id) {
+        String tableName = HIVE_ENGINE_SOURCE_TABLE_PREFIX + id;
+        if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
+            tableName = HIVE_ENGINE_SOURCE_TABLE_PREFIX + dbName + HIVE_ENGINE_TABLE_SEP + tbName + HIVE_ENGINE_TABLE_SEP + id;
+        }
+        return tableName;
+    }
+
+    protected String getTargetTableName(String fullTbName, String id) {
+        String[] strs = fullTbName.split(DATABASE_AND_TABLE_SEP);
+        String dbName = null;
+        String tbName = null;
+        if (strs.length == 1) {
+            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
+        } else if (strs.length == 2) {
+            dbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
+            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[1];
+        }
+        String tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + id;
+        if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
+            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + dbName + HIVE_ENGINE_TABLE_SEP + tbName + HIVE_ENGINE_TABLE_SEP + id;
+        } else if (StringUtils.isNotBlank(tbName)) {
+            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + tbName + HIVE_ENGINE_TABLE_SEP + id;
+        }
+        return tableName;
     }
 
     protected abstract MetadataCol getMetadataCols(ResultSetMetaData md, int i) throws SQLException;
