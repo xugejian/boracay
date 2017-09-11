@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Created by junjiem on 2016-6-2312312.
+ * Created by junjiem on 2016-6-23.
  */
 public class ClientFactory {
     public static BaseClient createMetaClient(AcquireType acquireType, DBType dbType, Connection conn) throws SQLException {
