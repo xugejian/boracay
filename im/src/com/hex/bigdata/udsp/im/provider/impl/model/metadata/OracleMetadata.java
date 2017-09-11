@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public class OracleMetadata extends Metadata {
+public class OracleMetadata extends JdbcMetadata {
     public OracleMetadata(List<Property> properties) {
         super(properties);
     }
