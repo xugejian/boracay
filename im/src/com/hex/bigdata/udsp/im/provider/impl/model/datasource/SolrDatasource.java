@@ -27,4 +27,11 @@ public class SolrDatasource extends Datasource {
             throw new IllegalArgumentException("solr.servers不能为空");
         return value;
     }
+
+    public String getSolrUrl() {
+        String value = getProperty("solr.url").getValue();
+        if (StringUtils.isBlank(value))
+            throw new IllegalArgumentException("solr.url不能为空");
+        return value;
+    }
 }

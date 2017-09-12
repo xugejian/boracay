@@ -6,14 +6,13 @@ import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.provider.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.OracleDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.OracleModel;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.OracleSqlUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
@@ -25,11 +24,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil.executeUpdate;
 
 /**
  * Created by JunjieM on 2017-9-5.
@@ -49,18 +49,25 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         sqls.add(OracleSqlUtil.createTable(fullTbName, columns, tableComment));
         sqls.add(OracleSqlUtil.commentTable(fullTbName, tableComment));
         sqls.addAll(OracleSqlUtil.createColComment(fullTbName, columns));
-        int status = getExecuteUpdateStatus(oracleDatasource, sqls);
-        return status == 0 ? true : false;
+       // int status = getExecuteUpdateStatus(oracleDatasource, sqls);
+       // return status == 0 ? true : false;
+
+        return JdbcProviderUtil.executeUpdate(oracleDatasource, sql) == 1 ? true : false;
+
     }
 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
         Datasource datasource = metadata.getDatasource();
-        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
+        OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = OracleSqlUtil.dropTable(fullTbName);
-        int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 0 ? true : false;
+
+        //int status = getExecuteUpdateStatus(hiveDatasource, sql);
+        //return status == 0 ? true : false;
+
+        return JdbcProviderUtil.executeUpdate(oracleDatasource, sql) == 1 ? true : false;
+
     }
 
     @Override
@@ -80,12 +87,12 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
 
     @Override
     public boolean createEngineSchema(Model model) throws Exception {
-        return false;
+        return createEngineSchema(model, DatasourceType.ORACLE);
     }
 
     @Override
     public boolean dropEngineSchema(Model model) throws Exception {
-        return false;
+        return dropEngineSchema(model, DatasourceType.ORACLE);
     }
 
     @Override

@@ -17,7 +17,7 @@ import java.util.Properties;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class KafkaWrapper {
+public abstract class KafkaWrapper extends Wrapper {
     private static Logger logger = LogManager.getLogger(KafkaWrapper.class);
 
     protected ConsumerConnector getConsumerConnector(KafkaDatasource datasource) {

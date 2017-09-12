@@ -7,7 +7,9 @@ import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
+import com.hex.bigdata.udsp.im.provider.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.MysqlDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.MysqlSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
@@ -41,8 +43,10 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
         boolean ifNotExists = false;
         String sql = MysqlSqlUtil.createTable(ifNotExists, fullTbName, columns, tableComment);
-        int status = getExecuteUpdateStatus(mysqlDatasource, sql);
-        return status == 0 ? true : false;
+       // int status = getExecuteUpdateStatus(mysqlDatasource, sql);
+       // return status == 0 ? true : false;
+        return JdbcProviderUtil.executeUpdate(mysqlDatasource, sql) ==1 ? true : false;
+
     }
 
     @Override
@@ -52,8 +56,9 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         String fullTbName = metadata.getTbName();
         boolean ifExists = false;
         String sql = MysqlSqlUtil.dropTable(ifExists, fullTbName);
-        int status = getExecuteUpdateStatus(mysqlDatasource, sql);
-        return status == 0 ? true : false;
+        //int status = getExecuteUpdateStatus(mysqlDatasource, sql);
+       // return status == 0 ? true : false;
+        return JdbcProviderUtil.executeUpdate(mysqlDatasource, sql)==1 ? true : false;
     }
 
     @Override
@@ -73,12 +78,12 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
 
     @Override
     public boolean createEngineSchema(Model model) throws Exception {
-        return false;
+        return createEngineSchema(model, DatasourceType.MYSQL);
     }
 
     @Override
     public boolean dropEngineSchema(Model model) throws Exception {
-        return false;
+        return dropEngineSchema(model, DatasourceType.MYSQL);
     }
 
     @Override

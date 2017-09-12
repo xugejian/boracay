@@ -7,26 +7,24 @@ import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.metadata.db.util.JdbcUtil;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.constant.DatasourceType;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
+import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.util.ImUtil;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.RowFormat;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
-import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,8 +146,10 @@ public class HiveProvider extends JdbcWrapper {
         String fileFormat = FileFormat.HIVE_FILE_FORMAT_PARQUET;
         String sql = HiveSqlUtil.createTable(isExternal, ifNotExists, fullTbName,
                 columns, tableComment, partitions, rowFormat, fileFormat);
-        int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 0 ? true : false;
+      //  int status = getExecuteUpdateStatus(hiveDatasource, sql);
+     //   return status == 0 ? true : false;
+       return JdbcProviderUtil.executeUpdate(hiveDatasource, sql) == 1 ? true : false;
+
     }
 
     @Override
@@ -159,8 +159,10 @@ public class HiveProvider extends JdbcWrapper {
         String fullTbName = metadata.getTbName();
         boolean ifExists = false;
         String sql = HiveSqlUtil.dropTable(ifExists, fullTbName);
-        int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 0 ? true : false;
+       // int status = getExecuteUpdateStatus(hiveDatasource, sql);
+       // return status == 0 ? true : false;
+        return JdbcProviderUtil.executeUpdate(hiveDatasource, sql) == 1 ? true : false;
+
     }
 
     @Override
@@ -175,38 +177,11 @@ public class HiveProvider extends JdbcWrapper {
 
     @Override
     public boolean createEngineSchema(Model model) throws Exception {
-        boolean status = false;
-        Datasource sDs = model.getSourceDatasource();
-        String sDsType = sDs.getType();
-        // 作为源
-        if (DatasourceType.HIVE.getValue().equals(sDsType)) {
-            // TODO ...
-
-        }
-        Datasource tDs = model.getTargetMetadata().getDatasource();
-        String tDsType = tDs.getType();
-        // 作为目标
-        if (DatasourceType.HIVE.getValue().equals(tDsType)) {
-            // TODO ...
-        }
-        return status;
+        return createEngineSchema(model, DatasourceType.HIVE);
     }
 
     @Override
     public boolean dropEngineSchema(Model model) throws Exception {
-        boolean status = false;
-        Datasource sDs = model.getSourceDatasource();
-        String sDsType = sDs.getType();
-        // 作为源
-        if (DatasourceType.HIVE.getValue().equals(sDsType)) {
-            // TODO ...
-        }
-        Datasource tDs = model.getTargetMetadata().getDatasource();
-        String tDsType = tDs.getType();
-        // 作为目标
-        if (DatasourceType.HIVE.getValue().equals(tDsType)) {
-            // TODO ...
-        }
-        return status;
+        return dropEngineSchema(model, DatasourceType.HIVE);
     }
 }
