@@ -37,7 +37,7 @@ public class SqlServerJdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.SQLSERVER.getValue();
     }
 }

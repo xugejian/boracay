@@ -39,7 +39,7 @@ public class ImpalaForMysqlJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.IMPALA_FOR_MYSQL.getValue();
     }
 }

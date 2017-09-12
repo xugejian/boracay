@@ -52,7 +52,7 @@ public class OracleJdbcInfoHelper extends BaseJdbcInfoHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.ORACLE.getValue();
     }
 

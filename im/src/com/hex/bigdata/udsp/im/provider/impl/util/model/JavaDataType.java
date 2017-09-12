@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.util.model;
+package com.hex.bigdata.udsp.im.provider.impl.util.model;
 
 public class JavaDataType {
 	public static final String JAVA_DATA_TYPE_BIGINTEGER = "java.math.BigInteger";

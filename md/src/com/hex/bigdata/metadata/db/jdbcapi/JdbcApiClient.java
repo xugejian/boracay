@@ -16,7 +16,7 @@ public class JdbcApiClient extends BaseClient {
         super(conn, dbType);
     }
 
-    public BaseJdbcApiHelper getHelper(DBType dbType) throws SQLException {
+    public BaseJdbcApiHelper createHelper(DBType dbType) throws SQLException {
         BaseJdbcApiHelper helper = null;
         if (DBType.MYSQL == dbType) {
             helper = new MysqlJdbcApiHelper(this.conn);

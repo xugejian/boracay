@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.rc.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
+import com.hex.bigdata.udsp.common.constant.DatasourceModel;
 import com.hex.bigdata.udsp.common.constant.DatasourceType;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
@@ -253,7 +254,7 @@ public class RcServiceService {
             searchList = this.iqApplicationService.select(new IqApplicationView());
         } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equals(type)) {
             ComDatasourceView datasourceView = new ComDatasourceView();
-            datasourceView.setModel(DatasourceType.OLQ.getValue());
+            datasourceView.setModel(DatasourceModel.OLQ.getValue());
             searchList = comDatasourceService.select(datasourceView);
         } else if (RcConstant.UDSP_SERVICE_TYPE_MM.equals(type)) {
             searchList = mmApplicationService.selectAll();

@@ -39,6 +39,4 @@ public abstract class BaseHelper implements Helper {
         }
         return null;
     }
-
-    protected abstract String getDbType();
 }

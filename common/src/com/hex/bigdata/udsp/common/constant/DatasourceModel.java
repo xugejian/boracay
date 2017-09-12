@@ -1,16 +1,21 @@
-package com.hex.bigdata.udsp.im.constant;
+package com.hex.bigdata.udsp.common.constant;
 
 /**
- * Created by JunjieM on 2017-9-8.
+ * Created with IntelliJ IDEA
+ * Author: tomnic.wang
+ * DATE:2017/4/17
+ * TIME:14:09
  */
-public enum ModelStatus {
-    CREATED("已创建", "CREATED"),
-    NO_CREATED("未创建", "NO_CREATED");
+public enum DatasourceModel {
+    IQ("交互查询", "IQ"),
+    OLQ("联机查询", "OLQ"),
+    RTS("实时流", "RTS"),
+    IM("交互建模", "IM");
 
     private String value;
     private String name;
 
-    private ModelStatus(String name, String value) {
+    private DatasourceModel(String name, String value) {
         this.value = value;
         this.name = name;
     }

@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.util.model;
+package com.hex.bigdata.udsp.im.provider.impl.util.model;
 
 /**
  * Impala数据类型

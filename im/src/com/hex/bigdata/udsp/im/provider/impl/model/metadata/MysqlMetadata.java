@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public class MysqlMetadata extends Metadata {
+public class MysqlMetadata extends JdbcMetadata {
     public MysqlMetadata(List<Property> properties) {
         super(properties);
     }

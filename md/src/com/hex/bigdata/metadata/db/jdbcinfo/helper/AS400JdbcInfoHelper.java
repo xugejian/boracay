@@ -2,6 +2,7 @@ package com.hex.bigdata.metadata.db.jdbcinfo.helper;
 
 import com.hex.bigdata.metadata.db.jdbcinfo.BaseJdbcInfoHelper;
 import com.hex.bigdata.metadata.db.model.ColumnType;
+import com.hex.bigdata.metadata.db.util.DBType;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,8 +17,8 @@ public class AS400JdbcInfoHelper extends BaseJdbcInfoHelper {
     }
 
     @Override
-    protected String getDbType() {
-        return null;
+    public String getDbType() {
+        return DBType.AS400.getValue();
     }
 
     @Override

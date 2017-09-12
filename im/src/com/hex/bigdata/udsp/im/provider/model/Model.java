@@ -3,8 +3,8 @@ package com.hex.bigdata.udsp.im.provider.model;
 import com.hex.bigdata.udsp.common.provider.model.Base;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.constant.ModelStatus;
-import com.hex.bigdata.udsp.im.constant.ModelType;
+import com.hex.bigdata.udsp.im.provider.constant.ModelStatus;
+import com.hex.bigdata.udsp.im.provider.constant.ModelType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -14,6 +14,8 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class Model extends Base {
+    private String id; // 唯一键
+
     private String name;
 
     private String describe;
@@ -46,6 +48,17 @@ public class Model extends Base {
 
     public Model(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    @Override
+    public String getId() {
+        if (StringUtils.isBlank(name))
+            throw new IllegalArgumentException("id不能为空");
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

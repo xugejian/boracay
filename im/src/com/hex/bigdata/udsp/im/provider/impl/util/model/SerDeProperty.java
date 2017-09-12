@@ -1,14 +1,14 @@
-package com.hex.bigdata.udsp.im.provider.util.model;
+package com.hex.bigdata.udsp.im.provider.impl.util.model;
 
-public class TblProperty {
+public class SerDeProperty {
 	private String key;
 	private String value;
 
-	public TblProperty() {
+	public SerDeProperty() {
 		super();
 	}
 
-	public TblProperty(String key, String value) {
+	public SerDeProperty(String key, String value) {
 		super();
 		this.key = key;
 		this.value = value;

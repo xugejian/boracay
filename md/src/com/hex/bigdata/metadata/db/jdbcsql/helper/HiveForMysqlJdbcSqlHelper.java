@@ -39,7 +39,7 @@ public class HiveForMysqlJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.HIVE_FOR_MYSQL.getValue();
     }
 }

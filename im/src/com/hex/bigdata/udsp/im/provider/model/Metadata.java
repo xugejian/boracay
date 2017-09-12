@@ -3,8 +3,8 @@ package com.hex.bigdata.udsp.im.provider.model;
 import com.hex.bigdata.udsp.common.provider.model.Base;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.constant.MetadataStatus;
-import com.hex.bigdata.udsp.im.constant.MetadataType;
+import com.hex.bigdata.udsp.im.provider.constant.MetadataStatus;
+import com.hex.bigdata.udsp.im.provider.constant.MetadataType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

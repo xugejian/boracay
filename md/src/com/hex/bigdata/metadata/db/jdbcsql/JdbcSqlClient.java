@@ -16,7 +16,7 @@ public class JdbcSqlClient extends BaseClient {
         super(conn, dbType);
     }
 
-    public BaseJdbcSqlHelper getHelper(DBType dbType) {
+    public BaseJdbcSqlHelper createHelper(DBType dbType) {
         BaseJdbcSqlHelper helper = null;
         if (DBType.MYSQL == dbType) {
             helper = new MysqlJdbcSqlHelper(this.conn);

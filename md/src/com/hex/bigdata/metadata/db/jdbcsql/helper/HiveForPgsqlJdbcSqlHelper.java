@@ -39,7 +39,7 @@ public class HiveForPgsqlJdbcSqlHelper extends BaseJdbcSqlHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.HIVE_FOR_PGSQL.getValue();
     }
 }

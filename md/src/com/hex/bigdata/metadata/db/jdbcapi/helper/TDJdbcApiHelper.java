@@ -37,7 +37,7 @@ public class TDJdbcApiHelper extends BaseJdbcApiHelper {
     }
 
     @Override
-    protected String getDbType() {
+    public String getDbType() {
         return DBType.TD.getValue();
     }
 }

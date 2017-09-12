@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.common.provider.model;
 
+import com.hex.bigdata.udsp.common.constant.DatasourceType;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.util.PropertyUtil;

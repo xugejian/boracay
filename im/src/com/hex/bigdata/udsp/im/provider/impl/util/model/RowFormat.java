@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.util.model;
+package com.hex.bigdata.udsp.im.provider.impl.util.model;
 
 public class RowFormat {
 	public static final String IMPALA_FIELDS_TERMINATED_DEFAULT = "\\t";

@@ -3,10 +3,11 @@ package com.hex.bigdata.udsp.im.provider.impl;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.wrapper.SolrHBaseWrapper;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.provider.model.Model;
 import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,12 +69,12 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
-    public boolean createEngineSchema(Metadata metadata) throws Exception {
+    public boolean createEngineSchema(Model model) throws Exception {
         return false;
     }
 
     @Override
-    public boolean dropEngineSchema(Metadata metadata) throws Exception {
+    public boolean dropEngineSchema(Model model) throws Exception {
         return false;
     }
 }
