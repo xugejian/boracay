@@ -11,11 +11,11 @@ ${extends("/goframe/function_layout.httl")}
                         <input id="name" name="name" class="nui-textbox" style="width: 97%" required="true"
                                vtype="maxLength:64" onvalidation="nameValidation"/>
                     </td>
-                        <th class="nui-form-label"><label for="sDsId">数据源：</label></th>
+                    <th class="nui-form-label"><label for="sDsId">数据源：</label></th>
                     <td>
 
                         <div  class="nui-combobox" style="width:97%;" id="sDsId"  popupWidth="400" textField="name" valueField="pkId" type="type"
-                             url="${basePath}/com/ds/selectAllSrc" dataField="data" name="sDsId" multiSelect="false"  required="true" onvaluechanged="srcSourceChange">
+                              url="${basePath}/com/ds/selectAllSrc" dataField="data" name="sDsId" multiSelect="false"  required="true" onvaluechanged="srcSourceChange">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -98,7 +98,6 @@ ${extends("/goframe/function_layout.httl")}
     <div>
         <fieldset style="border:dotted 1px #227EA0;">
             <legend><span style="font-weight: bold">配置栏</span></legend>
-
             <div style="padding: 5px 5px 0px 5px;">
                 <div class="nui-toolbar" style="border-bottom: 0;">
                     <table style="width: 100%;">
@@ -131,133 +130,133 @@ ${extends("/goframe/function_layout.httl")}
                         <div field="value" headerAlign="center" allowSort="true" width="20">内容<font color="#FF0000">（必填）</font>
                             <input property="editor" class="nui-textarea" vtype="maxLength:4000" required="true"/>
                         </div>
-                        </div>
-                        <div field="note" headerAlign="center" allowSort="true" width="30">备注
-                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
-                        </div>
+                    </div>
+                    <div field="note" headerAlign="center" allowSort="true" width="30">备注
+                        <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
                     </div>
                 </div>
             </div>
-        </fieldset>
-        <div style="padding-bottom: 30px;padding-top: 10px;">
-            <a class="nui-button" style="float: right;" iconCls="icon-reload" onclick="lodaMapping" id="lodaMapping">加载映射字段</a>
+    </div>
+    </fieldset>
+    <div style="padding-bottom: 30px;padding-top: 10px;">
+        <a class="nui-button" style="float: right;" iconCls="icon-reload" onclick="lodaMapping" id="lodaMapping">加载映射字段</a>
+    </div>
+
+    <fieldset style="border:dotted 1px #227EA0;">
+        <legend><span style="font-weight: bold">字段映射栏:</span></legend>
+        <div style="padding: 5px 5px 0px 5px;">
+            <div class="nui-toolbar" style="border-bottom: 0;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="text-align: right;">
+                            <a class="nui-button" iconCls="icon-add" onclick="addMapp">添加</a>
+                            <a class="nui-button" iconCls="icon-remove" onclick="removeMapp" enabled="false"
+                               id="removeMapp">删除</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
 
-        <fieldset style="border:dotted 1px #227EA0;">
-            <legend><span style="font-weight: bold">字段映射栏:</span></legend>
-            <div style="padding: 5px 5px 0px 5px;">
-                <div class="nui-toolbar" style="border-bottom: 0;">
-                    <table style="width: 100%;">
-                        <tr>
-                            <td style="text-align: right;">
-                                <a class="nui-button" iconCls="icon-add" onclick="addMapp">添加</a>
-                                <a class="nui-button" iconCls="icon-remove" onclick="removeMapp" enabled="false"
-                                   id="removeMapp">删除</a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="nui-fit" style="height:150px;">
-                <div id="datagrid2" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
-                     idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
-                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected1">
-                    <div property="columns">
-                        <div type="checkcolumn" headerAlign="center" width="5"></div>
-                        <div type="indexcolumn" headerAlign="center" width="8">位置</div>
-                        <div field="name" headerAlign="center" allowSort="true" width="30">源字段名称</font>
-                            <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
-                        </div>
-                        <div field="colId" headerAlign="center" allowSort="true" width="30">目标字段名称
-                            <input property="editor" class="nui-combobox"
+        <div class="nui-fit" style="height:150px;">
+            <div id="datagrid2" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
+                 idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
+                 showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected1">
+                <div property="columns">
+                    <div type="checkcolumn" headerAlign="center" width="5"></div>
+                    <div type="indexcolumn" headerAlign="center" width="8">位置</div>
+                    <div field="name" headerAlign="center" allowSort="true" width="30">源字段名称</font>
+                        <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
+                    </div>
+                    <div field="colId" headerAlign="center" allowSort="true" width="30">目标字段名称
+                        <input name="colName" property="editor" class="nui-combobox"
                                textField="name" valueField="pkId" allowInput="true" dataField="data"
                                onbeforeshowpopup="targetMateColumn" vtype="maxLength:64" required="true"/>
-                        </div>
-                        <div field="type" headerAlign="center" allowSort="true" width="10">类型
-                            <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
-                                   dictTypeId="IQ_MD_COL_DATA_TYPE" value="STRING" vtype="maxLength:32"/>
-                        </div>
-                        <div field="length" headerAlign="center" allowSort="true" width="10">长度
-                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
-                        </div>
-                        <div field="describe" headerAlign="center" allowSort="true" width="30">描述
-                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
-                        </div>
-                        <div field="note" headerAlign="center" allowSort="true" width="30">备注
-                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
-                        </div>
+                    </div>
+                    <div field="type" headerAlign="center" allowSort="true" width="10">类型
+                        <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
+                               dictTypeId="IQ_MD_COL_DATA_TYPE" value="STRING" vtype="maxLength:32"/>
+                    </div>
+                    <div field="length" headerAlign="center" allowSort="true" width="10">长度
+                        <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                    </div>
+                    <div field="describe" headerAlign="center" allowSort="true" width="30">描述
+                        <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                    </div>
+                    <div field="note" headerAlign="center" allowSort="true" width="30">备注
+                        <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
                     </div>
                 </div>
             </div>
-
-        </fieldset>
-
-
-        <fieldset style="border:dotted 1px #227EA0;">
-            <legend><span style="font-weight: bold">字段过滤栏:</span></legend>
-            <div style="padding: 5px 5px 0px 5px;">
-                <div class="nui-toolbar" style="border-bottom: 0;">
-                    <table style="width: 100%;">
-                        <tr>
-                            <td style="text-align: right;">
-                                <a class="nui-button" iconCls="icon-add" onclick="addFilter">添加</a>
-                                <a class="nui-button" iconCls="icon-remove" onclick="removeFilter" enabled="false"
-                                   id="removeFilter">删除</a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="nui-fit" style="height:150px; padding: 0px 5px 0px 5px;">
-                <div id="datagrid4" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
-                     idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
-                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected2">
-                    <div property="columns">
-                        <div type="checkcolumn" headerAlign="center" width="5"></div>
-                        <div type="indexcolumn" headerAlign="center" width="8">位置</div>
-                        <div field="name" headerAlign="center" allowSort="true" width="30">字段名称<font
-                                color="#FF0000">（必填）</font>
-                            <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
-                            <!--<input name="colName" property="editor" class="nui-combobox"
-                                   textField="name" valueField="name" allowInput="true" dataField="data"
-                                   onbeforeshowpopup="targetFilterColumn" vtype="maxLength:64" required="true"
-                                   onvaluechanged="colNameChanged1"/>-->
-                        </div>
-                        <div field="describe" headerAlign="center" allowSort="true" width="30">说明</font>
-                            <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
-                        </div>
-                        <div field="type" headerAlign="center" allowSort="true" width="20">类型
-                            <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
-                                   dictTypeId="IQ_MD_COL_DATA_TYPE" value="STRING" vtype="maxLength:32"/>
-                        </div>
-                        <div field="length" headerAlign="center" allowSort="true" width="15">长度
-                            <input property="editor" class="nui-textbox" vtype="maxLength:32"/>
-                        </div>
-                        <div type="checkboxcolumn"  field="isNeed" trueValue="0" falseValue="1"
-                             headerAlign="center" allowSort="true" width="8">必填
-                        </div>
-                        <div field="operator" headerAlign="center" allowSort="true" width="15">操作符
-                            <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
-                                   dictTypeId="IM_MODEL_FILTER_TYPE" value="STRING" vtype="maxLength:32"/>
-                        </div>
-                        <div field="defaultValue" headerAlign="center" allowSort="true" width="15">默认值
-                            <input property="editor" class="nui-textbox" vtype="maxLength:32"/>
-                        </div>
-                        <div field="label" headerAlign="center" allowSort="true" width="30">别名
-                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-
-        <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
-            <a class="nui-button" style="" iconCls="icon-save" onclick="save" id="saveButton">保存</a>
-            <span style="display:inline-block;width:25px;"></span>
-            <a class="nui-button" style="" iconCls="icon-cancel" onclick="cancel">返回</a>
         </div>
+
+    </fieldset>
+
+
+    <fieldset style="border:dotted 1px #227EA0;">
+        <legend><span style="font-weight: bold">字段过滤栏:</span></legend>
+        <div style="padding: 5px 5px 0px 5px;">
+            <div class="nui-toolbar" style="border-bottom: 0;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="text-align: right;">
+                            <a class="nui-button" iconCls="icon-add" onclick="addFilter">添加</a>
+                            <a class="nui-button" iconCls="icon-remove" onclick="removeFilter" enabled="false"
+                               id="removeFilter">删除</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="nui-fit" style="height:150px; padding: 0px 5px 0px 5px;">
+            <div id="datagrid4" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
+                 idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
+                 showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected2">
+                <div property="columns">
+                    <div type="checkcolumn" headerAlign="center" width="5"></div>
+                    <div type="indexcolumn" headerAlign="center" width="8">位置</div>
+                    <div field="name" headerAlign="center" allowSort="true" width="30">字段名称<font
+                            color="#FF0000">（必填）</font>
+                        <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
+                        <!--<input name="colName" property="editor" class="nui-combobox"
+                               textField="name" valueField="name" allowInput="true" dataField="data"
+                               onbeforeshowpopup="targetFilterColumn" vtype="maxLength:64" required="true"
+                               onvaluechanged="colNameChanged1"/>-->
+                    </div>
+                    <div field="describe" headerAlign="center" allowSort="true" width="30">说明</font>
+                        <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
+                    </div>
+                    <div field="type" headerAlign="center" allowSort="true" width="20">类型
+                        <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
+                               dictTypeId="IQ_MD_COL_DATA_TYPE" value="STRING" vtype="maxLength:32"/>
+                    </div>
+                    <div field="length" headerAlign="center" allowSort="true" width="15">长度
+                        <input property="editor" class="nui-textbox" vtype="maxLength:32"/>
+                    </div>
+                    <div type="checkboxcolumn"  field="isNeed" trueValue="0" falseValue="1"
+                         headerAlign="center" allowSort="true" width="8">必填
+                    </div>
+                    <div field="operator" headerAlign="center" allowSort="true" width="15">操作符
+                        <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
+                               dictTypeId="IM_MODEL_FILTER_TYPE" value="STRING" vtype="maxLength:32"/>
+                    </div>
+                    <div field="defaultValue" headerAlign="center" allowSort="true" width="15">默认值
+                        <input property="editor" class="nui-textbox" vtype="maxLength:32"/>
+                    </div>
+                    <div field="label" headerAlign="center" allowSort="true" width="30">别名
+                        <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
+        <a class="nui-button" style="" iconCls="icon-save" onclick="save" id="saveButton">保存</a>
+        <span style="display:inline-block;width:25px;"></span>
+        <a class="nui-button" style="" iconCls="icon-cancel" onclick="cancel">返回</a>
     </div>
+</div>
 </div>
 
 <script type="text/javascript">
@@ -272,9 +271,9 @@ ${extends("/goframe/function_layout.httl")}
     var updateKeyObject;
     var buildModeObject;
     var srcSourceType;
-    var cols;
+    var modelName;
     var filterCols = [];
-
+    var cols;
     /**
      * 按需加载资源文件
      */
@@ -289,7 +288,51 @@ ${extends("/goframe/function_layout.httl")}
         updateModeObject = nui.get("updateMode");
         updateKeyObject = nui.get("updateKey");
         buildModeObject = nui.get("buildMode");
+
+        //加载数据
+        loadData();
     });
+
+    function loadData(){
+        //加载配置栏内容
+        $.post("${basePath}/im/model/selectByPkId/${pkId}", {}, function (data) {
+
+            form1.setData(data);
+            form1.setChanged(false);
+            //初始化模型名称
+            modelName = data.name;
+            //判断是否实时
+            if(data.type == "2"){
+                $("#updateType").css("display","table-row");
+                $("#buildType").css("display","none");
+                $("#eDsModel").css("display","none");
+                srcSourceType = "2";
+            }else{
+                $("#updateType").css("display","none");
+                $("#buildType").css("display","table-row");
+                $("#eDsModel").css("display","table-row");
+                srcSourceType = "1";
+            }
+        });
+
+        //加载参数栏
+        $.post("${basePath}/com/props/select/${pkId}", {}, function (data) {
+
+            grid1.addRows(data.data);
+        });
+
+        //加载映射
+        $.post("${basePath}/im/imMMapping/getImMMappingByMid/${pkId}", {}, function (data) {
+
+            grid2.addRows(data.data);
+        });
+
+        //加载过滤栏
+        $.post("${basePath}/im/imMFilter/getImMFilterByMid/${pkId}", {}, function (data) {
+
+            grid4.addRows(data.data);
+        });
+    }
 
 
     //源数据源改变时改变参数列表
@@ -426,7 +469,7 @@ ${extends("/goframe/function_layout.httl")}
         //禁用保存按钮
         nui.get("saveButton").disable();
         $.ajax({
-            url: "${basePath}/im/model/insert",
+            url: "${basePath}/im/model/update/${pkId}",
             type: 'POST',
             data: json,
             cache: false,
@@ -449,8 +492,9 @@ ${extends("/goframe/function_layout.httl")}
         });
 
     }
-    
+
     function getSaveData() {
+        // TODO 数据校验
         var baseData = getBaseData();
         if (!baseData) {
             return;
@@ -480,7 +524,7 @@ ${extends("/goframe/function_layout.httl")}
         };
         return saveData;
     }
-    
+
     function getBaseData() {
         //基础信息栏数据校验
         form1.validate();
@@ -505,12 +549,7 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function getModelMappings(){
-        grid2.validate();
-        if (grid2.isValid() == false) {
-            return false;
-        }
         var modelMappings = grid2.getData(true, true);
-        // TODO 映射校验
         $.each(modelMappings, function (_index, record) {
             record.seq = grid2.indexOf(record) + 1;
         });
@@ -518,12 +557,7 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function getImModelFilterCols(){
-        grid4.validate();
-        if (grid4.isValid() == false) {
-            return false;
-        }
         var modelFilterCols = grid4.getData(true, true);
-        // TODO 过滤字段校验
         $.each(modelFilterCols, function (_index, record) {
             record.seq = grid4.indexOf(record) + 1;
         })
@@ -578,7 +612,7 @@ ${extends("/goframe/function_layout.httl")}
         //字段映射栏对应的目标字段全部制空
         var data = grid2.getData(true, true);
         if(data == null || data.length == 0){
-             return;
+            return;
         }
         var cols = [];
         //设置可下拉的目标字段信息
@@ -602,7 +636,7 @@ ${extends("/goframe/function_layout.httl")}
             cache: false,
             contentType: 'application/json',
             success: function (data) {
-                    e.source.load(data.data);
+                e.source.load(data.data);
             }
         });
     }
@@ -628,20 +662,24 @@ ${extends("/goframe/function_layout.httl")}
                 e.errorText = "只能包含字母、数字、下划线，且以字母开头";
                 e.isValid = false;
             }
-            $.ajax({
-                url: "${basePath}/im/model/checkExist/" + e.value,
-                type: 'POST',
-                cache: false,
-                async:false,
-                contentType: 'application/json',
-                success: function (data) {
-                    //状态成功并信息是是的
-                    if(data.status = true && data.data == true){
-                        e.errorText = "名称已存在";
-                        e.isValid = false;
+
+            //如果和开始名称不一样则检查名称
+            if(e.value != modelName){
+                $.ajax({
+                    url: "${basePath}/im/model/checkExist/" + e.value,
+                    type: 'POST',
+                    cache: false,
+                    async:false,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        //状态成功并信息是是的
+                        if(data.status = true && data.data == true){
+                            e.errorText = "名称已存在";
+                            e.isValid = false;
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -655,13 +693,13 @@ ${extends("/goframe/function_layout.httl")}
         }
         return false;
     }
-
+    
     function comPropertiesName(e) {
         e.source.load(cols);
     }
 
     /**
-     * 检查参数名称是否重复和内容是否为空
+     * 检查参数名称是否重复
      */
     function checkProperties(properties) {
         //算法1、遍历
@@ -682,7 +720,7 @@ ${extends("/goframe/function_layout.httl")}
         });
         return repetFlg;
     }
-    
+
     function addComProperties() {
         var rows = grid1.getData(true, true);
         var length = rows.length;
@@ -699,7 +737,7 @@ ${extends("/goframe/function_layout.httl")}
             nui.alert("请至少选中一条记录!");
         }
     }
-    
+
     function selectedProperties() {
         var rows = grid1.getSelecteds();
         if (rows.length > 0) {
@@ -717,7 +755,7 @@ ${extends("/goframe/function_layout.httl")}
         row.describe = selected.describe;
         row.value = "";
     }
-    
+
     function showTargetCols(e) {
         var targetCols = this;
         if(!targetSourceId){

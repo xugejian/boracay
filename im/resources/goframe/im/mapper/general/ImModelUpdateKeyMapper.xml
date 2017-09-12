@@ -31,4 +31,9 @@
     select PK_ID, COL_ID, MODEL_ID
     from IM_MODEL_UPDATE_KEY
   </select>
+
+  <delete id="deleteByMid" parameterType="java.lang.String">
+    DELETE  FROM IM_MODEL_UPDATE_KEY
+    WHERE MODEL_ID = #{mid}
+  </delete>
 </mapper>

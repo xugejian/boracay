@@ -5,6 +5,7 @@ public class TableColumn {
 	private String dataType; // 类型
 	private String colComment; // 注释
 	private String length; //长度
+
 	public TableColumn(String colName, String dataType) {
 		super();
 		this.colName = colName;
@@ -58,4 +59,11 @@ public class TableColumn {
 		this.colComment = colComment;
 	}
 
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
 }

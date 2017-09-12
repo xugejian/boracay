@@ -4,7 +4,6 @@ import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.im.model.ImMetadataCol;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
