@@ -19,7 +19,6 @@ public class TableColumn {
 		this.colComment = colComment;
 	}
 
-
 	public TableColumn(String colName, String dataType, String colComment, int length) {
 		super();
 		this.colName = colName;

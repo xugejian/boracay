@@ -66,6 +66,7 @@ public class MysqlSqlUtil {
                 dataType = column.getDataType();
                 colComment = column.getColComment();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
+                  // TODO 该处错误需要修改！
                     if (i == 0) {
                         if("VARCHAR".equals(dataType)){
                             dataType += "("+ column.getLength()+")";
