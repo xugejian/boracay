@@ -50,11 +50,15 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
+        // TODO ... 创建HBase表
+        // TODO ... 创建Solr表
         return false;
     }
 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
+        // TODO ... 删除Solr表
+        // TODO ... 删除HBase表
         return false;
     }
 
@@ -64,17 +68,17 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
+    public boolean createTargetEngineSchema(Model model) throws Exception {
+        return false;
+    }
+
+    @Override
+    public boolean dropTargetEngineSchema(Model model) throws Exception {
+        return false;
+    }
+
+    @Override
     public void outputData() {
 
-    }
-
-    @Override
-    public boolean createEngineSchema(Model model) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean dropEngineSchema(Model model) throws Exception {
-        return false;
     }
 }

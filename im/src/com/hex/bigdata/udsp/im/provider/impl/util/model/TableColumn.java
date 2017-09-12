@@ -58,12 +58,4 @@ public class TableColumn {
 	public void setColComment(String colComment) {
 		this.colComment = colComment;
 	}
-
-	public int getLength() {
-		return length;
-	}
-
-	public void setLength(int length) {
-		this.length = length;
-	}
 }

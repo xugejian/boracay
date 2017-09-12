@@ -43,43 +43,43 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.solr.SolrStorageHandler";
 
     private List<MetadataCol> getColumns(String collectionName, String solrServers) {
-        if(StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)){
+        if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {
             return null;
         }
         String response = "";
         String[] addresses = solrServers.split(",");
-        for(String solrServer : addresses){
-            String url = "http://"+solrServer+"/solr/"+collectionName+"/schema/fields";
-            response = SolrUtil.sendGet(url,"");
-            if(StringUtils.isEmpty(response)){
+        for (String solrServer : addresses) {
+            String url = "http://" + solrServer + "/solr/" + collectionName + "/schema/fields";
+            response = SolrUtil.sendGet(url, "");
+            if (StringUtils.isEmpty(response)) {
                 continue;
-            }else{
+            } else {
                 break;
             }
         }
         JSONObject rs = JSONObject.parseObject(response);
-        JSONArray fields = (JSONArray)rs.get("fields");
+        JSONArray fields = (JSONArray) rs.get("fields");
         List<MetadataCol> metadataCols = new ArrayList<>();
         MetadataCol mdCol = null;
-        for(int i=0;i<fields.size();i++){
+        for (int i = 0; i < fields.size(); i++) {
             mdCol = new MetadataCol();
-            mdCol.setSeq((short)i);
-            mdCol.setName((String)fields.getJSONObject(i).get("name"));
-            mdCol.setDescribe((String)fields.getJSONObject(i).get("name"));
-            mdCol.setType(getColType((String)fields.getJSONObject(i).get("type")));
+            mdCol.setSeq((short) i);
+            mdCol.setName((String) fields.getJSONObject(i).get("name"));
+            mdCol.setDescribe((String) fields.getJSONObject(i).get("name"));
+            mdCol.setType(getColType((String) fields.getJSONObject(i).get("type")));
             mdCol.setLength("");
-            mdCol.setIndexed((boolean)fields.getJSONObject(i).get("indexed"));
-            mdCol.setStored((boolean)fields.getJSONObject(i).get("stored"));
+            mdCol.setIndexed((boolean) fields.getJSONObject(i).get("indexed"));
+            mdCol.setStored((boolean) fields.getJSONObject(i).get("stored"));
             metadataCols.add(mdCol);
         }
         return metadataCols;
     }
 
 
-    public static DataType getColType(String type){
+    public static DataType getColType(String type) {
         type = type.toUpperCase();
         DataType dataType = null;
-        switch (type){
+        switch (type) {
             case "STRING":
                 dataType = DataType.STRING;
                 break;
@@ -123,15 +123,15 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
         String[] addresses = solrServers.split(",");
         String response = "";
         Map<String, Property> mdPropertyMap = metadata.getPropertyMap();
-        for(String solrServer : addresses){
-            String url = "http://"+solrServer+"/solr/admin/collections";
-            String param = "action=CREATE"+"&name="+metadata.getTbName()+"&replicationFactor="+mdPropertyMap.get("solr.replicas").getValue()+
-                    "&numShards="+mdPropertyMap.get("solr.shards").getValue()+ "&maxShardsPerNode="+mdPropertyMap.get("solr.max.shards.per.node").getValue()+
-                    "&collection.configName="+metadata.getTbName();
+        for (String solrServer : addresses) {
+            String url = "http://" + solrServer + "/solr/admin/collections";
+            String param = "action=CREATE" + "&name=" + metadata.getTbName() + "&replicationFactor=" + mdPropertyMap.get("solr.replicas").getValue() +
+                    "&numShards=" + mdPropertyMap.get("solr.shards").getValue() + "&maxShardsPerNode=" + mdPropertyMap.get("solr.max.shards.per.node").getValue() +
+                    "&collection.configName=" + metadata.getTbName();
             response = SolrUtil.sendGet(url, param);
-            if(StringUtils.isEmpty(response)){
+            if (StringUtils.isEmpty(response)) {
                 continue;
-            }else{
+            } else {
                 break;
             }
         }
@@ -146,12 +146,12 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
         String solrServers = dsPropertyMap.get("solr.servers").getValue();
         String[] addresses = solrServers.split(",");
         String response = "";
-        for(String solrServer : addresses){
-            String url = "http://"+solrServer+"/solr/admin/collections";
-            String param = "action=DELETE"+"&name="+metadata.getTbName();
+        for (String solrServer : addresses) {
+            String url = "http://" + solrServer + "/solr/admin/collections";
+            String param = "action=DELETE" + "&name=" + metadata.getTbName();
             try {
                 SolrUtil.sendGet(url, param);
-            }catch (Exception e){
+            } catch (Exception e) {
                 continue;
             }
             break;
@@ -185,72 +185,63 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public boolean createEngineSchema(Model model) throws Exception {
-        boolean status = false;
-        Datasource sDs = model.getSourceDatasource();
-        String sDsType = sDs.getType();
-        Metadata md = model.getTargetMetadata();
-        Datasource tDs = md.getDatasource();
-        String tDsType = tDs.getType();
-        Datasource eDs = model.getEngineDatasource();
-        HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
+    public boolean createSourceEngineSchema(Model model) throws Exception {
+        Datasource datasource = model.getSourceDatasource();
+        Datasource engineDatasource = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
         String id = model.getId();
-        // 作为源
-        if (DatasourceType.SOLR.getValue().equals(sDsType)) {
-            SolrModel solrModel = new SolrModel(model.getPropertyMap());
-            String collectionName = solrModel.getCollectionName();
-            String tableName = getSourceTableName(null, collectionName, id);
-            SolrDatasource solrDs = new SolrDatasource(sDs.getPropertyMap());
-            List<ModelMapping> modelMappings = model.getModelMappings();
-            String pkName = getSourcePrimaryKey(modelMappings);
-            String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
-                    getSourceColumns(modelMappings), "源的Hive引擎表", null,
-                    HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, collectionName));
-            status = JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-            if (!status) return status;
-        }
-        // 作为目标
-        if (DatasourceType.SOLR.getValue().equals(tDsType)) {
-            SolrMetadata solrMetadata = new SolrMetadata(md.getPropertyMap());
-            String collectionName = solrMetadata.getTbName();
-            String tableName = getTargetTableName(collectionName, id);
-            SolrDatasource solrDs = new SolrDatasource(tDs.getPropertyMap());
-            List<ModelMapping> modelMappings = model.getModelMappings();
-            String pkName = getTargetPrimaryKey(modelMappings);
-            String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
-                    getTargetColumns(modelMappings), "目标的Hive引擎表", null,
-                    HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, collectionName));
-            status = JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-        }
-        return status;
+        SolrModel solrModel = new SolrModel(model.getPropertyMap());
+        String collectionName = solrModel.getCollectionName();
+        String tableName = getSourceTableName(null, collectionName, id);
+        SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
+        List<ModelMapping> modelMappings = model.getModelMappings();
+        String pkName = getSourcePrimaryKey(modelMappings);
+        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
+                getSourceColumns(modelMappings), "源的Hive引擎表", null,
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, collectionName));
+        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
 
     @Override
-    public boolean dropEngineSchema(Model model) throws Exception {
-        boolean status = false;
-        Datasource sDs = model.getSourceDatasource();
-        String sDsType = sDs.getType();
-        Metadata md = model.getTargetMetadata();
-        Datasource tDs = md.getDatasource();
-        String tDsType = tDs.getType();
-        Datasource eDs = model.getEngineDatasource();
-        HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
+    public boolean dropSourceEngineSchema(Model model) throws Exception {
+        Datasource datasource = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(datasource.getPropertyMap());
         String id = model.getId();
-        // 作为源
-        if (DatasourceType.SOLR.getValue().equals(sDsType)) {
-            SolrModel solrModel = new SolrModel(model.getPropertyMap());
-            String tableName = getSourceTableName(null, solrModel.getCollectionName(), id);
-            String sql = HiveSqlUtil.dropTable(true, tableName);
-            status = JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-            if (!status) return status;
-        }
-        // 作为目标
-        if (DatasourceType.SOLR.getValue().equals(tDsType)) {
-            SolrMetadata solrMetadata = new SolrMetadata(md.getPropertyMap());
-            String tableName = getTargetTableName(solrMetadata.getTbName(), id);
-            String sql = HiveSqlUtil.dropTable(true, tableName);
-            status = JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-        }
-        return status;
+        SolrModel solrModel = new SolrModel(model.getPropertyMap());
+        String tableName = getSourceTableName(null, solrModel.getCollectionName(), id);
+        String sql = HiveSqlUtil.dropTable(true, tableName);
+        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
+
+    @Override
+    public boolean createTargetEngineSchema(Model model) throws Exception {
+        Metadata metadata = model.getTargetMetadata();
+        Datasource datasource = metadata.getDatasource();
+        Datasource engineDatasource = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
+        String id = model.getId();
+        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
+        String collectionName = solrMetadata.getTbName();
+        String tableName = getTargetTableName(collectionName, id);
+        SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
+        List<ModelMapping> modelMappings = model.getModelMappings();
+        String pkName = getTargetPrimaryKey(modelMappings);
+        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
+                getTargetColumns(modelMappings), "目标的Hive引擎表", null,
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, collectionName));
+        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+    }
+
+    @Override
+    public boolean dropTargetEngineSchema(Model model) throws Exception {
+        Metadata metadata = model.getTargetMetadata();
+        Datasource engineDatasource = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
+        String id = model.getId();
+        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
+        String tableName = getTargetTableName(solrMetadata.getTbName(), id);
+        String sql = HiveSqlUtil.dropTable(true, tableName);
+        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+    }
+
 }

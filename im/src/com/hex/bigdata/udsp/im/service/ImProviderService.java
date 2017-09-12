@@ -1,9 +1,7 @@
 package com.hex.bigdata.udsp.im.service;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.BatchProvider;
-import com.hex.bigdata.udsp.im.provider.SourceProvider;
-import com.hex.bigdata.udsp.im.provider.TargetProvider;
+import com.hex.bigdata.udsp.im.provider.*;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
@@ -40,38 +38,24 @@ public class ImProviderService {
     public boolean createEngineSchema(Model model) throws Exception {
         boolean status = false;
         Datasource sDs = model.getSourceDatasource();
-        String sDsType = sDs.getType();
+        BatchSourceProvider batchSourceProvider = getBatchSourceProvider(sDs);
+        status = batchSourceProvider.createSourceEngineSchema(model);
+        if (!status) return status;
         Datasource tDs = model.getTargetMetadata().getDatasource();
-        String tDsType = tDs.getType();
-        // 创建sDsType的Hive关联表
-        BatchProvider sBatchProvider = getBatchProvider(sDs);
-        status = sBatchProvider.createEngineSchema(model);
-        // 如果sDsType和tDsType一致则退出
-        if (sDsType.equals(tDsType) || !status) {
-            return status;
-        }
-        // 创建tDsType的Hive关联表
-        BatchProvider tBatchProvider = getBatchProvider(tDs);
-        status = tBatchProvider.createEngineSchema(model);
+        BatchTargetProvider batchTargetProvider = getBatchTargetProvider(tDs);
+        status = batchTargetProvider.createTargetEngineSchema(model);
         return status;
     }
 
     public boolean dropEngineSchema(Model model) throws Exception {
         boolean status = false;
         Datasource sDs = model.getSourceDatasource();
-        String sDsType = sDs.getType();
+        BatchSourceProvider batchSourceProvider = getBatchSourceProvider(sDs);
+        status = batchSourceProvider.dropSourceEngineSchema(model);
+        if (!status) return status;
         Datasource tDs = model.getTargetMetadata().getDatasource();
-        String tDsType = tDs.getType();
-        // 删除sDsType的Hive关联表
-        BatchProvider sBatchProvider = getBatchProvider(sDs);
-        status = sBatchProvider.dropEngineSchema(model);
-        // 如果sDsType和tDsType一致则退出
-        if (sDsType.equals(tDsType) || !status) {
-            return status;
-        }
-        // 删除tDsType的Hive关联表
-        BatchProvider tBatchProvider = getBatchProvider(tDs);
-        status = tBatchProvider.dropEngineSchema(model);
+        BatchTargetProvider batchTargetProvider = getBatchTargetProvider(tDs);
+        status = batchTargetProvider.dropTargetEngineSchema(model);
         return status;
     }
 
@@ -87,9 +71,14 @@ public class ImProviderService {
         return provider.dropSchema(metadata);
     }
 
-    private BatchProvider getBatchProvider(Datasource datasource) {
+    private BatchSourceProvider getBatchSourceProvider(Datasource datasource) {
         String implClass = getImplClass(datasource);
-        return (BatchProvider) WebApplicationContextUtil.getBean(implClass);
+        return (BatchSourceProvider) WebApplicationContextUtil.getBean(implClass);
+    }
+
+    private BatchTargetProvider getBatchTargetProvider(Datasource datasource) {
+        String implClass = getImplClass(datasource);
+        return (BatchTargetProvider) WebApplicationContextUtil.getBean(implClass);
     }
 
     private SourceProvider getSourceProvider(Datasource datasource) {
@@ -110,13 +99,6 @@ public class ImProviderService {
             implClass = gfDict.getDictName();
         }
         return implClass;
-    }
-
-    public List<MetadataCol> getCloumnInfo(Model model) {
-        Datasource datasource = model.getSourceDatasource();
-        String implClass = getImplClass(datasource);
-        SourceProvider provider = (SourceProvider) WebApplicationContextUtil.getBean(implClass);
-        return provider.columnInfo(model);
     }
 
     public boolean createTable(Metadata metadata) throws Exception {
