@@ -6,7 +6,6 @@
     <result column="NAME" property="name" jdbcType="VARCHAR" />
     <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
     <result column="S_DS_ID" property="sDsId" jdbcType="VARCHAR" />
-    <result column="S_TB_NAME" property="sTbName" jdbcType="VARCHAR" />
     <result column="T_MD_ID" property="tMdId" jdbcType="VARCHAR" />
     <result column="NOTE" property="note" jdbcType="VARCHAR" />
     <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
@@ -17,56 +16,88 @@
     <result column="TYPE" property="type" jdbcType="CHAR" />
     <result column="BUILD_MODE" property="buildMode" jdbcType="CHAR" />
     <result column="UPDATE_MODE" property="updateMode" jdbcType="CHAR" />
-    <result column="UPDATE_KEY" property="updateKey" jdbcType="CHAR" />
-    <result column="S_TEXT" property="sText" jdbcType="CLOB" />
+    <result column="E_DS_ID" property="eDsId" jdbcType="VARCHAR"/>
+    <result column="STATUS" property="status" jdbcType="CHAR" />
   </resultMap>
+
+  <resultMap id="ImModelView" type="com.hex.bigdata.udsp.im.dto.ImModelView" extends="BaseResultMap">
+    <result column="TDSNAME" property="tDsName" jdbcType="VARCHAR" />
+    <result column="SDSNAME" property="sDsName" jdbcType="VARCHAR" />
+  </resultMap>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from IM_MODEL
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.im.model.ImModel" >
     insert into IM_MODEL (PK_ID, NAME, DESCRIBE, 
-      S_DS_ID, S_TB_NAME, T_MD_ID, 
+      S_DS_ID, T_MD_ID,
       NOTE, DEL_FLG, CRT_USER, 
       CRT_TIME, UPT_USER, UPT_TIME, 
-      TYPE, BUILD_MODE, UPDATE_MODE, 
-      UPDATE_KEY, S_TEXT)
+      TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS)
     values (#{pkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, 
-      #{sDsId,jdbcType=VARCHAR}, #{sTbName,jdbcType=VARCHAR}, #{tMdId,jdbcType=VARCHAR}, 
+      #{sDsId,jdbcType=VARCHAR},#{tMdId,jdbcType=VARCHAR},
       #{note,jdbcType=VARCHAR}, #{delFlg,jdbcType=CHAR}, #{crtUser,jdbcType=VARCHAR}, 
       #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, 
-      #{type,jdbcType=CHAR}, #{buildMode,jdbcType=CHAR}, #{updateMode,jdbcType=CHAR}, 
-      #{updateKey,jdbcType=CHAR}, #{sText,jdbcType=CLOB})
+      #{type,jdbcType=CHAR}, #{buildMode,jdbcType=CHAR}, #{updateMode,jdbcType=CHAR},#{eDsId,jdbcType=VARCHAR},#{status,jdbcType=CHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.im.model.ImModel" >
     update IM_MODEL
     set NAME = #{name,jdbcType=VARCHAR},
       DESCRIBE = #{describe,jdbcType=VARCHAR},
       S_DS_ID = #{sDsId,jdbcType=VARCHAR},
-      S_TB_NAME = #{sTbName,jdbcType=VARCHAR},
       T_MD_ID = #{tMdId,jdbcType=VARCHAR},
       NOTE = #{note,jdbcType=VARCHAR},
       DEL_FLG = #{delFlg,jdbcType=CHAR},
-      CRT_USER = #{crtUser,jdbcType=VARCHAR},
-      CRT_TIME = #{crtTime,jdbcType=VARCHAR},
       UPT_USER = #{uptUser,jdbcType=VARCHAR},
       UPT_TIME = #{uptTime,jdbcType=VARCHAR},
       TYPE = #{type,jdbcType=CHAR},
       BUILD_MODE = #{buildMode,jdbcType=CHAR},
       UPDATE_MODE = #{updateMode,jdbcType=CHAR},
-      UPDATE_KEY = #{updateKey,jdbcType=CHAR},
-      S_TEXT = #{sText,jdbcType=CLOB}
+      E_DS_ID = #{eDsId,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR}
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, NAME, DESCRIBE, S_DS_ID, S_TB_NAME, T_MD_ID, NOTE, DEL_FLG, CRT_USER, 
-    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE, UPDATE_KEY, S_TEXT
+    select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
+    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
     where PK_ID = #{pkId,jdbcType=VARCHAR}
+    and DEL_FLG = '0'
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, NAME, DESCRIBE, S_DS_ID, S_TB_NAME, T_MD_ID, NOTE, DEL_FLG, CRT_USER, 
-    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE, UPDATE_KEY, S_TEXT
+    select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
+    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
+  </select>
+
+  <select id="selectPage" resultMap="ImModelView" parameterType="com.hex.bigdata.udsp.im.dto.ImModelView">
+      select IM.PK_ID, IM.NAME, IM.DESCRIBE, IM.S_DS_ID, IM.T_MD_ID, IM.NOTE, IM.DEL_FLG, IM.CRT_USER,
+    IM.CRT_TIME, IM.UPT_USER, IM.UPT_TIME, IM.TYPE, IM.BUILD_MODE, IM.UPDATE_MODE,IM.E_DS_ID,IM.STATUS,CD.NAME SDSNAME,IMM.NAME  TDSNAME
+    from IM_MODEL IM
+    left join COM_DATASOURCE CD
+    on CD.PK_ID = IM.S_DS_ID
+    and CD.DEL_FLG = '0'
+    LEFT JOIN IM_METADATA IMM
+    on IMM.PK_ID = IM.T_MD_ID
+    and IMM.DEL_FLG = '0'
+    where IM.DEL_FLG = '0'
+    <if test="name != null and name != ''">and IM.NAME = #{name} </if>
+    <if test="describe != null and describe != ''">and IM.DESCRIBE = #{describe} </if>
+    <if test="tMdId != null and tMdId != ''">and IM.T_MD_ID = #{tMdId} </if>
+    <if test="type != null and type != ''">and IM.TYPE = #{type} </if>
+    <if test="sDsId != null and sDsId != ''">and IM.S_DS_ID = #{sDsId} </if>
+    <if test="crtTimeStart != null and crtTimeStart != ''">and IM.CRT_TIME >= #{crtTimeStart} </if>
+    <if test="crtTimeEnd != null and crtTimeEnd != ''">and #{crtTimeEnd} >= IM.CRT_TIME </if>
+    <if test="uptTimeStart != null and uptTimeStart != ''">and IM.UPT_TIME >= #{uptTimeStart} </if>
+    <if test="uptTimeEnd != null and uptTimeEnd != ''">and #{uptTimeEnd} >= IM.UPT_TIME </if>
+  </select>
+
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+      select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
+    CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
+    from IM_MODEL
+    where NAME = #{modelName,jdbcType=VARCHAR}
+    and DEL_FLG = '0'
   </select>
 </mapper>

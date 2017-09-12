@@ -11,7 +11,7 @@ public class ImModelUpdateKeyMapper extends SyncMapper<ImModelUpdateKey> {
 
     @Override
     protected boolean insertExe(ImModelUpdateKey imModelUpdateKey) {
-        return false;
+        return sqlSessionTemplate.insert("com.hex.bigdata.udsp.im.dao.ImModelUpdateKeyMapper.insert",imModelUpdateKey) == 1;
     }
 
     @Override
@@ -30,8 +30,8 @@ public class ImModelUpdateKeyMapper extends SyncMapper<ImModelUpdateKey> {
     }
 
     @Override
-    protected boolean deleteListExe(String id) {
-        return false;
+    protected boolean deleteListExe(String mid) {
+        return sqlSessionTemplate.delete("com.hex.bigdata.udsp.im.dao.ImModelUpdateKeyMapper.deleteByMid",mid) >= 0 ;
     }
 
     @Override

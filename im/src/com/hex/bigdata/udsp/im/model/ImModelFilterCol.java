@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.im.model;
 
-public class ImModelFilterCol {
+import java.io.Serializable;
+
+public class ImModelFilterCol implements Serializable {
     private String pkId;
 
     private String modelId;

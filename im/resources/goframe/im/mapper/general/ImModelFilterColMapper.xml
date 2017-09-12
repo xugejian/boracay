@@ -53,4 +53,17 @@
     OPERATOR, LABEL
     from IM_MODEL_FILTER_COLUMN
   </select>
+
+  <select id="selectByMid" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select PK_ID, MODEL_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, IS_NEED, DEFAULT_VAL,
+    OPERATOR, LABEL
+    from IM_MODEL_FILTER_COLUMN
+    where MODEL_ID = #{mid}
+    ORDER BY SEQ
+  </select>
+
+  <delete id="deleteByMid" parameterType="java.lang.String">
+      delete from  IM_MODEL_FILTER_COLUMN
+      where MODEL_ID = #{mid}
+  </delete>
 </mapper>
