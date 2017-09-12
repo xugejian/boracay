@@ -6,6 +6,7 @@ import com.hex.bigdata.udsp.im.model.ImMetadata;
 import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
 import com.hex.bigdata.udsp.im.dto.ImMetadataView;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.service.ImMetadataService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -100,6 +101,147 @@ public class ImMetadataController {
         return new MessageResult(status, message);
     }
 
+    @RequestMapping({"/insertAndCreate"})
+    @ResponseBody
+    public MessageResult insertAndCreate(@RequestBody ImMetadataDto imMetadataDto) {
+        boolean status = true;
+        String message = "保存并创建成功";
+        if (imMetadataDto == null) {
+            status = false;
+            message = "请求参数为空";
+        } else {
+            try {
+                if (StringUtils.isBlank(imMetadataService.insert(imMetadataDto)) && imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
+                    status = false;
+                    message = "保存并创建失败";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = false;
+                message = "系统异常：" + e;
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.info(message);
+        }
+        return new MessageResult(status, message);
+    }
+
+    @RequestMapping({"/updateAndCreate"})
+    @ResponseBody
+    public MessageResult updateAndCreate(@RequestBody ImMetadataDto imMetadataDto) {
+        boolean status = true;
+        String message = "保存并创建成功";
+        if (imMetadataDto == null) {
+            status = false;
+            message = "请求参数为空";
+        } else {
+            try {
+                if (imMetadataService.update(imMetadataDto) && imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
+                    status = false;
+                    message = "保存并创建失败";
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = false;
+                message = "系统异常：" + e;
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.info(message);
+        }
+        return new MessageResult(status, message);
+    }
+
+    @RequestMapping({"/createTable/{pkId}"})
+    @ResponseBody
+    public MessageResult createTable(@PathVariable("pkId") String pkId) {
+        boolean status = true;
+        String message = "创建成功";
+        if (pkId == null) {
+            status = false;
+            message = "请求参数为空";
+        } else {
+            try {
+                if (!imMetadataService.createTable(pkId)) {
+                    status = false;
+                    message = "创建失败";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = false;
+                message = "系统异常：" + e;
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.info(message);
+        }
+        return new MessageResult(status, message);
+    }
+
+    @RequestMapping({"/dropTable/{pkId}"})
+    @ResponseBody
+    public MessageResult dropTable(@PathVariable("pkId") String pkId) {
+        boolean status = true;
+        String message = "删除成功";
+        if (pkId == null) {
+            status = false;
+            message = "请求参数为空";
+        } else {
+            try {
+                if (!imMetadataService.dropTable(pkId)) {
+                    status = false;
+                    message = "删除失败";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = false;
+                message = "系统异常：" + e;
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.info(message);
+        }
+        return new MessageResult(status, message);
+    }
+
+    @RequestMapping({"/update"})
+    @ResponseBody
+    public MessageResult update(@RequestBody ImMetadataDto imMetadataDto) {
+        boolean status = true;
+        String message = "更新成功";
+        if (imMetadataDto == null) {
+            status = false;
+            message = "请求参数为空";
+        } else {
+            try {
+                if (!imMetadataService.update(imMetadataDto)) {
+                    status = false;
+                    message = "更新失败";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = false;
+                message = "系统异常：" + e;
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.error(message);
+        }
+        return new MessageResult(status, message);
+    }
+
     @RequestMapping("/delete")
     @ResponseBody
     public MessageResult delete(@RequestBody ImMetadata[] imMetadatas) {
@@ -162,16 +304,13 @@ public class ImMetadataController {
         String message = "获取外表字段信息成功！";
         String dsId = imMetadata.getDsId();
         String tbName = imMetadata.getTbName();
+        List<MetadataCol> metadataCols = null;
         if (StringUtils.isBlank(dsId) || StringUtils.isBlank(tbName)) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
-                imMetadataService.getCloumnInfo(dsId, tbName);
-//                if (!imMetadataService.getCloumnInfo(dsId, tbName)) {
-//                    status = false;
-//                    message = "获取外表字段信息失败！";
-//                }
+                metadataCols = imMetadataService.getCloumnInfo(dsId, tbName);
             } catch (Exception e) {
                 e.printStackTrace();
                 status = false;
@@ -183,6 +322,6 @@ public class ImMetadataController {
         } else {
             logger.error(message);
         }
-        return new MessageResult(status, message);
+        return new MessageResult(status, message, metadataCols);
     }
 }

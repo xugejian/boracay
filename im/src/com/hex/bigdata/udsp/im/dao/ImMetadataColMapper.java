@@ -31,7 +31,7 @@ public class ImMetadataColMapper extends SyncMapper<ImMetadataCol> {
 
     @Override
     protected boolean deleteListExe(String id) {
-        return false;
+        return sqlSessionTemplate.delete("com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.deleteByMdId", id) >= 0;
     }
 
     @Override

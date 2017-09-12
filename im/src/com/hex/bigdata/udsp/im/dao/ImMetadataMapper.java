@@ -27,7 +27,7 @@ public class ImMetadataMapper extends SyncMapper<ImMetadata> {
 
     @Override
     protected boolean updateExe(ImMetadata imMetadata) {
-        return false;
+        return sqlSessionTemplate.update("com.hex.bigdata.udsp.im.dao.ImMetadataMapper.updateByPrimaryKey", imMetadata) == 1;
     }
 
     @Override
