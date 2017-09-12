@@ -9,6 +9,7 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
+import com.hex.bigdata.udsp.im.provider.constant.BuildMode;
 import com.hex.bigdata.udsp.im.provider.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
@@ -21,10 +22,8 @@ import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
-import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
+import com.hex.bigdata.udsp.im.provider.model.*;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -364,6 +363,41 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
             metadataCols.add(mdCol);
         }
         return metadataCols;
+    }
+
+    @Override
+    public String outputSQL(Model model) {
+        JdbcModel jdbcModel = new JdbcModel(model.getPropertyMap());
+        String tableName = getSourceTableName(jdbcModel.getDatabaseName(), jdbcModel.getTableName(), model.getId());
+        List<ModelMapping> modelMappings = model.getModelMappings();
+        List<String> selectColumns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings) {
+            selectColumns.add(mapping.getName());
+        }
+        List<ModelFilterCol> modelFilterCols = model.getModelFilterCols();
+        List<WhereProperty> whereProperties = new ArrayList<>();
+        for (ModelFilterCol filterCol : modelFilterCols) {
+            WhereProperty whereProperty = new WhereProperty();
+            whereProperty.setName(filterCol.getName());
+            whereProperty.setValue(filterCol.getValue());
+            whereProperty.setType(filterCol.getType());
+            whereProperty.setOperator(filterCol.getOperator());
+        }
+        return HiveSqlUtil.select(selectColumns, tableName, whereProperties);
+    }
+
+    @Override
+    public String inputSQL(Model model) {
+        Metadata metadata = model.getTargetMetadata();
+        String tableName = getTargetTableName(metadata.getTbName(), model.getId());
+        BuildMode buildMode = model.getBuildMode();
+        boolean isOverwrite = (BuildMode.INSERT_OVERWRITE == buildMode ? true : false);
+        List<ModelMapping> modelMappings = model.getModelMappings();
+        List<String> insertColumns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings) {
+            insertColumns.add(mapping.getMetadataCol().getName());
+        }
+        return HiveSqlUtil.insert(isOverwrite, tableName, insertColumns, null);
     }
 
     protected abstract DataType getColType(String type);

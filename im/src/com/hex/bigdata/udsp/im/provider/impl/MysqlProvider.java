@@ -57,16 +57,6 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
     }
 
     @Override
-    public String inputSQL() {
-        return null;
-    }
-
-    @Override
-    public String outputSQL() {
-        return null;
-    }
-
-    @Override
     public void inputData() {
 
     }

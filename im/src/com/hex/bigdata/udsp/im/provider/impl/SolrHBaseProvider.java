@@ -59,7 +59,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
-    public String inputSQL() {
+    public String inputSQL(Model model) {
         return null;
     }
 

@@ -1,9 +1,8 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
-import com.hex.bigdata.udsp.im.provider.impl.util.model.RowFormat;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.SerDeProperty;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
+import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.common.constant.Operator;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -47,6 +46,8 @@ public class HiveSqlUtil {
     }
 
     /**
+     * 创建StorageHandler表
+     *
      * @param isExternal
      * @param ifNotExists
      * @param tableName
@@ -69,6 +70,166 @@ public class HiveSqlUtil {
                 + getStoredBy(storageHandlerClass)
                 + getSerDeProperties(serDeProperties)
                 + getTblProperties(tblProperties);
+    }
+
+    /**
+     * 查询表
+     *
+     * @param selectColumns
+     * @param tableName
+     * @param whereProperties
+     * @return
+     */
+    public static String select(List<String> selectColumns, String tableName, List<WhereProperty> whereProperties) {
+        return "SELECT " + getSelectColumns(selectColumns) + " FROM "
+                + tableName + getWhere(whereProperties);
+    }
+
+    /**
+     * 插入表
+     *
+     * @param isOverwrite
+     * @param tableName
+     * @param insertColumns
+     * @param partitionColumns
+     * @return
+     */
+    public static String insert(boolean isOverwrite, String tableName, List<String> insertColumns, List<String> partitionColumns) {
+        return "INSERT" + getOverwrite(isOverwrite) + " TABLE "
+                + tableName + getInsertColumns(insertColumns)
+                + getPartitionKey(partitionColumns);
+    }
+
+    private static String getPartitionKey(List<String> columns) {
+        String sql = "";
+        if (columns != null && columns.size() != 0) {
+            sql = " PARTITION (";
+            if (columns != null && columns.size() != 0) {
+                for (int i = 0; i < columns.size(); i++) {
+                    if (i == 0) {
+                        sql += columns.get(i);
+                    } else {
+                        sql += ", " + columns.get(i);
+                    }
+                }
+            }
+            sql += ")";
+        }
+        return sql;
+    }
+
+    private static String getWhere(List<WhereProperty> whereProperties) {
+        String sql = "";
+        WhereProperty whereProperty = null;
+        String name = null;
+        String value = null;
+        DataType type = null;
+        Operator operator = null;
+        String str = null;
+        if (whereProperties != null && whereProperties.size() != 0) {
+            sql = " WHERE ";
+            for (int i = 0; i < whereProperties.size(); i++) {
+                whereProperty = whereProperties.get(i);
+                name = whereProperty.getName();
+                value = whereProperty.getValue();
+                type = whereProperty.getType();
+                operator = whereProperty.getOperator();
+                if (StringUtils.isBlank(name) || StringUtils.isBlank(value) || operator == null) {
+                    continue;
+                }
+                if (DataType.INT == type || DataType.TINYINT == type || DataType.DOUBLE == type
+                        || DataType.DECIMAL == type || DataType.BIGINT == type || DataType.FLOAT == type
+                        || DataType.SMALLINT == type) {
+                    if (Operator.EQ == operator) {
+                        str = name + " = " + value;
+                    } else if (Operator.NE == operator) {
+                        str = name + " != " + value;
+                    } else if (Operator.GE == operator) {
+                        str = name + " >= " + value;
+                    } else if (Operator.GT == operator) {
+                        str = name + " > " + value;
+                    } else if (Operator.LE == operator) {
+                        str = name + " <= " + value;
+                    } else if (Operator.LT == operator) {
+                        str = name + " < " + value;
+                    } else if (Operator.IN == operator) {
+                        str = name + " IN (" + value + ")";
+                    } else if (Operator.LK == operator) {
+                        str = name + " LIKE '%" + value + "%'";
+                    } else if (Operator.RLIKE == operator) {
+                        str = name + " LIKE '" + value + "%'";
+                    }
+                } else {
+                    if (Operator.EQ == operator) {
+                        str = name + " = '" + value + "'";
+                    } else if (Operator.NE == operator) {
+                        str = name + " != '" + value + "'";
+                    } else if (Operator.GE == operator) {
+                        str = name + " >= '" + value + "'";
+                    } else if (Operator.GT == operator) {
+                        str = name + " > '" + value + "'";
+                    } else if (Operator.LE == operator) {
+                        str = name + " <= '" + value + "'";
+                    } else if (Operator.LT == operator) {
+                        str = name + " < '" + value + "'";
+                    } else if (Operator.IN == operator) {
+                        String[] strs = value.split(",");
+                        for (int j = 0; j < strs.length; j++) {
+                            if (j == 0) {
+                                value = "'" + strs[j] + "'";
+                            } else {
+                                value += ",'" + strs[j] + "'";
+                            }
+                        }
+                        str = name + " IN (" + value + ")";
+                    } else if (Operator.LK == operator) {
+                        str = name + " LIKE '%" + value + "%'";
+                    } else if (Operator.RLIKE == operator) {
+                        str = name + " LIKE '" + value + "%'";
+                    }
+                }
+                sql += (i == 0 ? str : " AND " + str);
+            }
+        }
+        return sql;
+    }
+
+    private static String getInsertColumns(List<String> columns) {
+        String sql = " ";
+        if (columns != null && columns.size() != 0) {
+            sql = " (";
+            for (int i = 0; i < columns.size(); i++) {
+                if (i == 0) {
+                    sql += columns.get(i);
+                } else {
+                    sql += ", " + columns.get(i);
+                }
+            }
+            sql += ")";
+        }
+        return sql;
+    }
+
+    private static String getSelectColumns(List<String> columns) {
+        String sql = " * ";
+        if (columns != null && columns.size() != 0) {
+            for (int i = 0; i < columns.size(); i++) {
+                if (i == 0) {
+                    sql = " " + columns.get(i);
+                } else {
+                    sql += ", " + columns.get(i);
+                }
+            }
+        }
+        return sql;
+    }
+
+    private static String getOverwrite(boolean isOverwrite) {
+        String sql = " INTO";
+        if (isOverwrite) {
+            sql = " OVERWRITE";
+        }
+        return sql;
     }
 
     private static String getStoredBy(String storageHandlerClass) {

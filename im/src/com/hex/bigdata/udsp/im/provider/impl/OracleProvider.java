@@ -62,16 +62,6 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public String inputSQL() {
-        return null;
-    }
-
-    @Override
-    public String outputSQL() {
-        return null;
-    }
-
-    @Override
     public void inputData() {
 
     }

@@ -145,7 +145,6 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
         Map<String, Property> dsPropertyMap = datasource.getPropertyMap();
         String solrServers = dsPropertyMap.get("solr.servers").getValue();
         String[] addresses = solrServers.split(",");
-        String response = "";
         for (String solrServer : addresses) {
             String url = "http://" + solrServer + "/solr/admin/collections";
             String param = "action=DELETE" + "&name=" + metadata.getTbName();
@@ -170,12 +169,12 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public String inputSQL() {
+    public String inputSQL(Model model) {
         return null;
     }
 
     @Override
-    public String outputSQL() {
+    public String outputSQL(Model model) {
         return null;
     }
 

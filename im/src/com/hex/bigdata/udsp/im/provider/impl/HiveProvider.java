@@ -7,6 +7,7 @@ import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
@@ -14,6 +15,7 @@ import com.hex.bigdata.udsp.im.provider.impl.util.model.RowFormat;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,16 +67,6 @@ public class HiveProvider extends JdbcWrapper {
     }
 
     @Override
-    public String outputSQL() {
-        return null;
-    }
-
-    @Override
-    public String inputSQL() {
-        return null;
-    }
-
-    @Override
     protected DataType getColType(String type) {
         type = type.toUpperCase();
         DataType dataType = null;
@@ -118,7 +110,6 @@ public class HiveProvider extends JdbcWrapper {
         }
         return dataType;
     }
-
 
     @Override
     protected List<Column> getColumns(Connection conn, String dbName, String tbName) throws SQLException {

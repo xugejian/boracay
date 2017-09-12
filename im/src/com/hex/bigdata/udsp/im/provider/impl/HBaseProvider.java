@@ -44,8 +44,7 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public String inputSQL() {
-        // TODO ...
+    public String inputSQL(Model model) {
         return null;
     }
 

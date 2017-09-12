@@ -7,7 +7,7 @@ import com.hex.bigdata.udsp.im.provider.model.Model;
  */
 public interface BatchSourceProvider extends SourceProvider, BatchProvider {
 
-    String outputSQL();
+    String outputSQL(Model model);
 
     boolean createSourceEngineSchema(Model model) throws Exception;
 
