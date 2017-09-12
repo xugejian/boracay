@@ -93,15 +93,15 @@ public class JdbcProviderUtil {
         return rs;
     }
 
-    public static int executeUpdate(JdbcDatasource datasource, List<String> updateSql) throws SQLException {
+    public static int executeUpdate(JdbcDatasource datasource, List<String> updateSqls) throws SQLException {
         Connection conn = null;
         Statement stmt = null;
         int rs = -1;
         try {
             conn = JdbcProviderUtil.getConnection(datasource);
             stmt = conn.createStatement();
-            for(String sql : updateSql){
-               rs = stmt.executeUpdate(sql);
+            for (String updateSql : updateSqls) {
+                rs = stmt.executeUpdate(updateSql);
             }
         } finally {
             JdbcUtil.close(stmt);

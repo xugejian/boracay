@@ -51,7 +51,6 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         sqls.addAll(OracleSqlUtil.createColComment(fullTbName, columns));
        // int status = getExecuteUpdateStatus(oracleDatasource, sqls);
        // return status == 0 ? true : false;
-
         return JdbcProviderUtil.executeUpdate(oracleDatasource, sqls) == 1 ? true : false;
 
     }
@@ -135,7 +134,7 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         MetadataCol mdCol = null;
         for (Column col : columns) {
             mdCol = new MetadataCol();
-            mdCol.setSeq((short)col.getSeq());
+            mdCol.setSeq((short) col.getSeq());
             mdCol.setName(col.getName());
             mdCol.setDescribe(col.getComment());
             mdCol.setType(getColType(col.getType()));
@@ -146,9 +145,9 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         return metadataCols;
     }
 
-    public static DataType getColType(String type){
+    public static DataType getColType(String type) {
         DataType dataType = null;
-        switch (type){
+        switch (type) {
             case "VARCHAR":
             case "VARCHAR2":
             case "NVARCHAR2":

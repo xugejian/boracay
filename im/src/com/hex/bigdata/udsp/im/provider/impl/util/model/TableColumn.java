@@ -58,5 +58,4 @@ public class TableColumn {
 	public void setColComment(String colComment) {
 		this.colComment = colComment;
 	}
-
 }

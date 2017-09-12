@@ -54,8 +54,8 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
 
-       // String dbName = fullTbName.split("\\.")[0];
-       // String tbName = fullTbName.split("\\.")[1];
+        // String dbName = fullTbName.split("\\.")[0];
+        // String tbName = fullTbName.split("\\.")[1];
 
         String[] strs = fullTbName.split(DATABASE_AND_TABLE_SEP);
         String dbName = null;
@@ -104,7 +104,7 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         Statement stmt = null;
         int rs = 0;
         try {
-            conn = getConnection(datasource);
+            conn = JdbcProviderUtil.getConnection(datasource);
             stmt = conn.createStatement();
             rs = stmt.executeUpdate(updateSql);
         } finally {
@@ -119,10 +119,10 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         Statement stmt = null;
         int rs = 0;
         try {
-            conn = getConnection(datasource);
+            conn = JdbcProviderUtil.getConnection(datasource);
             stmt = conn.createStatement();
-            for(String sql : updateSqls)
-            rs = stmt.executeUpdate(sql);
+            for (String sql : updateSqls)
+                rs = stmt.executeUpdate(sql);
         } finally {
             JdbcUtil.close(stmt);
             JdbcUtil.close(conn);
