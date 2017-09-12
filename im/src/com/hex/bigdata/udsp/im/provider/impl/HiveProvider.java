@@ -12,6 +12,7 @@ import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.RowFormat;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
