@@ -42,7 +42,7 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
     private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.solr.SolrStorageHandler";
 
-    private List<MetadataCol> getColumns(String collectionName, String solrServers) {
+    public List<MetadataCol> getColumns(String collectionName, String solrServers) {
         if(StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)){
             return null;
         }
