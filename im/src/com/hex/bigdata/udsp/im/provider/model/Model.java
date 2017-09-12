@@ -3,8 +3,10 @@ package com.hex.bigdata.udsp.im.provider.model;
 import com.hex.bigdata.udsp.common.provider.model.Base;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.im.provider.constant.BuildMode;
 import com.hex.bigdata.udsp.im.provider.constant.ModelStatus;
 import com.hex.bigdata.udsp.im.provider.constant.ModelType;
+import com.hex.bigdata.udsp.im.provider.constant.UpdateMode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -26,9 +28,9 @@ public class Model extends Base {
 
     private ModelStatus status; // 状态（1：未建，2：已建）
 
-    private String buildMode; // 构建策略（1：增量，2：全量）
+    private BuildMode buildMode; // 构建策略（1：增量，2：全量）
 
-    private String updateMode; // 更新策略（1、匹配更新 2、更新、插入 3、增量插入）
+    private UpdateMode updateMode; // 更新策略（1、匹配更新 2、更新、插入 3、增量插入）
 
     private List<MetadataCol> updateKeys; // 更新键值集合
 
@@ -107,19 +109,19 @@ public class Model extends Base {
         this.status = status;
     }
 
-    public String getBuildMode() {
+    public BuildMode getBuildMode() {
         return buildMode;
     }
 
-    public void setBuildMode(String buildMode) {
+    public void setBuildMode(BuildMode buildMode) {
         this.buildMode = buildMode;
     }
 
-    public String getUpdateMode() {
+    public UpdateMode getUpdateMode() {
         return updateMode;
     }
 
-    public void setUpdateMode(String updateMode) {
+    public void setUpdateMode(UpdateMode updateMode) {
         this.updateMode = updateMode;
     }
 
