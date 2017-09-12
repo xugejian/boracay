@@ -62,13 +62,14 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                     <th class="nui-form-label"><label for="updateKey">更新主键：</label></th>
                     <td>
-                        <div id="updateKey" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
+                        <input id="updateKey" name="updateKey" class="nui-buttonedit" onbuttonclick="showTargetCols" required="false"/>
+                        <!--<div id="updateKey" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
                              url="${basePath}/com/ds/select" dataField="data" name="updateKey" multiSelect="false"  required="false" >
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
                             </div>
-                        </div>
+                        </div>-->
                     </td>
                 </tr>
                 <tr id="buildType" style="display:none">
@@ -114,7 +115,7 @@ ${extends("/goframe/function_layout.httl")}
             <div class="nui-fit" style="height:150px; padding: 0px 5px 0px 5px;">
                 <div id="datagrid1" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
                      idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
-                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected1">
+                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selectedProperties">
                     <div property="columns">
                         <div type="checkcolumn" headerAlign="center" width="5"></div>
                         <div type="indexcolumn" headerAlign="center" width="8">位置</div>
@@ -122,7 +123,7 @@ ${extends("/goframe/function_layout.httl")}
                                 color="#FF0000">（必填）</font>
                             <input name="comPropertie" property="editor" class="nui-combobox"
                                    textField="name" valueField="name" allowInput="true"
-                                   onbeforeshowpopup="comPropertiesName" vtype="maxLength:64" required="true"/>
+                                   onbeforeshowpopup="comPropertiesName" vtype="maxLength:64" required="true" onvaluechanged="propertieChange"/>
                         </div>
                         <div field="describe" headerAlign="center" allowSort="true" width="30">说明
                             <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
@@ -367,12 +368,22 @@ ${extends("/goframe/function_layout.httl")}
     }
     //映射选中
     function selected1(){
-        nui.get("removeMapp").enable();
+        var rows = grid2.getSelecteds();
+        if (rows.length > 0) {
+            nui.get("removeMapp").enable();
+        } else if (rows.length == 0) {
+            nui.get("removeMapp").disable();
+        }
     }
 
     //字段过滤选中
     function selected2(){
-        nui.get("removeFilter").enable();
+        var rows = grid4.getSelecteds();
+        if (rows.length > 0) {
+            nui.get("removeFilter").enable();
+        } else if (rows.length == 0) {
+            nui.get("removeFilter").disable();
+        }
     }
 
     //删除映射
@@ -406,6 +417,9 @@ ${extends("/goframe/function_layout.httl")}
     //保存
     function save(){
         var date = getSaveData();
+        if (!date) {
+            return;
+        }
         var json = nui.encode(date);
         // --发送信息--
         form1.loading("正在保存中,请稍等...");
@@ -478,12 +492,25 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function getComPropertiess(){
+        grid1.validate();
+        if (grid1.isValid() == false) {
+            return false;
+        }
         var comPropertiess = grid1.getData(true, true);
+        //检查名称是否重复
+        if(!checkProperties(comPropertiess)){
+            return false;
+        }
         return comPropertiess;
     }
 
     function getModelMappings(){
+        grid2.validate();
+        if (grid2.isValid() == false) {
+            return false;
+        }
         var modelMappings = grid2.getData(true, true);
+        // TODO 映射校验
         $.each(modelMappings, function (_index, record) {
             record.seq = grid2.indexOf(record) + 1;
         });
@@ -491,7 +518,12 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function getImModelFilterCols(){
+        grid4.validate();
+        if (grid4.isValid() == false) {
+            return false;
+        }
         var modelFilterCols = grid4.getData(true, true);
+        // TODO 过滤字段校验
         $.each(modelFilterCols, function (_index, record) {
             record.seq = grid4.indexOf(record) + 1;
         })
@@ -597,7 +629,7 @@ ${extends("/goframe/function_layout.httl")}
                 e.isValid = false;
             }
             $.ajax({
-                url: "${basePath}/im/md/checkExist/" + e.value,
+                url: "${basePath}/im/model/checkExist/" + e.value,
                 type: 'POST',
                 cache: false,
                 async:false,
@@ -626,6 +658,88 @@ ${extends("/goframe/function_layout.httl")}
 
     function comPropertiesName(e) {
         e.source.load(cols);
+    }
+
+    /**
+     * 检查参数名称是否重复和内容是否为空
+     */
+    function checkProperties(properties) {
+        //算法1、遍历
+        var repetFlg = true;
+        $.each(properties, function (_index, record) {
+            var repetCount = 0;
+            if(record.value == null || record.value == ""){
+                repetFlg = false;
+            }
+            $.each(properties, function (i, item) {
+                if (record.name == item.name) {
+                    repetCount++;
+                }
+            });
+            if (repetCount > 1) {
+                repetFlg = false;
+            }
+        });
+        return repetFlg;
+    }
+    
+    function addComProperties() {
+        var rows = grid1.getData(true, true);
+        var length = rows.length;
+        var newRow = {};
+        grid1.addRow(newRow, length);
+    }
+
+    //删除字段过滤
+    function removeComProperties(){
+        var rows = grid1.getSelecteds();
+        if (rows.length > 0) {
+            grid1.removeRows(rows, true);
+        } else {
+            nui.alert("请至少选中一条记录!");
+        }
+    }
+    
+    function selectedProperties() {
+        var rows = grid1.getSelecteds();
+        if (rows.length > 0) {
+            nui.get("removeComProperties").enable();
+        } else if (rows.length == 0) {
+            nui.get("removeComProperties").disable();
+        }
+    }
+
+    //参数名称变化时
+    function propertieChange(e){
+        // --同一行的说明、长度和别名变化--
+        var selected = e.selected;
+        var row = grid1.getSelected();
+        row.describe = selected.describe;
+        row.value = "";
+    }
+    
+    function showTargetCols(e) {
+        var targetCols = this;
+        if(!targetSourceId){
+            return;
+        }
+        nui.open({
+            url:"${basePath}/goframe/p/im.cm.model.updatekeys_edit?tMdId="+targetSourceId,
+            title:"编辑更新主键",
+            width:700,
+            height:400,
+            onload:function(){
+                var data = e.source.value;
+                var iframe = this.getIFrameEl();
+                iframe.contentWindow.SetData(data);
+            },
+            ondestroy:function(){
+                var iframe = this.getIFrameEl();
+                var data = iframe.contentWindow.GetData();
+                targetCols.setValue(data.keys);
+                targetCols.setText(data.values);
+            }
+        });
     }
 </script>
 <!--#end-->
