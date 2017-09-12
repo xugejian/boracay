@@ -1,12 +1,13 @@
 package com.hex.bigdata.udsp.im.controller;
 
-import com.hex.bigdata.udsp.common.model.ComDatasource;
+import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.ImModel;
 import com.hex.bigdata.udsp.im.model.ImModelViews;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.service.ImModelService;
-import com.hex.goframe.model.GFDict;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.model.PageListResult;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by JunjieM on 2017-9-4.
@@ -136,5 +136,18 @@ public class ImModelController {
             log.error("根据模型名称查询模型是否存在失败！模型名称为：" + modelName + ";错误信息：" + e.getMessage());
         }
         return new MessageResult(status,message,result);
+    }
+
+    /**
+     * 获取源的字段列表
+     * @return
+     */
+    @RequestMapping("getColumnsInfo/{srcDataSourceId}")
+    @ResponseBody
+    public MessageResult getSrcMateData(@PathVariable String srcDataSourceId,@RequestBody Property[] properties){
+
+        List<MetadataCol> metadataCols = imModelService.getSrcMateData(properties,srcDataSourceId);
+
+        return new PageListResult(metadataCols);
     }
 }

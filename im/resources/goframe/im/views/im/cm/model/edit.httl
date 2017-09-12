@@ -217,11 +217,11 @@ ${extends("/goframe/function_layout.httl")}
                     <div type="indexcolumn" headerAlign="center" width="8">位置</div>
                     <div field="name" headerAlign="center" allowSort="true" width="30">字段名称<font
                             color="#FF0000">（必填）</font>
-                        <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
-                        <!--<input name="colName" property="editor" class="nui-combobox"
+                        <!--<input property="editor" class="nui-textbox" vtype="maxLength:256"/>-->
+                        <input name="colName" property="editor" class="nui-combobox"
                                textField="name" valueField="name" allowInput="true" dataField="data"
                                onbeforeshowpopup="targetFilterColumn" vtype="maxLength:64" required="true"
-                               onvaluechanged="colNameChanged1"/>-->
+                               onvaluechanged="colNameChanged1"/>
                     </div>
                     <div field="describe" headerAlign="center" allowSort="true" width="30">说明</font>
                         <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
@@ -383,22 +383,30 @@ ${extends("/goframe/function_layout.httl")}
         grid2.clearRows();
         //可过滤字段制空
         filterCols = [];
-        var json = nui.encode({"dsId":"e3ef337e3153453b9b98f1736195a35b","tbName":"UDSP.IM_MODEL"});
-        $.post("${basePath}/im/md/getCloumnInfo", json, function (data) {
-            //对data内容解析加载到grid2中
-            for(var i = 0, len = data.length; i < len; i++){
-                filterCols.push({
-                    // TODO 解析到的data中字段名填充进去
-                    "name": data.name,
-                    "colId": "",
-                    "note":data.note,
-                    "describe":data.describe,
-                    "length":data.length,
-                    "type":data.type
-                });
-            };
-            //字段映射加进去
-            grid2.addRows(filterCols);
+        var properties = getComPropertiess();
+        var json = nui.encode(properties);
+
+        $.ajax({
+            url: "${basePath}/im/model/getColumnsInfo/"+srcDsModel.value,
+            type: 'POST',
+            data: json,
+            cache: false,
+            contentType: 'application/json',
+            success: function (data) {
+                //对data内容解析加载到grid2中
+                for (var i = 0, len = data.total; i < len; i++) {
+                    filterCols.push({
+                        "name": data.data[i].name,
+                        "colId": "",
+                        "note": data.data[i].note,
+                        "describe": data.data[i].describe,
+                        "length": data.data[i].length,
+                        "type": data.data[i].type
+                    });
+                };
+                //字段映射加进去
+                grid2.addRows(filterCols);
+            }
         });
     }
 
