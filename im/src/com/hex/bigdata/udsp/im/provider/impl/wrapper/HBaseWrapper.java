@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseAdminPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
@@ -172,17 +173,12 @@ public abstract class HBaseWrapper extends Wrapper {
     /**
      * 创建HBase表
      *
-     * @param datasource
-     * @param tableName
-     * @param numRegions
-     * @param isCompression
-     * @param isAutoSplit
-     * @param family
      * @return
      */
-    public boolean createHTable(HBaseDatasource datasource, String tableName,
-                                int numRegions, boolean isCompression, boolean isAutoSplit, String family) {
+    protected boolean createHTable(HBaseMetadata metadata) {
+        HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
         HBaseAdmin admin = getHBaseAdmin(datasource);
+        String tableName = metadata.getTbName();
         TableName hbaseTableName = TableName.valueOf(tableName);
         // 判断是否已经存在该表
         boolean status = false;
@@ -196,10 +192,20 @@ public abstract class HBaseWrapper extends Wrapper {
         if (!status) {
             HTableDescriptor hbaseTable = new HTableDescriptor(hbaseTableName);
             // 族设置参数
-            HColumnDescriptor hbaseColumn = new HColumnDescriptor(family);
+            HColumnDescriptor hbaseColumn = new HColumnDescriptor(metadata.getFamily());
             hbaseColumn.setBlocksize(65536); // 块大小
-            if (isCompression) {
-                hbaseColumn.setCompressionType(Compression.Algorithm.SNAPPY); // 压缩
+            // 压缩
+            String compression = metadata.getCompression();
+            if (Compression.Algorithm.SNAPPY.getName().equals(compression)) {
+                hbaseColumn.setCompressionType(Compression.Algorithm.SNAPPY);
+            } else if (Compression.Algorithm.GZ.getName().equals(compression)) {
+                hbaseColumn.setCompressionType(Compression.Algorithm.GZ);
+            } else if (Compression.Algorithm.LZ4.getName().equals(compression)) {
+                hbaseColumn.setCompressionType(Compression.Algorithm.LZ4);
+            } else if (Compression.Algorithm.LZO.getName().equals(compression)) {
+                hbaseColumn.setCompressionType(Compression.Algorithm.LZO);
+            } else if (Compression.Algorithm.NONE.getName().equals(compression)) {
+                hbaseColumn.setCompressionType(Compression.Algorithm.NONE);
             }
             hbaseColumn.setMaxVersions(1); // 数据保存的最大版本数
             // hbaseColumn.setMinVersions(0); // 数据保存的最小版本数（配合TimeToLive使用）
@@ -210,12 +216,12 @@ public abstract class HBaseWrapper extends Wrapper {
             hbaseColumn.setInMemory(false); // 是否保存在内存中以提高相应速度
             hbaseTable.addFamily(hbaseColumn);
             // 表设置参数
-            if (!isAutoSplit) {
-                hbaseTable.setConfiguration(HTableDescriptor.SPLIT_POLICY,
-                        "org.apache.hadoop.hbase.regionserver.ConstantSizeRegionSplitPolicy");
+            String splitPolicy = metadata.getSplitPolicy();
+            if (StringUtils.isNotBlank(splitPolicy)) {
+                hbaseTable.setConfiguration(HTableDescriptor.SPLIT_POLICY, splitPolicy);
             }
             // 创建表
-            byte[][] regionSplits = getHexSplits(HBASE_REGION_START_KEY, HBASE_REGION_STOP_KEY, numRegions);
+            byte[][] regionSplits = getHexSplits(HBASE_REGION_START_KEY, HBASE_REGION_STOP_KEY, metadata.getRegionNum());
             try {
                 admin.createTable(hbaseTable, regionSplits);
                 System.out.println("HBase表" + tableName + "创建成功！");
@@ -238,7 +244,7 @@ public abstract class HBaseWrapper extends Wrapper {
      * @param tableName
      * @return
      */
-    public boolean disableHTable(HBaseDatasource datasource, String tableName) {
+    protected boolean disableHTable(HBaseDatasource datasource, String tableName) {
         HBaseAdmin admin = getHBaseAdmin(datasource);
         TableName hbaseTableName = TableName.valueOf(tableName);
         // 判断是否已经存在该表
@@ -273,7 +279,7 @@ public abstract class HBaseWrapper extends Wrapper {
      * @param tableName
      * @return
      */
-    public boolean deleteHTable(HBaseDatasource datasource, String tableName) {
+    protected boolean deleteHTable(HBaseDatasource datasource, String tableName) {
         HBaseAdmin admin = getHBaseAdmin(datasource);
         TableName hbaseTableName = TableName.valueOf(tableName);
         // 判断是否已经存在该表
@@ -308,7 +314,7 @@ public abstract class HBaseWrapper extends Wrapper {
      * @param tableName
      * @return
      */
-    public boolean dropHTable(HBaseDatasource datasource, String tableName) {
+    protected boolean dropHTable(HBaseDatasource datasource, String tableName) {
         HBaseAdmin admin = getHBaseAdmin(datasource);
         TableName hbaseTableName = TableName.valueOf(tableName);
         // 判断是否已经存在该表
@@ -349,11 +355,11 @@ public abstract class HBaseWrapper extends Wrapper {
     /**
      * 清空HBase表数据
      */
-    public boolean emptyHTable(HBaseDatasource datasource, String tableName,
-                               int numRegions, boolean isCompression, boolean isAutoSplit, String family) {
+    protected boolean emptyHTable(HBaseMetadata metadata) {
+        HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
+        String tableName = metadata.getTbName();
         if (dropHTable(datasource, tableName)) {
-            return createHTable(datasource, tableName, numRegions, isCompression,
-                    isAutoSplit, family);
+            return createHTable(metadata);
         }
         return false;
     }
@@ -361,15 +367,14 @@ public abstract class HBaseWrapper extends Wrapper {
     /**
      * 清空HBase表数据
      */
-    public boolean emptyHTable(HBaseDatasource datasource, String tableName, int numRegions) {
+    protected boolean emptyHTable(HBaseDatasource datasource, String tableName, int numRegions) {
         if (dropHTable(datasource, tableName)) {
             TableName hbaseTableName = TableName.valueOf(tableName);
             HConnection conn = getConnection(datasource);
             HBaseAdmin admin = getHBaseAdmin(datasource);
             byte[][] regionSplits = getHexSplits(HBASE_REGION_START_KEY, HBASE_REGION_STOP_KEY, numRegions);
             try {
-                HTableDescriptor hbaseTable = conn
-                        .getHTableDescriptor(hbaseTableName);
+                HTableDescriptor hbaseTable = conn.getHTableDescriptor(hbaseTableName);
                 admin.createTable(hbaseTable, regionSplits);
                 System.out.println("HBase表" + tableName + "创建成功！");
                 return true;
@@ -392,7 +397,7 @@ public abstract class HBaseWrapper extends Wrapper {
      * @param numRegions
      * @return
      */
-    private byte[][] getHexSplits(String startKey, String endKey, int numRegions) {
+    protected byte[][] getHexSplits(String startKey, String endKey, int numRegions) {
         byte[][] splits = new byte[numRegions - 1][];
         if (startKey.length() < 16) {
             int len = 16 - startKey.length();

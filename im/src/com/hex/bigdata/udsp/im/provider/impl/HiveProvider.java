@@ -175,14 +175,4 @@ public class HiveProvider extends JdbcWrapper {
     public String inputSQL() {
         return null;
     }
-
-    @Override
-    public boolean createEngineSchema(Model model) throws Exception {
-        return createEngineSchema(model, DatasourceType.HIVE);
-    }
-
-    @Override
-    public boolean dropEngineSchema(Model model) throws Exception {
-        return dropEngineSchema(model, DatasourceType.HIVE);
-    }
 }

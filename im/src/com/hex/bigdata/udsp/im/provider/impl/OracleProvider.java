@@ -85,16 +85,6 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public boolean createEngineSchema(Model model) throws Exception {
-        return createEngineSchema(model, DatasourceType.ORACLE);
-    }
-
-    @Override
-    public boolean dropEngineSchema(Model model) throws Exception {
-        return dropEngineSchema(model, DatasourceType.ORACLE);
-    }
-
-    @Override
     protected MetadataCol getMetadataCols(ResultSetMetaData md, int i) throws SQLException {
         logger.debug("-----------------------------------------------------------");
         logger.debug("getCatalogName:" + md.getCatalogName(i));

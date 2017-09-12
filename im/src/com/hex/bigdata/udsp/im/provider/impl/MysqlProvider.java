@@ -77,16 +77,6 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
     }
 
     @Override
-    public boolean createEngineSchema(Model model) throws Exception {
-        return createEngineSchema(model, DatasourceType.MYSQL);
-    }
-
-    @Override
-    public boolean dropEngineSchema(Model model) throws Exception {
-        return dropEngineSchema(model, DatasourceType.MYSQL);
-    }
-
-    @Override
     protected MetadataCol getMetadataCols(ResultSetMetaData md, int i) throws SQLException {
         logger.debug("-----------------------------------------------------------");
         logger.debug("getCatalogName:" + md.getCatalogName(i));
