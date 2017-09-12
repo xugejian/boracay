@@ -43,4 +43,8 @@ public class ImMetadataColMapper extends SyncMapper<ImMetadataCol> {
         return sqlSessionTemplate.selectList(
                 "com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.select", imMetadataCol);
     }
+
+    public List<ImMetadataCol> selectModelUpdateKeys(String modelId) {
+        return sqlSessionTemplate.selectList("com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.selectModelUpdateKeys",modelId);
+    }
 }

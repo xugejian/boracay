@@ -8,6 +8,6 @@ import java.util.Map;
  */
 public interface RealtimeSourceProvider extends SourceProvider, RealtimeProvider {
 
-    List<Map<String, String>> inputData();
+    List<Map<String, String>> outputData();
 
 }

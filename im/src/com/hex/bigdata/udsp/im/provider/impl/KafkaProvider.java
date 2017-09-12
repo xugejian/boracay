@@ -94,7 +94,7 @@ public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvide
     }
 
     @Override
-    public List<Map<String, String>> inputData() {
+    public List<Map<String, String>> outputData() {
 
         return null;
     }
