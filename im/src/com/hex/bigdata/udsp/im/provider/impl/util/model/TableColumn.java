@@ -4,7 +4,7 @@ public class TableColumn {
 	private String colName; // 字段名
 	private String dataType; // 类型
 	private String colComment; // 注释
-	private int length; //varchar长度
+	private String length; //长度
 
 	public TableColumn(String colName, String dataType) {
 		super();
@@ -19,7 +19,7 @@ public class TableColumn {
 		this.colComment = colComment;
 	}
 
-	public TableColumn(String colName, String dataType, String colComment, int length) {
+	public TableColumn(String colName, String dataType, String colComment, String length) {
 		super();
 		this.colName = colName;
 		this.dataType = dataType;
@@ -45,6 +45,14 @@ public class TableColumn {
 
 	public String getColComment() {
 		return colComment;
+	}
+
+	public String getLength() {
+		return length;
+	}
+
+	public void setLength(String length) {
+		this.length = length;
 	}
 
 	public void setColComment(String colComment) {

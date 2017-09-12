@@ -53,6 +53,10 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         Datasource datasource = metadata.getDatasource();
         JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
+
+       // String dbName = fullTbName.split("\\.")[0];
+       // String tbName = fullTbName.split("\\.")[1];
+
         String[] strs = fullTbName.split(DATABASE_AND_TABLE_SEP);
         String dbName = null;
         String tbName = null;
@@ -62,6 +66,7 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
             dbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
             tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[1];
         }
+
         return getMetadataCols(jdbcDatasource, dbName, tbName);
     }
 
@@ -91,6 +96,38 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
             return getMetadataCols(datasource, dbName, tbName);
         }
         return null;
+    }
+
+
+    protected int getExecuteUpdateStatus(JdbcDatasource datasource, String updateSql) throws SQLException {
+        Connection conn = null;
+        Statement stmt = null;
+        int rs = 0;
+        try {
+            conn = getConnection(datasource);
+            stmt = conn.createStatement();
+            rs = stmt.executeUpdate(updateSql);
+        } finally {
+            JdbcUtil.close(stmt);
+            JdbcUtil.close(conn);
+        }
+        return rs;
+    }
+
+    protected int getExecuteUpdateStatus(JdbcDatasource datasource, List<String> updateSqls) throws SQLException {
+        Connection conn = null;
+        Statement stmt = null;
+        int rs = 0;
+        try {
+            conn = getConnection(datasource);
+            stmt = conn.createStatement();
+            for(String sql : updateSqls)
+            rs = stmt.executeUpdate(sql);
+        } finally {
+            JdbcUtil.close(stmt);
+            JdbcUtil.close(conn);
+        }
+        return rs;
     }
 
     protected List<MetadataCol> getMetadataCols(JdbcDatasource datasource, String querySql) {
