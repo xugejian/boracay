@@ -169,5 +169,10 @@ public class ImMetadataService extends BaseService {
         metadata.setDatasource(datasource);
         return metadata;
     }
+
+    public List<ImMetadata> selectAll() {
+
+        return imMetadataMapper.selectAll();
+    }
 }
 

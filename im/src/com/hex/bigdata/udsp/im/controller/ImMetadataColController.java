@@ -38,4 +38,11 @@ public class ImMetadataColController {
         }
         return new PageListResult(list);
     }
+
+    @ResponseBody
+    @RequestMapping("selectModelUpdateKeys/{modelId}")
+    public PageListResult selectModelUpdateKeys(@PathVariable String modelId){
+        List<ImMetadataCol> list = imMetadataColService.selectModelUpdateKeys(modelId);
+        return new PageListResult(list);
+    }
 }

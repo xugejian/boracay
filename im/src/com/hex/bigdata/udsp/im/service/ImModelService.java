@@ -1,15 +1,21 @@
 package com.hex.bigdata.udsp.im.service;
 
+import com.hex.bigdata.udsp.common.dao.ComDatasourceMapper;
 import com.hex.bigdata.udsp.common.dao.ComPropertiesMapper;
+import com.hex.bigdata.udsp.common.model.ComDatasource;
+import com.hex.bigdata.udsp.common.model.ComProperties;
+import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.dao.ImModelFilterColMapper;
 import com.hex.bigdata.udsp.im.dao.ImModelMapper;
 import com.hex.bigdata.udsp.im.dao.ImModelMappingMapper;
 import com.hex.bigdata.udsp.im.dao.ImModelUpdateKeyMapper;
 import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.ImModel;
-import com.hex.bigdata.udsp.im.model.ImModelFilterCol;
 import com.hex.bigdata.udsp.im.model.ImModelUpdateKey;
 import com.hex.bigdata.udsp.im.model.ImModelViews;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.util.Util;
 import org.apache.commons.lang3.StringUtils;
@@ -17,8 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 交互建模处理类
@@ -41,6 +48,12 @@ public class ImModelService {
 
     @Autowired
     private ImModelUpdateKeyMapper imModelUpdateKeyMapper;
+
+    @Autowired
+    private ImProviderService imProviderService;
+
+    @Autowired
+    private ComDatasourceMapper comDatasourceMapper;
 
     @Transactional
     public boolean insert(ImModelViews imModelViews) throws Exception{
@@ -71,8 +84,9 @@ public class ImModelService {
                 imModelUpdateKey.setPkId(updateKeyId);
                 imModelUpdateKey.setModelId(pkId);
                 imModelUpdateKey.setColId(updateKey);
-                imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey);
-                return false;
+                if(!imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey)){
+                    throw new RuntimeException("添加更新主键异常");
+                }
             }
         }
         return true;
@@ -115,8 +129,9 @@ public class ImModelService {
                 imModelUpdateKey.setPkId(updateKeyId);
                 imModelUpdateKey.setModelId(pkId);
                 imModelUpdateKey.setColId(updateKey);
-                imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey);
-                throw new RuntimeException("更新更新主键异常2");
+                if(!imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey)){
+                    throw new RuntimeException("更新更新主键异常2");
+                }
             }
         }
         return true;
@@ -146,5 +161,17 @@ public class ImModelService {
 
     public ImModel selectByName(String modelName) {
         return imModelMapper.selectByName(modelName);
+    }
+
+    public List<MetadataCol> getSrcMateData(Property[] properties, String srcDataSourceId) {
+        //根据元数据获取相关信息
+        Model model = new Model(Arrays.asList(properties));
+        ComDatasource comDatasource= comDatasourceMapper.select(srcDataSourceId);
+        Datasource datasource = new Datasource(comDatasource,new ArrayList<ComProperties>());
+        // 由于该实现类和模型中的实现类不一样故制为空
+        datasource.setImplClass("");
+        model.setProperties(Arrays.asList(properties));
+        model.setSourceDatasource(datasource);
+        return imProviderService.getCloumnInfo(model);
     }
 }
