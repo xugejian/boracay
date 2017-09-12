@@ -33,5 +33,11 @@ public class ImMetadataColService extends BaseService {
         imMetadataCol.setMdId(mdId);
         return imMetadataColMapper.select(imMetadataCol);
     }
+
+    @Transactional
+    public boolean deleteByMdId(String mdId) {
+        return imMetadataColMapper.deleteList(mdId);
+    }
+
 }
 

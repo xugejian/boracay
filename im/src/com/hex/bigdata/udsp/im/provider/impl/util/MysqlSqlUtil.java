@@ -66,6 +66,9 @@ public class MysqlSqlUtil {
                 dataType = column.getDataType();
                 colComment = column.getColComment();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
+                    if("VARCHAR".equals(dataType)){
+                        dataType += "("+ column.getLength()+")";
+                    }
                     if (i == 0) {
                         sql += "\n" + colName + " " + dataType;
                     } else {
@@ -78,6 +81,7 @@ public class MysqlSqlUtil {
             }
             sql += "\n)";
         }
+        sql = sql.replaceAll("STRING","BLOB");
         return sql;
     }
 

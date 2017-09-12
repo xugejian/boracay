@@ -5,6 +5,7 @@ import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.metadata.db.util.JdbcUtil;
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
@@ -20,6 +21,7 @@ import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.RowFormat;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -75,11 +77,59 @@ public class HiveProvider extends JdbcWrapper {
         MetadataCol mdCol = null;
         for (Column col : columns) {
             mdCol = new MetadataCol();
-            // TODO ...
-
+            mdCol.setSeq((short)col.getSeq());
+            mdCol.setName(col.getName());
+            mdCol.setDescribe(col.getComment());
+            mdCol.setType(getColType(col.getType()));
+            mdCol.setLength(col.getLength());
+            mdCol.setPrimary(col.getPrimaryKeyN() == 1 ? true : false);
             metadataCols.add(mdCol);
         }
         return metadataCols;
+    }
+
+    public static DataType getColType(String type){
+        type = type.toUpperCase();
+        DataType dataType = null;
+        switch (type){
+            case "VARCHAR":
+                dataType = DataType.VARCHAR;
+                break;
+            case "STRING":
+                dataType = DataType.STRING;
+                break;
+            case "DECIMAL":
+                dataType = DataType.DECIMAL;
+                break;
+            case "CHAR":
+                dataType = DataType.CHAR;
+                break;
+            case "FLOAT":
+                dataType = DataType.FLOAT;
+                break;
+            case "DOUBLE":
+                dataType = DataType.DOUBLE;
+                break;
+            case "TIMESTAMP":
+            case "DATE":
+                dataType = DataType.TIMESTAMP;
+                break;
+            case "INT":
+                dataType = DataType.INT;
+                break;
+            case "BIGINT":
+                dataType = DataType.BIGINT;
+                break;
+            case "TINYINT":
+                dataType = DataType.TINYINT;
+                break;
+            case "SMALLINT":
+                dataType = DataType.SMALLINT;
+                break;
+            default:
+                dataType = null;
+        }
+        return dataType;
     }
 
     @Override
@@ -88,8 +138,10 @@ public class HiveProvider extends JdbcWrapper {
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = null;
-        List<TableColumn> partitions = null;
+        List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
+        List<TableColumn> partitions = new ArrayList<TableColumn>();
+        TableColumn tableColumn = new TableColumn("date","DATE","分区字段"); //todo hive分区字段
+        partitions.add(tableColumn);
         boolean isExternal = false;
         boolean ifNotExists = false;
         RowFormat rowFormat = null;
@@ -97,7 +149,7 @@ public class HiveProvider extends JdbcWrapper {
         String sql = HiveSqlUtil.createTable(isExternal, ifNotExists, fullTbName,
                 columns, tableComment, partitions, rowFormat, fileFormat);
         int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 1 ? true : false;
+        return status == 0 ? true : false;
     }
 
     @Override
@@ -108,7 +160,7 @@ public class HiveProvider extends JdbcWrapper {
         boolean ifExists = false;
         String sql = HiveSqlUtil.dropTable(ifExists, fullTbName);
         int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        return status == 1 ? true : false;
+        return status == 0 ? true : false;
     }
 
     @Override

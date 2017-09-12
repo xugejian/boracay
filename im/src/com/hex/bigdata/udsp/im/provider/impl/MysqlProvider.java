@@ -4,26 +4,22 @@ import com.hex.bigdata.metadata.db.ClientFactory;
 import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
-import com.hex.bigdata.metadata.db.util.JdbcUtil;
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.MysqlDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MysqlModel;
+import com.hex.bigdata.udsp.im.provider.impl.util.MysqlSqlUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.provider.impl.util.MysqlSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,11 +38,11 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = null;
+        List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
         boolean ifNotExists = false;
         String sql = MysqlSqlUtil.createTable(ifNotExists, fullTbName, columns, tableComment);
         int status = getExecuteUpdateStatus(mysqlDatasource, sql);
-        return status == 1 ? true : false;
+        return status == 0 ? true : false;
     }
 
     @Override
@@ -57,7 +53,7 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         boolean ifExists = false;
         String sql = MysqlSqlUtil.dropTable(ifExists, fullTbName);
         int status = getExecuteUpdateStatus(mysqlDatasource, sql);
-        return status == 1 ? true : false;
+        return status == 0 ? true : false;
     }
 
     @Override
@@ -111,7 +107,7 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         List<MetadataCol> metadataCols = null;
         // 方式一：通过JDBCAPI方式获取字段信息
         // 通过JDBC的API接口获取，可以拿到字段名、类型、长度、注释、主键、索引、分区等信息
-        List<Column> columns = ClientFactory.createMetaClient(AcquireType.JDBCAPI, DBType.HIVE, conn)
+        List<Column> columns = ClientFactory.createMetaClient(AcquireType.JDBCAPI, DBType.MYSQL, conn)
                 .getColumns(dbName, tbName);
 //        // 方式二：通过JDBCINFO方式获取字段信息
 //        // 通过select * from dbName.tbName获取，只能拿到字段名、类型、长度等信息
@@ -125,10 +121,52 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         MetadataCol mdCol = null;
         for (Column col : columns) {
             mdCol = new MetadataCol();
-            // TODO ...
-
+            mdCol.setSeq((short)col.getSeq());
+            mdCol.setName(col.getName());
+            mdCol.setDescribe(col.getComment());
+            mdCol.setType(getColType(col.getType()));
+            mdCol.setLength(col.getLength());
+            mdCol.setPrimary(col.getPrimaryKeyN() == 1 ? true : false);
             metadataCols.add(mdCol);
         }
         return metadataCols;
+    }
+
+    public static DataType getColType(String type){
+        type = type.toUpperCase();
+        DataType dataType = null;
+        switch (type){
+            case "VARCHAR":
+                dataType = DataType.VARCHAR;
+                break;
+            case "BLOB":
+            case "TEXT":
+                dataType = DataType.STRING;
+                break;
+            case "DECIMAL":
+                dataType = DataType.DECIMAL;
+                break;
+            case "CHAR":
+                dataType = DataType.CHAR;
+                break;
+            case "INT":
+                dataType = DataType.INT;
+                break;
+            case "BIGINT":
+                dataType = DataType.BIGINT;
+                break;
+            case "TINYINT":
+                dataType = DataType.TINYINT;
+                break;
+            case "DOUBLE":
+                dataType = DataType.DOUBLE;
+                break;
+            case "TIMESTAMP":
+                dataType = DataType.TIMESTAMP;
+                break;
+            default:
+                dataType = null;
+        }
+        return dataType;
     }
 }

@@ -48,4 +48,18 @@ public class ImProviderService {
         return provider.columnInfo(model);
     }
 
+    public boolean createTable(Metadata metadata) throws Exception {
+        Datasource datasource = metadata.getDatasource();
+        String implClass = getImplClass(datasource);
+        TargetProvider provider = (TargetProvider) WebApplicationContextUtil.getBean(implClass);
+        return provider.createSchema(metadata);
+    }
+
+    public boolean dropTable(Metadata metadata) throws Exception {
+        Datasource datasource = metadata.getDatasource();
+        String implClass = getImplClass(datasource);
+        TargetProvider provider = (TargetProvider) WebApplicationContextUtil.getBean(implClass);
+        return provider.dropSchema(metadata);
+    }
+
 }
