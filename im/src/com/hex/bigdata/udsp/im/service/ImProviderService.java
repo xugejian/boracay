@@ -112,13 +112,6 @@ public class ImProviderService {
         return implClass;
     }
 
-    public List<MetadataCol> getCloumnInfo(Model model) {
-        Datasource datasource = model.getSourceDatasource();
-        String implClass = getImplClass(datasource);
-        SourceProvider provider = (SourceProvider) WebApplicationContextUtil.getBean(implClass);
-        return provider.columnInfo(model);
-    }
-
     public boolean createTable(Metadata metadata) throws Exception {
         Datasource datasource = metadata.getDatasource();
         String implClass = getImplClass(datasource);
