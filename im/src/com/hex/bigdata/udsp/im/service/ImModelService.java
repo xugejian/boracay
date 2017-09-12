@@ -84,8 +84,9 @@ public class ImModelService {
                 imModelUpdateKey.setPkId(updateKeyId);
                 imModelUpdateKey.setModelId(pkId);
                 imModelUpdateKey.setColId(updateKey);
-                imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey);
-                return false;
+                if(!imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey)){
+                    throw new RuntimeException("添加更新主键异常");
+                }
             }
         }
         return true;
@@ -128,8 +129,9 @@ public class ImModelService {
                 imModelUpdateKey.setPkId(updateKeyId);
                 imModelUpdateKey.setModelId(pkId);
                 imModelUpdateKey.setColId(updateKey);
-                imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey);
-                throw new RuntimeException("更新更新主键异常2");
+                if(!imModelUpdateKeyMapper.insert(updateKeyId,imModelUpdateKey)){
+                    throw new RuntimeException("更新更新主键异常2");
+                }
             }
         }
         return true;

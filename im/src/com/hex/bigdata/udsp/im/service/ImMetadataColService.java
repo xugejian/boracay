@@ -39,5 +39,8 @@ public class ImMetadataColService extends BaseService {
         return imMetadataColMapper.deleteList(mdId);
     }
 
+    public List<ImMetadataCol> selectModelUpdateKeys(String modelId) {
+        return imMetadataColMapper.selectModelUpdateKeys(modelId);
+    }
 }
 

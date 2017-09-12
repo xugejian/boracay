@@ -301,4 +301,11 @@ public class ImMetadataController {
         }
         return new MessageResult(status, message, metadataCols);
     }
+
+    @ResponseBody
+    @RequestMapping("selectAll")
+    public MessageResult selectAll(){
+        List<ImMetadata> imMetadatas = imMetadataService.selectAll();
+        return new PageListResult(imMetadatas);
+    }
 }
