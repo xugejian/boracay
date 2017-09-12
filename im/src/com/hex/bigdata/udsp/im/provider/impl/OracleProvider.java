@@ -52,7 +52,7 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
        // int status = getExecuteUpdateStatus(oracleDatasource, sqls);
        // return status == 0 ? true : false;
 
-        return JdbcProviderUtil.executeUpdate(oracleDatasource, sql) == 1 ? true : false;
+        return JdbcProviderUtil.executeUpdate(oracleDatasource, sqls) == 1 ? true : false;
 
     }
 
