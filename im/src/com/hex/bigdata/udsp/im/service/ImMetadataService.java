@@ -8,10 +8,11 @@ import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.PropertyUtil;
 import com.hex.bigdata.udsp.im.dao.ImMetadataMapper;
-import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
-import com.hex.bigdata.udsp.im.dto.ImMetadataView;
 import com.hex.bigdata.udsp.im.model.ImMetadata;
 import com.hex.bigdata.udsp.im.model.ImMetadataCol;
+import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
+import com.hex.bigdata.udsp.im.dto.ImMetadataView;
+import com.hex.bigdata.udsp.im.provider.constant.MetadataType;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.util.ImUtil;
@@ -132,6 +133,7 @@ public class ImMetadataService extends BaseService {
         Datasource datasource = new Datasource(comDatasource, comProperties);
         List<Property> prop = new ArrayList<>();
         Metadata metadata = new Metadata(prop);
+        metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
         List<MetadataCol> list = imProviderService.getCloumnInfo(metadata);
@@ -142,14 +144,14 @@ public class ImMetadataService extends BaseService {
     public boolean createTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("2"); //状态为已建
-        return imProviderService.createSchema(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
+        return imProviderService.createTable(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
     }
 
     @Transactional
     public boolean dropTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("1"); //状态为未建
-        return  imProviderService.dropSchema(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
+        return  imProviderService.dropTable(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
     }
 
     public Metadata getMetadata(String pkId){
@@ -160,16 +162,12 @@ public class ImMetadataService extends BaseService {
         Datasource datasource = new Datasource(comDatasource, comProperties);
         List<Property> prop = PropertyUtil.convertToPropertyList(comPropertiesService.selectByFkId(pkId));
         Metadata metadata = new Metadata(prop);
+        metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(imMetadata.getTbName());
         metadata.setMetadataCols(ImUtil.convertToMetadataColList(imMetadataColService.select(pkId)));
         metadata.setDescribe(imMetadata.getDescribe());
         metadata.setDatasource(datasource);
         return metadata;
-    }
-
-    public List<ImMetadata> selectAll() {
-
-        return imMetadataMapper.selectAll();
     }
 }
 

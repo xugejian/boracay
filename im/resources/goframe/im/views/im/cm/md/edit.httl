@@ -136,10 +136,10 @@ ${extends("/goframe/function_layout.httl")}
                             <td style="text-align: right;">
                                 <a class="nui-button" iconCls="icon-add" onclick="add2" >添加</a>
                                 <a class="nui-button" iconCls="icon-add" onclick="adds" >批量添加</a>
-                                <a class="nui-button" iconCls="icon-remove" onclick="remove2" id="remove">删除</a>
+                                <a class="nui-button" iconCls="icon-remove" onclick="remove2" id="remove2">删除</a>
                                 <span class="separator"></span>
-                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp2" id="moveUp">上移</a>
-                                <a class="nui-button" iconCls="icon-download" onclick="moveDown2" id="moveDown">下移</a>
+                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp2" id="moveUp2">上移</a>
+                                <a class="nui-button" iconCls="icon-download" onclick="moveDown2" id="moveDown2">下移</a>
                             </td>
                         </tr>
                     </table>
@@ -373,6 +373,7 @@ ${extends("/goframe/function_layout.httl")}
 
     //todo 创建
     function saveAndCreate(){
+        debugger;
         form1.validate();
         if (form1.isValid() == false) {
             return;
@@ -516,10 +517,10 @@ ${extends("/goframe/function_layout.httl")}
         var status = true;
         var propsData = grid2.getData(true, true);
         var type = nui.get("type").getValue();
-        if (type==0 && (propsData == null || propsData.length == 0)){
-            nui.alert("【配置参数】的信息不能为空!");
-            return;
-        }
+//        if (type==0 && (propsData == null || propsData.length == 0)){
+//            nui.alert("【配置参数】的信息不能为空!");
+//            return;
+//        }
         $.each(propsData, function (_index, record) {
             record.seq = grid2.indexOf(record) + 1;
             if (record.name == null || record.name == "") {

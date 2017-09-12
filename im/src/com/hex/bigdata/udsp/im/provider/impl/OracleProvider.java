@@ -4,6 +4,7 @@ import com.hex.bigdata.metadata.db.ClientFactory;
 import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.constant.DatasourceType;
@@ -15,6 +16,9 @@ import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
+import com.hex.bigdata.udsp.im.provider.impl.util.OracleSqlUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -40,9 +44,15 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = null;
-        String sql = OracleSqlUtil.createTable(fullTbName, columns, tableComment);
-        return JdbcProviderUtil.executeUpdate(oracleDatasource, sql) == 1 ? true : false;
+        List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
+        List<String> sqls = new ArrayList<>();
+        sqls.add(OracleSqlUtil.createTable(fullTbName, columns, tableComment));
+        sqls.add(OracleSqlUtil.commentTable(fullTbName, tableComment));
+        sqls.addAll(OracleSqlUtil.createColComment(fullTbName, columns));
+       // int status = getExecuteUpdateStatus(oracleDatasource, sqls);
+       // return status == 0 ? true : false;
+        return JdbcProviderUtil.executeUpdate(oracleDatasource, sqls) == 1 ? true : false;
+
     }
 
     @Override
@@ -51,7 +61,12 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = OracleSqlUtil.dropTable(fullTbName);
+
+        //int status = getExecuteUpdateStatus(hiveDatasource, sql);
+        //return status == 0 ? true : false;
+
         return JdbcProviderUtil.executeUpdate(oracleDatasource, sql) == 1 ? true : false;
+
     }
 
     @Override
@@ -67,16 +82,6 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
     @Override
     public void outputData() {
 
-    }
-
-    @Override
-    public boolean createEngineSchema(Model model) throws Exception {
-        return createEngineSchema(model, DatasourceType.ORACLE);
-    }
-
-    @Override
-    public boolean dropEngineSchema(Model model) throws Exception {
-        return dropEngineSchema(model, DatasourceType.ORACLE);
     }
 
     @Override
@@ -119,10 +124,51 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         MetadataCol mdCol = null;
         for (Column col : columns) {
             mdCol = new MetadataCol();
-            // TODO ...
-
+            mdCol.setSeq((short) col.getSeq());
+            mdCol.setName(col.getName());
+            mdCol.setDescribe(col.getComment());
+            mdCol.setType(getColType(col.getType()));
+            mdCol.setLength(col.getLength());
+            mdCol.setPrimary(col.getPrimaryKeyN() == 1 ? true : false);
             metadataCols.add(mdCol);
         }
         return metadataCols;
+    }
+
+    public static DataType getColType(String type) {
+        DataType dataType = null;
+        switch (type) {
+            case "VARCHAR":
+            case "VARCHAR2":
+            case "NVARCHAR2":
+                dataType = DataType.VARCHAR;
+                break;
+            case "CLOB":
+            case "LONG":
+            case "BLOB":
+                dataType = DataType.STRING;
+                break;
+            case "NUMBER":
+                dataType = DataType.DECIMAL;
+                break;
+            case "CHAR":
+            case "NCHAR":
+                dataType = DataType.CHAR;
+                break;
+            case "BINARY_FLOAT":
+                dataType = DataType.FLOAT;
+                break;
+            case "BINARY_DOUBLE":
+                dataType = DataType.DOUBLE;
+                break;
+            case "TIMESTAMP":
+            case "TIMESTAMP(6)":
+            case "DATE":
+                dataType = DataType.TIMESTAMP;
+                break;
+            default:
+                dataType = null;
+        }
+        return dataType;
     }
 }

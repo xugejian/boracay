@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -85,6 +86,23 @@ public class JdbcProviderUtil {
             conn = JdbcProviderUtil.getConnection(datasource);
             stmt = conn.createStatement();
             rs = stmt.executeUpdate(updateSql);
+        } finally {
+            JdbcUtil.close(stmt);
+            JdbcUtil.close(conn);
+        }
+        return rs;
+    }
+
+    public static int executeUpdate(JdbcDatasource datasource, List<String> updateSqls) throws SQLException {
+        Connection conn = null;
+        Statement stmt = null;
+        int rs = -1;
+        try {
+            conn = JdbcProviderUtil.getConnection(datasource);
+            stmt = conn.createStatement();
+            for (String updateSql : updateSqls) {
+                rs = stmt.executeUpdate(updateSql);
+            }
         } finally {
             JdbcUtil.close(stmt);
             JdbcUtil.close(conn);

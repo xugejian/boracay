@@ -53,6 +53,10 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         Datasource datasource = metadata.getDatasource();
         JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
+
+        // String dbName = fullTbName.split("\\.")[0];
+        // String tbName = fullTbName.split("\\.")[1];
+
         String[] strs = fullTbName.split(DATABASE_AND_TABLE_SEP);
         String dbName = null;
         String tbName = null;
@@ -62,6 +66,7 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
             dbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
             tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[1];
         }
+
         return getMetadataCols(jdbcDatasource, dbName, tbName);
     }
 
@@ -93,6 +98,38 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         return null;
     }
 
+
+    protected int getExecuteUpdateStatus(JdbcDatasource datasource, String updateSql) throws SQLException {
+        Connection conn = null;
+        Statement stmt = null;
+        int rs = 0;
+        try {
+            conn = JdbcProviderUtil.getConnection(datasource);
+            stmt = conn.createStatement();
+            rs = stmt.executeUpdate(updateSql);
+        } finally {
+            JdbcUtil.close(stmt);
+            JdbcUtil.close(conn);
+        }
+        return rs;
+    }
+
+    protected int getExecuteUpdateStatus(JdbcDatasource datasource, List<String> updateSqls) throws SQLException {
+        Connection conn = null;
+        Statement stmt = null;
+        int rs = 0;
+        try {
+            conn = JdbcProviderUtil.getConnection(datasource);
+            stmt = conn.createStatement();
+            for (String sql : updateSqls)
+                rs = stmt.executeUpdate(sql);
+        } finally {
+            JdbcUtil.close(stmt);
+            JdbcUtil.close(conn);
+        }
+        return rs;
+    }
+
     protected List<MetadataCol> getMetadataCols(JdbcDatasource datasource, String querySql) {
         List<MetadataCol> metadataCols = null;
         Connection conn = null;
@@ -120,67 +157,59 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         return metadataCols;
     }
 
-    protected boolean createEngineSchema(Model model, DatasourceType dsType) throws Exception {
-        boolean status = false;
-        Datasource sDs = model.getSourceDatasource();
-        String sDsType = sDs.getType();
-        Metadata md = model.getTargetMetadata();
-        Datasource tDs = md.getDatasource();
-        String tDsType = tDs.getType();
-        Datasource eDs = model.getEngineDatasource();
-        HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
+    @Override
+    public boolean createSourceEngineSchema(Model model) throws SQLException {
+        Datasource datasource = model.getSourceDatasource();
+        Datasource engineDatasource = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
         String id = model.getId();
-        // 作为源
-        if (dsType.getValue().equals(sDsType)) {
-            JdbcModel jdbcModel = new JdbcModel(model.getPropertyMap());
-            String fullTbName = jdbcModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + jdbcModel.getTableName();
-            String tableName = getSourceTableName(jdbcModel.getDatabaseName(), jdbcModel.getTableName(), id);
-            JdbcDatasource jdbcDs = new JdbcDatasource(sDs.getPropertyMap());
-            String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
-                    getSourceColumns(model.getModelMappings()), "源的Hive引擎表", null,
-                    HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(jdbcDs, fullTbName));
-            status = JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-            if (!status) return status;
-        }
-        // 作为目标
-        if (dsType.getValue().equals(tDsType)) {
-            HiveMetadata hiveMetadata = new HiveMetadata(md.getPropertyMap());
-            String fullTbName = hiveMetadata.getTbName();
-            String tableName = getTargetTableName(fullTbName, id);
-            JdbcDatasource jdbcDs = new JdbcDatasource(tDs.getPropertyMap());
-            String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
-                    getTargetColumns(model.getModelMappings()), "目标的Hive引擎表", null,
-                    HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(jdbcDs, fullTbName));
-            status = JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-        }
-        return status;
+        JdbcModel jdbcModel = new JdbcModel(model.getPropertyMap());
+        String fullTbName = jdbcModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + jdbcModel.getTableName();
+        String tableName = getSourceTableName(jdbcModel.getDatabaseName(), jdbcModel.getTableName(), id);
+        JdbcDatasource jdbcDs = new JdbcDatasource(datasource.getPropertyMap());
+        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
+                getSourceColumns(model.getModelMappings()), "源的Hive引擎表", null,
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(jdbcDs, fullTbName));
+        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
 
-    protected boolean dropEngineSchema(Model model, DatasourceType dsType) throws Exception {
-        boolean status = false;
-        Datasource sDs = model.getSourceDatasource();
-        String sDsType = sDs.getType();
-        Metadata md = model.getTargetMetadata();
-        Datasource tDs = md.getDatasource();
-        String tDsType = tDs.getType();
-        Datasource eDs = model.getEngineDatasource();
-        HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
+    @Override
+    public boolean createTargetEngineSchema(Model model) throws SQLException {
+        Metadata metadata = model.getTargetMetadata();
+        Datasource datasource = metadata.getDatasource();
+        Datasource engineDatasource = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
         String id = model.getId();
-        // 作为源
-        if (dsType.getValue().equals(sDsType)) {
-            JdbcModel jdbcModel = new JdbcModel(model.getPropertyMap());
-            String tableName = getSourceTableName(jdbcModel.getDatabaseName(), jdbcModel.getTableName(), id);
-            String sql = HiveSqlUtil.dropTable(true, tableName);
-            status = JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-            if (!status) return status;
-        }
-        // 作为目标
-        if (dsType.getValue().equals(tDsType)) {
-            String tableName = getTargetTableName(md.getTbName(), id);
-            String sql = HiveSqlUtil.dropTable(true, tableName);
-            status = JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-        }
-        return status;
+        HiveMetadata hiveMetadata = new HiveMetadata(metadata.getPropertyMap());
+        String fullTbName = hiveMetadata.getTbName();
+        String tableName = getTargetTableName(fullTbName, id);
+        JdbcDatasource jdbcDs = new JdbcDatasource(datasource.getPropertyMap());
+        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
+                getTargetColumns(model.getModelMappings()), "目标的Hive引擎表", null,
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(jdbcDs, fullTbName));
+        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+    }
+
+    @Override
+    public boolean dropSourceEngineSchema(Model model) throws SQLException {
+        Datasource engineDatasource = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
+        String id = model.getId();
+        JdbcModel jdbcModel = new JdbcModel(model.getPropertyMap());
+        String tableName = getSourceTableName(jdbcModel.getDatabaseName(), jdbcModel.getTableName(), id);
+        String sql = HiveSqlUtil.dropTable(true, tableName);
+        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+    }
+
+    @Override
+    public boolean dropTargetEngineSchema(Model model) throws SQLException {
+        Metadata metadata = model.getTargetMetadata();
+        Datasource engineDatasource = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
+        String id = model.getId();
+        String tableName = getTargetTableName(metadata.getTbName(), id);
+        String sql = HiveSqlUtil.dropTable(true, tableName);
+        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
 
     private List<TableColumn> getTargetColumns(List<ModelMapping> modelMappings) {

@@ -219,34 +219,6 @@ public class ImMetadataController {
         return new MessageResult(status, message);
     }
 
-    @RequestMapping({"/update"})
-    @ResponseBody
-    public MessageResult update(@RequestBody ImMetadataDto imMetadataDto) {
-        boolean status = true;
-        String message = "更新成功";
-        if (imMetadataDto == null) {
-            status = false;
-            message = "请求参数为空";
-        } else {
-            try {
-                if (!imMetadataService.update(imMetadataDto)) {
-                    status = false;
-                    message = "更新失败";
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                status = false;
-                message = "系统异常：" + e;
-            }
-        }
-        if (status) {
-            logger.debug(message);
-        } else {
-            logger.error(message);
-        }
-        return new MessageResult(status, message);
-    }
-
     @RequestMapping("/delete")
     @ResponseBody
     public MessageResult delete(@RequestBody ImMetadata[] imMetadatas) {
@@ -328,12 +300,5 @@ public class ImMetadataController {
             logger.error(message);
         }
         return new MessageResult(status, message, metadataCols);
-    }
-
-    @ResponseBody
-    @RequestMapping("selectAll")
-    public MessageResult selectAll(){
-        List<ImMetadata> imMetadatas = imMetadataService.selectAll();
-        return new PageListResult(imMetadatas);
     }
 }
