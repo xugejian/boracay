@@ -5,6 +5,6 @@ package com.hex.bigdata.udsp.im.provider;
  */
 public interface RealtimeTargetProvider extends TargetProvider, RealtimeProvider {
 
-    void outputData();
+    void inputData();
 
 }

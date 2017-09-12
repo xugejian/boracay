@@ -44,7 +44,7 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public String outputSQL() {
+    public String inputSQL() {
         // TODO ...
         return null;
     }
@@ -78,7 +78,7 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public void outputData() {
+    public void inputData() {
         // TODO ...
     }
 }

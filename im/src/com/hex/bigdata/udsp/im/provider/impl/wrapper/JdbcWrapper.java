@@ -1,5 +1,9 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
+import com.hex.bigdata.metadata.db.ClientFactory;
+import com.hex.bigdata.metadata.db.model.Column;
+import com.hex.bigdata.metadata.db.util.AcquireType;
+import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.metadata.db.util.JdbcUtil;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
@@ -144,7 +148,7 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
             metadataCols = new ArrayList<>();
             if (columnCount >= 1) {
                 for (int i = 1; i <= columnCount; i++) {
-                    metadataCols.add(getMetadataCols(md, i));
+                    metadataCols.add(getMetadataCol(md, i));
                 }
             }
         } catch (SQLException e) {
@@ -290,7 +294,80 @@ public abstract class JdbcWrapper extends Wrapper implements BatchSourceProvider
         return tableName;
     }
 
-    protected abstract MetadataCol getMetadataCols(ResultSetMetaData md, int i) throws SQLException;
+    protected MetadataCol getMetadataCol(ResultSetMetaData md, int i) throws SQLException {
+//        logger.debug("-----------------------------------------------------------");
+//        logger.debug("getCatalogName:" + md.getCatalogName(i));
+//        logger.debug("getSchemaName:" + md.getSchemaName(i));
+//        logger.debug("getTableName:" + md.getTableName(i));
+//        logger.debug("getColumnClassName:" + md.getColumnClassName(i));
+//        logger.debug("getColumnName:" + md.getColumnName(i));
+//        logger.debug("getColumnLabel:" + md.getColumnLabel(i));
+//        logger.debug("getColumnDisplaySize:" + md.getColumnDisplaySize(i));
+//        logger.debug("getColumnType:" + md.getColumnType(i));
+//        logger.debug("getColumnTypeName:" + md.getColumnTypeName(i));
+//        logger.debug("getPrecision:" + md.getPrecision(i));
+//        logger.debug("getScale:" + md.getScale(i));
+        MetadataCol metadataCol = new MetadataCol();
+//        String columnName = md.getColumnName(i);
+        String columnLabel = md.getColumnLabel(i);
+        int columnType = md.getColumnType(i);
+        String columnTypeName = md.getColumnTypeName(i);
+//        int columnDisplaySize = 0;
+//        try {
+//            columnDisplaySize = md.getColumnDisplaySize(i);
+//        } catch (SQLException e) {
+//            columnDisplaySize = 0;
+//        }
+        int precision = 0;
+        try {
+            precision = md.getPrecision(i);
+        } catch (SQLException e) {
+            precision = 0;
+        }
+        int scale = 0;
+        try {
+            scale = md.getScale(i);
+        } catch (SQLException e) {
+            scale = 0;
+        }
+        if (columnLabel.contains(".")) {
+            columnLabel = columnLabel.split("\\.")[1];
+        }
+        String colLength = "";
+        if (scale == 0 && precision > 0) {
+            colLength = String.valueOf(precision);
+        } else if (scale > 0 && precision > 0 && scale <= precision) {
+            colLength = String.valueOf(precision) + "," + String.valueOf(scale);
+        }
+        metadataCol.setSeq((short) i);
+        metadataCol.setName(columnLabel);
+        metadataCol.setType(getColType(columnTypeName));
+        metadataCol.setLength(colLength);
+        return metadataCol;
+    }
 
-    protected abstract List<MetadataCol> getMetadataCols(Connection conn, String dbName, String tbName) throws SQLException;
+    protected List<MetadataCol> getMetadataCols(Connection conn, String dbName, String tbName) throws SQLException {
+        List<MetadataCol> metadataCols = null;
+        List<Column> columns = getColumns(conn, dbName, tbName);
+        metadataCols = new ArrayList<>();
+        MetadataCol mdCol = null;
+        for (Column col : columns) {
+            mdCol = new MetadataCol();
+            mdCol.setSeq((short) col.getSeq());
+            mdCol.setName(col.getName());
+            mdCol.setDescribe(col.getComment());
+            mdCol.setType(getColType(col.getType()));
+            mdCol.setLength(col.getLength());
+            mdCol.setPrimary(col.getPrimaryKeyN() > 0 ? true : false);
+            mdCol.setIndexed(col.getPrimaryKeyN() > 0 ? true : false);
+            mdCol.setStored(true);
+            metadataCols.add(mdCol);
+        }
+        return metadataCols;
+    }
+
+    protected abstract DataType getColType(String type);
+
+    protected abstract List<Column> getColumns(Connection conn, String dbName, String tbName) throws SQLException;
+
 }

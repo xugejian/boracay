@@ -180,7 +180,7 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public void outputData() {
+    public void inputData() {
 
     }
 

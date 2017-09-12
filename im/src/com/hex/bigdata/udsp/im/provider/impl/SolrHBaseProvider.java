@@ -3,8 +3,8 @@ package com.hex.bigdata.udsp.im.provider.impl;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
@@ -35,16 +35,12 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
         Datasource datasource = metadata.getDatasource();
         SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource(datasource.getPropertyMap());
         String collectionName = metadata.getTbName();
-        String hbaseTbName = collectionName;
         List<MetadataCol> metadataCols = new ArrayList<>();
-
         // 获取Solr的字段信息
         SolrServer solrServer = getSolrServer(collectionName, solrHBaseDatasource);
         metadataCols.addAll(getColumns(solrServer));
-
         // HBase无法获取字段信息
         metadataCols.addAll(null);
-
         return metadataCols;
     }
 
@@ -63,7 +59,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
-    public String outputSQL() {
+    public String inputSQL() {
         return null;
     }
 
@@ -78,7 +74,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
-    public void outputData() {
+    public void inputData() {
 
     }
 }
