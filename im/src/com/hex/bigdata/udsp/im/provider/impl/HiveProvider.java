@@ -7,7 +7,6 @@ import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
@@ -15,7 +14,6 @@ import com.hex.bigdata.udsp.im.provider.impl.util.model.RowFormat;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,14 +41,9 @@ public class HiveProvider extends JdbcWrapper {
         List<TableColumn> partitions = new ArrayList<TableColumn>();
         TableColumn tableColumn = new TableColumn("date", "DATE", "分区字段"); //todo hive分区字段
         partitions.add(tableColumn);
-        boolean isExternal = false;
-        boolean ifNotExists = false;
-        RowFormat rowFormat = null;
         String fileFormat = FileFormat.HIVE_FILE_FORMAT_PARQUET;
-        String sql = HiveSqlUtil.createTable(isExternal, ifNotExists, fullTbName,
-                columns, tableComment, partitions, rowFormat, fileFormat);
-        //  int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        //   return status == 0 ? true : false;
+        String sql = HiveSqlUtil.createTable(false, false, fullTbName,
+                columns, tableComment, partitions, null, fileFormat);
         return JdbcProviderUtil.executeUpdate(hiveDatasource, sql) == 1 ? true : false;
     }
 
@@ -59,10 +52,7 @@ public class HiveProvider extends JdbcWrapper {
         Datasource datasource = metadata.getDatasource();
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
-        boolean ifExists = false;
-        String sql = HiveSqlUtil.dropTable(ifExists, fullTbName);
-        // int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        // return status == 0 ? true : false;
+        String sql = HiveSqlUtil.dropTable(false, fullTbName);
         return JdbcProviderUtil.executeUpdate(hiveDatasource, sql) == 1 ? true : false;
     }
 

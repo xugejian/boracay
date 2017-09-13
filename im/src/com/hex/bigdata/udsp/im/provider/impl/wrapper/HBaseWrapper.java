@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseAdminPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
@@ -9,7 +8,6 @@ import com.hex.bigdata.udsp.im.provider.impl.model.metadata.HBaseMetadata;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.SerDeProperty;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
@@ -140,25 +138,6 @@ public abstract class HBaseWrapper extends Wrapper {
         tblProperties.add(new TblProperty("hbase.table.name", tableName));
         //tblProperties.add(new TblProperty("hbase.mapred.output.outputtable", tableName));
         return tblProperties;
-    }
-
-    protected String getTargetTableName(String fullTbName, String id) {
-        String[] strs = fullTbName.split(DATABASE_AND_TABLE_SEP);
-        String dbName = null;
-        String tbName = null;
-        if (strs.length == 1) {
-            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
-        } else if (strs.length == 2) {
-            dbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
-            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[1];
-        }
-        String tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + id;
-        if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
-            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + dbName + HIVE_ENGINE_TABLE_SEP + tbName + HIVE_ENGINE_TABLE_SEP + id;
-        } else if (StringUtils.isNotBlank(tbName)) {
-            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + tbName + HIVE_ENGINE_TABLE_SEP + id;
-        }
-        return tableName;
     }
 
     protected List<SerDeProperty> getSerDeProperties(List<ModelMapping> modelMappings, HBaseMetadata hbaseMetadata) {

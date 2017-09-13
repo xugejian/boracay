@@ -13,16 +13,15 @@ import com.hex.bigdata.udsp.im.provider.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.SolrMetadata;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrWrapper;
-import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.im.provider.model.Model;
+import com.hex.bigdata.udsp.im.provider.model.*;
 import org.apache.commons.lang3.StringUtils;
-import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServer;
@@ -170,7 +169,23 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
 
     @Override
     public String inputSQL(Model model) {
-        return null;
+        SolrModel solrModel = new SolrModel(model.getPropertyMap());
+        String tableName = getSourceTableName(null, solrModel.getCollectionName(), model.getId());
+        List<ModelMapping> modelMappings = model.getModelMappings();
+        List<String> selectColumns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings) {
+            selectColumns.add(mapping.getName());
+        }
+        List<ModelFilterCol> modelFilterCols = model.getModelFilterCols();
+        List<WhereProperty> whereProperties = new ArrayList<>();
+        for (ModelFilterCol filterCol : modelFilterCols) {
+            WhereProperty whereProperty = new WhereProperty();
+            whereProperty.setName(filterCol.getName());
+            whereProperty.setValue(filterCol.getValue());
+            whereProperty.setType(filterCol.getType());
+            whereProperty.setOperator(filterCol.getOperator());
+        }
+        return HiveSqlUtil.select(selectColumns, tableName, whereProperties);
     }
 
     @Override
