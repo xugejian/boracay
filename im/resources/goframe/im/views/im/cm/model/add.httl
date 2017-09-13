@@ -521,7 +521,7 @@ ${extends("/goframe/function_layout.httl")}
             if(record.name == null || record.name == ""){
                 nui.alert("【字段映射】的位置" + record.seq + "：名称不能为空");
                 result = false;
-                return;
+                return false;
             }
             if(record.colId == null || record.colId == ""){
                 nui.alert("【字段映射】的位置" + record.seq + "：目标字段不能为空");
@@ -725,6 +725,7 @@ ${extends("/goframe/function_layout.httl")}
             if(record.value == null || record.value == ""){
                 nui.alert("【参数配置】的位置" + (_index+1) + "：内容不能为空");
                 repetFlg = false;
+                return repetFlg;
             }
             $.each(properties, function (i, item) {
                 if (record.name == item.name) {

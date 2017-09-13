@@ -785,6 +785,7 @@ ${extends("/goframe/function_layout.httl")}
             if(record.value == null || record.value == ""){
                 nui.alert("【参数配置】的位置" + (_index+1) + "：内容不能为空");
                 repetFlg = false;
+                return repetFlg;
             }
             $.each(properties, function (i, item) {
                 if (record.name == item.name) {
