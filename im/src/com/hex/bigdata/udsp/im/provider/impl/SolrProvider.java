@@ -22,6 +22,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServer;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -111,10 +114,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
         SolrUtil.uploadSolrConfig(metadata);
-        Datasource datasource = metadata.getDatasource();
-        Map<String, Property> dsPropertyMap = datasource.getPropertyMap();
-        String solrServers = dsPropertyMap.get("solr.servers").getValue();
-        String[] addresses = solrServers.split(",");
+        String[] addresses = getSolrServerStrings(metadata);
         String response = "";
         Map<String, Property> mdPropertyMap = metadata.getPropertyMap();
         for (String solrServer : addresses) {
@@ -135,10 +135,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
         SolrUtil.deleteZnode(metadata);
-        Datasource datasource = metadata.getDatasource();
-        Map<String, Property> dsPropertyMap = datasource.getPropertyMap();
-        String solrServers = dsPropertyMap.get("solr.servers").getValue();
-        String[] addresses = solrServers.split(",");
+        String[] addresses = getSolrServerStrings(metadata);
         for (String solrServer : addresses) {
             String url = "http://" + solrServer + "/solr/admin/collections";
             String param = "action=DELETE" + "&name=" + metadata.getTbName();
@@ -150,6 +147,40 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
             break;
         }
         return true;
+    }
+
+    private String[] getSolrServerStrings(Metadata metadata) {
+        Datasource datasource = metadata.getDatasource();
+        Map<String, Property> dsPropertyMap = datasource.getPropertyMap();
+        String solrServers = dsPropertyMap.get("solr.servers").getValue();
+        return solrServers.split(",");
+    }
+
+    @Override
+    public boolean checkTableExists(Metadata metadata) throws Exception {
+        String[] addresses = getSolrServerStrings(metadata);
+        String response = "";
+        for(String solrServer : addresses){
+            String url = "http://"+solrServer+"/solr/admin/collections?action=LIST";
+            try {
+                response = SolrUtil.sendGet(url, null);
+            }catch (Exception e){
+                continue;
+            }
+            break;
+        }
+        Document document = DocumentHelper.parseText(response);
+        Element root = document.getRootElement();
+        Element arr = root.element("arr");
+        List<Element> collections = arr.elements("str");
+        boolean exists = false;
+        for(Element e : collections) {
+            if (e.getData().equals(metadata.getTbName())) {
+                exists = true;
+                break;
+            }
+        }
+        return exists;
     }
 
     @Override

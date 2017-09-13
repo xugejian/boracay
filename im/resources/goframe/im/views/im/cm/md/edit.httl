@@ -791,7 +791,6 @@ ${extends("/goframe/function_layout.httl")}
         }
         var tbName = nui.get("tbName").getValue();
         if(!tbName){
-            alert("请输入表名！"); //todo 需要验证表是否存在
             return;
         }
         if(tbName == originName){
@@ -810,6 +809,8 @@ ${extends("/goframe/function_layout.httl")}
                 if(text.status){
                     grid1.clearRows();
                     grid1.addRows(dealCols(text.data));
+                }else {
+                    nui.alert(text.message);
                 }
             }
         });
