@@ -36,8 +36,8 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
     private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.solr.SolrStorageHandler";
 
-    private List<MetadataCol> getColumns(String collectionName, String solrServers) {
-        if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {
+    public List<MetadataCol> getColumns(String collectionName, String solrServers) {
+        if(StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)){
             return null;
         }
         String response = "";

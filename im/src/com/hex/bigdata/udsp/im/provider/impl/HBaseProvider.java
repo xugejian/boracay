@@ -12,6 +12,8 @@ import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -34,6 +36,10 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
+        //HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
+        //int numRegions = Integer.parseInt(metadata.getPropertyMap().get("hbase.region.num").getValue());
+        //String family = metadata.getPropertyMap().get("hbase.family").getValue();
+        //return createHTable(datasource, metadata.getTbName(),numRegions,true,true, family);
         return createHTable(new HBaseMetadata(metadata.getPropertyMap()));
     }
 

@@ -149,7 +149,7 @@ ${extends("/goframe/function_layout.httl")}
                 <div id="datagrid2" class="nui-datagrid" style="width:100%; height: 100%;"
                      url="${basePath}/com/props/select/${pkId}"
                      idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
-                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected">
+                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected2">
                     <div property="columns">
                         <div type="checkcolumn" headerAlign="center" width="5"></div>
                         <div type="indexcolumn" headerAlign="center" width="8">位置</div>
@@ -198,7 +198,6 @@ ${extends("/goframe/function_layout.httl")}
         setData();
         grid1.load();
         grid2.load();
-        setSaveButton();
     });
 
     /**
@@ -213,9 +212,9 @@ ${extends("/goframe/function_layout.httl")}
             contentType:'application/json',
             success:function(result){
                 if(result.status == true) {
-                    debugger;
                     form1.setData(result.data);
                     originName = result.data.name;
+                    setSaveButton();
                 }
             }
         });
@@ -367,13 +366,19 @@ ${extends("/goframe/function_layout.httl")}
                 form1.unmask();
                 //解除保存按钮禁用
                 nui.get("saveButton").enable();
+            },
+            error: function () {
+                nui.alert("系统错误", "系统提示", function (action) {
+                    if (action == "ok" || action == "close") {
+//                            CloseWindow("failed");
+                    }
+                });
+                form1.unmask();
             }
         });
     }
 
-    //todo 创建
     function saveAndCreate(){
-        debugger;
         form1.validate();
         if (form1.isValid() == false) {
             return;
@@ -407,6 +412,14 @@ ${extends("/goframe/function_layout.httl")}
                 form1.unmask();
                 //解除保存按钮禁用
                 nui.get("saveAndCreateButton").enable();
+            },
+            error: function () {
+                nui.alert("系统错误", "系统提示", function (action) {
+                    if (action == "ok" || action == "close") {
+//                            CloseWindow("failed");
+                    }
+                });
+                form1.unmask();
             }
         });
     }
@@ -547,8 +560,56 @@ ${extends("/goframe/function_layout.httl")}
             nui.alert("【配置参数】中存在重复【名称】，请检查后再提交！");
             return;
         }
-        //todo solr 参数合理性检查
+        //检查solr参数是否正确
+        if(checkSolrProperty(propsData)){
+            nui.alert('【配置参数】中的参数必须需满足”分片数*副本数<=节点数*单节点最大分片数“，请修改后再提交！');
+            return;
+        }
         return propsData;
+    }
+
+    /**
+     * 检查solr参数是否正确
+     */
+    function checkSolrProperty(propsData){
+        var dsId = nui.get("dsId").getValue();
+        var ds = getDsByPkId(dsId);
+        if(ds.type == "SOLR" || ds.type == "SOLR_HBASE"){
+            var numShards;
+            var replicationFactor;
+            var maxShardsPerNode;
+            var solrNodes;
+            $.each(propsData, function (i, val){
+                if(val.name == "solr.shards"){
+                    numShards = parseInt(val.value);
+                }
+                if(val.name == "solr.replicas"){
+                    replicationFactor = parseInt(val.value);
+                }
+                if(val.name == "solr.max.shards.per.node"){
+                    maxShardsPerNode = parseInt(val.value);
+                }
+            }) ;
+
+            $.ajax({
+                url: "${basePath}/com/props/select/"+ dsId,
+                type: 'POST',
+                cache: false,
+                async: false,
+                contentType: 'application/json',
+                success: function (text) {
+                    $.each(text.data, function (i, val){
+                        if(val.name == "solr.servers"){
+                            solrNodes = val.value.split(",").length;
+                        }
+                    }) ;
+                }
+            });
+            if(numShards*replicationFactor >= solrNodes*maxShardsPerNode){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -661,7 +722,7 @@ ${extends("/goframe/function_layout.httl")}
         // --配置信息变化--
         grid2.clearRows();
         var dsId = nui.get("dsId").getValue();
-        $.post("${basePath}/goframe/dict/getDictData?dictTypeId=${model}_MD_PROPS_" + getDsTypeByPkId(dsId), {}, function (data) {
+        $.post("${basePath}/goframe/dict/getDictData?dictTypeId=${model}_MD_PROPS_" + getDsByPkId(dsId).type, {}, function (data) {
             var props = [];
             if (data.length > 0) {
                 for (var i = 0, len = data.length; i < len; i++) {
@@ -679,7 +740,7 @@ ${extends("/goframe/function_layout.httl")}
     /**
      *  根据pkId获取数据源类型
      */
-    function getDsTypeByPkId(dsId) {
+    function getDsByPkId(dsId) {
         var result = "";
         $.ajax({
             url: "${basePath}/com/ds/select/" + dsId,
@@ -689,7 +750,7 @@ ${extends("/goframe/function_layout.httl")}
             contentType: 'application/json',
             success: function (text) {
                 if(text.data){
-                    result = text.data.type;
+                    result = text.data;
                 }
             }
         });
@@ -705,7 +766,6 @@ ${extends("/goframe/function_layout.httl")}
      *  根据内外表控制保持按钮
      */
     function setSaveButton(){
-        debugger;
         var type = nui.get("type").getValue();
         if(type==0){
             nui.get("saveAndCreateButton").show();
@@ -788,7 +848,7 @@ ${extends("/goframe/function_layout.httl")}
             return;
         }
         nui.open({
-            url: "${basePath}/goframe/p/com.ds.multi?dictTypeId=${model}_MD_PROPS_" + getDsTypeByPkId(dsId),
+            url: "${basePath}/goframe/p/com.ds.multi?dictTypeId=${model}_MD_PROPS_" + getDsByPkId(dsId).type,
             title: "批量添加",
             width: 650,
             height: 380,
