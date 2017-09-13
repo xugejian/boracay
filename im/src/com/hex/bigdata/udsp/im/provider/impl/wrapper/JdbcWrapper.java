@@ -285,8 +285,35 @@ public abstract class JdbcWrapper extends BatchWrapper {
         return insertColumns;
     }
 
+    @Override
+    public boolean checkTableExists(Metadata metadata) throws SQLException {
+        JdbcDatasource datasource = new JdbcDatasource(metadata.getDatasource().getPropertyMap());
+        String tbName = metadata.getTbName();
+        String sql = "select 1 from "+  tbName;
+
+        Connection conn = null;
+        Statement stmt = null;
+        boolean exists = true;
+        try {
+            conn = JdbcProviderUtil.getConnection(datasource);
+            stmt = conn.createStatement();
+            stmt.executeQuery(sql);
+        } catch (Exception e){
+            logger.error(e.getMessage());
+            if(e.getMessage().indexOf("doesn't exist") != -1 || e.getMessage().indexOf("ORA-00942") != -1){
+                exists = false;
+            }
+        }finally {
+            JdbcUtil.close(stmt);
+            JdbcUtil.close(conn);
+        }
+        return exists;
+    }
+
     protected abstract DataType getColType(String type);
 
     protected abstract List<Column> getColumns(Connection conn, String dbName, String tbName) throws SQLException;
+
+
 
 }
