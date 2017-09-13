@@ -2,31 +2,26 @@ package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.SolrMetadata;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
-import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
+import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrWrapper;
-import com.hex.bigdata.udsp.im.provider.model.*;
+import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.provider.model.Model;
+import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.request.CollectionAdminRequest;
-import org.apache.solr.rest.SolrSchemaRestApi;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -37,7 +32,7 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 @Component("com.hex.bigdata.udsp.im.provider.impl.SolrProvider")
-public class SolrProvider extends SolrWrapper implements BatchSourceProvider, BatchTargetProvider, RealtimeTargetProvider {
+public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
     private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.solr.SolrStorageHandler";
 
@@ -168,32 +163,6 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public String inputSQL(Model model) {
-        SolrModel solrModel = new SolrModel(model.getPropertyMap());
-        String tableName = getSourceTableName(null, solrModel.getCollectionName(), model.getId());
-        List<ModelMapping> modelMappings = model.getModelMappings();
-        List<String> selectColumns = new ArrayList<>();
-        for (ModelMapping mapping : modelMappings) {
-            selectColumns.add(mapping.getName());
-        }
-        List<ModelFilterCol> modelFilterCols = model.getModelFilterCols();
-        List<WhereProperty> whereProperties = new ArrayList<>();
-        for (ModelFilterCol filterCol : modelFilterCols) {
-            WhereProperty whereProperty = new WhereProperty();
-            whereProperty.setName(filterCol.getName());
-            whereProperty.setValue(filterCol.getValue());
-            whereProperty.setType(filterCol.getType());
-            whereProperty.setOperator(filterCol.getOperator());
-        }
-        return HiveSqlUtil.select(selectColumns, tableName, whereProperties);
-    }
-
-    @Override
-    public String outputSQL(Model model) {
-        return null;
-    }
-
-    @Override
     public void inputData() {
 
     }
@@ -206,7 +175,7 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
         String id = model.getId();
         SolrModel solrModel = new SolrModel(model.getPropertyMap());
         String collectionName = solrModel.getCollectionName();
-        String tableName = getSourceTableName(null, collectionName, id);
+        String tableName = getSourceTableName(id);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
         List<ModelMapping> modelMappings = model.getModelMappings();
         String pkName = getSourcePrimaryKey(modelMappings);
@@ -217,45 +186,18 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public boolean dropSourceEngineSchema(Model model) throws Exception {
-        Datasource datasource = model.getEngineDatasource();
-        HiveDatasource eHiveDs = new HiveDatasource(datasource.getPropertyMap());
-        String id = model.getId();
-        SolrModel solrModel = new SolrModel(model.getPropertyMap());
-        String tableName = getSourceTableName(null, solrModel.getCollectionName(), id);
-        String sql = HiveSqlUtil.dropTable(true, tableName);
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-    }
-
-    @Override
     public boolean createTargetEngineSchema(Model model) throws Exception {
         Metadata metadata = model.getTargetMetadata();
         Datasource datasource = metadata.getDatasource();
         Datasource engineDatasource = model.getEngineDatasource();
         HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
-        String id = model.getId();
         SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
-        String collectionName = solrMetadata.getTbName();
-        String tableName = getTargetTableName(collectionName, id);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
         List<ModelMapping> modelMappings = model.getModelMappings();
         String pkName = getTargetPrimaryKey(modelMappings);
-        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
+        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, getTargetTableName(model.getId()),
                 getTargetColumns(modelMappings), "目标的Hive引擎表", null,
-                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, collectionName));
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, solrMetadata.getTbName()));
         return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
-
-    @Override
-    public boolean dropTargetEngineSchema(Model model) throws Exception {
-        Metadata metadata = model.getTargetMetadata();
-        Datasource engineDatasource = model.getEngineDatasource();
-        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
-        String id = model.getId();
-        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
-        String tableName = getTargetTableName(solrMetadata.getTbName(), id);
-        String sql = HiveSqlUtil.dropTable(true, tableName);
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-    }
-
 }

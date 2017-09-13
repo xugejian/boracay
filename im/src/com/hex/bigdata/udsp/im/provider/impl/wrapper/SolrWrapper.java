@@ -4,6 +4,7 @@ import com.hex.bigdata.udsp.im.provider.impl.factory.SolrConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
+import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import org.apache.commons.pool.impl.GenericObjectPool;
@@ -19,7 +20,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class SolrWrapper extends Wrapper {
+public abstract class SolrWrapper extends BatchWrapper {
     private static Logger logger = LogManager.getLogger(SolrWrapper.class);
     private static Map<String, SolrConnectionPoolFactory> dataSourcePool;
 
@@ -106,5 +107,25 @@ public abstract class SolrWrapper extends Wrapper {
             columns.add(new TableColumn(mapping.getName(), dataType, mapping.getDescribe()));
         }
         return columns;
+    }
+
+    @Override
+    protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        if (modelMappings == null || modelMappings.size() == 0)
+            return null;
+        List<java.lang.String> selectColumns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings)
+            selectColumns.add(mapping.getName());
+        return selectColumns;
+    }
+
+    @Override
+    protected List<String> getInsertColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        if (modelMappings == null || modelMappings.size() == 0)
+            return null;
+        List<java.lang.String> insertColumns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings)
+            insertColumns.add(mapping.getMetadataCol().getName());
+        return insertColumns;
     }
 }

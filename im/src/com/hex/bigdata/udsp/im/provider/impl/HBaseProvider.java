@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
@@ -23,7 +22,7 @@ import java.util.List;
  * Created by JunjieM on 2017-9-5.
  */
 @Component("com.hex.bigdata.udsp.im.provider.impl.HBaseProvider")
-public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvider, BatchTargetProvider {
+public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(HBaseProvider.class);
     private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "org.apache.hadoop.hive.hbase.HBaseStorageHandler";
 
@@ -44,11 +43,6 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public String inputSQL(Model model) {
-        return null;
-    }
-
-    @Override
     public boolean createTargetEngineSchema(Model model) throws Exception {
         Metadata md = model.getTargetMetadata();
         Datasource engineDatasource = model.getEngineDatasource();
@@ -56,23 +50,12 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
         String id = model.getId();
         HBaseMetadata hbaseMetadata = new HBaseMetadata(md.getPropertyMap());
         String fullTbName = hbaseMetadata.getTbName();
-        String tableName = getTargetTableName(fullTbName, id);
+        String tableName = getTargetTableName(id);
         List<ModelMapping> modelMappings = model.getModelMappings();
         String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                 getTargetColumns(modelMappings, hbaseMetadata), "目标的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, getSerDeProperties(modelMappings, hbaseMetadata),
                 getTblProperties(fullTbName));
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-    }
-
-    @Override
-    public boolean dropTargetEngineSchema(Model model) throws Exception {
-        Metadata metadata = model.getTargetMetadata();
-        Datasource engineDatasource = model.getEngineDatasource();
-        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
-        String id = model.getId();
-        String tableName = getTargetTableName(metadata.getTbName(), id);
-        String sql = HiveSqlUtil.dropTable(true, tableName);
         return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
 
