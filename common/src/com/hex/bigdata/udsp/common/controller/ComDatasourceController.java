@@ -288,4 +288,22 @@ public class ComDatasourceController extends BaseController {
         return filePath;
     }
 
+
+    /**
+     * 获取所有源数据源
+     * @return
+     */
+    @RequestMapping({"/selectEDs"})
+    @ResponseBody
+    public PageListResult selectEDs() {
+        List<ComDatasource> list = null;
+        try {
+            list = comDatasourceService.selectEDs();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("系统异常：" + e);
+        }
+        return new PageListResult(list);
+    }
+
 }

@@ -292,5 +292,9 @@ public class ComDatasourceService extends BaseService {
     public boolean checkSourceType(String sourceId) {
         return comDatasourceMapper.checkSourceType(sourceId);
     }
+
+    public List<ComDatasource> selectEDs() {
+        return comDatasourceMapper.selectEDs();
+    }
 }
 
