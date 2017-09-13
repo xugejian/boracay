@@ -36,12 +36,8 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
         List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
-        boolean ifNotExists = false;
-        String sql = MysqlSqlUtil.createTable(ifNotExists, fullTbName, columns, tableComment);
-        // int status = getExecuteUpdateStatus(mysqlDatasource, sql);
-        // return status == 0 ? true : false;
+        String sql = MysqlSqlUtil.createTable(false, fullTbName, columns, tableComment);
         return JdbcProviderUtil.executeUpdate(mysqlDatasource, sql) == 1 ? true : false;
-
     }
 
     @Override
@@ -49,10 +45,7 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         Datasource datasource = metadata.getDatasource();
         MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
-        boolean ifExists = false;
-        String sql = MysqlSqlUtil.dropTable(ifExists, fullTbName);
-        //int status = getExecuteUpdateStatus(mysqlDatasource, sql);
-        // return status == 0 ? true : false;
+        String sql = MysqlSqlUtil.dropTable(false, fullTbName);
         return JdbcProviderUtil.executeUpdate(mysqlDatasource, sql) == 1 ? true : false;
     }
 

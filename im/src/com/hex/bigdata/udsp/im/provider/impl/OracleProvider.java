@@ -41,10 +41,7 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         sqls.add(OracleSqlUtil.createTable(fullTbName, columns, tableComment));
         sqls.add(OracleSqlUtil.commentTable(fullTbName, tableComment));
         sqls.addAll(OracleSqlUtil.createColComment(fullTbName, columns));
-        // int status = getExecuteUpdateStatus(oracleDatasource, sqls);
-        // return status == 0 ? true : false;
         return JdbcProviderUtil.executeUpdate(oracleDatasource, sqls) == 1 ? true : false;
-
     }
 
     @Override
@@ -53,12 +50,7 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = OracleSqlUtil.dropTable(fullTbName);
-
-        //int status = getExecuteUpdateStatus(hiveDatasource, sql);
-        //return status == 0 ? true : false;
-
         return JdbcProviderUtil.executeUpdate(oracleDatasource, sql) == 1 ? true : false;
-
     }
 
     @Override

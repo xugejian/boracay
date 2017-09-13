@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrHBaseWrapper;
@@ -27,7 +26,7 @@ import java.util.List;
  * Created by JunjieM on 2017-9-5.
  */
 @Component("com.hex.bigdata.udsp.im.provider.impl.SolrHBaseProvider")
-public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTargetProvider, BatchTargetProvider {
+public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTargetProvider {
     private static Logger logger = LoggerFactory.getLogger(SolrHBaseProvider.class);
     @Autowired
     private SolrProvider solrProvider;
@@ -71,17 +70,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
-    public String inputSQL(Model model) {
-        return null;
-    }
-
-    @Override
     public boolean createTargetEngineSchema(Model model) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean dropTargetEngineSchema(Model model) throws Exception {
         return false;
     }
 

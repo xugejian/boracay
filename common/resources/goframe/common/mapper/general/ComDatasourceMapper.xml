@@ -141,4 +141,17 @@
     where GFD1.DICT_TYPE_ID = 'IM_DS_SOURCE_REALTIME_TYPE'
     and CD.PK_ID = #{sourceId}
   </select>
+
+  <select id="selectEDs" resultMap="BaseResultMap">
+    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    UPT_TIME, IMPL_CLASS, MODEL
+    from COM_DATASOURCE CD
+    where CD.DEL_FLG = '0'
+    and  EXISTS (
+    select 1
+    from  T_GF_DICT GFD1
+    where GFD1.DICT_TYPE_ID = 'IM_MODEL_ENGINE_TYPE'
+    and GFD1.DICT_ID = CD.TYPE
+    )
+  </select>
 </mapper>
