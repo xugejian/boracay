@@ -290,7 +290,7 @@ public class ComDatasourceController extends BaseController {
 
 
     /**
-     * 获取所有源数据源
+     * 获取所有引擎数据源
      * @return
      */
     @RequestMapping({"/selectEDs"})
