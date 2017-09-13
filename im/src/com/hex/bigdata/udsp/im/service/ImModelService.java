@@ -167,7 +167,8 @@ public class ImModelService {
         //根据元数据获取相关信息
         Model model = new Model(Arrays.asList(properties));
         ComDatasource comDatasource= comDatasourceMapper.select(srcDataSourceId);
-        Datasource datasource = new Datasource(comDatasource,new ArrayList<ComProperties>());
+        List<ComProperties> comProperties = comPropertiesMapper.selectByFkId(srcDataSourceId);
+        Datasource datasource = new Datasource(comDatasource,comProperties);
         // 由于该实现类和模型中的实现类不一样故制为空
         datasource.setImplClass("");
         model.setProperties(Arrays.asList(properties));
