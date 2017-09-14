@@ -46,27 +46,24 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
         SolrServer solrServer = getSolrServer(collectionName, solrHBaseDatasource);
         metadataCols.addAll(getColumns(collectionName,  datasource.getPropertyMap().get("solr.servers").getValue()));
 
-        // HBase无法获取字段信息
+//        HBase无法获取字段信息
 //        metadataCols.addAll(null);
-        metadataCols.addAll(getColumns(solrServer));
-        // HBase无法获取字段信息
-     //   metadataCols.addAll(null);
         return metadataCols;
     }
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
         return solrProvider.createSchema(metadata) && hbaseProvider.createSchema(metadata);
-        // TODO ... 创建HBase表
-        // TODO ... 创建Solr表
     }
 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
-
         return solrProvider.dropSchema(metadata) && hbaseProvider.dropSchema(metadata);
-        // TODO ... 删除Solr表
-        // TODO ... 删除HBase表
+    }
+
+    @Override
+    public boolean checkTableExists(Metadata metadata) throws Exception {
+        return false;
     }
 
     @Override

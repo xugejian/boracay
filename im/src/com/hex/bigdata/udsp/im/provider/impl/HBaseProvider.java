@@ -12,8 +12,6 @@ import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -68,5 +66,10 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     @Override
     public void inputData() {
         // TODO ...
+    }
+
+    @Override
+    public boolean checkTableExists(Metadata metadata) throws Exception {
+        return false;
     }
 }
