@@ -1,5 +1,8 @@
 package com.hex.bigdata.udsp.im.provider;
 
+import com.hex.bigdata.udsp.im.provider.model.Model;
+import kafka.consumer.KafkaStream;
+
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +11,6 @@ import java.util.Map;
  */
 public interface RealtimeSourceProvider extends SourceProvider, RealtimeProvider {
 
-    List<Map<String, String>> outputData();
+    List<KafkaStream<byte[], byte[]>> outputData(Model model);
 
 }

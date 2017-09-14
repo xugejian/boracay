@@ -13,6 +13,7 @@ import com.hex.bigdata.udsp.im.provider.impl.util.MysqlSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,7 +51,7 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
     }
 
     @Override
-    public void inputData() {
+    public void inputData(Model model) {
 
     }
 

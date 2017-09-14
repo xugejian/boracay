@@ -48,7 +48,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
 
         // HBase无法获取字段信息
 //        metadataCols.addAll(null);
-        metadataCols.addAll(getColumns(solrServer));
+        //metadataCols.addAll(getColumns(solrServer));
         // HBase无法获取字段信息
      //   metadataCols.addAll(null);
         return metadataCols;
@@ -75,7 +75,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
-    public void inputData() {
+    public void inputData(Model model) {
 
     }
 }
