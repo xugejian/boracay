@@ -300,7 +300,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
             stmt.executeQuery(sql);
         } catch (Exception e){
             logger.error(e.getMessage());
-            if(e.getMessage().indexOf("doesn't exist") != -1 || e.getMessage().indexOf("ORA-00942") != -1){
+            if(e.getMessage().indexOf("doesn't exist") != -1 || e.getMessage().indexOf("ORA-00942") != -1 || e.getMessage().indexOf("Table not found") != -1){
                 exists = false;
             }
         }finally {

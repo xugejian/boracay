@@ -155,6 +155,7 @@ public class ImMetadataService extends BaseService {
     public boolean createTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("2"); //状态为已建
+
         return imProviderService.createTable(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
     }
 
@@ -173,6 +174,7 @@ public class ImMetadataService extends BaseService {
         Datasource datasource = new Datasource(comDatasource, comProperties);
         List<Property> prop = PropertyUtil.convertToPropertyList(comPropertiesService.selectByFkId(pkId));
         Metadata metadata = new Metadata(prop);
+        metadata.setName(imMetadata.getName());
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(imMetadata.getTbName());
         metadata.setMetadataCols(ImUtil.convertToMetadataColList(imMetadataColService.select(pkId)));
