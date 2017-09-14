@@ -1,7 +1,9 @@
 package com.hex.bigdata.udsp.im.dao;
 
 import com.hex.bigdata.udsp.common.dao.base.SyncMapper;
+import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.ImModel;
+import com.hex.goframe.model.Page;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,22 +13,23 @@ public class ImModelMapper extends SyncMapper<ImModel> {
 
     @Override
     protected boolean insertExe(ImModel imModel) {
-        return false;
+        return sqlSessionTemplate.insert(
+                "com.hex.bigdata.udsp.im.dao.ImModelMapper.insert", imModel) == 1;
     }
 
     @Override
     protected boolean updateExe(ImModel imModel) {
-        return false;
+        return sqlSessionTemplate.update("com.hex.bigdata.udsp.im.dao.ImModelMapper.updateByPrimaryKey",imModel) == 1;
     }
 
     @Override
     protected boolean deleteExe(String id) {
-        return false;
+        return sqlSessionTemplate.update("com.hex.bigdata.udsp.im.dao.ImModelMapper.updateToDeleted",id) == 1;
     }
 
     @Override
-    protected ImModel selectExe(String id) {
-        return null;
+    protected ImModel selectExe(String pkId) {
+        return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.selectByPrimaryKey",pkId);
     }
 
     @Override
@@ -37,5 +40,21 @@ public class ImModelMapper extends SyncMapper<ImModel> {
     @Override
     protected List<ImModel> selectListExe(String id) {
         return null;
+    }
+
+    public List<ImModelView> selectPage(ImModelView imModelView, Page page) {
+        return sqlSessionTemplate.selectList("com.hex.bigdata.udsp.im.dao.ImModelMapper.selectPage",imModelView,page.toPageBounds());
+    }
+
+    public ImModel selectByName(String modelName) {
+        return  sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.selectByName",modelName);
+    }
+
+    public String getModelUpdateModeByName(String updateMode) {
+        return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.getModelUpdateModeByName",updateMode);
+    }
+
+    public String getModelBuildModeByName(String buildMode) {
+        return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.getModelBuildModeByName",buildMode);
     }
 }

@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.im.model;
 
-public class ImModelUpdateKey {
+import java.io.Serializable;
+
+public class ImModelUpdateKey implements Serializable {
     private String pkId;
 
     private String colId;

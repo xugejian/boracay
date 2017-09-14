@@ -9,7 +9,8 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public class HiveMetadata extends Metadata {
+public class HiveMetadata extends JdbcMetadata {
+
     public HiveMetadata(List<Property> properties) {
         super(properties);
     }

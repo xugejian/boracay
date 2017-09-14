@@ -3,6 +3,8 @@ package com.hex.bigdata.udsp.im.provider.model;
 import com.hex.bigdata.udsp.common.provider.model.Base;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.im.provider.constant.MetadataStatus;
+import com.hex.bigdata.udsp.im.provider.constant.MetadataType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -20,9 +22,9 @@ public class Metadata extends Base {
 
     private String tbName; // 库表
 
-    private String status; // 状态
+    private MetadataStatus status; // 状态
 
-    private String type; // 类型
+    private MetadataType type; // 类型
 
     private Datasource datasource; // 数据源
 
@@ -36,23 +38,23 @@ public class Metadata extends Base {
         super(propertyMap);
     }
 
-    public String getStatus() {
-        if (StringUtils.isBlank(status))
+    public MetadataStatus getStatus() {
+        if (status == null)
             throw new IllegalArgumentException("status不能为空");
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(MetadataStatus status) {
         this.status = status;
     }
 
-    public String getType() {
-        if (StringUtils.isBlank(type))
+    public MetadataType getType() {
+        if (type == null)
             throw new IllegalArgumentException("type不能为空");
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(MetadataType type) {
         this.type = type;
     }
 

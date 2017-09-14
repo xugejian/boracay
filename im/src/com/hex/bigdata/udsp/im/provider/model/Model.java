@@ -3,6 +3,10 @@ package com.hex.bigdata.udsp.im.provider.model;
 import com.hex.bigdata.udsp.common.provider.model.Base;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.im.provider.constant.BuildMode;
+import com.hex.bigdata.udsp.im.provider.constant.ModelStatus;
+import com.hex.bigdata.udsp.im.provider.constant.ModelType;
+import com.hex.bigdata.udsp.im.provider.constant.UpdateMode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -12,23 +16,29 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class Model extends Base {
+    private String id; // 唯一键
+
     private String name;
 
     private String describe;
 
     private String note;
 
-    private String type; // 类型（1：批量 2：实时）
+    private ModelType type; // 类型（1：批量 2：实时）
 
-    private String buildMode; // 构建策略（1：增量，2：全量）
+    private ModelStatus status; // 状态（1：未建，2：已建）
 
-    private String updateMode; // 更新策略（1、匹配更新 2、更新、插入 3、增量插入）
+    private BuildMode buildMode; // 构建策略（1：增量，2：全量）
+
+    private UpdateMode updateMode; // 更新策略（1、匹配更新 2、更新、插入 3、增量插入）
 
     private List<MetadataCol> updateKeys; // 更新键值集合
 
-    private Datasource datasource; // 源的数据源
+    private Datasource sourceDatasource; // 源的数据源
 
-    private Metadata metadata; // 目标的元数据
+    private Metadata targetMetadata; // 目标的元数据
+
+    private Datasource engineDatasource; // 引擎的数据源
 
     private List<ModelMapping> modelMappings; // 字段映射集合
 
@@ -40,6 +50,17 @@ public class Model extends Base {
 
     public Model(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    @Override
+    public String getId() {
+        if (StringUtils.isBlank(name))
+            throw new IllegalArgumentException("id不能为空");
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -68,50 +89,68 @@ public class Model extends Base {
         this.note = note;
     }
 
-    public String getType() {
-        if (StringUtils.isBlank(type))
+    public ModelType getType() {
+        if (type == null)
             throw new IllegalArgumentException("type不能为空");
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ModelType type) {
         this.type = type;
     }
 
-    public String getBuildMode() {
+    public ModelStatus getStatus() {
+        if (status == null)
+            throw new IllegalArgumentException("status不能为空");
+        return status;
+    }
+
+    public void setStatus(ModelStatus status) {
+        this.status = status;
+    }
+
+    public BuildMode getBuildMode() {
         return buildMode;
     }
 
-    public void setBuildMode(String buildMode) {
+    public void setBuildMode(BuildMode buildMode) {
         this.buildMode = buildMode;
     }
 
-    public String getUpdateMode() {
+    public UpdateMode getUpdateMode() {
         return updateMode;
     }
 
-    public void setUpdateMode(String updateMode) {
+    public void setUpdateMode(UpdateMode updateMode) {
         this.updateMode = updateMode;
     }
 
-    public Datasource getDatasource() {
-        if (datasource == null)
-            throw new IllegalArgumentException("datasource不能为空");
-        return datasource;
+    public Datasource getSourceDatasource() {
+        if (sourceDatasource == null)
+            throw new IllegalArgumentException("sourceDatasource不能为空");
+        return sourceDatasource;
     }
 
-    public void setDatasource(Datasource datasource) {
-        this.datasource = datasource;
+    public void setSourceDatasource(Datasource sourceDatasource) {
+        this.sourceDatasource = sourceDatasource;
     }
 
-    public Metadata getMetadata() {
-        if (metadata == null)
-            throw new IllegalArgumentException("metadata不能为空");
-        return metadata;
+    public Metadata getTargetMetadata() {
+        if (targetMetadata == null)
+            throw new IllegalArgumentException("targetMetadata不能为空");
+        return targetMetadata;
     }
 
-    public void setMetadata(Metadata metadata) {
-        this.metadata = metadata;
+    public void setTargetMetadata(Metadata targetMetadata) {
+        this.targetMetadata = targetMetadata;
+    }
+
+    public Datasource getEngineDatasource() {
+        return engineDatasource;
+    }
+
+    public void setEngineDatasource(Datasource engineDatasource) {
+        this.engineDatasource = engineDatasource;
     }
 
     public List<ModelMapping> getModelMappings() {

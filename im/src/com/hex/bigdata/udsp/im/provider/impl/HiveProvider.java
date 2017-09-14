@@ -1,178 +1,118 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
+import com.hex.bigdata.metadata.db.ClientFactory;
+import com.hex.bigdata.metadata.db.model.Column;
+import com.hex.bigdata.metadata.db.util.AcquireType;
+import com.hex.bigdata.metadata.db.util.DBType;
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
+import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.im.provider.model.Model;
-import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.lang3.StringUtils;
+import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by JunjieM on 2017-9-5.
  */
 @Component("com.hex.bigdata.udsp.im.provider.impl.HiveProvider")
-public class HiveProvider implements BatchSourceProvider, BatchTargetProvider {
+public class HiveProvider extends JdbcWrapper {
     private static Logger logger = LogManager.getLogger(HiveProvider.class);
-    private static Map<String, BasicDataSource> dataSourcePool;
-
-    private synchronized BasicDataSource getDataSource(HiveDatasource datasource) {
-        String dsId = datasource.getId();
-        if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<String, BasicDataSource>();
-        }
-        BasicDataSource dataSource = dataSourcePool.get(dsId);
-        if (dataSource == null) {
-            dataSource = new BasicDataSource();
-
-            //Class.forName(datasource.getDriverClass());
-            if (StringUtils.isNotBlank(datasource.getDriverClass()))
-                dataSource.setDriverClassName(datasource.getDriverClass());
-            if (StringUtils.isNotBlank(datasource.getJdbcUrl()))
-                dataSource.setUrl(datasource.getJdbcUrl());
-            if (StringUtils.isNotBlank(datasource.getUsername()))
-                dataSource.setUsername(datasource.getUsername());
-            if (StringUtils.isNotBlank(datasource.getPassword()))
-                dataSource.setPassword(datasource.getPassword());
-            if (StringUtils.isNotBlank(datasource.getInitialSize()))
-                dataSource.setInitialSize(Integer.valueOf(datasource.getInitialSize()));// 数据库初始化时，创建的连接个数
-            if (StringUtils.isNotBlank(datasource.getMinIdle()))
-                dataSource.setMinIdle(Integer.valueOf(datasource.getMinIdle()));// 最小空闲连接数
-            if (StringUtils.isNotBlank(datasource.getMaxIdle()))
-                dataSource.setMaxIdle(Integer.valueOf(datasource.getMaxIdle()));// 数据库最大连接数
-            if (StringUtils.isNotBlank(datasource.getMaxActive()))
-                dataSource.setMaxActive(Integer.valueOf(datasource.getMaxActive()));// 设置最大并发数
-            if (StringUtils.isNotBlank(datasource.getMaxWait()))
-                dataSource.setMaxWait(Integer.valueOf(datasource.getMaxWait()));// 最长等待时间，单位毫秒
-            if (StringUtils.isNotBlank(datasource.getValidationQuery()))
-                dataSource.setValidationQuery(datasource.getValidationQuery()); // 验证链接的SQL语句，必须能返回一行及以上数据
-            if (StringUtils.isNotBlank(datasource.getValidationQueryTimeout()))
-                dataSource.setValidationQueryTimeout(Integer.valueOf(datasource.getValidationQueryTimeout())); // 自动验证连接的时间
-            if (StringUtils.isNotBlank(datasource.getTimeBetweenEvictionRunsMillis()))
-                dataSource.setTimeBetweenEvictionRunsMillis(Integer.valueOf(datasource.getTimeBetweenEvictionRunsMillis())); // N毫秒检测一次是否有死掉的线程
-            if (StringUtils.isNotBlank(datasource.getMinEvictableIdleTimeMillis()))
-                dataSource.setMinEvictableIdleTimeMillis(Integer.valueOf(datasource.getMinEvictableIdleTimeMillis()));// 空闲连接N毫秒中后释放
-            if (StringUtils.isNotBlank(datasource.getTestWhileIdle()))
-                dataSource.setTestWhileIdle(Boolean.valueOf(datasource.getTestWhileIdle()));
-            if (StringUtils.isNotBlank(datasource.getTestOnBorrow()))
-                dataSource.setTestOnBorrow(Boolean.valueOf(datasource.getTestOnBorrow()));
-            if (StringUtils.isNotBlank(datasource.getTestOnReturn()))
-                dataSource.setTestOnReturn(Boolean.valueOf(datasource.getTestOnReturn()));
-
-            dataSourcePool.put(dsId, dataSource);
-        }
-        return dataSource;
-    }
-
-    private Connection getConnection(HiveDatasource datasource) throws SQLException {
-        Connection conn = null;
-        BasicDataSource dataSource = getDataSource(datasource);
-        if (dataSource != null) {
-            conn = dataSource.getConnection();
-        }
-        return conn;
-    }
-
-    private List<MetadataCol> getColumns(HiveDatasource datasource, String sql) {
-        List<MetadataCol> metadataCols = null;
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            conn = getConnection(datasource);
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(sql);
-            ResultSetMetaData md = rs.getMetaData();
-            int columnCount = md.getColumnCount();
-            metadataCols = new ArrayList<>();
-            if (columnCount >= 1) {
-                for (int i = 1; i <= columnCount; i++) {
-                    logger.debug("-----------------------------------------------------------");
-                    logger.debug("getCatalogName:" + md.getCatalogName(i));
-                    logger.debug("getSchemaName:" + md.getSchemaName(i));
-                    logger.debug("getTableName:" + md.getTableName(i));
-                    logger.debug("getColumnClassName:" + md.getColumnClassName(i));
-                    logger.debug("getColumnName:" + md.getColumnName(i));
-                    logger.debug("getColumnLabel:" + md.getColumnLabel(i));
-                    logger.debug("getColumnDisplaySize:" + md.getColumnDisplaySize(i));
-                    logger.debug("getColumnType:" + md.getColumnType(i));
-                    logger.debug("getColumnTypeName:" + md.getColumnTypeName(i));
-                    logger.debug("getPrecision:" + md.getPrecision(i));
-                    logger.debug("getScale:" + md.getScale(i));
-
-                    // TODO ......
-
-                }
-            }
-        } catch (SQLException e) {
-            logger.warn(e.getMessage());
-        }
-        return metadataCols;
-    }
 
     @Override
-    public List<MetadataCol> columnInfo(Model model) {
-        Datasource datasource = model.getDatasource();
-        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
-        HiveModel hiveModel = new HiveModel(datasource.getPropertyMap());
-        String sql = getCloumnInfoSql(hiveModel);
-        if (sql == null) return null;
-        return getColumns(hiveDatasource, sql);
-    }
-
-    private String getCloumnInfoSql(HiveModel hiveModel) {
-        String dbName = hiveModel.getDatabaseName();
-        String tbName = hiveModel.getTableName();
-        String sql = hiveModel.getSql();
-        if (StringUtils.isBlank(sql)) {
-            if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName))
-                sql = "SELECT * FROM " + dbName + "." + tbName + " WHERE 1=0";
-            else
-                return null;
-        } else {
-            sql = "select * from (" + sql + ") udsp_view WHERE 1=0";
-        }
-        return sql;
-    }
-
-    @Override
-    public List<MetadataCol> columnInfo(Metadata metadata) {
+    public boolean createSchema(Metadata metadata) throws Exception {
         Datasource datasource = metadata.getDatasource();
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
-        String sql = "SELECT * FROM " + fullTbName + " WHERE 1=0";
-        return getColumns(hiveDatasource, sql);
+        String tableComment = metadata.getDescribe();
+        List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
+        List<TableColumn> partitions = new ArrayList<TableColumn>();
+        TableColumn tableColumn = new TableColumn("date", "DATE", "分区字段"); //todo hive分区字段
+        partitions.add(tableColumn);
+        String fileFormat = FileFormat.HIVE_FILE_FORMAT_PARQUET;
+        String sql = HiveSqlUtil.createTable(false, false, fullTbName,
+                columns, tableComment, partitions, null, fileFormat);
+        return JdbcProviderUtil.executeUpdate(hiveDatasource, sql) == 1 ? true : false;
     }
 
     @Override
-    public void create() {
-
+    public boolean dropSchema(Metadata metadata) throws Exception {
+        Datasource datasource = metadata.getDatasource();
+        HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
+        String fullTbName = metadata.getTbName();
+        String sql = HiveSqlUtil.dropTable(false, fullTbName);
+        return JdbcProviderUtil.executeUpdate(hiveDatasource, sql) == 1 ? true : false;
     }
 
     @Override
-    public void drop() {
-
+    protected DataType getColType(String type) {
+        type = type.toUpperCase();
+        DataType dataType = null;
+        switch (type) {
+            case "VARCHAR":
+                dataType = DataType.VARCHAR;
+                break;
+            case "STRING":
+                dataType = DataType.STRING;
+                break;
+            case "DECIMAL":
+                dataType = DataType.DECIMAL;
+                break;
+            case "CHAR":
+                dataType = DataType.CHAR;
+                break;
+            case "FLOAT":
+                dataType = DataType.FLOAT;
+                break;
+            case "DOUBLE":
+                dataType = DataType.DOUBLE;
+                break;
+            case "TIMESTAMP":
+            case "DATE":
+                dataType = DataType.TIMESTAMP;
+                break;
+            case "INT":
+                dataType = DataType.INT;
+                break;
+            case "BIGINT":
+                dataType = DataType.BIGINT;
+                break;
+            case "TINYINT":
+                dataType = DataType.TINYINT;
+                break;
+            case "SMALLINT":
+                dataType = DataType.SMALLINT;
+                break;
+            default:
+                dataType = null;
+        }
+        return dataType;
     }
 
     @Override
-    public String outputSQL() {
-        return null;
-    }
-
-    @Override
-    public String inputSQL() {
-        return null;
+    protected List<Column> getColumns(Connection conn, String dbName, String tbName) throws SQLException {
+        // 方式一：通过JDBCAPI方式获取字段信息
+        // 通过JDBC的API接口获取，可以拿到字段名、类型、长度、注释、主键、索引、分区等信息
+        return ClientFactory.createMetaClient(AcquireType.JDBCAPI, DBType.HIVE, conn)
+                .getColumns(dbName, tbName);
+//        // 方式二：通过JDBCINFO方式获取字段信息
+//        // 通过select * from dbName.tbName获取，只能拿到字段名、类型、长度等信息
+//        return ClientFactory.createMetaClient(AcquireType.JDBCINFO, DBType.HIVE, conn)
+//                .getColumns(dbName, tbName);
+//        // 方式三：通过JDBCAPI方式获取字段信息
+//        // 查询元数据表，可以获取最为详细的字段信息
+//        return ClientFactory.createMetaClient(AcquireType.JDBCSQL, DBType.HIVE, conn)
+//                .getColumns(dbName, tbName);
     }
 }

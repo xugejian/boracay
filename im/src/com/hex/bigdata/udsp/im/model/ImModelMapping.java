@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.im.model;
 
-public class ImModelMapping {
+import java.io.Serializable;
+
+public class ImModelMapping implements Serializable {
     private String pkId;
 
     private String modelId;
@@ -12,6 +14,12 @@ public class ImModelMapping {
     private String colId;
 
     private String note;
+
+    private String type;
+
+    private String length;
+
+    private String describe;
 
     public String getPkId() {
         return pkId;
@@ -59,5 +67,29 @@ public class ImModelMapping {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
     }
 }

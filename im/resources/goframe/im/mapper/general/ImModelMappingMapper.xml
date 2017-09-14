@@ -8,6 +8,9 @@
     <result column="NAME" property="name" jdbcType="VARCHAR" />
     <result column="COL_ID" property="colId" jdbcType="VARCHAR" />
     <result column="NOTE" property="note" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="LENGTH" property="length" jdbcType="VARCHAR" />
+    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from IM_MODEL_MAPPING
@@ -15,9 +18,10 @@
   </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.im.model.ImModelMapping" >
     insert into IM_MODEL_MAPPING (PK_ID, MODEL_ID, SEQ, 
-      NAME, COL_ID, NOTE)
+      NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE)
     values (#{pkId,jdbcType=VARCHAR}, #{modelId,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, 
-      #{name,jdbcType=VARCHAR}, #{colId,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR})
+      #{name,jdbcType=VARCHAR}, #{colId,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR},
+      #{type,jdbcType=VARCHAR},#{length,jdbcType=VARCHAR},#{describe,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.im.model.ImModelMapping" >
     update IM_MODEL_MAPPING
@@ -29,12 +33,34 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE
     from IM_MODEL_MAPPING
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE
     from IM_MODEL_MAPPING
+  </select>
+
+  <select id="selectByMid" parameterType="java.lang.String" resultMap="BaseResultMap" >
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE
+    from IM_MODEL_MAPPING
+    where MODEL_ID = #{mid}
+     ORDER BY SEQ
+  </select>
+
+  <delete id="deleteByMid" parameterType="java.lang.String">
+    delete FROM  IM_MODEL_MAPPING
+    where MODEL_ID = #{mid}
+  </delete>
+
+
+  <select id="selectByModelId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT IMM.PK_ID, IMM.MODEL_ID, IMM.SEQ, IMM.NAME, IMC.NAME COL_ID, IMM.NOTE,IMM.TYPE,IMM.LENGTH,IMM.DESCRIBE
+    FROM IM_MODEL_MAPPING IMM
+    LEFT JOIN IM_METADATA_COLUMN IMC
+    ON IMC.PK_ID = IMM.COL_ID
+    WHERE MODEL_ID = #{mId}
+     ORDER BY SEQ
   </select>
 </mapper>
