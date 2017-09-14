@@ -17,4 +17,5 @@ public interface TargetProvider extends Provider {
 
     boolean dropSchema(Metadata metadata) throws Exception;
 
+    boolean checkTableExists(Metadata metadata) throws Exception;
 }

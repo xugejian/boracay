@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseAdminPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
@@ -9,6 +8,7 @@ import com.hex.bigdata.udsp.im.provider.impl.model.metadata.HBaseMetadata;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.SerDeProperty;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
+import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import org.apache.commons.lang3.StringUtils;
@@ -27,15 +27,12 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class HBaseWrapper extends Wrapper {
+public abstract class HBaseWrapper extends BatchTargetWrapper {
     static {
         // 解决winutils.exe不存在的问题
         try {
@@ -130,8 +127,8 @@ public abstract class HBaseWrapper extends Wrapper {
 
     protected List<TableColumn> getTargetColumns(List<ModelMapping> modelMappings, HBaseMetadata hbaseMetadata) {
         List<TableColumn> columns = new ArrayList<>();
-        columns.add(new TableColumn("key", DataType.STRING.getValue()));
-        columns.add(new TableColumn("val", DataType.STRING.getValue()));
+        columns.add(new TableColumn("KEY", DataType.STRING.getValue()));
+        columns.add(new TableColumn("VAL", DataType.STRING.getValue()));
         return columns;
     }
 
@@ -142,25 +139,6 @@ public abstract class HBaseWrapper extends Wrapper {
         return tblProperties;
     }
 
-    protected String getTargetTableName(String fullTbName, String id) {
-        String[] strs = fullTbName.split(DATABASE_AND_TABLE_SEP);
-        String dbName = null;
-        String tbName = null;
-        if (strs.length == 1) {
-            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
-        } else if (strs.length == 2) {
-            dbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[0];
-            tbName = fullTbName.split(DATABASE_AND_TABLE_SEP)[1];
-        }
-        String tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + id;
-        if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
-            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + dbName + HIVE_ENGINE_TABLE_SEP + tbName + HIVE_ENGINE_TABLE_SEP + id;
-        } else if (StringUtils.isNotBlank(tbName)) {
-            tableName = HIVE_ENGINE_TARGET_TABLE_PREFIX + tbName + HIVE_ENGINE_TABLE_SEP + id;
-        }
-        return tableName;
-    }
-
     protected List<SerDeProperty> getSerDeProperties(List<ModelMapping> modelMappings, HBaseMetadata hbaseMetadata) {
         List<SerDeProperty> serDeProperties = new ArrayList<>();
         String family = hbaseMetadata.getFamily();
@@ -168,6 +146,169 @@ public abstract class HBaseWrapper extends Wrapper {
         String hbaseColumnsMapping = ":key," + family + ":" + qualifier;
         serDeProperties.add(new SerDeProperty("hbase.columns.mapping", hbaseColumnsMapping));
         return serDeProperties;
+    }
+
+    @Override
+    protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        List<java.lang.String> selectColumns = new ArrayList<>();
+        HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata.getPropertyMap());
+        String fqDataType = hBaseMetadata.getFqDataType();
+        String fqDsvSeprator = hBaseMetadata.getFqDsvSeprator();
+        // 按照目标元数据字段升序
+        Collections.sort(modelMappings, new Comparator<ModelMapping>() {
+            @Override
+            public int compare(ModelMapping o1, ModelMapping o2) {
+                return o1.getMetadataCol().getSeq().compareTo(o2.getMetadataCol().getSeq());
+            }
+        });
+        // 根据目标元数据字段信息获取val值
+        String val = "";
+        List<MetadataCol> vals = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings) {
+            String sName = mapping.getName();
+            MetadataCol mdCol = mapping.getMetadataCol();
+            boolean stored = mdCol.isStored();
+            mdCol.setName(sName);
+            if (stored) vals.add(mdCol);
+        }
+        if ("json".equalsIgnoreCase(fqDataType)) {
+            val = getJsonValue(vals);
+        } else {
+            val = getDsvValue(vals, fqDsvSeprator);
+        }
+        selectColumns.add(val);
+        // 根据目标元数据字段信息获取key值
+        String key = null;
+        List<MetadataCol> dts = new ArrayList<>();
+        List<MetadataCol> keys = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings) {
+            String sName = mapping.getName();
+            MetadataCol mdCol = mapping.getMetadataCol();
+            DataType tType = mdCol.getType();
+            boolean primary = mdCol.isPrimary();
+            boolean indexed = mdCol.isIndexed();
+            if (primary) {
+                key = "CAST(" + sName + " AS STRING) AS KEY";
+                break;
+            }
+            if (indexed) {
+                mdCol.setName(sName);
+                if (DataType.TIMESTAMP == tType) {
+                    dts.add(mdCol);
+                } else {
+                    keys.add(mdCol);
+                }
+            }
+        }
+        if (StringUtils.isBlank(key)) {
+            key = getKey(keys, dts, vals);
+        }
+        selectColumns.add(key);
+        return selectColumns;
+    }
+
+    private String getKey(List<MetadataCol> keys, List<MetadataCol> dts, List<MetadataCol> vals) {
+        if ((keys == null || keys.size() == 0) && (dts == null || dts.size() == 0)) {
+            throw new IllegalArgumentException("keys和dts不能同时为空");
+        }
+        String sql = "\nCONCAT_WS('|',";
+        // 哈希头
+        if (keys != null && keys.size() > 0) {
+            sql += "\nSUBSTR(SYS_MD5(CONCAT(";
+            for (int i = 0; i < keys.size(); i++) {
+                MetadataCol mdCol = keys.get(i);
+                String name = mdCol.getName();
+                sql += (i == 0 ? "NVL(CAST(" + name + " AS STRING),'')"
+                        : ",NVL(CAST(" + name + " AS STRING),'')");
+            }
+            sql += ")),9,16),";
+        }
+        // 普通字段
+        if (keys != null && keys.size() > 0) {
+            for (int i = 0; i < keys.size(); i++) {
+                MetadataCol mdCol = keys.get(i);
+                String name = mdCol.getName();
+                String length = mdCol.getLength();
+                int len = getLen(length);
+                String space = (len <= 0 ? "" : ",SPACE(" + len + "-LENGTH(CAST(" + name + " AS STRING))");
+                sql += (i == 0 ? "\nCONCAT(CAST(" + name + " AS STRING)" + space + ")"
+                        : "\n,CONCAT(CAST(" + name + " AS STRING)" + space + ")");
+            }
+        }
+        // 日期字段
+        if (dts != null && dts.size() > 0) {
+            for (int i = 0; i < dts.size(); i++) {
+                MetadataCol mdCol = dts.get(i);
+                String name = mdCol.getName();
+                String length = mdCol.getLength();
+                int len = getLen(length);
+                if (len == 10) {
+                    sql += "SUBSTR(" + name + ",1,10)";
+                } else if (len == 8) {
+                    sql += "SUBSTR(REGEXP_REPLACE(REGEXP_REPLACE(" + name + ",'-',''),'/',''),1,8))";
+                } else {
+                    sql += name;
+                }
+            }
+        }
+        // 哈希尾
+        if (vals != null && vals.size() > 0) {
+            sql += "\nSUBSTR(SYS_MD5(CONCAT_WS('|',";
+            for (int i = 0; i < vals.size(); i++) {
+                MetadataCol mdCol = vals.get(i);
+                String name = mdCol.getName();
+                sql += (i == 0 ? "NVL(CAST(" + name + " AS STRING),'')"
+                        : ",NVL(CAST(" + name + " AS STRING),'')");
+            }
+            sql += ")),9,16),";
+        }
+        sql += ") AS KEY";
+        return sql;
+    }
+
+    private int getLen(String length) {
+        int len = 0;
+        if (StringUtils.isNotBlank(length)) {
+            try {
+                len = Integer.valueOf(length);
+            } catch (Exception e) {
+                logger.debug(e.getMessage());
+            }
+        }
+        return len;
+    }
+
+    private String getJsonValue(List<MetadataCol> vals) {
+        if (vals == null || vals.size() == 0) {
+            throw new IllegalArgumentException("vals不能为空");
+        }
+        String sql = "\nJSON_WS(";
+        for (int i = 0; i < vals.size(); i++) {
+            sql += (i == 0 ? "\nNVL(CAST(" + vals.get(i).getName() + " AS STRING),'')"
+                    : "\n,NVL(CAST(" + vals.get(i).getName() + " AS STRING),'')");
+        }
+        sql += "\n) AS VAL";
+        return sql;
+    }
+
+    private String getDsvValue(List<MetadataCol> vals, String seprator) {
+        if (vals == null || vals.size() == 0) {
+            throw new IllegalArgumentException("vals不能为空");
+        }
+        String sql = "\nCONCAT_WS('" + seprator + "'";
+        for (int i = 0; i < vals.size(); i++) {
+            sql += "\n,NVL(CAST(" + vals.get(i).getName() + " AS STRING),'')";
+        }
+        sql += "\n) AS VAL";
+        return sql;
+    }
+
+    @Override
+    protected List<String> getInsertColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        List<java.lang.String> insertColumns = new ArrayList<>();
+        insertColumns.add("KEY");
+        insertColumns.add("VAL");
+        return insertColumns;
     }
 
     /**

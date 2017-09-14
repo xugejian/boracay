@@ -2,32 +2,29 @@ package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.SolrMetadata;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
-import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import org.apache.commons.lang3.StringUtils;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.request.CollectionAdminRequest;
-import org.apache.solr.rest.SolrSchemaRestApi;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -38,12 +35,12 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 @Component("com.hex.bigdata.udsp.im.provider.impl.SolrProvider")
-public class SolrProvider extends SolrWrapper implements BatchSourceProvider, BatchTargetProvider, RealtimeTargetProvider {
+public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
     private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.solr.SolrStorageHandler";
 
-    private List<MetadataCol> getColumns(String collectionName, String solrServers) {
-        if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {
+    public List<MetadataCol> getColumns(String collectionName, String solrServers) {
+        if(StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)){
             return null;
         }
         String response = "";
@@ -117,10 +114,7 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
         SolrUtil.uploadSolrConfig(metadata);
-        Datasource datasource = metadata.getDatasource();
-        Map<String, Property> dsPropertyMap = datasource.getPropertyMap();
-        String solrServers = dsPropertyMap.get("solr.servers").getValue();
-        String[] addresses = solrServers.split(",");
+        String[] addresses = getSolrServerStrings(metadata);
         String response = "";
         Map<String, Property> mdPropertyMap = metadata.getPropertyMap();
         for (String solrServer : addresses) {
@@ -141,11 +135,7 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
         SolrUtil.deleteZnode(metadata);
-        Datasource datasource = metadata.getDatasource();
-        Map<String, Property> dsPropertyMap = datasource.getPropertyMap();
-        String solrServers = dsPropertyMap.get("solr.servers").getValue();
-        String[] addresses = solrServers.split(",");
-        String response = "";
+        String[] addresses = getSolrServerStrings(metadata);
         for (String solrServer : addresses) {
             String url = "http://" + solrServer + "/solr/admin/collections";
             String param = "action=DELETE" + "&name=" + metadata.getTbName();
@@ -159,6 +149,40 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
         return true;
     }
 
+    private String[] getSolrServerStrings(Metadata metadata) {
+        Datasource datasource = metadata.getDatasource();
+        Map<String, Property> dsPropertyMap = datasource.getPropertyMap();
+        String solrServers = dsPropertyMap.get("solr.servers").getValue();
+        return solrServers.split(",");
+    }
+
+    @Override
+    public boolean checkTableExists(Metadata metadata) throws Exception {
+        String[] addresses = getSolrServerStrings(metadata);
+        String response = "";
+        for(String solrServer : addresses){
+            String url = "http://"+solrServer+"/solr/admin/collections?action=LIST";
+            try {
+                response = SolrUtil.sendGet(url, null);
+            }catch (Exception e){
+                continue;
+            }
+            break;
+        }
+        Document document = DocumentHelper.parseText(response);
+        Element root = document.getRootElement();
+        Element arr = root.element("arr");
+        List<Element> collections = arr.elements("str");
+        boolean exists = false;
+        for(Element e : collections) {
+            if (e.getData().equals(metadata.getTbName())) {
+                exists = true;
+                break;
+            }
+        }
+        return exists;
+    }
+
     @Override
     public List<MetadataCol> columnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
@@ -170,17 +194,7 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public String inputSQL() {
-        return null;
-    }
-
-    @Override
-    public String outputSQL() {
-        return null;
-    }
-
-    @Override
-    public void outputData() {
+    public void inputData(Model model) {
 
     }
 
@@ -192,7 +206,7 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
         String id = model.getId();
         SolrModel solrModel = new SolrModel(model.getPropertyMap());
         String collectionName = solrModel.getCollectionName();
-        String tableName = getSourceTableName(null, collectionName, id);
+        String tableName = getSourceTableName(id);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
         List<ModelMapping> modelMappings = model.getModelMappings();
         String pkName = getSourcePrimaryKey(modelMappings);
@@ -203,45 +217,18 @@ public class SolrProvider extends SolrWrapper implements BatchSourceProvider, Ba
     }
 
     @Override
-    public boolean dropSourceEngineSchema(Model model) throws Exception {
-        Datasource datasource = model.getEngineDatasource();
-        HiveDatasource eHiveDs = new HiveDatasource(datasource.getPropertyMap());
-        String id = model.getId();
-        SolrModel solrModel = new SolrModel(model.getPropertyMap());
-        String tableName = getSourceTableName(null, solrModel.getCollectionName(), id);
-        String sql = HiveSqlUtil.dropTable(true, tableName);
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-    }
-
-    @Override
     public boolean createTargetEngineSchema(Model model) throws Exception {
         Metadata metadata = model.getTargetMetadata();
         Datasource datasource = metadata.getDatasource();
         Datasource engineDatasource = model.getEngineDatasource();
         HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
-        String id = model.getId();
         SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
-        String collectionName = solrMetadata.getTbName();
-        String tableName = getTargetTableName(collectionName, id);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
         List<ModelMapping> modelMappings = model.getModelMappings();
         String pkName = getTargetPrimaryKey(modelMappings);
-        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
+        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, getTargetTableName(model.getId()),
                 getTargetColumns(modelMappings), "目标的Hive引擎表", null,
-                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, collectionName));
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, solrMetadata.getTbName()));
         return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
-
-    @Override
-    public boolean dropTargetEngineSchema(Model model) throws Exception {
-        Metadata metadata = model.getTargetMetadata();
-        Datasource engineDatasource = model.getEngineDatasource();
-        HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
-        String id = model.getId();
-        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
-        String tableName = getTargetTableName(solrMetadata.getTbName(), id);
-        String sql = HiveSqlUtil.dropTable(true, tableName);
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
-    }
-
 }

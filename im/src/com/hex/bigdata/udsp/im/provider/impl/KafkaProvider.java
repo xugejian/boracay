@@ -4,10 +4,10 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.im.provider.impl.wrapper.KafkaWrapper;
 import com.hex.bigdata.udsp.im.provider.RealtimeSourceProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KafkaDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
+import com.hex.bigdata.udsp.im.provider.impl.wrapper.KafkaWrapper;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import kafka.consumer.ConsumerIterator;
@@ -30,24 +30,20 @@ import java.util.Map;
 @Component("com.hex.bigdata.udsp.im.provider.impl.KafkaProvider")
 public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvider {
     private static Logger logger = LogManager.getLogger(KafkaProvider.class);
+    private static final int CONSUMER_TIMEOUT_MS = 1000;
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
         List<MetadataCol> metadataCols = null;
         Datasource datasource = model.getSourceDatasource();
-        List<Property> propertyList = datasource.getProperties();
-        int consumerTimeoutMs = 1000;
-        for (Property property : propertyList) {
-            if ("consumer.timeout.ms".equals(property.getName())) {
-                property.setValue(Integer.toString(consumerTimeoutMs));
-            }
-        }
-        logger.debug("consumer.timeout.ms = " + consumerTimeoutMs + "ms");
-        KafkaDatasource kafkaDatasource = new KafkaDatasource(propertyList);
-        ConsumerConnector consumer = getConsumerConnector(kafkaDatasource);
-        int threadNum = kafkaDatasource.getThreadNum();
         KafkaModel kafkaModel = new KafkaModel(model.getPropertyMap());
         String topic = kafkaModel.getTopic();
+        Map<String, Property> propertyMap = datasource.getPropertyMap();
+        propertyMap.put("consumer.timeout.ms", new Property("consumer.timeout.ms", Integer.toString(CONSUMER_TIMEOUT_MS)));
+        logger.debug("consumer.timeout.ms=" + CONSUMER_TIMEOUT_MS + "ms");
+        KafkaDatasource kafkaDatasource = new KafkaDatasource(propertyMap);
+        ConsumerConnector consumer = getConsumerConnector(kafkaDatasource);
+        int threadNum = kafkaDatasource.getThreadNum();
         List<KafkaStream<byte[], byte[]>> streams = receive(consumer, topic, threadNum);
         for (KafkaStream<byte[], byte[]> stream : streams) {
             ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
@@ -94,9 +90,18 @@ public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvide
     }
 
     @Override
-    public List<Map<String, String>> inputData() {
-
-        return null;
+    public List<KafkaStream<byte[], byte[]>> outputData(Model model) {
+        Datasource datasource = model.getSourceDatasource();
+        KafkaModel kafkaModel = new KafkaModel(model.getPropertyMap());
+        String consumerTimeMs = kafkaModel.getConsumerTimeMs();
+        String topic = kafkaModel.getTopic();
+        Map<String, Property> propertyMap = datasource.getPropertyMap();
+        propertyMap.put("consumer.timeout.ms", new Property("consumer.timeout.ms", consumerTimeMs));
+        logger.debug("consumer.timeout.ms=" + consumerTimeMs + "ms");
+        KafkaDatasource kafkaDatasource = new KafkaDatasource(propertyMap);
+        ConsumerConnector consumer = getConsumerConnector(kafkaDatasource);
+        int threadNum = kafkaDatasource.getThreadNum();
+        return receive(consumer, topic, threadNum);
     }
 
 }

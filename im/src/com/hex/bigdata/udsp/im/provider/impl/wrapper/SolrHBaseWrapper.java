@@ -2,6 +2,8 @@ package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
+import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.hadoop.hbase.client.HConnection;
@@ -14,12 +16,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class SolrHBaseWrapper extends Wrapper {
+public abstract class SolrHBaseWrapper extends BatchTargetWrapper {
     static {
         // 解决winutils.exe不存在的问题
         try {
@@ -89,5 +92,15 @@ public abstract class SolrHBaseWrapper extends Wrapper {
             e.printStackTrace();
         }
         return solrServer;
+    }
+
+    @Override
+    protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        return null;
+    }
+
+    @Override
+    protected List<String> getInsertColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        return null;
     }
 }

@@ -4,10 +4,10 @@ import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.zookeeper.*;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -23,12 +23,13 @@ import java.util.Map;
  * Created by hj on 2017/9/11.
  */
 public class SolrUtil {
+    private static Logger logger = LogManager.getLogger(SolrUtil.class);
     /**
      * @param metadata
      * @throws KeeperException
      * @throws InterruptedException
      */
-    public static void uploadSolrConfig(Metadata metadata) throws KeeperException, InterruptedException {
+    public static void uploadSolrConfig(Metadata metadata) throws Exception {
         Datasource ds = metadata.getDatasource();
         Map<String, Property> propertyMap = ds.getPropertyMap();
         ZooKeeper zkClient = getZkClient(propertyMap.get("solr.url").getValue());
@@ -44,7 +45,12 @@ public class SolrUtil {
     public static ZooKeeper getZkClient(String zkConnectString){
         ZooKeeper zkClient = null;
         try {
-            zkClient = new ZooKeeper(zkConnectString, 20000, null);
+            zkClient = new ZooKeeper(zkConnectString, 20000, new Watcher() {
+                @Override
+                public void process(WatchedEvent event) {
+                    //do nothing
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,19 +67,16 @@ public class SolrUtil {
      * @throws KeeperException
      * @throws InterruptedException
      */
-    public static void upload(ZooKeeper zkClient, String filePath, String solrConfigPath, String configName,  List<MetadataCol> metadataCols) throws KeeperException, InterruptedException {
+    public static void upload(ZooKeeper zkClient, String filePath, String solrConfigPath, String configName,  List<MetadataCol> metadataCols) throws Exception {
         File file = new File(filePath);
         if (file.isFile()) {
             byte[] bytes = "schema.xml".equals(file.getName()) ? setSchemaField(metadataCols) : readFileByBytes(file.getPath());
-            if(zkClient.exists(solrConfigPath+"/"+file.getName(), false)!=null){//todo 存在的直接删除了 实际存在提示存在
-                zkClient.delete(solrConfigPath+"/"+file.getName(), -1);
-            }
             String nodeCreated = zkClient.create(solrConfigPath+"/"+file.getName(), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             return;
         }else{
             solrConfigPath += "/" + (configName!=null ? configName : file.getName());
-            if(zkClient.exists(solrConfigPath, false)!=null){//todo delete
-                zkClient.delete(solrConfigPath, -1);
+            if(zkClient.exists(solrConfigPath, false)!=null){
+                throw new Exception("该名称的配置文件已存在！");
             }
             zkClient.create(solrConfigPath, file.getName().getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             File[] files = file.listFiles();
@@ -82,9 +85,6 @@ public class SolrUtil {
                     upload(zkClient, e.getPath(), solrConfigPath, null, metadataCols);
                 }else{
                     byte[] bytes = "schema.xml".equals(e.getName()) ? setSchemaField(metadataCols) : readFileByBytes(e.getPath());
-                    if(zkClient.exists(solrConfigPath+"/"+e.getName(), false)!=null){//todo delete
-                        zkClient.delete(solrConfigPath+"/"+e.getName(), -1);
-                    }
                     zkClient.create(solrConfigPath+"/"+e.getName(), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                     continue;
                 }
@@ -102,7 +102,7 @@ public class SolrUtil {
         File file = new File(url.getPath());
         Document document = File2Doc(file);
         Element root = document.getRootElement();
-//        Element fields=root.element("fields"); //todo schema  fields ?? 添加到了最后面
+//      Element fields=root.element("fields"); //todo schema  fields ?? 添加到了最后面  主键未作处理
         for(MetadataCol e:metadataCols){
             Element filed= DocumentHelper.createElement("field");
             filed.addAttribute("name", e.getName());
@@ -111,7 +111,6 @@ public class SolrUtil {
             filed.addAttribute("stored", e.isStored() ? "true" : "false");
             root.add(filed);
         }
-        System.out.print(root.asXML());
         return root.asXML().getBytes();
     }
 
@@ -166,8 +165,11 @@ public class SolrUtil {
         String result = "";
         BufferedReader in = null;
         try {
-            String urlNameString = url + "?" + param;
-            System.out.print("urlNameString1111111111111111111" +urlNameString);
+            String urlNameString = url;
+            if(StringUtils.isNotEmpty(param))  {
+                urlNameString  += "?" + param;
+            }
+            logger.info("solrUrlApi: "+urlNameString);
             URL realUrl = new URL(urlNameString);
             // 打开和URL之间的连接
             URLConnection connection = realUrl.openConnection();
@@ -192,7 +194,7 @@ public class SolrUtil {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送GET请求出现异常！" + e);
+            logger.info("发送GET请求出现异常！" + e);
             e.printStackTrace();
         }
         // 使用finally块来关闭输入流
@@ -233,7 +235,6 @@ public class SolrUtil {
         List<String> paths=zk.getChildren(path, false);
         for (String p:paths){
             delPath(zk,path+"/"+p);
-//            System.out.println(path+"/"+p);
         }
         for(String p:paths){
             zk.delete(path+"/"+p, -1);

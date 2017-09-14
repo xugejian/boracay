@@ -29,6 +29,12 @@ public class ImProviderService {
         return provider.columnInfo(metadata);
     }
 
+    public boolean checkTableExists(Metadata metadata) throws Exception{
+        Datasource datasource = metadata.getDatasource();
+        TargetProvider provider = getTargetProvider(datasource);
+        return provider.checkTableExists(metadata);
+    }
+
     public List<MetadataCol> getCloumnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
         SourceProvider provider = getSourceProvider(datasource);
