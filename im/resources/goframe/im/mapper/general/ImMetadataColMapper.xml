@@ -80,4 +80,11 @@
     LEFT JOIN IM_MODEL_UPDATE_KEY IMUK ON IMUK.COL_ID = IMC.PK_ID
     WHERE IMUK.MODEL_ID = #{MODELID}
   </select>
+
+  <select id="selectByNameAndMdId" resultMap="BaseResultMap">
+    SELECT IMC.PK_ID, IMC.MD_ID, IMC.SEQ, IMC.NAME, IMC.DESCRIBE, IMC.TYPE, IMC.LENGTH, IMC.NOTE, IMC.INDEXED, IMC.PRIMARY, IMC.STORED
+    FROM IM_METADATA_COLUMN IMC
+    WHERE IMC.NAME = #{name}
+    AND IMC.MD_ID = #{mdId}
+  </select>
 </mapper>

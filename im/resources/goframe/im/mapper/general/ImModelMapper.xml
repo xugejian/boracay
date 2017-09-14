@@ -100,4 +100,24 @@
     where NAME = #{modelName,jdbcType=VARCHAR}
     and DEL_FLG = '0'
   </select>
+
+  <select id="getModelUpdateModeByName" resultType="java.lang.String" >
+    select DICT_ID
+    from t_gf_dict
+    where DICT_TYPE_ID = 'IM_MODEL_UPDATE_TYPE'
+    and DICT_NAME = #{updateMode}
+  </select>
+
+  <select id="getModelBuildModeByName" resultType="java.lang.String" >
+    select DICT_ID
+    from t_gf_dict
+    where DICT_TYPE_ID = 'IM_MODEL_BUILD_TYPE'
+    and DICT_NAME = #{updateMode}
+  </select>
+
+  <update id="updateToDeleted">
+    UPDATE IM_MODEL
+    SET DEL_FLG = '1'
+    where PK_ID = #{id}
+  </update>
 </mapper>

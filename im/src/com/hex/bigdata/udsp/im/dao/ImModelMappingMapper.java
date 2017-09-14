@@ -58,4 +58,8 @@ public class ImModelMappingMapper  extends SyncMapper<ImModelMapping> {
         }
         return true;
     }
+
+    public List<ImModelMapping> selectByModelId(String mId) {
+        return sqlSessionTemplate.selectList("com.hex.bigdata.udsp.im.dao.ImModelMappingMapper.selectByModelId",mId);
+    }
 }
