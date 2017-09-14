@@ -144,7 +144,7 @@ public class ImMetadataController {
             message = "请求参数为空";
         } else {
             try {
-                if (imMetadataService.update(imMetadataDto) && imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
+                if (!imMetadataService.update(imMetadataDto) || !imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
                     status = false;
                     message = "保存并创建失败";
                 }
@@ -219,6 +219,34 @@ public class ImMetadataController {
         return new MessageResult(status, message);
     }
 
+    @RequestMapping({"/update"})
+    @ResponseBody
+    public MessageResult update(@RequestBody ImMetadataDto imMetadataDto) {
+        boolean status = true;
+        String message = "更新成功";
+        if (imMetadataDto == null) {
+            status = false;
+            message = "请求参数为空";
+        } else {
+            try {
+                if (!imMetadataService.update(imMetadataDto)) {
+                    status = false;
+                    message = "更新失败";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = false;
+                message = "系统异常：" + e;
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.error(message);
+        }
+        return new MessageResult(status, message);
+    }
+
     @RequestMapping("/delete")
     @ResponseBody
     public MessageResult delete(@RequestBody ImMetadata[] imMetadatas) {
@@ -287,6 +315,9 @@ public class ImMetadataController {
             message = "请求参数为空";
         } else {
             try {
+                if(!imMetadataService.checkTableExists(dsId, tbName)){
+                    return new MessageResult(false, "外表不存在，请检查后重新输入！");
+                }
                 metadataCols = imMetadataService.getCloumnInfo(dsId, tbName);
             } catch (Exception e) {
                 e.printStackTrace();

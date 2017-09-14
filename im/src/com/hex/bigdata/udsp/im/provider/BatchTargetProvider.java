@@ -7,7 +7,7 @@ import com.hex.bigdata.udsp.im.provider.model.Model;
  */
 public interface BatchTargetProvider extends TargetProvider, BatchProvider {
 
-    String outputSQL();
+    String inputSQL(Model model);
 
     boolean createTargetEngineSchema(Model model) throws Exception;
 

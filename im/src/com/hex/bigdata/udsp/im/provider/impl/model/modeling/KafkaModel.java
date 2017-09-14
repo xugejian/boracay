@@ -25,4 +25,18 @@ public class KafkaModel extends Model {
             throw new IllegalArgumentException("kafka.topic不能为空");
         return value;
     }
+
+    public String getConsumerTimeMs() {
+        String value = getProperty("kafka.consumer.time.ms").getValue();
+        if (StringUtils.isBlank(value))
+            value = "1000";
+        return value;
+    }
+
+    public String getConsumerInterval() {
+        String value = getProperty("kafka.consumer.interval").getValue();
+        if (StringUtils.isBlank(value))
+            value = "1";
+        return value;
+    }
 }

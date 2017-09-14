@@ -491,44 +491,68 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function dropTable(pkId) {
-        grid1.loading("正在删除中,请稍等...");
-        $.ajax({
-            url: "${basePath}/im/md/dropTable/"+pkId,
-            type: 'POST',
-            data:null,
-            cache: false,
-            async: false,
-            contentType: 'application/json',
-            success: function (result) {
-                if (result.status == true) {
-                    nui.alert(result.message);
-                } else {
-                    nui.alert(result.message, "系统提示");
-                }
-                grid1.unmask();
-                grid1.load();
+        nui.confirm("确定删除？", "系统提示", function (action) {
+            if (action != "ok") {
+                return;
             }
+            grid1.loading("正在删除中,请稍等...");
+            $.ajax({
+                url: "${basePath}/im/md/dropTable/" + pkId,
+                type: 'POST',
+                data: null,
+                cache: false,
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.status == true) {
+                        nui.alert(result.message);
+                    } else {
+                        nui.alert(result.message, "系统提示");
+                    }
+                    grid1.unmask();
+                    grid1.load();
+                },
+                error: function () {
+                    nui.alert("系统错误", "系统提示", function (action) {
+                        if (action == "ok" || action == "close") {
+//                            CloseWindow("failed");
+                        }
+                    });
+                    form1.unmask();
+                }
+            });
         });
     }
 
     function createTable(pkId) {
-        grid1.loading("正在创建中,请稍等...");
-        $.ajax({
-            url: "${basePath}/im/md/createTable/"+pkId,
-            type: 'POST',
-            data:null,
-            cache: false,
-            async: false,
-            contentType: 'application/json',
-            success: function (result) {
-                if (result.status == true) {
-                    nui.alert(result.message);
-                } else {
-                    nui.alert(result.message, "系统提示")
-                }
-                grid1.unmask();
-                grid1.load();
+        nui.confirm("确定创建？", "系统提示", function (action) {
+            if (action != "ok") {
+                return;
             }
+            grid1.loading("正在创建中,请稍等...");
+            $.ajax({
+                url: "${basePath}/im/md/createTable/" + pkId,
+                type: 'POST',
+                data: null,
+                cache: false,
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.status == true) {
+                        nui.alert(result.message);
+                    } else {
+                        nui.alert(result.message, "系统提示")
+                    }
+                    grid1.unmask();
+                    grid1.load();
+                },
+                error: function () {
+                    nui.alert("系统错误", "系统提示", function (action) {
+                        if (action == "ok" || action == "close") {
+//                            CloseWindow("failed");
+                        }
+                    });
+                    form1.unmask();
+                }
+            });
         });
     }
 </script>

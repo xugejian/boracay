@@ -127,7 +127,6 @@ public class ImMetadataService extends BaseService {
     }
 
     public List<MetadataCol> getCloumnInfo(String dsId, String tbName){
-        //todo 验证
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectByFkId(dsId);
         Datasource datasource = new Datasource(comDatasource, comProperties);
@@ -138,6 +137,18 @@ public class ImMetadataService extends BaseService {
         metadata.setDatasource(datasource);
         List<MetadataCol> list = imProviderService.getCloumnInfo(metadata);
         return list;
+    }
+
+    public boolean checkTableExists(String dsId, String tbName) throws Exception{
+        ComDatasource comDatasource = comDatasourceService.select(dsId);
+        List<ComProperties> comProperties = comPropertiesService.selectByFkId(dsId);
+        Datasource datasource = new Datasource(comDatasource, comProperties);
+        List<Property> prop = new ArrayList<>();
+        Metadata metadata = new Metadata(prop);
+        metadata.setType(MetadataType.EXTERNAL);
+        metadata.setTbName(tbName);
+        metadata.setDatasource(datasource);
+        return imProviderService.checkTableExists(metadata);
     }
 
     @Transactional

@@ -29,7 +29,6 @@ public class JdbcProviderUtil {
         BasicDataSource dataSource = dataSourcePool.get(dsId);
         if (dataSource == null) {
             dataSource = new BasicDataSource();
-
             //Class.forName(datasource.getDriverClass());
             if (StringUtils.isNotBlank(datasource.getDriverClass()))
                 dataSource.setDriverClassName(datasource.getDriverClass());
@@ -63,7 +62,6 @@ public class JdbcProviderUtil {
                 dataSource.setTestOnBorrow(Boolean.valueOf(datasource.getTestOnBorrow()));
             if (StringUtils.isNotBlank(datasource.getTestOnReturn()))
                 dataSource.setTestOnReturn(Boolean.valueOf(datasource.getTestOnReturn()));
-
             dataSourcePool.put(dsId, dataSource);
         }
         return dataSource;
