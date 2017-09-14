@@ -55,10 +55,10 @@ ${extends("/goframe/function_layout.httl")}
                         </td>
                         <td class="tit roleLabel" style="width: 100px;text-align: right">目标元数据：</td>
                         <td class="roleText" style="width: 25%">
-                            <input name="tMdId" class="nui-textbox" style="width:98%;"/>
-                            <!--<input id="tMdId" name="tMdId" class="nui-combobox" valueField="pkId" textField="name"
-                                   dataField="data" url="${basePath}/im/md/select" allowInput="true" sortMode="client"
-                                   showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>-->
+                            <!--<input name="tMdId" class="nui-textbox" style="width:98%;"/>-->
+                            <input id="tMdId" name="tMdId" class="nui-combobox" valueField="pkId" textField="name"
+                                   dataField="data" url="${basePath}/im/md/selectAll" allowInput="true" sortMode="client"
+                                   showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>
                         </td>
                     </tr>
 
