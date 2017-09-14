@@ -24,7 +24,7 @@ public class ImModelMapper extends SyncMapper<ImModel> {
 
     @Override
     protected boolean deleteExe(String id) {
-        return false;
+        return sqlSessionTemplate.update("com.hex.bigdata.udsp.im.dao.ImModelMapper.updateToDeleted",id) == 1;
     }
 
     @Override
@@ -48,5 +48,13 @@ public class ImModelMapper extends SyncMapper<ImModel> {
 
     public ImModel selectByName(String modelName) {
         return  sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.selectByName",modelName);
+    }
+
+    public String getModelUpdateModeByName(String updateMode) {
+        return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.getModelUpdateModeByName",updateMode);
+    }
+
+    public String getModelBuildModeByName(String buildMode) {
+        return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.getModelBuildModeByName",buildMode);
     }
 }

@@ -6,11 +6,11 @@ import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.ImModel;
 import com.hex.bigdata.udsp.im.model.ImModelViews;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.model.PageListResult;
+import com.hex.goframe.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JunjieM on 2017-9-4.
@@ -40,7 +43,7 @@ public class ImModelController {
         boolean result = true;
         String message = "保存成功！";
         try{
-            result = imModelService.insert(imModelViews);
+            result = imModelService.insert(imModelViews) != null;
             if(!result){
                 message = "保存失败！";
             }
@@ -149,5 +152,51 @@ public class ImModelController {
         List<MetadataCol> metadataCols = imModelService.getSrcMateData(properties,srcDataSourceId);
 
         return new PageListResult(metadataCols);
+    }
+
+    /**
+     * 交互建模-模型excel上传
+     * @return
+     */
+    @RequestMapping("upload")
+    @ResponseBody
+    public MessageResult upload(MultipartFile excelFile){
+        boolean status = true;
+        String message = "上传成功";
+        try{
+            //判断结尾是否为xl或者xlsx
+            if (((CommonsMultipartFile)excelFile).getFileItem().getName().endsWith(".xls")
+                    || ((CommonsMultipartFile)excelFile).getFileItem().getName().endsWith(".xlsx")) {
+                //将文件放到项目上传文件目录中
+                String uploadFilePath = FileUtil.uploadFile(FileUtil
+                        .getRealUploadPath("EXCEL_UPLOAD"), excelFile);
+                Map<String,String> result = imModelService.uploadExcel(uploadFilePath);
+                if("false".equals(result.get("status"))){
+                    status = false;
+                    message = result.get("message");
+                }
+            }else{
+                status = false;
+                message = "请上传正确格式的文件！";
+            }
+        }catch (Exception e){
+            message = e.getMessage();
+            status = false;
+        }
+
+        return new MessageResult(status,message);
+    }
+
+    @ResponseBody
+    @RequestMapping("/download")
+    public String createExcel(@RequestBody ImModel[] imModels){
+        // 写入Excel文件
+        String filePath = "";
+        try {
+            filePath = imModelService.createExcel(imModels);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return filePath;
     }
 }

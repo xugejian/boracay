@@ -32,6 +32,9 @@ ${extends("/goframe/function_layout.httl")}
                     #if(hasPermission("IM.cm.model.list.remove"))
                     <a class="nui-button" iconCls="icon-remove" plain="true" onclick="remove" enabled="false" id="remove">删除</a>
                     #end
+                    #if(hasPermission("IM.cm.model.list.create"))
+                    <a class="nui-button" iconCls="icon-add" plain="true" onclick="remove" enabled="false" id="create">创建</a>
+                    #end
                 </td>
             </tr>
         </table>
@@ -116,7 +119,7 @@ ${extends("/goframe/function_layout.httl")}
                 <td><input id="fileUpload" class="nui-fileupload" style="width:100%"
                            name="excelFile" limitType="*.xls;*.xlsx"
                            flashUrl="${basePath}/s/js/nui/swfupload/swfupload.swf"
-                           uploadUrl="${basePath}/iq/md/upload"
+                           uploadUrl="${basePath}/im/model/upload"
                            onuploadsuccess="uploadSuccess"
                         />
                 </td>
@@ -208,12 +211,15 @@ ${extends("/goframe/function_layout.httl")}
         if (rows.length == 1) {
             nui.get("edit").enable();
             nui.get("remove").enable();
+            nui.get("create").enable();
         } else if (rows.length == 0) {
             nui.get("edit").disable();
             nui.get("remove").disable();
+            nui.get("create").disable();
         } else {
             nui.get("edit").disable();
             nui.get("remove").enable();
+            nui.get("create").enable();
         }
     }
 
@@ -307,9 +313,9 @@ ${extends("/goframe/function_layout.httl")}
         return nodes;
     }
 
-    /*/!**
+    /**
      * 双击查看详情
-     *!/
+     */
     function info() {
         var row = grid1.getSelected();
         if (!row) {
@@ -317,16 +323,19 @@ ${extends("/goframe/function_layout.httl")}
             return;
         }
         nui.open({
-            url: "${basePath}/goframe/p/iq.cm.md.info/?pkId=" + row.pkId + "&model=${model}",
-            title: "详情-" + row.describe,
+            url: "${basePath}/goframe/p/im.cm.model.info?pkId=" + row.pkId,
+            title: "编辑",
             width: 800,
-            height: 500,
+            height: 600,
             onload: function () {
             },
             ondestroy: function (action) {
+                if (action == "success") {
+                    grid1.load();
+                }
             }
-        });
-    }*/
+        })
+    }
 
     /**
      * 时间格式化
@@ -437,7 +446,7 @@ ${extends("/goframe/function_layout.httl")}
         var json = nui.encode(getRows(rows));
         grid1.loading("正在导出中,请稍等...");
         $.ajax({
-            url:"${basePath}/iq/md/download",
+            url:"${basePath}/im/model/download",
             type : 'POST',
             data : json,
             cache : false,
