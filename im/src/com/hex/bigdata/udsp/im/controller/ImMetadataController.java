@@ -144,7 +144,7 @@ public class ImMetadataController {
             message = "请求参数为空";
         } else {
             try {
-                if (imMetadataService.update(imMetadataDto) && imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
+                if (!imMetadataService.update(imMetadataDto) || !imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
                     status = false;
                     message = "保存并创建失败";
                 }
@@ -315,6 +315,9 @@ public class ImMetadataController {
             message = "请求参数为空";
         } else {
             try {
+                if(!imMetadataService.checkTableExists(dsId, tbName)){
+                    return new MessageResult(false, "外表不存在，请检查后重新输入！");
+                }
                 metadataCols = imMetadataService.getCloumnInfo(dsId, tbName);
             } catch (Exception e) {
                 e.printStackTrace();

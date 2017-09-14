@@ -42,7 +42,7 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         sqls.add(OracleSqlUtil.createTable(fullTbName, columns, tableComment));
         sqls.add(OracleSqlUtil.commentTable(fullTbName, tableComment));
         sqls.addAll(OracleSqlUtil.createColComment(fullTbName, columns));
-        return JdbcProviderUtil.executeUpdate(oracleDatasource, sqls) == 1 ? true : false;
+        return JdbcProviderUtil.executeUpdate(oracleDatasource, sqls) == 0 ? true : false;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = OracleSqlUtil.dropTable(fullTbName);
-        return JdbcProviderUtil.executeUpdate(oracleDatasource, sql) == 1 ? true : false;
+        return JdbcProviderUtil.executeUpdate(oracleDatasource, sql) == 0 ? true : false;
     }
 
     @Override
