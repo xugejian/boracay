@@ -58,7 +58,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
 
     @Override
     public boolean checkTableExists(Metadata metadata) throws Exception {
-        return false;
+        return solrProvider.checkTableExists(metadata);
     }
 
     @Override
