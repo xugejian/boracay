@@ -42,6 +42,7 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         sqls.add(OracleSqlUtil.createTable(fullTbName, columns, tableComment));
         sqls.add(OracleSqlUtil.commentTable(fullTbName, tableComment));
         sqls.addAll(OracleSqlUtil.createColComment(fullTbName, columns));
+        sqls.add(OracleSqlUtil.createPrimaryKey(fullTbName, columns));
         return JdbcProviderUtil.executeUpdate(oracleDatasource, sqls) == 0 ? true : false;
     }
 

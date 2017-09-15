@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
+import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import org.apache.commons.lang3.StringUtils;
 
@@ -106,5 +107,23 @@ public class OracleSqlUtil {
         }
         sql = sql.replaceAll("STRING","BLOB");
         return sql;
+    }
+
+    public static String createPrimaryKey(String tableName, List<TableColumn> columns){
+        if(StringUtils.isEmpty(tableName)){
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        List<String> list = new ArrayList<>();
+        for(TableColumn col : columns){
+            if(col.isPrimaryKey()){
+                list.add(col.getColName());
+            }
+        }
+        if(list.size()<=0){
+            return "";
+        }else{
+            return "alter table "+ tableName + " add constraint primaryKey primary key ("+ list.toString().replaceAll("(\\[|\\])","") + ")";
+        }
     }
 }

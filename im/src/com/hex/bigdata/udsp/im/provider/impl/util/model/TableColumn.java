@@ -5,6 +5,15 @@ public class TableColumn {
 	private String dataType; // 类型
 	private String colComment; // 注释
 	private String length; //长度
+	private boolean primaryKey; //是否主键
+
+	public boolean isPrimaryKey() {
+		return primaryKey;
+	}
+
+	public void setPrimaryKey(boolean primaryKey) {
+		this.primaryKey = primaryKey;
+	}
 
 	public TableColumn(String colName, String dataType) {
 		super();
@@ -19,12 +28,13 @@ public class TableColumn {
 		this.colComment = colComment;
 	}
 
-	public TableColumn(String colName, String dataType, String colComment, String length) {
+	public TableColumn(String colName, String dataType, String colComment, String length, boolean primaryKey) {
 		super();
 		this.colName = colName;
 		this.dataType = dataType;
 		this.colComment = colComment;
 		this.length = length;
+		this.primaryKey = primaryKey;
 	}
 
 	public String getColName() {
