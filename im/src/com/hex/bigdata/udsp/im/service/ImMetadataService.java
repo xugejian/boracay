@@ -12,7 +12,7 @@ import com.hex.bigdata.udsp.im.model.ImMetadata;
 import com.hex.bigdata.udsp.im.model.ImMetadataCol;
 import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
 import com.hex.bigdata.udsp.im.dto.ImMetadataView;
-import com.hex.bigdata.udsp.im.provider.constant.MetadataType;
+import com.hex.bigdata.udsp.im.constant.MetadataType;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.util.ImUtil;
@@ -155,14 +155,14 @@ public class ImMetadataService extends BaseService {
     public boolean createTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("2"); //状态为已建
-        return imProviderService.createTable(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
+        return imProviderService.createSchema(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
     }
 
     @Transactional
     public boolean dropTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("1"); //状态为未建
-        return  imProviderService.dropTable(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
+        return  imProviderService.dropSchema(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
     }
 
     public Metadata getMetadata(String pkId){

@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.model.modeling;
 
 import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.provider.model.Model;
 
 import java.util.List;
 import java.util.Map;

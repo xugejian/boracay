@@ -3,10 +3,10 @@ package com.hex.bigdata.udsp.im.provider.model;
 import com.hex.bigdata.udsp.common.provider.model.Base;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.provider.constant.BuildMode;
-import com.hex.bigdata.udsp.im.provider.constant.ModelStatus;
-import com.hex.bigdata.udsp.im.provider.constant.ModelType;
-import com.hex.bigdata.udsp.im.provider.constant.UpdateMode;
+import com.hex.bigdata.udsp.im.constant.BuildMode;
+import com.hex.bigdata.udsp.im.constant.ModelStatus;
+import com.hex.bigdata.udsp.im.constant.ModelType;
+import com.hex.bigdata.udsp.im.constant.UpdateMode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

@@ -1,16 +1,16 @@
-package com.hex.bigdata.udsp.im.provider.constant;
+package com.hex.bigdata.udsp.im.constant;
 
 /**
- * Created by JunjieM on 2017-9-12.
+ * Created by JunjieM on 2017-9-8.
  */
-public enum BuildMode {
-    INSERT_INTO("增量", "INSERT_INTO"),
-    INSERT_OVERWRITE("全量", "INSERT_OVERWRITE");
+public enum ModelType {
+    BATCH("批量", "BATCH"),
+    REALTIME("实时", "REALTIME");
 
     private String value;
     private String name;
 
-    private BuildMode(String name, String value) {
+    private ModelType(String name, String value) {
         this.value = value;
         this.name = name;
     }

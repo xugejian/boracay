@@ -3,7 +3,6 @@ package com.hex.bigdata.udsp.im.provider;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**

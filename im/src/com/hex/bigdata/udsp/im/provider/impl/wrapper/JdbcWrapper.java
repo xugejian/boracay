@@ -1,16 +1,14 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
 import com.hex.bigdata.metadata.db.model.Column;
-import com.hex.bigdata.metadata.db.util.JdbcUtil;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.HiveMetadata;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MysqlModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
@@ -37,8 +35,8 @@ public abstract class JdbcWrapper extends BatchWrapper {
     public List<MetadataCol> columnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
         JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
-        MysqlModel mysqlModel = new MysqlModel(model.getPropertyMap());
-        return getColumnInfo(jdbcDatasource, mysqlModel);
+        JdbcModel jdbcModel = new JdbcModel(model.getPropertyMap());
+        return getColumnInfo(jdbcDatasource, jdbcModel);
     }
 
     @Override
@@ -62,12 +60,12 @@ public abstract class JdbcWrapper extends BatchWrapper {
         List<MetadataCol> metadataCols = null;
         Connection conn = null;
         try {
-            conn = JdbcProviderUtil.getConnection(datasource);
+            conn = JdbcUtil.getConnection(datasource);
             metadataCols = getMetadataCols(conn, dbName, tbName);
         } catch (SQLException e) {
             logger.warn(e.getMessage());
         } finally {
-            JdbcUtil.close(conn);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
         }
         return metadataCols;
     }
@@ -92,7 +90,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            conn = JdbcProviderUtil.getConnection(datasource);
+            conn = JdbcUtil.getConnection(datasource);
             stmt = conn.createStatement();
             rs = stmt.executeQuery(querySql);
             ResultSetMetaData md = rs.getMetaData();
@@ -106,9 +104,9 @@ public abstract class JdbcWrapper extends BatchWrapper {
         } catch (SQLException e) {
             logger.warn(e.getMessage());
         } finally {
-            JdbcUtil.close(rs);
-            JdbcUtil.close(stmt);
-            JdbcUtil.close(conn);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(rs);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
         }
         return metadataCols;
     }
@@ -131,7 +129,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
             String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                     getSourceColumns(model.getModelMappings()), "源的Hive引擎表", null,
                     HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(jdbcDs, fullTbName));
-            return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+            return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
         }
         return true;
     }
@@ -155,7 +153,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
             String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                     getTargetColumns(model.getModelMappings()), "目标的Hive引擎表", null,
                     HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(jdbcDs, fullTbName));
-            return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+            return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
         }
         return true;
     }
@@ -295,7 +293,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
         Statement stmt = null;
         boolean exists = true;
         try {
-            conn = JdbcProviderUtil.getConnection(datasource);
+            conn = JdbcUtil.getConnection(datasource);
             stmt = conn.createStatement();
             stmt.executeQuery(sql);
         } catch (Exception e){
@@ -304,8 +302,8 @@ public abstract class JdbcWrapper extends BatchWrapper {
                 exists = false;
             }
         }finally {
-            JdbcUtil.close(stmt);
-            JdbcUtil.close(conn);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
         }
         return exists;
     }

@@ -1,17 +1,22 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.HBaseMetadata;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.KafkaUtil;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.HBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import kafka.consumer.ConsumerIterator;
+import kafka.consumer.KafkaStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -60,16 +65,30 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
                 getTargetColumns(modelMappings, hbaseMetadata), "目标的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, getSerDeProperties(modelMappings, hbaseMetadata),
                 getTblProperties(fullTbName));
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
 
     @Override
     public void inputData(Model model) {
-        // TODO ...
+        String sDsType = model.getSourceDatasource().getType();
+        // 源是Kafka
+        if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
+            KafkaModel kafkaModel = new KafkaModel(model.getPropertyMap());
+            List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.outputData(kafkaModel);
+            for (KafkaStream<byte[], byte[]> stream : streams) {
+                ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
+                while (iterator.hasNext()) {
+                    String message = new String(iterator.next().message());
+                    logger.debug("kafka接收的信息为：" + message);
+                    // TODO ... 实时数据处理
+                }
+            }
+        }
     }
 
     @Override
     public boolean checkTableExists(Metadata metadata) throws Exception {
         return false;
     }
+
 }

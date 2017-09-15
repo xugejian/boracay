@@ -131,7 +131,7 @@ public class HeartbeatService {
                                 //获取宕机机器上的任务转到本机器上运行
                                 this.transferTask(heartbeat.getIp());
                                 //从内存中移除宕机机器信息
-                                heartbeatMapper.delete(HEARTBEAT_INFO_KEY + ":" +heartbeat.getIp());
+                                heartbeatMapper.delete(HEARTBEAT_INFO_KEY + ":" + heartbeat.getIp());
                                 break;
                             }
                         }
@@ -176,7 +176,7 @@ public class HeartbeatService {
             request.setRequestType(mcCurrent.getRequestType());
             request.setAppType(mcCurrent.getAppType());
             request.setAppName(mcCurrent.getAppName());
-            if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(request.getEntity())){
+            if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(request.getEntity())) {
                 continue;
             }
             //并发检查
@@ -210,12 +210,12 @@ public class HeartbeatService {
                 }
             } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(type)) {
                 String sql = request.getSql();
-                ThreadPool.execute(new OlqAsyncService(mcCurrent, appId, sql,RcConstant.UDSP_SERVICE_TYPE_OLQ,localFileName));
-            }else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)){
+                ThreadPool.execute(new OlqAsyncService(mcCurrent, appId, sql, RcConstant.UDSP_SERVICE_TYPE_OLQ, localFileName));
+            } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
                 OLQApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 MessageResult messageResult = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                ThreadPool.execute(new OlqAsyncService(mcCurrent, dsId, (String)messageResult.getData(),RcConstant.UDSP_SERVICE_TYPE_OLQ_APP,localFileName));
+                ThreadPool.execute(new OlqAsyncService(mcCurrent, dsId, (String) messageResult.getData(), RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName));
             }
 
         }
@@ -262,5 +262,8 @@ public class HeartbeatService {
         mcConsumeLogService.insert(mcConsumeLog);
     }
 
+    public List<HeartbeatInfo> selectList() {
+        return heartbeatMapper.selectLike(HEARTBEAT_INFO_KEY);
+    }
 
 }
