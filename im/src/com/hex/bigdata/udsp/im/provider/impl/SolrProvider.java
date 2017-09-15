@@ -194,7 +194,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     }
 
     @Override
-    public void inputData() {
+    public void inputData(Model model) {
 
     }
 

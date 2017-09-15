@@ -68,7 +68,7 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public void inputData() {
+    public void inputData(Model model) {
         // TODO ...
     }
 

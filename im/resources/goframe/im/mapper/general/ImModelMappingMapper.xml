@@ -53,4 +53,14 @@
     delete FROM  IM_MODEL_MAPPING
     where MODEL_ID = #{mid}
   </delete>
+
+
+  <select id="selectByModelId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT IMM.PK_ID, IMM.MODEL_ID, IMM.SEQ, IMM.NAME, IMC.NAME COL_ID, IMM.NOTE,IMM.TYPE,IMM.LENGTH,IMM.DESCRIBE
+    FROM IM_MODEL_MAPPING IMM
+    LEFT JOIN IM_METADATA_COLUMN IMC
+    ON IMC.PK_ID = IMM.COL_ID
+    WHERE MODEL_ID = #{mId}
+     ORDER BY SEQ
+  </select>
 </mapper>
