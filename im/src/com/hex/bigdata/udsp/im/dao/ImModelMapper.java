@@ -6,7 +6,9 @@ import com.hex.bigdata.udsp.im.model.ImModel;
 import com.hex.goframe.model.Page;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ImModelMapper extends SyncMapper<ImModel> {
@@ -56,5 +58,12 @@ public class ImModelMapper extends SyncMapper<ImModel> {
 
     public String getModelBuildModeByName(String buildMode) {
         return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.getModelBuildModeByName",buildMode);
+    }
+
+    public boolean updateStatus(String pkId,String status){
+        Map paramter = new HashMap<>();
+        paramter.put("pkId",pkId);
+        paramter.put("status",status);
+        return sqlSessionTemplate.update("com.hex.bigdata.udsp.im.dao.ImModelMapper.updateStatus",paramter) == 1;
     }
 }

@@ -120,4 +120,10 @@
     SET DEL_FLG = '1'
     where PK_ID = #{id}
   </update>
+
+  <update id="updateStatus">
+    UPDATE IM_MODEL
+    SET DEL_FLG = #{status}
+    where PK_ID = #{pkId}
+  </update>
 </mapper>

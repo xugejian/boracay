@@ -154,6 +154,7 @@ ${extends("/goframe/function_layout.httl")}
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
             <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat">更新时间</div>
             <div field="note" headerAlign="center" allowSort="true">备注</div>
+            <div field="operator" headerAlign="center" renderer="operatorRenderer">操作</div>
         </div>
     </div>
 </div>
@@ -462,6 +463,39 @@ ${extends("/goframe/function_layout.httl")}
                 grid1.unmask();
             }
         });
+    }
+    //操作的按钮的添加
+    function operatorRenderer(e) {
+        var operatorS = "<div style='text-align: center'>";
+        if(e.row.delFlg  == '0'){
+            operatorS = operatorS.concat("<a href='#'  onclick='deleteOperator(\""+e.row.pkId+"\")'>删除</a>");
+        }else{
+            operatorS = operatorS.concat("<a href='#'  onclick='createOperator(\""+e.row.pkId+"\")'>创建</a>");
+        }
+        //先判断是否实时
+        if(e.row.type == '1'){
+            //判断是否构建
+            if(e.row.status == '1'){
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='buildOperator(\""+e.row.pkId+"\")'>构建</a>");
+            }else{
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='removeBuild(\""+e.row.pkId+"\")'>取消构建</a>");
+            }
+        }
+        operatorS = operatorS.concat("</div>");
+        return operatorS;
+    }
+    
+    function deleteOperator(pkId){
+        
+    }
+    function createOperator(pkId){
+
+    }
+    function buildOperator(pkId){
+
+    }
+    function removeBuild(pkId){
+
     }
 </script>
 <!--#end-->
