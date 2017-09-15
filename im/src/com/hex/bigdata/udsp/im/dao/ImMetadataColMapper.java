@@ -4,7 +4,9 @@ import com.hex.bigdata.udsp.common.dao.base.SyncMapper;
 import com.hex.bigdata.udsp.im.model.ImMetadataCol;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ImMetadataColMapper extends SyncMapper<ImMetadataCol> {
@@ -46,5 +48,12 @@ public class ImMetadataColMapper extends SyncMapper<ImMetadataCol> {
 
     public List<ImMetadataCol> selectModelUpdateKeys(String modelId) {
         return sqlSessionTemplate.selectList("com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.selectModelUpdateKeys",modelId);
+    }
+
+    public ImMetadataCol selectByNameAndMdId(String mdId, String name) {
+        Map<String,String> parameters = new HashMap<>(2);
+        parameters.put("name",name);
+        parameters.put("mdId",mdId);
+        return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.selectByNameAndMdId",parameters);
     }
 }

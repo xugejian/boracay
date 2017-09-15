@@ -116,7 +116,7 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
     protected List<Column> getColumns(Connection conn, String dbName, String tbName) throws SQLException {
         // 方式一：通过JDBCAPI方式获取字段信息
         // 通过JDBC的API接口获取，可以拿到字段名、类型、长度、注释、主键、索引、分区等信息
-        return ClientFactory.createMetaClient(AcquireType.JDBCAPI, DBType.HIVE, conn)
+        return ClientFactory.createMetaClient(AcquireType.JDBCAPI, DBType.MYSQL, conn)
                 .getColumns(dbName, tbName);
 //        // 方式二：通过JDBCINFO方式获取字段信息
 //        // 通过select * from dbName.tbName获取，只能拿到字段名、类型、长度等信息

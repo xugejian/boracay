@@ -3,6 +3,8 @@ package com.hex.bigdata.udsp.im.dao;
 import com.hex.bigdata.udsp.common.dao.base.SyncMapper;
 import com.hex.bigdata.udsp.im.model.ImModelFilterCol;
 import com.hex.goframe.util.Util;
+import io.netty.util.internal.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +13,15 @@ public class ImModelFilterColMapper  extends SyncMapper<ImModelFilterCol> {
 
     @Override
     protected boolean insertExe(ImModelFilterCol imModelFilterCol) {
+        String isNeed = imModelFilterCol.getIsNeed();
+        //转译并给予默认值
+        if(StringUtils.isBlank(isNeed) || isNeed.equals("否")){
+            imModelFilterCol.setIsNeed("1");
+        }else if(isNeed.equals("是")){
+            imModelFilterCol.setIsNeed("0");
+        }
+        //给予默认值
+        if(StringUtils.isBlank(imModelFilterCol.getLabel())) imModelFilterCol.setLabel(imModelFilterCol.getName());
         return sqlSessionTemplate.insert("com.hex.bigdata.udsp.im.dao.ImModelFilterColMapper.insert",imModelFilterCol) == 1;
     }
 

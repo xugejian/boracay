@@ -1,22 +1,17 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.HBaseMetadata;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.KafkaUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.HBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
-import kafka.consumer.ConsumerIterator;
-import kafka.consumer.KafkaStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -39,11 +34,13 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
-        //HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
-        //int numRegions = Integer.parseInt(metadata.getPropertyMap().get("hbase.region.num").getValue());
-        //String family = metadata.getPropertyMap().get("hbase.family").getValue();
-        //return createHTable(datasource, metadata.getTbName(),numRegions,true,true, family);
-        return createHTable(new HBaseMetadata(metadata.getPropertyMap()));
+        HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata.getPropertyMap());
+        hBaseMetadata.setDatasource(metadata.getDatasource());
+        hBaseMetadata.setTbName(metadata.getTbName());
+        hBaseMetadata.setName(metadata.getName());
+        hBaseMetadata.setDescribe(metadata.getDescribe());
+        hBaseMetadata.setNote(metadata.getDescribe());
+        return createHTable(hBaseMetadata);
     }
 
     @Override
@@ -88,7 +85,11 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
 
     @Override
     public boolean checkTableExists(Metadata metadata) throws Exception {
-        return false;
+        HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
+        HBaseAdmin admin = getHBaseAdmin(datasource);
+        String tableName = metadata.getTbName();
+        TableName hbaseTableName = TableName.valueOf(tableName);
+        return admin.isTableAvailable(hbaseTableName);
     }
 
 }

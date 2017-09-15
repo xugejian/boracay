@@ -544,7 +544,6 @@ ${extends("/goframe/function_layout.httl")}
      * 检查solr参数是否正确
      */
     function checkSolrProperty(propsData){
-        debugger;
         var dsId = nui.get("dsId").getValue();
         var ds = getDsByPkId(dsId);
         if(ds.type == "SOLR" || ds.type == "SOLR_HBASE"){

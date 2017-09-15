@@ -123,6 +123,7 @@
     UPT_TIME, IMPL_CLASS, MODEL
     from COM_DATASOURCE CD
     where CD.DEL_FLG = '0'
+    and CD.MODEL = 'IM'
     and  EXISTS (
     select 1
     from  T_GF_DICT GFD1
@@ -147,6 +148,7 @@
     UPT_TIME, IMPL_CLASS, MODEL
     from COM_DATASOURCE CD
     where CD.DEL_FLG = '0'
+    and CD.MODEL = 'IM'
     and  EXISTS (
     select 1
     from  T_GF_DICT GFD1

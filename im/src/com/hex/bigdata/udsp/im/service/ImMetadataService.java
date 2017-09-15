@@ -12,7 +12,7 @@ import com.hex.bigdata.udsp.im.model.ImMetadata;
 import com.hex.bigdata.udsp.im.model.ImMetadataCol;
 import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
 import com.hex.bigdata.udsp.im.dto.ImMetadataView;
-import com.hex.bigdata.udsp.im.constant.MetadataType;
+import com.hex.bigdata.udsp.im.provider.constant.MetadataType;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.util.ImUtil;
@@ -173,6 +173,7 @@ public class ImMetadataService extends BaseService {
         Datasource datasource = new Datasource(comDatasource, comProperties);
         List<Property> prop = PropertyUtil.convertToPropertyList(comPropertiesService.selectByFkId(pkId));
         Metadata metadata = new Metadata(prop);
+        metadata.setName(imMetadata.getName());
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(imMetadata.getTbName());
         metadata.setMetadataCols(ImUtil.convertToMetadataColList(imMetadataColService.select(pkId)));
