@@ -1,17 +1,24 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.HBaseMetadata;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.KafkaUtil;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.HBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import kafka.consumer.ConsumerIterator;
+import kafka.consumer.KafkaStream;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
