@@ -686,6 +686,14 @@ public class RcUserServiceService extends BaseService {
             cell.setCellValue(rcService1.getMaxSyncNum());
             cell = row.createCell(5);
             cell.setCellValue(rcService1.getMaxAsyncNum());
+            cell = row.createCell(6);
+            cell.setCellValue(rcService1.getMaxSyncWaitNum());
+            cell = row.createCell(7);
+            cell.setCellValue(rcService1.getMaxAsyncWaitNum());
+            cell = row.createCell(8);
+            cell.setCellValue(rcService1.getMaxExecuteTimeout());
+            cell = row.createCell(9);
+            cell.setCellValue(rcService1.getMaxWaitTimeout());
             i++;
         }
         if (workbook != null) {

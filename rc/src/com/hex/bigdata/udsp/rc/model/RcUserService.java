@@ -15,6 +15,26 @@ public class RcUserService implements Serializable {
 
     private int maxAsyncNum;
 
+    /**
+     * 等待队列大小（同步）
+     */
+    private int maxSyncWaitNum;
+
+    /**
+     * 等待队列大小（异步）
+     */
+    private int maxAsyncWaitNum;
+
+    /**
+     * 运行超时时间
+     */
+    private int maxExecuteTimeout;
+
+    /**
+     * 等待超时时间
+     */
+    private int maxWaitTimeout;
+
     private String delFlg;
 
     private String crtUser;
@@ -73,6 +93,38 @@ public class RcUserService implements Serializable {
         this.maxAsyncNum = maxAsyncNum;
     }
 
+    public int getMaxSyncWaitNum() {
+        return maxSyncWaitNum;
+    }
+
+    public void setMaxSyncWaitNum(int maxSyncWaitNum) {
+        this.maxSyncWaitNum = maxSyncWaitNum;
+    }
+
+    public int getMaxAsyncWaitNum() {
+        return maxAsyncWaitNum;
+    }
+
+    public void setMaxAsyncWaitNum(int maxAsyncWaitNum) {
+        this.maxAsyncWaitNum = maxAsyncWaitNum;
+    }
+
+    public int getMaxExecuteTimeout() {
+        return maxExecuteTimeout;
+    }
+
+    public void setMaxExecuteTimeout(int maxExecuteTimeout) {
+        this.maxExecuteTimeout = maxExecuteTimeout;
+    }
+
+    public int getMaxWaitTimeout() {
+        return maxWaitTimeout;
+    }
+
+    public void setMaxWaitTimeout(int maxWaitTimeout) {
+        this.maxWaitTimeout = maxWaitTimeout;
+    }
+
     public String getDelFlg() {
         return delFlg;
     }
@@ -112,4 +164,6 @@ public class RcUserService implements Serializable {
     public void setUptTime(String uptTime) {
         this.uptTime = uptTime;
     }
+
+
 }
