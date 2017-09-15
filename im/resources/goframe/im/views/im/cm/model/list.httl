@@ -432,6 +432,7 @@ ${extends("/goframe/function_layout.httl")}
                 nui.alert("上传失败！请重新上传") ;
             }else{
                 nui.alert(retData.message) ;
+                grid1.reload();
             }
             uploadFileStatus=false;
         }
@@ -486,16 +487,68 @@ ${extends("/goframe/function_layout.httl")}
     }
     
     function deleteOperator(pkId){
-        
+        $.ajax({
+            url:"${basePath}/im/model/updateModelDelStatus/"+pkId+"/1",
+            type : 'POST',
+            cache : false,
+            contentType : 'application/json',
+            success : function(data) {
+                if(data.status == true){
+                    nui.alert("删除成功", "系统提示");
+                    grid1.reload();
+                }else{
+                    nui.alert("删除失败，信息：" + data.message, "系统提示");
+                }
+            }
+        });
     }
     function createOperator(pkId){
-
+        $.ajax({
+            url:"${basePath}/im/model/updateModelDelStatus/"+pkId+"/0",
+            type : 'POST',
+            cache : false,
+            contentType : 'application/json',
+            success : function(data) {
+                if(data.status == true){
+                    nui.alert("创建成功", "系统提示");
+                    grid1.reload();
+                }else{
+                    nui.alert("创建失败，信息：" + data.message, "系统提示");
+                }
+            }
+        });
     }
     function buildOperator(pkId){
-
+        $.ajax({
+            url:"${basePath}/im/model/updateModelBuildStatus/"+pkId+"/0",
+            type : 'POST',
+            cache : false,
+            contentType : 'application/json',
+            success : function(data) {
+                if(data.status == true){
+                    nui.alert("构建成功", "系统提示");
+                    grid1.reload();
+                }else{
+                    nui.alert("构建失败，信息：" + data.message, "系统提示");
+                }
+            }
+        });
     }
     function removeBuild(pkId){
-
+        $.ajax({
+            url:"${basePath}/im/model/updateModelBuildStatus/"+pkId+"/1",
+            type : 'POST',
+            cache : false,
+            contentType : 'application/json',
+            success : function(data) {
+                if(data.status == true){
+                    nui.alert("取消构建成功", "系统提示");
+                    grid1.reload();
+                }else{
+                    nui.alert("取消构建失败，信息：" + data.message, "系统提示");
+                }
+            }
+        });
     }
 </script>
 <!--#end-->

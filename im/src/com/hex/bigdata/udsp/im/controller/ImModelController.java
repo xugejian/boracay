@@ -199,4 +199,40 @@ public class ImModelController {
         }
         return filePath;
     }
+
+
+    @ResponseBody
+    @RequestMapping(value = "updateModelDelStatus/{pkId}/{status}")
+    public MessageResult updateModelDelStatus(@PathVariable String pkId,@PathVariable String status ){
+        boolean result = false;
+        String message = "";
+        try{
+            result = imModelService.updateModelDelStatus(pkId,status);
+            if(result == false){
+                message = "失败";
+            }else{
+                message = "成功";
+            }
+        }catch(Exception e){
+            result = false;
+            message = e.getMessage();
+        }
+        return new MessageResult(result,message);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "updateModelBuildStatus/{pkId}/{status}")
+    public MessageResult updateModelBuildStatus(@PathVariable String pkId,@PathVariable String status ){
+        boolean result = false;
+        String message = "";
+        try{
+            // TODO 根据status值不同做不同处理
+
+
+        }catch(Exception e){
+            result = false;
+            message = e.getMessage();
+        }
+        return new MessageResult(result,message);
+    }
 }

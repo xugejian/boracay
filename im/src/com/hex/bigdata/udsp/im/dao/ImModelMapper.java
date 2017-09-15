@@ -60,10 +60,10 @@ public class ImModelMapper extends SyncMapper<ImModel> {
         return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImModelMapper.getModelBuildModeByName",buildMode);
     }
 
-    public boolean updateStatus(String pkId,String status){
+    public boolean updateModelDelStatus(String pkId,String status){
         Map paramter = new HashMap<>();
         paramter.put("pkId",pkId);
         paramter.put("status",status);
-        return sqlSessionTemplate.update("com.hex.bigdata.udsp.im.dao.ImModelMapper.updateStatus",paramter) == 1;
+        return sqlSessionTemplate.update("com.hex.bigdata.udsp.im.dao.ImModelMapper.updateModelDelStatus",paramter) == 1;
     }
 }

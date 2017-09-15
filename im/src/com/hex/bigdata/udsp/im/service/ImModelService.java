@@ -181,7 +181,7 @@ public class ImModelService {
         for(ImModel imModel : imModels){
             imModel.setDelFlg("1");
             // 进行逻辑删除
-            if(!imModelMapper.updateStatus(imModel.getPkId(),"1")){
+            if(!imModelMapper.updateModelDelStatus(imModel.getPkId(),"1")){
                 //跑出异常，进行回滚
                 throw new RuntimeException("删除失败,删除失败的模型名称为：" + imModel.getName());
             }
@@ -502,5 +502,9 @@ public class ImModelService {
             }
         }
         return null;
+    }
+
+    public boolean updateModelDelStatus(String pkId, String status) {
+        return imModelMapper.updateModelDelStatus(pkId,status);
     }
 }
