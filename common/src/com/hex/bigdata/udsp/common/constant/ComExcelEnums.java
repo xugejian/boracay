@@ -999,4 +999,75 @@ public class ComExcelEnums {
         }
     }
 
+
+    public enum ImMetadataCol implements ExcelProperty {
+        Excel_0("seq", "0"),
+        Excel_1("name", "1"),
+        Excel_2("describe", "2"),
+        Excel_3("type", "3"),
+        Excel_4("length", "4"),
+        Excel_5("note", "5"),
+        Excel_6("indexed", "6"),
+        Excel_7("primary", "7"),
+        Excel_8("stored", "8");
+
+        private String value;
+        private String name;
+
+        private static List<ImMetadataCol> enums;
+
+        private ImMetadataCol(String na, String va) {
+            value = va;
+            name = na;
+        }
+
+        public static List getAllNums() {
+            if (enums == null) {
+                enums = new ArrayList();
+                enums.add(Excel_0);
+                enums.add(Excel_1);
+                enums.add(Excel_2);
+                enums.add(Excel_3);
+                enums.add(Excel_4);
+                enums.add(Excel_5);
+                enums.add(Excel_6);
+                enums.add(Excel_7);
+                enums.add(Excel_8);
+            }
+            return enums;
+        }
+
+        public List getNums() {
+            if (enums == null) {
+                enums = new ArrayList();
+                enums.add(Excel_0);
+                enums.add(Excel_1);
+                enums.add(Excel_2);
+                enums.add(Excel_3);
+                enums.add(Excel_4);
+                enums.add(Excel_5);
+                enums.add(Excel_6);
+                enums.add(Excel_7);
+                enums.add(Excel_8);
+            }
+            return enums;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
 }
