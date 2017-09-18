@@ -40,12 +40,12 @@ public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetP
         String selectTableName = getSourceTableName(id);
         String insertTableName = getTargetTableName(id);
         if (sDsId.equals(eDsId) && tDsId.equals(eDsId)) { // 源、引擎、目标的数据源相同
-            HiveModel hiveModel = new HiveModel(model.getPropertyMap());
+            HiveModel hiveModel = new HiveModel(model);
             selectSql = hiveModel.getSql();
             selectTableName = hiveModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + hiveModel.getTableName();
             insertTableName = fullTbName;
         } else if (sDsId.equals(eDsId)) { // 源、引擎的数据源相同
-            HiveModel hiveModel = new HiveModel(model.getPropertyMap());
+            HiveModel hiveModel = new HiveModel(model);
             selectSql = hiveModel.getSql();
             selectTableName = hiveModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + hiveModel.getTableName();
             insertTableName = getTargetTableName(id);

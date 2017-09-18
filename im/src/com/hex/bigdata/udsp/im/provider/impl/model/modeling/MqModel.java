@@ -11,12 +11,19 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-15.
  */
 public abstract class MqModel extends Model {
+    public MqModel() {
+    }
+
     public MqModel(List<Property> properties) {
         super(properties);
     }
 
     public MqModel(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public MqModel(Model model) {
+        super(model);
     }
 
     public String getTopic() {

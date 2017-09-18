@@ -30,12 +30,27 @@ public class Metadata extends Base {
 
     private List<MetadataCol> metadataCols; // 字段集合
 
+    public Metadata() {
+    }
+
     public Metadata(List<Property> properties) {
         super(properties);
     }
 
     public Metadata(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public Metadata(Metadata metadata) {
+        super(metadata.getPropertyMap());
+        this.name = metadata.getName();
+        this.describe = metadata.getDescribe();
+        this.note = metadata.getNote();
+        this.tbName = metadata.tbName;
+        this.status = metadata.getStatus();
+        this.type = metadata.getType();
+        this.datasource = metadata.getDatasource();
+        this.metadataCols = metadata.getMetadataCols();
     }
 
     public MetadataStatus getStatus() {

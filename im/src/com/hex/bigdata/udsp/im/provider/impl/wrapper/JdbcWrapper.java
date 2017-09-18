@@ -35,7 +35,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
     public List<MetadataCol> columnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
         JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
-        JdbcModel jdbcModel = new JdbcModel(model.getPropertyMap());
+        JdbcModel jdbcModel = new JdbcModel(model);
         return getColumnInfo(jdbcDatasource, jdbcModel);
     }
 
@@ -122,7 +122,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
             Datasource engineDatasource = model.getEngineDatasource();
             HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
             String id = model.getId();
-            JdbcModel jdbcModel = new JdbcModel(model.getPropertyMap());
+            JdbcModel jdbcModel = new JdbcModel(model);
             String fullTbName = jdbcModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + jdbcModel.getTableName();
             String tableName = getSourceTableName(id);
             JdbcDatasource jdbcDs = new JdbcDatasource(datasource.getPropertyMap());
@@ -146,7 +146,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
             Datasource engineDatasource = model.getEngineDatasource();
             HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
             String id = model.getId();
-            HiveMetadata hiveMetadata = new HiveMetadata(metadata.getPropertyMap());
+            HiveMetadata hiveMetadata = new HiveMetadata(metadata);
             String fullTbName = hiveMetadata.getTbName();
             String tableName = getTargetTableName(id);
             JdbcDatasource jdbcDs = new JdbcDatasource(datasource.getPropertyMap());

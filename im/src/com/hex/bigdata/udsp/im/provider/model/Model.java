@@ -44,12 +44,33 @@ public class Model extends Base {
 
     private List<ModelFilterCol> modelFilterCols; // 过滤字段集合
 
+    public Model() {
+    }
+
     public Model(List<Property> properties) {
         super(properties);
     }
 
     public Model(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public Model(Model model) {
+        super(model.getPropertyMap());
+        this.id = model.getId();
+        this.name = model.getName();
+        this.describe = model.getDescribe();
+        this.note = model.getNote();
+        this.type = model.getType();
+        this.status = model.getStatus();
+        this.buildMode = model.getBuildMode();
+        this.updateMode = model.getUpdateMode();
+        this.updateKeys = model.getUpdateKeys();
+        this.sourceDatasource = model.getSourceDatasource();
+        this.targetMetadata = model.getTargetMetadata();
+        this.engineDatasource = model.getEngineDatasource();
+        this.modelMappings = model.getModelMappings();
+        this.modelFilterCols = model.getModelFilterCols();
     }
 
     @Override

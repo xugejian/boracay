@@ -11,12 +11,19 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class SolrModel extends Model {
+    public SolrModel() {
+    }
+
     public SolrModel(List<Property> properties) {
         super(properties);
     }
 
     public SolrModel(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public SolrModel(Model model) {
+        super(model);
     }
 
     public String getCollectionName() {

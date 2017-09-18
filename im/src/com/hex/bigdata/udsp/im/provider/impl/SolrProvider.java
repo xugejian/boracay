@@ -192,7 +192,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     public List<MetadataCol> columnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
-        SolrModel solrModel = new SolrModel(datasource.getPropertyMap());
+        SolrModel solrModel = new SolrModel(model);
         String collectionName = solrModel.getCollectionName();
         SolrServer solrServer = getConnection(solrDatasource, collectionName);
         return null; //getColumns(solrServer);
@@ -203,7 +203,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         String sDsType = model.getSourceDatasource().getType();
         // 源是Kafka
         if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
-            KafkaModel kafkaModel = new KafkaModel(model.getPropertyMap());
+            KafkaModel kafkaModel = new KafkaModel(model);
             List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.outputData(kafkaModel);
             for (KafkaStream<byte[], byte[]> stream : streams) {
                 ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
@@ -222,7 +222,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Datasource engineDatasource = model.getEngineDatasource();
         HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
         String id = model.getId();
-        SolrModel solrModel = new SolrModel(model.getPropertyMap());
+        SolrModel solrModel = new SolrModel(model);
         String collectionName = solrModel.getCollectionName();
         String tableName = getSourceTableName(id);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
@@ -240,7 +240,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Datasource datasource = metadata.getDatasource();
         Datasource engineDatasource = model.getEngineDatasource();
         HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
-        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
+        SolrMetadata solrMetadata = new SolrMetadata(metadata);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
         List<ModelMapping> modelMappings = model.getModelMappings();
         String pkName = getTargetPrimaryKey(modelMappings);

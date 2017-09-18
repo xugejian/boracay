@@ -41,12 +41,7 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
-        HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata.getPropertyMap());
-        hBaseMetadata.setDatasource(metadata.getDatasource());
-        hBaseMetadata.setTbName(metadata.getTbName());
-        hBaseMetadata.setName(metadata.getName());
-        hBaseMetadata.setDescribe(metadata.getDescribe());
-        hBaseMetadata.setNote(metadata.getDescribe());
+        HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata);
         return createHTable(hBaseMetadata);
     }
 
@@ -57,11 +52,11 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
 
     @Override
     public boolean createTargetEngineSchema(Model model) throws Exception {
-        Metadata md = model.getTargetMetadata();
+        Metadata metadata = model.getTargetMetadata();
         Datasource engineDatasource = model.getEngineDatasource();
         HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
         String id = model.getId();
-        HBaseMetadata hbaseMetadata = new HBaseMetadata(md.getPropertyMap());
+        HBaseMetadata hbaseMetadata = new HBaseMetadata(metadata);
         String fullTbName = hbaseMetadata.getTbName();
         String tableName = getTargetTableName(id);
         List<ModelMapping> modelMappings = model.getModelMappings();
@@ -77,7 +72,7 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
         String sDsType = model.getSourceDatasource().getType();
         // 源是Kafka
         if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
-            KafkaModel kafkaModel = new KafkaModel(model.getPropertyMap());
+            KafkaModel kafkaModel = new KafkaModel(model);
             List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.outputData(kafkaModel);
             for (KafkaStream<byte[], byte[]> stream : streams) {
                 ConsumerIterator<byte[], byte[]> iterator = stream.iterator();

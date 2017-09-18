@@ -13,13 +13,6 @@ import java.util.Map;
  */
 public class MysqlDatasource extends JdbcDatasource {
 
-    public String getDriverClass() {
-        String value = getProperty("driver.class").getValue();
-        if (StringUtils.isBlank(value))
-            value = "com.mysql.jdbc.Driver";
-        return value;
-    }
-
     public MysqlDatasource(List<Property> properties) {
         super(properties);
     }
@@ -31,4 +24,12 @@ public class MysqlDatasource extends JdbcDatasource {
     public MysqlDatasource(ComDatasource comDatasource, List<ComProperties> comPropertieList) {
         super(comDatasource, comPropertieList);
     }
+
+    public String getDriverClass() {
+        String value = getProperty("driver.class").getValue();
+        if (StringUtils.isBlank(value))
+            value = "com.mysql.jdbc.Driver";
+        return value;
+    }
+
 }

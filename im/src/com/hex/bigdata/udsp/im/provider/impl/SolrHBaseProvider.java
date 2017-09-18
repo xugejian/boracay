@@ -76,7 +76,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
         String sDsType = model.getSourceDatasource().getType();
         // 源是Kafka
         if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
-            KafkaModel kafkaModel = new KafkaModel(model.getPropertyMap());
+            KafkaModel kafkaModel = new KafkaModel(model);
             List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.outputData(kafkaModel);
             for (KafkaStream<byte[], byte[]> stream : streams) {
                 ConsumerIterator<byte[], byte[]> iterator = stream.iterator();

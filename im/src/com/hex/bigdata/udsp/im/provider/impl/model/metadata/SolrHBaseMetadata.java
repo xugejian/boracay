@@ -11,12 +11,19 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class SolrHBaseMetadata extends Metadata {
+    public SolrHBaseMetadata() {
+    }
+
     public SolrHBaseMetadata(List<Property> properties) {
         super(properties);
     }
 
     public SolrHBaseMetadata(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public SolrHBaseMetadata(Metadata metadata) {
+        super(metadata);
     }
 
     public int getShards() {

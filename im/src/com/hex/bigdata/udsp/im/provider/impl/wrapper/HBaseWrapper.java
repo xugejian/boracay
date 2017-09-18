@@ -151,7 +151,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
     @Override
     protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
         List<java.lang.String> selectColumns = new ArrayList<>();
-        HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata.getPropertyMap());
+        HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata);
         String fqDataType = hBaseMetadata.getFqDataType();
         String fqDsvSeprator = hBaseMetadata.getFqDsvSeprator();
         // 按照目标元数据字段升序
