@@ -38,14 +38,14 @@ public class ImProviderService {
     }
 
     /**
-     * 检查表
+     * 检查Schema是否存在
      *
      * @param metadata
      * @return
      * @throws Exception
      */
-    public boolean checkTableExists(Metadata metadata) throws Exception {
-        return getTargetProvider(metadata.getDatasource()).checkTableExists(metadata);
+    public boolean checkSchemaExists(Metadata metadata) throws Exception {
+        return getTargetProvider(metadata.getDatasource()).checkSchemaExists(metadata);
     }
 
     /**
@@ -109,7 +109,7 @@ public class ImProviderService {
      *
      * @param model
      */
-    public void buildRealtime(Model model) {
+    public void buildRealtime(Model model) throws Exception {
         getRealtimeTargetProvider(model.getTargetMetadata().getDatasource()).inputData(model);
     }
 
@@ -118,7 +118,7 @@ public class ImProviderService {
      *
      * @param model
      */
-    public void buildBatch(Model model) {
+    public void buildBatch(Model model) throws Exception {
         getBatchTargetProvider(model.getTargetMetadata().getDatasource()).inputSQL(model);
     }
 

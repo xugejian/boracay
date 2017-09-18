@@ -23,7 +23,7 @@ import java.util.List;
  */
 public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetProvider {
     @Override
-    public String inputSQL(Model model) {
+    public void inputSQL(Model model) throws SQLException {
         String id = model.getId();
         Metadata metadata = model.getTargetMetadata();
         String fullTbName = metadata.getTbName();
@@ -32,6 +32,7 @@ public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetP
         Datasource sDs = model.getSourceDatasource();
         String sDsId = sDs.getId();
         Datasource eDs = model.getEngineDatasource();
+        HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
         String eDsId = eDs.getId();
         Datasource tDs = metadata.getDatasource();
         String tDsId = tDs.getId();
@@ -54,14 +55,21 @@ public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetP
             insertTableName = fullTbName;
         }
 
+        insert(eHiveDs, metadata, modelMappings, isOverwrite, selectSql, selectTableName, insertTableName, model.getModelFilterCols());
+    }
+
+    // 插入Hive关联表
+    protected void insert(HiveDatasource eHiveDs, Metadata metadata, List<ModelMapping> modelMappings, boolean isOverwrite, String selectSql, String selectTableName, String insertHBaseTableName, List<ModelFilterCol> modelFilterCols) throws SQLException {
+        String insertSql = null;
         if (StringUtils.isNotBlank(selectSql)) {
             for (ModelMapping mapping : modelMappings) mapping.setName("UDSP_VIEW." + mapping.getName());
-            return HiveSqlUtil.insert2(isOverwrite, insertTableName, getInsertColumns(modelMappings, metadata), null,
-                    getSelectColumns(modelMappings, metadata), selectSql, getWhereProperties(model.getModelFilterCols()));
+            insertSql = HiveSqlUtil.insert2(isOverwrite, insertHBaseTableName, getInsertColumns(modelMappings, metadata), null,
+                    getSelectColumns(modelMappings, metadata), selectSql, getWhereProperties(modelFilterCols));
         } else {
-            return HiveSqlUtil.insert(isOverwrite, insertTableName, getInsertColumns(modelMappings, metadata), null,
-                    getSelectColumns(modelMappings, metadata), selectTableName, getWhereProperties(model.getModelFilterCols()));
+            insertSql = HiveSqlUtil.insert(isOverwrite, insertHBaseTableName, getInsertColumns(modelMappings, metadata), null,
+                    getSelectColumns(modelMappings, metadata), selectTableName, getWhereProperties(modelFilterCols));
         }
+        JdbcUtil.executeUpdate(eHiveDs, insertSql);
     }
 
     @Override
@@ -74,7 +82,7 @@ public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetP
         return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
 
-    private List<WhereProperty> getWhereProperties(List<ModelFilterCol> modelFilterCols) {
+    protected List<WhereProperty> getWhereProperties(List<ModelFilterCol> modelFilterCols) {
         if (modelFilterCols == null || modelFilterCols.size() == 0)
             return null;
         List<WhereProperty> whereProperties = new ArrayList<>();

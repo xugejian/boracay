@@ -2,6 +2,7 @@ package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
+import com.hex.bigdata.udsp.im.constant.UpdateMode;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
@@ -31,7 +32,6 @@ import java.util.List;
 @Component("com.hex.bigdata.udsp.im.provider.impl.HBaseProvider")
 public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(HBaseProvider.class);
-    private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "org.apache.hadoop.hive.hbase.HBaseStorageHandler";
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
@@ -70,6 +70,7 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     @Override
     public void inputData(Model model) {
         String sDsType = model.getSourceDatasource().getType();
+        UpdateMode updateMode = model.getUpdateMode();
         // 源是Kafka
         if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
             KafkaModel kafkaModel = new KafkaModel(model);
@@ -80,13 +81,20 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
                     String message = new String(iterator.next().message());
                     logger.debug("kafka接收的信息为：" + message);
                     // TODO ... 实时数据处理
+                    if (UpdateMode.MATCHING_UPDATE == updateMode) { // 匹配更新
+
+                    } else if (UpdateMode.UPDATE_INSERT == updateMode) { // 更新插入
+
+                    } else { // 增量插入
+
+                    }
                 }
             }
         }
     }
 
     @Override
-    public boolean checkTableExists(Metadata metadata) throws Exception {
+    public boolean checkSchemaExists(Metadata metadata) throws Exception {
         HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
         HBaseAdmin admin = getHBaseAdmin(datasource);
         String tableName = metadata.getTbName();
