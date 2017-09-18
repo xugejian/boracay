@@ -81,6 +81,13 @@ ${extends("/goframe/function_layout.httl")}
                     </tr>
 
                     <tr>
+                        <td class="tit roleLabel" style="width: 100px;text-align: right">是否已删除：</td>
+                        <td class="roleText" style="width: 25%">
+                            <!--<input name="tMdId" class="nui-textbox" style="width:98%;"/>-->
+                            <input id="isDeleted" name="isDeleted" class="nui-combobox" valueField="pkId" textField="name"
+                                   data="[{'pkId':'1','name':'是'},{'pkId':'0','name':'否'}]"  allowInput="true" sortMode="client"
+                                   showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>
+                        </td>
                         <td style="width: 100px;text-align: right">创建时间：</td>
                         <td style="width: 25%">
                             <input name="crtTimeStart" class="nui-datepicker" allowInput="true"

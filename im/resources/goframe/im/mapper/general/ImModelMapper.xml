@@ -88,6 +88,7 @@
         <if test="tMdId != null and tMdId != ''">and IM.T_MD_ID = #{tMdId} </if>
         <if test="type != null and type != ''">and IM.TYPE = #{type} </if>
         <if test="sDsId != null and sDsId != ''">and IM.S_DS_ID = #{sDsId} </if>
+        <if test="isDeleted != null and isDeleted != ''">and IM.DEL_FLG = #{isDeleted} </if>
         <if test="crtTimeStart != null and crtTimeStart != ''">and IM.CRT_TIME >= #{crtTimeStart} </if>
         <if test="crtTimeEnd != null and crtTimeEnd != ''">and #{crtTimeEnd} >= IM.CRT_TIME </if>
         <if test="uptTimeStart != null and uptTimeStart != ''">and IM.UPT_TIME >= #{uptTimeStart} </if>
