@@ -81,6 +81,13 @@ ${extends("/goframe/function_layout.httl")}
                     </tr>
 
                     <tr>
+                        <td class="tit roleLabel" style="width: 100px;text-align: right">是否已删除：</td>
+                        <td class="roleText" style="width: 25%">
+                            <!--<input name="tMdId" class="nui-textbox" style="width:98%;"/>-->
+                            <input id="isDeleted" name="isDeleted" class="nui-combobox" valueField="pkId" textField="name"
+                                   data="[{'pkId':'1','name':'是'},{'pkId':'0','name':'否'}]"  allowInput="true" sortMode="client"
+                                   showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>
+                        </td>
                         <td style="width: 100px;text-align: right">创建时间：</td>
                         <td style="width: 25%">
                             <input name="crtTimeStart" class="nui-datepicker" allowInput="true"
@@ -154,6 +161,7 @@ ${extends("/goframe/function_layout.httl")}
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
             <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat">更新时间</div>
             <div field="note" headerAlign="center" allowSort="true">备注</div>
+            <div field="operator" headerAlign="center" renderer="operatorRenderer">操作</div>
         </div>
     </div>
 </div>
@@ -431,6 +439,7 @@ ${extends("/goframe/function_layout.httl")}
                 nui.alert("上传失败！请重新上传") ;
             }else{
                 nui.alert(retData.message) ;
+                grid1.reload();
             }
             uploadFileStatus=false;
         }
@@ -460,6 +469,91 @@ ${extends("/goframe/function_layout.httl")}
                     nui.alert("导出Excel失败", "系统提示");
                 }
                 grid1.unmask();
+            }
+        });
+    }
+    //操作的按钮的添加
+    function operatorRenderer(e) {
+        var operatorS = "<div style='text-align: center'>";
+        if(e.row.delFlg  == '0'){
+            operatorS = operatorS.concat("<a href='#'  onclick='deleteOperator(\""+e.row.pkId+"\")'>删除</a>");
+        }else{
+            operatorS = operatorS.concat("<a href='#'  onclick='createOperator(\""+e.row.pkId+"\")'>创建</a>");
+        }
+        //先判断是否实时
+        if(e.row.type == '1'){
+            //判断是否构建
+            if(e.row.status == '1'){
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='buildOperator(\""+e.row.pkId+"\")'>构建</a>");
+            }else{
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='removeBuild(\""+e.row.pkId+"\")'>取消构建</a>");
+            }
+        }
+        operatorS = operatorS.concat("</div>");
+        return operatorS;
+    }
+    
+    function deleteOperator(pkId){
+        $.ajax({
+            url:"${basePath}/im/model/updateModelDelStatus/"+pkId+"/1",
+            type : 'POST',
+            cache : false,
+            contentType : 'application/json',
+            success : function(data) {
+                if(data.status == true){
+                    nui.alert("删除成功", "系统提示");
+                    grid1.reload();
+                }else{
+                    nui.alert("删除失败，信息：" + data.message, "系统提示");
+                }
+            }
+        });
+    }
+    function createOperator(pkId){
+        $.ajax({
+            url:"${basePath}/im/model/updateModelDelStatus/"+pkId+"/0",
+            type : 'POST',
+            cache : false,
+            contentType : 'application/json',
+            success : function(data) {
+                if(data.status == true){
+                    nui.alert("创建成功", "系统提示");
+                    grid1.reload();
+                }else{
+                    nui.alert("创建失败，信息：" + data.message, "系统提示");
+                }
+            }
+        });
+    }
+    function buildOperator(pkId){
+        $.ajax({
+            url:"${basePath}/im/model/updateModelBuildStatus/"+pkId+"/0",
+            type : 'POST',
+            cache : false,
+            contentType : 'application/json',
+            success : function(data) {
+                if(data.status == true){
+                    nui.alert("构建成功", "系统提示");
+                    grid1.reload();
+                }else{
+                    nui.alert("构建失败，信息：" + data.message, "系统提示");
+                }
+            }
+        });
+    }
+    function removeBuild(pkId){
+        $.ajax({
+            url:"${basePath}/im/model/updateModelBuildStatus/"+pkId+"/1",
+            type : 'POST',
+            cache : false,
+            contentType : 'application/json',
+            success : function(data) {
+                if(data.status == true){
+                    nui.alert("取消构建成功", "系统提示");
+                    grid1.reload();
+                }else{
+                    nui.alert("取消构建失败，信息：" + data.message, "系统提示");
+                }
             }
         });
     }
