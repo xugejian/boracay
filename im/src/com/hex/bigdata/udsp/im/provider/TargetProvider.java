@@ -3,7 +3,6 @@ package com.hex.bigdata.udsp.im.provider;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -17,5 +16,5 @@ public interface TargetProvider extends Provider {
 
     boolean dropSchema(Metadata metadata) throws Exception;
 
-    boolean checkTableExists(Metadata metadata) throws Exception;
+    boolean checkSchemaExists(Metadata metadata) throws Exception;
 }

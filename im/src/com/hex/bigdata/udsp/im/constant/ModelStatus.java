@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.provider.constant;
+package com.hex.bigdata.udsp.im.constant;
 
 /**
  * Created by JunjieM on 2017-9-8.

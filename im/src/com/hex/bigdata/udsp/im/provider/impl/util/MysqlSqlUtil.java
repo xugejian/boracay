@@ -71,15 +71,12 @@ public class MysqlSqlUtil {
                         dataType += "("+ column.getLength()+")";
                     }
                     if (i == 0) {
-                        if("VARCHAR".equals(dataType)){
-                            dataType += "("+ column.getLength()+")";
-                        }
                         sql += "\n" + colName + " " + dataType;
                     } else {
-                        if("VARCHAR".equals(dataType)){
-                            dataType += "("+ column.getLength()+")";
-                        }
                         sql += "\n, " + colName + " " + dataType;
+                    }
+                    if(column.isPrimaryKey()){
+                        sql += " primary key ";
                     }
                     if (StringUtils.isNoneBlank(colComment)) {
                         sql += " COMMENT '" + colComment + "'";

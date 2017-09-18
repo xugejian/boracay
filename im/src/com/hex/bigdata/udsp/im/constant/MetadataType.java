@@ -1,16 +1,16 @@
-package com.hex.bigdata.udsp.im.provider.constant;
+package com.hex.bigdata.udsp.im.constant;
 
 /**
  * Created by JunjieM on 2017-9-8.
  */
-public enum ModelType {
-    BATCH("批量", "BATCH"),
-    REALTIME("实时", "REALTIME");
+public enum MetadataType {
+    EXTERNAL("外部", "EXTERNAL"),
+    INTERIOR("内部", "INTERIOR");
 
     private String value;
     private String name;
 
-    private ModelType(String name, String value) {
+    private MetadataType(String name, String value) {
         this.value = value;
         this.name = name;
     }

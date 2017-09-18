@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
-import com.hex.bigdata.metadata.db.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -17,8 +16,8 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-11.
  */
-public class JdbcProviderUtil {
-    private static Logger logger = LogManager.getLogger(JdbcProviderUtil.class);
+public class JdbcUtil {
+    private static Logger logger = LogManager.getLogger(JdbcUtil.class);
     private static Map<String, BasicDataSource> dataSourcePool;
 
     public static synchronized BasicDataSource getDataSource(JdbcDatasource datasource) {
@@ -81,12 +80,12 @@ public class JdbcProviderUtil {
         Statement stmt = null;
         int rs = -1;
         try {
-            conn = JdbcProviderUtil.getConnection(datasource);
+            conn = JdbcUtil.getConnection(datasource);
             stmt = conn.createStatement();
             rs = stmt.executeUpdate(updateSql);
         } finally {
-            JdbcUtil.close(stmt);
-            JdbcUtil.close(conn);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
         }
         return rs;
     }
@@ -96,14 +95,14 @@ public class JdbcProviderUtil {
         Statement stmt = null;
         int rs = -1;
         try {
-            conn = JdbcProviderUtil.getConnection(datasource);
+            conn = JdbcUtil.getConnection(datasource);
             stmt = conn.createStatement();
             for (String updateSql : updateSqls) {
                 rs = stmt.executeUpdate(updateSql);
             }
         } finally {
-            JdbcUtil.close(stmt);
-            JdbcUtil.close(conn);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
         }
         return rs;
     }

@@ -1,5 +1,7 @@
 package com.hex.bigdata.udsp.im.provider.impl.model.datasource;
 
+import com.hex.bigdata.udsp.common.model.ComDatasource;
+import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +20,10 @@ public class HBaseDatasource extends Datasource {
 
     public HBaseDatasource(Map<String, Property> propertieMap) {
         super(propertieMap);
+    }
+
+    public HBaseDatasource(ComDatasource comDatasource, List<ComProperties> comPropertieList) {
+        super(comDatasource, comPropertieList);
     }
 
     public String getZkQuorum() {

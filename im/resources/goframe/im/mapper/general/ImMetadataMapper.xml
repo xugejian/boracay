@@ -77,16 +77,19 @@
     on A.DS_ID = B.PK_ID
     where A.DEL_FLG = '0'
     <if test="pkId!='' and pkId!=null ">and A.PK_ID = #{pkId}</if>
+    <if test="dsId!='' and dsId!=null ">and A.DS_ID = #{dsId}</if>
     <if test="name!='' and name!=null ">and A.NAME like '%' || #{name} || '%'</if>
     <if test="describe!='' and describe!=null ">and A.DESCRIBE like '%' || #{describe} || '%'</if>
     <if test="note!='' and note!=null ">and A.NOTE like '%' || #{note} || '%'</if>
     <if test="type!='' and type!=null ">and A.TYPE = #{type}</if>
+    <if test="status!='' and status!=null ">and A.STATUS = #{status}</if>
     <if test="crtTimeStart!=null and crtTimeStart!='' ">and A.CRT_TIME >= #{crtTimeStart}</if>
     <if test="crtTimeEnd!=null and crtTimeEnd!='' ">and #{crtTimeEnd} >= A.CRT_TIME</if>
     <if test="uptTimeStart!=null and uptTimeStart!='' ">and A.UPT_TIME >= #{uptTimeStart}</if>
     <if test="uptTimeEnd!=null and uptTimeEnd!='' ">and #{uptTimeEnd} >= A.UPT_TIME</if>
     <if test="crtUser!='' and crtUser!=null ">and A.CRT_USER like '%' || #{crtUser} || '%'</if>
     <if test="uptUser!='' and uptUser!=null ">and A.UPT_USER like '%' || #{uptUser} || '%'</if>
+    ORDER BY CRT_TIME desc
   </select>
   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, DS_ID, NAME, DESCRIBE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,

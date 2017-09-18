@@ -10,12 +10,19 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-6.
  */
 public class JdbcModel extends Model {
+    public JdbcModel() {
+    }
+
     public JdbcModel(List<Property> properties) {
         super(properties);
     }
 
     public JdbcModel(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public JdbcModel(Model model) {
+        super(model);
     }
 
     public String getDatabaseName() {
