@@ -75,8 +75,9 @@ public class ImMetadataService extends BaseService {
         imMetadata.setPkId(pkId);
         if("1".equals(imMetadata.getType())){
             imMetadata.setStatus("2"); //外表状态为已建
+        }else{
+            imMetadata.setStatus("1"); //1未建 2已建
         }
-        imMetadata.setStatus("1"); //1未建 2已建
         if (imMetadataMapper.insert(imMetadata.getPkId(), imMetadata)) {
             return pkId;
         }

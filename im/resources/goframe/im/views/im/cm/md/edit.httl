@@ -560,56 +560,7 @@ ${extends("/goframe/function_layout.httl")}
             nui.alert("【配置参数】中存在重复【名称】，请检查后再提交！");
             return;
         }
-        //检查solr参数是否正确
-        if(checkSolrProperty(propsData)){
-            nui.alert('【配置参数】中的参数必须需满足”分片数*副本数<=节点数*单节点最大分片数“，请修改后再提交！');
-            return;
-        }
         return propsData;
-    }
-
-    /**
-     * 检查solr参数是否正确
-     */
-    function checkSolrProperty(propsData){
-        var dsId = nui.get("dsId").getValue();
-        var ds = getDsByPkId(dsId);
-        if(ds.type == "SOLR" || ds.type == "SOLR_HBASE"){
-            var numShards;
-            var replicationFactor;
-            var maxShardsPerNode;
-            var solrNodes;
-            $.each(propsData, function (i, val){
-                if(val.name == "solr.shards"){
-                    numShards = parseInt(val.value);
-                }
-                if(val.name == "solr.replicas"){
-                    replicationFactor = parseInt(val.value);
-                }
-                if(val.name == "solr.max.shards.per.node"){
-                    maxShardsPerNode = parseInt(val.value);
-                }
-            }) ;
-
-            $.ajax({
-                url: "${basePath}/com/props/select/"+ dsId,
-                type: 'POST',
-                cache: false,
-                async: false,
-                contentType: 'application/json',
-                success: function (text) {
-                    $.each(text.data, function (i, val){
-                        if(val.name == "solr.servers"){
-                            solrNodes = val.value.split(",").length;
-                        }
-                    }) ;
-                }
-            });
-            if(numShards*replicationFactor >= solrNodes*maxShardsPerNode){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

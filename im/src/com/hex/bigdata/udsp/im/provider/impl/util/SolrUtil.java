@@ -133,14 +133,19 @@ public class SolrUtil {
         File file = new File(url.getPath());
         Document document = File2Doc(file);
         Element root = document.getRootElement();
-//      Element fields = root.element("fields"); //todo schema  fields ?? 添加到了最后面  主键未作处理
-        for (MetadataCol e : metadataCols) {
-            Element filed = DocumentHelper.createElement("field");
+//      Element fields=root.element("fields"); //todo schema  fields ?? 添加到了最后面
+        for(MetadataCol e:metadataCols){
+            Element filed= DocumentHelper.createElement("field");
             filed.addAttribute("name", e.getName());
             filed.addAttribute("type", e.getType().getValue().toLowerCase()); //todo
             filed.addAttribute("indexed", e.isIndexed() ? "true" : "false");
             filed.addAttribute("stored", e.isStored() ? "true" : "false");
             root.add(filed);
+            if(e.isPrimary()){
+                Element uniqueKey= DocumentHelper.createElement("uniqueKey");
+                uniqueKey.setText(e.getName());
+                root.add(uniqueKey);
+            }
         }
         return root.asXML().getBytes();
     }
