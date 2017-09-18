@@ -44,11 +44,11 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
         String tableComment = metadata.getDescribe();
         List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
         List<String> sqls = new ArrayList<>();
-        sqls.add(OracleSqlUtil.createTable(fullTbName, columns, tableComment));
+        sqls.add(OracleSqlUtil.createTable(fullTbName, columns));
         sqls.add(OracleSqlUtil.commentTable(fullTbName, tableComment));
         sqls.addAll(OracleSqlUtil.createColComment(fullTbName, columns));
         sqls.add(OracleSqlUtil.createPrimaryKey(fullTbName, columns));
-        return JdbcProviderUtil.executeUpdate(oracleDatasource, sqls) == 0 ? true : false;
+        return JdbcUtil.executeUpdate(oracleDatasource, sqls) == 0 ? true : false;
     }
 
     @Override

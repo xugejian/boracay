@@ -17,29 +17,13 @@ public class OracleSqlUtil {
      *
      * @param tableName
      * @param columns
-     * @param tableComment
      * @return
      */
-    public static String createTable(String tableName, List<TableColumn> columns, String tableComment) {
-        String sql = "CREATE TABLE " + tableName + getColumns(columns) ;//+ ";";
-//        sql += "\n" + commentTable(tableName, tableComment) + ";";
-//        TableColumn column = null;
-//        String colName = "";
-//        String colComment = "";
-//        if (columns != null && columns.size() != 0) {
-//            for (int i = 0; i < columns.size(); i++) {
-//                column = columns.get(i);
-//                colName = column.getColName();
-//                colComment = column.getColComment();
-//                if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(colComment)) {
-//                    sql += "\n" + commentColumn(tableName, colName, colComment) + ";";
-//                }
-//            }
-//        }
-        return sql;
+    public static String createTable(String tableName, List<TableColumn> columns) {
+        return "CREATE TABLE " + tableName + getColumns(columns);
     }
 
-    public static  List<String>  createColComment(String tableName, List<TableColumn> columns) {
+    public static List<String> createColComment(String tableName, List<TableColumn> columns) {
         TableColumn column = null;
         String colName = "";
         String colComment = "";
@@ -67,11 +51,25 @@ public class OracleSqlUtil {
         return "DROP TABLE " + tableName;
     }
 
-
+    /**
+     * 字段注释
+     *
+     * @param tableName
+     * @param colName
+     * @param colComment
+     * @return
+     */
     public static String commentColumn(String tableName, String colName, String colComment) {
         return "COMMENT ON COLUMN " + tableName + "." + colName + " IS '" + colComment + "'";
     }
 
+    /**
+     * 表注释
+     *
+     * @param tableName
+     * @param tableComment
+     * @return
+     */
     public static String commentTable(String tableName, String tableComment) {
         return "COMMENT ON TABLE " + tableName + " IS '" + tableComment + "'";
     }
@@ -90,8 +88,8 @@ public class OracleSqlUtil {
                 dataType = column.getDataType();
                 colComment = column.getColComment();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
-                    if("VARCHAR".equals(dataType)){
-                        dataType += "("+ column.getLength()+")";
+                    if ("VARCHAR".equals(dataType)) {
+                        dataType += "(" + column.getLength() + ")";
                     }
                     if (i == 0) {
                         sql += "\n" + colName + " " + dataType;
@@ -105,25 +103,25 @@ public class OracleSqlUtil {
             }
             sql += "\n)";
         }
-        sql = sql.replaceAll("STRING","BLOB");
+        sql = sql.replaceAll("STRING", "BLOB");
         return sql;
     }
 
-    public static String createPrimaryKey(String tableName, List<TableColumn> columns){
-        if(StringUtils.isEmpty(tableName)){
+    public static String createPrimaryKey(String tableName, List<TableColumn> columns) {
+        if (StringUtils.isEmpty(tableName)) {
             return "";
         }
         StringBuffer sb = new StringBuffer();
         List<String> list = new ArrayList<>();
-        for(TableColumn col : columns){
-            if(col.isPrimaryKey()){
+        for (TableColumn col : columns) {
+            if (col.isPrimaryKey()) {
                 list.add(col.getColName());
             }
         }
-        if(list.size()<=0){
+        if (list.size() <= 0) {
             return "";
-        }else{
-            return "alter table "+ tableName + " add constraint primaryKey primary key ("+ list.toString().replaceAll("(\\[|\\])","") + ")";
+        } else {
+            return "alter table " + tableName + " add constraint primaryKey primary key (" + list.toString().replaceAll("(\\[|\\])", "") + ")";
         }
     }
 }
