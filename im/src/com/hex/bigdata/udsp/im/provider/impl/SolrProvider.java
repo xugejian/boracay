@@ -27,7 +27,6 @@ import kafka.consumer.KafkaStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.solr.client.solrj.SolrServer;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -118,6 +117,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
+        SolrUtil.checkSolrProperty(metadata);
         SolrUtil.uploadSolrConfig(metadata);
         String[] addresses = getSolrServerStrings(metadata);
         String response = "";
