@@ -13,22 +13,18 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-6.
  */
 public class JdbcDatasource extends Datasource {
-    private String driverClass;
-    private String jdbcUrl;
-    private String username;
-    private String password;
-    private String initialSize;
-    private String minIdle;
-    private String maxIdle;
-    private String maxWait;
-    private String maxActive;
-    private String validationQueryTimeout;
-    private String timeBetweenEvictionRunsMillis;
-    private String minEvictableIdleTimeMillis;
-    private String validationQuery;
-    private String testWhileIdle;
-    private String testOnBorrow;
-    private String testOnReturn;
+
+    public JdbcDatasource(List<Property> properties) {
+        super(properties);
+    }
+
+    public JdbcDatasource(Map<String, Property> propertieMap) {
+        super(propertieMap);
+    }
+
+    public JdbcDatasource(ComDatasource comDatasource, List<ComProperties> comPropertieList) {
+        super(comDatasource, comPropertieList);
+    }
 
     public String getDriverClass() {
         String value = getProperty("driver.class").getValue();
@@ -98,17 +94,5 @@ public class JdbcDatasource extends Datasource {
 
     public String getTestOnReturn() {
         return getProperty("test.on.return").getValue();
-    }
-
-    public JdbcDatasource(List<Property> properties) {
-        super(properties);
-    }
-
-    public JdbcDatasource(Map<String, Property> propertieMap) {
-        super(propertieMap);
-    }
-
-    public JdbcDatasource(ComDatasource comDatasource, List<ComProperties> comPropertieList) {
-        super(comDatasource, comPropertieList);
     }
 }

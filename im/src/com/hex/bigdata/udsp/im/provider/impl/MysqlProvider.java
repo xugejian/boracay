@@ -6,15 +6,20 @@ import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.MysqlDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.KafkaUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.MysqlSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.util.ImUtil;
+import kafka.consumer.ConsumerIterator;
+import kafka.consumer.KafkaStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -38,7 +43,7 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         String tableComment = metadata.getDescribe();
         List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
         String sql = MysqlSqlUtil.createTable(false, fullTbName, columns, tableComment);
-        return JdbcProviderUtil.executeUpdate(mysqlDatasource, sql) == 0 ? true : false;
+        return JdbcUtil.executeUpdate(mysqlDatasource, sql) == 0 ? true : false;
     }
 
     @Override
@@ -47,12 +52,25 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = MysqlSqlUtil.dropTable(false, fullTbName);
-        return JdbcProviderUtil.executeUpdate(mysqlDatasource, sql) == 0 ? true : false;
+        return JdbcUtil.executeUpdate(mysqlDatasource, sql) == 0 ? true : false;
     }
 
     @Override
     public void inputData(Model model) {
-
+        String sDsType = model.getSourceDatasource().getType();
+        // 源是Kafka
+        if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
+            KafkaModel kafkaModel = new KafkaModel(model);
+            List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.outputData(kafkaModel);
+            for (KafkaStream<byte[], byte[]> stream : streams) {
+                ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
+                while (iterator.hasNext()) {
+                    String message = new String(iterator.next().message());
+                    logger.debug("kafka接收的信息为：" + message);
+                    // TODO ... 实时数据处理
+                }
+            }
+        }
     }
 
     @Override

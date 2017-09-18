@@ -10,11 +10,12 @@ import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
 import com.hex.bigdata.udsp.common.util.PropertyUtil;
+import com.hex.bigdata.udsp.im.constant.MetadataStatus;
+import com.hex.bigdata.udsp.im.constant.MetadataType;
 import com.hex.bigdata.udsp.im.dao.ImMetadataMapper;
 import com.hex.bigdata.udsp.im.model.*;
 import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
 import com.hex.bigdata.udsp.im.dto.ImMetadataView;
-import com.hex.bigdata.udsp.im.provider.constant.MetadataType;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.util.ImUtil;
@@ -89,9 +90,7 @@ public class ImMetadataService extends BaseService {
         if (StringUtils.isBlank(pkId)) {
             return "";
         }
-
         comPropertiesService.insertList(pkId, imMetadataDto.getComPropertiesList());
-
         List<ImMetadataCol> imMetadataCols = imMetadataDto.getImMetadataColList();
         for(ImMetadataCol imMetadataCol : imMetadataCols){
             imMetadataCol.setMdId(pkId);
@@ -156,8 +155,7 @@ public class ImMetadataService extends BaseService {
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectByFkId(dsId);
         Datasource datasource = new Datasource(comDatasource, comProperties);
-        List<Property> prop = new ArrayList<>();
-        Metadata metadata = new Metadata(prop);
+        Metadata metadata = new Metadata();
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
@@ -169,8 +167,7 @@ public class ImMetadataService extends BaseService {
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectByFkId(dsId);
         Datasource datasource = new Datasource(comDatasource, comProperties);
-        List<Property> prop = new ArrayList<>();
-        Metadata metadata = new Metadata(prop);
+        Metadata metadata = new Metadata();
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
@@ -181,15 +178,14 @@ public class ImMetadataService extends BaseService {
     public boolean createTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("2"); //状态为已建
-
-        return imProviderService.createTable(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
+        return imProviderService.createSchema(getMetadata(pkId)) && imMetadataMapper.update(pkId, imMetadata);
     }
 
     @Transactional
     public boolean dropTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("1"); //状态为未建
-        return  imProviderService.dropTable(getMetadata(pkId)) && imMetadataMapper.update(imMetadata.getPkId(), imMetadata);
+        return  imProviderService.dropSchema(getMetadata(pkId)) && imMetadataMapper.update(pkId, imMetadata);
     }
 
     public Metadata getMetadata(String pkId){
@@ -206,11 +202,11 @@ public class ImMetadataService extends BaseService {
         metadata.setMetadataCols(ImUtil.convertToMetadataColList(imMetadataColService.select(pkId)));
         metadata.setDescribe(imMetadata.getDescribe());
         metadata.setDatasource(datasource);
+        metadata.setStatus(MetadataStatus.NO_CREATED);
         return metadata;
     }
 
     public List<ImMetadata> selectAll() {
-
         return imMetadataMapper.selectAll();
     }
 

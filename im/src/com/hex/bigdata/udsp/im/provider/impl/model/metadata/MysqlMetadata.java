@@ -10,11 +10,18 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class MysqlMetadata extends JdbcMetadata {
+    public MysqlMetadata() {
+    }
+
     public MysqlMetadata(List<Property> properties) {
         super(properties);
     }
 
     public MysqlMetadata(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public MysqlMetadata(Metadata metadata) {
+        super(metadata);
     }
 }

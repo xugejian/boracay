@@ -8,7 +8,11 @@ import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.goframe.dao.GFDictMapper;
 import com.hex.goframe.model.GFDict;
 import com.hex.goframe.util.WebApplicationContextUtil;
+import kafka.consumer.ConsumerIterator;
+import kafka.consumer.KafkaStream;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,105 +23,131 @@ import java.util.List;
  */
 @Service
 public class ImProviderService {
-
+    private static Logger logger = LogManager.getLogger(ImProviderService.class);
     @Autowired
     private GFDictMapper gfDictMapper;
 
+    /**
+     * 获取字段信息
+     *
+     * @param metadata
+     * @return
+     */
     public List<MetadataCol> getCloumnInfo(Metadata metadata) {
-        Datasource datasource = metadata.getDatasource();
-        TargetProvider provider = getTargetProvider(datasource);
-        return provider.columnInfo(metadata);
+        return getTargetProvider(metadata.getDatasource()).columnInfo(metadata);
     }
 
-    public boolean checkTableExists(Metadata metadata) throws Exception{
-        Datasource datasource = metadata.getDatasource();
-        TargetProvider provider = getTargetProvider(datasource);
-        return provider.checkTableExists(metadata);
+    /**
+     * 检查表
+     *
+     * @param metadata
+     * @return
+     * @throws Exception
+     */
+    public boolean checkTableExists(Metadata metadata) throws Exception {
+        return getTargetProvider(metadata.getDatasource()).checkTableExists(metadata);
     }
 
+    /**
+     * 获取字段信息
+     *
+     * @param model
+     * @return
+     */
     public List<MetadataCol> getCloumnInfo(Model model) {
-        Datasource datasource = model.getSourceDatasource();
-        SourceProvider provider = getSourceProvider(datasource);
-        return provider.columnInfo(model);
+        return getSourceProvider(model.getSourceDatasource()).columnInfo(model);
     }
 
+    /**
+     * 创建引擎Schema
+     *
+     * @param model
+     * @return
+     * @throws Exception
+     */
     public boolean createEngineSchema(Model model) throws Exception {
-        boolean status = false;
-        Datasource sDs = model.getSourceDatasource();
-        BatchSourceProvider batchSourceProvider = getBatchSourceProvider(sDs);
-        status = batchSourceProvider.createSourceEngineSchema(model);
-        if (!status) return status;
-        Datasource tDs = model.getTargetMetadata().getDatasource();
-        BatchTargetProvider batchTargetProvider = getBatchTargetProvider(tDs);
-        status = batchTargetProvider.createTargetEngineSchema(model);
-        return status;
+        if (!getBatchSourceProvider(model.getSourceDatasource()).createSourceEngineSchema(model)) return false;
+        return getBatchTargetProvider(model.getTargetMetadata().getDatasource()).createTargetEngineSchema(model);
     }
 
+    /**
+     * 删除引擎Schema
+     *
+     * @param model
+     * @return
+     * @throws Exception
+     */
     public boolean dropEngineSchema(Model model) throws Exception {
-        boolean status = false;
-        Datasource sDs = model.getSourceDatasource();
-        BatchSourceProvider batchSourceProvider = getBatchSourceProvider(sDs);
-        status = batchSourceProvider.dropSourceEngineSchema(model);
-        if (!status) return status;
-        Datasource tDs = model.getTargetMetadata().getDatasource();
-        BatchTargetProvider batchTargetProvider = getBatchTargetProvider(tDs);
-        status = batchTargetProvider.dropTargetEngineSchema(model);
-        return status;
+        if (!getBatchSourceProvider(model.getSourceDatasource()).dropSourceEngineSchema(model)) return false;
+        return getBatchTargetProvider(model.getTargetMetadata().getDatasource()).dropTargetEngineSchema(model);
     }
 
+    /**
+     * 创建Schema
+     *
+     * @param metadata
+     * @return
+     * @throws Exception
+     */
     public boolean createSchema(Metadata metadata) throws Exception {
-        Datasource datasource = metadata.getDatasource();
-        TargetProvider provider = getTargetProvider(datasource);
-        return provider.createSchema(metadata);
+        return getTargetProvider(metadata.getDatasource()).createSchema(metadata);
     }
 
+    /**
+     * 删除Schema
+     *
+     * @param metadata
+     * @return
+     * @throws Exception
+     */
     public boolean dropSchema(Metadata metadata) throws Exception {
-        Datasource datasource = metadata.getDatasource();
-        TargetProvider provider = getTargetProvider(datasource);
-        return provider.dropSchema(metadata);
+        return getTargetProvider(metadata.getDatasource()).dropSchema(metadata);
+    }
+
+    /**
+     * 构建实时任务
+     *
+     * @param model
+     */
+    public void buildRealtime(Model model) {
+        getRealtimeTargetProvider(model.getTargetMetadata().getDatasource()).inputData(model);
+    }
+
+    /**
+     * 构建批量任务
+     *
+     * @param model
+     */
+    public void buildBatch(Model model) {
+        getBatchTargetProvider(model.getTargetMetadata().getDatasource()).inputSQL(model);
     }
 
     private BatchSourceProvider getBatchSourceProvider(Datasource datasource) {
-        String implClass = getImplClass(datasource);
-        return (BatchSourceProvider) WebApplicationContextUtil.getBean(implClass);
+        return (BatchSourceProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
     private BatchTargetProvider getBatchTargetProvider(Datasource datasource) {
-        String implClass = getImplClass(datasource);
-        return (BatchTargetProvider) WebApplicationContextUtil.getBean(implClass);
+        return (BatchTargetProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
+    }
+
+    private RealtimeTargetProvider getRealtimeTargetProvider(Datasource datasource) {
+        return (RealtimeTargetProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
     private SourceProvider getSourceProvider(Datasource datasource) {
-        String implClass = getImplClass(datasource);
-        return (SourceProvider) WebApplicationContextUtil.getBean(implClass);
+        return (SourceProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
     private TargetProvider getTargetProvider(Datasource datasource) {
-        String implClass = getImplClass(datasource);
-        return (TargetProvider) WebApplicationContextUtil.getBean(implClass);
+        return (TargetProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
     private String getImplClass(Datasource datasource) {
-        String type = datasource.getType();
         String implClass = datasource.getImplClass();
         if (StringUtils.isBlank(implClass)) {
-            GFDict gfDict = gfDictMapper.selectByPrimaryKey("IM_IMPL_CLASS", type);
+            GFDict gfDict = gfDictMapper.selectByPrimaryKey("IM_IMPL_CLASS", datasource.getType());
             implClass = gfDict.getDictName();
         }
         return implClass;
-    }
-
-    public boolean createTable(Metadata metadata) throws Exception {
-        Datasource datasource = metadata.getDatasource();
-        String implClass = getImplClass(datasource);
-        TargetProvider provider = (TargetProvider) WebApplicationContextUtil.getBean(implClass);
-        return provider.createSchema(metadata);
-    }
-
-    public boolean dropTable(Metadata metadata) throws Exception {
-        Datasource datasource = metadata.getDatasource();
-        String implClass = getImplClass(datasource);
-        TargetProvider provider = (TargetProvider) WebApplicationContextUtil.getBean(implClass);
-        return provider.dropSchema(metadata);
     }
 }

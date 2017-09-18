@@ -8,7 +8,7 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
@@ -43,7 +43,7 @@ public class HiveProvider extends JdbcWrapper {
         String fileFormat = FileFormat.HIVE_FILE_FORMAT_PARQUET;
         String sql = HiveSqlUtil.createTable(false, false, fullTbName,
                 columns, tableComment, partitions, null, fileFormat);
-        return JdbcProviderUtil.executeUpdate(hiveDatasource, sql) == 0 ? true : false;
+        return JdbcUtil.executeUpdate(hiveDatasource, sql) == 0 ? true : false;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class HiveProvider extends JdbcWrapper {
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = HiveSqlUtil.dropTable(false, fullTbName);
-        return JdbcProviderUtil.executeUpdate(hiveDatasource, sql) == 0 ? true : false;
+        return JdbcUtil.executeUpdate(hiveDatasource, sql) == 0 ? true : false;
     }
 
     @Override

@@ -10,6 +10,8 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class HiveModel extends JdbcModel {
+    public HiveModel() {
+    }
 
     public HiveModel(List<Property> properties) {
         super(properties);
@@ -17,5 +19,9 @@ public class HiveModel extends JdbcModel {
 
     public HiveModel(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public HiveModel(Model model) {
+        super(model);
     }
 }

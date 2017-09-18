@@ -3,10 +3,10 @@ package com.hex.bigdata.udsp.im.provider.model;
 import com.hex.bigdata.udsp.common.provider.model.Base;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.provider.constant.BuildMode;
-import com.hex.bigdata.udsp.im.provider.constant.ModelStatus;
-import com.hex.bigdata.udsp.im.provider.constant.ModelType;
-import com.hex.bigdata.udsp.im.provider.constant.UpdateMode;
+import com.hex.bigdata.udsp.im.constant.BuildMode;
+import com.hex.bigdata.udsp.im.constant.ModelStatus;
+import com.hex.bigdata.udsp.im.constant.ModelType;
+import com.hex.bigdata.udsp.im.constant.UpdateMode;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -44,12 +44,33 @@ public class Model extends Base {
 
     private List<ModelFilterCol> modelFilterCols; // 过滤字段集合
 
+    public Model() {
+    }
+
     public Model(List<Property> properties) {
         super(properties);
     }
 
     public Model(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public Model(Model model) {
+        super(model.getPropertyMap());
+        this.id = model.getId();
+        this.name = model.getName();
+        this.describe = model.getDescribe();
+        this.note = model.getNote();
+        this.type = model.getType();
+        this.status = model.getStatus();
+        this.buildMode = model.getBuildMode();
+        this.updateMode = model.getUpdateMode();
+        this.updateKeys = model.getUpdateKeys();
+        this.sourceDatasource = model.getSourceDatasource();
+        this.targetMetadata = model.getTargetMetadata();
+        this.engineDatasource = model.getEngineDatasource();
+        this.modelMappings = model.getModelMappings();
+        this.modelFilterCols = model.getModelFilterCols();
     }
 
     @Override

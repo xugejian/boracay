@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 
 import java.sql.SQLException;
@@ -20,6 +20,6 @@ public abstract class BatchWrapper extends BatchTargetWrapper implements BatchSo
         String id = model.getId();
         String tableName = getSourceTableName(id);
         String sql = HiveSqlUtil.dropTable(true, tableName);
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
 }

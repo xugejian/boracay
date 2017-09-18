@@ -5,19 +5,24 @@ import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.SolrMetadata;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.KafkaUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import kafka.consumer.ConsumerIterator;
+import kafka.consumer.KafkaStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +45,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.solr.SolrStorageHandler";
 
     public List<MetadataCol> getColumns(String collectionName, String solrServers) {
-        if(StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)){
+        if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {
             return null;
         }
         String response = "";
@@ -160,11 +165,11 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     public boolean checkTableExists(Metadata metadata) throws Exception {
         String[] addresses = getSolrServerStrings(metadata);
         String response = "";
-        for(String solrServer : addresses){
-            String url = "http://"+solrServer+"/solr/admin/collections?action=LIST";
+        for (String solrServer : addresses) {
+            String url = "http://" + solrServer + "/solr/admin/collections?action=LIST";
             try {
                 response = SolrUtil.sendGet(url, null);
-            }catch (Exception e){
+            } catch (Exception e) {
                 continue;
             }
             break;
@@ -174,7 +179,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Element arr = root.element("arr");
         List<Element> collections = arr.elements("str");
         boolean exists = false;
-        for(Element e : collections) {
+        for (Element e : collections) {
             if (e.getData().equals(metadata.getTbName())) {
                 exists = true;
                 break;
@@ -187,7 +192,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     public List<MetadataCol> columnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
-        SolrModel solrModel = new SolrModel(datasource.getPropertyMap());
+        SolrModel solrModel = new SolrModel(model);
         String collectionName = solrModel.getCollectionName();
         SolrServer solrServer = getConnection(solrDatasource, collectionName);
         return null; //getColumns(solrServer);
@@ -195,7 +200,20 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
 
     @Override
     public void inputData(Model model) {
-
+        String sDsType = model.getSourceDatasource().getType();
+        // 源是Kafka
+        if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
+            KafkaModel kafkaModel = new KafkaModel(model);
+            List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.outputData(kafkaModel);
+            for (KafkaStream<byte[], byte[]> stream : streams) {
+                ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
+                while (iterator.hasNext()) {
+                    String message = new String(iterator.next().message());
+                    logger.debug("kafka接收的信息为：" + message);
+                    // TODO ... 实时数据处理
+                }
+            }
+        }
     }
 
     @Override
@@ -204,7 +222,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Datasource engineDatasource = model.getEngineDatasource();
         HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
         String id = model.getId();
-        SolrModel solrModel = new SolrModel(model.getPropertyMap());
+        SolrModel solrModel = new SolrModel(model);
         String collectionName = solrModel.getCollectionName();
         String tableName = getSourceTableName(id);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
@@ -213,7 +231,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                 getSourceColumns(modelMappings), "源的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, collectionName));
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
 
     @Override
@@ -222,13 +240,13 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Datasource datasource = metadata.getDatasource();
         Datasource engineDatasource = model.getEngineDatasource();
         HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
-        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
+        SolrMetadata solrMetadata = new SolrMetadata(metadata);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
         List<ModelMapping> modelMappings = model.getModelMappings();
         String pkName = getTargetPrimaryKey(modelMappings);
         String sql = HiveSqlUtil.createStorageHandlerTable(true, true, getTargetTableName(model.getId()),
                 getTargetColumns(modelMappings), "目标的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, solrMetadata.getTbName()));
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
     }
 }
