@@ -2,16 +2,20 @@ package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
 import com.hex.bigdata.udsp.im.provider.impl.factory.SolrConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +49,24 @@ public abstract class SolrWrapper extends BatchWrapper {
             dataSourcePool.put(dsId, factory);
         }
         return factory;
+    }
+
+    protected SolrServer getSolrServer(String collectionName, SolrHBaseDatasource datasource) {
+        if (StringUtils.isBlank(collectionName)) {
+            throw new IllegalArgumentException("collection name不能为空");
+        }
+        String[] tempServers = datasource.getSolrServers().split(",");
+        String[] servers = new String[tempServers.length];
+        for (int i = 0; i < tempServers.length; i++) {
+            servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
+        }
+        SolrServer solrServer = null;
+        try {
+            solrServer = new LBHttpSolrServer(servers);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return solrServer;
     }
 
     protected SolrServer getConnection(SolrDatasource datasource, String collectionName) {

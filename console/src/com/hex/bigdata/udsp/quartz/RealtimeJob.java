@@ -27,7 +27,11 @@ public class RealtimeJob implements Job {
         String jobName = jobExecutionContext.getJobDetail().getKey().getName();
         RealtimeTotalInfo realtimeTotalInfo = realtimeTotalService.select(jobName);
         MqModel model = realtimeTotalInfo.getModel();
-        imProviderService.buildRealtime(model);
+        try {
+            imProviderService.buildRealtime(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         logger.debug("一次实时构建【结束】");
     }
 }

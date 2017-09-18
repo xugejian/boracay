@@ -52,6 +52,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
 
     private static final String HBASE_REGION_START_KEY = "0000000000000000";
     private static final String HBASE_REGION_STOP_KEY = "ffffffffffffffff";
+    protected static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "org.apache.hadoop.hive.hbase.HBaseStorageHandler";
 
     protected synchronized HBaseAdminPoolFactory getHBaseAdminFactory(HBaseDatasource datasource) {
         String dsId = datasource.getId();
@@ -161,7 +162,9 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
                 return o1.getMetadataCol().getSeq().compareTo(o2.getMetadataCol().getSeq());
             }
         });
-        // 根据目标元数据字段信息获取val值
+        /*
+        根据目标元数据字段信息获取val值
+         */
         String val = "";
         List<MetadataCol> vals = new ArrayList<>();
         for (ModelMapping mapping : modelMappings) {
@@ -177,31 +180,58 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
             val = getDsvValue(vals, fqDsvSeprator);
         }
         selectColumns.add(val);
-        // 根据目标元数据字段信息获取key值
-        String key = null;
-        List<MetadataCol> dts = new ArrayList<>();
-        List<MetadataCol> keys = new ArrayList<>();
+        /*
+         根据目标元数据字段信息获取key值
+         */
+        int count = 0;
         for (ModelMapping mapping : modelMappings) {
-            String sName = mapping.getName();
             MetadataCol mdCol = mapping.getMetadataCol();
-            DataType tType = mdCol.getType();
             boolean primary = mdCol.isPrimary();
-            boolean indexed = mdCol.isIndexed();
-            if (primary) {
-                key = "CAST(" + sName + " AS STRING) AS KEY";
-                break;
-            }
-            if (indexed) {
-                mdCol.setName(sName);
-                if (DataType.TIMESTAMP == tType) {
-                    dts.add(mdCol);
-                } else {
-                    keys.add(mdCol);
+            if (primary) count++;
+        }
+        String key = null;
+        if (count == 0) { // 没有主键
+            List<MetadataCol> dts = new ArrayList<>();
+            List<MetadataCol> keys = new ArrayList<>();
+            for (ModelMapping mapping : modelMappings) {
+                String sName = mapping.getName();
+                MetadataCol mdCol = mapping.getMetadataCol();
+                DataType tType = mdCol.getType();
+                boolean indexed = mdCol.isIndexed();
+                if (indexed) {
+                    mdCol.setName(sName);
+                    if (DataType.TIMESTAMP == tType) {
+                        dts.add(mdCol);
+                    } else {
+                        keys.add(mdCol);
+                    }
                 }
             }
-        }
-        if (StringUtils.isBlank(key)) {
-            key = getKey(keys, dts, vals);
+            if (StringUtils.isBlank(key)) {
+                key = getKey(keys, dts, vals);
+            }
+        } else if (count == 1) { // 一个主键
+            for (ModelMapping mapping : modelMappings) {
+                String sName = mapping.getName();
+                MetadataCol mdCol = mapping.getMetadataCol();
+                boolean primary = mdCol.isPrimary();
+                if (primary) {
+                    key = "CAST(" + sName + " AS STRING) AS KEY";
+                    break;
+                }
+            }
+        } else { // 多个主键
+            key = "SUBSTR(SYS_MD5(CONCAT(";
+            for (int i = 0; i < modelMappings.size(); i++) {
+                String sName = modelMappings.get(i).getName();
+                MetadataCol mdCol = modelMappings.get(i).getMetadataCol();
+                boolean primary = mdCol.isPrimary();
+                if (primary) {
+                    key += (i == 0 ? "NVL(CAST(" + sName + " AS STRING),'')"
+                            : ",NVL(CAST(" + sName + " AS STRING),'')");
+                }
+            }
+            key += ")),9,16) AS KEY";
         }
         selectColumns.add(key);
         return selectColumns;

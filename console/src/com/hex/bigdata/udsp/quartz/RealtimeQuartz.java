@@ -20,7 +20,7 @@ public class RealtimeQuartz {
     /**
      * 检查实时任务状态
      */
-    @Scheduled(cron = "${check.realtime.status.cron.expression:0/2 * * * * ?}")
+//    @Scheduled(cron = "${check.realtime.status.cron.expression:0/1 * * * * ?}")
     public void checkRealtimeStatus() {
         logger.debug("检查实时状态【开始】");
         realtimeService.checkRealtimeStatus();

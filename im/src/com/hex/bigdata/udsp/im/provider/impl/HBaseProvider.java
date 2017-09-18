@@ -31,7 +31,6 @@ import java.util.List;
 @Component("com.hex.bigdata.udsp.im.provider.impl.HBaseProvider")
 public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(HBaseProvider.class);
-    private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "org.apache.hadoop.hive.hbase.HBaseStorageHandler";
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {

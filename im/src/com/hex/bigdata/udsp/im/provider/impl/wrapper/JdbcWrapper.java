@@ -118,14 +118,12 @@ public abstract class JdbcWrapper extends BatchWrapper {
         Datasource eDs = model.getEngineDatasource();
         String eDsId = eDs.getId();
         if (!sDsId.equals(eDsId)) { // 源、引擎的数据源不相同
-            Datasource datasource = model.getSourceDatasource();
-            Datasource engineDatasource = model.getEngineDatasource();
-            HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
+            HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
             String id = model.getId();
             JdbcModel jdbcModel = new JdbcModel(model);
             String fullTbName = jdbcModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + jdbcModel.getTableName();
             String tableName = getSourceTableName(id);
-            JdbcDatasource jdbcDs = new JdbcDatasource(datasource.getPropertyMap());
+            JdbcDatasource jdbcDs = new JdbcDatasource(sDs.getPropertyMap());
             String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                     getSourceColumns(model.getModelMappings()), "源的Hive引擎表", null,
                     HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(jdbcDs, fullTbName));

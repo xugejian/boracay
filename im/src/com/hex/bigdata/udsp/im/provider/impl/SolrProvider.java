@@ -109,11 +109,10 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
         Datasource datasource = metadata.getDatasource();
-        Map<String, Property> propertyMap = datasource.getPropertyMap();
-//        SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
         String collectionName = metadata.getTbName();
-//        SolrServer solrServer = getConnection(solrDatasource, collectionName);
-        return getColumns(collectionName, propertyMap.get("solr.servers").getValue());
+        SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
+        String solrServers = solrDatasource.getSolrServers();
+        return getColumns(collectionName, solrServers);
     }
 
     @Override
@@ -192,10 +191,10 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     public List<MetadataCol> columnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
+        String solrServers = solrDatasource.getSolrServers();
         SolrModel solrModel = new SolrModel(model);
         String collectionName = solrModel.getCollectionName();
-        SolrServer solrServer = getConnection(solrDatasource, collectionName);
-        return null; //getColumns(solrServer);
+        return getColumns(collectionName, solrServers);
     }
 
     @Override

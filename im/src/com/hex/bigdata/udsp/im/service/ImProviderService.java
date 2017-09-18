@@ -109,7 +109,7 @@ public class ImProviderService {
      *
      * @param model
      */
-    public void buildRealtime(Model model) {
+    public void buildRealtime(Model model) throws Exception {
         getRealtimeTargetProvider(model.getTargetMetadata().getDatasource()).inputData(model);
     }
 
@@ -118,7 +118,7 @@ public class ImProviderService {
      *
      * @param model
      */
-    public void buildBatch(Model model) {
+    public void buildBatch(Model model) throws Exception {
         getBatchTargetProvider(model.getTargetMetadata().getDatasource()).inputSQL(model);
     }
 
