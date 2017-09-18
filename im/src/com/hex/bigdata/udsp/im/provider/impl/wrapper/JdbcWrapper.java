@@ -282,11 +282,10 @@ public abstract class JdbcWrapper extends BatchWrapper {
     }
 
     @Override
-    public boolean checkTableExists(Metadata metadata) throws SQLException {
+    public boolean checkSchemaExists(Metadata metadata) throws SQLException {
         JdbcDatasource datasource = new JdbcDatasource(metadata.getDatasource().getPropertyMap());
         String tbName = metadata.getTbName();
-        String sql = "select 1 from "+  tbName;
-
+        String sql = "select 1 from " + tbName;
         Connection conn = null;
         Statement stmt = null;
         boolean exists = true;
@@ -294,12 +293,14 @@ public abstract class JdbcWrapper extends BatchWrapper {
             conn = JdbcUtil.getConnection(datasource);
             stmt = conn.createStatement();
             stmt.executeQuery(sql);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
-            if(e.getMessage().indexOf("doesn't exist") != -1 || e.getMessage().indexOf("ORA-00942") != -1 || e.getMessage().indexOf("Table not found") != -1){
+            if (e.getMessage().indexOf("doesn't exist") != -1
+                    || e.getMessage().indexOf("ORA-00942") != -1
+                    || e.getMessage().indexOf("Table not found") != -1) {
                 exists = false;
             }
-        }finally {
+        } finally {
             com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
             com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
         }
@@ -309,7 +310,6 @@ public abstract class JdbcWrapper extends BatchWrapper {
     protected abstract DataType getColType(String type);
 
     protected abstract List<Column> getColumns(Connection conn, String dbName, String tbName) throws SQLException;
-
 
 
 }

@@ -38,14 +38,14 @@ public class ImProviderService {
     }
 
     /**
-     * 检查表
+     * 检查Schema是否存在
      *
      * @param metadata
      * @return
      * @throws Exception
      */
-    public boolean checkTableExists(Metadata metadata) throws Exception {
-        return getTargetProvider(metadata.getDatasource()).checkTableExists(metadata);
+    public boolean checkSchemaExists(Metadata metadata) throws Exception {
+        return getTargetProvider(metadata.getDatasource()).checkSchemaExists(metadata);
     }
 
     /**

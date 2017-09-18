@@ -50,8 +50,8 @@ public class SolrHBaseProvider extends SolrHBaseWrapper {
     }
 
     @Override
-    public boolean checkTableExists(Metadata metadata) throws Exception {
-        return solrProvider.checkTableExists(metadata);
+    public boolean checkSchemaExists(Metadata metadata) throws Exception {
+        return solrProvider.checkSchemaExists(metadata);
     }
 
     @Override

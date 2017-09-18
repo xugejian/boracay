@@ -162,7 +162,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     }
 
     @Override
-    public boolean checkTableExists(Metadata metadata) throws Exception {
+    public boolean checkSchemaExists(Metadata metadata) throws Exception {
         String[] addresses = getSolrServerStrings(metadata);
         String response = "";
         for (String solrServer : addresses) {

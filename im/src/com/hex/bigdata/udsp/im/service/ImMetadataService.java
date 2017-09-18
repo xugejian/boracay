@@ -171,7 +171,7 @@ public class ImMetadataService extends BaseService {
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
-        return imProviderService.checkTableExists(metadata);
+        return imProviderService.checkSchemaExists(metadata);
     }
 
     @Transactional

@@ -94,7 +94,7 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    public boolean checkTableExists(Metadata metadata) throws Exception {
+    public boolean checkSchemaExists(Metadata metadata) throws Exception {
         HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
         HBaseAdmin admin = getHBaseAdmin(datasource);
         String tableName = metadata.getTbName();
