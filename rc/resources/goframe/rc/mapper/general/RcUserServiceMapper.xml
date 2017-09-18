@@ -10,8 +10,10 @@
         <result column="MAX_ASYNC_NUM" property="maxAsyncNum" jdbcType="DECIMAL"/>
         <result column="MAX_SYNC_WAIT_NUM" property="maxSyncWaitNum" jdbcType="DECIMAL"/>
         <result column="MAX_ASYNC_WAIT_NUM" property="maxAsyncWaitNum" jdbcType="DECIMAL"/>
-        <result column="MAX_WAIT_TIMEOUT" property="maxWaitTimeout" jdbcType="DECIMAL"/>
-        <result column="MAX_EXECUTE_TIMEOUT" property="maxExecuteTimeout" jdbcType="DECIMAL"/>
+        <result column="MAX_SYNC_WAIT_TIMEOUT" property="maxSyncWaitTimeout" jdbcType="DECIMAL"/>
+        <result column="MAX_ASYNC_WAIT_TIMEOUT" property="maxAsyncWaitTimeout" jdbcType="DECIMAL"/>
+        <result column="MAX_SYNC_EXECUTE_TIMEOUT" property="maxSyncExecuteTimeout" jdbcType="DECIMAL"/>
+        <result column="MAX_ASYNC_EXECUTE_TIMEOUT" property="maxAsyncExecuteTimeout" jdbcType="DECIMAL"/>
         <result column="DEL_FLG" property="delFlg" jdbcType="CHAR"/>
         <result column="CRT_USER" property="crtUser" jdbcType="VARCHAR"/>
         <result column="CRT_TIME" property="crtTime" jdbcType="VARCHAR"/>
@@ -46,12 +48,12 @@
   </delete>
     <insert id="insert" parameterType="com.hex.bigdata.udsp.rc.model.RcUserService">
     insert into RC_USER_SERVICE (PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM,
-    MAX_ASYNC_NUM,MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,MAX_WAIT_TIMEOUT,MAX_EXECUTE_TIMEOUT,
-    DEL_FLG,CRT_USER, CRT_TIME, UPT_USER, UPT_TIME)
+    MAX_ASYNC_NUM,MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,MAX_SYNC_WAIT_TIMEOUT,MAX_ASYNC_WAIT_TIMEOUT,
+    MAX_SYNC_EXECUTE_TIMEOUT,MAX_ASYNC_EXECUTE_TIMEOUT,DEL_FLG,CRT_USER, CRT_TIME, UPT_USER, UPT_TIME)
     values (#{pkId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{serviceId,jdbcType=VARCHAR}, #{ipSection,jdbcType=VARCHAR},
      #{maxSyncNum,jdbcType=DECIMAL}, #{maxAsyncNum,jdbcType=DECIMAL},#{maxSyncWaitNum,jdbcType=DECIMAL},#{maxAsyncWaitNum,jdbcType=DECIMAL},
-     #{maxWaitTimeout,jdbcType=DECIMAL},#{maxExecuteTimeout,jdbcType=DECIMAL},#{delFlg,jdbcType=CHAR},#{crtUser,jdbcType=VARCHAR},
-     #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR})
+     #{maxSyncWaitTimeout,jdbcType=DECIMAL},#{maxAsyncWaitTimeout,jdbcType=DECIMAL},#{maxSyncExecuteTimeout,jdbcType=DECIMAL},#{maxAsyncExecuteTimeout,jdbcType=DECIMAL},
+     #{delFlg,jdbcType=CHAR},#{crtUser,jdbcType=VARCHAR},#{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR})
   </insert>
     <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.rc.model.RcUserService">
     update RC_USER_SERVICE
@@ -62,8 +64,10 @@
       MAX_ASYNC_NUM = #{maxAsyncNum,jdbcType=DECIMAL},
       MAX_SYNC_WAIT_NUM = #{maxSyncWaitNum,jdbcType=DECIMAL},
       MAX_ASYNC_WAIT_NUM = #{maxAsyncWaitNum,jdbcType=DECIMAL},
-      MAX_WAIT_TIMEOUT = #{maxWaitTimeout,jdbcType=DECIMAL},
-      MAX_EXECUTE_TIMEOUT = #{maxExecuteTimeout,jdbcType=DECIMAL},
+      MAX_SYNC_WAIT_TIMEOUT = #{maxSyncWaitTimeout,jdbcType=DECIMAL},
+      MAX_ASYNC_WAIT_TIMEOUT = #{maxAsyncWaitTimeout,jdbcType=DECIMAL},
+      MAX_SYNC_EXECUTE_TIMEOUT = #{maxSyncExecuteTimeout,jdbcType=DECIMAL},
+      MAX_ASYNC_EXECUTE_TIMEOUT = #{maxAsyncExecuteTimeout,jdbcType=DECIMAL},
       DEL_FLG = #{delFlg,jdbcType=CHAR},
       CRT_USER = #{crtUser,jdbcType=VARCHAR},
       CRT_TIME = #{crtTime,jdbcType=VARCHAR},
@@ -72,12 +76,14 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM, MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,MAX_WAIT_TIMEOUT,MAX_EXECUTE_TIMEOUT,DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME
+    select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM, MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,
+    MAX_SYNC_WAIT_TIMEOUT,MAX_ASYNC_WAIT_TIMEOUT,MAX_SYNC_EXECUTE_TIMEOUT,MAX_ASYNC_EXECUTE_TIMEOUT,DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME
     from RC_USER_SERVICE
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
     <select id="selectAll" resultMap="BaseResultMap">
-    select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM, MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,MAX_WAIT_TIMEOUT,MAX_EXECUTE_TIMEOUT,DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME
+    select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM, MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,
+     MAX_SYNC_WAIT_TIMEOUT,MAX_ASYNC_WAIT_TIMEOUT,MAX_SYNC_EXECUTE_TIMEOUT,MAX_ASYNC_EXECUTE_TIMEOUT,DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME
     from RC_USER_SERVICE
     where DEL_FLG = '0'
   </select>
@@ -91,8 +97,10 @@
 
     <select id="selectPage" resultMap="FullResultMap" parameterType="com.hex.bigdata.udsp.rc.dto.RcUserServiceView">
         select rcus.PK_ID, rcus.USER_ID, rcus.SERVICE_ID, rcus.IP_SECTION, rcus.MAX_SYNC_NUM, rcus.MAX_ASYNC_NUM,
-        rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_WAIT_TIMEOUT,rcus.MAX_EXECUTE_TIMEOUT,
-        rcus.DEL_FLG, rcus.CRT_USER, rcus.CRT_TIME, rcus.UPT_USER, rcus.UPT_TIME,rcs.NAME AS SERVICE_NAME,
+        rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,
+        rcus.MAX_SYNC_WAIT_TIMEOUT,rcus.MAX_ASYNC_WAIT_TIMEOUT,rcus.MAX_SYNC_EXECUTE_TIMEOUT,
+        rcus.MAX_ASYNC_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER, rcus.CRT_TIME, rcus.UPT_USER, rcus.UPT_TIME,rcs.NAME
+        AS SERVICE_NAME,
         rcs.TYPE AS SERVICE_TYPE,gfuser.user_name AS USER_NAME
         from RC_USER_SERVICE rcus
         LEFT JOIN T_GF_LOGINUSER gfuser ON rcus.USER_ID=gfuser.USER_ID
@@ -112,8 +120,10 @@
     </select>
 
     <select id="selectRelation" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rc.model.RcUserService">
-        select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM, MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,
-        MAX_WAIT_TIMEOUT,MAX_EXECUTE_TIMEOUT,DEL_FLG, CRT_USER, CRT_TIME,UPT_USER, UPT_TIME
+        select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM,
+        MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,
+        MAX_SYNC_WAIT_TIMEOUT,MAX_ASYNC_WAIT_TIMEOUT,MAX_SYNC_EXECUTE_TIMEOUT,MAX_ASYNC_EXECUTE_TIMEOUT,DEL_FLG,
+        CRT_USER, CRT_TIME,UPT_USER, UPT_TIME
         from RC_USER_SERVICE
         where DEL_FLG = '0'
         <if test="serviceId!='' and serviceId!=null ">and SERVICE_ID =#{serviceId}</if>
@@ -122,8 +132,8 @@
 
     <select id="selectFullResultMap" resultMap="FullResultMap" parameterType="java.lang.String">
     select rcus.PK_ID, rcus.USER_ID, rcus.SERVICE_ID, rcus.IP_SECTION, rcus.MAX_SYNC_NUM, rcus.MAX_ASYNC_NUM,
-    rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_WAIT_TIMEOUT,rcus.MAX_EXECUTE_TIMEOUT,
-    rcus.DEL_FLG, rcus.CRT_USER, rcus.CRT_TIME, rcus.UPT_USER, rcus.UPT_TIME,rcs.NAME AS SERVICE_NAME,
+    rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_SYNC_WAIT_TIMEOUT,rcus.MAX_ASYNC_WAIT_TIMEOUT,rcus.MAX_SYNC_EXECUTE_TIMEOUT,
+    rcus.MAX_ASYNC_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER, rcus.CRT_TIME, rcus.UPT_USER, rcus.UPT_TIME,rcs.NAME AS SERVICE_NAME,
     rcs.TYPE AS SERVICE_TYPE,gfuser.user_name AS USER_NAME
     from RC_USER_SERVICE rcus
     LEFT JOIN T_GF_LOGINUSER gfuser ON  rcus.USER_ID=gfuser.USER_ID
@@ -190,7 +200,7 @@
     <select id="selectByUserIdAndServiceId" resultMap="BaseResultMap"
             parameterType="com.hex.bigdata.udsp.rc.model.RcUserService">
     select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM,
-    MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,MAX_WAIT_TIMEOUT,MAX_EXECUTE_TIMEOUT,
+    MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,MAX_SYNC_WAIT_TIMEOUT,MAX_ASYNC_WAIT_TIMEOUT,MAX_SYNC_EXECUTE_TIMEOUT,MAX_ASYNC_EXECUTE_TIMEOUT,
     DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME
     from RC_USER_SERVICE
     where DEL_FLG = '0'
@@ -209,7 +219,8 @@
     <!-- 服务注册数据查看是否有服务授权数据-->
     <select id="selectRelationByServiceId" resultMap="FullResultMap" parameterType="java.lang.String">
         select rcus.PK_ID, rcus.USER_ID, rcus.SERVICE_ID, rcus.IP_SECTION, rcus.MAX_SYNC_NUM, rcus.MAX_ASYNC_NUM,
-        rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_WAIT_TIMEOUT,rcus.MAX_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER,
+        rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_SYNC_WAIT_TIMEOUT,rcus.MAX_ASYNC_WAIT_TIMEOUT,rcus.MAX_SYNC_EXECUTE_TIMEOUT,
+        rcus.MAX_ASYNC_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER,
         rcus.CRT_TIME, rcus.UPT_USER, rcus.UPT_TIME,rcs.NAME AS SERVICE_NAME
         from RC_USER_SERVICE rcus
         LEFT JOIN RC_SERVICE rcs ON rcus.SERVICE_ID = rcs.PK_ID
@@ -220,7 +231,8 @@
     <select id="selectServicesByUserId" resultMap="FullResultMap"
             parameterType="com.hex.bigdata.udsp.rc.model.RcUserService">
     select rcus.PK_ID, rcus.USER_ID, rcus.SERVICE_ID, rcus.IP_SECTION, rcus.MAX_SYNC_NUM, rcus.MAX_ASYNC_NUM,
-    rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_WAIT_TIMEOUT,rcus.MAX_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER,
+    rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_SYNC_WAIT_TIMEOUT,rcus.MAX_ASYNC_WAIT_TIMEOUT,rcus.MAX_SYNC_EXECUTE_TIMEOUT,
+    rcus.MAX_ASYNC_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER,
         rcus.CRT_TIME, rcus.UPT_USER, rcus.UPT_TIME,rcs.NAME AS SERVICE_NAME
         from RC_USER_SERVICE rcus
         LEFT JOIN RC_SERVICE rcs ON rcus.SERVICE_ID = rcs.PK_ID

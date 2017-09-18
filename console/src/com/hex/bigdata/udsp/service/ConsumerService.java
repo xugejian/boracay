@@ -555,7 +555,7 @@ public class ConsumerService {
         if (waitNumResult.isIntoWaitQueue() && CommonConstant.REQUEST_SYNC.equalsIgnoreCase(waitNumResult.getWaitQueueSyncType())) {
             Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, syncCycleTimeInterval));
             try {
-                futureTask.get(rcUserService.getMaxWaitTimeout(), TimeUnit.SECONDS);
+                futureTask.get(rcUserService.getMaxSyncWaitTimeout(),TimeUnit.SECONDS);
                 mcCurrentService.insert(mcCurrent);
                 mcCurrentCountService.addAsyncCurrent(mcCurrent);
             } catch (TimeoutException e) {
@@ -620,7 +620,7 @@ public class ConsumerService {
                 runStart = System.currentTimeMillis();
                 Future<Response> iqFuture = executorService.submit(new IqSyncServiceCallable(request.getData(), appId, page));
                 try {
-                    response = iqFuture.get(rcUserService.getMaxExecuteTimeout(), TimeUnit.SECONDS);
+                    response = iqFuture.get(rcUserService.getMaxSyncExecuteTimeout(), TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                     return response;
@@ -661,7 +661,7 @@ public class ConsumerService {
                 runStart = System.currentTimeMillis();
                 Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(appId, new OLQQuerySql(sql)));
                 try {
-                    response = olqFuture.get(rcUserService.getMaxExecuteTimeout(), TimeUnit.SECONDS);
+                    response = olqFuture.get(rcUserService.getMaxSyncExecuteTimeout(), TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                     return response;
@@ -721,7 +721,7 @@ public class ConsumerService {
                     OLQQuerySql olqQuerySql = (OLQQuerySql) messageResult.getData();
                     Future<Response> olqAppFuture = executorService.submit(new OlqSyncServiceCallable(dsId, olqQuerySql));
                     try {
-                        response = olqAppFuture.get(rcUserService.getMaxExecuteTimeout(), TimeUnit.SECONDS);
+                        response = olqAppFuture.get(rcUserService.getMaxSyncExecuteTimeout(), TimeUnit.SECONDS);
                     } catch (TimeoutException e) {
                         this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                         return response;

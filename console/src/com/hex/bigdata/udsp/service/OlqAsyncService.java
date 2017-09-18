@@ -107,7 +107,7 @@ public class OlqAsyncService implements Runnable {
             //任务进入等待队列
             Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, asyncCycleTimeInterval));
             try {
-                passFlg = futureTask.get(rcUserService.getMaxWaitTimeout(), TimeUnit.SECONDS);
+                passFlg = futureTask.get(rcUserService.getMaxAsyncWaitTimeout(), TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 status = McConstant.MCLOG_STATUS_FAILED;
                 errorCode = ErrorCode.ERROR_000014.getValue();
@@ -127,7 +127,7 @@ public class OlqAsyncService implements Runnable {
                 //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- end
                 Future<OLQResponse> olqFutureTask = executorService.submit(new OlqAsyncCallable(mcCurrent, this.appId, this.sql, this.fileName));
                 try {
-                    response = olqFutureTask.get(rcUserService.getMaxWaitTimeout(), TimeUnit.SECONDS);
+                    response = olqFutureTask.get(rcUserService.getMaxAsyncWaitTimeout(), TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     status = McConstant.MCLOG_STATUS_FAILED;
                     errorCode = ErrorCode.ERROR_000015.getValue();

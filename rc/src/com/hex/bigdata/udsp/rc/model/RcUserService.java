@@ -26,14 +26,24 @@ public class RcUserService implements Serializable {
     private int maxAsyncWaitNum;
 
     /**
-     * 运行超时时间
+     * 同步最大等待时间
      */
-    private int maxExecuteTimeout;
+    private int maxSyncWaitTimeout;
 
     /**
-     * 等待超时时间
+     * 异步最大等待时间
      */
-    private int maxWaitTimeout;
+    private int maxAsyncWaitTimeout;
+
+    /**
+     * 同步最大运行时间
+     */
+    private int maxSyncExecuteTimeout;
+
+    /**
+     *异步最大运行时间
+     */
+    private int maxAsyncExecuteTimeout;
 
     private String delFlg;
 
@@ -109,20 +119,36 @@ public class RcUserService implements Serializable {
         this.maxAsyncWaitNum = maxAsyncWaitNum;
     }
 
-    public int getMaxExecuteTimeout() {
-        return maxExecuteTimeout;
+    public int getMaxSyncWaitTimeout() {
+        return maxSyncWaitTimeout;
     }
 
-    public void setMaxExecuteTimeout(int maxExecuteTimeout) {
-        this.maxExecuteTimeout = maxExecuteTimeout;
+    public void setMaxSyncWaitTimeout(int maxSyncWaitTimeout) {
+        this.maxSyncWaitTimeout = maxSyncWaitTimeout;
     }
 
-    public int getMaxWaitTimeout() {
-        return maxWaitTimeout;
+    public int getMaxAsyncWaitTimeout() {
+        return maxAsyncWaitTimeout;
     }
 
-    public void setMaxWaitTimeout(int maxWaitTimeout) {
-        this.maxWaitTimeout = maxWaitTimeout;
+    public void setMaxAsyncWaitTimeout(int maxAsyncWaitTimeout) {
+        this.maxAsyncWaitTimeout = maxAsyncWaitTimeout;
+    }
+
+    public int getMaxSyncExecuteTimeout() {
+        return maxSyncExecuteTimeout;
+    }
+
+    public void setMaxSyncExecuteTimeout(int maxSyncExecuteTimeout) {
+        this.maxSyncExecuteTimeout = maxSyncExecuteTimeout;
+    }
+
+    public int getMaxAsyncExecuteTimeout() {
+        return maxAsyncExecuteTimeout;
+    }
+
+    public void setMaxAsyncExecuteTimeout(int maxAsyncExecuteTimeout) {
+        this.maxAsyncExecuteTimeout = maxAsyncExecuteTimeout;
     }
 
     public String getDelFlg() {

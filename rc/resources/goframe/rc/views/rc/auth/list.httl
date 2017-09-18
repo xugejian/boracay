@@ -328,7 +328,7 @@ ${extends("/goframe/function_layout.httl")}
             url: "${basePath}/goframe/p/rc.auth.info/?pkId=" + pkId,
             title: title,
             width: 900,
-            height: 420,
+            height: 480,
             onload: function () {
             },
             ondestroy: function (action) {
@@ -351,7 +351,7 @@ ${extends("/goframe/function_layout.httl")}
             url: "${basePath}/goframe/p/rc.auth.info/?pkId=" + row.pkId,
             title: "详情-" + userName + "-" + serviceName + "服务",
             width: 900,
-            height: 420,
+            height: 480,
             onload: function () {
             },
             ondestroy: function (action) {
