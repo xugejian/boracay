@@ -5,12 +5,14 @@ import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.model.ImMetadata;
 import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
 import com.hex.bigdata.udsp.im.dto.ImMetadataView;
+import com.hex.bigdata.udsp.im.model.ImModel;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.service.ImMetadataService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.model.PageListResult;
+import com.hex.goframe.util.FileUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +22,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JunjieM on 2017-9-4.
@@ -338,5 +343,51 @@ public class ImMetadataController {
     public MessageResult selectAll(){
         List<ImMetadata> imMetadatas = imMetadataService.selectAll();
         return new PageListResult(imMetadatas);
+    }
+
+    /**
+     * 交互建模-元数据excel上传
+     * @return
+     */
+    @RequestMapping("upload")
+    @ResponseBody
+    public MessageResult upload(MultipartFile excelFile){
+        boolean status = true;
+        String message = "上传成功";
+        try{
+            //判断结尾是否为xl或者xlsx
+            if (((CommonsMultipartFile)excelFile).getFileItem().getName().endsWith(".xls")
+                    || ((CommonsMultipartFile)excelFile).getFileItem().getName().endsWith(".xlsx")) {
+                //将文件放到项目上传文件目录中
+                String uploadFilePath = FileUtil.uploadFile(FileUtil
+                        .getRealUploadPath("EXCEL_UPLOAD"), excelFile);
+                Map<String,String> result = imMetadataService.uploadExcel(uploadFilePath);
+                if("false".equals(result.get("status"))){
+                    status = false;
+                    message = result.get("message");
+                }
+            }else{
+                status = false;
+                message = "请上传正确格式的文件！";
+            }
+        }catch (Exception e){
+            message = e.getMessage();
+            status = false;
+        }
+
+        return new MessageResult(status,message);
+    }
+
+    @ResponseBody
+    @RequestMapping("/download")
+    public String createExcel(@RequestBody ImMetadata[] imMetadatas){
+        // 写入Excel文件
+        String filePath = "";
+        try {
+            filePath = imMetadataService.createExcel(imMetadatas);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return filePath;
     }
 }

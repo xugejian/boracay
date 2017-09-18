@@ -114,7 +114,7 @@ ${extends("/goframe/function_layout.httl")}
                 <td><input id="fileUpload" class="nui-fileupload" style="width:100%"
                            name="excelFile" limitType="*.xls;*.xlsx"
                            flashUrl="${basePath}/s/js/nui/swfupload/swfupload.swf"
-                           uploadUrl="${basePath}/iq/md/upload"
+                           uploadUrl="${basePath}/im/md/upload"
                            onuploadsuccess="uploadSuccess"
                         />
                 </td>
@@ -460,7 +460,7 @@ ${extends("/goframe/function_layout.httl")}
         var json = nui.encode(getRows(rows));
         grid1.loading("正在导出中,请稍等...");
         $.ajax({
-            url:"${basePath}/iq/md/download",
+            url:"${basePath}/im/md/download",
             type : 'POST',
             data : json,
             cache : false,
