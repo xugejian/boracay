@@ -6,6 +6,7 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
+import com.hex.bigdata.udsp.im.constant.UpdateMode;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
@@ -200,6 +201,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     @Override
     public void inputData(Model model) {
         String sDsType = model.getSourceDatasource().getType();
+        UpdateMode updateMode = model.getUpdateMode();
         // 源是Kafka
         if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
             KafkaModel kafkaModel = new KafkaModel(model);
@@ -210,6 +212,13 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
                     String message = new String(iterator.next().message());
                     logger.debug("kafka接收的信息为：" + message);
                     // TODO ... 实时数据处理
+                    if (UpdateMode.MATCHING_UPDATE == updateMode) { // 匹配更新
+
+                    } else if (UpdateMode.UPDATE_INSERT == updateMode) { // 更新插入
+
+                    } else { // 增量插入
+
+                    }
                 }
             }
         }
