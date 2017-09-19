@@ -113,8 +113,8 @@ public class OracleSqlUtil {
         }
         StringBuffer sb = new StringBuffer();
         List<String> list = new ArrayList<>();
-        for (TableColumn col : columns) {
-            if (col.isPrimaryKey()) {
+        for(TableColumn col : columns){
+            if(col.isPrimaryKey() && !"STRING".equals(col.getDataType())){
                 list.add(col.getColName());
             }
         }

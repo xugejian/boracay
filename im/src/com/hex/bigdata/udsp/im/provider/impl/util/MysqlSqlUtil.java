@@ -75,7 +75,7 @@ public class MysqlSqlUtil {
                     } else {
                         sql += "\n, " + colName + " " + dataType;
                     }
-                    if(column.isPrimaryKey()){
+                    if(column.isPrimaryKey() && !"STRING".equals(column.getDataType())){ //类型不能指定为pk
                         sql += " primary key ";
                     }
                     if (StringUtils.isNoneBlank(colComment)) {
