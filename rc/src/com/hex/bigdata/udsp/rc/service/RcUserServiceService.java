@@ -656,7 +656,6 @@ public class RcUserServiceService extends BaseService {
         try {
             sourceFile = new POIFSFileSystem(new FileInputStream(
                     templateFile));
-
             sourceWork = new HSSFWorkbook(sourceFile);
             sourceSheet = sourceWork.getSheetAt(0);
             //创建表格
