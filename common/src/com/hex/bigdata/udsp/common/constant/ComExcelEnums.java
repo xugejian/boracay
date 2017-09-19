@@ -690,7 +690,8 @@ public class ComExcelEnums {
         Excel_1("name", "1"),
         Excel_2("type", "2"),
         Excel_3("appId", "3"),
-        Excel_4("describe", "4");
+        Excel_4("describe", "4"),
+        Excel_5("status", "5");
 
         private String value;
         private String name;
@@ -710,6 +711,7 @@ public class ComExcelEnums {
                 enums.add(Excel_2);
                 enums.add(Excel_3);
                 enums.add(Excel_4);
+                enums.add(Excel_5);
             }
             return enums;
         }
@@ -722,6 +724,7 @@ public class ComExcelEnums {
                 enums.add(Excel_2);
                 enums.add(Excel_3);
                 enums.add(Excel_4);
+                enums.add(Excel_5);
             }
             return enums;
         }
@@ -753,8 +756,10 @@ public class ComExcelEnums {
         Excel_5("maxAsyncNum", "5"),
         Excel_6("maxSyncWaitNum", "6"),
         Excel_7("maxAsyncWaitNum", "7"),
-        Excel_8("maxExecuteTimeout", "8"),
-        Excel_9("maxWaitTimeout", "9");
+        Excel_8("maxSyncWaitTimeout", "8"),
+        Excel_9("maxAsyncWaitTimeout", "9"),
+        Excel_10("maxSyncExecuteTimeout", "10"),
+        Excel_11("maxAsyncExecuteTimeout", "11");
 
         private String value;
         private String name;
@@ -779,6 +784,8 @@ public class ComExcelEnums {
                 enums.add(Excel_7);
                 enums.add(Excel_8);
                 enums.add(Excel_9);
+                enums.add(Excel_10);
+                enums.add(Excel_11);
             }
             return enums;
         }
