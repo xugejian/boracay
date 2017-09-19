@@ -18,12 +18,17 @@ import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HConnection;
+import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -47,7 +52,9 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
-        return dropHTable(new HBaseDatasource(metadata.getDatasource().getPropertyMap()), metadata.getTbName());
+        Datasource datasource = metadata.getDatasource();
+        HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getPropertyMap());
+        return dropHTable(hBaseDatasource, metadata.getTbName());
     }
 
     @Override
@@ -102,4 +109,21 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
         return admin.isTableAvailable(hbaseTableName);
     }
 
+    @Override
+    public boolean testDatasource(Datasource datasource) {
+        boolean canConnection = false;
+        HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getProperties());
+        HConnection conn = null;
+        try {
+            conn = getConnection(hBaseDatasource);
+            if (conn != null && !conn.isAborted()) {
+                canConnection = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            release(hBaseDatasource, conn);
+        }
+        return canConnection;
+    }
 }

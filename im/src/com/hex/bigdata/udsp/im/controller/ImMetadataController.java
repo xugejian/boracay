@@ -153,7 +153,6 @@ public class ImMetadataController {
                     status = false;
                     message = "保存并创建失败";
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 status = false;
@@ -374,7 +373,6 @@ public class ImMetadataController {
             message = e.getMessage();
             status = false;
         }
-
         return new MessageResult(status,message);
     }
 

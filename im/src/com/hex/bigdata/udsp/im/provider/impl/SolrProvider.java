@@ -32,6 +32,8 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.stereotype.Component;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -119,13 +121,13 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     public boolean createSchema(Metadata metadata) throws Exception {
         SolrUtil.checkSolrProperty(metadata);
         SolrUtil.uploadSolrConfig(metadata);
+        SolrMetadata solrMetadata = new SolrMetadata(metadata);
         String[] addresses = getSolrServerStrings(metadata);
         String response = "";
-        Map<String, Property> mdPropertyMap = metadata.getPropertyMap();
         for (String solrServer : addresses) {
             String url = "http://" + solrServer + "/solr/admin/collections";
-            String param = "action=CREATE" + "&name=" + metadata.getTbName() + "&replicationFactor=" + mdPropertyMap.get("solr.replicas").getValue() +
-                    "&numShards=" + mdPropertyMap.get("solr.shards").getValue() + "&maxShardsPerNode=" + mdPropertyMap.get("solr.max.shards.per.node").getValue() +
+            String param = "action=CREATE" + "&name=" + metadata.getTbName() + "&replicationFactor=" + solrMetadata.getReplicas() +
+                    "&numShards=" + solrMetadata.getShards() + "&maxShardsPerNode=" + solrMetadata.getMaxShardsPerNode() +
                     "&collection.configName=" + metadata.getTbName();
             response = SolrUtil.sendGet(url, param);
             if (StringUtils.isEmpty(response)) {
@@ -156,9 +158,8 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
 
     private String[] getSolrServerStrings(Metadata metadata) {
         Datasource datasource = metadata.getDatasource();
-        Map<String, Property> dsPropertyMap = datasource.getPropertyMap();
-        String solrServers = dsPropertyMap.get("solr.servers").getValue();
-        return solrServers.split(",");
+        SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
+        return solrDatasource.getSolrServers().split(",");
     }
 
     @Override
@@ -256,5 +257,42 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
                 getTargetColumns(modelMappings), "目标的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, solrMetadata.getTbName()));
         return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+    }
+
+    @Override
+    public boolean testDatasource(Datasource datasource) {
+        boolean canConnection = false;
+        HttpURLConnection connection = null;
+        URL url = null;
+        try {
+            SolrDatasource solrDatasource = new SolrDatasource(datasource.getProperties());
+            String[] tempServers = solrDatasource.getSolrServers().split(",");
+            for (int i = 0; i < tempServers.length; i++) {
+                try {
+                    url = new URL("http://" + tempServers[i] + "/solr");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+                    connection.setUseCaches(false);
+                    connection.setInstanceFollowRedirects(true);
+                    connection.connect();
+                    if (connection != null) {
+                        canConnection = true;
+                        break;
+                    }
+                } catch (Exception e) {
+                    logger.debug("获取solr连接失败的地址为：" + (url == null ? "" : url.toString()));
+                    canConnection = false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            canConnection = false;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return canConnection;
     }
 }

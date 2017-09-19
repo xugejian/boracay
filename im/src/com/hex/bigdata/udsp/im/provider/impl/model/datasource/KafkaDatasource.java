@@ -53,9 +53,9 @@ public class KafkaDatasource extends Datasource {
         return getProperty("zookeeper.sync.time.ms").getValue();
     }
 
-    public String getConsumerTimeoutMs() {
-        return getProperty("consumer.timeout.ms").getValue();
-    }
+//    public String getConsumerTimeoutMs() {
+//        return getProperty("consumer.timeout.ms").getValue();
+//    }
 
     public String getAutoCommitEnable() {
         return getProperty("auto.commit.enable").getValue();
@@ -77,7 +77,28 @@ public class KafkaDatasource extends Datasource {
         return getProperty("rebalance.backoff.ms").getValue();
     }
 
-    public String getGroupId() {
-        return getProperty("group.id").getValue();
+//    public String getGroupId() {
+//        return getProperty("group.id").getValue();
+//    }
+
+    public String getSerializerClass() {
+        String value = getProperty("serializer.class").getValue();
+        if (StringUtils.isBlank(value))
+            value = "kafka.serializer.StringEncoder";
+        return value;
+    }
+
+    public String getKeySerializerClass() {
+        String value = getProperty("key.serializer.class").getValue();
+        if (StringUtils.isBlank(value))
+            value = "kafka.serializer.StringEncoder";
+        return value;
+    }
+
+    public String getRequestRequiredAcks() {
+        String value = getProperty("request.required.acks").getValue();
+        if (StringUtils.isBlank(value))
+            value = "0";
+        return value;
     }
 }

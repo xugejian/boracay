@@ -71,7 +71,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
             config.testWhileIdle = true;
             config.testOnBorrow = false;
             config.testOnReturn = false;
-            factory = new HBaseAdminPoolFactory(config, datasource.getZkQuorum(), datasource.getZkPort());
+            factory = new HBaseAdminPoolFactory(config, datasource);
         }
         hbaseAdminPool.put(dsId, factory);
         return factory;
@@ -107,7 +107,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
             config.testWhileIdle = true;
             config.testOnBorrow = false;
             config.testOnReturn = false;
-            factory = new HBaseConnectionPoolFactory(config, datasource.getZkQuorum(), datasource.getZkPort());
+            factory = new HBaseConnectionPoolFactory(config, datasource);
         }
         dataSourcePool.put(dsId, factory);
         return factory;

@@ -122,6 +122,16 @@ public class ImProviderService {
         getBatchTargetProvider(model.getTargetMetadata().getDatasource()).inputSQL(model);
     }
 
+    /**
+     * 测试数据源
+     *
+     * @param datasource
+     * @return
+     */
+    public boolean testDatasource(Datasource datasource) {
+        return getProvider(datasource).testDatasource(datasource);
+    }
+
     private BatchSourceProvider getBatchSourceProvider(Datasource datasource) {
         return (BatchSourceProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
@@ -140,6 +150,10 @@ public class ImProviderService {
 
     private TargetProvider getTargetProvider(Datasource datasource) {
         return (TargetProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
+    }
+
+    private Provider getProvider(Datasource datasource) {
+        return (Provider) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
     private String getImplClass(Datasource datasource) {
