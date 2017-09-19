@@ -226,10 +226,43 @@ public class ImModelController {
         boolean result = false;
         String message = "";
         try{
-            // TODO 根据status值不同做不同处理
-
-
+            //先获取该对一个pkId的交互建模模型
+            ImModel imModel = imModelService.selectByPkId(pkId);
+            //如果相同则说明已经已经构建或则已经删除构建
+            if(imModel.getStatus() ==  status){
+                result  = false;
+                message = "请执行正确的操作！";
+            }
+            result = imModelService.updateStatus(imModel,status);
+            if(result){
+                message = "成功";
+            }else{
+                message = "失败";
+            }
         }catch(Exception e){
+            e.printStackTrace();
+            result = false;
+            message = e.getMessage();
+        }
+        return new MessageResult(result,message);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "runModelBuild/{pkId}/{status}")
+    public MessageResult runModelBuild(@PathVariable String pkId,@PathVariable String status ){
+        boolean result = true;
+        String message = "成功";
+        try{
+            //先获取该对一个pkId的交互建模模型
+            ImModel imModel = imModelService.selectByPkId(pkId);
+            //如果相同则说明已经已经构建或则已经删除构建
+            if(imModel.getStatus() ==  "1"){
+                result  = false;
+                message = "该模型未构建的！";
+            }
+            imModelService.runModelBuild(imModel);
+        }catch(Exception e){
+            e.printStackTrace();
             result = false;
             message = e.getMessage();
         }
