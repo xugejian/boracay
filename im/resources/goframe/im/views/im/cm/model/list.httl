@@ -596,6 +596,10 @@ ${extends("/goframe/function_layout.httl")}
                 if(data.status == true){
                     nui.alert("已运行", "系统提示");
                     grid1.reload();
+                }else{
+                    $(e).attr("onclick","runBuild('"+pkId+"',this)");
+                    $(e).attr("style","");
+                    nui.alert("运行失败，信息：" + data.message, "系统提示");
                 }
             }
         });
