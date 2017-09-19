@@ -489,6 +489,11 @@ ${extends("/goframe/function_layout.httl")}
                 operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='removeBuild(\""+e.row.pkId+"\",this)'>取消构建</a>");
                 operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='runBuild(\""+e.row.pkId+"\",this)'>运行</a>");
             }
+        }else{
+            //实时的未删除的应该也可以运行
+            if(e.row.delFlg  == '0'){
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='runBuild(\""+e.row.pkId+"\",this)'>运行</a>");
+            }
         }
         operatorS = operatorS.concat("</div>");
         return operatorS;
@@ -536,7 +541,7 @@ ${extends("/goframe/function_layout.httl")}
         grid1.loading("正在构建中,请稍等...");
         //先将按钮灰度并修改点击事件，防止重复操作
         $(e).attr("onclick","javascript:return false;");
-        $(e).attr("style","opacity: 0.2");
+        $(e).attr("style","padding-left: 6px;opacity: 0.2");
         $.ajax({
             url:"${basePath}/im/model/updateModelBuildStatus/"+pkId+"/2",
             type : 'POST',
@@ -550,7 +555,7 @@ ${extends("/goframe/function_layout.httl")}
                 }else{
                     //失败后还原原来的点击事件和样式
                     $(e).attr("onclick","buildOperator('"+pkId+"',this)");
-                    $(e).attr("style","");
+                    $(e).attr("style","padding-left: 6px");
                     grid1.unmask();
                     nui.alert("构建失败，信息：" + data.message, "系统提示");
                 }
@@ -561,7 +566,7 @@ ${extends("/goframe/function_layout.httl")}
         grid1.loading("正在取消构建中,请稍等...");
         //先将按钮灰度并修改点击事件，防止重复操作
         $(e).attr("onclick","javascript:return false;");
-        $(e).attr("style","opacity: 0.2");
+        $(e).attr("style","padding-left: 6px;opacity: 0.2");
         $.ajax({
             url:"${basePath}/im/model/updateModelBuildStatus/"+pkId+"/1",
             type : 'POST',
@@ -575,7 +580,7 @@ ${extends("/goframe/function_layout.httl")}
                 }else{
                     //失败后还原原来的点击事件和样式
                     $(e).attr("onclick","removeBuild('"+pkId+"',this)");
-                    $(e).attr("style","");
+                    $(e).attr("style","padding-left: 6px");
                     grid1.unmask();
                     nui.alert("取消构建失败，信息：" + data.message, "系统提示");
                 }
@@ -586,7 +591,7 @@ ${extends("/goframe/function_layout.httl")}
     function runBuild(pkId,e){
         //先将按钮灰度并修改点击事件，防止重复操作
         $(e).attr("onclick","javascript:return false;");
-        $(e).attr("style","opacity: 0.2");
+        $(e).attr("style","padding-left: 6px;opacity: 0.2");
         $.ajax({
             url:"${basePath}/im/model/runModelBuild/"+pkId+"/1",
             type : 'POST',
@@ -598,7 +603,7 @@ ${extends("/goframe/function_layout.httl")}
                     grid1.reload();
                 }else{
                     $(e).attr("onclick","runBuild('"+pkId+"',this)");
-                    $(e).attr("style","");
+                    $(e).attr("style","padding-left: 6px");
                     nui.alert("运行失败，信息：" + data.message, "系统提示");
                 }
             }

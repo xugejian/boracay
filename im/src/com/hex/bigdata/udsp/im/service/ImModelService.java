@@ -648,9 +648,9 @@ public class ImModelService {
             model.setStatus(ModelStatus.NO_CREATED);
         }
         if("1".equals(imModel.getType())){
-            model.setType(ModelType.REALTIME);
-        }else if("2".equals(imModel.getType())){
             model.setType(ModelType.BATCH);
+        }else if("2".equals(imModel.getType())){
+            model.setType(ModelType.REALTIME);
         }
         if("1".equals(imModel.getUpdateMode())){
             model.setUpdateMode(UpdateMode.MATCHING_UPDATE);
@@ -662,6 +662,9 @@ public class ImModelService {
     }
 
     private Datasource getDatasourceById(String id){
+        if(StringUtils.isBlank(id)){
+            return null;
+        }
         ComDatasource comDatasource = comDatasourceMapper.select(id);
         List<ComProperties> comProperties = comPropertiesMapper.selectByFkId(id);
         return new Datasource(comDatasource,comProperties);
@@ -703,10 +706,10 @@ public class ImModelService {
     public void runModelBuild(ImModel imModel) throws Exception{
         //组织需要构建或则删除构建的模型
         Model model = getModelByPkId(imModel);
-        /*if(model.getType().equals(ModelType.BATCH)){
+        if(model.getType().equals(ModelType.BATCH)){
             imProviderService.buildBatch(model);
         }else if(model.getType().equals(ModelType.REALTIME)){
             imProviderService.buildRealtime(model);
-        }*/
+        }
     }
 }
