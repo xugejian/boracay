@@ -1,8 +1,8 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.metadata.SolrMetadata;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import org.apache.commons.lang3.StringUtils;
@@ -133,14 +133,19 @@ public class SolrUtil {
         File file = new File(url.getPath());
         Document document = File2Doc(file);
         Element root = document.getRootElement();
-//      Element fields = root.element("fields"); //todo schema  fields ?? 添加到了最后面  主键未作处理
-        for (MetadataCol e : metadataCols) {
-            Element filed = DocumentHelper.createElement("field");
+//      Element fields=root.element("fields"); //todo schema  fields ?? 添加到了最后面
+        for(MetadataCol e:metadataCols){
+            Element filed= DocumentHelper.createElement("field");
             filed.addAttribute("name", e.getName());
             filed.addAttribute("type", e.getType().getValue().toLowerCase()); //todo
             filed.addAttribute("indexed", e.isIndexed() ? "true" : "false");
             filed.addAttribute("stored", e.isStored() ? "true" : "false");
             root.add(filed);
+            if(e.isPrimary()){
+                Element uniqueKey= DocumentHelper.createElement("uniqueKey");
+                uniqueKey.setText(e.getName());
+                root.add(uniqueKey);
+            }
         }
         return root.asXML().getBytes();
     }
@@ -271,6 +276,32 @@ public class SolrUtil {
         }
         for (String p : paths) {
             zk.delete(path + "/" + p, -1);
+        }
+    }
+
+    public static void checkSolrProperty(Metadata metadata) throws Exception{
+        //检查主键是否合法
+        List<MetadataCol> cols = metadata.getMetadataCols();
+        boolean existPk = false;
+        for(MetadataCol e : cols){
+            if(e.isPrimary()){
+                existPk = true;
+                break;
+            }
+        }
+        if(!existPk){
+            throw new Exception("【配置参数】中的参数必须需满足”分片数*副本数<=节点数*单节点最大分片数“，请修改后再提交！");
+        }
+
+        //检查分片是否合法
+        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
+        int shards = solrMetadata.getShards();
+        int replicas = solrMetadata.getReplicas();
+        int maxShardsPerNode = solrMetadata.getMaxShardsPerNode();
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
+        int nodesNum = solrDatasource.getSolrServers().split(",").length; //todo 使用代理地址时会有问题
+        if(shards*replicas >= maxShardsPerNode*nodesNum){
+            throw new Exception("必须指定主键！");
         }
     }
 }
