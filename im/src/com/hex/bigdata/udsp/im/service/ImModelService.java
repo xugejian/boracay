@@ -518,6 +518,8 @@ public class ImModelService {
         Model model = getModelByPkId(imModel);
 
         if("1".equals(status)){
+            // TODO 先停止相关的任务
+
             //删除建模
             result = imProviderService.dropEngineSchema(model);
         }else if("2".equals(status)){

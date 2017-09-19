@@ -207,11 +207,18 @@ public class ImModelController {
         boolean result = false;
         String message = "";
         try{
-            result = imModelService.updateModelDelStatus(pkId,status);
-            if(result == false){
-                message = "失败";
+            ImModel imModel = imModelService.selectByPkId(pkId);
+            //如果是删除的话要判断是否能够删除，原则上构建了的不能够直接删除，或者删除连带构建一起删除
+            if("1".equals(status) && "2".equals(imModel.getStatus())){
+                result = false;
+                message = "该模型已建模不可删除！";
             }else{
-                message = "成功";
+                result = imModelService.updateModelDelStatus(pkId,status);
+                if(result == false){
+                    message = "失败";
+                }else{
+                    message = "成功";
+                }
             }
         }catch(Exception e){
             result = false;
