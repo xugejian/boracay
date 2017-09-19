@@ -30,6 +30,7 @@ import java.util.Map;
 public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvider {
     private static Logger logger = LogManager.getLogger(KafkaProvider.class);
     private static final int CONSUMER_TIMEOUT_MS = 1000;
+    private static final String GROUP_ID = "udsp-group";
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
@@ -39,7 +40,7 @@ public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvide
         String topic = kafkaModel.getTopic();
         Map<String, Property> propertyMap = datasource.getPropertyMap();
         propertyMap.put("consumer.timeout.ms", new Property("consumer.timeout.ms", Integer.toString(CONSUMER_TIMEOUT_MS)));
-        propertyMap.put("group.id", new Property("group.id", "udsp-group"));
+        propertyMap.put("group.id", new Property("group.id", GROUP_ID));
         KafkaDatasource kafkaDatasource = new KafkaDatasource(propertyMap);
         ConsumerConnector consumer = null;
         try {
