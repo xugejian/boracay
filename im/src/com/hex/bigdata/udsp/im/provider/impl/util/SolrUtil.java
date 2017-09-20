@@ -1,8 +1,8 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.metadata.SolrMetadata;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +27,10 @@ import java.util.concurrent.CountDownLatch;
 public class SolrUtil {
     private static Logger logger = LogManager.getLogger(SolrUtil.class);
 
+    private static final String SOLR_CONFIGS_TEMPLATE = "goframe/im/solr/template/conf";
+    private static final String SOLR_CONFIGS_TEMPLATE_SCHEMA = SOLR_CONFIGS_TEMPLATE + "/schema.xml";
+    private static final String SOLR_CONFIG_ZOOKEEPER_DIR = "/configs";
+
     /**
      * 上传配置文件
      *
@@ -38,7 +42,7 @@ public class SolrUtil {
         Datasource datasource = metadata.getDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
         ZooKeeper zkClient = getZkClient(solrDatasource.getSolrUrl());
-        upload(zkClient, getSolrConfigPath(), "/solr/configs", metadata.getTbName(), metadata.getMetadataCols());
+        upload(zkClient, getSolrConfigPath(), SOLR_CONFIG_ZOOKEEPER_DIR, metadata.getTbName(), metadata.getMetadataCols());
     }
 
     /**
@@ -87,7 +91,7 @@ public class SolrUtil {
     }
 
     /**
-     * 上传配置文件
+     * 上传配置目录及文件（递归）
      *
      * @param zkClient
      * @param filePath       配置文件路径
@@ -100,12 +104,15 @@ public class SolrUtil {
     public static void upload(ZooKeeper zkClient, String filePath, String solrConfigPath, String configName, List<MetadataCol> metadataCols) throws Exception {
         File file = new File(filePath);
         if (file.isFile()) {
-            byte[] bytes = "schema.xml".equals(file.getName()) ? setSchemaField(metadataCols) : readFileByBytes(file.getPath());
-            String nodeCreated = zkClient.create(solrConfigPath + "/" + file.getName(), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            return;
+            byte[] bytes = getSchemaXMLBytes(configName, metadataCols, file);
+            zkClient.create(solrConfigPath + "/" + file.getName(), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         } else {
             solrConfigPath += "/" + (configName != null ? configName : file.getName());
+            // 配置文件目录已存在
             if (zkClient.exists(solrConfigPath, false) != null) {
+//                // 删除原配置目录及文件
+//                delPath(zkClient, solrConfigPath);
+//                zkClient.delete(solrConfigPath, -1);
                 throw new Exception("该名称的配置文件已存在！");
             }
             zkClient.create(solrConfigPath, file.getName().getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
@@ -114,12 +121,16 @@ public class SolrUtil {
                 if (e.isDirectory()) {
                     upload(zkClient, e.getPath(), solrConfigPath, null, metadataCols);
                 } else {
-                    byte[] bytes = "schema.xml".equals(e.getName()) ? setSchemaField(metadataCols) : readFileByBytes(e.getPath());
+                    byte[] bytes = getSchemaXMLBytes(configName, metadataCols, e);
                     zkClient.create(solrConfigPath + "/" + e.getName(), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                     continue;
                 }
             }
         }
+    }
+
+    private static byte[] getSchemaXMLBytes(String configName, List<MetadataCol> metadataCols, File file) {
+        return "schema.xml".equals(file.getName()) ? setSchemaField(configName, metadataCols) : readFileByBytes(file.getPath());
     }
 
     /**
@@ -128,26 +139,82 @@ public class SolrUtil {
      * @param metadataCols
      * @return
      */
-    public static byte[] setSchemaField(List<MetadataCol> metadataCols) {
-        URL url = ClassLoader.getSystemResource("goframe/im/SolrConfig/schema.xml");
+    public static byte[] setSchemaField(String collectionName, List<MetadataCol> metadataCols) {
+        URL url = ClassLoader.getSystemResource(SOLR_CONFIGS_TEMPLATE_SCHEMA);
         File file = new File(url.getPath());
         Document document = File2Doc(file);
         Element root = document.getRootElement();
-//      Element fields=root.element("fields"); //todo schema  fields ?? 添加到了最后面
-        for(MetadataCol e:metadataCols){
-            Element filed= DocumentHelper.createElement("field");
-            filed.addAttribute("name", e.getName());
-            filed.addAttribute("type", e.getType().getValue().toLowerCase()); //todo
-            filed.addAttribute("indexed", e.isIndexed() ? "true" : "false");
-            filed.addAttribute("stored", e.isStored() ? "true" : "false");
-            root.add(filed);
-            if(e.isPrimary()){
-                Element uniqueKey= DocumentHelper.createElement("uniqueKey");
-                uniqueKey.setText(e.getName());
+        root.addAttribute("name", collectionName);
+        Element fields = root.element("fields");
+        for (MetadataCol metadataCol : metadataCols) {
+            if (metadataCol.isPrimary()) { // 主键
+                Element field = DocumentHelper.createElement("field");
+                field.addAttribute("name", metadataCol.getName());
+                field.addAttribute("type", getSolrType(metadataCol.getType()));
+                field.addAttribute("indexed", "true");
+                field.addAttribute("stored", "true");
+                field.addAttribute("required", "true");
+                field.addAttribute("multiValued", "false");
+                fields.add(field);
+                Element uniqueKey = DocumentHelper.createElement("uniqueKey");
+                uniqueKey.setText(metadataCol.getName());
                 root.add(uniqueKey);
+            } else { // 非主键
+                Element field = DocumentHelper.createElement("field");
+                field.addAttribute("name", metadataCol.getName());
+                field.addAttribute("type", getSolrType(metadataCol.getType()));
+                field.addAttribute("indexed", metadataCol.isIndexed() ? "true" : "false");
+                field.addAttribute("stored", metadataCol.isStored() ? "true" : "false");
+                fields.add(field);
             }
         }
         return root.asXML().getBytes();
+    }
+
+    public static String getSolrType(DataType type) {
+        if (DataType.STRING == type || DataType.VARCHAR == type || DataType.CHAR == type || DataType.TIMESTAMP == type) {
+            return "string";
+        } else if (DataType.DOUBLE == type || DataType.DECIMAL == type) {
+            return "double";
+        } else if (DataType.INT == type || DataType.SMALLINT == type || DataType.TINYINT == type) {
+            return "int";
+        } else if (DataType.FLOAT == type) {
+            return "float";
+        } else if (DataType.BIGINT == type) {
+            return "long";
+        } else if (DataType.BOOLEAN == type) {
+            return "boolean";
+        } else {
+            return "string";
+        }
+    }
+
+    public static DataType getColType(String type) {
+        type = type.toUpperCase();
+        DataType dataType = null;
+        switch (type) {
+            case "STRING":
+                dataType = DataType.STRING;
+                break;
+            case "INT":
+                dataType = DataType.INT;
+                break;
+            case "FLOAT":
+                dataType = DataType.FLOAT;
+                break;
+            case "DOUBLE":
+                dataType = DataType.DOUBLE;
+                break;
+            case "DATE":
+                dataType = DataType.TIMESTAMP;
+                break;
+            case "BOOLEAN":
+                dataType = DataType.BOOLEAN;
+                break;
+            default:
+                dataType = DataType.STRING;
+        }
+        return dataType;
     }
 
     /**
@@ -248,7 +315,7 @@ public class SolrUtil {
     }
 
     public static String getSolrConfigPath() {
-        URL url = ClassLoader.getSystemResource("goframe/im/SolrConfig");
+        URL url = ClassLoader.getSystemResource(SOLR_CONFIGS_TEMPLATE);
         return url.getPath();
     }
 
@@ -263,45 +330,53 @@ public class SolrUtil {
         Datasource datasource = metadata.getDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
         ZooKeeper zkClient = getZkClient(solrDatasource.getSolrUrl());
-        String path = "/solr/configs/" + metadata.getTbName();
+        String path = SOLR_CONFIG_ZOOKEEPER_DIR + "/" + metadata.getTbName();
         delPath(zkClient, path);
         zkClient.delete(path, -1);
     }
 
 
+    /**
+     * 删除配置目录及文件（递归）
+     *
+     * @param zk
+     * @param path
+     * @throws Exception
+     */
     public static void delPath(ZooKeeper zk, String path) throws Exception {
-        List<String> paths = zk.getChildren(path, false);
-        for (String p : paths) {
-            delPath(zk, path + "/" + p);
+        List<String> files = zk.getChildren(path, false);
+        for (String file : files) {
+            delPath(zk, path + "/" + file);
         }
-        for (String p : paths) {
-            zk.delete(path + "/" + p, -1);
+        for (String file : files) {
+            zk.delete(path + "/" + file, -1);
         }
     }
 
-    public static void checkSolrProperty(Metadata metadata) throws Exception{
+    public static void checkSolrProperty(Metadata metadata) throws Exception {
         //检查主键是否合法
         List<MetadataCol> cols = metadata.getMetadataCols();
         boolean existPk = false;
-        for(MetadataCol e : cols){
-            if(e.isPrimary()){
+        for (MetadataCol e : cols) {
+            if (e.isPrimary()) {
                 existPk = true;
                 break;
             }
         }
-        if(!existPk){
-            throw new Exception("【配置参数】中的参数必须需满足”分片数*副本数<=节点数*单节点最大分片数“，请修改后再提交！");
+        if (!existPk) {
+            throw new Exception("必须指定至少一个主键！");
         }
 
-        //检查分片是否合法
-        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
-        int shards = solrMetadata.getShards();
-        int replicas = solrMetadata.getReplicas();
-        int maxShardsPerNode = solrMetadata.getMaxShardsPerNode();
-        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
-        int nodesNum = solrDatasource.getSolrServers().split(",").length; //todo 使用代理地址时会有问题
-        if(shards*replicas >= maxShardsPerNode*nodesNum){
-            throw new Exception("必须指定主键！");
-        }
+//        //检查分片是否合法（使用代理地址时会有问题）
+//        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
+//        int shards = solrMetadata.getShards();
+//        int replicas = solrMetadata.getReplicas();
+//        int maxShardsPerNode = solrMetadata.getMaxShardsPerNode();
+//        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
+//        int nodesNum = solrDatasource.getSolrServers().split(",").length;
+//        if (shards * replicas >= maxShardsPerNode * nodesNum) {
+//            throw new Exception("【配置参数】中的参数必须需满足”分片数*副本数<=节点数*单节点最大分片数“，请修改后再提交！");
+//        }
+
     }
 }

@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
-import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import org.apache.commons.lang3.StringUtils;
 
@@ -79,32 +78,37 @@ public class OracleSqlUtil {
         TableColumn column = null;
         String colName = "";
         String dataType = "";
-        String colComment = "";
+        String length = "";
         if (columns != null && columns.size() != 0) {
             sql = "\n (";
             for (int i = 0; i < columns.size(); i++) {
                 column = columns.get(i);
                 colName = column.getColName();
                 dataType = column.getDataType();
-                colComment = column.getColComment();
+                length = column.getLength();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
-                    if ("VARCHAR".equals(dataType)) {
-                        dataType += "(" + column.getLength() + ")";
-                    }
+                    dataType = getColType(dataType, length);
                     if (i == 0) {
                         sql += "\n" + colName + " " + dataType;
                     } else {
                         sql += "\n, " + colName + " " + dataType;
                     }
-//                    if (StringUtils.isNoneBlank(colComment)) {
-//                        sql += " COMMENT '" + colComment + "'";
-//                    }
                 }
             }
             sql += "\n)";
         }
-        sql = sql.replaceAll("STRING", "BLOB");
         return sql;
+    }
+
+    public static String getColType(String dataType, String length) {
+        if ("VARCHAR".equals(dataType)) {
+            dataType = "VARCHAR2(" + length + ")";
+        } else if ("CHAR".equals(dataType)) {
+            dataType = "CHAR(" + length + ")";
+        } else if ("DECIMAL".equals(dataType)) {
+            dataType = "NUMBER(" + length + ")";
+        }
+        return dataType;
     }
 
     public static String createPrimaryKey(String tableName, List<TableColumn> columns) {
@@ -113,8 +117,8 @@ public class OracleSqlUtil {
         }
         StringBuffer sb = new StringBuffer();
         List<String> list = new ArrayList<>();
-        for(TableColumn col : columns){
-            if(col.isPrimaryKey() && !"STRING".equals(col.getDataType())){
+        for (TableColumn col : columns) {
+            if (col.isPrimaryKey() && !"STRING".equals(col.getDataType())) {
                 list.add(col.getColName());
             }
         }

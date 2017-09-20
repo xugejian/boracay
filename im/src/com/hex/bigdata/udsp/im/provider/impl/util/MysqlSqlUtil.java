@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,6 +59,7 @@ public class MysqlSqlUtil {
         String colName = "";
         String dataType = "";
         String colComment = "";
+        String length = "";
         if (columns != null && columns.size() != 0) {
             sql = "\n (";
             for (int i = 0; i < columns.size(); i++) {
@@ -65,18 +67,16 @@ public class MysqlSqlUtil {
                 colName = column.getColName();
                 dataType = column.getDataType();
                 colComment = column.getColComment();
+                length = column.getLength();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
-                  // TODO 该处错误需要修改！
-                    if("VARCHAR".equals(dataType)){
-                        dataType += "("+ column.getLength()+")";
-                    }
+                    dataType = getColType(dataType, length);
                     if (i == 0) {
                         sql += "\n" + colName + " " + dataType;
                     } else {
                         sql += "\n, " + colName + " " + dataType;
                     }
-                    if(column.isPrimaryKey() && !"STRING".equals(column.getDataType())){ //类型不能指定为pk
-                        sql += " primary key ";
+                    if (column.isPrimaryKey() && !"STRING".equals(column.getDataType())) { //类型不能指定为pk
+                        sql += " PRIMARY KEY ";
                     }
                     if (StringUtils.isNoneBlank(colComment)) {
                         sql += " COMMENT '" + colComment + "'";
@@ -85,8 +85,19 @@ public class MysqlSqlUtil {
             }
             sql += "\n)";
         }
-        sql = sql.replaceAll("STRING","BLOB");
+        sql = sql.replaceAll("STRING", "BLOB");
         return sql;
+    }
+
+    private static String getColType(String dataType, String length) {
+        if ("VARCHAR".equals(dataType)) {
+            dataType = "VARCHAR(" + length + ")";
+        } else if ("CHAR".equals(dataType)) {
+            dataType = "CHAR(" + length + ")";
+        } else if ("DECIMAL".equals(dataType)) {
+            dataType = "DECIMAL(" + length + ")";
+        }
+        return dataType;
     }
 
     private static String getTableComment(String tableComment) {
