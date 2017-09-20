@@ -1,15 +1,11 @@
 package com.hex.bigdata.udsp.im.dao;
 
 import com.hex.bigdata.udsp.common.dao.base.SyncMapper;
-import com.hex.bigdata.udsp.im.dto.ImModelView;
-import com.hex.bigdata.udsp.im.model.ImModel;
 import com.hex.bigdata.udsp.im.model.ImModelMapping;
-import com.hex.goframe.model.Page;
 import com.hex.goframe.util.Util;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public class ImModelMappingMapper  extends SyncMapper<ImModelMapping> {

@@ -98,4 +98,16 @@
     where DEL_FLG = '0'
     and NAME = #{name,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectTargetMateData" resultMap="BaseResultMap">
+    select IM.PK_ID, IM.DS_ID, IM.NAME, IM.DESCRIBE, IM.NOTE, IM.DEL_FLG, IM.CRT_USER, IM.CRT_TIME, IM.UPT_USER,
+    IM.UPT_TIME, IM.TB_NAME, IM.STATUS, IM.TYPE
+    from IM_METADATA IM
+    LEFT JOIN COM_DATASOURCE CD
+    ON CD.PK_ID = IM.DS_ID
+    LEFT JOIN T_GF_DICT TGD
+    on TGD.DICT_ID = CD.TYPE
+    where IM.DEL_FLG = '0'
+    and TGD.DICT_TYPE_ID = #{tgctId}
+  </select>
 </mapper>

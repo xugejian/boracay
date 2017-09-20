@@ -32,7 +32,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="tMdId">目标元数据：</label></th>
                     <td >
                         <div id="tMdId" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
-                             url="${basePath}/im/md/selectAll" dataField="data" name="tMdId" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
+                             dataField="data" name="tMdId" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -319,22 +319,40 @@ ${extends("/goframe/function_layout.httl")}
             }
             grid1.addRows(cols);
         });
+        //不能异步执行
+        $.ajax({
+            url:"${basePath}/com/ds/checkSourceType/"+srcDsModel.value,
+            data:{},
+            cache: false,
+            async:false,
+            success:function (data) {
+                if (data.data == true) {
+                    $("#updateType").css("display", "table-row");
+                    $("#buildType").css("display", "none");
+                    buildModeObject.setValue("");
+                    $("#eDsModel").css("display", "none");
+                    srcSourceType = "2";
+                } else {
+                    $("#updateType").css("display", "none");
+                    updateModeObject.setValue("");
+                    updateKeyObject.setValue("");
+                    $("#buildType").css("display", "table-row");
+                    $("#eDsModel").css("display", "table-row");
+                    srcSourceType = "1";
+                }
+            }
+        });
 
-        //判断数据源实时非实时来判断显示跟新策略还是构建策略并清空原来数据
-        $.post("${basePath}/com/ds/checkSourceType/"+srcDsModel.value, {}, function (data) {
-            if(data.data == true){
-                $("#updateType").css("display","table-row");
-                $("#buildType").css("display","none");
-                buildModeObject.setValue("");
-                $("#eDsModel").css("display","none");
-                srcSourceType = "2";
-            }else{
-                $("#updateType").css("display","none");
-                updateModeObject.setValue("");
-                updateKeyObject.setValue("");
-                $("#buildType").css("display","table-row");
-                $("#eDsModel").css("display","table-row");
-                srcSourceType = "1";
+        //目标元数据可选择项修改
+        $.ajax({
+            url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
+            type: 'POST',
+            cache: false,
+            async:false,
+            contentType: 'application/json',
+            success: function (data) {
+                //状态成功并信息是是的
+                targetDsModel.load(data.data);
             }
         });
     }
@@ -600,8 +618,9 @@ ${extends("/goframe/function_layout.httl")}
 
     //添加目标元数据
     function addTarget(){
+        //应该只能添加对应类型的目标数据源
         nui.open({
-            url: "${basePath}/goframe/p/im.cm.md.add?fromModel=true",
+            url: "${basePath}/goframe/p/im.cm.md.add?fromModel=true&targetType="+srcSourceType,
             title: "添加",
             width: 800,
             height: 600,
@@ -610,7 +629,7 @@ ${extends("/goframe/function_layout.httl")}
             ondestroy: function (action) {
                 //重新加载下
                 $.ajax({
-                    url: "${basePath}/im/md/selectAll",
+                    url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
                     type: 'POST',
                     cache: false,
                     async:false,
@@ -805,6 +824,10 @@ ${extends("/goframe/function_layout.httl")}
                 targetCols.setText(data.values);
             }
         });
+    }
+    
+    function getTargetMateData(e) {
+
     }
 </script>
 <!--#end-->

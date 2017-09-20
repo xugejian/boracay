@@ -181,6 +181,7 @@ ${extends("/goframe/function_layout.httl")}
     var grid1;
     var grid2;
     var originName;
+    var dsIdObject;
     /**
      * 按需加载资源文件
      */
@@ -189,8 +190,40 @@ ${extends("/goframe/function_layout.httl")}
         form1 = new nui.Form("#form1");
         grid1 = nui.get("datagrid1");
         grid2 = nui.get("datagrid2");
+        dsIdObject = nui.get("dsId");
+        debugger;
+        var targetType = getUrlParam('targetType');
+        if(targetType){
+            initLoad(targetType);
+        }
     });
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
 
+    function initLoad(type) {
+        var targetType;
+        if(type == "2"){
+            targetType = "IM_DS_TARGET_REALTIME_TYPE";
+        }else{
+            targetType = "IM_DS_TARGET_BATCH_TYPE";
+        }
+        dsIdObject.url = "${basePath}/com/ds/select?model=IM&imDsTypeDictId=" + targetType;
+        $.ajax({
+            url: "${basePath}/com/ds/select?model=IM&imDsTypeDictId=" + targetType,
+            type: 'POST',
+            cache: false,
+            async:false,
+            contentType: 'application/json',
+            success: function (data) {
+                dsIdObject.load(data.data);
+            }
+        });
+
+    }
+    
     /**
      * 选中
      */

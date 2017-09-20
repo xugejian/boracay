@@ -390,4 +390,17 @@ public class ImMetadataController {
         }
         return filePath;
     }
+
+
+    @RequestMapping("getTargetMateData/{type}")
+    @ResponseBody
+    public MessageResult getTargetMateData(@PathVariable String type){
+        List<ImMetadata> imMetadatas = null;
+        try{
+            imMetadatas = imMetadataService.selectTargetMateData(type);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new PageListResult(imMetadatas);
+    }
 }
