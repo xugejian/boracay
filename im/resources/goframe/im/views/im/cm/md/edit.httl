@@ -385,14 +385,10 @@ ${extends("/goframe/function_layout.httl")}
 
     function saveAndCreate() {
         form1.validate();
-        if (form1.isValid() == false) {
-            return;
-        }
+        if (form1.isValid() == false) return;
         var saveData = getSaveData();
-        if (!saveData) {
-            return;
-        }
-        var json = nui.encode(saveData);
+        if (!saveData) return;
+        json = nui.encode(saveData);
         //禁用保存按钮
         nui.get("saveAndCreateButton").disable();
         // --发送信息--
@@ -402,6 +398,7 @@ ${extends("/goframe/function_layout.httl")}
             type: 'POST',
             data: json,
             cache: false,
+            async: false,
             contentType: 'application/json',
             success: function (result) {
                 if (result.status == true) {
@@ -715,6 +712,7 @@ ${extends("/goframe/function_layout.httl")}
     function onvaluechangedType() {
         setSaveButton();
         setCols();
+        setParams();
     }
 
     /**
@@ -736,39 +734,64 @@ ${extends("/goframe/function_layout.httl")}
      */
     function setCols() {
         var type = nui.get("type").getValue();
-        if (type == 0) {
-            return;
-        }
         var dsId = nui.get("dsId").getValue();
         if (!dsId) {
             alert("请选择数据源！");
             return;
         }
         var tbName = nui.get("tbName").getValue();
-        if (!tbName) {
-            return;
-        }
-        if (tbName == originName) {
-            return;
-        }
+        if (!tbName) return;
+        if (tbName == originName) return;
         originName = tbName;
         var json = nui.encode({"dsId": dsId, "tbName": tbName});
-        $.ajax({
-            url: "${basePath}/im/md/getCloumnInfo",
-            type: 'POST',
-            data: json,
-            cache: false,
-            async: false,
-            contentType: 'application/json',
-            success: function (text) {
-                if (text.status) {
-                    grid1.clearRows();
-                    grid1.addRows(dealCols(text.data));
-                } else {
-                    nui.alert(text.message);
+        if (type == 0) { // 内表
+            form1.loading("正在检查表中,请稍等...");
+            $.ajax({
+                url: "${basePath}/im/md/checkSchemaExists",
+                type: 'POST',
+                data: json,
+                cache: false,
+                async: false,
+                contentType: 'application/json',
+                success: function (text) {
+                    if (!text.status) {
+                        nui.alert(text.message);
+                    }
+                    form1.unmask();
                 }
-            }
-        });
+            });
+        } else { // 外表
+            form1.loading("正在获取字段中,请稍等...");
+            $.ajax({
+                url: "${basePath}/im/md/getCloumnInfo",
+                type: 'POST',
+                data: json,
+                cache: false,
+                async: false,
+                contentType: 'application/json',
+                success: function (text) {
+                    if (text.status) {
+                        grid1.clearRows();
+                        grid1.addRows(dealCols(text.data));
+                    } else {
+                        nui.alert(text.message);
+                    }
+                    form1.unmask();
+                }
+            });
+        }
+    }
+
+    /**
+     * 设置配置信息
+     */
+    function setParams() {
+        var type = nui.get("type").getValue();
+        if (type == 0) { // 内表
+            typeChanged();
+        } else { // 外表
+            grid2.clearRows();
+        }
     }
 
     /**

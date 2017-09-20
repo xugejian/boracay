@@ -70,42 +70,13 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
             mdCol.setSeq((short) i);
             mdCol.setName((String) fields.getJSONObject(i).get("name"));
             mdCol.setDescribe((String) fields.getJSONObject(i).get("name"));
-            mdCol.setType(getColType((String) fields.getJSONObject(i).get("type")));
-            mdCol.setLength("");
+            mdCol.setType(SolrUtil.getColType((String) fields.getJSONObject(i).get("type")));
             mdCol.setIndexed((boolean) fields.getJSONObject(i).get("indexed"));
             mdCol.setStored((boolean) fields.getJSONObject(i).get("stored"));
+            mdCol.setPrimary(fields.getJSONObject(i).get("uniqueKey") == null ? false : true);
             metadataCols.add(mdCol);
         }
         return metadataCols;
-    }
-
-
-    public static DataType getColType(String type) {
-        type = type.toUpperCase();
-        DataType dataType = null;
-        switch (type) {
-            case "STRING":
-                dataType = DataType.STRING;
-                break;
-            case "INT":
-                dataType = DataType.INT;
-                break;
-            case "FLOAT":
-                dataType = DataType.FLOAT;
-                break;
-            case "DOUBLE":
-                dataType = DataType.DOUBLE;
-                break;
-            case "DATE":
-                dataType = DataType.TIMESTAMP;
-                break;
-            case "BOOLEAN":
-                dataType = DataType.BOOLEAN;
-                break;
-            default:
-                dataType = DataType.STRING;
-        }
-        return dataType;
     }
 
     @Override
@@ -138,23 +109,6 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         }
         return true;
     }
-
-//    @Override
-//    public boolean dropSchema(Metadata metadata) throws Exception {
-//        SolrUtil.deleteZnode(metadata);
-//        String[] addresses = getSolrServerStrings(metadata);
-//        for (String solrServer : addresses) {
-//            String url = "http://" + solrServer + "/solr/admin/collections";
-//            String param = "action=DELETE" + "&name=" + metadata.getTbName();
-//            try {
-//                SolrUtil.sendGet(url, param);
-//            } catch (Exception e) {
-//                continue;
-//            }
-//            break;
-//        }
-//        return true;
-//    }
 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {

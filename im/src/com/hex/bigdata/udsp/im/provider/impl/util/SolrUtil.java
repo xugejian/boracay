@@ -29,7 +29,7 @@ public class SolrUtil {
 
     private static final String SOLR_CONFIGS_TEMPLATE = "goframe/im/solr/template/conf";
     private static final String SOLR_CONFIGS_TEMPLATE_SCHEMA = SOLR_CONFIGS_TEMPLATE + "/schema.xml";
-    private static final String SOLR_CONFIG_ZOOKEEPER_DIR = "/solr/configs";
+    private static final String SOLR_CONFIG_ZOOKEEPER_DIR = "/configs";
 
     /**
      * 上传配置文件
@@ -106,7 +106,6 @@ public class SolrUtil {
         if (file.isFile()) {
             byte[] bytes = getSchemaXMLBytes(configName, metadataCols, file);
             zkClient.create(solrConfigPath + "/" + file.getName(), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            return;
         } else {
             solrConfigPath += "/" + (configName != null ? configName : file.getName());
             // 配置文件目录已存在
@@ -188,6 +187,34 @@ public class SolrUtil {
         } else {
             return "string";
         }
+    }
+
+    public static DataType getColType(String type) {
+        type = type.toUpperCase();
+        DataType dataType = null;
+        switch (type) {
+            case "STRING":
+                dataType = DataType.STRING;
+                break;
+            case "INT":
+                dataType = DataType.INT;
+                break;
+            case "FLOAT":
+                dataType = DataType.FLOAT;
+                break;
+            case "DOUBLE":
+                dataType = DataType.DOUBLE;
+                break;
+            case "DATE":
+                dataType = DataType.TIMESTAMP;
+                break;
+            case "BOOLEAN":
+                dataType = DataType.BOOLEAN;
+                break;
+            default:
+                dataType = DataType.STRING;
+        }
+        return dataType;
     }
 
     /**

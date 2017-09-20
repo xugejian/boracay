@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.im.provider.impl.factory.SolrConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
@@ -14,8 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
-import org.apache.solr.common.params.ModifiableSolrParams;
-import org.apache.solr.common.params.SolrParams;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -105,7 +104,7 @@ public abstract class SolrWrapper extends BatchWrapper {
 
     protected List<TblProperty> getTblProperties(SolrDatasource datasource, String pkName, String collectionName) {
         List<TblProperty> tblProperties = new ArrayList<>();
-        tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl())); // zookeeper地址、端口和目录
+        tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl() + "/solr")); // zookeeper地址、端口和目录
         tblProperties.add(new TblProperty("solr.query", "*:*")); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1000")); // 批量大小
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名

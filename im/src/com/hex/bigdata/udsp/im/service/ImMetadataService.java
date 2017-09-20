@@ -164,7 +164,7 @@ public class ImMetadataService extends BaseService {
         return list;
     }
 
-    public boolean checkTableExists(String dsId, String tbName) throws Exception{
+    public boolean checkSchemaExists(String dsId, String tbName) throws Exception{
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectByFkId(dsId);
         Datasource datasource = new Datasource(comDatasource, comProperties);
