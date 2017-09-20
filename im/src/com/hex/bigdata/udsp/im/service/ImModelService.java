@@ -538,7 +538,7 @@ public class ImModelService {
     }
 
     //通过模型id获取模型
-    private Model getModelByPkId(ImModel imModel) {
+    private Model getModelByPkId(ImModel imModel) throws Exception{
         String pkId = imModel.getPkId();
         //修改comProperties为继承property类比较好,设计有问题，冗余
         List<ComProperties> properties = comPropertiesMapper.selectByFkId(pkId);
@@ -576,6 +576,7 @@ public class ImModelService {
             transformModelMapping(imModelMapping,modelMapping);
             //获取映射的目标字段信息
             ImMetadataCol imMetadataCol = imMetadataColMapper.select(imModelMapping.getColId());
+            //如果出错则将异常抛出来
             transformMetaCol(imMetadataCol,metadataCol);
             modelMapping.setMetadataCol(metadataCol);
             modelMappings.add(modelMapping);
@@ -593,7 +594,7 @@ public class ImModelService {
         return  model;
     }
 
-    private Metadata getMateDataById(String mdId) {
+    private Metadata getMateDataById(String mdId) throws Exception{
 
         List<ComProperties> comProperties = comPropertiesMapper.selectByFkId(mdId);
         Metadata metadata = new Metadata(PropertyUtil.convertToPropertyList(comProperties));
@@ -632,7 +633,7 @@ public class ImModelService {
     }
 
     //模型基础信息转换
-    private void transformModel(Model model, ImModel imModel) {
+    private void transformModel(Model model, ImModel imModel) throws Exception{
         model.setId(imModel.getPkId());
         model.setName(imModel.getName());
         model.setDescribe(imModel.getDescribe());
@@ -661,7 +662,7 @@ public class ImModelService {
         }
     }
 
-    private Datasource getDatasourceById(String id){
+    private Datasource getDatasourceById(String id) throws Exception{
         if(StringUtils.isBlank(id)){
             return null;
         }
@@ -670,7 +671,7 @@ public class ImModelService {
         return new Datasource(comDatasource,comProperties);
     }
     //元数据字段信息转换
-    private void transformMetaCol(ImMetadataCol imMetadataCol,MetadataCol metadataCol){
+    private void transformMetaCol(ImMetadataCol imMetadataCol,MetadataCol metadataCol) throws Exception{
         metadataCol.setSeq(imMetadataCol.getSeq());
         metadataCol.setDescribe(imMetadataCol.getDescribe());
         metadataCol.setIndexed(imMetadataCol.getIndexed().equals("0"));
@@ -681,7 +682,7 @@ public class ImModelService {
         metadataCol.setPrimary(imMetadataCol.getPrimary().equals("0"));
     }
     //映射字段转换
-    private void transformModelMapping(ImModelMapping imModelMapping,ModelMapping modelMapping){
+    private void transformModelMapping(ImModelMapping imModelMapping,ModelMapping modelMapping) throws Exception{
         modelMapping.setName(imModelMapping.getName());
         modelMapping.setDescribe(imModelMapping.getDescribe());
         modelMapping.setLength(imModelMapping.getLength());
@@ -691,7 +692,7 @@ public class ImModelService {
     }
 
     //过滤字段转换
-    private void transformModelFilterCol(ImModelFilterCol imModelFilterCol, ModelFilterCol modelFilterCol){
+    private void transformModelFilterCol(ImModelFilterCol imModelFilterCol, ModelFilterCol modelFilterCol) throws Exception{
         modelFilterCol.setSeq(imModelFilterCol.getSeq());
         modelFilterCol.setDefaultVal(imModelFilterCol.getDefaultVal());
         modelFilterCol.setDescribe(imModelFilterCol.getDescribe());
