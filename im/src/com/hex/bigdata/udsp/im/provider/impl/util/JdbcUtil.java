@@ -75,6 +75,12 @@ public class JdbcUtil {
         return conn;
     }
 
+    public static boolean createEngineSchema(JdbcDatasource datasource, String dbName, String updateSql) throws SQLException {
+        String sql = HiveSqlUtil.createDatabase(true, dbName);
+        return executeUpdate(datasource, sql) >= 0 ? true : false
+                && executeUpdate(datasource, updateSql) >= 0 ? true : false;
+    }
+
     public static int executeUpdate(JdbcDatasource datasource, String updateSql) throws SQLException {
         Connection conn = null;
         Statement stmt = null;
