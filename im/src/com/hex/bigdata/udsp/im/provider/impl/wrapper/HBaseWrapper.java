@@ -71,7 +71,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
             config.testWhileIdle = true;
             config.testOnBorrow = false;
             config.testOnReturn = false;
-            factory = new HBaseAdminPoolFactory(config, datasource.getZkQuorum(), datasource.getZkPort());
+            factory = new HBaseAdminPoolFactory(config, datasource);
         }
         hbaseAdminPool.put(dsId, factory);
         return factory;
@@ -107,7 +107,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
             config.testWhileIdle = true;
             config.testOnBorrow = false;
             config.testOnReturn = false;
-            factory = new HBaseConnectionPoolFactory(config, datasource.getZkQuorum(), datasource.getZkPort());
+            factory = new HBaseConnectionPoolFactory(config, datasource);
         }
         dataSourcePool.put(dsId, factory);
         return factory;
@@ -346,7 +346,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
      *
      * @return
      */
-    protected boolean createHTable(HBaseMetadata metadata) {
+    protected boolean createHTable(HBaseMetadata metadata) throws IOException {
         HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
         HBaseAdmin admin = getHBaseAdmin(datasource);
         String tableName = metadata.getTbName();
@@ -356,11 +356,14 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
         try {
             status = admin.isTableAvailable(hbaseTableName);
         } catch (IOException e1) {
-            e1.printStackTrace();
             release(datasource, admin);
+            throw new IOException(e1.getMessage());
         }
         // 不存在该表
-        if (!status) {
+        if (status) {
+            System.out.println("HBase表" + tableName + "已经存在！");
+            throw new IOException("HBase表" + tableName + "已经存在！");
+        } else {
             HTableDescriptor hbaseTable = new HTableDescriptor(hbaseTableName);
             // 族设置参数
             HColumnDescriptor hbaseColumn = new HColumnDescriptor(metadata.getFamily());
@@ -399,14 +402,11 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
                 return true;
             } catch (IOException e) {
                 System.out.println("HBase表" + tableName + "创建失败！");
-                e.printStackTrace();
+                throw new IOException("HBase表" + tableName + "创建失败！" + e.getMessage());
             } finally {
                 release(datasource, admin);
             }
-        } else {
-            System.out.println("HBase表" + tableName + "已经存在！");
         }
-        return false;
     }
 
     /**
@@ -415,7 +415,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
      * @param tableName
      * @return
      */
-    protected boolean disableHTable(HBaseDatasource datasource, String tableName) {
+    protected boolean disableHTable(HBaseDatasource datasource, String tableName) throws IOException {
         HBaseAdmin admin = getHBaseAdmin(datasource);
         TableName hbaseTableName = TableName.valueOf(tableName);
         // 判断是否已经存在该表
@@ -423,8 +423,8 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
         try {
             status = admin.isTableAvailable(hbaseTableName);
         } catch (IOException e1) {
-            e1.printStackTrace();
             release(datasource, admin);
+            throw new IOException(e1.getMessage());
         }
         // 存在该表
         if (status) {
@@ -434,14 +434,14 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
                 return true;
             } catch (IOException e) {
                 System.out.println("HBase表" + tableName + "禁用失败！");
-                e.printStackTrace();
+                throw new IOException("HBase表" + tableName + "禁用失败！" + e.getMessage());
             } finally {
                 release(datasource, admin);
             }
         } else {
             System.out.println("HBase表" + tableName + "不存在！");
+            throw new IOException("HBase表" + tableName + "不存在！");
         }
-        return false;
     }
 
     /**
@@ -450,7 +450,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
      * @param tableName
      * @return
      */
-    protected boolean deleteHTable(HBaseDatasource datasource, String tableName) {
+    protected boolean deleteHTable(HBaseDatasource datasource, String tableName) throws IOException {
         HBaseAdmin admin = getHBaseAdmin(datasource);
         TableName hbaseTableName = TableName.valueOf(tableName);
         // 判断是否已经存在该表
@@ -458,8 +458,8 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
         try {
             status = admin.isTableAvailable(hbaseTableName);
         } catch (IOException e1) {
-            e1.printStackTrace();
             release(datasource, admin);
+            throw new IOException(e1.getMessage());
         }
         // 存在该表
         if (status) {
@@ -469,14 +469,14 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
                 return true;
             } catch (IOException e) {
                 System.out.println("HBase表" + tableName + "删除失败！");
-                e.printStackTrace();
+                throw new IOException("HBase表" + tableName + "删除失败！" + e.getMessage());
             } finally {
                 release(datasource, admin);
             }
         } else {
             System.out.println("HBase表" + tableName + "不存在！");
+            throw new IOException("HBase表" + tableName + "不存在！");
         }
-        return false;
     }
 
     /**
@@ -485,7 +485,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
      * @param tableName
      * @return
      */
-    protected boolean dropHTable(HBaseDatasource datasource, String tableName) {
+    protected boolean dropHTable(HBaseDatasource datasource, String tableName) throws IOException {
         HBaseAdmin admin = getHBaseAdmin(datasource);
         TableName hbaseTableName = TableName.valueOf(tableName);
         // 判断是否已经存在该表
@@ -493,8 +493,8 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
         try {
             status = admin.isTableAvailable(hbaseTableName);
         } catch (IOException e1) {
-            e1.printStackTrace();
             release(datasource, admin);
+            throw new IOException(e1.getMessage());
         }
         // 存在该表
         if (status) {
@@ -507,26 +507,26 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
                     return true;
                 } catch (IOException e) {
                     System.out.println("HBase表" + tableName + "删除失败！");
-                    e.printStackTrace();
+                    throw new IOException("HBase表" + tableName + "删除失败！" + e.getMessage());
                 } finally {
                     release(datasource, admin);
                 }
             } catch (IOException e) {
                 System.out.println("HBase表" + tableName + "禁用失败！");
-                e.printStackTrace();
+                throw new IOException("HBase表" + tableName + "禁用失败！" + e.getMessage());
             } finally {
                 release(datasource, admin);
             }
         } else {
             System.out.println("HBase表" + tableName + "不存在！");
+            throw new IOException("HBase表" + tableName + "不存在！");
         }
-        return false;
     }
 
     /**
      * 清空HBase表数据
      */
-    protected boolean emptyHTable(HBaseMetadata metadata) {
+    protected boolean emptyHTable(HBaseMetadata metadata) throws IOException {
         HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
         String tableName = metadata.getTbName();
         if (dropHTable(datasource, tableName)) {
@@ -538,7 +538,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
     /**
      * 清空HBase表数据
      */
-    protected boolean emptyHTable(HBaseDatasource datasource, String tableName, int numRegions) {
+    protected boolean emptyHTable(HBaseDatasource datasource, String tableName, int numRegions) throws IOException {
         if (dropHTable(datasource, tableName)) {
             TableName hbaseTableName = TableName.valueOf(tableName);
             HConnection conn = getConnection(datasource);
@@ -551,7 +551,7 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
                 return true;
             } catch (IOException e) {
                 System.out.println("HBase表" + tableName + "创建失败！");
-                e.printStackTrace();
+                throw new IOException("HBase表" + tableName + "创建失败！" + e.getMessage());
             } finally {
                 release(datasource, admin);
                 release(datasource, conn);
@@ -585,12 +585,10 @@ public abstract class HBaseWrapper extends BatchTargetWrapper {
         BigInteger lowestKey = new BigInteger(startKey, 16);
         BigInteger highestKey = new BigInteger(endKey, 16);
         BigInteger range = highestKey.subtract(lowestKey);
-        BigInteger regionIncrement = range.divide(BigInteger
-                .valueOf(numRegions));
+        BigInteger regionIncrement = range.divide(BigInteger.valueOf(numRegions));
         lowestKey = lowestKey.add(regionIncrement);
         for (int i = 0; i < numRegions - 1; i++) {
-            BigInteger key = lowestKey.add(regionIncrement.multiply(BigInteger
-                    .valueOf(i)));
+            BigInteger key = lowestKey.add(regionIncrement.multiply(BigInteger.valueOf(i)));
             byte[] b = String.format("%016x", key).getBytes();
             splits[i] = b;
         }

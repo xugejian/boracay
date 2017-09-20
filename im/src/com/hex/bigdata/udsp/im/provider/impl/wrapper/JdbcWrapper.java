@@ -133,6 +133,21 @@ public abstract class JdbcWrapper extends BatchWrapper {
     }
 
     @Override
+    public boolean testDatasource(Datasource datasource) {
+        boolean canConnection = false;
+        Connection conn = null;
+        try {
+            conn = JdbcUtil.getConnection(new JdbcDatasource(datasource.getPropertyMap()));
+            if (conn != null && !conn.isClosed()) canConnection = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
+        }
+        return canConnection;
+    }
+
+    @Override
     public boolean createTargetEngineSchema(Model model) throws SQLException {
         Datasource eDs = model.getEngineDatasource();
         String eDsId = eDs.getId();

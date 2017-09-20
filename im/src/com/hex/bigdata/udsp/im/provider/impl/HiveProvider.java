@@ -37,12 +37,8 @@ public class HiveProvider extends JdbcWrapper {
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
         List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
-        List<TableColumn> partitions = new ArrayList<TableColumn>();
-        TableColumn tableColumn = new TableColumn("date", "DATE", "分区字段"); //todo hive分区字段
-        partitions.add(tableColumn);
-        String fileFormat = FileFormat.HIVE_FILE_FORMAT_PARQUET;
         String sql = HiveSqlUtil.createTable(false, false, fullTbName,
-                columns, tableComment, partitions, null, fileFormat);
+                columns, tableComment, null, null, FileFormat.HIVE_FILE_FORMAT_PARQUET);
         return JdbcUtil.executeUpdate(hiveDatasource, sql) == 0 ? true : false;
     }
 

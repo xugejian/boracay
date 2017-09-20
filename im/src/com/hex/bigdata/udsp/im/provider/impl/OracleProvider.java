@@ -89,6 +89,7 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
 
     @Override
     protected DataType getColType(String type) {
+        type = type.toUpperCase();
         DataType dataType = null;
         switch (type) {
             case "VARCHAR":

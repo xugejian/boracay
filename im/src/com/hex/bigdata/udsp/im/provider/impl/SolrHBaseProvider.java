@@ -3,6 +3,9 @@ package com.hex.bigdata.udsp.im.provider.impl;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.constant.UpdateMode;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.KafkaUtil;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrHBaseWrapper;
@@ -11,11 +14,19 @@ import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.HConnection;
+import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -41,7 +52,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper {
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
-        return solrProvider.createSchema(metadata) && hbaseProvider.createSchema(metadata);
+        return hbaseProvider.createSchema(metadata) && solrProvider.createSchema(metadata);
     }
 
     @Override
@@ -51,7 +62,7 @@ public class SolrHBaseProvider extends SolrHBaseWrapper {
 
     @Override
     public boolean checkSchemaExists(Metadata metadata) throws Exception {
-        return solrProvider.checkSchemaExists(metadata);
+        return solrProvider.checkSchemaExists(metadata) && hbaseProvider.checkSchemaExists(metadata);
     }
 
     @Override
@@ -109,5 +120,10 @@ public class SolrHBaseProvider extends SolrHBaseWrapper {
         solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
         hbaseProvider.inputSQL(hBaseModel);
         solrProvider.inputSQL(solrModel);
+    }
+
+    @Override
+    public boolean testDatasource(Datasource datasource) {
+        return hbaseProvider.testDatasource(datasource) && solrProvider.testDatasource(datasource);
     }
 }

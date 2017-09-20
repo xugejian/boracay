@@ -13,6 +13,8 @@ import com.hex.bigdata.udsp.im.provider.model.Model;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvider {
     private static Logger logger = LogManager.getLogger(KafkaProvider.class);
     private static final int CONSUMER_TIMEOUT_MS = 1000;
+    private static final String GROUP_ID = "udsp-group";
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
@@ -37,30 +40,59 @@ public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvide
         String topic = kafkaModel.getTopic();
         Map<String, Property> propertyMap = datasource.getPropertyMap();
         propertyMap.put("consumer.timeout.ms", new Property("consumer.timeout.ms", Integer.toString(CONSUMER_TIMEOUT_MS)));
+        propertyMap.put("group.id", new Property("group.id", GROUP_ID));
         KafkaDatasource kafkaDatasource = new KafkaDatasource(propertyMap);
-        ConsumerConnector consumer = KafkaUtil.getConsumerConnector(kafkaDatasource);
-        int threadNum = kafkaDatasource.getThreadNum();
-        List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.receive(consumer, topic, threadNum);
-        for (KafkaStream<byte[], byte[]> stream : streams) {
-            ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
-            while (iterator.hasNext()) {
-                String message = new String(iterator.next().message());
-                logger.debug("kafka接收的信息为：" + message);
-                try {
-                    Map<String, Object> map = JSONUtil.parseJSON2Map(message);
-                    metadataCols = new ArrayList<>();
-                    for (Map.Entry<String, Object> entry : map.entrySet()) {
-                        MetadataCol metadataCol = new MetadataCol();
-                        metadataCol.setName(entry.getKey());
-                        metadataCol.setType(getType(entry.getValue()));
-                        metadataCols.add(metadataCol);
+        ConsumerConnector consumer = null;
+        try {
+            consumer = KafkaUtil.getConsumerConnector(kafkaDatasource);
+            int threadNum = kafkaDatasource.getThreadNum();
+            List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.receive(consumer, topic, threadNum);
+            for (KafkaStream<byte[], byte[]> stream : streams) {
+                ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
+                while (iterator.hasNext()) {
+                    String message = new String(iterator.next().message());
+                    logger.debug("kafka接收的信息为：" + message);
+                    try {
+                        Map<String, Object> map = JSONUtil.parseJSON2Map(message);
+                        metadataCols = new ArrayList<>();
+                        for (Map.Entry<String, Object> entry : map.entrySet()) {
+                            MetadataCol metadataCol = new MetadataCol();
+                            metadataCol.setName(entry.getKey());
+                            metadataCol.setType(getType(entry.getValue()));
+                            metadataCols.add(metadataCol);
+                        }
+                        break;
+                    } catch (Exception e) {
+                        logger.debug(e.getMessage());
                     }
-                    break;
-                } catch (Exception e) {
-                    logger.debug(e.getMessage());
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            KafkaUtil.close(consumer);
         }
         return metadataCols;
+    }
+
+    @Override
+    public boolean testDatasource(Datasource datasource) {
+        boolean canConnection = true;
+        Producer<String, String> producer = null;
+        try {
+            producer = KafkaUtil.getProducer(new KafkaDatasource(datasource.getProperties()));
+            if (producer == null) {
+                canConnection = false;
+            } else {
+                producer.send(new KeyedMessage<String, String>("udsp-im-ds-test", "udsp rts datasource test info"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            canConnection = false;
+        } finally {
+            KafkaUtil.close(producer);
+        }
+        return canConnection;
     }
 }
