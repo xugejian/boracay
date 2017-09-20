@@ -119,8 +119,8 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
-        SolrUtil.checkSolrProperty(metadata);
-        SolrUtil.uploadSolrConfig(metadata);
+        SolrUtil.checkSolrProperty(metadata); // 检查参数
+        SolrUtil.uploadSolrConfig(metadata); // 添加配置
         SolrMetadata solrMetadata = new SolrMetadata(metadata);
         String[] addresses = getSolrServerStrings(metadata);
         String response = "";
@@ -139,9 +139,26 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         return true;
     }
 
+//    @Override
+//    public boolean dropSchema(Metadata metadata) throws Exception {
+//        SolrUtil.deleteZnode(metadata);
+//        String[] addresses = getSolrServerStrings(metadata);
+//        for (String solrServer : addresses) {
+//            String url = "http://" + solrServer + "/solr/admin/collections";
+//            String param = "action=DELETE" + "&name=" + metadata.getTbName();
+//            try {
+//                SolrUtil.sendGet(url, param);
+//            } catch (Exception e) {
+//                continue;
+//            }
+//            break;
+//        }
+//        return true;
+//    }
+
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
-        SolrUtil.deleteZnode(metadata);
+        SolrUtil.deleteZnode(metadata); // 删除配置
         String[] addresses = getSolrServerStrings(metadata);
         for (String solrServer : addresses) {
             String url = "http://" + solrServer + "/solr/admin/collections";
