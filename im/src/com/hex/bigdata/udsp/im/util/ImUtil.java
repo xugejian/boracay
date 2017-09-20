@@ -46,7 +46,7 @@ public class ImUtil {
         List<TableColumn> tableColumns = new ArrayList<>();
         for (MetadataCol item : metadataCol) {
             String length = StringUtils.isEmpty(item.getLength()) ? "0" : item.getLength();
-            TableColumn tableColumn = new TableColumn(item.getName(),item.getType().getValue(),item.getDescribe(),length, item.isPrimary());
+            TableColumn tableColumn = new TableColumn(item.getName(), item.getType().getValue(), item.getDescribe(), length, item.isPrimary());
             tableColumns.add(tableColumn);
         }
         return tableColumns;
