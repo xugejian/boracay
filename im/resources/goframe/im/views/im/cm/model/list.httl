@@ -84,7 +84,7 @@ ${extends("/goframe/function_layout.httl")}
                     </tr>
 
                     <tr>
-                        <td class="tit roleLabel" style="width: 100px;text-align: right">是否已建模：</td>
+                        <td class="tit roleLabel" style="width: 100px;text-align: right">状态：</td>
                         <td class="roleText" style="width: 25%">
                             <!--<input name="tMdId" class="nui-textbox" style="width:98%;"/>-->
                             <input id="isBuilded" name="isBuilded" class="nui-combobox" valueField="pkId"
@@ -164,7 +164,7 @@ ${extends("/goframe/function_layout.httl")}
             <div field="tDsName" headerAlign="center" allowSort="true" width="15">目标元数据</div>
             <div field="type" headerAlign="center" allowSort="true" renderer="ImModelTypeRenderer" width="8">类型</div>
             <div field="buildStatus" headerAlign="center" allowSort="true" renderer="buildStatusRenderer" width="8">
-                建模状态
+                状态
             </div>
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat" width="15">创建时间</div>
             <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat" width="15">更新时间</div>
