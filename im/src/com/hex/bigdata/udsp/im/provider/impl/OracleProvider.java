@@ -13,6 +13,7 @@ import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.OracleDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MysqlModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.OracleModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.KafkaUtil;
@@ -93,6 +94,10 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
     @Override
     public JdbcModel getJdbcModel(List<Property> properties, Datasource srcDatasource) {
         return new OracleModel(properties,srcDatasource);
+    }
+
+    public JdbcModel getJdbcModel(Model model) {
+        return new OracleModel(model);
     }
 
     @Override

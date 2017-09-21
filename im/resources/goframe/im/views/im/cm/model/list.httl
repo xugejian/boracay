@@ -493,8 +493,7 @@ ${extends("/goframe/function_layout.httl")}
         }else{
             //实时的未删除的应该也可以运行
             if(e.row.delFlg  == '0'){
-                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='runBuild(\""+e.row.pkId+"\",this)'>构建</a>");
-                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='stopBuild(\""+e.row.pkId+"\",this)'>取消构建</a>");
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px'class='runBuild' onclick='runBuild(\""+e.row.pkId+"\",this,2)'>构建</a>");
             }
         }
         operatorS = operatorS.concat("</div>");
@@ -605,30 +604,54 @@ ${extends("/goframe/function_layout.httl")}
         });
     }
 
-    function runBuild(pkId,e){
+    function runBuild(pkId,e,type){
         //先将按钮灰度并修改点击事件，防止重复操作
+        $(e).attr("onclick","javascript:return false;");
+        //$(e).attr("style","padding-left: 6px;opacity: 0.2");
+        //如果是实时的则点击构建后新建添加一个取消构建按钮
+        if(type == 2){
+            //添加取消按钮
+            $(e).parent().append("<a href='#' style='padding-left: 6px' class='stopBuild' onclick='stopBuild(\""+pkId+"\",this)'>取消构建</a>");
+            $.ajax({
+                url:"${basePath}/im/model/runModelBuild/"+pkId+"/2",
+                type : 'POST',
+                cache : false,
+                contentType : 'application/json',
+                success : function(data) {
+                    if(data.status == true){
+                        $(e).html("正在运行");
+                    }else{
+                        $(e).attr("onclick","runBuild('"+pkId+"',this,2)");
+                        nui.alert("运行失败，信息：" + data.message, "系统提示");
+                        //删除取消按钮
+                        $(e).next().remove();
+                    }
+                }
+            });
+        }else if(type == 1){
+            //如果是批量则先弹出窗口让输入过滤字段值
+        }
+    }
+
+    function stopBuild(pkId,e){
         $(e).attr("onclick","javascript:return false;");
         $(e).attr("style","padding-left: 6px;opacity: 0.2");
         $.ajax({
-            url:"${basePath}/im/model/runModelBuild/"+pkId+"/1",
+            url:"${basePath}/im/model/runModelBuild/"+pkId+"/2",
             type : 'POST',
             cache : false,
             contentType : 'application/json',
             success : function(data) {
                 if(data.status == true){
-                    nui.alert("已运行", "系统提示");
-                    grid1.reload();
+                    $(e).prev().html("构建");
+                    $(e).prev().attr("onclick","runBuild('"+pkId+"',this,2)");
+                    nui.alert("停止成功", "系统提示");
+                    $(e).remove();
                 }else{
-                    $(e).attr("onclick","runBuild('"+pkId+"',this)");
-                    $(e).attr("style","padding-left: 6px");
-                    nui.alert("运行失败，信息：" + data.message, "系统提示");
+
                 }
             }
         });
-    }
-
-    function stopBuild(pkId,e){
-
     }
 </script>
 <!--#end-->

@@ -11,6 +11,7 @@ import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.constant.UpdateMode;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.MysqlDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MysqlModel;
@@ -88,6 +89,10 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
     @Override
     public JdbcModel getJdbcModel(List<Property> properties, Datasource srcDatasource) {
         return new MysqlModel(properties,srcDatasource);
+    }
+
+    public JdbcModel getJdbcModel(Model model) {
+        return new MysqlModel(model);
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,6 +58,10 @@ public class HiveProvider extends JdbcWrapper {
     @Override
     public JdbcModel getJdbcModel(List<Property> properties, Datasource srcDatasource) {
         return new HiveModel(properties,srcDatasource);
+    }
+
+    public JdbcModel getJdbcModel(Model model) {
+        return new HiveModel(model);
     }
 
     @Override
