@@ -1,7 +1,10 @@
-package com.hex.bigdata.udsp.im.model;
+package com.hex.bigdata.udsp.im.dto;
 
 
 import com.hex.bigdata.udsp.common.model.ComProperties;
+import com.hex.bigdata.udsp.im.model.ImModel;
+import com.hex.bigdata.udsp.im.model.ImModelFilterCol;
+import com.hex.bigdata.udsp.im.model.ImModelMapping;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,7 +13,7 @@ import java.util.List;
  * 交互建模视图
  * Created by jintian on 2017/9/6.
  */
-public class ImModelViews implements Serializable {
+public class ImModelDto implements Serializable {
     //模型
     private ImModel imModel;
     //关系映射表

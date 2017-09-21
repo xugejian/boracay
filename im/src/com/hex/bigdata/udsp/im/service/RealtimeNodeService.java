@@ -27,6 +27,7 @@ public class RealtimeNodeService {
     public void starting(String id) {
         try {
             RealtimeNodeInfo realtimeInfo = new RealtimeNodeInfo();
+            realtimeInfo.setId(id);
             realtimeInfo.setHost(HOST_KEY);
             realtimeInfo.setStatus(RealtimeStatus.STARTING);
             realtimeInfo.setUpdateTime(new Date());

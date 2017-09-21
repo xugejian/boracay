@@ -2,12 +2,13 @@ package com.hex.bigdata.udsp.im.model;
 
 import com.hex.bigdata.udsp.im.constant.BatchStatus;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by JunjieM on 2017-9-21.
  */
-public class BatchInfo {
+public class BatchInfo implements Serializable {
     private String id; // 主键
     private String host; // 主机
     private BatchStatus status; // 准备构建、正在构建、构建成功、构建失败

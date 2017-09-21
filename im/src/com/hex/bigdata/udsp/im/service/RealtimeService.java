@@ -29,12 +29,6 @@ public class RealtimeService {
     private static Logger logger = LogManager.getLogger(RealtimeService.class);
     private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
 
-    /**
-     * 异常或停止的作业信息踢除阀值(秒)
-     */
-    @Value("${realtime.jobinfo.timeout:86400}")
-    private Long realtimeJobinfoTimeout;
-
     @Autowired
     private RealtimeTotalService realtimeTotalService;
     @Autowired
@@ -76,7 +70,6 @@ public class RealtimeService {
 //            quartzManager.addJob("test2", "test2", "test2", "test2", JobTest2.class, "0/2 * * * * ?");
 //        }
         List<RealtimeTotalInfo> realtimeTotalInfos = realtimeTotalService.selectList();
-        logger.debug("实时作业信息个数：" + realtimeTotalInfos.size());
         for (RealtimeTotalInfo totalInfo : realtimeTotalInfos) {
             MqModel model = totalInfo.getModel();
             String id = model.getId();
@@ -84,18 +77,7 @@ public class RealtimeService {
             RealtimeStatus status = totalInfo.getStatus();
             String startHost = totalInfo.getStartHost();
             String stopHost = totalInfo.getStopHost();
-            Date updateTime = totalInfo.getUpdateTime();
-            if (((RealtimeStatus.START_FAIL == status || RealtimeStatus.RUN_FAIL == status) && HOST_KEY.equals(startHost))
-                    || ((RealtimeStatus.STOP_FAIL == status || RealtimeStatus.STOP_SUCCESS == status) && HOST_KEY.equals(stopHost))
-                    ) { // 异常或停止
-                // --------------------------------------------异常或停止处理---------------------------------------------
-                logger.debug("异常或停止处理...");
-                // 管理节点操作
-                if (System.currentTimeMillis() - realtimeJobinfoTimeout * 1000 >= updateTime.getTime()) {
-                    realtimeNodeService.deleteList(id);
-                    realtimeTotalService.delete(id);
-                }
-            } else if (RealtimeStatus.READY_START == status) { // 准备启动
+            if (RealtimeStatus.READY_START == status) { // 准备启动
                 // --------------------------------------------开始启动作业---------------------------------------------
                 logger.debug("开始启动作业...");
                 // 管理节点操作
@@ -212,8 +194,29 @@ public class RealtimeService {
             for (RealtimeNodeInfo info : realtimeNodeInfos) {
                 String host = info.getHost();
                 if (!list.contains(host)) {
+                    logger.debug("删除宕机节点的作业信息,ID:" + id + ",HOST:" + host);
                     realtimeNodeService.delete(id, host);
                 }
+            }
+        }
+    }
+
+    /**
+     * 清空过时的实时作业信息
+     */
+    public void cleanOutmodedRealtime() {
+        List<RealtimeTotalInfo> realtimeTotalInfos = realtimeTotalService.selectList();
+        for (RealtimeTotalInfo totalInfo : realtimeTotalInfos) {
+            String id = totalInfo.getId();
+            RealtimeStatus status = totalInfo.getStatus();
+            String startHost = totalInfo.getStartHost();
+            String stopHost = totalInfo.getStopHost();
+            if (((RealtimeStatus.START_FAIL == status || RealtimeStatus.RUN_FAIL == status) && HOST_KEY.equals(startHost))
+                    || ((RealtimeStatus.STOP_FAIL == status || RealtimeStatus.STOP_SUCCESS == status) && HOST_KEY.equals(stopHost))
+                    ) { // 异常或停止
+                logger.debug("删除异常或停止且过时的实时作业信息,ID:" + id);
+                realtimeNodeService.deleteList(id);
+                realtimeTotalService.delete(id);
             }
         }
     }

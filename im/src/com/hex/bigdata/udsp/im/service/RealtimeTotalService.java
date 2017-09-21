@@ -5,7 +5,6 @@ import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
 import com.hex.bigdata.udsp.im.dao.RealtimeTotalMapper;
 import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MqModel;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ public class RealtimeTotalService {
         try {
             String id = model.getId();
             RealtimeTotalInfo realtimeInfo = new RealtimeTotalInfo();
+            realtimeInfo.setId(id);
             realtimeInfo.setStartHost(HOST_KEY);
             Date nowDate = new Date();
             realtimeInfo.setStartTime(nowDate);

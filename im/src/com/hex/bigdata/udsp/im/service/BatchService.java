@@ -83,14 +83,18 @@ public class BatchService {
     }
 
     /**
-     * 检查并删除失败或成功的作业信息
+     * 清空过时的批量作业信息
      */
-    public void checkBatchStatus() {
+    public void cleanOutmodedBatch() {
         List<BatchInfo> batchInfos = selectList();
         for (BatchInfo batchInfo : batchInfos) {
+            String id = batchInfo.getId();
             BatchStatus status = batchInfo.getStatus();
-            if (BatchStatus.BUILD_SUCCESS == status || BatchStatus.BUILD_FAIL == status) {
-                delete(batchInfo.getId());
+            String host = batchInfo.getHost();
+            if ((BatchStatus.BUILD_SUCCESS == status || BatchStatus.BUILD_FAIL == status)
+                    && HOST_KEY.equals(host)) {
+                logger.debug("删除失败或成功且过时的批量作业信息,ID:" + id);
+                delete(id);
             }
         }
     }

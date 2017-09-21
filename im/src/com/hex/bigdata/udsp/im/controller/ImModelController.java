@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.ImModel;
-import com.hex.bigdata.udsp.im.model.ImModelViews;
+import com.hex.bigdata.udsp.im.dto.ImModelDto;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.goframe.model.MessageResult;
@@ -38,7 +38,7 @@ public class ImModelController {
 
     @ResponseBody
     @RequestMapping("insert")
-    public MessageResult inset(@RequestBody ImModelViews imModelViews){
+    public MessageResult inset(@RequestBody ImModelDto imModelViews){
         log.debug("插入交互建模数据为："+ JSONUtil.parseObj2JSON(imModelViews));
         boolean result = true;
         String message = "保存成功！";
@@ -57,7 +57,7 @@ public class ImModelController {
 
     @ResponseBody
     @RequestMapping("update/{pkId}")
-    public MessageResult update(@RequestBody ImModelViews imModelViews,@PathVariable String pkId){
+    public MessageResult update(@RequestBody ImModelDto imModelViews, @PathVariable String pkId){
         log.debug("更新交互建模数据为："+ JSONUtil.parseObj2JSON(imModelViews));
         boolean result = true;
         String message = "更新成功";

@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by JunjieM on 2017-9-21.
+ * 批量作业的调度任务
  */
 @Component
 public class BatchTask {
@@ -17,10 +17,10 @@ public class BatchTask {
     @Autowired
     private BatchService batchService;
 
-    @Scheduled(cron = "${check.batch.status.cron.expression:1 1 * * * ?}")
-    public void checkBatchStatus() {
-        logger.debug("检查批量作业状态【开始】");
-        batchService.checkBatchStatus();
-        logger.debug("检查批量作业状态【结束】");
+    @Scheduled(cron = "${clean.batch.outmoded.cron.expression:0 0 0 * * ?}")
+    public void cleanOutmodedBatch() {
+        logger.debug("清空过时的批量作业信息【开始】");
+        batchService.cleanOutmodedBatch();
+        logger.debug("清空过时的批量作业信息【结束】");
     }
 }
