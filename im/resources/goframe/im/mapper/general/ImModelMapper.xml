@@ -63,7 +63,7 @@
     CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
     where PK_ID = #{pkId,jdbcType=VARCHAR}
-    <!--and DEL_FLG = '0' //现在删除的也要展示-->
+    and DEL_FLG = '0'
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
@@ -81,8 +81,8 @@
     LEFT JOIN IM_METADATA IMM
     on IMM.PK_ID = IM.T_MD_ID
     and IMM.DEL_FLG = '0'
-    <!--where IM.DEL_FLG = '0' 现在删除的也要展示 -->
-    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+    where IM.DEL_FLG = '0'
+    <!--<trim prefix="WHERE" prefixOverrides="AND |OR ">-->
         <if test="name != null and name != ''">and IM.NAME = #{name} </if>
         <if test="describe != null and describe != ''">and IM.DESCRIBE = #{describe} </if>
         <if test="tMdId != null and tMdId != ''">and IM.T_MD_ID = #{tMdId} </if>
@@ -93,7 +93,7 @@
         <if test="crtTimeEnd != null and crtTimeEnd != ''">and #{crtTimeEnd} >= IM.CRT_TIME </if>
         <if test="uptTimeStart != null and uptTimeStart != ''">and IM.UPT_TIME >= #{uptTimeStart} </if>
         <if test="uptTimeEnd != null and uptTimeEnd != ''">and #{uptTimeEnd} >= IM.UPT_TIME </if>
-    </trim>
+   <!-- </trim>-->
   </select>
 
   <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -101,7 +101,7 @@
     CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
     where NAME = #{modelName,jdbcType=VARCHAR}
-    <!--and DEL_FLG = '0' -->
+    and DEL_FLG = '0' 
   </select>
 
   <select id="getModelUpdateModeByName" resultType="java.lang.String" >

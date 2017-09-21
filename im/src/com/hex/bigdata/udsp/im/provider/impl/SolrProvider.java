@@ -165,7 +165,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Datasource datasource = model.getSourceDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
         String solrServers = solrDatasource.getSolrServers();
-        SolrModel solrModel = new SolrModel(model);
+        SolrModel solrModel = new SolrModel(model.getProperties(),model.getSourceDatasource());
         String collectionName = solrModel.getCollectionName();
         return getColumns(collectionName, solrServers);
     }

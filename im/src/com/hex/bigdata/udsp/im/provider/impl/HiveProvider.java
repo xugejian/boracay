@@ -6,13 +6,17 @@ import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,6 +53,15 @@ public class HiveProvider extends JdbcWrapper {
         String fullTbName = metadata.getTbName();
         String sql = HiveSqlUtil.dropTable(false, fullTbName);
         return JdbcUtil.executeUpdate(hiveDatasource, sql);
+    }
+
+    @Override
+    public JdbcModel getJdbcModel(List<Property> properties, Datasource srcDatasource) {
+        return new HiveModel(properties,srcDatasource);
+    }
+
+    public JdbcModel getJdbcModel(Model model) {
+        return new HiveModel(model);
     }
 
     @Override

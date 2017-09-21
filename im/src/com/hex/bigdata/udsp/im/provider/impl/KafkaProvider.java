@@ -36,7 +36,7 @@ public class KafkaProvider extends KafkaWrapper implements RealtimeSourceProvide
     public List<MetadataCol> columnInfo(Model model) {
         List<MetadataCol> metadataCols = null;
         Datasource datasource = model.getSourceDatasource();
-        KafkaModel kafkaModel = new KafkaModel(model);
+        KafkaModel kafkaModel = new KafkaModel(model.getProperties(),model.getSourceDatasource());
         String topic = kafkaModel.getTopic();
         Map<String, Property> propertyMap = datasource.getPropertyMap();
         propertyMap.put("consumer.timeout.ms", new Property("consumer.timeout.ms", Integer.toString(CONSUMER_TIMEOUT_MS)));

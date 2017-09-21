@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.model.modeling;
 
+import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +32,10 @@ public class MqModel extends Model {
         if (StringUtils.isBlank(value))
             throw new IllegalArgumentException("topic不能为空");
         return value;
+    }
+
+    public MqModel(List<Property> properties, Datasource srcDatasource){
+        super(properties,srcDatasource);
     }
 
     public String getConsumerTimeoutMs() {

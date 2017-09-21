@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.model.modeling;
 
+import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 
@@ -23,5 +24,9 @@ public class HiveModel extends JdbcModel {
 
     public HiveModel(Model model) {
         super(model);
+    }
+
+    public HiveModel(List<Property> properties, Datasource srcDatasource){
+        super(properties,srcDatasource);
     }
 }

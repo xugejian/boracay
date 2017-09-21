@@ -6,11 +6,15 @@ import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.constant.UpdateMode;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.OracleDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MysqlModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.OracleModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.KafkaUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.OracleSqlUtil;
@@ -85,6 +89,15 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
                 }
             }
         }
+    }
+
+    @Override
+    public JdbcModel getJdbcModel(List<Property> properties, Datasource srcDatasource) {
+        return new OracleModel(properties,srcDatasource);
+    }
+
+    public JdbcModel getJdbcModel(Model model) {
+        return new OracleModel(model);
     }
 
     @Override

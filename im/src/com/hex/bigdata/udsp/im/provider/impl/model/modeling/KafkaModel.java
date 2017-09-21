@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.model.modeling;
 
+import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import org.apache.commons.lang.StringUtils;
@@ -24,6 +25,10 @@ public class KafkaModel extends MqModel {
 
     public KafkaModel(Model model) {
         super(model);
+    }
+
+    public KafkaModel(List<Property> properties, Datasource srcDatasource){
+        super(properties,srcDatasource);
     }
 
     public String getGroupId() {
