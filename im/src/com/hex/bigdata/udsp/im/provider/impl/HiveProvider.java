@@ -6,7 +6,10 @@ import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.JdbcModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.FileFormat;
@@ -49,6 +52,11 @@ public class HiveProvider extends JdbcWrapper {
         String fullTbName = metadata.getTbName();
         String sql = HiveSqlUtil.dropTable(false, fullTbName);
         return JdbcUtil.executeUpdate(hiveDatasource, sql) == 0 ? true : false;
+    }
+
+    @Override
+    public JdbcModel getJdbcModel(List<Property> properties, Datasource srcDatasource) {
+        return new HiveModel(properties,srcDatasource);
     }
 
     @Override

@@ -417,5 +417,17 @@ public class ImMetadataService extends BaseService {
         }
         return null;
     }
+
+    public List<ImMetadata> selectTargetMateData(String type) {
+        String tgctId;
+        if("1".equals(type)){
+            tgctId = "IM_DS_TARGET_BATCH_TYPE";
+        }else if("2".equals(type)){
+            tgctId = "IM_DS_TARGET_REALTIME_TYPE";
+        }else{
+            return null;
+        }
+        return imMetadataMapper.selectTargetMateData(tgctId);
+    }
 }
 
