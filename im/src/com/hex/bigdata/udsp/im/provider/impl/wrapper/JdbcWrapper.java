@@ -42,6 +42,8 @@ public abstract class JdbcWrapper extends BatchWrapper {
 
     public abstract JdbcModel getJdbcModel(List<Property> properties, Datasource srcDatasource);
 
+    public abstract JdbcModel getJdbcModel(Model model);
+
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
         Datasource datasource = metadata.getDatasource();
@@ -123,7 +125,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
         if (!sDsId.equals(eDsId)) { // 源、引擎的数据源不相同
             HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
             String id = model.getId();
-            JdbcModel jdbcModel = new JdbcModel(model);
+            JdbcModel jdbcModel = getJdbcModel(model);
             String fullTbName = jdbcModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + jdbcModel.getTableName();
             String tableName = getSourceTableName(id);
             JdbcDatasource jdbcDs = new JdbcDatasource(sDs.getPropertyMap());
