@@ -1,9 +1,9 @@
-package com.hex.bigdata.udsp.quartz;
+package com.hex.bigdata.udsp.im.task;
 
+import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MqModel;
 import com.hex.bigdata.udsp.im.service.ImProviderService;
-import com.hex.bigdata.udsp.model.RealtimeTotalInfo;
-import com.hex.bigdata.udsp.service.RealtimeTotalService;
+import com.hex.bigdata.udsp.im.service.RealtimeTotalService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.Job;

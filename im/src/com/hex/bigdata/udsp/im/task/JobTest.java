@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.quartz;
+package com.hex.bigdata.udsp.im.task;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;

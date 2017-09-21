@@ -71,7 +71,7 @@ public class HBaseProvider extends HBaseWrapper implements RealtimeTargetProvide
                 getTargetColumns(modelMappings, hbaseMetadata), "目标的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, getSerDeProperties(modelMappings, hbaseMetadata),
                 getTblProperties(fullTbName));
-        return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.createEngineSchema(eHiveDs, HIVE_ENGINE_DATABASE_NAME, sql);
     }
 
     @Override

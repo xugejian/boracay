@@ -116,6 +116,10 @@ public class HiveSqlUtil {
                 + selectSql + ") UDSP_VIEW " + getWhere2(whereProperties);
     }
 
+    public static String createDatabase(boolean ifNotExists, String databaseName) {
+        return "CREATE DATABASE " + getIfNotExists(ifNotExists) + " " + databaseName;
+    }
+
     private static String getPartitionKey(List<String> columns) {
         String sql = "";
         if (columns != null && columns.size() != 0) {

@@ -14,17 +14,16 @@ import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
 import com.hex.bigdata.udsp.common.util.PropertyUtil;
 import com.hex.bigdata.udsp.im.constant.*;
 import com.hex.bigdata.udsp.im.dao.*;
+import com.hex.bigdata.udsp.im.dto.ImModelDto;
 import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.*;
 import com.hex.bigdata.udsp.im.provider.model.*;
 import com.hex.goframe.dao.GFDictMapper;
-import com.hex.goframe.model.GFDict;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.util.DateUtil;
 import com.hex.goframe.util.FileUtil;
 import com.hex.goframe.util.Util;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.hadoop.security.ssl.SSLFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -94,7 +93,7 @@ public class ImModelService {
     }
 
     @Transactional
-    public String insert(ImModelViews imModelViews) throws Exception{
+    public String insert(ImModelDto imModelViews) throws Exception{
         String pkId = Util.uuid();
         ImModel model = imModelViews.getImModel();
         model.setPkId(pkId);
@@ -131,7 +130,7 @@ public class ImModelService {
     }
 
     @Transactional
-    public boolean update(ImModelViews imModelViews) throws Exception{
+    public boolean update(ImModelDto imModelViews) throws Exception{
         ImModel model = imModelViews.getImModel();
         //获取模型主键
         String pkId = model.getPkId();
@@ -242,7 +241,7 @@ public class ImModelService {
             page.setPageSize(1);
             for (int activeIndex = hfb.getNumberOfSheets(); i < activeIndex; i++) {
                 sheet = hfb.getSheetAt(i);
-                ImModelViews imModelView = new ImModelViews();
+                ImModelDto imModelDto = new ImModelDto();
                 Map<String, List> uploadExcelModel = ExcelUploadhelper.getUploadExcelModel(sheet, dataSourceContent);
                 List<ImModel> imModels = (List<ImModel>) uploadExcelModel.get("com.hex.bigdata.udsp.im.model.ImModel");
                 ImModel imModel = imModels.get(0);
@@ -279,10 +278,10 @@ public class ImModelService {
                 //设置模型状态
                 imModel.setStatus("1");
                 //设置模型
-                imModelView.setImModel(imModel);
+                imModelDto.setImModel(imModel);
                 //获取参数内容
                 List<ComProperties> comPropertiesList = (List<ComProperties>) uploadExcelModel.get("com.hex.bigdata.udsp.common.model.ComProperties");
-                imModelView.setComPropertiesList(comPropertiesList);
+                imModelDto.setComPropertiesList(comPropertiesList);
                 //获取映射内容
                 List<ImModelMapping> imModelMappings = (List<ImModelMapping>) uploadExcelModel.get("com.hex.bigdata.udsp.im.model.ImModelMapping");
                     //遍历更改目标字段对应的字段pkId
@@ -291,11 +290,11 @@ public class ImModelService {
                         imModelMapping.setPkId(imMetadataColMapper.selectByNameAndMdId(imModel.gettMdId(),imModelMapping.getColId()).getPkId());
                     }
                 }
-                imModelView.setImModelMappings(imModelMappings);
+                imModelDto.setImModelMappings(imModelMappings);
                 //获取过滤字段内容
                 List<ImModelFilterCol> imModelFilterCols = (List<ImModelFilterCol>) uploadExcelModel.get("com.hex.bigdata.udsp.im.model.ImModelFilterCol");
-                imModelView.setImModelFilterCols(imModelFilterCols);
-                String pkId = insert(imModelView);
+                imModelDto.setImModelFilterCols(imModelFilterCols);
+                String pkId = insert(imModelDto);
 
                 //更改主键
                 String updateKey = imModel.getUpdateKey();

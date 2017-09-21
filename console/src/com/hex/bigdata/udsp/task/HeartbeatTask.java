@@ -2,7 +2,6 @@ package com.hex.bigdata.udsp.task;
 
 import com.hex.bigdata.udsp.common.constant.ServiceMode;
 import com.hex.bigdata.udsp.service.HeartbeatService;
-import com.hex.bigdata.udsp.service.RealtimeService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +18,6 @@ public class HeartbeatTask {
 
     @Autowired
     private HeartbeatService heartbeatService;
-    @Autowired
-    private RealtimeService realtimeService;
 
     /**
      * 服务模式（single、cluster）
@@ -51,9 +48,6 @@ public class HeartbeatTask {
             logger.debug("检测集群服务心跳【开始】");
             heartbeatService.checkClusterHeartbeat();
             logger.debug("检测集群服务心跳【结束】");
-            logger.debug("检测实时任务情况【开始】");
-            realtimeService.checkRealtimeNodes();
-            logger.debug("检测实时任务情况【结束】");
         } else {
             logger.debug("单机模式不需要检查心跳");
         }

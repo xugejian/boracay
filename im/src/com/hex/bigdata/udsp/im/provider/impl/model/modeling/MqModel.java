@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-15.
  */
-public abstract class MqModel extends Model {
+public class MqModel extends Model {
     public MqModel() {
     }
 

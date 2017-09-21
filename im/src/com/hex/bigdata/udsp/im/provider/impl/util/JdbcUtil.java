@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -18,13 +19,10 @@ import java.util.Map;
  */
 public class JdbcUtil {
     private static Logger logger = LogManager.getLogger(JdbcUtil.class);
-    private static Map<String, BasicDataSource> dataSourcePool;
+    private static Map<String, BasicDataSource> dataSourcePool = new HashMap<String, BasicDataSource>();
 
     public static synchronized BasicDataSource getDataSource(JdbcDatasource datasource) {
         String dsId = datasource.getId();
-        if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<String, BasicDataSource>();
-        }
         BasicDataSource dataSource = dataSourcePool.get(dsId);
         if (dataSource == null) {
             dataSource = new BasicDataSource();
@@ -75,7 +73,29 @@ public class JdbcUtil {
         return conn;
     }
 
-    public static int executeUpdate(JdbcDatasource datasource, String updateSql) throws SQLException {
+    public static boolean createEngineSchema(JdbcDatasource datasource, String dbName, String updateSql) throws SQLException {
+        String sql = HiveSqlUtil.createDatabase(true, dbName);
+        return executeUpdate(datasource, sql) && executeUpdate(datasource, updateSql);
+    }
+
+    public static boolean executeHiveUpdate(HiveDatasource datasource, String updateSql) throws SQLException {
+        Connection conn = null;
+        Statement stmt = null;
+        int rs = -1;
+        try {
+            conn = JdbcUtil.getConnection(datasource);
+            stmt = conn.createStatement();
+            HiveGetLogThread thread = new HiveGetLogThread(stmt, 500L, 100);
+            thread.start();
+            rs = stmt.executeUpdate(updateSql);
+        } finally {
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
+            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
+        }
+        return rs == 0 ? true : false;
+    }
+
+    public static boolean executeUpdate(JdbcDatasource datasource, String updateSql) throws SQLException {
         Connection conn = null;
         Statement stmt = null;
         int rs = -1;
@@ -87,23 +107,15 @@ public class JdbcUtil {
             com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
             com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
         }
-        return rs;
+        return rs == 0 ? true : false;
     }
 
-    public static int executeUpdate(JdbcDatasource datasource, List<String> updateSqls) throws SQLException {
-        Connection conn = null;
-        Statement stmt = null;
-        int rs = -1;
-        try {
-            conn = JdbcUtil.getConnection(datasource);
-            stmt = conn.createStatement();
-            for (String updateSql : updateSqls) {
-                rs = stmt.executeUpdate(updateSql);
+    public static boolean executeUpdate(JdbcDatasource datasource, List<String> updateSqls) throws SQLException {
+        for (String updateSql : updateSqls) {
+            if (!executeUpdate(datasource, updateSql)) {
+                return false;
             }
-        } finally {
-            com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
-            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
         }
-        return rs;
+        return true;
     }
 }
