@@ -1,14 +1,15 @@
-package com.hex.bigdata.udsp.service;
+package com.hex.bigdata.udsp.im.service;
 
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
+import com.hex.bigdata.udsp.im.model.RealtimeNodeInfo;
+import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MqModel;
+import com.hex.bigdata.udsp.im.provider.model.Model;
+import com.hex.bigdata.udsp.im.task.QuartzManager;
+import com.hex.bigdata.udsp.im.task.RealtimeJob;
 import com.hex.bigdata.udsp.model.HeartbeatInfo;
-import com.hex.bigdata.udsp.model.RealtimeNodeInfo;
-import com.hex.bigdata.udsp.model.RealtimeTotalInfo;
-import com.hex.bigdata.udsp.quartz.QuartzManager;
-import com.hex.bigdata.udsp.quartz.RealtimeJob;
-import org.apache.commons.lang3.time.FastDateFormat;
+import com.hex.bigdata.udsp.service.HeartbeatService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +27,6 @@ import java.util.List;
 @Service
 public class RealtimeService {
     private static Logger logger = LogManager.getLogger(RealtimeService.class);
-    private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
 
     /**
@@ -45,6 +44,25 @@ public class RealtimeService {
     @Autowired
     @Qualifier("quartzManager")
     private QuartzManager quartzManager;
+
+    /**
+     * 启动
+     *
+     * @param model
+     */
+    public void start(Model model) {
+        MqModel mqModel = new MqModel(model);
+        realtimeTotalService.readyStart(mqModel);
+    }
+
+    /**
+     * 停止
+     *
+     * @param id
+     */
+    public void stop(String id) {
+        realtimeTotalService.readyStop(id);
+    }
 
     /**
      * 检查实时任务状态
@@ -66,20 +84,16 @@ public class RealtimeService {
             RealtimeStatus status = totalInfo.getStatus();
             String startHost = totalInfo.getStartHost();
             String stopHost = totalInfo.getStopHost();
-            String updateTime = totalInfo.getUpdateTime();
+            Date updateTime = totalInfo.getUpdateTime();
             if (((RealtimeStatus.START_FAIL == status || RealtimeStatus.RUN_FAIL == status) && HOST_KEY.equals(startHost))
                     || ((RealtimeStatus.STOP_FAIL == status || RealtimeStatus.STOP_SUCCESS == status) && HOST_KEY.equals(stopHost))
                     ) { // 异常或停止
                 // --------------------------------------------异常或停止处理---------------------------------------------
                 logger.debug("异常或停止处理...");
                 // 管理节点操作
-                try {
-                    if (System.currentTimeMillis() - realtimeJobinfoTimeout * 1000 >= format.parse(updateTime).getTime()) {
-                        realtimeNodeService.deleteList(id);
-                        realtimeTotalService.delete(id);
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                if (System.currentTimeMillis() - realtimeJobinfoTimeout * 1000 >= updateTime.getTime()) {
+                    realtimeNodeService.deleteList(id);
+                    realtimeTotalService.delete(id);
                 }
             } else if (RealtimeStatus.READY_START == status) { // 准备启动
                 // --------------------------------------------开始启动作业---------------------------------------------
@@ -182,9 +196,9 @@ public class RealtimeService {
     }
 
     /**
-     * 检查每个节点实时任务情况
+     * 检查每个节点心跳，删除宕机节点的作业信息
      */
-    public void checkRealtimeNodes() {
+    public void checkRealtimeLive() {
         List<HeartbeatInfo> heartbeatInfos = heartbeatService.selectList();
         List<String> list = new ArrayList<>();
         for (HeartbeatInfo info : heartbeatInfos) {

@@ -39,7 +39,7 @@ public class HiveProvider extends JdbcWrapper {
         List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
         String sql = HiveSqlUtil.createTable(false, false, fullTbName,
                 columns, tableComment, null, null, FileFormat.HIVE_FILE_FORMAT_PARQUET);
-        return JdbcUtil.executeUpdate(hiveDatasource, sql) == 0 ? true : false;
+        return JdbcUtil.executeUpdate(hiveDatasource, sql);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class HiveProvider extends JdbcWrapper {
         HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = HiveSqlUtil.dropTable(false, fullTbName);
-        return JdbcUtil.executeUpdate(hiveDatasource, sql) == 0 ? true : false;
+        return JdbcUtil.executeUpdate(hiveDatasource, sql);
     }
 
     @Override

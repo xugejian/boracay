@@ -1,6 +1,6 @@
-package com.hex.bigdata.udsp.quartz;
+package com.hex.bigdata.udsp.im.task;
 
-import com.hex.bigdata.udsp.service.RealtimeService;
+import com.hex.bigdata.udsp.im.service.RealtimeService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +20,11 @@ public class RealtimeQuartz {
     /**
      * 检查实时任务状态
      */
-//    @Scheduled(cron = "${check.realtime.status.cron.expression:0/1 * * * * ?}")
+    //@Scheduled(cron = "${check.realtime.status.cron.expression:0/2 * * * * ?}")
     public void checkRealtimeStatus() {
-        logger.debug("检查实时状态【开始】");
+        logger.debug("检查实时作业状态【开始】");
         realtimeService.checkRealtimeStatus();
-        logger.debug("检查实时状态【结束】");
+        logger.debug("检查实时作业状态【结束】");
     }
 
 }

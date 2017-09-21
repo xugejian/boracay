@@ -58,7 +58,6 @@ public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetP
         insert(eHiveDs, metadata, modelMappings, isOverwrite, selectSql, selectTableName, insertTableName, model.getModelFilterCols());
     }
 
-    // 插入Hive关联表
     protected void insert(HiveDatasource eHiveDs, Metadata metadata, List<ModelMapping> modelMappings, boolean isOverwrite, String selectSql, String selectTableName, String insertHBaseTableName, List<ModelFilterCol> modelFilterCols) throws SQLException {
         String insertSql = null;
         if (StringUtils.isNotBlank(selectSql)) {
@@ -69,7 +68,7 @@ public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetP
             insertSql = HiveSqlUtil.insert(isOverwrite, insertHBaseTableName, getInsertColumns(modelMappings, metadata), null,
                     getSelectColumns(modelMappings, metadata), selectTableName, getWhereProperties(modelFilterCols));
         }
-        JdbcUtil.executeUpdate(eHiveDs, insertSql);
+        JdbcUtil.executeHiveUpdate(eHiveDs, insertSql);
     }
 
     @Override
@@ -79,7 +78,7 @@ public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetP
         String id = model.getId();
         String tableName = getTargetTableName(id);
         String sql = HiveSqlUtil.dropTable(true, tableName);
-        return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.executeUpdate(eHiveDs, sql);
     }
 
     protected List<WhereProperty> getWhereProperties(List<ModelFilterCol> modelFilterCols) {

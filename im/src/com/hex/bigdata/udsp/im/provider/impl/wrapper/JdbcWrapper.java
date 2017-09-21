@@ -127,7 +127,6 @@ public abstract class JdbcWrapper extends BatchWrapper {
             String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                     getSourceColumns(model.getModelMappings()), "源的Hive引擎表", null,
                     HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(jdbcDs, fullTbName));
-            // return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
             return JdbcUtil.createEngineSchema(eHiveDs, HIVE_ENGINE_DATABASE_NAME, sql);
         }
         return true;
@@ -167,7 +166,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
             String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                     getTargetColumns(model.getModelMappings()), "目标的Hive引擎表", null,
                     HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(jdbcDs, fullTbName));
-            return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+            return JdbcUtil.executeUpdate(eHiveDs, sql);
         }
         return true;
     }

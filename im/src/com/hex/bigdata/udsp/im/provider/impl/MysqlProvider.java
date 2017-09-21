@@ -44,7 +44,7 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         String tableComment = metadata.getDescribe();
         List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
         String sql = MysqlSqlUtil.createTable(false, fullTbName, columns, tableComment);
-        return JdbcUtil.executeUpdate(mysqlDatasource, sql) == 0 ? true : false;
+        return JdbcUtil.executeUpdate(mysqlDatasource, sql);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MysqlProvider extends JdbcWrapper implements RealtimeTargetProvider
         MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
         String fullTbName = metadata.getTbName();
         String sql = MysqlSqlUtil.dropTable(false, fullTbName);
-        return JdbcUtil.executeUpdate(mysqlDatasource, sql) == 0 ? true : false;
+        return JdbcUtil.executeUpdate(mysqlDatasource, sql);
     }
 
     @Override

@@ -1,10 +1,9 @@
-package com.hex.bigdata.udsp.service;
+package com.hex.bigdata.udsp.im.service;
 
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
-import com.hex.bigdata.udsp.dao.RealtimeNodeMapper;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
-import com.hex.bigdata.udsp.model.RealtimeNodeInfo;
-import org.apache.commons.lang3.time.FastDateFormat;
+import com.hex.bigdata.udsp.im.dao.RealtimeNodeMapper;
+import com.hex.bigdata.udsp.im.model.RealtimeNodeInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import java.util.List;
 @Service
 public class RealtimeNodeService {
     private static Logger logger = LogManager.getLogger(RealtimeNodeService.class);
-    private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     private static final String REALTIME_NODE_INFO_KEY = "REALTIME_NODE";
     private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
 
@@ -31,7 +29,7 @@ public class RealtimeNodeService {
             RealtimeNodeInfo realtimeInfo = new RealtimeNodeInfo();
             realtimeInfo.setHost(HOST_KEY);
             realtimeInfo.setStatus(RealtimeStatus.STARTING);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             insert(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,9 +40,9 @@ public class RealtimeNodeService {
         try {
             RealtimeNodeInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.RUNNING);
-            String nowTime = format.format(new Date());
-            realtimeInfo.setRunTime(nowTime);
-            realtimeInfo.setUpdateTime(nowTime);
+            Date nowDate = new Date();
+            realtimeInfo.setRunTime(nowDate);
+            realtimeInfo.setUpdateTime(nowDate);
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,7 +53,7 @@ public class RealtimeNodeService {
         try {
             RealtimeNodeInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.START_FAIL);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             realtimeInfo.setMessage(message);
             update(id, realtimeInfo);
         } catch (Exception e) {
@@ -67,7 +65,7 @@ public class RealtimeNodeService {
         try {
             RealtimeNodeInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.STOPING);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,9 +76,9 @@ public class RealtimeNodeService {
         try {
             RealtimeNodeInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.STOP_SUCCESS);
-            String nowTime = format.format(new Date());
-            realtimeInfo.setUpdateTime(nowTime);
-            realtimeInfo.setEndTime(nowTime);
+            Date nowDate = new Date();
+            realtimeInfo.setUpdateTime(nowDate);
+            realtimeInfo.setEndTime(nowDate);
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,7 +89,7 @@ public class RealtimeNodeService {
         try {
             RealtimeNodeInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.STOP_FAIL);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             realtimeInfo.setMessage(message);
             update(id, realtimeInfo);
         } catch (Exception e) {
@@ -103,7 +101,7 @@ public class RealtimeNodeService {
         try {
             RealtimeNodeInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.RUN_FAIL);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             realtimeInfo.setMessage(message);
             update(id, realtimeInfo);
         } catch (Exception e) {

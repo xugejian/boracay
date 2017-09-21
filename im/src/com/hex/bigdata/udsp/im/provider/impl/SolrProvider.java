@@ -211,7 +211,6 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                 getSourceColumns(modelMappings), "源的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, collectionName));
-        // return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
         return JdbcUtil.createEngineSchema(eHiveDs, HIVE_ENGINE_DATABASE_NAME, sql);
     }
 
@@ -228,7 +227,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         String sql = HiveSqlUtil.createStorageHandlerTable(true, true, getTargetTableName(model.getId()),
                 getTargetColumns(modelMappings), "目标的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, solrMetadata.getTbName()));
-        return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.executeUpdate(eHiveDs, sql);
     }
 
     @Override

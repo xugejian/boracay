@@ -20,6 +20,6 @@ public abstract class BatchWrapper extends BatchTargetWrapper implements BatchSo
         String id = model.getId();
         String tableName = getSourceTableName(id);
         String sql = HiveSqlUtil.dropTable(true, tableName);
-        return JdbcUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.executeUpdate(eHiveDs, sql);
     }
 }

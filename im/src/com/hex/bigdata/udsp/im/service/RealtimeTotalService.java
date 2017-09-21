@@ -1,10 +1,10 @@
-package com.hex.bigdata.udsp.service;
+package com.hex.bigdata.udsp.im.service;
 
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
-import com.hex.bigdata.udsp.dao.RealtimeTotalMapper;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
+import com.hex.bigdata.udsp.im.dao.RealtimeTotalMapper;
+import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MqModel;
-import com.hex.bigdata.udsp.model.RealtimeTotalInfo;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,6 @@ import java.util.List;
 @Service
 public class RealtimeTotalService {
     private static Logger logger = LogManager.getLogger(RealtimeTotalService.class);
-    private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     private static final String REALTIME_TOTAL_KEY = "REALTIME_TOTAL";
     private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
 
@@ -32,10 +31,10 @@ public class RealtimeTotalService {
             String id = model.getId();
             RealtimeTotalInfo realtimeInfo = new RealtimeTotalInfo();
             realtimeInfo.setStartHost(HOST_KEY);
-            String nowTime = format.format(new Date());
-            realtimeInfo.setStartTime(nowTime);
+            Date nowDate = new Date();
+            realtimeInfo.setStartTime(nowDate);
             realtimeInfo.setStatus(RealtimeStatus.READY_START);
-            realtimeInfo.setUpdateTime(nowTime);
+            realtimeInfo.setUpdateTime(nowDate);
             realtimeInfo.setModel(model);
             insert(id, realtimeInfo);
         } catch (Exception e) {
@@ -47,7 +46,7 @@ public class RealtimeTotalService {
         try {
             RealtimeTotalInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.STARTING);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,9 +58,9 @@ public class RealtimeTotalService {
         try {
             RealtimeTotalInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.RUNNING);
-            String nowTime = format.format(new Date());
-            realtimeInfo.setRunTime(nowTime);
-            realtimeInfo.setUpdateTime(nowTime);
+            Date nowDate = new Date();
+            realtimeInfo.setRunTime(nowDate);
+            realtimeInfo.setUpdateTime(nowDate);
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,7 +71,7 @@ public class RealtimeTotalService {
         try {
             RealtimeTotalInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.START_FAIL);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,10 +82,10 @@ public class RealtimeTotalService {
         try {
             RealtimeTotalInfo realtimeInfo = select(id);
             realtimeInfo.setStopHost(HOST_KEY);
-            String nowTime = format.format(new Date());
-            realtimeInfo.setStopTime(nowTime);
+            Date nowDate = new Date();
+            realtimeInfo.setStopTime(nowDate);
             realtimeInfo.setStatus(RealtimeStatus.READY_STOP);
-            realtimeInfo.setUpdateTime(nowTime);
+            realtimeInfo.setUpdateTime(nowDate);
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,7 +96,7 @@ public class RealtimeTotalService {
         try {
             RealtimeTotalInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.STOPING);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,9 +107,9 @@ public class RealtimeTotalService {
         try {
             RealtimeTotalInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.STOP_SUCCESS);
-            String nowTime = format.format(new Date());
-            realtimeInfo.setUpdateTime(nowTime);
-            realtimeInfo.setEndTime(nowTime);
+            Date nowDate = new Date();
+            realtimeInfo.setUpdateTime(nowDate);
+            realtimeInfo.setEndTime(nowDate);
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,7 +120,7 @@ public class RealtimeTotalService {
         try {
             RealtimeTotalInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.STOP_FAIL);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,7 +131,7 @@ public class RealtimeTotalService {
         try {
             RealtimeTotalInfo realtimeInfo = select(id);
             realtimeInfo.setStatus(RealtimeStatus.RUN_FAIL);
-            realtimeInfo.setUpdateTime(format.format(new Date()));
+            realtimeInfo.setUpdateTime(new Date());
             update(id, realtimeInfo);
         } catch (Exception e) {
             e.printStackTrace();
