@@ -605,6 +605,7 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function runBuild(pkId,e,type){
+        // TODO
         //先将按钮灰度并修改点击事件，防止重复操作
         $(e).attr("onclick","javascript:return false;");
         //$(e).attr("style","padding-left: 6px;opacity: 0.2");
@@ -630,6 +631,56 @@ ${extends("/goframe/function_layout.httl")}
             });
         }else if(type == 1){
             //如果是批量则先弹出窗口让输入过滤字段值
+            var modelFilterCols;
+            $.ajax({
+                url:"${basePath}/im/imMFilter/getImMFilterByMid/"+pkId,
+                type : 'POST',
+                cache : false,
+                contentType : 'application/json',
+                success : function(data) {
+                    if(data.status == true){
+                        modelFilterCols = data.data;
+                    }else{
+                        nui.alert("获取过滤字段信息异常："+data.message, "系统提示");
+                    }
+                }
+            });
+            if(modelFilterCols){
+                //根据数据条数设置弹窗高度
+                var height = modelFilterCols/4 * 10
+                nui.open({
+                    url: "${basePath}/goframe/p/im.cm.md.input_filterValue",
+                    title: "添加",
+                    width: 800,
+                    height: height,
+                    onload: function () {
+                        var iframe = this.getIFrameEl();
+                        iframe.contentWindow.setModelFilterCols(modelFilterCols);
+                    },
+                    ondestroy: function (data) {
+                        $(e).attr("onclick","runBuild('"+pkId+"',this,1)");
+                        if(data.status == true){
+                            $.ajax({
+                                url: "${basePath}/im/model/runModelBuild/"+pkId+"/1",
+                                type: 'POST',
+                                cache: false,
+                                data:data.data,
+                                async:false,
+                                contentType: 'application/json',
+                                success: function (data) {
+                                    if(data.status == true){
+                                        nui.alert("已建模，可到监控中心查看状态！","系统提示");
+                                    }else{
+                                        nui.alert(data.message,"系统提示");
+                                    }
+                                }
+                            });
+                        }else{
+                            nui.alert(data.message,"系统提示");
+                        }
+                    }
+                });
+            }
         }
     }
 
