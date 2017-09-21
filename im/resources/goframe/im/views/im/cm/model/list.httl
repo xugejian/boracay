@@ -503,9 +503,9 @@ ${extends("/goframe/function_layout.httl")}
         if (e.row.type == '1') {
             //判断是否构建
             if (e.row.status == '1') {
-                return "未建模";
+                return "未建";
             } else {
-                return "已建模";
+                return "已建";
             }
         } else {
             return "实时"
