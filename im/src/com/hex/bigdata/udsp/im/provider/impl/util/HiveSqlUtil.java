@@ -370,6 +370,7 @@ public class HiveSqlUtil {
         String colName = "";
         String dataType = "";
         String colComment = "";
+        String length = "";
         if (columns != null && columns.size() != 0) {
             sql = "\n (";
             for (int i = 0; i < columns.size(); i++) {
@@ -377,7 +378,9 @@ public class HiveSqlUtil {
                 colName = column.getColName();
                 dataType = column.getDataType();
                 colComment = column.getColComment();
+                length = column.getLength();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
+                    dataType = getColType(dataType, length);
                     if (i == 0) {
                         sql += "\n" + colName + " " + dataType;
                     } else {
@@ -391,6 +394,17 @@ public class HiveSqlUtil {
             sql += "\n)";
         }
         return sql;
+    }
+
+    private static String getColType(String dataType, String length) {
+        if ("VARCHAR".equals(dataType)) {
+            dataType = "VARCHAR(" + length + ")";
+        } else if ("CHAR".equals(dataType)) {
+            dataType = "CHAR(" + length + ")";
+        } else if ("DECIMAL".equals(dataType)) {
+            dataType = "DECIMAL(" + length + ")";
+        }
+        return dataType;
     }
 
     private static String getTableComment(String tableComment) {
