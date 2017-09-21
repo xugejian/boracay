@@ -85,7 +85,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="buildMode">引擎数据源：</label></th>
                     <td>
                         <div id="eDsId" class="nui-combobox" style="width:100%;"  popupWidth="400" textField="name" valueField="pkId"
-                             url="${basePath}/com/ds/selectEDs" dataField="data" name="eDsId" multiSelect="true"  required="false">
+                             url="${basePath}/com/ds/selectEDs" dataField="data" name="eDsId"  required="false">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
