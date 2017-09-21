@@ -543,8 +543,9 @@ public class ImModelService {
         //修改comProperties为继承property类比较好,设计有问题，冗余
         List<ComProperties> properties = comPropertiesMapper.selectByFkId(pkId);
         List<Property> propertyList = new ArrayList<>(properties.size());
-        Property property = new Property();
+        Property property;
         for(ComProperties comProperties:properties){
+                property = new Property();
                 property.setDescribe(comProperties.getDescribe());
                 property.setName(comProperties.getName());
                 property.setValue(comProperties.getValue());
@@ -562,8 +563,9 @@ public class ImModelService {
         //设置更新键值
         List<ImMetadataCol> imMetadataCols = imMetadataColMapper.selectModelUpdateKeys(pkId);
         List<MetadataCol> metadataCols = new ArrayList<>();
-        MetadataCol metadataCol = new MetadataCol();
+        MetadataCol metadataCol;
         for(ImMetadataCol imMetadataCol : imMetadataCols){
+            metadataCol = new MetadataCol();
             transformMetaCol(imMetadataCol,metadataCol);
             metadataCols.add(metadataCol);
         }
@@ -571,8 +573,10 @@ public class ImModelService {
         //设置字段映射
         List<ModelMapping> modelMappings = new ArrayList<>();
         List<ImModelMapping> imModelMappings = imModelMappingMapper.selectList(pkId);
-        ModelMapping modelMapping = new ModelMapping();
+        ModelMapping modelMapping;
         for(ImModelMapping imModelMapping : imModelMappings){
+            metadataCol = new MetadataCol();
+            modelMapping = new ModelMapping();
             transformModelMapping(imModelMapping,modelMapping);
             //获取映射的目标字段信息
             ImMetadataCol imMetadataCol = imMetadataColMapper.select(imModelMapping.getColId());
@@ -585,8 +589,9 @@ public class ImModelService {
         //设置过滤字段集合
         List<ImModelFilterCol> imModelFilterCols = imModelFilterColMapper.selectList(pkId);
         List<ModelFilterCol> modelFilterCols = new ArrayList<>();
-        ModelFilterCol  modelFilterCol = new ModelFilterCol();
+        ModelFilterCol  modelFilterCol;
         for(ImModelFilterCol imModelFilterCol : imModelFilterCols){
+            modelFilterCol = new ModelFilterCol();
             transformModelFilterCol(imModelFilterCol,modelFilterCol);
             modelFilterCols.add(modelFilterCol);
         }
@@ -623,8 +628,9 @@ public class ImModelService {
         ImMetadataCol imMetadataCol1 = new ImMetadataCol();
         imMetadataCol1.setMdId(mdId);
         List<ImMetadataCol> imMetadataCols = imMetadataColMapper.select(imMetadataCol1);
-        MetadataCol metadataCol = new MetadataCol();
+        MetadataCol metadataCol;
         for(ImMetadataCol imMetadataCol : imMetadataCols){
+            metadataCol = new MetadataCol();
             transformMetaCol(imMetadataCol,metadataCol);
             metadataCols.add(metadataCol);
         }
