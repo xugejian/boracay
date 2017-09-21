@@ -185,7 +185,6 @@ ${extends("/goframe/function_layout.httl")}
     var grid1;
     var grid2;
     var originTbName;
-    var originTbName;
     var originName;
     var dsIdObject;
     /**

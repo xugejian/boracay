@@ -81,11 +81,11 @@ ${extends("/goframe/function_layout.httl")}
                     </tr>
 
                     <tr>
-                        <td class="tit roleLabel" style="width: 100px;text-align: right">是否已删除：</td>
+                        <td class="tit roleLabel" style="width: 100px;text-align: right">是否已建模：</td>
                         <td class="roleText" style="width: 25%">
                             <!--<input name="tMdId" class="nui-textbox" style="width:98%;"/>-->
-                            <input id="isDeleted" name="isDeleted" class="nui-combobox" valueField="pkId" textField="name"
-                                   data="[{'pkId':'1','name':'是'},{'pkId':'0','name':'否'}]"  allowInput="true" sortMode="client"
+                            <input id="isBuilded" name="isBuilded" class="nui-combobox" valueField="pkId" textField="name"
+                                   data="[{'pkId':'1','name':'已建'},{'pkId':'2','name':'未建'}]"  allowInput="true" sortMode="client"
                                    showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>
                         </td>
                         <td style="width: 100px;text-align: right">创建时间：</td>
@@ -152,16 +152,17 @@ ${extends("/goframe/function_layout.httl")}
          sizeList="[10,20,50,100]" pageSize="20" multiSelect="true" dataField="data"
          allowCellSelect="false" onselectionchanged="selected" onrowdblclick="info">
         <div property="columns">
-            <div type="checkcolumn" width="20"></div>
-            <div field="name" headerAlign="center" allowSort="true">名称</div>
-            <div field="describe" headerAlign="center" allowSort="true">说明</div>
-            <div field="tDsName" headerAlign="center" allowSort="true">目标元数据</div>
-            <div field="type" headerAlign="center" allowSort="true" renderer="ImModelTypeRenderer">类型</div>
-            <div field="sDsName" headerAlign="center" allowSort="true">源数据源</div>
-            <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
-            <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat">更新时间</div>
-            <div field="note" headerAlign="center" allowSort="true">备注</div>
-            <div field="operator" headerAlign="center" renderer="operatorRenderer">操作</div>
+            <div type="checkcolumn" width="5"></div>
+            <div field="name" headerAlign="center" allowSort="true" width="15">名称</div>
+            <div field="describe" headerAlign="center" allowSort="true" width="15">说明</div>
+            <div field="sDsName" headerAlign="center" allowSort="true" width="15">源数据源</div>
+            <div field="tDsName" headerAlign="center" allowSort="true" width="15">目标元数据</div>
+            <div field="type" headerAlign="center" allowSort="true" renderer="ImModelTypeRenderer" width="8">类型</div>
+            <div field="buildStatus" headerAlign="center" allowSort="true" renderer="buildStatusRenderer" width="8">建模状态</div>
+            <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat" width="15">创建时间</div>
+            <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat" width="15">更新时间</div>
+            <div field="note" headerAlign="center" allowSort="true" width="15">备注</div>
+            <div field="operator" headerAlign="center" renderer="operatorRenderer" width="15">操作</div>
         </div>
     </div>
 </div>
@@ -475,28 +476,44 @@ ${extends("/goframe/function_layout.httl")}
     //操作的按钮的添加
     function operatorRenderer(e) {
         var operatorS = "<div style='text-align: center'>";
-        if(e.row.delFlg  == '0'){
+        /*if(e.row.delFlg  == '0'){
             operatorS = operatorS.concat("<a href='#'  onclick='deleteOperator(\""+e.row.pkId+"\")'>删除</a>");
         }else{
             operatorS = operatorS.concat("<a href='#'  onclick='createOperator(\""+e.row.pkId+"\")'>创建</a>");
-        }
+        }*/
         //先判断是否实时
         if(e.row.type == '1'){
             //判断是否构建
             if(e.row.status == '1'){
-                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='buildOperator(\""+e.row.pkId+"\",this)'>构建</a>");
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='buildOperator(\""+e.row.pkId+"\",this)'>建模</a>");
             }else{
-                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='removeBuild(\""+e.row.pkId+"\",this)'>取消构建</a>");
-                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='runBuild(\""+e.row.pkId+"\",this)'>运行</a>");
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='removeBuild(\""+e.row.pkId+"\",this)'>删除建模</a>");
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='runBuild(\""+e.row.pkId+"\",this)'>构建</a>");
             }
         }else{
             //实时的未删除的应该也可以运行
             if(e.row.delFlg  == '0'){
-                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='runBuild(\""+e.row.pkId+"\",this)'>运行</a>");
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='runBuild(\""+e.row.pkId+"\",this)'>构建</a>");
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='stopBuild(\""+e.row.pkId+"\",this)'>取消构建</a>");
             }
         }
         operatorS = operatorS.concat("</div>");
         return operatorS;
+    }
+
+    function buildStatusRenderer(e){
+        var status = e.row.status;
+        //先判断是否实时
+        if(e.row.type == '1'){
+            //判断是否构建
+            if(e.row.status == '1'){
+                return "未建模";
+            }else{
+                return "已建模";
+            }
+        }else{
+            return "实时"
+        }
     }
     
     function deleteOperator(pkId){
@@ -608,6 +625,10 @@ ${extends("/goframe/function_layout.httl")}
                 }
             }
         });
+    }
+
+    function stopBuild(pkId,e){
+
     }
 </script>
 <!--#end-->
