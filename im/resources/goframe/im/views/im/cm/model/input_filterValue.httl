@@ -26,7 +26,7 @@ ${extends("/goframe/function_layout.httl")}
     require(['jquery', 'nui'], function ($, nui) {
         nui.parse();
         formObject = new nui.Form("form1");
-        getFormHtml();
+        $("#form1").html(getFormHtml())
     });
 
     function setModelFilterCols(data){
@@ -37,7 +37,8 @@ ${extends("/goframe/function_layout.httl")}
      * 获取Form动态的HTML
      */
     function getFormHtml() {
-
+        filterCols = {};
+        debugger;
         //console.warn(queryCols);
         var count = 0;
         var html = "<table style='width:100%'>";
@@ -49,8 +50,8 @@ ${extends("/goframe/function_layout.httl")}
             var isNeed = record.isNeed == "1" ? false : true;
             var defaultVal = record.defaultVal ? record.defaultVal : "";
             var operator = record.operator;
-            var tdHtml = "<td class='tit roleLabel' style='width: 100px;text-align: right'>" + describe + "：</td>"
-                + "<td class='roleText' style='width: 25%'>"
+            var tdHtml = "<td class='tit roleLabel' style='width: 10%;text-align: right'>" + describe + "：</td>"
+                + "<td class='roleText' style='width: 90%'>"
                 + "<input name='" + label + "' class='nui-textbox' style='width:98%;' value='" + defaultVal + "' required='" + isNeed + "' emptyText='进行\"" + operator + "\"匹配'/>"
                 + "</td>";
             count++;
@@ -84,15 +85,19 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function save(){
+        debugger;
         var data = {};
         var modelfilterValue = formObject.getData();
         //检查
         //基础信息栏数据校验
         formObject.validate();
         if (formObject.isValid() == false) {
-            return ;
+            data.status = false;
+        }else{
+            data.status = true;
+            data.data = modelfilterValue;
         }
-        return data;
+        return window.CloseOwnerWindow(data);
     }
 </script>
 <!--#end-->
