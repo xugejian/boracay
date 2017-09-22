@@ -306,11 +306,9 @@ public class ImMetadataController {
         return new MessageResult(status, message);
     }
 
-    @RequestMapping({"/checkSchemaExists"})
+    @RequestMapping({"/checkSchemaExists/{dsId}/{tbName}"})
     @ResponseBody
-    public MessageResult checkSchemaExists(@RequestBody ImMetadata imMetadata) {
-        String dsId = imMetadata.getDsId();
-        String tbName = imMetadata.getTbName();
+    public MessageResult checkSchemaExists(@PathVariable("dsId") String dsId, @PathVariable("tbName") String tbName) {
         try {
             if (imMetadataService.checkSchemaExists(dsId, tbName)) {
                 return new MessageResult(false, "表已经存在，不可使用！");
@@ -321,13 +319,11 @@ public class ImMetadataController {
         return new MessageResult(true, "表不存在，可以使用！");
     }
 
-    @RequestMapping({"/getCloumnInfo"})
+    @RequestMapping({"/getCloumnInfo/{dsId}/{tbName}"})
     @ResponseBody
-    public MessageResult getCloumnInfo(@RequestBody ImMetadata imMetadata) {
+    public MessageResult getCloumnInfo(@PathVariable("dsId") String dsId, @PathVariable("tbName") String tbName) {
         boolean status = true;
         String message = "获取外表字段信息成功！";
-        String dsId = imMetadata.getDsId();
-        String tbName = imMetadata.getTbName();
         List<MetadataCol> metadataCols = null;
         if (StringUtils.isBlank(dsId) || StringUtils.isBlank(tbName)) {
             status = false;

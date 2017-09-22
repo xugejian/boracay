@@ -14,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,8 +24,8 @@ import java.util.List;
  * Created by JunjieM on 2017-9-15.
  */
 @Service
-public class RealtimeService {
-    private static Logger logger = LogManager.getLogger(RealtimeService.class);
+public class RealtimeJobService {
+    private static Logger logger = LogManager.getLogger(RealtimeJobService.class);
     private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
 
     @Autowired
@@ -44,17 +43,17 @@ public class RealtimeService {
      *
      * @param model
      */
-    public void start(Model model) {
+    public void start(Model model) throws Exception {
         MqModel mqModel = new MqModel(model);
         realtimeTotalService.readyStart(mqModel);
     }
 
     /**
-     * 停止
+     * 停止（）
      *
      * @param id
      */
-    public void stop(String id) {
+    public void stop(String id) throws Exception {
         realtimeTotalService.readyStop(id);
     }
 

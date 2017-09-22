@@ -5,6 +5,7 @@ import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.constant.BuildMode;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.HiveModel;
+import com.hex.bigdata.udsp.im.provider.impl.util.HiveJdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetProvider {
     @Override
-    public void inputSQL(Model model) throws SQLException {
+    public void inputSQL(String key, Model model) throws SQLException {
         String id = model.getId();
         Metadata metadata = model.getTargetMetadata();
         String fullTbName = metadata.getTbName();
@@ -55,10 +56,10 @@ public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetP
             insertTableName = fullTbName;
         }
 
-        insert(eHiveDs, metadata, modelMappings, isOverwrite, selectSql, selectTableName, insertTableName, model.getModelFilterCols());
+        insert(key, eHiveDs, metadata, modelMappings, isOverwrite, selectSql, selectTableName, insertTableName, model.getModelFilterCols());
     }
 
-    protected void insert(HiveDatasource eHiveDs, Metadata metadata, List<ModelMapping> modelMappings, boolean isOverwrite, String selectSql, String selectTableName, String insertHBaseTableName, List<ModelFilterCol> modelFilterCols) throws SQLException {
+    protected void insert(String key, HiveDatasource eHiveDs, Metadata metadata, List<ModelMapping> modelMappings, boolean isOverwrite, String selectSql, String selectTableName, String insertHBaseTableName, List<ModelFilterCol> modelFilterCols) throws SQLException {
         String insertSql = null;
         if (StringUtils.isNotBlank(selectSql)) {
             for (ModelMapping mapping : modelMappings) mapping.setName("UDSP_VIEW." + mapping.getName());
@@ -68,7 +69,7 @@ public abstract class BatchTargetWrapper extends Wrapper implements BatchTargetP
             insertSql = HiveSqlUtil.insert(isOverwrite, insertHBaseTableName, getInsertColumns(modelMappings, metadata), null,
                     getSelectColumns(modelMappings, metadata), selectTableName, getWhereProperties(modelFilterCols));
         }
-        JdbcUtil.executeHiveUpdate(eHiveDs, insertSql);
+        HiveJdbcUtil.executeUpdate(key, eHiveDs, insertSql);
     }
 
     @Override

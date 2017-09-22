@@ -112,14 +112,14 @@ public class SolrHBaseProvider extends SolrHBaseWrapper {
     }
 
     @Override
-    public void inputSQL(Model model) throws SQLException {
+    public void inputSQL(String key, Model model) throws SQLException {
         String id = model.getId();
         Model hBaseModel = new Model(model);
         hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
         Model solrModel = new Model(model);
         solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
-        hbaseProvider.inputSQL(hBaseModel);
-        solrProvider.inputSQL(solrModel);
+        hbaseProvider.inputSQL("HBASE" + HIVE_ENGINE_TABLE_SEP + key, hBaseModel);
+        solrProvider.inputSQL("SOLR" + HIVE_ENGINE_TABLE_SEP + key, solrModel);
     }
 
     @Override
