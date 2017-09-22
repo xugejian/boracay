@@ -280,6 +280,7 @@ ${extends("/goframe/function_layout.httl")}
     var srcSourceType;
     var cols;
     var filterCols = [];
+    var esSourceObject;
 
     /**
      * 按需加载资源文件
@@ -295,6 +296,7 @@ ${extends("/goframe/function_layout.httl")}
         updateModeObject = nui.get("updateMode");
         updateKeyObject = nui.get("updateKey");
         buildModeObject = nui.get("buildMode");
+        esSourceObject = nui.get("eDsId");
     });
 
 
@@ -327,17 +329,25 @@ ${extends("/goframe/function_layout.httl")}
             success:function (data) {
                 if (data.data == true) {
                     $("#updateType").css("display", "table-row");
+                    //更新策略默认为更新插入
+                    updateModeObject.setValue("2");
+
                     $("#buildType").css("display", "none");
+                    //将构建方式和引擎设置为空值
                     buildModeObject.setValue("");
-                    $("#eDsModel").css("display", "none");
+                    esSourceObject.setValue("");
                     srcSourceType = "2";
                 } else {
                     $("#updateType").css("display", "none");
                     updateModeObject.setValue("");
                     updateKeyObject.setValue("");
                     $("#buildType").css("display", "table-row");
-                    $("#eDsModel").css("display", "table-row");
+                    //构建策略默认为增量
+                    buildModeObject.setValue("1");
+                    //引擎数据源设置为第一个
+                    esSourceObject.setValue(esSourceObject.data[0].pkId);
                     srcSourceType = "1";
+
                 }
             }
         });

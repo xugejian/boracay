@@ -391,8 +391,7 @@ ${extends("/goframe/function_layout.httl")}
             }
             grid1.addRows(cols);
         });
-
-        //判断数据源实时非实时来判断显示跟新策略还是构建策略并清空原来数据
+        //不能异步执行
         $.ajax({
             url:"${basePath}/com/ds/checkSourceType/"+srcDsModel.value,
             data:{},
@@ -401,21 +400,30 @@ ${extends("/goframe/function_layout.httl")}
             success:function (data) {
                 if (data.data == true) {
                     $("#updateType").css("display", "table-row");
+                    //更新策略默认为更新插入
+                    updateModeObject.setValue("2");
+
                     $("#buildType").css("display", "none");
+                    //将构建方式和引擎设置为空值
                     buildModeObject.setValue("");
-                    $("#eDsModel").css("display", "none");
+                    esSourceObject.setValue("");
                     srcSourceType = "2";
                 } else {
                     $("#updateType").css("display", "none");
                     updateModeObject.setValue("");
                     updateKeyObject.setValue("");
                     $("#buildType").css("display", "table-row");
-                    $("#eDsModel").css("display", "table-row");
+                    //构建策略默认为增量
+                    buildModeObject.setValue("1");
+                    //引擎数据源设置为第一个
+                    esSourceObject.setValue(esSourceObject.data[0].pkId);
                     srcSourceType = "1";
+
                 }
             }
         });
 
+        //目标元数据可选择项修改
         $.ajax({
             url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
             type: 'POST',
@@ -423,6 +431,7 @@ ${extends("/goframe/function_layout.httl")}
             async:false,
             contentType: 'application/json',
             success: function (data) {
+                //状态成功并信息是是的
                 targetDsModel.load(data.data);
             }
         });
