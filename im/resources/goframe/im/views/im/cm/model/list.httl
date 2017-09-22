@@ -87,11 +87,10 @@ ${extends("/goframe/function_layout.httl")}
                         <td class="tit roleLabel" style="width: 100px;text-align: right">状态：</td>
                         <td class="roleText" style="width: 25%">
                             <!--<input name="tMdId" class="nui-textbox" style="width:98%;"/>-->
-                            <input id="isBuilded" name="isBuilded" class="nui-combobox" valueField="pkId"
-                                   textField="name"
-                                   data="[{'pkId':'1','name':'已建'},{'pkId':'2','name':'未建'}]" allowInput="true"
-                                   sortMode="client"
-                                   showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>
+                            <input name="isBuilded" class="nui-dictcombobox" valueField="dictId" textField="dictName"
+                                   style="width:98%;"
+                                   dictTypeId="IM_MODEL_BUILD_STAUS" value="" vtype="maxLength:32" emptyText="全部"
+                                   nullItemText="全部" showNullItem="true"/>
                         </td>
                         <td style="width: 100px;text-align: right">创建时间：</td>
                         <td style="width: 25%">

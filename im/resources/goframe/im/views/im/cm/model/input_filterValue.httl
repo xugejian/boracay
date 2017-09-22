@@ -38,7 +38,6 @@ ${extends("/goframe/function_layout.httl")}
      */
     function getFormHtml() {
         filterCols = {};
-        debugger;
         //console.warn(queryCols);
         var count = 0;
         var html = "<table style='width:100%'>";
