@@ -7,6 +7,12 @@ import com.hex.bigdata.udsp.im.provider.model.Model;
  */
 public interface RealtimeTargetProvider extends TargetProvider, RealtimeProvider {
 
+    /**
+     * 实时构建
+     *
+     * @param model
+     * @throws Exception
+     */
     void inputData(Model model) throws Exception;
 
 }

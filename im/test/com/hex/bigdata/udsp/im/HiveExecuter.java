@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.im;
 
-import com.hex.bigdata.udsp.im.provider.impl.util.HiveGetLogThread;
+import com.hex.bigdata.udsp.im.thread.HiveGetLogThread;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

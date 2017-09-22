@@ -1,5 +1,7 @@
-package com.hex.bigdata.udsp.im.provider.impl.util;
+package com.hex.bigdata.udsp.im.thread;
 
+import com.hex.bigdata.udsp.im.service.BatchJobService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hive.jdbc.HiveStatement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,12 +22,35 @@ public class HiveGetLogThread extends Thread {
     private long queryLogIntervalMs = 500L;
     private int fetchSize = 100;
     private Statement statement = null;
+    private String id;
+    private BatchJobService batchService;
 
     private int jobCount = 0;
     private int mapCount = 0;
     private int reduceCount = 0;
     private int percent = 0;
     private int oldPercent = -1;
+
+    public HiveGetLogThread(BatchJobService batchService, String id, Statement statement) {
+        this.batchService = batchService;
+        this.id = id;
+        this.statement = statement;
+    }
+
+    public HiveGetLogThread(BatchJobService batchService, String id, Statement statement, long queryLogIntervalMs) {
+        this.batchService = batchService;
+        this.id = id;
+        this.statement = statement;
+        this.queryLogIntervalMs = queryLogIntervalMs;
+    }
+
+    public HiveGetLogThread(BatchJobService batchService, String id, Statement statement, long queryLogIntervalMs, int fetchSize) {
+        this.batchService = batchService;
+        this.id = id;
+        this.statement = statement;
+        this.queryLogIntervalMs = queryLogIntervalMs;
+        this.fetchSize = fetchSize;
+    }
 
     public HiveGetLogThread(Statement statement) {
         this.statement = statement;
@@ -104,7 +129,10 @@ public class HiveGetLogThread extends Thread {
         logger.debug("百分比：" + percent + "%");
         if (oldPercent != percent) {
             logger.info("百分比：" + percent + "%");
-            // TODO ... 将百分比值放入内存
+            // 百分比值写入内存中
+            if (batchService != null && StringUtils.isNoneBlank(id)) {
+                batchService.building(id, percent);
+            }
             oldPercent = percent;
         }
     }

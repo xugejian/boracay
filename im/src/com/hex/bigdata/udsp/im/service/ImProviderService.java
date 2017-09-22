@@ -118,8 +118,8 @@ public class ImProviderService {
      *
      * @param model
      */
-    public void buildBatch(Model model) throws Exception {
-        getBatchTargetProvider(model.getTargetMetadata().getDatasource()).inputSQL(model);
+    public void buildBatch(String key, Model model) throws Exception {
+        getBatchTargetProvider(model.getTargetMetadata().getDatasource()).inputSQL(key, model);
     }
 
     /**
