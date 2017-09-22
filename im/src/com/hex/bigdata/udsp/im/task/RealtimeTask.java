@@ -1,8 +1,7 @@
 package com.hex.bigdata.udsp.im.task;
 
 import com.hex.bigdata.udsp.common.constant.ServiceMode;
-import com.hex.bigdata.udsp.im.service.BatchService;
-import com.hex.bigdata.udsp.im.service.RealtimeService;
+import com.hex.bigdata.udsp.im.service.RealtimeJobService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class RealtimeTask {
     private static Logger logger = LogManager.getLogger(BatchTask.class);
 
     @Autowired
-    private RealtimeService realtimeService;
+    private RealtimeJobService realtimeService;
 
     /**
      * 服务模式（single、cluster）

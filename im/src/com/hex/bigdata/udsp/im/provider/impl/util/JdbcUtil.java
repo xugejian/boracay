@@ -78,23 +78,6 @@ public class JdbcUtil {
         return executeUpdate(datasource, sql) && executeUpdate(datasource, updateSql);
     }
 
-    public static boolean executeHiveUpdate(HiveDatasource datasource, String updateSql) throws SQLException {
-        Connection conn = null;
-        Statement stmt = null;
-        int rs = -1;
-        try {
-            conn = JdbcUtil.getConnection(datasource);
-            stmt = conn.createStatement();
-            HiveGetLogThread thread = new HiveGetLogThread(stmt, 500L, 100);
-            thread.start();
-            rs = stmt.executeUpdate(updateSql);
-        } finally {
-            com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
-            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
-        }
-        return rs == 0 ? true : false;
-    }
-
     public static boolean executeUpdate(JdbcDatasource datasource, String updateSql) throws SQLException {
         Connection conn = null;
         Statement stmt = null;

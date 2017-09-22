@@ -25,7 +25,7 @@ public class RealtimeTotalService {
     @Autowired
     private RealtimeTotalMapper realtimeTotalMapper;
 
-    public void readyStart(MqModel model) {
+    public void readyStart(MqModel model) throws Exception {
         try {
             String id = model.getId();
             RealtimeTotalInfo realtimeInfo = new RealtimeTotalInfo();
@@ -38,7 +38,7 @@ public class RealtimeTotalService {
             realtimeInfo.setModel(model);
             insert(id, realtimeInfo);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception(e);
         }
     }
 
@@ -78,7 +78,7 @@ public class RealtimeTotalService {
         }
     }
 
-    public void readyStop(String id) {
+    public void readyStop(String id) throws Exception {
         try {
             RealtimeTotalInfo realtimeInfo = select(id);
             realtimeInfo.setStopHost(HOST_KEY);
@@ -88,7 +88,7 @@ public class RealtimeTotalService {
             realtimeInfo.setUpdateTime(nowDate);
             update(id, realtimeInfo);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception(e);
         }
     }
 

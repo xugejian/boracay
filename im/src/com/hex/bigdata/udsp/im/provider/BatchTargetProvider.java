@@ -8,10 +8,11 @@ import com.hex.bigdata.udsp.im.provider.model.Model;
 public interface BatchTargetProvider extends TargetProvider, BatchProvider {
 
     /**
+     * 批量构建
      * @param model
      * @throws Exception
      */
-    void inputSQL(Model model) throws Exception;
+    void inputSQL(String key, Model model) throws Exception;
 
     /**
      * 创建目标引擎Schema
