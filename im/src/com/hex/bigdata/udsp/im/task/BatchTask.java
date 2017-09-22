@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.im.task;
 
-import com.hex.bigdata.udsp.im.service.BatchService;
+import com.hex.bigdata.udsp.im.service.BatchJobService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class BatchTask {
     private static Logger logger = LogManager.getLogger(BatchTask.class);
 
     @Autowired
-    private BatchService batchService;
+    private BatchJobService batchService;
 
     @Scheduled(cron = "${clean.batch.outmoded.cron.expression:0 0 0 * * ?}")
     public void cleanOutmodedBatch() {

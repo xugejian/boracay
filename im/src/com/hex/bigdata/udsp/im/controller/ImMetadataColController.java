@@ -1,9 +1,7 @@
 package com.hex.bigdata.udsp.im.controller;
 
-import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.model.ImMetadataCol;
 import com.hex.bigdata.udsp.im.service.ImMetadataColService;
-import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.PageListResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
