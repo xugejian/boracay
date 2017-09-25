@@ -277,7 +277,7 @@ ${extends("/goframe/function_layout.httl")}
     var buildModeObject;
     var srcSourceType;
     var modelName;
-    var filterCols = [];
+    var filterCols;
     var cols;
     /**
      * 按需加载资源文件
@@ -370,15 +370,9 @@ ${extends("/goframe/function_layout.httl")}
         });
     }
 
-
-    //源数据源改变时改变参数列表
-    function srcSourceChange(){
-        //将参数配置栏和字段映射栏重置
-        grid1.clearRows();
-        grid2.clearRows();
-        filterCols = [];
+    //获取参数列表可输入内容
+    function getComproperties() {
         cols = [];
-        //将参数配置栏自动输入
         $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
             if (data.length > 0) {
                 for (var i = 0, len = data.length; i < len; i++) {
@@ -389,8 +383,20 @@ ${extends("/goframe/function_layout.httl")}
                     });
                 }
             }
-            grid1.addRows(cols);
+
         });
+    }
+
+    //源数据源改变时改变参数列表
+    function srcSourceChange(){
+        //将参数配置栏和字段映射栏重置
+        grid1.clearRows();
+        grid2.clearRows();
+        filterCols = [];
+
+        getComproperties();
+        //将参数配置栏自动输入
+        grid1.addRows(cols);
         //不能异步执行
         $.ajax({
             url:"${basePath}/com/ds/checkSourceType/"+srcDsModel.value,
@@ -440,6 +446,13 @@ ${extends("/goframe/function_layout.httl")}
 
     //加载字段映射
     function loadMapping(){
+        getSrcCols();
+        //字段映射加进去
+        grid2.addRows(filterCols);
+    }
+
+    //获取源数据源的字段信息列表
+    function getSrcCols() {
         //清楚原来配置  ---是否必要！！！
         grid2.clearRows();
         //可过滤字段制空
@@ -465,8 +478,6 @@ ${extends("/goframe/function_layout.httl")}
                         "type": data.data[i].type
                     });
                 };
-                //字段映射加进去
-                grid2.addRows(filterCols);
             }
         });
     }
@@ -752,6 +763,9 @@ ${extends("/goframe/function_layout.httl")}
 
     //过滤字段可选内容
     function targetFilterColumn(e){
+        if(!filterCols){
+            getSrcCols();
+        }
         e.source.load(filterCols);
     }
 
@@ -822,6 +836,10 @@ ${extends("/goframe/function_layout.httl")}
     }
     
     function comPropertiesName(e) {
+        //当可选字段不存在时自动获取
+        if(!cols){
+            getComproperties();
+        }
         e.source.load(cols);
     }
 

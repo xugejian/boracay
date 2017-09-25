@@ -94,15 +94,15 @@
         <if test="uptTimeEnd != null and uptTimeEnd != ''">and #{uptTimeEnd} >= IM.UPT_TIME </if>
         <choose>
           <!-- 未建模-->
-          <when test="isBuilded != null and isBuilded == '1'">
-            and IM.STATUS = '1'
+          <when test="isBuilded != null and isBuilded == '1'.toString()">
+            and IM.STATUS = '2' and IM.TYPE = '1'
           </when>
           <!-- 已建模-->
-          <when test="isBuilded != null and isBuilded == '2'">
-            and IM.STATUS = '2'
+          <when test="isBuilded != null and isBuilded == '2'.toString()">
+            and IM.STATUS = '1' and IM.TYPE = '1'
           </when>
           <!-- 实时 -->
-          <when test="isBuilded != null and isBuilded == '3'">
+          <when test="isBuilded != null and isBuilded == '3'.toString()">
             and IM.TYPE = '2'
           </when>
         </choose>
