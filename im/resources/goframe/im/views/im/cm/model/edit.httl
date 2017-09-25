@@ -374,7 +374,7 @@ ${extends("/goframe/function_layout.httl")}
     function getComproperties() {
         cols = [];
         $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
-            if (data.length > 0) {
+            if (data && data.length && data.length > 0) {
                 for (var i = 0, len = data.length; i < len; i++) {
                     cols.push({
                         "name": data[i].dictId,

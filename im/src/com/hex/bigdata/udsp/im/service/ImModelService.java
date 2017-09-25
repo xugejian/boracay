@@ -723,14 +723,4 @@ public class ImModelService {
         modelFilterCol.setNeed(imModelFilterCol.getIsNeed().equals("0"));
         modelFilterCol.setOperator(Operator.getOperatorByValue(imModelFilterCol.getOperator()));
     }
-
-    public void runModelBuild(ImModel imModel) throws Exception{
-        //组织需要构建或则删除构建的模型
-        Model model = getModelByImModel(imModel);
-        if(model.getType().equals(ModelType.BATCH)){
-           /* imProviderService.buildBatch(model);*/
-        }else if(model.getType().equals(ModelType.REALTIME)){
-            imProviderService.buildRealtime(model);
-        }
-    }
 }

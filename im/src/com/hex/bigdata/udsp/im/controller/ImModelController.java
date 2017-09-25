@@ -253,26 +253,4 @@ public class ImModelController {
         }
         return new MessageResult(result,message);
     }
-
-    @ResponseBody
-    @RequestMapping(value = "runModelBuild/{pkId}/{status}")
-    public MessageResult runModelBuild(@PathVariable String pkId,@PathVariable String status ){
-        boolean result = true;
-        String message = "成功";
-        try{
-            //先获取该对一个pkId的交互建模模型
-            ImModel imModel = imModelService.selectByPkId(pkId);
-            //如果相同则说明已经已经构建或则已经删除构建
-            if(imModel.getStatus() ==  "1"){
-                result  = false;
-                message = "该模型未构建的！";
-            }
-            imModelService.runModelBuild(imModel);
-        }catch(Exception e){
-            e.printStackTrace();
-            result = false;
-            message = e.getMessage();
-        }
-        return new MessageResult(result,message);
-    }
 }
