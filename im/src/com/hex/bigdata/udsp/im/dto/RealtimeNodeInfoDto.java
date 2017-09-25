@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.im.dto;
 
 /**
- * Created by JunjieM on 2017-9-21.
+ * Created by JunjieM on 2017-9-25.
  */
-public class RealtimeNodeInfoView {
+public class RealtimeNodeInfoDto {
     private String id; //
     private String host; // 主机
     private String status; // 开始启动、正在运行、启动失败、开始停止、停止成功、停止失败、运行失败

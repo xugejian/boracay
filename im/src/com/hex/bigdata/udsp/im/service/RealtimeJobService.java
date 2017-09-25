@@ -2,6 +2,10 @@ package com.hex.bigdata.udsp.im.service;
 
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
+import com.hex.bigdata.udsp.im.dto.BatchInfoDto;
+import com.hex.bigdata.udsp.im.dto.RealtimeNodeInfoDto;
+import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoDto;
+import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoView;
 import com.hex.bigdata.udsp.im.model.RealtimeNodeInfo;
 import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MqModel;
@@ -10,6 +14,10 @@ import com.hex.bigdata.udsp.im.task.QuartzManager;
 import com.hex.bigdata.udsp.im.task.RealtimeJob;
 import com.hex.bigdata.udsp.model.HeartbeatInfo;
 import com.hex.bigdata.udsp.service.HeartbeatService;
+import com.hex.goframe.model.Page;
+import com.hex.goframe.model.PageListResult;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +35,7 @@ import java.util.List;
 public class RealtimeJobService {
     private static Logger logger = LogManager.getLogger(RealtimeJobService.class);
     private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
+    private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
 
     @Autowired
     private RealtimeTotalService realtimeTotalService;
@@ -45,11 +54,12 @@ public class RealtimeJobService {
      */
     public void start(Model model) throws Exception {
         MqModel mqModel = new MqModel(model);
-        realtimeTotalService.readyStart(mqModel);
+        String id = model.getId();
+        realtimeTotalService.readyStart(id, mqModel);
     }
 
     /**
-     * 停止（）
+     * 停止
      *
      * @param id
      */
@@ -218,5 +228,176 @@ public class RealtimeJobService {
                 realtimeTotalService.delete(id);
             }
         }
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param realtimeTotalInfoView
+     * @param page
+     * @return
+     */
+    public PageListResult selectPage(RealtimeTotalInfoView realtimeTotalInfoView, Page page) {
+        List<RealtimeTotalInfoDto> infos = selectAll(realtimeTotalInfoView);
+        int pageIndex = page.getPageIndex();
+        int pageSize = page.getPageSize();
+        int befNum = pageSize * (pageIndex - 1); // 不需要显示的数据条数
+        if (befNum < 0) befNum = 0;
+        int count = 0;
+        List<RealtimeTotalInfoDto> list = new ArrayList<>();
+        if (infos == null || infos.size() == 0) {
+            return null;
+        }
+        for (int i = 0; i < infos.size(); i++) {
+            if (i >= befNum) {
+                list.add(infos.get(i));
+                count++;
+                if (count >= pageSize) {
+                    break;
+                }
+            }
+        }
+        PageListResult pageListResult = new PageListResult(list);
+        pageListResult.setTotal(infos.size());
+        return pageListResult;
+    }
+
+    /**
+     * 不分页查询
+     *
+     * @param realtimeTotalInfoView
+     * @return
+     */
+    public List<RealtimeTotalInfoDto> selectAll(RealtimeTotalInfoView realtimeTotalInfoView) {
+        String modelName = realtimeTotalInfoView.getModelName();
+        String status = realtimeTotalInfoView.getStatus();
+        String startTimeStart = realtimeTotalInfoView.getStartTimeStart();
+        String endTimeStart = realtimeTotalInfoView.getEndTimeStart();
+        String runTimeStart = realtimeTotalInfoView.getRunTimeStart();
+        String stopTimeStart = realtimeTotalInfoView.getStopTimeStart();
+        String updateTimeStart = realtimeTotalInfoView.getUpdateTimeStart();
+        String startTimeEnd = realtimeTotalInfoView.getStartTimeEnd();
+        String endTimeEnd = realtimeTotalInfoView.getEndTimeEnd();
+        String runTimeEnd = realtimeTotalInfoView.getRunTimeEnd();
+        String stopTimeEnd = realtimeTotalInfoView.getStopTimeEnd();
+        String updateTimeEnd = realtimeTotalInfoView.getUpdateTimeEnd();
+
+        List<RealtimeTotalInfoDto> list = new ArrayList<>();
+        List<RealtimeTotalInfo> infos = realtimeTotalService.selectList();
+        if (infos == null || infos.size() == 0) {
+            return null;
+        }
+        for (RealtimeTotalInfo info : infos) {
+            list.add(infoToDto(info));
+        }
+
+        // 过滤
+        for (RealtimeTotalInfoDto dto : list) {
+            if (StringUtils.isNotBlank(modelName) && !dto.getModelName().contains(modelName)) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(status) && !dto.getStatus().equals(status)) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(startTimeStart) && dto.getStartTime().compareTo(startTimeStart) < 0) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(startTimeEnd) && dto.getStartTime().compareTo(startTimeEnd) > 0) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(endTimeStart) && dto.getEndTime().compareTo(endTimeStart) < 0) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(endTimeEnd) && dto.getEndTime().compareTo(endTimeEnd) > 0) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(updateTimeStart) && dto.getUpdateTime().compareTo(updateTimeStart) < 0) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(updateTimeEnd) && dto.getUpdateTime().compareTo(updateTimeEnd) > 0) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(runTimeStart) && dto.getRunTime().compareTo(runTimeStart) < 0) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(runTimeEnd) && dto.getRunTime().compareTo(runTimeEnd) > 0) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(stopTimeStart) && dto.getStopTime().compareTo(stopTimeStart) < 0) {
+                list.remove(dto);
+                continue;
+            }
+            if (StringUtils.isNotBlank(stopTimeEnd) && dto.getStopTime().compareTo(stopTimeEnd) > 0) {
+                list.remove(dto);
+                continue;
+            }
+        }
+        return list;
+    }
+
+    private RealtimeTotalInfoDto infoToDto(RealtimeTotalInfo info) {
+        RealtimeTotalInfoDto dto = new RealtimeTotalInfoDto();
+        dto.setId(info.getId());
+        dto.setStatus(info.getStatus().getValue());
+        dto.setModelName(info.getModel().getName());
+        dto.setModelId(info.getModel().getId());
+        dto.setStartTime(format.format(info.getStartTime()));
+        dto.setStopTime(format.format(info.getStopTime()));
+        dto.setRunTime(format.format(info.getRunTime()));
+        dto.setUpdateTime(format.format(info.getUpdateTime()));
+        dto.setEndTime(format.format(info.getEndTime()));
+        dto.setStartHost(info.getStartHost());
+        dto.setStopHost(info.getStopHost());
+        return dto;
+    }
+
+    /**
+     * 通过ID查询
+     *
+     * @param id
+     * @return
+     */
+    public RealtimeTotalInfoDto selectDto(String id) {
+        return infoToDto(realtimeTotalService.select(id));
+    }
+
+    /**
+     * 查询子列表
+     *
+     * @param id
+     * @return
+     */
+    public List<RealtimeNodeInfoDto> selectNodesDto(String id) {
+        List<RealtimeNodeInfo> realtimeNodeInfos = realtimeNodeService.selectList(id);
+        if (realtimeNodeInfos == null || realtimeNodeInfos.size() == 0) {
+            return null;
+        }
+        List<RealtimeNodeInfoDto> list = new ArrayList<>();
+        for (RealtimeNodeInfo info : realtimeNodeInfos) {
+            list.add(infoToDto(info));
+        }
+        return list;
+    }
+
+    private RealtimeNodeInfoDto infoToDto(RealtimeNodeInfo info) {
+        RealtimeNodeInfoDto dto = new RealtimeNodeInfoDto();
+        dto.setId(info.getId());
+        dto.setStatus(info.getStatus().getValue());
+        dto.setMessage(info.getMessage());
+        dto.setHost(info.getHost());
+        dto.setRunTime(format.format(info.getRunTime()));
+        dto.setEndTime(format.format(info.getEndTime()));
+        dto.setUpdateTime(format.format(info.getUpdateTime()));
+        return dto;
     }
 }
