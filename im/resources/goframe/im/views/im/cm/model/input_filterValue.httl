@@ -1,13 +1,12 @@
 ${extends("/goframe/function_layout.httl")}
 <!--#macro(content)-->
-<div style="padding: 5px 5px 0px 5px;">
-    <div id="ff" method="post">
-        <fieldset style="border:dotted 1px #227EA0;">
-            <legend><span style="font-weight: bold">过滤参数栏</span></legend>
-            <div id="form1">
+<div class="nui-toolbar">
+    <div class="panel-query search-condition" id="query">
+        <div class="list">
+            <div id="filterForm">
                 <!-- 搜索栏 -->
             </div>
-        </fieldset>
+        </div>
     </div>
 
     <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
@@ -19,84 +18,86 @@ ${extends("/goframe/function_layout.httl")}
 
 <script type="text/javascript">
     var filterCols;
-    var formObject;
-    /**
-     * 按需加载资源文件
-     */
-    require(['jquery', 'nui'], function ($, nui) {
-        nui.parse();
-        formObject = new nui.Form("form1");
-        $("#form1").html(getFormHtml())
-    });
+    var returnData = {};
+    var message;
 
     function setModelFilterCols(data){
-        filterCols = data;
-    }
+        /**
+         * 按需加载资源文件
+         */
+        require(['jquery', 'nui'], function ($, nui) {
+            filterCols = data;
+            nui.parse();
 
-    /**
-     * 获取Form动态的HTML
-     */
-    function getFormHtml() {
-        filterCols = {};
-        //console.warn(queryCols);
-        var count = 0;
-        var html = "<table style='width:100%'>";
-        $.each(filterCols, function (_index, record) {
-            //console.warn(record);
-            var name = record.name;
-            var describe = record.describe;
-            var label = record.label;
-            var isNeed = record.isNeed == "1" ? false : true;
-            var defaultVal = record.defaultVal ? record.defaultVal : "";
-            var operator = record.operator;
-            var tdHtml = "<td class='tit roleLabel' style='width: 10%;text-align: right'>" + describe + "：</td>"
-                + "<td class='roleText' style='width: 90%'>"
-                + "<input name='" + label + "' class='nui-textbox' style='width:98%;' value='" + defaultVal + "' required='" + isNeed + "' emptyText='进行\"" + operator + "\"匹配'/>"
-                + "</td>";
-            count++;
-            if (count % 4 == 1) {
-                html += "<tr>" + tdHtml;
-            } else if (count % 4 == 0) {
-                html += tdHtml + "</tr>";
-            } else {
-                html += tdHtml;
+            var count = 0;
+            var html = "<table style='width:100%'>";
+            $.each(filterCols, function (_index, record) {
+                var name = record.name;
+                var describe = record.describe;
+                var label = record.label;
+                var isNeed = record.isNeed == "1" ? false : true;
+                var defaultVal = record.defaultVal ? record.defaultVal : "";
+                var operator = record.operator;
+                var tdHtml = "<td class='tit roleLabel' style='width: 10%;text-align: right'>" + describe + "：</td>"
+                    + "<td class='roleText' style='width: 90%'>"
+                    + "<input name='" + label + "' class='nui-textbox' style='width:98%;' value='" + defaultVal + "' required='" + isNeed + "' emptyText='进行\"" + operator + "\"匹配'/>"
+                    + "</td>";
+                count++;
+                if (count % 4 == 1) {
+                    html += "<tr>" + tdHtml;
+                } else if (count % 4 == 0) {
+                    html += tdHtml + "</tr>";
+                } else {
+                    html += tdHtml;
+                }
+            });
+            if (count % 4 != 0) {
+                html += "</tr>";
             }
+            html += "</table>";
+            console.info(html);
+            $("#filterForm").empty();
+            $("#filterForm").append(html)
+
         });
-        if (count % 4 != 0) {
-            html += "</tr>";
-        }
-        html += /*"<tr>"
-            + "<td colspan='8' align='center'>"
-            + "#if(hasPermission('IQ.qm.test.search'))"
-            + "<input class='nui-button' iconCls='icon-search' text='查询' onclick='search'/>"
-            + "#end"
-            + "<span style='display:inline-block;width:25px;'></span>"
-            + "<input class='nui-button' iconCls='icon-reset' text='重置' onclick='onFormReset(\"form1\")'/>"
-            + "<span style='display:inline-block;width:25px;'></span>"
-            + "#if(hasPermission('IQ.qm.test.download'))"
-            + "<input class='nui-button' iconCls='icon-download' text='下载' onclick='download'/>"
-            + "#end"
-            + "</td>"
-            + "</tr>"
-            + */"</table>";
-        //console.warn(html);
-        return html;
     }
 
     function save(){
-        debugger;
-        var data = {};
-        var modelfilterValue = formObject.getData();
-        //检查
+        CloseWindow("cancel");
+        // 获取内容失败！！！原因未知
+        /* var formObject =  new nui.Form("filterForm");
+         console.info(new nui.Form("filterForm").getData(true,true));
+         var modelfilterValue = formObject.getData(true, true);*/
+        var result = true;
+        var modelfilterValue = {};
+        $.each($(".nui-textbox"), function (_index, record) {
+            //校验是否是必输
+            var isNeed = record.required;
+            var value = record.value.trim();
+            var name = record.name;
+            //比输入项为空
+            if(isNeed && (value == null || value == undefined || value == "")){
+                result = false;
+                message = "字段"+name+"不能为空";
+            }else{
+                modelfilterValue[name] = value;
+            }
+        });
         //基础信息栏数据校验
-        formObject.validate();
-        if (formObject.isValid() == false) {
-            data.status = false;
+
+        if (result == false) {
+            returnData.status = false;
+            returnData.message = message;
         }else{
-            data.status = true;
-            data.data = modelfilterValue;
+            returnData.status = true;
+            returnData.data = modelfilterValue;
         }
-        return window.CloseOwnerWindow(data);
+        return window.CloseOwnerWindow(returnData);
+    }
+
+    function cancel() {
+        returnData.status = false;
+        return window.CloseOwnerWindow(returnData);
     }
 </script>
 <!--#end-->

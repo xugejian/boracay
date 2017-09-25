@@ -606,6 +606,7 @@ ${extends("/goframe/function_layout.httl")}
     function buildModel(pkId,e){
         //先将按钮灰度并修改点击事件，防止重复操作
         $(e).attr("onclick","javascript:return false;");
+        $(e).attr("style","padding-left: 6px;opacity: 0.2");
         //如果是批量则先弹出窗口让输入过滤字段值
         var modelFilterCols;
         $.ajax({
@@ -635,10 +636,10 @@ ${extends("/goframe/function_layout.httl")}
                     iframe.contentWindow.setModelFilterCols(modelFilterCols);
                 },
                 ondestroy: function (data) {
-                    $(e).attr("onclick", "runBuild('" + pkId + "',this,1)");
+                    $(e).attr("onclick", "buildModel('" + pkId + "',this)");
                     if (data.status == true) {
                         $.ajax({
-                            url: "${basePath}/im/model/runModelBuild/" + pkId + "/1",
+                            url: "${basePath}/im/job/batch/start/" + pkId,
                             type: 'POST',
                             cache: false,
                             data: data.data,
@@ -661,14 +662,12 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function runBuild(pkId,e){
-        // TODO
         //先将按钮灰度并修改点击事件，防止重复操作
         $(e).attr("onclick","javascript:return false;");
-
         //添加取消按钮
-        $(e).parent().append("<a href='#' style='padding-left: 6px' class='stopBuild' onclick='stopBuild(\""+pkId+"\",this)'>取消构建</a>");
+       // $(e).parent().append("<a href='#' style='padding-left: 6px' class='stopBuild' onclick='stopBuild(\""+pkId+"\",this)'>取消构建</a>");
         $.ajax({
-            url:"${basePath}/im/model/runModelBuild/"+pkId+"/2",
+            url:"${basePath}/im/job/realtime/start/"+pkId,
             type : 'POST',
             cache : false,
             contentType : 'application/json',
@@ -676,7 +675,7 @@ ${extends("/goframe/function_layout.httl")}
                 if(data.status == true){
                     $(e).html("正在运行");
                 }else{
-                    $(e).attr("onclick","runBuild('"+pkId+"',this,2)");
+                    $(e).attr("onclick","runBuild('"+pkId+"',this)");
                     nui.alert("运行失败，信息：" + data.message, "系统提示");
                     //删除取消按钮
                     $(e).next().remove();
@@ -689,13 +688,13 @@ ${extends("/goframe/function_layout.httl")}
         $(e).attr("onclick","javascript:return false;");
         $(e).attr("style","padding-left: 6px;opacity: 0.2");
         $.ajax({
-            url:"${basePath}/im/model/runModelBuild/"+pkId+"/2",
+            url:"${basePath}/im/job/realtime/stop/"+pkId,
             type : 'POST',
             cache : false,
             contentType : 'application/json',
             success : function(data) {
                 if(data.status == true){
-                    $(e).prev().html("构建");
+                    $(e).prev().html("运行");
                     $(e).prev().attr("onclick","runBuild('"+pkId+"',this,2)");
                     nui.alert("停止成功", "系统提示");
                     $(e).remove();
