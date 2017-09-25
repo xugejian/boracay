@@ -53,8 +53,8 @@ public class RealtimeJobService {
      * @param model
      */
     public void start(Model model) throws Exception {
+        String id = UdspCommonUtil.getConsumeId(model.getId());
         MqModel mqModel = new MqModel(model);
-        String id = model.getId();
         realtimeTotalService.readyStart(id, mqModel);
     }
 
@@ -80,8 +80,8 @@ public class RealtimeJobService {
 //        }
         List<RealtimeTotalInfo> realtimeTotalInfos = realtimeTotalService.selectList();
         for (RealtimeTotalInfo totalInfo : realtimeTotalInfos) {
+            String id = totalInfo.getId();
             MqModel model = totalInfo.getModel();
-            String id = model.getId();
             String consumerCronExpression = model.getConsumerCronExpression();
             RealtimeStatus status = totalInfo.getStatus();
             String startHost = totalInfo.getStartHost();
