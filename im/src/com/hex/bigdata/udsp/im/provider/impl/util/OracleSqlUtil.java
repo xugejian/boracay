@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -71,6 +73,31 @@ public class OracleSqlUtil {
      */
     public static String commentTable(String tableName, String tableComment) {
         return "COMMENT ON TABLE " + tableName + " IS '" + tableComment + "'";
+    }
+
+    /**
+     * 插入
+     *
+     * @param tableName
+     * @param valueColumns
+     * @return
+     */
+    public static String insert(String tableName, List<ValueColumn> valueColumns) {
+        //TODO ...
+        return "";
+    }
+
+    /**
+     * 更新
+     *
+     * @param tableName
+     * @param valueColumns
+     * @param whereProperties
+     * @return
+     */
+    public static String update(String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
+        //TODO ...
+        return "";
     }
 
     private static String getColumns(List<TableColumn> columns) {

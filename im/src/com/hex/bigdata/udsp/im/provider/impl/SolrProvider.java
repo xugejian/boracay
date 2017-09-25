@@ -2,28 +2,21 @@ package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.constant.DatasourceType;
-import com.hex.bigdata.udsp.im.constant.UpdateMode;
-import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.SolrMetadata;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.KafkaUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
-import kafka.consumer.ConsumerIterator;
-import kafka.consumer.KafkaStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,13 +29,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by JunjieM on 2017-9-5.
  */
 @Component("com.hex.bigdata.udsp.im.provider.impl.SolrProvider")
-public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider {
+public class SolrProvider extends SolrWrapper {
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
     private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.solr.SolrStorageHandler";
 
@@ -165,35 +157,44 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Datasource datasource = model.getSourceDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
         String solrServers = solrDatasource.getSolrServers();
-        SolrModel solrModel = new SolrModel(model.getProperties(),model.getSourceDatasource());
+        SolrModel solrModel = new SolrModel(model.getProperties(), model.getSourceDatasource());
         String collectionName = solrModel.getCollectionName();
         return getColumns(collectionName, solrServers);
     }
 
     @Override
-    public void inputData(Model model) {
-        String sDsType = model.getSourceDatasource().getType();
-        UpdateMode updateMode = model.getUpdateMode();
-        // 源是Kafka
-        if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
-            KafkaModel kafkaModel = new KafkaModel(model);
-            List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.outputData(kafkaModel);
-            for (KafkaStream<byte[], byte[]> stream : streams) {
-                ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
-                while (iterator.hasNext()) {
-                    String message = new String(iterator.next().message());
-                    logger.debug("kafka接收的信息为：" + message);
-                    // TODO ... 实时数据处理
-                    if (UpdateMode.MATCHING_UPDATE == updateMode) { // 匹配更新
+    protected void insertInto(Datasource datasource, String tableName, List<ValueColumn> valueColumns) {
 
-                    } else if (UpdateMode.UPDATE_INSERT == updateMode) { // 更新插入
+    }
 
-                    } else { // 增量插入
+    @Override
+    protected void updateInsert(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
 
-                    }
-                }
-            }
-        }
+    }
+
+    @Override
+    protected void matchingUpdate(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
+
+    }
+
+    @Override
+    protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        if (modelMappings == null || modelMappings.size() == 0)
+            return null;
+        List<java.lang.String> selectColumns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings)
+            selectColumns.add(mapping.getName());
+        return selectColumns;
+    }
+
+    @Override
+    protected List<String> getInsertColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        if (modelMappings == null || modelMappings.size() == 0)
+            return null;
+        List<java.lang.String> insertColumns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings)
+            insertColumns.add(mapping.getMetadataCol().getName());
+        return insertColumns;
     }
 
     @Override

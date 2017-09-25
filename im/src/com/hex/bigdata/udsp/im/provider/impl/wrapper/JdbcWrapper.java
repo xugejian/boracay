@@ -4,6 +4,8 @@ import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
+import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.HiveMetadata;
@@ -27,7 +29,7 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class JdbcWrapper extends BatchWrapper {
+public abstract class JdbcWrapper extends Wrapper implements BatchTargetProvider, BatchSourceProvider {
     private static Logger logger = LogManager.getLogger(JdbcWrapper.class);
 
     protected static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.jdbc.JdbcStorageHandler";
@@ -36,13 +38,9 @@ public abstract class JdbcWrapper extends BatchWrapper {
     public List<MetadataCol> columnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
         JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
-        JdbcModel jdbcModel = getJdbcModel(model.getProperties(),model.getSourceDatasource());
+        JdbcModel jdbcModel =  new JdbcModel(model.getProperties(), model.getSourceDatasource());
         return getColumnInfo(jdbcDatasource, jdbcModel);
     }
-
-    public abstract JdbcModel getJdbcModel(List<Property> properties, Datasource srcDatasource);
-
-    public abstract JdbcModel getJdbcModel(Model model);
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
@@ -125,7 +123,7 @@ public abstract class JdbcWrapper extends BatchWrapper {
         if (!sDsId.equals(eDsId)) { // 源、引擎的数据源不相同
             HiveDatasource eHiveDs = new HiveDatasource(eDs.getPropertyMap());
             String id = model.getId();
-            JdbcModel jdbcModel = getJdbcModel(model);
+            JdbcModel jdbcModel = new JdbcModel(model);
             String fullTbName = jdbcModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + jdbcModel.getTableName();
             String tableName = getSourceTableName(id);
             JdbcDatasource jdbcDs = new JdbcDatasource(sDs.getPropertyMap());

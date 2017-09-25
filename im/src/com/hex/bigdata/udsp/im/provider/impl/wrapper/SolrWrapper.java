@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
-import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
+import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
+import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.factory.SolrConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
@@ -25,7 +27,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class SolrWrapper extends BatchWrapper {
+public abstract class SolrWrapper extends Wrapper implements BatchSourceProvider, BatchTargetProvider, RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(SolrWrapper.class);
     private static Map<String, SolrConnectionPoolFactory> dataSourcePool;
 
@@ -130,25 +132,5 @@ public abstract class SolrWrapper extends BatchWrapper {
             columns.add(new TableColumn(mapping.getName(), dataType, mapping.getDescribe()));
         }
         return columns;
-    }
-
-    @Override
-    protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
-        if (modelMappings == null || modelMappings.size() == 0)
-            return null;
-        List<java.lang.String> selectColumns = new ArrayList<>();
-        for (ModelMapping mapping : modelMappings)
-            selectColumns.add(mapping.getName());
-        return selectColumns;
-    }
-
-    @Override
-    protected List<String> getInsertColumns(List<ModelMapping> modelMappings, Metadata metadata) {
-        if (modelMappings == null || modelMappings.size() == 0)
-            return null;
-        List<java.lang.String> insertColumns = new ArrayList<>();
-        for (ModelMapping mapping : modelMappings)
-            insertColumns.add(mapping.getMetadataCol().getName());
-        return insertColumns;
     }
 }

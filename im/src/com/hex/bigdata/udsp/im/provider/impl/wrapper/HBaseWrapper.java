@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
+import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseAdminPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
@@ -32,7 +34,7 @@ import java.util.*;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class HBaseWrapper extends BatchTargetWrapper {
+public abstract class HBaseWrapper extends Wrapper implements BatchTargetProvider, RealtimeTargetProvider {
     static {
         // 解决winutils.exe不存在的问题
         try {
