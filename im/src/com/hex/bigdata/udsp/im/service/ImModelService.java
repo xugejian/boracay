@@ -713,7 +713,7 @@ public class ImModelService {
         //组织需要构建或则删除构建的模型
         Model model = getModelByPkId(imModel);
         if(model.getType().equals(ModelType.BATCH)){
-            imProviderService.buildBatch(model);
+           /* imProviderService.buildBatch(model);*/
         }else if(model.getType().equals(ModelType.REALTIME)){
             imProviderService.buildRealtime(model);
         }
