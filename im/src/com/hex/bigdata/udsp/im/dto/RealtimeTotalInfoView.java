@@ -3,101 +3,95 @@ package com.hex.bigdata.udsp.im.dto;
 /**
  * Created by JunjieM on 2017-9-21.
  */
-public class RealtimeTotalInfoView {
-    private String id; //
-    private String startHost; // 发起启动命令的节点
-    private String stopHost; // 发起停止命令的节点
-    private String status; // 准备启动、开始启动、正在运行、启动失败、准备停止、开始停止、停止成功、停止失败、运行失败
-    private String startTime; // 准备启动的时间
-    private String runTime; // 开始运行的时间
-    private String stopTime; // 准备停止的时间
-    private String endTime; // 任务停止的时间
-    private String updateTime; // 更新信息的时间
-    private String startUser;
-    private String stopUser;
-    private String serviceName;
-    private String requestType;
-    private String appName;
-    private String appId;
-    private String requestContent; // 请求内容
+public class RealtimeTotalInfoView extends RealtimeTotalInfoDto{
+    private String startTimeStart;
+    private String runTimeStart;
+    private String stopTimeStart;
+    private String endTimeStart;
+    private String updateTimeStart;
+    private String startTimeEnd;
+    private String runTimeEnd;
+    private String stopTimeEnd;
+    private String endTimeEnd;
+    private String updateTimeEnd;
 
-    public String getId() {
-        return id;
+    public String getStartTimeStart() {
+        return startTimeStart;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setStartTimeStart(String startTimeStart) {
+        this.startTimeStart = startTimeStart;
     }
 
-    public String getStartHost() {
-        return startHost;
+    public String getRunTimeStart() {
+        return runTimeStart;
     }
 
-    public void setStartHost(String startHost) {
-        this.startHost = startHost;
+    public void setRunTimeStart(String runTimeStart) {
+        this.runTimeStart = runTimeStart;
     }
 
-    public String getStopHost() {
-        return stopHost;
+    public String getStopTimeStart() {
+        return stopTimeStart;
     }
 
-    public void setStopHost(String stopHost) {
-        this.stopHost = stopHost;
+    public void setStopTimeStart(String stopTimeStart) {
+        this.stopTimeStart = stopTimeStart;
     }
 
-    public String getStatus() {
-        return status;
+    public String getEndTimeStart() {
+        return endTimeStart;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setEndTimeStart(String endTimeStart) {
+        this.endTimeStart = endTimeStart;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public String getUpdateTimeStart() {
+        return updateTimeStart;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setUpdateTimeStart(String updateTimeStart) {
+        this.updateTimeStart = updateTimeStart;
     }
 
-    public String getRunTime() {
-        return runTime;
+    public String getStartTimeEnd() {
+        return startTimeEnd;
     }
 
-    public void setRunTime(String runTime) {
-        this.runTime = runTime;
+    public void setStartTimeEnd(String startTimeEnd) {
+        this.startTimeEnd = startTimeEnd;
     }
 
-    public String getStopTime() {
-        return stopTime;
+    public String getRunTimeEnd() {
+        return runTimeEnd;
     }
 
-    public void setStopTime(String stopTime) {
-        this.stopTime = stopTime;
+    public void setRunTimeEnd(String runTimeEnd) {
+        this.runTimeEnd = runTimeEnd;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public String getStopTimeEnd() {
+        return stopTimeEnd;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setStopTimeEnd(String stopTimeEnd) {
+        this.stopTimeEnd = stopTimeEnd;
     }
 
-    public String getUpdateTime() {
-        return updateTime;
+    public String getEndTimeEnd() {
+        return endTimeEnd;
     }
 
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
+    public void setEndTimeEnd(String endTimeEnd) {
+        this.endTimeEnd = endTimeEnd;
     }
 
-    public String getRequestContent() {
-        return requestContent;
+    public String getUpdateTimeEnd() {
+        return updateTimeEnd;
     }
 
-    public void setRequestContent(String requestContent) {
-        this.requestContent = requestContent;
+    public void setUpdateTimeEnd(String updateTimeEnd) {
+        this.updateTimeEnd = updateTimeEnd;
     }
 }
