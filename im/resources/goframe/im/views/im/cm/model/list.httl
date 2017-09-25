@@ -637,7 +637,7 @@ ${extends("/goframe/function_layout.httl")}
                 },
                 ondestroy: function (data) {
                     $(e).attr("onclick", "buildModel('" + pkId + "',this)");
-                    if (data.status == true) {
+                    if (data.status && data.status == true ) {
                         $.ajax({
                             url: "${basePath}/im/job/batch/start/" + pkId,
                             type: 'POST',

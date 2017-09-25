@@ -69,7 +69,7 @@ ${extends("/goframe/function_layout.httl")}
          console.info(new nui.Form("filterForm").getData(true,true));
          var modelfilterValue = formObject.getData(true, true);*/
         var result = true;
-        var modelfilterValue = {};
+        var modelfilterValue = [];
         $.each($(".nui-textbox"), function (_index, record) {
             //校验是否是必输
             var isNeed = record.required;
@@ -80,7 +80,7 @@ ${extends("/goframe/function_layout.httl")}
                 result = false;
                 message = "字段"+name+"不能为空";
             }else{
-                modelfilterValue[name] = value;
+                modelfilterValue.push({"name":name,"value":value});
             }
         });
         //基础信息栏数据校验
