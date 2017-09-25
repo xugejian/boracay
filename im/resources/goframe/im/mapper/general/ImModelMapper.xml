@@ -88,11 +88,24 @@
         <if test="tMdId != null and tMdId != ''">and IM.T_MD_ID = #{tMdId} </if>
         <if test="type != null and type != ''">and IM.TYPE = #{type} </if>
         <if test="sDsId != null and sDsId != ''">and IM.S_DS_ID = #{sDsId} </if>
-        <if test="isDeleted != null and isDeleted != ''">and IM.DEL_FLG = #{isDeleted} </if>
         <if test="crtTimeStart != null and crtTimeStart != ''">and IM.CRT_TIME >= #{crtTimeStart} </if>
         <if test="crtTimeEnd != null and crtTimeEnd != ''">and #{crtTimeEnd} >= IM.CRT_TIME </if>
         <if test="uptTimeStart != null and uptTimeStart != ''">and IM.UPT_TIME >= #{uptTimeStart} </if>
         <if test="uptTimeEnd != null and uptTimeEnd != ''">and #{uptTimeEnd} >= IM.UPT_TIME </if>
+        <choose>
+          <!-- 未建模-->
+          <when test="isBuilded != null and isBuilded == '1'">
+            and IM.STATUS = '1'
+          </when>
+          <!-- 已建模-->
+          <when test="isBuilded != null and isBuilded == '2'">
+            and IM.STATUS = '2'
+          </when>
+          <!-- 实时 -->
+          <when test="isBuilded != null and isBuilded == '3'">
+            and IM.TYPE = '2'
+          </when>
+        </choose>
    <!-- </trim>-->
   </select>
 

@@ -1,7 +1,5 @@
 package com.hex.bigdata.udsp.im.controller;
 
-import com.hex.bigdata.udsp.im.model.ImModelFilterCol;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelFilterCol;
 import com.hex.bigdata.udsp.im.service.BatchJobService;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 /**
  * Created by JunjieM on 2017-9-22.

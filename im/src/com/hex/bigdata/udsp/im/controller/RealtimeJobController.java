@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.im.controller;
 
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.service.BatchJobService;
 import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.bigdata.udsp.im.service.RealtimeJobService;
 import com.hex.goframe.model.MessageResult;
