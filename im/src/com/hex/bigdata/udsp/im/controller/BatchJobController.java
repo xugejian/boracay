@@ -86,6 +86,13 @@ public class BatchJobController {
         return new MessageResult(status, message);
     }
 
+    /**
+     * 分页列表
+     *
+     * @param batchInfoView
+     * @param page
+     * @return
+     */
     @RequestMapping({"/page"})
     @ResponseBody
     public PageListResult page(BatchInfoView batchInfoView, Page page) {
@@ -100,6 +107,12 @@ public class BatchJobController {
         return result;
     }
 
+    /**
+     * 查询详情
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping({"/select/{id}"})
     @ResponseBody
     public MessageResult selectById(@PathVariable("id") String id) {
