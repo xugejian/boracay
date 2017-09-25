@@ -2,6 +2,7 @@ package com.hex.bigdata.udsp.im.controller;
 
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.service.BatchJobService;
+import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.bigdata.udsp.im.service.RealtimeJobService;
 import com.hex.goframe.model.MessageResult;
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +23,9 @@ public class RealtimeJobController {
     @Autowired
     private RealtimeJobService realtimeJobService;
 
+    @Autowired
+    private ImModelService imModelService;
+
     /**
      * 启动
      *
@@ -33,8 +37,8 @@ public class RealtimeJobController {
     public MessageResult start(@PathVariable("pkId") String pkId) {
         boolean status = true;
         String message = "实时作业启动成功！";
-        Model model = null; // TODO ...
         try {
+            Model model = imModelService.getModel(pkId,null);
             realtimeJobService.start(model);
         } catch (Exception e) {
             e.printStackTrace();

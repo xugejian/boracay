@@ -642,7 +642,7 @@ ${extends("/goframe/function_layout.httl")}
                             url: "${basePath}/im/job/batch/start/" + pkId,
                             type: 'POST',
                             cache: false,
-                            data: data.data,
+                            data: nui.encode(data.data),
                             async: false,
                             contentType: 'application/json',
                             success: function (data) {
@@ -678,7 +678,7 @@ ${extends("/goframe/function_layout.httl")}
                     $(e).attr("onclick","runBuild('"+pkId+"',this)");
                     nui.alert("运行失败，信息：" + data.message, "系统提示");
                     //删除取消按钮
-                    $(e).next().remove();
+                    //$(e).next().remove();
                 }
             }
         });

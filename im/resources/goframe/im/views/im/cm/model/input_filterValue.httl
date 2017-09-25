@@ -80,7 +80,7 @@ ${extends("/goframe/function_layout.httl")}
                 result = false;
                 message = "字段"+name+"不能为空";
             }else{
-                modelfilterValue.push({"name":name,"value":value});
+                modelfilterValue.push({"label":name,"value":value});
             }
         });
         //基础信息栏数据校验
