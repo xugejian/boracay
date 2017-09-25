@@ -3,11 +3,8 @@ package com.hex.bigdata.udsp.im.controller;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.dto.BatchInfoDto;
 import com.hex.bigdata.udsp.im.dto.BatchInfoView;
-import com.hex.bigdata.udsp.im.model.BatchInfo;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.service.BatchJobService;
-import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.model.PageListResult;
@@ -19,8 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 /**
  * Created by JunjieM on 2017-9-22.

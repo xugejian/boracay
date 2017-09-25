@@ -1,10 +1,10 @@
 package com.hex.bigdata.udsp.im.controller;
 
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.im.dto.*;
-import com.hex.bigdata.udsp.im.model.RealtimeNodeInfo;
+import com.hex.bigdata.udsp.im.dto.RealtimeNodeInfoDto;
+import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoDto;
+import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoView;
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.service.BatchJobService;
 import com.hex.bigdata.udsp.im.service.RealtimeJobService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
