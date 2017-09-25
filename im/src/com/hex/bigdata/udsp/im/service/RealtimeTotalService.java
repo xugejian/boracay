@@ -20,14 +20,14 @@ import java.util.List;
 public class RealtimeTotalService {
     private static Logger logger = LogManager.getLogger(RealtimeTotalService.class);
     private static final String REALTIME_TOTAL_KEY = "REALTIME_TOTAL";
+    private static final String KEY_DELIMITER = ":";
     private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
 
     @Autowired
     private RealtimeTotalMapper realtimeTotalMapper;
 
-    public void readyStart(MqModel model) throws Exception {
+    public void readyStart(String id, MqModel model) throws Exception {
         try {
-            String id = model.getId();
             RealtimeTotalInfo realtimeInfo = new RealtimeTotalInfo();
             realtimeInfo.setId(id);
             realtimeInfo.setStartHost(HOST_KEY);
@@ -139,22 +139,22 @@ public class RealtimeTotalService {
     }
 
     public void insert(String id, RealtimeTotalInfo realtimeInfo) {
-        realtimeTotalMapper.insert(REALTIME_TOTAL_KEY + ":" + id, realtimeInfo);
+        realtimeTotalMapper.insert(REALTIME_TOTAL_KEY + KEY_DELIMITER + id, realtimeInfo);
     }
 
     public void update(String id, RealtimeTotalInfo realtimeInfo) {
-        realtimeTotalMapper.update(REALTIME_TOTAL_KEY + ":" + id, realtimeInfo);
+        realtimeTotalMapper.update(REALTIME_TOTAL_KEY + KEY_DELIMITER + id, realtimeInfo);
     }
 
     public RealtimeTotalInfo select(String id) {
-        return realtimeTotalMapper.select(REALTIME_TOTAL_KEY + ":" + id);
+        return realtimeTotalMapper.select(REALTIME_TOTAL_KEY + KEY_DELIMITER + id);
     }
 
     public List<RealtimeTotalInfo> selectList() {
-        return realtimeTotalMapper.selectLike(REALTIME_TOTAL_KEY);
+        return realtimeTotalMapper.selectLike(REALTIME_TOTAL_KEY + KEY_DELIMITER);
     }
 
     public void delete(String id) {
-        realtimeTotalMapper.delete(REALTIME_TOTAL_KEY + ":" + id);
+        realtimeTotalMapper.delete(REALTIME_TOTAL_KEY + KEY_DELIMITER + id);
     }
 }

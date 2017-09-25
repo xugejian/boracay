@@ -3,77 +3,59 @@ package com.hex.bigdata.udsp.im.dto;
 /**
  * Created by JunjieM on 2017-9-21.
  */
-public class BatchInfoView {
-    private String id; // 主键
-    private String host; // 主机
-    private String status; // 准备构建、正在构建、构建成功、构建失败
-    private String startTime; // 开始的时间
-    private String endTime; // 结束的时间
-    private String updateTime; // 更新的时间
-    private int percent; // 进度
-    private String message; // 信息
+public class BatchInfoView extends BatchInfoDto{
+    private String startTimeStart;
+    private String startTimeEnd;
+    private String endTimeStart;
+    private String endTimeEnd;
+    private String updateTimeStart;
+    private String updateTimeEnd;
 
-    public String getId() {
-        return id;
+    public String getStartTimeStart() {
+        return startTimeStart;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setStartTimeStart(String startTimeStart) {
+        this.startTimeStart = startTimeStart;
     }
 
-    public String getHost() {
-        return host;
+    public String getStartTimeEnd() {
+        return startTimeEnd;
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    public void setStartTimeEnd(String startTimeEnd) {
+        this.startTimeEnd = startTimeEnd;
     }
 
-    public String getStatus() {
-        return status;
+    public String getEndTimeStart() {
+        return endTimeStart;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setEndTimeStart(String endTimeStart) {
+        this.endTimeStart = endTimeStart;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public String getEndTimeEnd() {
+        return endTimeEnd;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setEndTimeEnd(String endTimeEnd) {
+        this.endTimeEnd = endTimeEnd;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public String getUpdateTimeStart() {
+        return updateTimeStart;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setUpdateTimeStart(String updateTimeStart) {
+        this.updateTimeStart = updateTimeStart;
     }
 
-    public String getUpdateTime() {
-        return updateTime;
+    public String getUpdateTimeEnd() {
+        return updateTimeEnd;
     }
 
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public int getPercent() {
-        return percent;
-    }
-
-    public void setPercent(int percent) {
-        this.percent = percent;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setUpdateTimeEnd(String updateTimeEnd) {
+        this.updateTimeEnd = updateTimeEnd;
     }
 }

@@ -17,6 +17,24 @@ public class BatchInfo implements Serializable {
     private Date updateTime; // 更新的时间
     private int percent; // 进度
     private String message; // 信息
+    private String modelName; // 模型名称
+    private String modelId; // 模型ID
+
+    public String getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
 
     public String getId() {
         return id;
