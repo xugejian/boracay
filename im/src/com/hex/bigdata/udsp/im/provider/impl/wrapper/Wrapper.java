@@ -115,12 +115,12 @@ public abstract class Wrapper {
         String insertTableName = getTargetTableName(id);
         if (sDsId.equals(eDsId) && tDsId.equals(eDsId)) { // 源、引擎、目标的数据源相同
             HiveModel hiveModel = new HiveModel(model);
-            selectSql = hiveModel.getSql();
+            selectSql = hiveModel.getSelectSql();
             selectTableName = hiveModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + hiveModel.getTableName();
             insertTableName = fullTbName;
         } else if (sDsId.equals(eDsId)) { // 源、引擎的数据源相同
             HiveModel hiveModel = new HiveModel(model);
-            selectSql = hiveModel.getSql();
+            selectSql = hiveModel.getSelectSql();
             selectTableName = hiveModel.getDatabaseName() + DATABASE_AND_TABLE_SEP + hiveModel.getTableName();
             insertTableName = getTargetTableName(id);
         } else if (tDsId.equals(eDsId)) { // 目标、引擎的数据源相同

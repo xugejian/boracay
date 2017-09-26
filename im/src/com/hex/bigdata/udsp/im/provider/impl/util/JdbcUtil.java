@@ -82,6 +82,7 @@ public class JdbcUtil {
     }
 
     public static int executeUpdate2(JdbcDatasource datasource, String updateSql) throws SQLException {
+        logger.debug("UPDATE SQL:" + updateSql);
         Connection conn = null;
         Statement stmt = null;
         int rs = -1;

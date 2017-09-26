@@ -76,10 +76,10 @@ public abstract class JdbcWrapper extends Wrapper implements BatchTargetProvider
     private List<MetadataCol> getColumnInfo(JdbcDatasource datasource, JdbcModel model) {
         String dbName = model.getDatabaseName();
         String tbName = model.getTableName();
-        String sql = model.getSql();
-        if (StringUtils.isNotBlank(sql)) {
-            sql = "SELECT * FROM (" + sql + ") UDSP_VIEW WHERE 1=0";
-            return getMetadataCols(datasource, sql);
+        String selectSql = model.getSelectSql();
+        if (StringUtils.isNotBlank(selectSql)) {
+            selectSql = "SELECT * FROM (" + selectSql + ") UDSP_VIEW WHERE 1=0";
+            return getMetadataCols(datasource, selectSql);
         }
         if (StringUtils.isNotBlank(dbName) && StringUtils.isNotBlank(tbName)) {
             return getMetadataCols(datasource, dbName, tbName);
