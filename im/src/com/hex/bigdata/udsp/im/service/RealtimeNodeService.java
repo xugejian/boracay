@@ -19,6 +19,7 @@ import java.util.List;
 public class RealtimeNodeService {
     private static Logger logger = LogManager.getLogger(RealtimeNodeService.class);
     private static final String REALTIME_NODE_INFO_KEY = "REALTIME_NODE";
+    private static final String KEY_DELIMITER = ":";
     private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
 
     @Autowired
@@ -111,32 +112,32 @@ public class RealtimeNodeService {
     }
 
     public void insert(String id, RealtimeNodeInfo realtimeInfo) {
-        realtimeNodeMapper.insert(REALTIME_NODE_INFO_KEY + ":" + id + ":" + HOST_KEY, realtimeInfo);
+        realtimeNodeMapper.insert(REALTIME_NODE_INFO_KEY + KEY_DELIMITER + id + KEY_DELIMITER + HOST_KEY, realtimeInfo);
     }
 
     public RealtimeNodeInfo select(String id) {
-        return realtimeNodeMapper.select(REALTIME_NODE_INFO_KEY + ":" + id + ":" + HOST_KEY);
+        return realtimeNodeMapper.select(REALTIME_NODE_INFO_KEY + KEY_DELIMITER + id + KEY_DELIMITER + HOST_KEY);
     }
 
     public void update(String id, RealtimeNodeInfo realtimeInfo) {
-        realtimeNodeMapper.update(REALTIME_NODE_INFO_KEY + ":" + id + ":" + HOST_KEY, realtimeInfo);
+        realtimeNodeMapper.update(REALTIME_NODE_INFO_KEY + KEY_DELIMITER + id + KEY_DELIMITER + HOST_KEY, realtimeInfo);
     }
 
     public List<RealtimeNodeInfo> selectList(String id) {
-        return realtimeNodeMapper.selectLike(REALTIME_NODE_INFO_KEY + ":" + id);
+        return realtimeNodeMapper.selectLike(REALTIME_NODE_INFO_KEY + KEY_DELIMITER + id + KEY_DELIMITER);
     }
 
     public void deleteList(String id) {
         for (RealtimeNodeInfo nodeInfo : selectList(id)) {
-            realtimeNodeMapper.delete(REALTIME_NODE_INFO_KEY + ":" + id + ":" + nodeInfo.getHost());
+            realtimeNodeMapper.delete(REALTIME_NODE_INFO_KEY + KEY_DELIMITER + id + KEY_DELIMITER + nodeInfo.getHost());
         }
     }
 
     public void delete(String id) {
-        realtimeNodeMapper.delete(REALTIME_NODE_INFO_KEY + ":" + id + ":" + HOST_KEY);
+        realtimeNodeMapper.delete(REALTIME_NODE_INFO_KEY + KEY_DELIMITER + id + KEY_DELIMITER + HOST_KEY);
     }
 
     public void delete(String id, String host) {
-        realtimeNodeMapper.delete(REALTIME_NODE_INFO_KEY + ":" + id + ":" + host);
+        realtimeNodeMapper.delete(REALTIME_NODE_INFO_KEY + KEY_DELIMITER + id + KEY_DELIMITER + host);
     }
 }
