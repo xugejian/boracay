@@ -309,7 +309,7 @@ ${extends("/goframe/function_layout.httl")}
         cols = [];
         //将参数配置栏自动输入
         $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
-            if (data & data.length > 0) {
+            if (data && data.length > 0) {
                 for (var i = 0, len = data.length; i < len; i++) {
                     cols.push({
                         "name": data[i].dictId,
