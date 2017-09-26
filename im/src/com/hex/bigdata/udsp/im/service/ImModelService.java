@@ -514,7 +514,7 @@ public class ImModelService {
     public boolean updateStatus(ImModel imModel, String status) throws Exception{
         boolean result = false;
         //组织需要构建或则删除构建的模型
-        Model model = getModelByPkId(imModel);
+        Model model = getModelByImModel(imModel);
 
         if("1".equals(status)){
             // TODO 先停止相关的任务
@@ -535,9 +535,24 @@ public class ImModelService {
         }
         return result;
     }
+    public Model getModel(String pkId,ModelFilterCol[] modelFilterCols) throws Exception{
+        Model model = getModelByImModel(selectByPkId(pkId));
+        //用map是不是效率更高些？
+        //设置其过滤字段
+        if(modelFilterCols != null){
+            for(ModelFilterCol modelFilterCol : modelFilterCols){
+                for(ModelFilterCol modelFilterCol1 : model.getModelFilterCols()){
+                    if(modelFilterCol1.getLabel().equals(modelFilterCol.getLabel())){
+                        modelFilterCol1.setValue(modelFilterCol.getValue());
+                    }
+                }
+            }
+        }
+        return model;
+    }
 
     //通过模型id获取模型
-    private Model getModelByPkId(ImModel imModel) throws Exception{
+    public Model getModelByImModel(ImModel imModel) throws Exception{
         String pkId = imModel.getPkId();
         //修改comProperties为继承property类比较好,设计有问题，冗余
         List<ComProperties> properties = comPropertiesMapper.selectByFkId(pkId);
@@ -711,7 +726,7 @@ public class ImModelService {
 
     public void runModelBuild(ImModel imModel) throws Exception{
         //组织需要构建或则删除构建的模型
-        Model model = getModelByPkId(imModel);
+        Model model = getModelByImModel(imModel);
         if(model.getType().equals(ModelType.BATCH)){
            /* imProviderService.buildBatch(model);*/
         }else if(model.getType().equals(ModelType.REALTIME)){

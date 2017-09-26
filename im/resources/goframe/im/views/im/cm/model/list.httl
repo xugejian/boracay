@@ -553,7 +553,7 @@ ${extends("/goframe/function_layout.httl")}
         });
     }
     function buildOperator(pkId,e){
-        grid1.loading("正在构建中,请稍等...");
+        grid1.loading("正在建模中,请稍等...");
         //先将按钮灰度并修改点击事件，防止重复操作
         $(e).attr("onclick","javascript:return false;");
         $(e).attr("style","padding-left: 6px;opacity: 0.2");
@@ -564,7 +564,7 @@ ${extends("/goframe/function_layout.httl")}
             contentType : 'application/json',
             success : function(data) {
                 if(data.status == true){
-                    nui.alert("构建成功", "系统提示");
+                    nui.alert("建模成功", "系统提示");
                     grid1.unmask();
                     grid1.reload();
                 }else{
@@ -572,13 +572,13 @@ ${extends("/goframe/function_layout.httl")}
                     $(e).attr("onclick","buildOperator('"+pkId+"',this)");
                     $(e).attr("style","padding-left: 6px");
                     grid1.unmask();
-                    nui.alert("构建失败，信息：" + data.message, "系统提示");
+                    nui.alert("建模失败，信息：" + data.message, "系统提示");
                 }
             }
         });
     }
     function removeBuild(pkId,e){
-        grid1.loading("正在取消构建中,请稍等...");
+        grid1.loading("正在取消建模中,请稍等...");
         //先将按钮灰度并修改点击事件，防止重复操作
         $(e).attr("onclick","javascript:return false;");
         $(e).attr("style","padding-left: 6px;opacity: 0.2");
@@ -589,7 +589,7 @@ ${extends("/goframe/function_layout.httl")}
             contentType : 'application/json',
             success : function(data) {
                 if(data.status == true){
-                    nui.alert("取消构建成功", "系统提示");
+                    nui.alert("取消建模成功", "系统提示");
                     grid1.unmask();
                     grid1.reload();
                 }else{
@@ -597,7 +597,7 @@ ${extends("/goframe/function_layout.httl")}
                     $(e).attr("onclick","removeBuild('"+pkId+"',this)");
                     $(e).attr("style","padding-left: 6px");
                     grid1.unmask();
-                    nui.alert("取消构建失败，信息：" + data.message, "系统提示");
+                    nui.alert("取消建模失败，信息：" + data.message, "系统提示");
                 }
             }
         });
@@ -638,16 +638,17 @@ ${extends("/goframe/function_layout.httl")}
                 ondestroy: function (data) {
                     $(e).attr("onclick", "buildModel('" + pkId + "',this)");
                     if (data.status && data.status == true ) {
+                        grid1.loading("正在构建中,请稍等...");
                         $.ajax({
                             url: "${basePath}/im/job/batch/start/" + pkId,
                             type: 'POST',
                             cache: false,
-                            data: data.data,
+                            data: nui.encode(data.data),
                             async: false,
                             contentType: 'application/json',
                             success: function (data) {
                                 if (data.status == true) {
-                                    nui.alert("已建模，可到监控中心查看状态！", "系统提示");
+                                    nui.alert("已构建，可到监控中心查看状态！", "系统提示");
                                 } else {
                                     nui.alert(data.message, "系统提示");
                                 }
@@ -662,6 +663,7 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function runBuild(pkId,e){
+        //实时的是否也需要输入过滤字段的值
         //先将按钮灰度并修改点击事件，防止重复操作
         $(e).attr("onclick","javascript:return false;");
         //添加取消按钮
@@ -678,10 +680,71 @@ ${extends("/goframe/function_layout.httl")}
                     $(e).attr("onclick","runBuild('"+pkId+"',this)");
                     nui.alert("运行失败，信息：" + data.message, "系统提示");
                     //删除取消按钮
-                    $(e).next().remove();
+                    //$(e).next().remove();
                 }
             }
         });
+    }
+
+
+    function runBuild1(pkId,e){
+        //先将按钮灰度并修改点击事件，防止重复操作
+        $(e).attr("onclick","javascript:return false;");
+        //如果是批量则先弹出窗口让输入过滤字段值
+        var modelFilterCols;
+        $.ajax({
+            url:"${basePath}/im/imMFilter/getImMFilterByMid/"+pkId,
+            type : 'POST',
+            cache : false,
+            contentType : 'application/json',
+            async:false,
+            success : function(data) {
+                if(data.status == true){
+                    modelFilterCols = data.data;
+                }else{
+                    nui.alert("获取过滤字段信息异常："+data.message, "系统提示");
+                }
+            }
+        });
+        if(modelFilterCols) {
+            //根据数据条数设置弹窗高度
+            var height = 70 + ( modelFilterCols.length / 4 + 1) * 18
+            nui.open({
+                url: "${basePath}/goframe/p/im.cm.model.input_filterValue",
+                title: "参数",
+                width: 800,
+                height: height,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    iframe.contentWindow.setModelFilterCols(modelFilterCols);
+                },
+                ondestroy: function (data) {
+                    $(e).attr("onclick", "buildModel('" + pkId + "',this)");
+                    if (data.status && data.status == true ) {
+                        $.ajax({
+                            url: "${basePath}/im/job/realtime/start/" + pkId,
+                            type: 'POST',
+                            cache: false,
+                            data: nui.encode(data.data),
+                            async: false,
+                            contentType: 'application/json',
+                            success: function (data) {
+                                if(data.status == true){
+                                    $(e).html("正在运行");
+                                }else{
+                                    $(e).attr("onclick","runBuild('"+pkId+"',this)");
+                                    nui.alert("运行失败，信息：" + data.message, "系统提示");
+                                    //删除取消按钮
+                                    //$(e).next().remove();
+                                }
+                            }
+                        });
+                    } else {
+                        nui.alert(data.message, "系统提示");
+                    }
+                }
+            });
+        }
     }
 
     function stopBuild(pkId,e){

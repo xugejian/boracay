@@ -19,7 +19,6 @@ ${extends("/goframe/function_layout.httl")}
 <script type="text/javascript">
     var filterCols;
     var returnData = {};
-    var message;
 
     function setModelFilterCols(data){
         /**
@@ -40,7 +39,7 @@ ${extends("/goframe/function_layout.httl")}
                 var operator = record.operator;
                 var tdHtml = "<td class='tit roleLabel' style='width: 10%;text-align: right'>" + describe + "：</td>"
                     + "<td class='roleText' style='width: 90%'>"
-                    + "<input name='" + label + "' class='nui-textbox' style='width:98%;' value='" + defaultVal + "' required='" + isNeed + "' emptyText='进行\"" + operator + "\"匹配'/>"
+                    + "<input name='" + label + "' class='nui-textbox' style='width:98%;' value='" + defaultVal + "' required='" + isNeed + "' emptyText='进行\"" + operator + "\"匹配' describe='"+describe+"'/>"
                     + "</td>";
                 count++;
                 if (count % 4 == 1) {
@@ -69,30 +68,33 @@ ${extends("/goframe/function_layout.httl")}
          console.info(new nui.Form("filterForm").getData(true,true));
          var modelfilterValue = formObject.getData(true, true);*/
         var result = true;
+        var message;
         var modelfilterValue = [];
         $.each($(".nui-textbox"), function (_index, record) {
             //校验是否是必输
             var isNeed = record.required;
             var value = record.value.trim();
             var name = record.name;
+            var describe = record.describe;
             //比输入项为空
             if(isNeed && (value == null || value == undefined || value == "")){
                 result = false;
-                message = "字段"+name+"不能为空";
+                message = describe+"不能为空";
             }else{
-                modelfilterValue.push({"name":name,"value":value});
+                modelfilterValue.push({"label":name,"value":value});
             }
         });
         //基础信息栏数据校验
 
         if (result == false) {
             returnData.status = false;
-            returnData.message = message;
+            nui.console(message,"提示信息");
         }else{
             returnData.status = true;
             returnData.data = modelfilterValue;
+            return window.CloseOwnerWindow(returnData);
         }
-        return window.CloseOwnerWindow(returnData);
+
     }
 
     function cancel() {

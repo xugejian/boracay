@@ -5,6 +5,7 @@ import com.hex.bigdata.udsp.im.dto.RealtimeNodeInfoDto;
 import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoDto;
 import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoView;
 import com.hex.bigdata.udsp.im.provider.model.Model;
+import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.bigdata.udsp.im.service.RealtimeJobService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -30,6 +31,9 @@ public class RealtimeJobController {
     @Autowired
     private RealtimeJobService realtimeJobService;
 
+    @Autowired
+    private ImModelService imModelService;
+
     /**
      * 启动
      *
@@ -41,8 +45,8 @@ public class RealtimeJobController {
     public MessageResult start(@PathVariable("pkId") String pkId) {
         boolean status = true;
         String message = "实时作业启动成功！";
-        Model model = null; // TODO ...
         try {
+            Model model = imModelService.getModel(pkId,null);
             realtimeJobService.start(model);
         } catch (Exception e) {
             e.printStackTrace();
