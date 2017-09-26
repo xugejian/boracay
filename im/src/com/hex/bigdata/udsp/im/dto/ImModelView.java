@@ -20,7 +20,7 @@ public class ImModelView extends ImModel implements Serializable{
 
     private String sDsName;
 
-    private String isDeleted;
+    private String isBuilded;
 
     public String getCrtTimeStart() {
         return crtTimeStart;
@@ -70,11 +70,11 @@ public class ImModelView extends ImModel implements Serializable{
         this.sDsName = sDsName;
     }
 
-    public String getIsDeleted() {
-        return isDeleted;
+    public String getIsBuilded() {
+        return isBuilded;
     }
 
-    public void setIsDeleted(String isDeleted) {
-        this.isDeleted = isDeleted;
+    public void setIsBuilded(String isBuilded) {
+        this.isBuilded = isBuilded;
     }
 }

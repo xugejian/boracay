@@ -4,7 +4,9 @@ import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.dto.BatchInfoDto;
 import com.hex.bigdata.udsp.im.dto.BatchInfoView;
 import com.hex.bigdata.udsp.im.provider.model.Model;
+import com.hex.bigdata.udsp.im.provider.model.ModelFilterCol;
 import com.hex.bigdata.udsp.im.service.BatchJobService;
+import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.model.PageListResult;
@@ -14,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,6 +31,9 @@ public class BatchJobController {
     @Autowired
     private BatchJobService batchJobService;
 
+    @Autowired
+    private ImModelService imModelService;
+
     /**
      * 开始构建
      *
@@ -36,11 +42,11 @@ public class BatchJobController {
      */
     @RequestMapping(value = "start/{pkId}")
     @ResponseBody
-    public MessageResult start(@PathVariable("pkId") String pkId) {
+    public MessageResult start(@PathVariable("pkId") String pkId,@RequestBody ModelFilterCol[] modelFilterCols) {
         boolean status = true;
         String message = "批量作业构建成功！";
-        Model model = null; // TODO ...
         try {
+            Model model = imModelService.getModel(pkId,modelFilterCols);
             batchJobService.start(model);
         } catch (Exception e) {
             e.printStackTrace();
