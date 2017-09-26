@@ -374,7 +374,7 @@ ${extends("/goframe/function_layout.httl")}
     function getComproperties() {
         cols = [];
         $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
-            if (data.length > 0) {
+            if (data && data.length && data.length > 0) {
                 for (var i = 0, len = data.length; i < len; i++) {
                     cols.push({
                         "name": data[i].dictId,
@@ -446,6 +446,8 @@ ${extends("/goframe/function_layout.httl")}
 
     //加载字段映射
     function loadMapping(){
+        //清楚原来配置  ---是否必要！！！
+        grid2.clearRows();
         getSrcCols();
         //字段映射加进去
         grid2.addRows(filterCols);
@@ -453,8 +455,6 @@ ${extends("/goframe/function_layout.httl")}
 
     //获取源数据源的字段信息列表
     function getSrcCols() {
-        //清楚原来配置  ---是否必要！！！
-        grid2.clearRows();
         //可过滤字段制空
         filterCols = [];
         var properties = getComPropertiess();
@@ -468,16 +468,18 @@ ${extends("/goframe/function_layout.httl")}
             contentType: 'application/json',
             success: function (data) {
                 //对data内容解析加载到grid2中
-                for (var i = 0, len = data.data.length; i < len; i++) {
-                    filterCols.push({
-                        "name": data.data[i].name,
-                        "colId": "",
-                        "note": data.data[i].note,
-                        "describe": data.data[i].describe,
-                        "length": data.data[i].length,
-                        "type": data.data[i].type
-                    });
-                };
+                if(data && data.data){
+                    for (var i = 0, len = data.data.length; i < len; i++) {
+                        filterCols.push({
+                            "name": data.data[i].name,
+                            "colId": "",
+                            "note": data.data[i].note,
+                            "describe": data.data[i].describe,
+                            "length": data.data[i].length,
+                            "type": data.data[i].type
+                        });
+                    };
+                }
             }
         });
     }

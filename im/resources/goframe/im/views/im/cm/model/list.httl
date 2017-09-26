@@ -359,15 +359,6 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     /**
-     * 数据源渲染
-     * @param e
-     * @returns {string}
-     */
-    function dsRenderer(e){
-        return "<a href='#' class='underline' onclick='showDatabaseInfo(\""+e.row.dsId+"\",\""+e.row.dsName+"\")'>"+e.row.dsName+"</a>";
-    }
-
-    /**
      * 显示数据源信息
      * @param pkId
      * @param dbName
@@ -477,11 +468,6 @@ ${extends("/goframe/function_layout.httl")}
     //操作的按钮的添加
     function operatorRenderer(e) {
         var operatorS = "<div style='text-align: center'>";
-        /*if(e.row.delFlg  == '0'){
-         operatorS = operatorS.concat("<a href='#'  onclick='deleteOperator(\""+e.row.pkId+"\")'>删除</a>");
-         }else{
-         operatorS = operatorS.concat("<a href='#'  onclick='createOperator(\""+e.row.pkId+"\")'>创建</a>");
-         }*/
         //先判断是否实时
         if(e.row.type == '1'){
             //判断是否构建

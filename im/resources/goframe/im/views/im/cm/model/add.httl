@@ -309,7 +309,7 @@ ${extends("/goframe/function_layout.httl")}
         cols = [];
         //将参数配置栏自动输入
         $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
-            if (data.length > 0) {
+            if (data & data.length > 0) {
                 for (var i = 0, len = data.length; i < len; i++) {
                     cols.push({
                         "name": data[i].dictId,
@@ -383,17 +383,19 @@ ${extends("/goframe/function_layout.httl")}
             cache: false,
             contentType: 'application/json',
             success: function (data) {
-                //对data内容解析加载到grid2中
-                for (var i = 0, len = data.data.length; i < len; i++) {
-                    filterCols.push({
-                        "name": data.data[i].name,
-                        "colId": "",
-                        "note": data.data[i].note,
-                        "describe": data.data[i].describe,
-                        "length": data.data[i].length,
-                        "type": data.data[i].type
-                    });
-                };
+                if(data && data.data){
+                    //对data内容解析加载到grid2中
+                    for (var i = 0, len = data.data.length; i < len; i++) {
+                        filterCols.push({
+                            "name": data.data[i].name,
+                            "colId": "",
+                            "note": data.data[i].note,
+                            "describe": data.data[i].describe,
+                            "length": data.data[i].length,
+                            "type": data.data[i].type
+                        });
+                    };
+                }
                 //字段映射加进去
                 grid2.addRows(filterCols);
             }
