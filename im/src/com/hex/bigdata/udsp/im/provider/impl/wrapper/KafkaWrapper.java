@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.RealtimeSourceProvider;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
@@ -18,7 +17,7 @@ public abstract class KafkaWrapper extends Wrapper implements RealtimeSourceProv
     private static Logger logger = LogManager.getLogger(KafkaWrapper.class);
 
     @Override
-    protected void insertInto(Datasource datasource, String tableName, List<ValueColumn> valueColumns) {
+    protected void insertInto(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns) throws Exception {
         try {
             throw new Exception("不支持该方法");
         } catch (Exception e) {
@@ -27,7 +26,7 @@ public abstract class KafkaWrapper extends Wrapper implements RealtimeSourceProv
     }
 
     @Override
-    protected void updateInsert(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
+    protected void updateInsert(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
         try {
             throw new Exception("不支持该方法");
         } catch (Exception e) {
@@ -36,7 +35,7 @@ public abstract class KafkaWrapper extends Wrapper implements RealtimeSourceProv
     }
 
     @Override
-    protected void matchingUpdate(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
+    protected void matchingUpdate(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
         try {
             throw new Exception("不支持该方法");
         } catch (Exception e) {

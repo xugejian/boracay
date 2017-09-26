@@ -1,9 +1,12 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.HBaseMetadata;
+import com.hex.bigdata.udsp.im.provider.impl.util.HBaseUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
@@ -13,6 +16,8 @@ import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HConnection;
@@ -20,7 +25,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 /**
  * Created by JunjieM on 2017-9-5.
@@ -28,6 +34,9 @@ import java.util.List;
 @Component("com.hex.bigdata.udsp.im.provider.impl.HBaseProvider")
 public class HBaseProvider extends HBaseWrapper {
     private static Logger logger = LogManager.getLogger(HBaseProvider.class);
+    private static final String rkSep = "|";
+    private static final String startStr = "";
+    private static final String stopStr = "|";
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
@@ -38,14 +47,14 @@ public class HBaseProvider extends HBaseWrapper {
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
         HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata);
-        return createHTable(hBaseMetadata);
+        return HBaseUtil.createHTable(hBaseMetadata);
     }
 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
         Datasource datasource = metadata.getDatasource();
         HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getPropertyMap());
-        return dropHTable(hBaseDatasource, metadata.getTbName());
+        return HBaseUtil.dropHTable(hBaseDatasource, metadata.getTbName());
     }
 
     @Override
@@ -66,24 +75,9 @@ public class HBaseProvider extends HBaseWrapper {
     }
 
     @Override
-    protected void insertInto(Datasource datasource, String tableName, List<ValueColumn> valueColumns) {
-
-    }
-
-    @Override
-    protected void updateInsert(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
-
-    }
-
-    @Override
-    protected void matchingUpdate(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
-
-    }
-
-    @Override
     public boolean checkSchemaExists(Metadata metadata) throws Exception {
         HBaseDatasource datasource = new HBaseDatasource(metadata.getDatasource().getPropertyMap());
-        HBaseAdmin admin = getHBaseAdmin(datasource);
+        HBaseAdmin admin = HBaseUtil.getHBaseAdmin(datasource);
         String tableName = metadata.getTbName();
         TableName hbaseTableName = TableName.valueOf(tableName);
         return admin.isTableAvailable(hbaseTableName);
@@ -95,15 +89,16 @@ public class HBaseProvider extends HBaseWrapper {
         HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getProperties());
         HConnection conn = null;
         try {
-            conn = getConnection(hBaseDatasource);
+            conn = HBaseUtil.getConnection(hBaseDatasource);
             if (conn != null && !conn.isAborted()) {
                 canConnection = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            release(hBaseDatasource, conn);
+            HBaseUtil.release(hBaseDatasource, conn);
         }
         return canConnection;
     }
+
 }

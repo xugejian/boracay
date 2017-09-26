@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
@@ -19,9 +18,8 @@ public abstract class SolrHBaseWrapper extends Wrapper implements BatchTargetPro
 
     private static Logger logger = LoggerFactory.getLogger(SolrHBaseWrapper.class);
 
-
     @Override
-    protected void insertInto(Datasource datasource, String tableName, List<ValueColumn> valueColumns) {
+    protected void insertInto(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns) throws Exception {
         try {
             throw new Exception("不支持该方法");
         } catch (Exception e) {
@@ -30,7 +28,7 @@ public abstract class SolrHBaseWrapper extends Wrapper implements BatchTargetPro
     }
 
     @Override
-    protected void updateInsert(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
+    protected void updateInsert(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
         try {
             throw new Exception("不支持该方法");
         } catch (Exception e) {
@@ -39,7 +37,7 @@ public abstract class SolrHBaseWrapper extends Wrapper implements BatchTargetPro
     }
 
     @Override
-    protected void matchingUpdate(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
+    protected void matchingUpdate(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
         try {
             throw new Exception("不支持该方法");
         } catch (Exception e) {

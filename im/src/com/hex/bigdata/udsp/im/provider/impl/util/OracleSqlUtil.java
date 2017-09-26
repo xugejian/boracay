@@ -1,5 +1,7 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
@@ -83,8 +85,8 @@ public class OracleSqlUtil {
      * @return
      */
     public static String insert(String tableName, List<ValueColumn> valueColumns) {
-        //TODO ...
-        return "";
+        return "INSERT INTO " + tableName + SqlUtil.getIntoNames(valueColumns)
+                + " VALUES " + SqlUtil.getIntoValues(valueColumns);
     }
 
     /**
@@ -96,8 +98,7 @@ public class OracleSqlUtil {
      * @return
      */
     public static String update(String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
-        //TODO ...
-        return "";
+        return "UPDATE " + tableName + SqlUtil.getSetValues(valueColumns) + SqlUtil.getWhere(whereProperties);
     }
 
     private static String getColumns(List<TableColumn> columns) {

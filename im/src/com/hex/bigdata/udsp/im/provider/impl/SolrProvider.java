@@ -28,7 +28,9 @@ import org.springframework.stereotype.Component;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JunjieM on 2017-9-5.
@@ -163,18 +165,41 @@ public class SolrProvider extends SolrWrapper {
     }
 
     @Override
-    protected void insertInto(Datasource datasource, String tableName, List<ValueColumn> valueColumns) {
-
+    protected void insertInto(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns) throws Exception {
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
+        Map<String, String> map = new HashMap<>();
+        for (ValueColumn column : valueColumns) {
+            map.put(column.getColName(), column.getValue());
+        }
+        SolrUtil.addDocument(solrDatasource, metadata.getTbName(), map);
     }
 
     @Override
-    protected void updateInsert(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
-
+    protected void updateInsert(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
+        String tableName = metadata.getTbName();
+        String idName = getIdName(modelMappings);
+        List<Map<String, String>> list = SolrUtil.search(solrDatasource, tableName, whereProperties);
+        if (list != null && list.size() != 0) {
+            update(solrDatasource, tableName, idName, list, valueColumns);
+        } else {
+            Map<String, String> map = new HashMap<>();
+            for (ValueColumn column : valueColumns) {
+                map.put(column.getColName(), column.getValue());
+            }
+            SolrUtil.addDocument(solrDatasource, metadata.getTbName(), map);
+        }
     }
 
     @Override
-    protected void matchingUpdate(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
-
+    protected void matchingUpdate(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
+        String tableName = metadata.getTbName();
+        String idName = getIdName(modelMappings);
+        List<Map<String, String>> list = SolrUtil.search(solrDatasource, tableName, whereProperties);
+        if (list != null && list.size() != 0) {
+            update(solrDatasource, tableName, idName, list, valueColumns);
+        }
     }
 
     @Override

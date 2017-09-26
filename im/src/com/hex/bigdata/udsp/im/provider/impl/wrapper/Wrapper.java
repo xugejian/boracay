@@ -25,10 +25,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by JunjieM on 2017-9-11.
@@ -224,12 +221,12 @@ public abstract class Wrapper {
     public void buildRealtime(Model model) {
         String sDsType = model.getSourceDatasource().getType();
         UpdateMode updateMode = model.getUpdateMode();
+        List<ModelMapping> modelMappings = model.getModelMappings();
         List<ModelFilterCol> modelFilterCols = model.getModelFilterCols();
         List<MetadataCol> updateKeys = model.getUpdateKeys();
         List<WhereProperty> whereProperties = updateKeysToWhereProperties(updateKeys);
         Metadata metadata = model.getTargetMetadata();
         Datasource datasource = metadata.getDatasource();
-        MysqlDatasource mysqlDatasource = new MysqlDatasource(datasource.getPropertyMap());
         String tableName = metadata.getTbName();
         // 源是Kafka
         if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
@@ -244,35 +241,38 @@ public abstract class Wrapper {
                         // 实时数据过滤
                         List<ValueColumn> valueColumns = new ArrayList<>();
                         Map<String, Object> map = JSONUtil.parseJSON2Map(message);
-                        for (Map.Entry<String, Object> entry : map.entrySet()) {
-                            String name = entry.getKey();
-                            String value = (String) entry.getValue();
-                            // 过滤
+                        for (ModelMapping mapping : modelMappings) {
+                            // 过滤值
+                            DataType type = mapping.getType();
+                            String name = mapping.getName();
+                            Object v = map.get(mapping.getName());
+                            String value = (v == null ? "" : (String) v);
+                            // 过滤行
                             for (ModelFilterCol filterCol : modelFilterCols) {
                                 if (filterCol.getName().equals(name)) {
                                     Operator operator = filterCol.getOperator();
                                     String val = filterCol.getValue();
                                     if (StringUtils.isNotBlank(val)) {
                                         if (Operator.EQ.equals(operator) && !val.equals(value)) {
-                                            continue;
+                                            break;
                                         } else if (Operator.NE.equals(operator) && val.equals(value)) {
-                                            continue;
+                                            break;
                                         } else if (Operator.GT.equals(operator) && val.compareTo(value) >= 0) {
-                                            continue;
+                                            break;
                                         } else if (Operator.GE.equals(operator) && val.compareTo(value) > 0) {
-                                            continue;
+                                            break;
                                         } else if (Operator.LT.equals(operator) && val.compareTo(value) <= 0) {
-                                            continue;
+                                            break;
                                         } else if (Operator.LE.equals(operator) && val.compareTo(value) < 0) {
-                                            continue;
+                                            break;
                                         } else if (Operator.LK.equals(operator) && !value.contains(val)) {
-                                            continue;
+                                            break;
                                         } else if (Operator.RLIKE.equals(operator) && !value.startsWith(val)) {
-                                            continue;
+                                            break;
                                         } else if (Operator.IN.equals(operator)) {
                                             String[] vs = val.split(",");
                                             if (!Arrays.asList(vs).contains(value)) {
-                                                continue;
+                                                break;
                                             }
                                         }
                                     }
@@ -282,16 +282,16 @@ public abstract class Wrapper {
                             ValueColumn column = new ValueColumn();
                             column.setColName(name);
                             column.setValue(value);
-                            column.setDataType(javaTransDBType(entry.getValue()));
+                            column.setDataType(type);
                             valueColumns.add(column);
                         }
                         // 实时数据处理
                         if (UpdateMode.MATCHING_UPDATE == updateMode) { // 匹配更新
-                            matchingUpdate(datasource, tableName, valueColumns, whereProperties);
+                            matchingUpdate(metadata, modelMappings, valueColumns, whereProperties);
                         } else if (UpdateMode.UPDATE_INSERT == updateMode) { // 更新插入
-                            updateInsert(datasource, tableName, valueColumns, whereProperties);
+                            updateInsert(metadata, modelMappings, valueColumns, whereProperties);
                         } else { // 增量插入
-                            insertInto(datasource, tableName, valueColumns);
+                            insertInto(metadata, modelMappings, valueColumns);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -304,31 +304,34 @@ public abstract class Wrapper {
     /**
      * 增量插入
      *
-     * @param datasource
-     * @param tableName
+     * @param metadata
+     * @param modelMappings
      * @param valueColumns
+     * @throws Exception
      */
-    protected abstract void insertInto(Datasource datasource, String tableName, List<ValueColumn> valueColumns) throws Exception;
+    protected abstract void insertInto(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns) throws Exception;
 
     /**
      * 更新、插入
      *
-     * @param datasource
-     * @param tableName
+     * @param metadata
+     * @param modelMappings
      * @param valueColumns
      * @param whereProperties
+     * @throws Exception
      */
-    protected abstract void updateInsert(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception;
+    protected abstract void updateInsert(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception;
 
     /**
      * 匹配更新
      *
-     * @param datasource
-     * @param tableName
+     * @param metadata
+     * @param modelMappings
      * @param valueColumns
      * @param whereProperties
+     * @throws Exception
      */
-    protected abstract void matchingUpdate(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception;
+    protected abstract void matchingUpdate(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception;
 
     /**
      * 获取查询字段集合

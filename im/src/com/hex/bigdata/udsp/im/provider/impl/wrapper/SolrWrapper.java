@@ -6,8 +6,10 @@ import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.factory.SolrConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
+import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
@@ -30,59 +32,6 @@ import java.util.Map;
 public abstract class SolrWrapper extends Wrapper implements BatchSourceProvider, BatchTargetProvider, RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(SolrWrapper.class);
     private static Map<String, SolrConnectionPoolFactory> dataSourcePool;
-
-    protected synchronized SolrConnectionPoolFactory getDataSource(SolrDatasource datasource, String collectionName) {
-        String dsId = datasource.getId() + ":" + collectionName;
-        if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<String, SolrConnectionPoolFactory>();
-        }
-        SolrConnectionPoolFactory factory = dataSourcePool.get(dsId);
-        if (factory == null) {
-            GenericObjectPool.Config config = new GenericObjectPool.Config();
-            config.lifo = true;
-            config.minIdle = 1;
-            config.maxActive = 10;
-            config.maxWait = 3000;
-            config.maxActive = 5;
-            config.timeBetweenEvictionRunsMillis = 30000;
-            config.testWhileIdle = true;
-            config.testOnBorrow = false;
-            config.testOnReturn = false;
-            factory = new SolrConnectionPoolFactory(config, datasource.getSolrServers(), collectionName);
-            dataSourcePool.put(dsId, factory);
-        }
-        return factory;
-    }
-
-    protected SolrServer getSolrServer(String collectionName, SolrHBaseDatasource datasource) {
-        if (StringUtils.isBlank(collectionName)) {
-            throw new IllegalArgumentException("collection name不能为空");
-        }
-        String[] tempServers = datasource.getSolrServers().split(",");
-        String[] servers = new String[tempServers.length];
-        for (int i = 0; i < tempServers.length; i++) {
-            servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
-        }
-        SolrServer solrServer = null;
-        try {
-            solrServer = new LBHttpSolrServer(servers);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return solrServer;
-    }
-
-    protected SolrServer getConnection(SolrDatasource datasource, String collectionName) {
-        try {
-            return getDataSource(datasource, collectionName).getConnection();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    protected void release(SolrDatasource datasource, String collectionName, SolrServer solrServer) {
-        getDataSource(datasource, collectionName).releaseConnection(solrServer);
-    }
 
     protected String getSourcePrimaryKey(List<ModelMapping> modelMappings) {
         for (ModelMapping mapping : modelMappings) {
@@ -132,5 +81,33 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceProvider
             columns.add(new TableColumn(mapping.getName(), dataType, mapping.getDescribe()));
         }
         return columns;
+    }
+
+    protected void update(SolrDatasource solrDatasource, String tableName, String idName, List<Map<String, String>> list, List<ValueColumn> valueColumns) {
+        // 获得满足条件主键值集合
+        List<String> ids = new ArrayList<>();
+        for (Map<String, String> m : list) {
+            ids.add(m.get(idName));
+        }
+        // 获得更新字段信息
+        Map<String, String> map = new HashMap<>();
+        for (ValueColumn column : valueColumns) {
+            if (!idName.equals(column.getColName()))
+                map.put(column.getColName(), column.getValue());
+        }
+        // 更新满足条件数据信息
+        SolrUtil.updateDocument(solrDatasource, tableName, idName, ids, map);
+    }
+
+    protected String getIdName(List<ModelMapping> modelMappings) {
+        String idName = "";
+        for (ModelMapping mapping : modelMappings) {
+            MetadataCol col = mapping.getMetadataCol();
+            if (col.isPrimary()) {
+                idName = col.getName();
+                break;
+            }
+        }
+        return idName;
     }
 }

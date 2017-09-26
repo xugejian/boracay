@@ -50,7 +50,7 @@ public class MysqlSqlUtil {
      */
     public static String update(String tableName, List<ValueColumn> valueColumns,
                                 List<WhereProperty> whereProperties) {
-        return "UPDATE " + tableName + getSetValues(valueColumns) + getWhere(whereProperties);
+        return "UPDATE " + tableName + SqlUtil.getSetValues(valueColumns) + SqlUtil.getWhere(whereProperties);
     }
 
     /**
@@ -61,92 +61,8 @@ public class MysqlSqlUtil {
      * @return
      */
     public static String insert(String tableName, List<ValueColumn> valueColumns) {
-        return "INSERT INTO " + tableName + getIntoNames(valueColumns) + " VALUES " + getIntoValues(valueColumns);
-    }
-
-    private static String getIntoValues(List<ValueColumn> valueColumns) {
-        String sql = "";
-        DataType dataType = null;
-        String value = null;
-        int count = 0;
-        if (valueColumns != null && valueColumns.size() != 0) {
-            sql = " (";
-            for (ValueColumn column : valueColumns) {
-                dataType = column.getDataType();
-                value = column.getValue();
-                sql += (count == 0 ? "" : ", ");
-                sql += getValue(dataType, value);
-            }
-            sql += ")";
-        }
-        return sql;
-    }
-
-    private static String getIntoNames(List<ValueColumn> valueColumns) {
-        String sql = "";
-        String colName = null;
-        int count = 0;
-        if (valueColumns != null && valueColumns.size() != 0) {
-            sql = " (";
-            for (ValueColumn column : valueColumns) {
-                colName = column.getColName();
-                sql += (count == 0 ? "" : ", ");
-                sql += colName;
-            }
-            sql += ")";
-        }
-        return sql;
-    }
-
-    private static String getWhere(List<WhereProperty> whereProperties) {
-        String sql = "";
-        String name = null;
-        String value = null;
-        DataType dataType = null;
-        Operator operator = null;
-        int count = 0;
-        if (whereProperties != null && whereProperties.size() != 0) {
-            sql = "\n WHERE ";
-            for (WhereProperty whereProperty : whereProperties) {
-                name = whereProperty.getName();
-                value = whereProperty.getValue();
-                dataType = whereProperty.getType();
-                operator = whereProperty.getOperator();
-                if (StringUtils.isBlank(name) || StringUtils.isBlank(value) || operator == null)
-                    continue;
-                sql += (count == 0 ? "" : " AND ");
-                sql += name + " = " + SqlUtil.getCondition(value, dataType, operator);
-                count++;
-            }
-        }
-        return sql;
-    }
-
-    private static String getSetValues(List<ValueColumn> valueColumns) {
-        String sql = "";
-        if (valueColumns != null && valueColumns.size() != 0) {
-            sql = "\n SET " + getValues(valueColumns);
-        }
-        return sql;
-    }
-
-    private static String getValues(List<ValueColumn> valueColumns) {
-        String sql = "";
-        String colName = null;
-        DataType dataType = null;
-        String value = null;
-        int count = 0;
-        if (valueColumns != null && valueColumns.size() != 0) {
-            for (ValueColumn column : valueColumns) {
-                colName = column.getColName();
-                dataType = column.getDataType();
-                value = column.getValue();
-                sql += (count == 0 ? "\n" : "\n,");
-                sql += colName + " = " + getValue(dataType, value);
-                count++;
-            }
-        }
-        return sql;
+        return "INSERT INTO " + tableName + SqlUtil.getIntoNames(valueColumns)
+                + " VALUES " + SqlUtil.getIntoValues(valueColumns);
     }
 
     private static String getValue(DataType dataType, String value) {

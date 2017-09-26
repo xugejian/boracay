@@ -10,13 +10,13 @@ import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.JdbcDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.OracleDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.MysqlSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.OracleSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -114,21 +114,21 @@ public class OracleProvider extends JdbcWrapper implements RealtimeTargetProvide
     }
 
     @Override
-    protected void insertInto(Datasource datasource, String tableName, List<ValueColumn> valueColumns) throws Exception {
-        JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
-        JdbcUtil.executeUpdate2(jdbcDatasource, OracleSqlUtil.insert(tableName, valueColumns));
+    protected void insertInto(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns) throws Exception {
+        JdbcDatasource jdbcDatasource = new JdbcDatasource(metadata.getDatasource().getPropertyMap());
+        JdbcUtil.executeUpdate2(jdbcDatasource, OracleSqlUtil.insert(metadata.getTbName(), valueColumns));
     }
 
     @Override
-    protected void updateInsert(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
-        JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
-        if (JdbcUtil.executeUpdate2(jdbcDatasource, OracleSqlUtil.update(tableName, valueColumns, whereProperties)) == 0)
-            JdbcUtil.executeUpdate2(jdbcDatasource, OracleSqlUtil.insert(tableName, valueColumns));
+    protected void updateInsert(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
+        JdbcDatasource jdbcDatasource = new JdbcDatasource(metadata.getDatasource().getPropertyMap());
+        if (JdbcUtil.executeUpdate2(jdbcDatasource, OracleSqlUtil.update(metadata.getTbName(), valueColumns, whereProperties)) == 0)
+            JdbcUtil.executeUpdate2(jdbcDatasource, OracleSqlUtil.insert(metadata.getTbName(), valueColumns));
     }
 
     @Override
-    protected void matchingUpdate(Datasource datasource, String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
-        JdbcDatasource jdbcDatasource = new JdbcDatasource(datasource.getPropertyMap());
-        JdbcUtil.executeUpdate2(jdbcDatasource, OracleSqlUtil.update(tableName, valueColumns, whereProperties));
+    protected void matchingUpdate(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
+        JdbcDatasource jdbcDatasource = new JdbcDatasource(metadata.getDatasource().getPropertyMap());
+        JdbcUtil.executeUpdate2(jdbcDatasource, OracleSqlUtil.update(metadata.getTbName(), valueColumns, whereProperties));
     }
 }
