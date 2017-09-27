@@ -25,7 +25,7 @@ public class RealtimeTask {
     @Value("${service.mode:single}")
     private String serviceMode;
 
-    @Scheduled(cron = "${check.realtime.status.cron.expression:0/2 * * * * ?}")
+//    @Scheduled(cron = "${check.realtime.status.cron.expression:0/2 * * * * ?}")
     public void checkRealtimeStatus() {
         logger.debug("检查实时作业状态【开始】");
         realtimeService.checkRealtimeStatus();
