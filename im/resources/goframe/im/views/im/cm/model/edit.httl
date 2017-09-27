@@ -167,7 +167,8 @@ ${extends("/goframe/function_layout.httl")}
         <div class="nui-fit" style="height:150px;padding: 0px 5px 0px 5px;">
             <div id="datagrid2" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
                  idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
-                 showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected1">
+                 showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected1"
+                 url="${basePath}/im/imMMapping/getImMMappingByMid/${pkId}">
                 <div property="columns">
                     <div type="checkcolumn" headerAlign="center" width="5"></div>
                     <div type="indexcolumn" headerAlign="center" width="8">位置</div>
@@ -217,7 +218,8 @@ ${extends("/goframe/function_layout.httl")}
         <div class="nui-fit" style="height:150px; padding: 0px 5px 0px 5px;">
             <div id="datagrid4" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
                  idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
-                 showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected2">
+                 showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected2"
+                 url="${basePath}/im/imMFilter/getImMFilterByMid/${pkId}">
                 <div property="columns">
                     <div type="checkcolumn" headerAlign="center" width="5"></div>
                     <div type="indexcolumn" headerAlign="center" width="8">位置</div>
@@ -355,17 +357,8 @@ ${extends("/goframe/function_layout.httl")}
             autoMapping();
         });
 
-        //加载映射
-        $.post("${basePath}/im/imMMapping/getImMMappingByMid/${pkId}", {}, function (data) {
-
-            grid2.addRows(data.data);
-        });
-
-        //加载过滤栏
-        $.post("${basePath}/im/imMFilter/getImMFilterByMid/${pkId}", {}, function (data) {
-
-            grid4.addRows(data.data);
-        });
+        grid2.load();
+        grid4.load();
 
         //加载更新主键
         $.post("${basePath}/im/md/col/selectModelUpdateKeys/${pkId}", {}, function (data) {
