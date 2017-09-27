@@ -174,7 +174,7 @@ ${extends("/goframe/function_layout.httl")}
                     <div field="name" headerAlign="center" allowSort="true" width="28">源字段名称<font color="#FF0000">（必填）</font>
                         <input property="editor" class="nui-combobox"
                                textField="name" valueField="name" allowInput="true" dataField="data"
-                               onbeforeshowpopup="targetFilterColumn" vtype="maxLength:64" required="true"/>
+                               onbeforeshowpopup="targetFilterColumn" vtype="maxLength:64" required="true" onvaluechanged="mappingColChange"/>
                     </div>
                     <div field="colId" headerAlign="center" allowSort="true" width="28">目标字段名称<font color="#FF0000">（必填）</font>
                         <input property="editor" class="nui-combobox"
@@ -281,6 +281,7 @@ ${extends("/goframe/function_layout.httl")}
     var cols;
     var targetCols;
     var targetSelectedCols;
+    var esSourceObject;
 
     /**
      * 按需加载资源文件
@@ -296,7 +297,7 @@ ${extends("/goframe/function_layout.httl")}
         updateModeObject = nui.get("updateMode");
         updateKeyObject = nui.get("updateKey");
         buildModeObject = nui.get("buildMode");
-
+        esSourceObject = nui.get("eDsId");
         //加载数据
         loadData();
     });
@@ -341,6 +342,7 @@ ${extends("/goframe/function_layout.httl")}
                 form1.setChanged(false);
                 //加载目标字段信息
                 getTargetCols();
+                autoMapping();
             }
         });
 
@@ -350,6 +352,7 @@ ${extends("/goframe/function_layout.httl")}
             grid1.addRows(data.data);
             //加载源字段信息
             getSrcCols();
+            autoMapping();
         });
 
         //加载映射
@@ -400,10 +403,20 @@ ${extends("/goframe/function_layout.httl")}
         grid1.clearRows();
         grid2.clearRows();
         filterCols = [];
-
-        getComproperties();
+        cols = [];
         //将参数配置栏自动输入
-        grid1.addRows(cols);
+        $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
+            if (data && data.length > 0) {
+                for (var i = 0, len = data.length; i < len; i++) {
+                    cols.push({
+                        "name": data[i].dictId,
+                        "describe": data[i].dictName,
+                        "value":data[i].filter
+                    });
+                }
+            }
+            grid1.addRows(cols);
+        });
         //不能异步执行
         $.ajax({
             url:"${basePath}/com/ds/checkSourceType/"+srcDsModel.value,
@@ -456,10 +469,22 @@ ${extends("/goframe/function_layout.httl")}
         //清楚原来配置  ---是否必要！！！
         grid2.clearRows();
         getSrcCols();
+
+        //如果目标字段不为空则将目标字段和源数据字段名称一样的自动关联
+        autoMapping();
         //字段映射加进去
         grid2.addRows(filterCols);
     }
 
+    function autoMapping() {
+        if(filterCols && filterCols.length > 0 && targetSelectedCols && targetSelectedCols.length > 0){
+            $.each(filterCols, function (_index, record) {
+                if(targetCols[record.name]){
+                    filterCols[_index].colId = record.name;
+                }
+            })
+        }
+    }
     //获取源数据源的字段信息列表
     function getSrcCols() {
         //可过滤字段制空
@@ -472,6 +497,7 @@ ${extends("/goframe/function_layout.httl")}
             type: 'POST',
             data: json,
             cache: false,
+            async:false,
             contentType: 'application/json',
             success: function (data) {
                 //对data内容解析加载到grid2中
@@ -483,7 +509,7 @@ ${extends("/goframe/function_layout.httl")}
                             "note": data.data[i].note,
                             "describe": data.data[i].describe,
                             "length": data.data[i].length,
-                            "type": data.data[i].type
+                            "type": data.data[i].type == ""?"STRING":data.data[i].type
                         });
                     };
                 }
@@ -495,7 +521,7 @@ ${extends("/goframe/function_layout.httl")}
     function addMapp(){
         var rows = grid2.getData(true, true);
         var length = rows.length;
-        var newRow = {};
+        var newRow = {type:"STRING"};
         grid2.addRow(newRow, length);
     }
     //映射选中
@@ -532,7 +558,7 @@ ${extends("/goframe/function_layout.httl")}
     function addFilter(){
         var rows = grid4.getData(true, true);
         var length = rows.length;
-        var newRow = {};
+        var newRow = {type:"STRING",operator:"=="};
         grid4.addRow(newRow, length);
     }
 
@@ -753,6 +779,7 @@ ${extends("/goframe/function_layout.httl")}
 
                 //获取目标元数据可选字段
                 getTargetCols();
+                autoMapping();
             }
         })
     }
@@ -761,7 +788,8 @@ ${extends("/goframe/function_layout.httl")}
     function targetSourceChange(){
         //更新目标元数据id
         targetSourceId = targetDsModel.value;
-
+        getTargetCols();
+        autoMapping();
         //字段映射栏对应的目标字段全部制空
         var data = grid2.getData(true, true);
         if(data == null || data.length == 0){
@@ -770,7 +798,11 @@ ${extends("/goframe/function_layout.httl")}
         var cols = [];
         //设置可下拉的目标字段信息
         $.each(data, function (_index, record) {
-            data[_index].colId = "";
+            if(targetCols[record.name]){
+                data[_index].colId = record.name;
+            }else{
+                data[_index].colId = "";
+            }
         })
         grid2.clearRows();
         grid2.addRows(data);
@@ -790,6 +822,7 @@ ${extends("/goframe/function_layout.httl")}
             url: "${basePath}/im/md/col/select/" + targetSourceId,
             type: 'POST',
             cache: false,
+            async:false,
             contentType: 'application/json',
             success: function (data) {
                 if(data.data){
@@ -807,15 +840,16 @@ ${extends("/goframe/function_layout.httl")}
     function targetMateColumn(e){
         if(!targetSelectedCols || targetSelectedCols == null){
             getTargetCols();
+            autoMapping();
         }
         e.source.load(targetSelectedCols);
     }
 
     //过滤字段发生变化时
-    function colNameChanged1(){
+    function colNameChanged1(e){
         // --同一行的说明、长度和别名变化--
         var selected = e.selected;
-        var row = grid1.getSelected();
+        var row = grid4.getSelected();
         row.describe = selected.describe;
         row.length = selected.length;
         row.label = selected.name;
@@ -981,6 +1015,16 @@ ${extends("/goframe/function_layout.httl")}
         }
     }
 
+    function mappingColChange(e){
+        // --同一行的说明、长度和别名变化--
+        var selected = e.selected;
+        var row = grid2.getSelected();
+        row.colId = selected.colId == undefined?"":selected.colId;
+        row.type = selected.type == ""?"STRING":selected.type;
+        row.length = selected.length;
+        row.describe = "";
+        row.note = "";
+    }
     /**
      * 显示提示信息
      */
