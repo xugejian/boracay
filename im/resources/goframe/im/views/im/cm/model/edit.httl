@@ -442,8 +442,11 @@ ${extends("/goframe/function_layout.httl")}
     function loadMapping(){
         //清楚原来配置  ---是否必要！！！
         grid2.clearRows();
+        //禁用保存按钮
+        nui.get("loadMapping").disable();
+        form1.loading("正在加载字段中,请稍等...");
         getSrcCols();
-
+        form1.unmask();
         //如果目标字段不为空则将目标字段和源数据字段名称一样的自动关联
         autoMapping();
         //字段映射加进去
