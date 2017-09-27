@@ -212,6 +212,7 @@ ${extends("/goframe/function_layout.httl")}
             nui.get("remove").disable();
         } else {
             nui.get("edit").disable();
+            nui.get("remove").disable();
             var canRemove = true;
             $.each(rows, function (i, val) {
                 if (val.type == 0 && val.status == 2) {
