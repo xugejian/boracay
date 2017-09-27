@@ -55,7 +55,7 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceProvider
 
     protected List<TblProperty> getTblProperties(SolrDatasource datasource, String pkName, String collectionName) {
         List<TblProperty> tblProperties = new ArrayList<>();
-        tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl() + "/solr")); // zookeeper地址、端口和目录
+        tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl())); // zookeeper地址、端口和目录
         tblProperties.add(new TblProperty("solr.query", "*:*")); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1000")); // 批量大小
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名
