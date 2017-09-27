@@ -167,17 +167,17 @@ ${extends("/goframe/function_layout.httl")}
                                    textField="name" valueField="pkId" allowInput="true" dataField="data"
                                    onbeforeshowpopup="targetMateColumn" vtype="maxLength:64"  readonly="true"/>
                         </div>
-                        <div field="type" headerAlign="center" allowSort="true" width="10">类型<font color="#FF0000">（必填）</font>
+                        <div field="type" headerAlign="center" allowSort="true" width="15">类型</font>
                             <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
                                    dictTypeId="IQ_MD_COL_DATA_TYPE" value="STRING" vtype="maxLength:32" readonly="true"/>
                         </div>
-                        <div field="length" headerAlign="center" allowSort="true" width="10">长度
+                        <div field="length" headerAlign="center" allowSort="true" width="15">长度
                             <input property="editor" class="nui-textbox" vtype="maxLength:4000" readonly="true"/>
                         </div>
                         <div field="describe" headerAlign="center" allowSort="true" width="30">描述<font color="#FF0000">（必填）</font>
                             <input property="editor" class="nui-textbox" vtype="maxLength:4000" readonly="true"/>
                         </div>
-                        <div field="note" headerAlign="center" allowSort="true" width="30">备注
+                        <div field="note" headerAlign="center" allowSort="true" width="20">备注
                             <input property="editor" class="nui-textbox" vtype="maxLength:4000" readonly="true"/>
                         </div>
                     </div>
@@ -218,7 +218,7 @@ ${extends("/goframe/function_layout.httl")}
                         <div field="describe" headerAlign="center" allowSort="true" width="30">说明<font color="#FF0000">（必填）</font>
                             <input property="editor" class="nui-textbox" vtype="maxLength:256" readonly="true"/>
                         </div>
-                        <div field="type" headerAlign="center" allowSort="true" width="20">类型<font color="#FF0000">（必填）</font>
+                        <div field="type" headerAlign="center" allowSort="true" width="20">类型</font>
                             <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
                                    dictTypeId="IQ_MD_COL_DATA_TYPE" value="STRING" vtype="maxLength:32" readonly="true"/>
                         </div>
@@ -228,7 +228,7 @@ ${extends("/goframe/function_layout.httl")}
                         <div type="checkboxcolumn"  field="isNeed" trueValue="0" falseValue="1"
                              headerAlign="center" allowSort="true" width="8" readonly="true">必填
                         </div>
-                        <div field="operator" headerAlign="center" allowSort="true" width="15">操作符<font color="#FF0000">（必填）</font>
+                        <div field="operator" headerAlign="center" allowSort="true" width="15">操作符</font>
                             <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
                                    dictTypeId="IM_MODEL_FILTER_TYPE" value="STRING" vtype="maxLength:32" readonly="true"/>
                         </div>

@@ -298,10 +298,10 @@ ${extends("/goframe/function_layout.httl")}
                     contentType: 'application/json',
                     success: function (result) {
                         if (result.status == true) {
-                            nui.alert(result.message);
+                            showMessage(result.message);
                             grid1.reload();
                         } else {
-                            nui.alert(result.message, "错误提示");
+                            showMessage(result.message);
                             grid1.unmask();
                         }
                     }
@@ -431,7 +431,7 @@ ${extends("/goframe/function_layout.httl")}
             if (undefined == retData.message || "" == retData.message) {
                 nui.alert("上传失败！请重新上传");
             } else {
-                nui.alert(retData.message);
+                showMessage(retData.message);
                 grid1.reload();
             }
             uploadFileStatus = false;
@@ -514,7 +514,7 @@ ${extends("/goframe/function_layout.httl")}
                     grid1.reload();
                 }else{
                     grid1.unmask();
-                    nui.alert("删除失败，信息：" + data.message, "系统提示");
+                    showMessage("删除失败，信息：" + data.message);
                 }
             }
         });
@@ -533,7 +533,7 @@ ${extends("/goframe/function_layout.httl")}
                     grid1.reload();
                 }else{
                     grid1.unmask();
-                    nui.alert("创建失败，信息：" + data.message, "系统提示");
+                    showMessage("创建失败，信息：" + data.message);
                 }
             }
         });
@@ -558,7 +558,7 @@ ${extends("/goframe/function_layout.httl")}
                     $(e).attr("onclick","buildOperator('"+pkId+"',this)");
                     $(e).attr("style","padding-left: 6px");
                     grid1.unmask();
-                    nui.alert("建模失败，信息：" + data.message, "系统提示");
+                    showMessage("建模失败，信息：" + data.message);
                 }
             }
         });
@@ -583,7 +583,7 @@ ${extends("/goframe/function_layout.httl")}
                     $(e).attr("onclick","removeBuild('"+pkId+"',this)");
                     $(e).attr("style","padding-left: 6px");
                     grid1.unmask();
-                    nui.alert("取消建模失败，信息：" + data.message, "系统提示");
+                    showMessage("取消建模失败，信息：" + data.message);
                 }
             }
         });
@@ -605,7 +605,7 @@ ${extends("/goframe/function_layout.httl")}
                 if(data.status == true){
                     modelFilterCols = data.data;
                 }else{
-                    nui.alert("获取过滤字段信息异常："+data.message, "系统提示");
+                    showMessage("获取过滤字段信息异常："+data.message);
                 }
             }
         });
@@ -636,12 +636,12 @@ ${extends("/goframe/function_layout.httl")}
                                 if (data.status == true) {
                                     nui.alert("已构建，可到监控中心查看状态！", "系统提示");
                                 } else {
-                                    nui.alert(data.message, "系统提示");
+                                    showMessage(data.message);
                                 }
                             }
                         });
                     } else {
-                        nui.alert(data.message, "系统提示");
+                        showMessage(data.message);
                     }
                 }
             });
@@ -664,7 +664,7 @@ ${extends("/goframe/function_layout.httl")}
                     $(e).html("正在运行");
                 }else{
                     $(e).attr("onclick","runBuild('"+pkId+"',this)");
-                    nui.alert("运行失败，信息：" + data.message, "系统提示");
+                    showMessage("运行失败，信息：" + data.message);
                     //删除取消按钮
                     //$(e).next().remove();
                 }
@@ -688,7 +688,7 @@ ${extends("/goframe/function_layout.httl")}
                 if(data.status == true){
                     modelFilterCols = data.data;
                 }else{
-                    nui.alert("获取过滤字段信息异常："+data.message, "系统提示");
+                    showMessage("获取过滤字段信息异常："+data.message);
                 }
             }
         });
@@ -719,14 +719,14 @@ ${extends("/goframe/function_layout.httl")}
                                     $(e).html("正在运行");
                                 }else{
                                     $(e).attr("onclick","runBuild('"+pkId+"',this)");
-                                    nui.alert("运行失败，信息：" + data.message, "系统提示");
+                                    showMessage("运行失败，信息：" + data.message);
                                     //删除取消按钮
                                     //$(e).next().remove();
                                 }
                             }
                         });
                     } else {
-                        nui.alert(data.message, "系统提示");
+                        showMessage(data.message);
                     }
                 }
             });
