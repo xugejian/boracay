@@ -73,7 +73,7 @@ ${extends("/goframe/function_layout.httl")}
                         <td style="width: 100px;text-align: right">源数据源：</td>
                         <td style="width: 25%">
                             <input id="sDsId" name="sDsId" class="nui-combobox" valueField="pkId" textField="name"
-                                   dataField="data" url="${basePath}/com/ds/selectAllSrc" allowInput="true"
+                                   dataField="data" url="${basePath}/com/ds/selectImSourceDs" allowInput="true"
                                    sortMode="client"
                                    showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>
                         </td>

@@ -21,7 +21,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="sDsId">源数据源：</label></th>
                     <td>
                         <div  class="nui-combobox" style="width:97%;" id="sDsId"  popupWidth="400" textField="name" valueField="pkId" type="type" readonly="true"
-                              url="${basePath}/com/ds/selectAllSrc" dataField="data" name="sDsId" multiSelect="false"   onvaluechanged="srcSourceChange">
+                              url="${basePath}/com/ds/selectImSourceDs" dataField="data" name="sDsId" multiSelect="false"   onvaluechanged="srcSourceChange">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
