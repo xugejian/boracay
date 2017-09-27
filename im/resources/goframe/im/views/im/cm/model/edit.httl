@@ -442,7 +442,7 @@ ${extends("/goframe/function_layout.httl")}
     function loadMapping(){
         //清楚原来配置  ---是否必要！！！
         grid2.clearRows();
-        //禁用保存按钮
+        //禁用加载按钮
         nui.get("loadMapping").disable();
         form1.loading("正在加载字段中,请稍等...");
         getSrcCols();
@@ -451,6 +451,7 @@ ${extends("/goframe/function_layout.httl")}
         autoMapping();
         //字段映射加进去
         grid2.addRows(filterCols);
+        nui.get("loadMapping").enable();
     }
 
     function autoMapping() {
