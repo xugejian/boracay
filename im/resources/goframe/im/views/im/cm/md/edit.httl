@@ -29,7 +29,7 @@ ${extends("/goframe/function_layout.httl")}
                     <td>
 
                         <div id="dsId" class="nui-combobox" style="width:97%;" popupWidth="400" textField="name"
-                             valueField="pkId" onvaluechanged="typeChanged"
+                             valueField="pkId" onvaluechanged="typeChanged" allowInput="true"
                              url="${basePath}/com/ds/select?model=IM" dataField="data" name="dsId"
                              multiSelect="false" required="true">
                             <div property="columns">

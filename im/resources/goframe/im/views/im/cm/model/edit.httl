@@ -23,8 +23,9 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="sDsId">源数据源：</label></th>
                     <td>
 
-                        <div  class="nui-combobox" style="width:97%;" id="sDsId"  popupWidth="400" textField="name" valueField="pkId" type="type"
-                              url="${basePath}/com/ds/selectImSourceDs" dataField="data" name="sDsId" multiSelect="false"  required="true" onvaluechanged="srcSourceChange">
+                        <div  class="nui-combobox" style="width:97%;" id="sDsId"  popupWidth="400" textField="name" valueField="pkId"
+                              url="${basePath}/com/ds/selectImSourceDs" dataField="data" name="sDsId" multiSelect="false"
+                              required="true" allowInput="true" onvaluechanged="srcSourceChange">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -35,7 +36,8 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="tMdId">目标元数据：</label></th>
                     <td >
                         <div id="tMdId" class="nui-combobox" style="width:70%;"  popupWidth="400" textField="name" valueField="pkId"
-                             dataField="data" name="tMdId" multiSelect="false"  required="true" onvaluechanged="targetSourceChange">
+                             dataField="data" name="tMdId" multiSelect="false"  required="true"
+                             allowInput="true" onvaluechanged="targetSourceChange">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -140,9 +142,6 @@ ${extends("/goframe/function_layout.httl")}
             </div>
         </div>
     </fieldset>
-    <!--<div style="padding-bottom: 30px;padding-top: 10px;">
-        <a class="nui-button" style="float: right;" iconCls="icon-reload" onclick="lodaMapping" id="lodaMapping">加载映射字段</a>
-    </div>-->
 
     <fieldset style="border:dotted 1px #227EA0;">
         <legend><span style="font-weight: bold">字段栏:</span></legend>
@@ -154,7 +153,7 @@ ${extends("/goframe/function_layout.httl")}
                             <b>字段映射信息</b>
                         </td>
                         <td style="text-align: right;">
-                            <a class="nui-button" iconCls="icon-reload" onclick="loadMapping" id="lodaMapping">加载映射字段</a>
+                            <a class="nui-button" iconCls="icon-reload" onclick="loadMapping" id="loadMapping">加载映射字段</a>
                             <a class="nui-button" iconCls="icon-add" onclick="addMapp">添加</a>
                             <a class="nui-button" iconCls="icon-remove" onclick="removeMapp" enabled="false"
                                id="removeMapp">删除</a>
@@ -448,9 +447,41 @@ ${extends("/goframe/function_layout.httl")}
     function loadMapping(){
         //清楚原来配置  ---是否必要！！！
         grid2.clearRows();
-        getSrcCols();
-        //字段映射加进去
-        grid2.addRows(filterCols);
+        //可过滤字段制空
+        filterCols = [];
+        var properties = getComPropertiess();
+        var json = nui.encode(properties);
+        //禁用保存按钮
+        nui.get("loadMapping").disable();
+        form1.loading("正在加载字段中,请稍等...");
+        $.ajax({
+            url: "${basePath}/im/model/getColumnsInfo/"+srcDsModel.value,
+            type: 'POST',
+            data: json,
+            cache: false,
+            contentType: 'application/json',
+            success: function (data) {
+                if(data && data.data){
+                    //对data内容解析加载到grid2中
+                    for (var i = 0, len = data.data.length; i < len; i++) {
+                        filterCols.push({
+                            "name": data.data[i].name,
+                            "colId": "",
+                            "note": data.data[i].note,
+                            "describe": data.data[i].describe,
+                            "length": data.data[i].length,
+                            "type": data.data[i].type
+                        });
+                    };
+                }
+                //字段映射加进去
+                grid2.addRows(filterCols);
+                form1.unmask();
+                //解除保存按钮禁用
+                nui.get("loadMapping").enable();
+                nui.alert("加载字段成功！");
+            }
+        });
     }
 
     //获取源数据源的字段信息列表
