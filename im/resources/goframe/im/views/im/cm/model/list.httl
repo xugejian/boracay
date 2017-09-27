@@ -154,17 +154,17 @@ ${extends("/goframe/function_layout.httl")}
          sizeList="[10,20,50,100]" pageSize="20" multiSelect="true" dataField="data"
          allowCellSelect="false" onselectionchanged="selected" onrowdblclick="info">
         <div property="columns">
-            <div type="checkcolumn" width="5"></div>
-            <div field="name" headerAlign="center" allowSort="true" width="15">名称</div>
-            <div field="describe" headerAlign="center" allowSort="true" width="15">说明</div>
-            <div field="sDsName" headerAlign="center" allowSort="true" width="15" renderer="dsRenderer">源数据源</div>
-            <div field="tMdName" headerAlign="center" allowSort="true" width="15" renderer="mdRenderer">目标元数据</div>
-            <div field="type" headerAlign="center" allowSort="true" renderer="ImModelTypeRenderer" width="8">类型</div>
-            <div field="buildStatus" headerAlign="center" allowSort="true" renderer="buildStatusRenderer" width="8">状态</div>
-            <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat" width="15">创建时间</div>
-            <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat" width="15">更新时间</div>
-            <div field="note" headerAlign="center" allowSort="true" width="15">备注</div>
-            <div field="operator" headerAlign="center" renderer="operatorRenderer" width="15">操作</div>
+            <div type="checkcolumn" width="20"></div>
+            <div field="name" headerAlign="center" allowSort="true" >名称</div>
+            <div field="describe" headerAlign="center" allowSort="true" >说明</div>
+            <div field="sDsName" headerAlign="center" allowSort="true" renderer="dsRenderer">源数据源</div>
+            <div field="tMdName" headerAlign="center" allowSort="true" renderer="mdRenderer">目标元数据</div>
+            <div field="type" headerAlign="center" allowSort="true" renderer="ImModelTypeRenderer" >类型</div>
+            <div field="buildStatus" headerAlign="center" allowSort="true" renderer="buildStatusRenderer" >状态</div>
+            <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat" >创建时间</div>
+            <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat" >更新时间</div>
+            <div field="note" headerAlign="center" allowSort="true" >备注</div>
+            <div field="operator" headerAlign="center" renderer="operatorRenderer" >操作</div>
         </div>
     </div>
 </div>
@@ -220,14 +220,27 @@ ${extends("/goframe/function_layout.httl")}
     function selected() {
         var rows = grid1.getSelecteds();
         if (rows.length == 1) {
-            nui.get("edit").enable();
-            nui.get("remove").enable();
+            if(rows[0].type == 1 && rows[0].status == 1) {// 批量、未建
+                nui.get("edit").enable();
+                nui.get("remove").enable();
+            }else if(rows[0].type == 2) { // 实时
+                nui.get("edit").enable();
+                nui.get("remove").enable();
+            }
         } else if (rows.length == 0) {
             nui.get("edit").disable();
             nui.get("remove").disable();
         } else {
             nui.get("edit").disable();
-            nui.get("remove").enable();
+            nui.get("remove").disable();
+            var canRemove = true;
+            $.each(rows, function (i, val) {
+                if (val.type == 1 && val.status == 2) { // 批量、已建
+                    canRemove = false;
+                    return;
+                }
+            });
+            if (canRemove) nui.get("remove").enable();
         }
     }
 
@@ -503,14 +516,14 @@ ${extends("/goframe/function_layout.httl")}
     function buildStatusRenderer(e) {
         var status = e.row.status;
         //先判断是否实时
-        if (e.row.type == '1') {
+        if (e.row.type == '1') { // 批量
             //判断是否构建
             if (e.row.status == '1') {
                 return "未建";
             } else {
                 return "已建";
             }
-        } else {
+        } else { // 实时
             return "已建"
         }
     }
