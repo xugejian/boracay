@@ -632,9 +632,9 @@ public class ImModelService {
 
         metadata.setTbName(imMetadata.getTbName());
 
-        if("1".equals(imMetadata.getType())){
+        if("0".equals(imMetadata.getType())){
             metadata.setType(MetadataType.INTERIOR);
-        }else if("2".equals(imMetadata.getType())){
+        }else if("1".equals(imMetadata.getType())){
             metadata.setType(MetadataType.EXTERNAL);
         }
 
@@ -700,6 +700,7 @@ public class ImModelService {
         metadataCol.setNote(imMetadataCol.getNote());
         metadataCol.setStored(imMetadataCol.getStored().equals("0"));
         metadataCol.setPrimary(imMetadataCol.getPrimary().equals("0"));
+        metadataCol.setLength(imMetadataCol.getLength());
     }
     //映射字段转换
     private void transformModelMapping(ImModelMapping imModelMapping,ModelMapping modelMapping) throws Exception{
