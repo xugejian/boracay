@@ -330,25 +330,19 @@ ${extends("/goframe/function_layout.httl")}
         }
     }
 
-    /**
-     * 保存
-     */
-    function save() {
-        form1.validate();
-        if (form1.isValid() == false) {
+    //保存
+    function save(){
+        var date = getSaveData();
+        if (!date) {
             return;
         }
-        var saveData = getSaveData();
-        if (!saveData) {
-            return;
-        }
-        var json = nui.encode(saveData);
-        //禁用保存按钮
-        nui.get("saveButton").disable();
+        var json = nui.encode(date);
         // --发送信息--
         form1.loading("正在保存中,请稍等...");
+        //禁用保存按钮
+        nui.get("saveButton").disable();
         $.ajax({
-            url: "${basePath}/im/md/insert",
+            url: "${basePath}/im/model/insert",
             type: 'POST',
             data: json,
             cache: false,
@@ -356,16 +350,11 @@ ${extends("/goframe/function_layout.httl")}
             success: function (result) {
                 if (result.status == true) {
                     nui.alert(result.message);
-                    var fromModel = "${fromModel}";
-                    if (fromModel == "true") {
-                        CloseWindow(result.data);
-                    } else {
-                        CloseWindow("success");
-                    }
+                    CloseWindow("success");
                 } else {
                     nui.alert(result.message, "系统提示", function (action) {
                         if (action == "ok" || action == "close") {
-//                            CloseWindow("failed");
+                            CloseWindow("failed");
                         }
                     });
                 }
@@ -374,6 +363,7 @@ ${extends("/goframe/function_layout.httl")}
                 nui.get("saveButton").enable();
             }
         });
+
     }
 
     function saveAndCreate() {
