@@ -1,7 +1,7 @@
--------------------------------------------------
--- Export file for user UDSP@192.168.1.61_ORCL --
--- Created by JunjieM on 2017-9-4, 12:04:29 -----
--------------------------------------------------
+--------------------------------------------------------
+-- Export file for user UDSP@DEV.GOUPWITH.COM_ZCTGGL2 --
+-- Created by JunjieM on 2017-9-25, 15:30:28 -----------
+--------------------------------------------------------
 
 set define off
 spool UDSP_CREATE_TABLES.log
@@ -263,7 +263,14 @@ alter table UDSP.IM_METADATA
   tablespace USERS
   pctfree 10
   initrans 2
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt
 prompt Creating table IM_METADATA_COLUMN
@@ -277,7 +284,7 @@ create table UDSP.IM_METADATA_COLUMN
   name     VARCHAR2(64) not null,
   describe VARCHAR2(256) not null,
   type     VARCHAR2(32) not null,
-  length   VARCHAR2(32) not null,
+  length   VARCHAR2(32),
   note     VARCHAR2(4000),
   indexed  CHAR(1) not null,
   primary  CHAR(1) not null,
@@ -324,7 +331,14 @@ alter table UDSP.IM_METADATA_COLUMN
   tablespace USERS
   pctfree 10
   initrans 2
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt
 prompt Creating table IM_MODEL
@@ -336,8 +350,6 @@ create table UDSP.IM_MODEL
   name        VARCHAR2(64) not null,
   describe    VARCHAR2(256) not null,
   s_ds_id     VARCHAR2(32) not null,
-  s_tb_name   VARCHAR2(64),
-  s_text      CLOB,
   t_md_id     VARCHAR2(32) not null,
   note        VARCHAR2(4000),
   del_flg     CHAR(1) not null,
@@ -348,7 +360,8 @@ create table UDSP.IM_MODEL
   type        CHAR(1) not null,
   build_mode  CHAR(1),
   update_mode CHAR(1),
-  update_key  CHAR(1)
+  e_ds_id     VARCHAR2(32),
+  status      CHAR(1) not null
 )
 tablespace USERS
   pctfree 10
@@ -371,10 +384,6 @@ comment on column UDSP.IM_MODEL.describe
   is '说明';
 comment on column UDSP.IM_MODEL.s_ds_id
   is '源数据源ID';
-comment on column UDSP.IM_MODEL.s_tb_name
-  is '源库表';
-comment on column UDSP.IM_MODEL.s_text
-  is '源SQL/JSON';
 comment on column UDSP.IM_MODEL.t_md_id
   is '目标元数据ID';
 comment on column UDSP.IM_MODEL.note
@@ -395,15 +404,24 @@ comment on column UDSP.IM_MODEL.build_mode
   is '构建策略（1：增量，2：全量）';
 comment on column UDSP.IM_MODEL.update_mode
   is '更新策略（1、匹配更新 2、更新、插入 3、增量插入，默认：2）';
-comment on column UDSP.IM_MODEL.update_key
-  is '更新参数（更新策略是1或2时显示，且必输）';
+comment on column UDSP.IM_MODEL.e_ds_id
+  is '引擎数据源ID';
+comment on column UDSP.IM_MODEL.status
+  is '状态（1：未建，2：已建）';
 alter table UDSP.IM_MODEL
   add constraint PK_IM_MODEL primary key (PK_ID)
   using index 
   tablespace USERS
   pctfree 10
   initrans 2
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt
 prompt Creating table IM_MODEL_FILTER_COLUMN
@@ -464,7 +482,14 @@ alter table UDSP.IM_MODEL_FILTER_COLUMN
   tablespace USERS
   pctfree 10
   initrans 2
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt
 prompt Creating table IM_MODEL_MAPPING
@@ -477,7 +502,10 @@ create table UDSP.IM_MODEL_MAPPING
   seq      NUMBER(3) not null,
   name     VARCHAR2(64) not null,
   col_id   VARCHAR2(32) not null,
-  note     VARCHAR2(4000)
+  note     VARCHAR2(4000),
+  type     VARCHAR2(32) not null,
+  length   VARCHAR2(32),
+  describe VARCHAR2(256)
 )
 tablespace USERS
   pctfree 10
@@ -504,13 +532,70 @@ comment on column UDSP.IM_MODEL_MAPPING.col_id
   is '目标元数据字段ID';
 comment on column UDSP.IM_MODEL_MAPPING.note
   is '备注';
+comment on column UDSP.IM_MODEL_MAPPING.type
+  is '源元数据字段类型';
+comment on column UDSP.IM_MODEL_MAPPING.length
+  is '源元数据字段长度';
+comment on column UDSP.IM_MODEL_MAPPING.describe
+  is '源元数据字段说明';
 alter table UDSP.IM_MODEL_MAPPING
   add constraint PK_IM_MODEL_MAPPING primary key (PK_ID)
   using index 
   tablespace USERS
   pctfree 10
   initrans 2
-  maxtrans 255;
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt
+prompt Creating table IM_MODEL_UPDATE_KEY
+prompt ==================================
+prompt
+create table UDSP.IM_MODEL_UPDATE_KEY
+(
+  pk_id    VARCHAR2(32) not null,
+  col_id   VARCHAR2(32) not null,
+  model_id VARCHAR2(32) not null
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 8K
+    minextents 1
+    maxextents unlimited
+  );
+comment on table UDSP.IM_MODEL_UPDATE_KEY
+  is '交互建模-模型更新键值';
+comment on column UDSP.IM_MODEL_UPDATE_KEY.pk_id
+  is '主键';
+comment on column UDSP.IM_MODEL_UPDATE_KEY.col_id
+  is '目标元数据字段ID';
+comment on column UDSP.IM_MODEL_UPDATE_KEY.model_id
+  is '模型ID';
+alter table UDSP.IM_MODEL_UPDATE_KEY
+  add constraint PK_IM_MODEL_UPDATE_KEY primary key (PK_ID)
+  using index 
+  tablespace UDSP_DATA
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt
 prompt Creating table IQ_APPLICATION
@@ -1644,6 +1729,20 @@ comment on column UDSP.OLQ_APPLICATION_PARAM.olq_app_id
   is '应用ID';
 comment on column UDSP.OLQ_APPLICATION_PARAM.seq
   is '序号';
+alter table UDSP.OLQ_APPLICATION_PARAM
+  add constraint OLQ_APPLICATION_PARAM_PKID primary key (PK_ID)
+  using index 
+  tablespace UDSP_DATA
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 
 prompt
 prompt Creating table RC_SERVICE
@@ -1660,7 +1759,8 @@ create table UDSP.RC_SERVICE
   crt_user VARCHAR2(32),
   crt_time VARCHAR2(32),
   upt_user VARCHAR2(32),
-  upt_time VARCHAR2(32)
+  upt_time VARCHAR2(32),
+  status   CHAR(1) default 0 not null
 )
 tablespace USERS
   pctfree 10
@@ -1695,6 +1795,8 @@ comment on column UDSP.RC_SERVICE.upt_user
   is '更新者';
 comment on column UDSP.RC_SERVICE.upt_time
   is '更新时间';
+comment on column UDSP.RC_SERVICE.status
+  is '启停标志（0：启动，1：停用）';
 create index UDSP.IDX_RC_SERVICE_DF on UDSP.RC_SERVICE (DEL_FLG)
   tablespace USERS
   pctfree 10
@@ -1764,17 +1866,23 @@ prompt ==============================
 prompt
 create table UDSP.RC_USER_SERVICE
 (
-  pk_id         VARCHAR2(32) not null,
-  user_id       VARCHAR2(32) not null,
-  service_id    VARCHAR2(32) not null,
-  ip_section    VARCHAR2(512),
-  max_sync_num  NUMBER(10) not null,
-  max_async_num NUMBER(10) not null,
-  del_flg       CHAR(1) not null,
-  crt_user      VARCHAR2(32) not null,
-  crt_time      VARCHAR2(32) not null,
-  upt_user      VARCHAR2(32) not null,
-  upt_time      VARCHAR2(32) not null
+  pk_id                     VARCHAR2(32) not null,
+  user_id                   VARCHAR2(32) not null,
+  service_id                VARCHAR2(32) not null,
+  ip_section                VARCHAR2(512),
+  max_sync_num              NUMBER(10) not null,
+  max_async_num             NUMBER(10) not null,
+  del_flg                   CHAR(1) not null,
+  crt_user                  VARCHAR2(32) not null,
+  crt_time                  VARCHAR2(32) not null,
+  upt_user                  VARCHAR2(32) not null,
+  upt_time                  VARCHAR2(32) not null,
+  max_sync_wait_num         NUMBER(10) default 0 not null,
+  max_async_wait_num        NUMBER(10) default 0 not null,
+  max_sync_wait_timeout     NUMBER(10) default 3000 not null,
+  max_async_wait_timeout    NUMBER(10) default 3000 not null,
+  max_sync_execute_timeout  NUMBER(10) default 3000 not null,
+  max_async_execute_timeout NUMBER(10) default 3000 not null
 )
 tablespace USERS
   pctfree 10
@@ -1809,6 +1917,18 @@ comment on column UDSP.RC_USER_SERVICE.upt_user
   is '更新者';
 comment on column UDSP.RC_USER_SERVICE.upt_time
   is '更新时间';
+comment on column UDSP.RC_USER_SERVICE.max_sync_wait_num
+  is '最大同步队列等待数';
+comment on column UDSP.RC_USER_SERVICE.max_async_wait_num
+  is '最大异步队列等待数';
+comment on column UDSP.RC_USER_SERVICE.max_sync_wait_timeout
+  is '同步最大等待超时时间';
+comment on column UDSP.RC_USER_SERVICE.max_async_wait_timeout
+  is '异步最大等待超时时间';
+comment on column UDSP.RC_USER_SERVICE.max_sync_execute_timeout
+  is '同步最大执行超时时间';
+comment on column UDSP.RC_USER_SERVICE.max_async_execute_timeout
+  is '异步最大执行超时时间';
 create index UDSP.IDX_RC_USER_SERVICE_DF on UDSP.RC_USER_SERVICE (DEL_FLG)
   tablespace USERS
   pctfree 10
