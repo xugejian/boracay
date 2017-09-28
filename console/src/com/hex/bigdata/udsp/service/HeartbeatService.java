@@ -9,6 +9,8 @@ import com.hex.bigdata.udsp.common.util.ThreadPool;
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.dao.HeartbeatMapper;
+import com.hex.bigdata.udsp.dto.ConsumeRequest;
+import com.hex.bigdata.udsp.dto.WaitNumResult;
 import com.hex.bigdata.udsp.mc.constant.McConstant;
 import com.hex.bigdata.udsp.mc.model.McConsumeLog;
 import com.hex.bigdata.udsp.mc.model.McCurrent;
@@ -201,21 +203,28 @@ public class HeartbeatService {
             //根据不同的APP类型、重新建任务
             //异步时文件
             String localFileName = CreateFileUtil.getFileName();
+            //新增消费请求类作为参数-start
+            //add 20170908
+            ConsumeRequest consumeRequest = new ConsumeRequest();
+            consumeRequest.setMcCurrent(mcCurrent);
+            WaitNumResult waitNumResult = new WaitNumResult();
+            consumeRequest.setWaitNumResult(waitNumResult);
+            //新增消费请求类作为参数-end
             if (RcConstant.UDSP_SERVICE_TYPE_IQ.equals(type)) {
                 Page page = request.getPage();
                 if (page != null && page.getPageIndex() > 0) {
-                    ThreadPool.execute(new IqAsyncService(mcCurrent, appId, request.getData(), page, localFileName));
+                    ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), page, localFileName));
                 } else {
-                    ThreadPool.execute(new IqAsyncService(mcCurrent, appId, request.getData(), localFileName));
+                    ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), localFileName));
                 }
             } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(type)) {
                 String sql = request.getSql();
-                ThreadPool.execute(new OlqAsyncService(mcCurrent, appId, sql, RcConstant.UDSP_SERVICE_TYPE_OLQ, localFileName));
-            } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, sql,RcConstant.UDSP_SERVICE_TYPE_OLQ,localFileName));
+            }else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)){
                 OLQApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 MessageResult messageResult = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                ThreadPool.execute(new OlqAsyncService(mcCurrent, dsId, (String) messageResult.getData(), RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName));
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, dsId, (String)messageResult.getData(),RcConstant.UDSP_SERVICE_TYPE_OLQ_APP,localFileName));
             }
 
         }
