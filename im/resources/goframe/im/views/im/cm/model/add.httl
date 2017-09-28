@@ -261,7 +261,7 @@ ${extends("/goframe/function_layout.httl")}
     var srcSourceType;
     var modelName;
     var filterCols;
-    var cols;
+    var compropertyCols;
     var targetCols;
     var targetSelectedCols;
     var esSourceObject;
@@ -284,19 +284,24 @@ ${extends("/goframe/function_layout.httl")}
     });
 
     //获取参数列表可输入内容
-    function getComproperties() {
-        cols = [];
-        $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
-            if (data && data.length && data.length > 0) {
-                for (var i = 0, len = data.length; i < len; i++) {
-                    cols.push({
-                        "name": data[i].dictId,
-                        "describe": data[i].dictName,
-                        "value":data[i].filter
-                    });
+    function getCompropertyCol() {
+        compropertyCols = [];
+        $.ajax({
+            url:"${basePath}/com/ds/selectParameters/"+srcDsModel.value,
+            data:{},
+            cache: false,
+            async:false,
+            success: function (data) {
+                if (data && data.length && data.length > 0) {
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        compropertyCols.push({
+                            "name": data[i].dictId,
+                            "describe": data[i].dictName,
+                            "value": data[i].filter
+                        });
+                    }
                 }
             }
-
         });
     }
 
@@ -306,20 +311,10 @@ ${extends("/goframe/function_layout.httl")}
         grid1.clearRows();
         grid2.clearRows();
         filterCols = [];
-        cols = [];
         //将参数配置栏自动输入
-        $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
-            if (data && data.length > 0) {
-                for (var i = 0, len = data.length; i < len; i++) {
-                    cols.push({
-                        "name": data[i].dictId,
-                        "describe": data[i].dictName,
-                        "value":data[i].filter
-                    });
-                }
-            }
-            grid1.addRows(cols);
-        });
+
+        getCompropertyCol();
+        grid1.addRows(compropertyCols);
         //不能异步执行
         $.ajax({
             url:"${basePath}/com/ds/checkSourceType/"+srcDsModel.value,
@@ -351,6 +346,12 @@ ${extends("/goframe/function_layout.httl")}
         });
 
         //目标元数据可选择项修改
+        getTargetMates();
+    }
+
+    //获取目标元数据可选内容
+    function getTargetMates(){
+        //加载目标元数据可选内容
         $.ajax({
             url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
             type: 'POST',
@@ -358,12 +359,10 @@ ${extends("/goframe/function_layout.httl")}
             async:false,
             contentType: 'application/json',
             success: function (data) {
-                //状态成功并信息是是的
                 targetDsModel.load(data.data);
             }
         });
     }
-
 
     //加载字段映射
     function loadMapping(){
@@ -487,7 +486,7 @@ ${extends("/goframe/function_layout.httl")}
         //禁用保存按钮
         nui.get("saveButton").disable();
         $.ajax({
-            url: "${basePath}/im/model/update/${pkId}",
+            url: "${basePath}/im/model/insert",
             type: 'POST',
             data: json,
             cache: false,
@@ -508,7 +507,6 @@ ${extends("/goframe/function_layout.httl")}
                 nui.get("saveButton").enable();
             }
         });
-
     }
 
     function getSaveData() {
@@ -655,16 +653,7 @@ ${extends("/goframe/function_layout.httl")}
             },
             ondestroy: function (action) {
                 //重新加载下
-                $.ajax({
-                    url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
-                    type: 'POST',
-                    cache: false,
-                    async:false,
-                    contentType: 'application/json',
-                    success: function (data) {
-                        targetDsModel.load(data.data);
-                    }
-                });
+                getTargetMates();
                 var k = 0;
                 for(;k < targetDsModel.data.length ;k++){
                     if(targetDsModel.data[k].pkId == action){
@@ -800,10 +789,10 @@ ${extends("/goframe/function_layout.httl")}
 
     function comPropertiesName(e) {
         //当可选字段不存在时自动获取
-        if(!cols){
+        if(!compropertyCols){
             getComproperties();
         }
-        e.source.load(cols);
+        e.source.load(compropertyCols);
     }
 
     /**
