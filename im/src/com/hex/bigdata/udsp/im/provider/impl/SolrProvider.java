@@ -2,17 +2,16 @@ package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.SolrMetadata;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcProviderUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
@@ -21,13 +20,15 @@ import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.solr.client.solrj.SolrServer;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.stereotype.Component;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +36,12 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 @Component("com.hex.bigdata.udsp.im.provider.impl.SolrProvider")
-public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider {
+public class SolrProvider extends SolrWrapper {
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
     private static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.solr.SolrStorageHandler";
 
     public List<MetadataCol> getColumns(String collectionName, String solrServers) {
-        if(StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)){
+        if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {
             return null;
         }
         String response = "";
@@ -63,64 +64,35 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
             mdCol.setSeq((short) i);
             mdCol.setName((String) fields.getJSONObject(i).get("name"));
             mdCol.setDescribe((String) fields.getJSONObject(i).get("name"));
-            mdCol.setType(getColType((String) fields.getJSONObject(i).get("type")));
-            mdCol.setLength("");
+            mdCol.setType(SolrUtil.getColType((String) fields.getJSONObject(i).get("type")));
             mdCol.setIndexed((boolean) fields.getJSONObject(i).get("indexed"));
             mdCol.setStored((boolean) fields.getJSONObject(i).get("stored"));
+            mdCol.setPrimary(fields.getJSONObject(i).get("uniqueKey") == null ? false : true);
             metadataCols.add(mdCol);
         }
         return metadataCols;
     }
 
-
-    public static DataType getColType(String type) {
-        type = type.toUpperCase();
-        DataType dataType = null;
-        switch (type) {
-            case "STRING":
-                dataType = DataType.STRING;
-                break;
-            case "INT":
-                dataType = DataType.INT;
-                break;
-            case "FLOAT":
-                dataType = DataType.FLOAT;
-                break;
-            case "DOUBLE":
-                dataType = DataType.DOUBLE;
-                break;
-            case "DATE":
-                dataType = DataType.TIMESTAMP;
-                break;
-            case "BOOLEAN":
-                dataType = DataType.BOOLEAN;
-                break;
-            default:
-                dataType = DataType.STRING;
-        }
-        return dataType;
-    }
-
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
         Datasource datasource = metadata.getDatasource();
-        Map<String, Property> propertyMap = datasource.getPropertyMap();
-//        SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
         String collectionName = metadata.getTbName();
-//        SolrServer solrServer = getConnection(solrDatasource, collectionName);
-        return getColumns(collectionName, propertyMap.get("solr.servers").getValue());
+        SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
+        String solrServers = solrDatasource.getSolrServers();
+        return getColumns(collectionName, solrServers);
     }
 
     @Override
     public boolean createSchema(Metadata metadata) throws Exception {
-        SolrUtil.uploadSolrConfig(metadata);
+        SolrUtil.checkSolrProperty(metadata); // 检查参数
+        SolrUtil.uploadSolrConfig(metadata); // 添加配置
+        SolrMetadata solrMetadata = new SolrMetadata(metadata);
         String[] addresses = getSolrServerStrings(metadata);
         String response = "";
-        Map<String, Property> mdPropertyMap = metadata.getPropertyMap();
         for (String solrServer : addresses) {
             String url = "http://" + solrServer + "/solr/admin/collections";
-            String param = "action=CREATE" + "&name=" + metadata.getTbName() + "&replicationFactor=" + mdPropertyMap.get("solr.replicas").getValue() +
-                    "&numShards=" + mdPropertyMap.get("solr.shards").getValue() + "&maxShardsPerNode=" + mdPropertyMap.get("solr.max.shards.per.node").getValue() +
+            String param = "action=CREATE" + "&name=" + metadata.getTbName() + "&replicationFactor=" + solrMetadata.getReplicas() +
+                    "&numShards=" + solrMetadata.getShards() + "&maxShardsPerNode=" + solrMetadata.getMaxShardsPerNode() +
                     "&collection.configName=" + metadata.getTbName();
             response = SolrUtil.sendGet(url, param);
             if (StringUtils.isEmpty(response)) {
@@ -134,7 +106,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
 
     @Override
     public boolean dropSchema(Metadata metadata) throws Exception {
-        SolrUtil.deleteZnode(metadata);
+        SolrUtil.deleteZnode(metadata); // 删除配置
         String[] addresses = getSolrServerStrings(metadata);
         for (String solrServer : addresses) {
             String url = "http://" + solrServer + "/solr/admin/collections";
@@ -151,20 +123,19 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
 
     private String[] getSolrServerStrings(Metadata metadata) {
         Datasource datasource = metadata.getDatasource();
-        Map<String, Property> dsPropertyMap = datasource.getPropertyMap();
-        String solrServers = dsPropertyMap.get("solr.servers").getValue();
-        return solrServers.split(",");
+        SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
+        return solrDatasource.getSolrServers().split(",");
     }
 
     @Override
-    public boolean checkTableExists(Metadata metadata) throws Exception {
+    public boolean checkSchemaExists(Metadata metadata) throws Exception {
         String[] addresses = getSolrServerStrings(metadata);
         String response = "";
-        for(String solrServer : addresses){
-            String url = "http://"+solrServer+"/solr/admin/collections?action=LIST";
+        for (String solrServer : addresses) {
+            String url = "http://" + solrServer + "/solr/admin/collections?action=LIST";
             try {
                 response = SolrUtil.sendGet(url, null);
-            }catch (Exception e){
+            } catch (Exception e) {
                 continue;
             }
             break;
@@ -174,7 +145,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Element arr = root.element("arr");
         List<Element> collections = arr.elements("str");
         boolean exists = false;
-        for(Element e : collections) {
+        for (Element e : collections) {
             if (e.getData().equals(metadata.getTbName())) {
                 exists = true;
                 break;
@@ -187,15 +158,68 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
     public List<MetadataCol> columnInfo(Model model) {
         Datasource datasource = model.getSourceDatasource();
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
-        SolrModel solrModel = new SolrModel(datasource.getPropertyMap());
+        String solrServers = solrDatasource.getSolrServers();
+        SolrModel solrModel = new SolrModel(model.getProperties(), model.getSourceDatasource());
         String collectionName = solrModel.getCollectionName();
-        SolrServer solrServer = getConnection(solrDatasource, collectionName);
-        return null; //getColumns(solrServer);
+        return getColumns(collectionName, solrServers);
     }
 
     @Override
-    public void inputData(Model model) {
+    protected void insertInto(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns) throws Exception {
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
+        Map<String, String> map = new HashMap<>();
+        for (ValueColumn column : valueColumns) {
+            map.put(column.getColName(), column.getValue());
+        }
+        SolrUtil.addDocument(solrDatasource, metadata.getTbName(), map);
+    }
 
+    @Override
+    protected void updateInsert(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
+        String tableName = metadata.getTbName();
+        String idName = getIdName(modelMappings);
+        List<Map<String, String>> list = SolrUtil.search(solrDatasource, tableName, whereProperties);
+        if (list != null && list.size() != 0) {
+            update(solrDatasource, tableName, idName, list, valueColumns);
+        } else {
+            Map<String, String> map = new HashMap<>();
+            for (ValueColumn column : valueColumns) {
+                map.put(column.getColName(), column.getValue());
+            }
+            SolrUtil.addDocument(solrDatasource, metadata.getTbName(), map);
+        }
+    }
+
+    @Override
+    protected void matchingUpdate(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) throws Exception {
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
+        String tableName = metadata.getTbName();
+        String idName = getIdName(modelMappings);
+        List<Map<String, String>> list = SolrUtil.search(solrDatasource, tableName, whereProperties);
+        if (list != null && list.size() != 0) {
+            update(solrDatasource, tableName, idName, list, valueColumns);
+        }
+    }
+
+    @Override
+    protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        if (modelMappings == null || modelMappings.size() == 0)
+            return null;
+        List<java.lang.String> selectColumns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings)
+            selectColumns.add(mapping.getName());
+        return selectColumns;
+    }
+
+    @Override
+    protected List<String> getInsertColumns(List<ModelMapping> modelMappings, Metadata metadata) {
+        if (modelMappings == null || modelMappings.size() == 0)
+            return null;
+        List<java.lang.String> insertColumns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings)
+            insertColumns.add(mapping.getMetadataCol().getName());
+        return insertColumns;
     }
 
     @Override
@@ -204,7 +228,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Datasource engineDatasource = model.getEngineDatasource();
         HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
         String id = model.getId();
-        SolrModel solrModel = new SolrModel(model.getPropertyMap());
+        SolrModel solrModel = new SolrModel(model);
         String collectionName = solrModel.getCollectionName();
         String tableName = getSourceTableName(id);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
@@ -213,7 +237,7 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
                 getSourceColumns(modelMappings), "源的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, collectionName));
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.createEngineSchema(eHiveDs, HIVE_ENGINE_DATABASE_NAME, sql);
     }
 
     @Override
@@ -222,13 +246,50 @@ public class SolrProvider extends SolrWrapper implements RealtimeTargetProvider 
         Datasource datasource = metadata.getDatasource();
         Datasource engineDatasource = model.getEngineDatasource();
         HiveDatasource eHiveDs = new HiveDatasource(engineDatasource.getPropertyMap());
-        SolrMetadata solrMetadata = new SolrMetadata(metadata.getPropertyMap());
+        SolrMetadata solrMetadata = new SolrMetadata(metadata);
         SolrDatasource solrDs = new SolrDatasource(datasource.getPropertyMap());
         List<ModelMapping> modelMappings = model.getModelMappings();
         String pkName = getTargetPrimaryKey(modelMappings);
         String sql = HiveSqlUtil.createStorageHandlerTable(true, true, getTargetTableName(model.getId()),
                 getTargetColumns(modelMappings), "目标的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTblProperties(solrDs, pkName, solrMetadata.getTbName()));
-        return JdbcProviderUtil.executeUpdate(eHiveDs, sql) >= 0 ? true : false;
+        return JdbcUtil.executeUpdate(eHiveDs, sql);
+    }
+
+    @Override
+    public boolean testDatasource(Datasource datasource) {
+        boolean canConnection = false;
+        HttpURLConnection connection = null;
+        URL url = null;
+        try {
+            SolrDatasource solrDatasource = new SolrDatasource(datasource.getProperties());
+            String[] tempServers = solrDatasource.getSolrServers().split(",");
+            for (int i = 0; i < tempServers.length; i++) {
+                try {
+                    url = new URL("http://" + tempServers[i] + "/solr");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+                    connection.setUseCaches(false);
+                    connection.setInstanceFollowRedirects(true);
+                    connection.connect();
+                    if (connection != null) {
+                        canConnection = true;
+                        break;
+                    }
+                } catch (Exception e) {
+                    logger.debug("获取solr连接失败的地址为：" + (url == null ? "" : url.toString()));
+                    canConnection = false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            canConnection = false;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return canConnection;
     }
 }

@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.model.modeling;
 
+import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import org.apache.commons.lang.StringUtils;
@@ -10,7 +11,10 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public class KafkaModel extends Model {
+public class KafkaModel extends MqModel {
+    public KafkaModel() {
+    }
+
     public KafkaModel(List<Property> properties) {
         super(properties);
     }
@@ -19,24 +23,18 @@ public class KafkaModel extends Model {
         super(propertyMap);
     }
 
-    public String getTopic() {
-        String value = getProperty("kafka.topic").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("kafka.topic不能为空");
-        return value;
+    public KafkaModel(Model model) {
+        super(model);
     }
 
-    public String getConsumerTimeMs() {
-        String value = getProperty("kafka.consumer.time.ms").getValue();
-        if (StringUtils.isBlank(value))
-            value = "1000";
-        return value;
+    public KafkaModel(List<Property> properties, Datasource srcDatasource){
+        super(properties,srcDatasource);
     }
 
-    public String getConsumerInterval() {
-        String value = getProperty("kafka.consumer.interval").getValue();
+    public String getGroupId() {
+        String value = getProperty("group.id").getValue();
         if (StringUtils.isBlank(value))
-            value = "1";
+            throw new IllegalArgumentException("group.id不能为空");
         return value;
     }
 }

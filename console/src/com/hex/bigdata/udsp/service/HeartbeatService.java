@@ -133,7 +133,7 @@ public class HeartbeatService {
                                 //获取宕机机器上的任务转到本机器上运行
                                 this.transferTask(heartbeat.getIp());
                                 //从内存中移除宕机机器信息
-                                heartbeatMapper.delete(HEARTBEAT_INFO_KEY + ":" +heartbeat.getIp());
+                                heartbeatMapper.delete(HEARTBEAT_INFO_KEY + ":" + heartbeat.getIp());
                                 break;
                             }
                         }
@@ -178,7 +178,7 @@ public class HeartbeatService {
             request.setRequestType(mcCurrent.getRequestType());
             request.setAppType(mcCurrent.getAppType());
             request.setAppName(mcCurrent.getAppName());
-            if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(request.getEntity())){
+            if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(request.getEntity())) {
                 continue;
             }
             //并发检查
@@ -271,5 +271,8 @@ public class HeartbeatService {
         mcConsumeLogService.insert(mcConsumeLog);
     }
 
+    public List<HeartbeatInfo> selectList() {
+        return heartbeatMapper.selectLike(HEARTBEAT_INFO_KEY);
+    }
 
 }

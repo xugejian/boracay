@@ -28,7 +28,7 @@ public class ImMetadataColMapper extends SyncMapper<ImMetadataCol> {
 
     @Override
     protected ImMetadataCol selectExe(String id) {
-        return null;
+        return sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.im.dao.ImMetadataColMapper.selectByPrimaryKey",id);
     }
 
     @Override

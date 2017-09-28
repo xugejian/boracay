@@ -10,6 +10,12 @@ import java.util.List;
  */
 public interface SourceProvider extends Provider {
 
+    /**
+     * 获取字段信息
+     *
+     * @param model
+     * @return
+     */
     List<MetadataCol> columnInfo(Model model);
 
 }

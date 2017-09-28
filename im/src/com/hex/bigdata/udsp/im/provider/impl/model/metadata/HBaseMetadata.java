@@ -11,6 +11,8 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class HBaseMetadata extends Metadata {
+    public HBaseMetadata() {
+    }
 
     public HBaseMetadata(List<Property> properties) {
         super(properties);
@@ -18,6 +20,10 @@ public class HBaseMetadata extends Metadata {
 
     public HBaseMetadata(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public HBaseMetadata(Metadata metadata) {
+        super(metadata);
     }
 
     public int getRegionNum() {

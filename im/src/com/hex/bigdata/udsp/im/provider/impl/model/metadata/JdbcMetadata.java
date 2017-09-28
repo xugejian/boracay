@@ -10,11 +10,18 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-11.
  */
 public class JdbcMetadata extends Metadata {
+    public JdbcMetadata() {
+    }
+
     public JdbcMetadata(List<Property> properties) {
         super(properties);
     }
 
     public JdbcMetadata(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public JdbcMetadata(Metadata metadata) {
+        super(metadata);
     }
 }
