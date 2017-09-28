@@ -87,7 +87,7 @@ ${extends("/goframe/function_layout.httl")}
                         <td class="roleText" style="width: 25%">
                             <input name="isBuilded" class="nui-dictcombobox" valueField="dictId" textField="dictName"
                                    style="width:98%;"
-                                   dictTypeId="IM_MODEL_BUILD_STAUS" value="" vtype="maxLength:32" emptyText="全部"
+                                   dictTypeId="IM_MODEL_STATUS" value="" vtype="maxLength:32" emptyText="全部"
                                    nullItemText="全部" showNullItem="true"/>
                         </td>
                         <td style="width: 100px;text-align: right">创建时间：</td>
@@ -159,8 +159,8 @@ ${extends("/goframe/function_layout.httl")}
             <div field="describe" headerAlign="center" allowSort="true" >说明</div>
             <div field="sDsName" headerAlign="center" allowSort="true" renderer="dsRenderer">源数据源</div>
             <div field="tMdName" headerAlign="center" allowSort="true" renderer="mdRenderer">目标元数据</div>
-            <div field="type" headerAlign="center" allowSort="true" renderer="ImModelTypeRenderer" >类型</div>
-            <div field="buildStatus" headerAlign="center" allowSort="true" renderer="buildStatusRenderer" >状态</div>
+            <div field="type" headerAlign="center" allowSort="true" renderer="typeRenderer" >类型</div>
+            <div field="buildStatus" headerAlign="center" allowSort="true" renderer="statusRenderer" >状态</div>
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat" >创建时间</div>
             <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat" >更新时间</div>
             <div field="note" headerAlign="center" allowSort="true" >备注</div>
@@ -178,7 +178,7 @@ ${extends("/goframe/function_layout.httl")}
     var fileIndex = 0;
 
 
-    function ImModelTypeRenderer(e) {
+    function typeRenderer(e) {
         return nui.getDictText("IM_MODEL_TYPE", e.row.type);
     }
     /**
@@ -513,19 +513,8 @@ ${extends("/goframe/function_layout.httl")}
         return operatorS;
     }
 
-    function buildStatusRenderer(e) {
-        var status = e.row.status;
-        //先判断是否实时
-        if (e.row.type == '1') { // 批量
-            //判断是否构建
-            if (e.row.status == '1') {
-                return "未建";
-            } else {
-                return "已建";
-            }
-        } else { // 实时
-            return "已建"
-        }
+    function statusRenderer(e) {
+        return nui.getDictText("IM_MODEL_STATUS", e.row.status);
     }
 
     function deleteOperator(pkId) {

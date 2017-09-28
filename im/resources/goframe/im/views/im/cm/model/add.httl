@@ -328,26 +328,24 @@ ${extends("/goframe/function_layout.httl")}
             async:false,
             success:function (data) {
                 if (data.data == true) {
+                    srcSourceType = "2"; // 实时
                     $("#updateType").css("display", "table-row");
-                    //更新策略默认为更新插入
-                    updateModeObject.setValue("2");
-
+                    //更新策略默认为“增量插入”
+                    updateModeObject.setValue("3"); // 增量插入
                     $("#buildType").css("display", "none");
                     //将构建方式和引擎设置为空值
                     buildModeObject.setValue("");
                     esSourceObject.setValue("");
-                    srcSourceType = "2";
                 } else {
+                    srcSourceType = "1"; // 批量
                     $("#updateType").css("display", "none");
                     updateModeObject.setValue("");
                     updateKeyObject.setValue("");
                     $("#buildType").css("display", "table-row");
-                    //构建策略默认为增量
-                    buildModeObject.setValue("1");
+                    //构建策略默认为“增量”
+                    buildModeObject.setValue("1"); // 增量
                     //引擎数据源设置为第一个
                     esSourceObject.setValue(esSourceObject.data[0].pkId);
-                    srcSourceType = "1";
-
                 }
             }
         });
@@ -369,17 +367,16 @@ ${extends("/goframe/function_layout.httl")}
 
     //加载字段映射
     function loadMapping(){
-        //清楚原来配置  ---是否必要！！！
+        //清楚原来配置
         grid2.clearRows();
         getSrcCols();
-
         //如果目标字段不为空则将目标字段和源数据字段名称一样的自动关联
-        autoMapping();
+        autoMapping(filterCols);
         //字段映射加进去
         grid2.addRows(filterCols);
     }
 
-    function autoMapping() {
+    function autoMapping(filterCols) {
         if(filterCols && filterCols.length > 0 && targetSelectedCols && targetSelectedCols.length > 0){
             $.each(filterCols, function (_index, record) {
                 if(targetCols[record.name]){
@@ -396,7 +393,6 @@ ${extends("/goframe/function_layout.httl")}
         var json = nui.encode(properties);
         //禁用保存按钮
         nui.get("loadMapping").disable();
-        form1.loading("正在加载字段中,请稍等...");
         $.ajax({
             url: "${basePath}/im/model/getColumnsInfo/"+srcDsModel.value,
             type: 'POST',
@@ -416,8 +412,10 @@ ${extends("/goframe/function_layout.httl")}
                             "length": data.data[i].length,
                             "type": data.data[i].type == ""?"STRING":data.data[i].type
                         });
-                    };
+                    }
                 }
+                nui.get("loadMapping").enable();
+                nui.alert("加载字段成功!");
             }
         });
     }
@@ -479,11 +477,11 @@ ${extends("/goframe/function_layout.httl")}
 
     //保存
     function save(){
-        var date = getSaveData();
-        if (!date) {
+        var data = getSaveData();
+        if (!data) {
             return;
         }
-        var json = nui.encode(date);
+        var json = nui.encode(data);
         // --发送信息--
         form1.loading("正在保存中,请稍等...");
         //禁用保存按钮
@@ -518,6 +516,7 @@ ${extends("/goframe/function_layout.httl")}
         if (!baseData) {
             return;
         }
+        baseData.type = srcSourceType;
         var comPropertiesList = getComPropertiess();
         if (!comPropertiesList) {
             return;
@@ -530,11 +529,6 @@ ${extends("/goframe/function_layout.httl")}
         if (!imModelFilterCols) {
             return;
         }
-        //修改其删除状态
-        baseData.delFlg = "0";
-        //修改其对应的是非实时
-        baseData.type = srcSourceType;
-        baseData.status = "1";
         var saveData = {
             "imModel": baseData,
             "imModelMappings": imModelMappings,
