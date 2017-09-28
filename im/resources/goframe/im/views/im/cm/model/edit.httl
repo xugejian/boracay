@@ -310,17 +310,8 @@ ${extends("/goframe/function_layout.httl")}
                     srcSourceType = "1";
                 }
                 //加载目标元数据可选内容
-                $.ajax({
-                    url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
-                    type: 'POST',
-                    cache: false,
-                    async:false,
-                    contentType: 'application/json',
-                    success: function (data) {
-                        targetDsModel.load(data.data);
-                        targetDsModel.setValue(targetSourceId);
-                    }
-                });
+                getTargetMates();
+                targetDsModel.setValue(targetSourceId);
                 form1.setData(data);
                 form1.setChanged(false);
                 //加载目标字段信息
@@ -354,20 +345,40 @@ ${extends("/goframe/function_layout.httl")}
         });
     }
 
+    //获取目标元数据可选内容
+    function getTargetMates(){
+        //加载目标元数据可选内容
+        $.ajax({
+            url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
+            type: 'POST',
+            cache: false,
+            async:false,
+            contentType: 'application/json',
+            success: function (data) {
+                targetDsModel.load(data.data);
+            }
+        });
+    }
+
     //获取参数列表可输入内容
     function getComproperties() {
         cols = [];
-        $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
-            if (data && data.length && data.length > 0) {
-                for (var i = 0, len = data.length; i < len; i++) {
-                    cols.push({
-                        "name": data[i].dictId,
-                        "describe": data[i].dictName,
-                        "value":data[i].filter
-                    });
+        $.ajax({
+            url:"${basePath}/com/ds/selectParameters/"+srcDsModel.value,
+            data:{},
+            cache: false,
+            async:false,
+            success: function (data) {
+                if (data && data.length && data.length > 0) {
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        cols.push({
+                            "name": data[i].dictId,
+                            "describe": data[i].dictName,
+                            "value": data[i].filter
+                        });
+                    }
                 }
             }
-
         });
     }
 
@@ -377,20 +388,9 @@ ${extends("/goframe/function_layout.httl")}
         grid1.clearRows();
         grid2.clearRows();
         filterCols = [];
-        cols = [];
         //将参数配置栏自动输入
-        $.post("${basePath}/com/ds/selectParameters/"+srcDsModel.value, {}, function (data) {
-            if (data && data.length > 0) {
-                for (var i = 0, len = data.length; i < len; i++) {
-                    cols.push({
-                        "name": data[i].dictId,
-                        "describe": data[i].dictName,
-                        "value":data[i].filter
-                    });
-                }
-            }
-            grid1.addRows(cols);
-        });
+        getComproperties();
+        grid1.addRows(cols);
         //不能异步执行
         $.ajax({
             url:"${basePath}/com/ds/checkSourceType/"+srcDsModel.value,
@@ -424,17 +424,7 @@ ${extends("/goframe/function_layout.httl")}
         });
 
         //目标元数据可选择项修改
-        $.ajax({
-            url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
-            type: 'POST',
-            cache: false,
-            async:false,
-            contentType: 'application/json',
-            success: function (data) {
-                //状态成功并信息是是的
-                targetDsModel.load(data.data);
-            }
-        });
+        getTargetMates();
     }
 
 
@@ -734,16 +724,7 @@ ${extends("/goframe/function_layout.httl")}
             },
             ondestroy: function (action) {
                 //重新加载下
-                $.ajax({
-                    url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
-                    type: 'POST',
-                    cache: false,
-                    async:false,
-                    contentType: 'application/json',
-                    success: function (data) {
-                        targetDsModel.load(data.data);
-                    }
-                });
+                getTargetMates();
                 var k = 0;
                 for(;k < targetDsModel.data.length ;k++){
                     if(targetDsModel.data[k].pkId == action){
