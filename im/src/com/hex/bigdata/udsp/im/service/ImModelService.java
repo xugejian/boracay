@@ -97,6 +97,11 @@ public class ImModelService {
         String pkId = Util.uuid();
         ImModel model = imModelViews.getImModel();
         model.setPkId(pkId);
+        if("1".equals(model.getType())) { // 批量
+            model.setStatus("2"); // 未建
+        }else if("2".equals(model.getType())){ // 实时
+            model.setStatus("1"); // 已建
+        }
         if (!imModelMapper.insert(pkId, model)) {
             throw new RuntimeException("保存配置栏基础信息异常");
         }
@@ -134,6 +139,11 @@ public class ImModelService {
         ImModel model = imModelViews.getImModel();
         //获取模型主键
         String pkId = model.getPkId();
+        if("1".equals(model.getType())) { // 批量
+            model.setStatus("1"); // 未建
+        }else if("2".equals(model.getType())){ // 实时
+            model.setStatus("2"); // 已建
+        }
         if (!imModelMapper.update(pkId, model)) {
             //添加运行时异常，使事务回滚
             throw new RuntimeException("更新配置栏基础信息异常");
