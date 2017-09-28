@@ -534,7 +534,7 @@ public class ConsumerService {
         WaitNumResult waitNumResult = consumeRequest.getWaitNumResult();
 
         //如果任务在等待队列中，则mcCurrent带上等待任务的id
-        if (StringUtils.isNotBlank(waitNumResult.getWaitQueueTaskId())) {
+        if (null != waitNumResult && StringUtils.isNotBlank(waitNumResult.getWaitQueueTaskId())) {
             mcCurrent.setWaitQueueTaskId(waitNumResult.getWaitQueueTaskId());
         }
         //在等执行列中执行
@@ -552,10 +552,10 @@ public class ConsumerService {
         String udspUser = request.getUdspUser();
 
         //在等待队列中等待执行(同步)
-        if (waitNumResult.isIntoWaitQueue() && CommonConstant.REQUEST_SYNC.equalsIgnoreCase(waitNumResult.getWaitQueueSyncType())) {
+        if (null != waitNumResult && waitNumResult.isIntoWaitQueue() && CommonConstant.REQUEST_SYNC.equalsIgnoreCase(waitNumResult.getWaitQueueSyncType())) {
             Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, syncCycleTimeInterval));
             try {
-                futureTask.get(rcUserService.getMaxSyncWaitTimeout(),TimeUnit.SECONDS);
+                futureTask.get(rcUserService.getMaxSyncWaitTimeout(), TimeUnit.SECONDS);
                 mcCurrentService.insert(mcCurrent);
                 mcCurrentCountService.addAsyncCurrent(mcCurrent);
             } catch (TimeoutException e) {
@@ -569,6 +569,8 @@ public class ConsumerService {
             } finally {
             }
         }
+        //解决应用测试的时候，没有配置同步、异步执行超时时间，则必须先进行判断
+        long maxSyncExecuteTimeout = rcUserService == null ? 10000 : rcUserService.getMaxSyncExecuteTimeout();
 
         //异步时文件
         String localFileName = "";
@@ -597,6 +599,8 @@ public class ConsumerService {
                     return response;
                 }
             }
+
+
             //开始iq消费
             if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(type)) {
                 if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
@@ -620,7 +624,7 @@ public class ConsumerService {
                 runStart = System.currentTimeMillis();
                 Future<Response> iqFuture = executorService.submit(new IqSyncServiceCallable(request.getData(), appId, page));
                 try {
-                    response = iqFuture.get(rcUserService.getMaxSyncExecuteTimeout(), TimeUnit.SECONDS);
+                    response = iqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                     return response;
@@ -661,7 +665,7 @@ public class ConsumerService {
                 runStart = System.currentTimeMillis();
                 Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(appId, new OLQQuerySql(sql)));
                 try {
-                    response = olqFuture.get(rcUserService.getMaxSyncExecuteTimeout(), TimeUnit.SECONDS);
+                    response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                     return response;
@@ -721,7 +725,7 @@ public class ConsumerService {
                     OLQQuerySql olqQuerySql = (OLQQuerySql) messageResult.getData();
                     Future<Response> olqAppFuture = executorService.submit(new OlqSyncServiceCallable(dsId, olqQuerySql));
                     try {
-                        response = olqAppFuture.get(rcUserService.getMaxSyncExecuteTimeout(), TimeUnit.SECONDS);
+                        response = olqAppFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                     } catch (TimeoutException e) {
                         this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                         return response;
