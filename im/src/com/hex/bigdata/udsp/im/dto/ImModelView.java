@@ -16,9 +16,11 @@ public class ImModelView extends ImModel implements Serializable{
 
     private String uptTimeEnd;
 
-    private String tDsName;
+    private String tMdName;
 
     private String sDsName;
+
+    private String isBuilded;
 
     public String getCrtTimeStart() {
         return crtTimeStart;
@@ -52,12 +54,12 @@ public class ImModelView extends ImModel implements Serializable{
         this.uptTimeEnd = uptTimeEnd;
     }
 
-    public String gettDsName() {
-        return tDsName;
+    public String gettMdName() {
+        return tMdName;
     }
 
-    public void settDsName(String tDsName) {
-        this.tDsName = tDsName;
+    public void settMdName(String tMdName) {
+        this.tMdName = tMdName;
     }
 
     public String getsDsName() {
@@ -66,5 +68,13 @@ public class ImModelView extends ImModel implements Serializable{
 
     public void setsDsName(String sDsName) {
         this.sDsName = sDsName;
+    }
+
+    public String getIsBuilded() {
+        return isBuilded;
+    }
+
+    public void setIsBuilded(String isBuilded) {
+        this.isBuilded = isBuilded;
     }
 }

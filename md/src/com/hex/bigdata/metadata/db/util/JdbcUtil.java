@@ -72,7 +72,9 @@ public class JdbcUtil {
         }
         try {
             if (obj instanceof Connection) {
-                ((Connection) obj).close();
+                Connection conn = ((Connection) obj);
+                if(!conn.isClosed())
+                    conn.close();
             } else if (obj instanceof Statement) {
                 ((Statement) obj).close();
             } else if (obj instanceof ResultSet) {

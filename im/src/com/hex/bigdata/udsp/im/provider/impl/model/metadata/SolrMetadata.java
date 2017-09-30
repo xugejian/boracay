@@ -11,6 +11,8 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class SolrMetadata extends Metadata {
+    public SolrMetadata() {
+    }
 
     public SolrMetadata(List<Property> properties) {
         super(properties);
@@ -18,6 +20,10 @@ public class SolrMetadata extends Metadata {
 
     public SolrMetadata(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public SolrMetadata(Metadata metadata) {
+        super(metadata);
     }
 
     public int getShards() {

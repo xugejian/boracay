@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.provider.impl.factory;
 
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HBaseDatasource;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.hadoop.conf.Configuration;
@@ -28,8 +29,8 @@ public class HBaseAdminPoolFactory {
 
     private GenericObjectPool pool;
 
-    public HBaseAdminPoolFactory(GenericObjectPool.Config config, String zkQuorum, String zkPort) {
-        HBaseAdminFactory factory = new HBaseAdminFactory(zkQuorum, zkPort);
+    public HBaseAdminPoolFactory(GenericObjectPool.Config config, HBaseDatasource datasource) {
+        HBaseAdminFactory factory = new HBaseAdminFactory(datasource);
         pool = new GenericObjectPool(factory, config);
     }
 
@@ -65,10 +66,17 @@ public class HBaseAdminPoolFactory {
 class HBaseAdminFactory extends BasePoolableObjectFactory {
     private Configuration conf;
 
-    public HBaseAdminFactory(String zkQuorum, String zkPort) {
+    public HBaseAdminFactory(HBaseDatasource datasource) {
         conf = HBaseConfiguration.create();
-        conf.set("hbase.zookeeper.quorum", zkQuorum);
-        conf.set("hbase.zookeeper.property.clientPort", zkPort);
+        conf.set("hbase.zookeeper.quorum", datasource.getZkQuorum());
+        conf.set("hbase.zookeeper.property.clientPort", datasource.getZkPort());
+        conf.set("hbase.rpc.timeout", datasource.getRpcTimeout());
+        conf.set("hbase.client.retries.number", datasource.getClientRetriesNumber());
+        conf.set("hbase.client.pause", datasource.getClientPause());
+        conf.set("zookeeper.recovery.retry", datasource.getZkRecoveryRetry());
+        conf.set("zookeeper.recovery.retry.intervalmill", datasource.getZkRecoveryRetryIntervalmill());
+        conf.set("hbase.client.operation.timeout", datasource.getClientOperationTimeout());
+        conf.set("hbase.regionserver.lease.period", datasource.getRegionserverLeasePeriod());
     }
 
     @Override

@@ -7,9 +7,28 @@ import com.hex.bigdata.udsp.im.provider.model.Model;
  */
 public interface BatchTargetProvider extends TargetProvider, BatchProvider {
 
-    String inputSQL(Model model);
+    /**
+     * 批量构建
+     * @param model
+     * @throws Exception
+     */
+    void buildBatch(String key, Model model) throws Exception;
 
+    /**
+     * 创建目标引擎Schema
+     *
+     * @param model
+     * @return
+     * @throws Exception
+     */
     boolean createTargetEngineSchema(Model model) throws Exception;
 
+    /**
+     * 删除目标引擎Schema
+     *
+     * @param model
+     * @return
+     * @throws Exception
+     */
     boolean dropTargetEngineSchema(Model model) throws Exception;
 }

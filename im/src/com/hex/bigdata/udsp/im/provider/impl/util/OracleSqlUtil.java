@@ -1,6 +1,10 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -16,29 +20,13 @@ public class OracleSqlUtil {
      *
      * @param tableName
      * @param columns
-     * @param tableComment
      * @return
      */
-    public static String createTable(String tableName, List<TableColumn> columns, String tableComment) {
-        String sql = "CREATE TABLE " + tableName + getColumns(columns) ;//+ ";";
-//        sql += "\n" + commentTable(tableName, tableComment) + ";";
-//        TableColumn column = null;
-//        String colName = "";
-//        String colComment = "";
-//        if (columns != null && columns.size() != 0) {
-//            for (int i = 0; i < columns.size(); i++) {
-//                column = columns.get(i);
-//                colName = column.getColName();
-//                colComment = column.getColComment();
-//                if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(colComment)) {
-//                    sql += "\n" + commentColumn(tableName, colName, colComment) + ";";
-//                }
-//            }
-//        }
-        return sql;
+    public static String createTable(String tableName, List<TableColumn> columns) {
+        return "CREATE TABLE " + tableName + getColumns(columns);
     }
 
-    public static  List<String>  createColComment(String tableName, List<TableColumn> columns) {
+    public static List<String> createColComment(String tableName, List<TableColumn> columns) {
         TableColumn column = null;
         String colName = "";
         String colComment = "";
@@ -66,13 +54,51 @@ public class OracleSqlUtil {
         return "DROP TABLE " + tableName;
     }
 
-
+    /**
+     * 字段注释
+     *
+     * @param tableName
+     * @param colName
+     * @param colComment
+     * @return
+     */
     public static String commentColumn(String tableName, String colName, String colComment) {
         return "COMMENT ON COLUMN " + tableName + "." + colName + " IS '" + colComment + "'";
     }
 
+    /**
+     * 表注释
+     *
+     * @param tableName
+     * @param tableComment
+     * @return
+     */
     public static String commentTable(String tableName, String tableComment) {
         return "COMMENT ON TABLE " + tableName + " IS '" + tableComment + "'";
+    }
+
+    /**
+     * 插入
+     *
+     * @param tableName
+     * @param valueColumns
+     * @return
+     */
+    public static String insert(String tableName, List<ValueColumn> valueColumns) {
+        return "INSERT INTO " + tableName + SqlUtil.getIntoNames(valueColumns)
+                + " VALUES " + SqlUtil.getIntoValues(valueColumns);
+    }
+
+    /**
+     * 更新
+     *
+     * @param tableName
+     * @param valueColumns
+     * @param whereProperties
+     * @return
+     */
+    public static String update(String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
+        return "UPDATE " + tableName + SqlUtil.getSetValues(valueColumns) + SqlUtil.getWhere(whereProperties);
     }
 
     private static String getColumns(List<TableColumn> columns) {
@@ -80,31 +106,54 @@ public class OracleSqlUtil {
         TableColumn column = null;
         String colName = "";
         String dataType = "";
-        String colComment = "";
+        String length = "";
         if (columns != null && columns.size() != 0) {
             sql = "\n (";
             for (int i = 0; i < columns.size(); i++) {
                 column = columns.get(i);
                 colName = column.getColName();
                 dataType = column.getDataType();
-                colComment = column.getColComment();
+                length = column.getLength();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
-                    if("VARCHAR".equals(dataType)){
-                        dataType += "("+ column.getLength()+")";
-                    }
+                    dataType = getColType(dataType, length);
                     if (i == 0) {
                         sql += "\n" + colName + " " + dataType;
                     } else {
                         sql += "\n, " + colName + " " + dataType;
                     }
-//                    if (StringUtils.isNoneBlank(colComment)) {
-//                        sql += " COMMENT '" + colComment + "'";
-//                    }
                 }
             }
             sql += "\n)";
         }
-        sql = sql.replaceAll("STRING","BLOB");
         return sql;
+    }
+
+    public static String getColType(String dataType, String length) {
+        if ("VARCHAR".equals(dataType)) {
+            dataType = "VARCHAR2(" + length + ")";
+        } else if ("CHAR".equals(dataType)) {
+            dataType = "CHAR(" + length + ")";
+        } else if ("DECIMAL".equals(dataType)) {
+            dataType = "NUMBER(" + length + ")";
+        }
+        return dataType;
+    }
+
+    public static String createPrimaryKey(String tableName, List<TableColumn> columns) {
+        if (StringUtils.isEmpty(tableName)) {
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        List<String> list = new ArrayList<>();
+        for (TableColumn col : columns) {
+            if (col.isPrimaryKey() && !"STRING".equals(col.getDataType())) {
+                list.add(col.getColName());
+            }
+        }
+        if (list.size() <= 0) {
+            return "";
+        } else {
+            return "alter table " + tableName + " add constraint primaryKey primary key (" + list.toString().replaceAll("(\\[|\\])", "") + ")";
+        }
     }
 }

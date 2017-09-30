@@ -10,11 +10,18 @@ import java.util.Map;
  * Created by JunjieM on 2017-9-5.
  */
 public class OracleMetadata extends JdbcMetadata {
+    public OracleMetadata() {
+    }
+
     public OracleMetadata(List<Property> properties) {
         super(properties);
     }
 
     public OracleMetadata(Map<String, Property> propertyMap) {
         super(propertyMap);
+    }
+
+    public OracleMetadata(Metadata metadata) {
+        super(metadata);
     }
 }

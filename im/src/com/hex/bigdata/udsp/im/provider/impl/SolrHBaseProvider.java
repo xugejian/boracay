@@ -1,54 +1,41 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.SolrHBaseDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import org.apache.solr.client.solrj.SolrServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  * Created by JunjieM on 2017-9-5.
  */
 @Component("com.hex.bigdata.udsp.im.provider.impl.SolrHBaseProvider")
-public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTargetProvider {
+public class SolrHBaseProvider extends SolrHBaseWrapper {
     private static Logger logger = LoggerFactory.getLogger(SolrHBaseProvider.class);
+
     @Autowired
     private SolrProvider solrProvider;
     @Autowired
     private HBaseProvider hbaseProvider;
 
-    private List<MetadataCol> getColumns(String collectionName, String solrServers) {
+    @Override
+    public List<MetadataCol> columnInfo(Metadata metadata) {
+        String collectionName = metadata.getTbName();
+        Datasource datasource = metadata.getDatasource();
+        String solrServers = datasource.getPropertyMap().get("solr.servers").getValue();
         return solrProvider.getColumns(collectionName, solrServers);
     }
 
     @Override
-    public List<MetadataCol> columnInfo(Metadata metadata) {
-        Datasource datasource = metadata.getDatasource();
-        SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource(datasource.getPropertyMap());
-        String collectionName = metadata.getTbName();
-        List<MetadataCol> metadataCols = new ArrayList<>();
-        // 获取Solr的字段信息
-        SolrServer solrServer = getSolrServer(collectionName, solrHBaseDatasource);
-        metadataCols.addAll(getColumns(collectionName, datasource.getPropertyMap().get("solr.servers").getValue()));
-
-//        HBase无法获取字段信息
-//        metadataCols.addAll(null);
-        return metadataCols;
-    }
-
-    @Override
     public boolean createSchema(Metadata metadata) throws Exception {
-        return solrProvider.createSchema(metadata) && hbaseProvider.createSchema(metadata);
+        return hbaseProvider.createSchema(metadata) && solrProvider.createSchema(metadata);
     }
 
     @Override
@@ -57,17 +44,48 @@ public class SolrHBaseProvider extends SolrHBaseWrapper implements RealtimeTarge
     }
 
     @Override
-    public boolean checkTableExists(Metadata metadata) throws Exception {
-        return false;
+    public boolean checkSchemaExists(Metadata metadata) throws Exception {
+        return solrProvider.checkSchemaExists(metadata) && hbaseProvider.checkSchemaExists(metadata);
     }
 
     @Override
     public boolean createTargetEngineSchema(Model model) throws Exception {
-        return false;
+        String id = model.getId();
+        Model hBaseModel = new Model(model);
+        hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
+        Model solrModel = new Model(model);
+        solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
+        return hbaseProvider.createTargetEngineSchema(hBaseModel) && solrProvider.createTargetEngineSchema(solrModel);
     }
 
     @Override
-    public void inputData(Model model) {
+    public boolean dropTargetEngineSchema(Model model) throws SQLException {
+        String id = model.getId();
+        Model solrModel = new Model(model);
+        solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
+        Model hBaseModel = new Model(model);
+        hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
+        return hbaseProvider.dropTargetEngineSchema(solrModel) && solrProvider.dropTargetEngineSchema(hBaseModel);
+    }
 
+    @Override
+    public void buildRealtime(Model model) {
+        // TODO ...
+    }
+
+    @Override
+    public void buildBatch(String key, Model model) throws SQLException {
+        String id = model.getId();
+        Model hBaseModel = new Model(model);
+        hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
+        Model solrModel = new Model(model);
+        solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
+        hbaseProvider.buildBatch("HBASE" + HIVE_ENGINE_TABLE_SEP + key, hBaseModel);
+        solrProvider.buildBatch("SOLR" + HIVE_ENGINE_TABLE_SEP + key, solrModel);
+    }
+
+    @Override
+    public boolean testDatasource(Datasource datasource) {
+        return hbaseProvider.testDatasource(datasource) && solrProvider.testDatasource(datasource);
     }
 }

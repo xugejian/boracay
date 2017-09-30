@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.im.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
+import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.common.dao.ComDatasourceMapper;
 import com.hex.bigdata.udsp.common.dao.ComPropertiesMapper;
 import com.hex.bigdata.udsp.common.model.*;
@@ -9,13 +11,14 @@ import com.hex.bigdata.udsp.common.provider.model.Property;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
+import com.hex.bigdata.udsp.common.util.PropertyUtil;
+import com.hex.bigdata.udsp.im.constant.*;
 import com.hex.bigdata.udsp.im.dao.*;
+import com.hex.bigdata.udsp.im.dto.ImModelDto;
 import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.*;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.im.provider.model.Model;
+import com.hex.bigdata.udsp.im.provider.model.*;
 import com.hex.goframe.dao.GFDictMapper;
-import com.hex.goframe.model.GFDict;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.util.DateUtil;
 import com.hex.goframe.util.FileUtil;
@@ -90,10 +93,15 @@ public class ImModelService {
     }
 
     @Transactional
-    public String insert(ImModelViews imModelViews) throws Exception{
+    public String insert(ImModelDto imModelViews) throws Exception{
         String pkId = Util.uuid();
         ImModel model = imModelViews.getImModel();
         model.setPkId(pkId);
+        if("1".equals(model.getType())) { // 批量
+            model.setStatus("2"); // 未建
+        }else if("2".equals(model.getType())){ // 实时
+            model.setStatus("1"); // 已建
+        }
         if (!imModelMapper.insert(pkId, model)) {
             throw new RuntimeException("保存配置栏基础信息异常");
         }
@@ -127,10 +135,15 @@ public class ImModelService {
     }
 
     @Transactional
-    public boolean update(ImModelViews imModelViews) throws Exception{
+    public boolean update(ImModelDto imModelViews) throws Exception{
         ImModel model = imModelViews.getImModel();
         //获取模型主键
         String pkId = model.getPkId();
+        if("1".equals(model.getType())) { // 批量
+            model.setStatus("1"); // 未建
+        }else if("2".equals(model.getType())){ // 实时
+            model.setStatus("2"); // 已建
+        }
         if (!imModelMapper.update(pkId, model)) {
             //添加运行时异常，使事务回滚
             throw new RuntimeException("更新配置栏基础信息异常");
@@ -181,7 +194,7 @@ public class ImModelService {
         for(ImModel imModel : imModels){
             imModel.setDelFlg("1");
             // 进行逻辑删除
-            if(!imModelMapper.delete(imModel.getPkId())){
+            if(!imModelMapper.updateModelDelStatus(imModel.getPkId(),"1")){
                 //跑出异常，进行回滚
                 throw new RuntimeException("删除失败,删除失败的模型名称为：" + imModel.getName());
             }
@@ -238,7 +251,7 @@ public class ImModelService {
             page.setPageSize(1);
             for (int activeIndex = hfb.getNumberOfSheets(); i < activeIndex; i++) {
                 sheet = hfb.getSheetAt(i);
-                ImModelViews imModelView = new ImModelViews();
+                ImModelDto imModelDto = new ImModelDto();
                 Map<String, List> uploadExcelModel = ExcelUploadhelper.getUploadExcelModel(sheet, dataSourceContent);
                 List<ImModel> imModels = (List<ImModel>) uploadExcelModel.get("com.hex.bigdata.udsp.im.model.ImModel");
                 ImModel imModel = imModels.get(0);
@@ -275,10 +288,10 @@ public class ImModelService {
                 //设置模型状态
                 imModel.setStatus("1");
                 //设置模型
-                imModelView.setImModel(imModel);
+                imModelDto.setImModel(imModel);
                 //获取参数内容
                 List<ComProperties> comPropertiesList = (List<ComProperties>) uploadExcelModel.get("com.hex.bigdata.udsp.common.model.ComProperties");
-                imModelView.setComPropertiesList(comPropertiesList);
+                imModelDto.setComPropertiesList(comPropertiesList);
                 //获取映射内容
                 List<ImModelMapping> imModelMappings = (List<ImModelMapping>) uploadExcelModel.get("com.hex.bigdata.udsp.im.model.ImModelMapping");
                     //遍历更改目标字段对应的字段pkId
@@ -287,11 +300,11 @@ public class ImModelService {
                         imModelMapping.setPkId(imMetadataColMapper.selectByNameAndMdId(imModel.gettMdId(),imModelMapping.getColId()).getPkId());
                     }
                 }
-                imModelView.setImModelMappings(imModelMappings);
+                imModelDto.setImModelMappings(imModelMappings);
                 //获取过滤字段内容
                 List<ImModelFilterCol> imModelFilterCols = (List<ImModelFilterCol>) uploadExcelModel.get("com.hex.bigdata.udsp.im.model.ImModelFilterCol");
-                imModelView.setImModelFilterCols(imModelFilterCols);
-                String pkId = insert(imModelView);
+                imModelDto.setImModelFilterCols(imModelFilterCols);
+                String pkId = insert(imModelDto);
 
                 //更改主键
                 String updateKey = imModel.getUpdateKey();
@@ -502,5 +515,223 @@ public class ImModelService {
             }
         }
         return null;
+    }
+
+    public boolean updateModelDelStatus(String pkId, String status) {
+        return imModelMapper.updateModelDelStatus(pkId,status);
+    }
+
+    public boolean updateStatus(ImModel imModel, String status) throws Exception{
+        boolean result = false;
+        //组织需要构建或则删除构建的模型
+        Model model = getModelByImModel(imModel);
+
+        if("1".equals(status)){
+            // TODO 先停止相关的任务
+
+            //删除建模
+            result = imProviderService.dropEngineSchema(model);
+        }else if("2".equals(status)){
+            //建模
+            result = imProviderService.createEngineSchema(model);
+        }
+        //只有成功了才修改该模型的构建状态
+        if(result){
+            imModel.setStatus(status);
+            //修改数据库中建模的状态
+            synchronized (imModel.getPkId()){
+                result = imModelMapper.update(imModel.getPkId(),imModel);
+            }
+        }
+        return result;
+    }
+    public Model getModel(String pkId,ModelFilterCol[] modelFilterCols) throws Exception{
+        Model model = getModelByImModel(selectByPkId(pkId));
+        //用map是不是效率更高些？
+        //设置其过滤字段
+        if(modelFilterCols != null){
+            for(ModelFilterCol modelFilterCol : modelFilterCols){
+                for(ModelFilterCol modelFilterCol1 : model.getModelFilterCols()){
+                    if(modelFilterCol1.getLabel().equals(modelFilterCol.getLabel())){
+                        modelFilterCol1.setValue(modelFilterCol.getValue());
+                    }
+                }
+            }
+        }
+        return model;
+    }
+
+    //通过模型id获取模型
+    public Model getModelByImModel(ImModel imModel) throws Exception{
+        String pkId = imModel.getPkId();
+        //修改comProperties为继承property类比较好,设计有问题，冗余
+        List<ComProperties> properties = comPropertiesMapper.selectByFkId(pkId);
+        List<Property> propertyList = new ArrayList<>(properties.size());
+        Property property;
+        for(ComProperties comProperties:properties){
+                property = new Property();
+                property.setDescribe(comProperties.getDescribe());
+                property.setName(comProperties.getName());
+                property.setValue(comProperties.getValue());
+                propertyList.add(property);
+        }
+        Model model = new Model(propertyList);
+        //设置源数据源
+        model.setSourceDatasource(getDatasourceById(imModel.getsDsId()));
+        //设置一些基础信息
+        transformModel(model,imModel);
+        //设置目标数据元信息
+        model.setTargetMetadata(getMateDataById(imModel.gettMdId()));
+        //设置引擎数据源信息
+        model.setEngineDatasource(getDatasourceById(imModel.geteDsId()));
+        //设置更新键值
+        List<ImMetadataCol> imMetadataCols = imMetadataColMapper.selectModelUpdateKeys(pkId);
+        List<MetadataCol> metadataCols = new ArrayList<>();
+        MetadataCol metadataCol;
+        for(ImMetadataCol imMetadataCol : imMetadataCols){
+            metadataCol = new MetadataCol();
+            transformMetaCol(imMetadataCol,metadataCol);
+            metadataCols.add(metadataCol);
+        }
+        model.setUpdateKeys(metadataCols);
+        //设置字段映射
+        List<ModelMapping> modelMappings = new ArrayList<>();
+        List<ImModelMapping> imModelMappings = imModelMappingMapper.selectList(pkId);
+        ModelMapping modelMapping;
+        for(ImModelMapping imModelMapping : imModelMappings){
+            metadataCol = new MetadataCol();
+            modelMapping = new ModelMapping();
+            transformModelMapping(imModelMapping,modelMapping);
+            //获取映射的目标字段信息
+            ImMetadataCol imMetadataCol = imMetadataColMapper.select(imModelMapping.getColId());
+            //如果出错则将异常抛出来
+            transformMetaCol(imMetadataCol,metadataCol);
+            modelMapping.setMetadataCol(metadataCol);
+            modelMappings.add(modelMapping);
+        }
+        model.setModelMappings(modelMappings);
+        //设置过滤字段集合
+        List<ImModelFilterCol> imModelFilterCols = imModelFilterColMapper.selectList(pkId);
+        List<ModelFilterCol> modelFilterCols = new ArrayList<>();
+        ModelFilterCol  modelFilterCol;
+        for(ImModelFilterCol imModelFilterCol : imModelFilterCols){
+            modelFilterCol = new ModelFilterCol();
+            transformModelFilterCol(imModelFilterCol,modelFilterCol);
+            modelFilterCols.add(modelFilterCol);
+        }
+        model.setModelFilterCols(modelFilterCols);
+        return  model;
+    }
+
+    private Metadata getMateDataById(String mdId) throws Exception{
+
+        List<ComProperties> comProperties = comPropertiesMapper.selectByFkId(mdId);
+        Metadata metadata = new Metadata(PropertyUtil.convertToPropertyList(comProperties));
+        //设置metadata的基础信息
+        ImMetadata imMetadata = imMetadataMapper.select(mdId);
+        metadata.setDatasource(getDatasourceById(imMetadata.getDsId()));
+        metadata.setDescribe(imMetadata.getDescribe());
+        metadata.setName(imMetadata.getName());
+        metadata.setNote(imMetadata.getNote());
+
+        if("1".equals(imMetadata.getStatus())){
+            metadata.setStatus(MetadataStatus.CREATED);
+        }else if("2".equals(imMetadata.getStatus())){
+            metadata.setStatus(MetadataStatus.NO_CREATED);
+        }
+
+        metadata.setTbName(imMetadata.getTbName());
+
+        if("0".equals(imMetadata.getType())){
+            metadata.setType(MetadataType.INTERIOR);
+        }else if("1".equals(imMetadata.getType())){
+            metadata.setType(MetadataType.EXTERNAL);
+        }
+
+        List<MetadataCol> metadataCols = new ArrayList<>();
+        ImMetadataCol imMetadataCol1 = new ImMetadataCol();
+        imMetadataCol1.setMdId(mdId);
+        List<ImMetadataCol> imMetadataCols = imMetadataColMapper.select(imMetadataCol1);
+        MetadataCol metadataCol;
+        for(ImMetadataCol imMetadataCol : imMetadataCols){
+            metadataCol = new MetadataCol();
+            transformMetaCol(imMetadataCol,metadataCol);
+            metadataCols.add(metadataCol);
+        }
+        metadata.setMetadataCols(metadataCols);
+        return metadata;
+    }
+
+    //模型基础信息转换
+    private void transformModel(Model model, ImModel imModel) throws Exception{
+        model.setId(imModel.getPkId());
+        model.setName(imModel.getName());
+        model.setDescribe(imModel.getDescribe());
+        if("1".equals(imModel.getBuildMode())){
+            model.setBuildMode(BuildMode.INSERT_INTO);
+        }else if("2".equals(imModel.getBuildMode())){
+            model.setBuildMode(BuildMode.INSERT_OVERWRITE);
+        }
+        model.setNote(imModel.getNote());
+        if("2".equals(imModel.getStatus())){
+            model.setStatus(ModelStatus.CREATED);
+        }else if("1".equals(imModel.getStatus())){
+            model.setStatus(ModelStatus.NO_CREATED);
+        }
+        if("1".equals(imModel.getType())){
+            model.setType(ModelType.BATCH);
+        }else if("2".equals(imModel.getType())){
+            model.setType(ModelType.REALTIME);
+        }
+        if("1".equals(imModel.getUpdateMode())){
+            model.setUpdateMode(UpdateMode.MATCHING_UPDATE);
+        }else if("2".equals(imModel.getUpdateMode())){
+            model.setUpdateMode(UpdateMode.UPDATE_INSERT);
+        }else if("3".equals(imModel.getUpdateMode())){
+            model.setUpdateMode(UpdateMode.INSERT_INTO);
+        }
+    }
+
+    private Datasource getDatasourceById(String id) throws Exception{
+        if(StringUtils.isBlank(id)){
+            return null;
+        }
+        ComDatasource comDatasource = comDatasourceMapper.select(id);
+        List<ComProperties> comProperties = comPropertiesMapper.selectByFkId(id);
+        return new Datasource(comDatasource,comProperties);
+    }
+    //元数据字段信息转换
+    private void transformMetaCol(ImMetadataCol imMetadataCol,MetadataCol metadataCol) throws Exception{
+        metadataCol.setSeq(imMetadataCol.getSeq());
+        metadataCol.setDescribe(imMetadataCol.getDescribe());
+        metadataCol.setIndexed(imMetadataCol.getIndexed().equals("0"));
+        metadataCol.setName(imMetadataCol.getName());
+        metadataCol.setType(DataType.valueOf(imMetadataCol.getType()));
+        metadataCol.setNote(imMetadataCol.getNote());
+        metadataCol.setStored(imMetadataCol.getStored().equals("0"));
+        metadataCol.setPrimary(imMetadataCol.getPrimary().equals("0"));
+        metadataCol.setLength(imMetadataCol.getLength());
+    }
+    //映射字段转换
+    private void transformModelMapping(ImModelMapping imModelMapping,ModelMapping modelMapping) throws Exception{
+        modelMapping.setName(imModelMapping.getName());
+        modelMapping.setDescribe(imModelMapping.getDescribe());
+        modelMapping.setLength(imModelMapping.getLength());
+        modelMapping.setNote(imModelMapping.getNote());
+        modelMapping.setType(DataType.valueOf(imModelMapping.getType()));
+        modelMapping.setSeq(imModelMapping.getSeq());
+    }
+
+    //过滤字段转换
+    private void transformModelFilterCol(ImModelFilterCol imModelFilterCol, ModelFilterCol modelFilterCol) throws Exception{
+        modelFilterCol.setSeq(imModelFilterCol.getSeq());
+        modelFilterCol.setDefaultVal(imModelFilterCol.getDefaultVal());
+        modelFilterCol.setDescribe(imModelFilterCol.getDescribe());
+        modelFilterCol.setLabel(imModelFilterCol.getLabel());
+        modelFilterCol.setLength(imModelFilterCol.getLength());
+        modelFilterCol.setName(imModelFilterCol.getName());
+        modelFilterCol.setType(DataType.valueOf(imModelFilterCol.getType()));
+        modelFilterCol.setNeed(imModelFilterCol.getIsNeed().equals("0"));
+        modelFilterCol.setOperator(Operator.getOperatorByValue(imModelFilterCol.getOperator()));
     }
 }

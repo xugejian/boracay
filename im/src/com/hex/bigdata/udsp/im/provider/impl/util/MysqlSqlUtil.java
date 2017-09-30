@@ -1,6 +1,10 @@
 package com.hex.bigdata.udsp.im.provider.impl.util;
 
+import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -36,6 +40,39 @@ public class MysqlSqlUtil {
         return "DROP TABLE" + getIfExists(ifExists) + " " + tableName;
     }
 
+    /**
+     * 更新
+     *
+     * @param tableName
+     * @param valueColumns
+     * @param whereProperties
+     * @return
+     */
+    public static String update(String tableName, List<ValueColumn> valueColumns,
+                                List<WhereProperty> whereProperties) {
+        return "UPDATE " + tableName + SqlUtil.getSetValues(valueColumns) + SqlUtil.getWhere(whereProperties);
+    }
+
+    /**
+     * 插入
+     *
+     * @param tableName
+     * @param valueColumns
+     * @return
+     */
+    public static String insert(String tableName, List<ValueColumn> valueColumns) {
+        return "INSERT INTO " + tableName + SqlUtil.getIntoNames(valueColumns)
+                + " VALUES " + SqlUtil.getIntoValues(valueColumns);
+    }
+
+    private static String getValue(DataType dataType, String value) {
+        if (DataType.STRING == dataType || DataType.VARCHAR == dataType || DataType.CHAR == dataType
+                || DataType.TIMESTAMP == dataType || DataType.BOOLEAN == dataType) {
+            value = "'" + value + "'";
+        }
+        return value;
+    }
+
     private static String getIfExists(boolean ifExists) {
         String sql = "";
         if (ifExists) {
@@ -54,42 +91,46 @@ public class MysqlSqlUtil {
 
     private static String getColumns(List<TableColumn> columns) {
         String sql = "";
-        TableColumn column = null;
         String colName = "";
         String dataType = "";
         String colComment = "";
+        String length = "";
+        int count = 0;
         if (columns != null && columns.size() != 0) {
             sql = "\n (";
-            for (int i = 0; i < columns.size(); i++) {
-                column = columns.get(i);
+            for (TableColumn column : columns) {
                 colName = column.getColName();
                 dataType = column.getDataType();
                 colComment = column.getColComment();
-                if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
-                  // TODO 该处错误需要修改！
-                    if("VARCHAR".equals(dataType)){
-                        dataType += "("+ column.getLength()+")";
-                    }
-                    if (i == 0) {
-                        if("VARCHAR".equals(dataType)){
-                            dataType += "("+ column.getLength()+")";
-                        }
-                        sql += "\n" + colName + " " + dataType;
-                    } else {
-                        if("VARCHAR".equals(dataType)){
-                            dataType += "("+ column.getLength()+")";
-                        }
-                        sql += "\n, " + colName + " " + dataType;
-                    }
-                    if (StringUtils.isNoneBlank(colComment)) {
-                        sql += " COMMENT '" + colComment + "'";
-                    }
+                length = column.getLength();
+                if (StringUtils.isBlank(colName) || StringUtils.isBlank(dataType))
+                    continue;
+                dataType = getColType(dataType, length);
+                sql += (count == 0 ? "\n" : "\n,");
+                sql += colName + " " + dataType;
+                if (column.isPrimaryKey() && !"STRING".equals(column.getDataType())) { //类型不能指定为pk
+                    sql += " PRIMARY KEY ";
                 }
+                if (StringUtils.isNoneBlank(colComment)) {
+                    sql += " COMMENT '" + colComment + "'";
+                }
+                count++;
             }
             sql += "\n)";
         }
-        sql = sql.replaceAll("STRING","BLOB");
+        sql = sql.replaceAll("STRING", "BLOB");
         return sql;
+    }
+
+    private static String getColType(String dataType, String length) {
+        if ("VARCHAR".equals(dataType)) {
+            dataType = "VARCHAR(" + length + ")";
+        } else if ("CHAR".equals(dataType)) {
+            dataType = "CHAR(" + length + ")";
+        } else if ("DECIMAL".equals(dataType)) {
+            dataType = "DECIMAL(" + length + ")";
+        }
+        return dataType;
     }
 
     private static String getTableComment(String tableComment) {
