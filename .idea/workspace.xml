@@ -2,198 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="72e5f216-bde4-4813-a9eb-1a4d0f1a67f9" name="Default" comment="Merge branch 'udsp-2.0.0-tzb' of https://github.com/junjiem/boracay into udsp-2.0.0-tzb&#10;&#10;# Conflicts:&#10;#&#9;im/resources/goframe/im/views/im/cm/md/add.httl">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/sql/deploy/UDSP_CREATE_TABLES_20170620.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/sql/deploy/UDSP_CREATE_TABLES_20170927.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/sql/deploy/UDSP_META_DATAS_20170620.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/sql/deploy/UDSP_META_DATAS_20170927.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/sql/update/udsp_change_metadata.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/sql/update/udsp_change_structure.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/MysqlModel.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/OracleModel.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/JobTest.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/JobTest2.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/test/com/hex/bigdata/udsp/im/HiveExecuter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/ELSearchProvider.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/auth.httl" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/templates/downLoadTemplate_imMetadata.xls" afterPath="$PROJECT_DIR$/console/resources/goframe/udsp/templates/downLoadTemplate_imMetadata.xls" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/templates/downLoadTemplate_imModel.xls" afterPath="$PROJECT_DIR$/console/resources/goframe/udsp/templates/downLoadTemplate_imModel.xls" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/console/resources/esb-server.properties" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComDatasourceMapper.xml" afterPath="$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComDatasourceMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/constant/ComExcelEnums.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/constant/ComExcelEnums.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/constant/ErrorCode.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/constant/ErrorCode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/controller/ComDatasourceController.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/controller/ComDatasourceController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/dao/ComDatasourceMapper.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/dao/ComDatasourceMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/dao/base/SyncMapper.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/dao/base/SyncMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/dao/cache/EhCache.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/dao/cache/EhCache.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/dao/cache/LocalCache.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/dao/cache/LocalCache.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/provider/model/Base.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/provider/model/Base.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/provider/model/Datasource.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/provider/model/Datasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/service/ComDatasourceService.java" afterPath="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/service/ComDatasourceService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/console.iml" afterPath="$PROJECT_DIR$/console/console.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/ehcache.xml" afterPath="$PROJECT_DIR$/console/resources/goframe/udsp/ehcache.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.oracle.properties" afterPath="$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.oracle.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/udsp.config.properties" afterPath="$PROJECT_DIR$/console/resources/goframe/udsp/udsp.config.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/constant/ConsumerConstant.java" afterPath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/constant/ConsumerConstant.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/ConsumerService.java" afterPath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/ConsumerService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/task/HeartbeatTask.java" afterPath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/task/HeartbeatTask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/thread/sync/IqSyncServiceCallable.java" afterPath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/thread/sync/IqSyncServiceCallable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/thread/sync/MmRequestServiceCallable.java" afterPath="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/thread/sync/MmRequestServiceCallable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataColMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelFilterColMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelFilterColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMappingMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMappingMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelUpdateKeyMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelUpdateKeyMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/md/add.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/md/add.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/md/edit.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/md/edit.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/md/info.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/md/info.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/md/list.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/md/list.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/add.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/add.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/edit.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/edit.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/info.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/info.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/input_filterValue.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/input_filterValue.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/list.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/list.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/updatekeys_edit.httl" afterPath="$PROJECT_DIR$/im/resources/goframe/im/views/im/cm/model/updatekeys_edit.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/BatchJobController.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/BatchJobController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImMetadataController.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImMetadataController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImModelController.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImModelController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImModelMappingController.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImModelMappingController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/RealtimeJobController.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/RealtimeJobController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImMetadataColMapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImMetadataColMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImMetadataMapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImMetadataMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImModelMapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImModelMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImModelMappingMapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImModelMappingMapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dto/BatchInfoDto.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dto/BatchInfoDto.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dto/ImModelView.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dto/ImModelView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dto/RealtimeNodeInfoDto.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dto/RealtimeNodeInfoDto.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dto/RealtimeTotalInfoDto.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dto/RealtimeTotalInfoDto.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/BatchInfo.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/BatchInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/ImModel.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/ImModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/ImModelMapping.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/ImModelMapping.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/RealtimeNodeInfo.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/RealtimeNodeInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/RealtimeTotalInfo.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/RealtimeTotalInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchSourceProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchSourceProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchTargetProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchTargetProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/RealtimeTargetProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/RealtimeTargetProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/TargetProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/TargetProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/HBaseProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/HBaseProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/HiveProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/HiveProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/KafkaProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/KafkaProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/MysqlProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/MysqlProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/OracleProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/OracleProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/SolrHBaseProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/SolrHBaseProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/SolrProvider.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/SolrProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HBaseDatasource.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HBaseDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HiveDatasource.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HiveDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/JdbcDatasource.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/JdbcDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/KafkaDatasource.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/KafkaDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/MysqlDatasource.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/MysqlDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/OracleDatasource.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/OracleDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/SolrDatasource.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/SolrDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/SolrHBaseDatasource.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/SolrHBaseDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/HiveModel.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/HiveModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/JdbcModel.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/JdbcModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/KafkaModel.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/KafkaModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/MqModel.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/MqModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/SolrModel.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/SolrModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/HBaseUtil.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/HBaseUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/HiveJdbcUtil.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/HiveJdbcUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/HiveSqlUtil.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/HiveSqlUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/JdbcUtil.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/JdbcUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/KafkaUtil.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/KafkaUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/MysqlSqlUtil.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/MysqlSqlUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/OracleSqlUtil.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/OracleSqlUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/SolrUtil.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/SolrUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/SqlUtil.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/SqlUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/HBaseWrapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/HBaseWrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/JdbcWrapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/JdbcWrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/KafkaWrapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/KafkaWrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/SolrHBaseWrapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/SolrHBaseWrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/SolrWrapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/SolrWrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/Wrapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/wrapper/Wrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Model.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Model.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/ModelFilterCol.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/ModelFilterCol.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/ModelMapping.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/ModelMapping.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/BatchJobService.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/BatchJobService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImModelMappingService.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImModelMappingService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImModelService.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImModelService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImProviderService.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImProviderService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/RealtimeJobService.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/RealtimeJobService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/RealtimeNodeService.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/RealtimeNodeService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/RealtimeTotalService.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/RealtimeTotalService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/QuartzManager.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/QuartzManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/RealtimeJob.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/RealtimeJob.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/RealtimeTask.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/RealtimeTask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/thread/HiveGetLogThread.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/thread/HiveGetLogThread.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/iq.iml" afterPath="$PROJECT_DIR$/iq/iq.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppOrderColMapper.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppOrderColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppQueryColMapper.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppQueryColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppReturnColMapper.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppReturnColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/spring/udsp.iq.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/spring/udsp.iq.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/app/add.httl" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/app/add.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/app/edit.httl" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/app/edit.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/app/info.httl" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/app/info.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/md/add.httl" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/md/add.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/md/edit.httl" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/md/edit.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/md/info.httl" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/views/iq/cm/md/info.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/model/IqAppOrderCol.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/model/IqAppOrderCol.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/model/IqAppQueryCol.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/model/IqAppQueryCol.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/model/IqAppReturnCol.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/model/IqAppReturnCol.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/HBaseProvider.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/HBaseProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/RedisProvider.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/RedisProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/SolrHBaseProvider.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/SolrHBaseProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/SolrProvider.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/SolrProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/factory/HBaseConnectionPoolFactory.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/factory/HBaseConnectionPoolFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/factory/RedisConnectionPoolFactory.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/factory/RedisConnectionPoolFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/ELSearchDatasource.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/ELSearchDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/HBaseDatasource.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/HBaseDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/RedisDataSource.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/RedisDataSource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/SolrDatasource.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/SolrDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/SolrHBaseDatasource.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/SolrHBaseDatasource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/service/IqApplicationService.java" afterPath="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/service/IqApplicationService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/job/batch/info.httl" afterPath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/job/batch/info.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/job/batch/list.httl" afterPath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/job/batch/list.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/job/realtime/info.httl" afterPath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/job/realtime/info.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/job/realtime/list.httl" afterPath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/job/realtime/list.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/stats/charts.httl" afterPath="$PROJECT_DIR$/mc/resources/goframe/mc/views/mc/stats/charts.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mc/src/com/hex/bigdata/udsp/mc/service/McCurrentCountService.java" afterPath="$PROJECT_DIR$/mc/src/com/hex/bigdata/udsp/mc/service/McCurrentCountService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mc/src/com/hex/bigdata/udsp/mc/service/McServiceChartsService.java" afterPath="$PROJECT_DIR$/mc/src/com/hex/bigdata/udsp/mc/service/McServiceChartsService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/BaseJdbcApiHelper.java" afterPath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/BaseJdbcApiHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/helper/DB2JdbcApiHelper.java" afterPath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/helper/DB2JdbcApiHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/helper/HiveJdbcApiHelper.java" afterPath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/helper/HiveJdbcApiHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/helper/ImpalaJdbcApiHelper.java" afterPath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/helper/ImpalaJdbcApiHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/helper/MysqlJdbcApiHelper.java" afterPath="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcapi/helper/MysqlJdbcApiHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mm/src/com/hex/bigdata/udsp/mm/controller/ModelInfoController.java" afterPath="$PROJECT_DIR$/mm/src/com/hex/bigdata/udsp/mm/controller/ModelInfoController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mm/src/com/hex/bigdata/udsp/mm/service/MmApplicationService.java" afterPath="$PROJECT_DIR$/mm/src/com/hex/bigdata/udsp/mm/service/MmApplicationService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/resources/goframe/olq/views/olq/qm/test.httl" afterPath="$PROJECT_DIR$/olq/resources/goframe/olq/views/olq/qm/test.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/Provider.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/Provider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/Db2Provider.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/Db2Provider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/HiveProvider.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/HiveProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/ImpalaProvider.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/ImpalaProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/KylinProvider.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/KylinProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/MysqlProvider.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/MysqlProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/OracleProvider.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/OracleProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/PgsqlProvider.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/provider/impl/PgsqlProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/service/OLQApplicationService.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/service/OLQApplicationService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/service/OlqProviderService.java" afterPath="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/service/OlqProviderService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcUserServiceMapper.xml" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcUserServiceMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/add.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/add.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/addBatch.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/addBatch.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/edit.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/edit.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/info.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/info.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/list.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/list.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/usersSelected.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/auth/usersSelected.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/authAdd.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/authAdd.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/authList.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/authList.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/edit.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/edit.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/list.httl" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/list.httl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/src/com/hex/bigdata/udsp/rc/controller/RcUserServiceController.java" afterPath="$PROJECT_DIR$/rc/src/com/hex/bigdata/udsp/rc/controller/RcUserServiceController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/src/com/hex/bigdata/udsp/rc/dto/RcUserServiceView.java" afterPath="$PROJECT_DIR$/rc/src/com/hex/bigdata/udsp/rc/dto/RcUserServiceView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/src/com/hex/bigdata/udsp/rc/service/RcServiceService.java" afterPath="$PROJECT_DIR$/rc/src/com/hex/bigdata/udsp/rc/service/RcServiceService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/src/com/hex/bigdata/udsp/rc/service/RcUserServiceService.java" afterPath="$PROJECT_DIR$/rc/src/com/hex/bigdata/udsp/rc/service/RcUserServiceService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rts/src/com/hex/bigdata/udsp/rts/service/RtsConsumerService.java" afterPath="$PROJECT_DIR$/rts/src/com/hex/bigdata/udsp/rts/service/RtsConsumerService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rts/src/com/hex/bigdata/udsp/rts/service/RtsProducerService.java" afterPath="$PROJECT_DIR$/rts/src/com/hex/bigdata/udsp/rts/service/RtsProducerService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/web/WEB-INF/web.xml" afterPath="$PROJECT_DIR$/console/web/WEB-INF/web.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -216,18 +27,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="authAdd.httl" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/authAdd.httl">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -256,7 +56,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="udsp-2.2.2-tzb" />
       </map>
     </option>
   </component>
@@ -298,6 +98,7 @@
         <option value="$PROJECT_DIR$/md/README.md" />
         <option value="$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.oracle.properties" />
         <option value="$PROJECT_DIR$/rc/resources/goframe/rc/views/rc/service/list.httl" />
+        <option value="$PROJECT_DIR$/console/web/WEB-INF/web.xml" />
       </list>
     </option>
   </component>
@@ -332,7 +133,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
@@ -343,7 +143,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="rc" />
+              <option name="myItemId" value="console" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -353,7 +153,53 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="rc" />
+              <option name="myItemId" value="console" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boracay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="console" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="WEB-INF" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boracay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="console" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boracay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="console" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -365,76 +211,13 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="rc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="boracay" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="goframe" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="service" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="boracay" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="goframe" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rc" />
+              <option name="myItemId" value="udsp" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -902,6 +685,7 @@
       <workItem from="1505954468628" duration="470000" />
       <workItem from="1509011626367" duration="3168000" />
       <workItem from="1509166061160" duration="1013000" />
+      <workItem from="1509168736710" duration="152000" />
     </task>
     <task id="LOCAL-00001" summary="异常捕获处理">
       <created>1505875263874</created>
@@ -942,7 +726,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="39105000" />
+    <option name="totallyTimeSpent" value="39257000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -961,7 +745,7 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36130136" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37842464" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37842464" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -970,7 +754,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31164902" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3161876" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1070,27 +854,6 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2323">
-          <caret line="101" column="34" lean-forward="false" selection-start-line="101" selection-start-column="14" selection-end-line="101" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImMetadataController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8602">
-          <caret line="399" column="53" lean-forward="false" selection-start-line="399" selection-start-column="53" selection-end-line="399" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/controller/ComDatasourceController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="805">
-          <caret line="59" column="43" lean-forward="false" selection-start-line="59" selection-start-column="43" selection-end-line="59" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComDatasourceMapper.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2093">
@@ -1377,13 +1140,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/ehcache.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-803">
-          <caret line="14" column="42" lean-forward="false" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/udsp.config.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1231">
@@ -1410,6 +1166,38 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/console/web/WEB-INF/web.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5">
+          <caret line="15" column="22" lean-forward="false" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/ehcache.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="14" column="42" lean-forward="false" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/config.mybatis.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/goframe.config.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-642">
+          <caret line="11" column="25" lean-forward="true" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
           <folding />
         </state>
       </provider>
