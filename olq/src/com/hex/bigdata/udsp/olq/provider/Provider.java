@@ -55,5 +55,5 @@ public interface Provider {
      * @param page
      * @return
      */
-    OLQQuerySql getPageSql(String sql,Page page);
+    OLQQuerySql getPageSql(String sql, Page page);
 }

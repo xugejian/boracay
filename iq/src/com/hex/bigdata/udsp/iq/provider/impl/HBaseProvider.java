@@ -276,14 +276,14 @@ public class HBaseProvider implements Provider {
             GenericObjectPool.Config config = new GenericObjectPool.Config();
             config.lifo = true;
             config.minIdle = 1;
-            config.maxActive = 10;
+            config.maxIdle = 10;
             config.maxWait = 3000;
             config.maxActive = 5;
             config.timeBetweenEvictionRunsMillis = 30000;
             config.testWhileIdle = true;
             config.testOnBorrow = false;
             config.testOnReturn = false;
-            factory = new HBaseConnectionPoolFactory(config, datasource.getZkQuorum(), datasource.getZkPort());
+            factory = new HBaseConnectionPoolFactory(config, datasource);
         }
         dataSourcePool.put(dsId, factory);
         return factory;

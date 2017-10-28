@@ -49,7 +49,8 @@ public class OlqProviderService extends BaseService {
         OLQRequest request = new OLQRequest(datasource, olqQuerySql);
         Provider provider = getProviderImpl(datasource);
         OLQResponse response = provider.execute(request);
-        response.setColumns(this.putColumnIntoMap(response.getMetadata()));
+        //java.sql.SQLException 未执行语句句柄，则放到各个实现类里面去
+        //response.setColumns(this.putColumnIntoMap(response.getMetadata()));
         return response;
     }
 

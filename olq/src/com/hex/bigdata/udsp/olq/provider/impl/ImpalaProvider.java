@@ -11,6 +11,7 @@ import com.hex.bigdata.udsp.olq.provider.impl.model.ImpalaDatasource;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponseFetch;
+import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -120,7 +121,7 @@ public class ImpalaProvider implements Provider {
             }
             rs.setFetchSize(1000);
             ResultSetMetaData rsmd = rs.getMetaData();
-            response.setMetadata(rsmd);
+            //response.setMetadata(rsmd);
             int columnCount = rsmd.getColumnCount();
             int max_num_size = impalaDatasource.getMaxNum();
             while (rs.next()) {
@@ -149,6 +150,8 @@ public class ImpalaProvider implements Provider {
             }
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
+            //设置返回列信息
+            response.setColumns(OLQCommUtil.putColumnIntoMap(rsmd));
         } catch (SQLException e) {
             logger.error(e.getMessage());
             response.setStatus(Status.DEFEAT);

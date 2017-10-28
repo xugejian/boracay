@@ -25,7 +25,7 @@ public class IqSyncServiceCallable<T> implements Callable<Response> {
         this.data = data;
         this.appId = appId;
         this.page = page;
-        this.iqSyncService = (IqSyncService) WebApplicationContextUtil.getBean("iqSyncService");;
+        this.iqSyncService = (IqSyncService) WebApplicationContextUtil.getBean("iqSyncService");
     }
 
     @Override

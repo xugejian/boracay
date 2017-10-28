@@ -885,7 +885,10 @@ public class ComExcelEnums {
         Excel_3("type", "3"),
         Excel_4("length", "4"),
         Excel_5("describe", "5"),
-        Excel_6("note", "6");
+        Excel_6("indexed", "6"),
+        Excel_7("primary", "7"),
+        Excel_8("stored", "8"),
+        Excel_9("note", "9");
 
         private String value;
         private String name;
@@ -907,6 +910,9 @@ public class ComExcelEnums {
                 enums.add(Excel_4);
                 enums.add(Excel_5);
                 enums.add(Excel_6);
+                enums.add(Excel_7);
+                enums.add(Excel_8);
+                enums.add(Excel_9);
             }
             return enums;
         }
@@ -921,6 +927,9 @@ public class ComExcelEnums {
                 enums.add(Excel_4);
                 enums.add(Excel_5);
                 enums.add(Excel_6);
+                enums.add(Excel_7);
+                enums.add(Excel_8);
+                enums.add(Excel_9);
             }
             return enums;
         }

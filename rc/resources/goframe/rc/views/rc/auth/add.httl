@@ -44,7 +44,7 @@ ${extends("/goframe/function_layout.httl")}
                                  showPageSize="true" showPageIndex="true" sizeList="[10,20,40,80,160]" pageSize="20" >
                                 <div property="columns">
                                     <div type="checkcolumn"></div>
-                                    <div field="userId" with="180" headerAlign="center" allowSort="true">用户Id</div>
+                                    <div field="userId" with="180" headerAlign="center" allowSort="true">用户ID</div>
                                     <div field="userName" with="180" headerAlign="center" allowSort="true">用户名</div>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                 </tr>
                 <tr>
-                    <th class="nui-form-label"><label for="ipSection">ip段：</label></th>
+                    <th class="nui-form-label"><label for="ipSection">IP段：</label></th>
                     <td colspan="3">
                         <input  id="ipSection" class="nui-textarea" style="height:60px; width:99%;"
                               emptyText="默认不拦截,支持模式，1、固定IP，如196.1.26.3；2、*号代替，如196.1.26.*、*.*.*.*；3、IP段范围196.1.*.[8,9-26]、196.1.26.[1-5,9-26]"/>
@@ -61,11 +61,11 @@ ${extends("/goframe/function_layout.httl")}
                 </tr>
 
                 <tr>
-                    <th class="nui-form-label"><label for="maxSyncNum">最大运行数（同步）：</label></th>
+                    <th class="nui-form-label"><label for="maxSyncNum">运行队列大小（同步）：</label></th>
                     <td>
                         <input id="maxSyncNum" name="maxSyncNum"  class="nui-textbox"  style="width:97%" required="true" emptyText="100" value="100" vtype="int" />
                     </td>
-                    <th class="nui-form-label"><label for="maxAsyncNum">最大运行数（异步）：</label></th>
+                    <th class="nui-form-label"><label for="maxAsyncNum">运行队列大小（异步）：</label></th>
                     <td>
                         <input id="maxAsyncNum" name="maxAsyncNum"  class="nui-textbox"  style="width:97%" required="true" emptyText="100" value="100" vtype="int" />
                     </td>

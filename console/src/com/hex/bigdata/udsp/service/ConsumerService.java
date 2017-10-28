@@ -46,6 +46,7 @@ import com.hex.bigdata.udsp.rts.service.RtsConsumerService;
 import com.hex.bigdata.udsp.rts.service.RtsMatedataColService;
 import com.hex.bigdata.udsp.rts.service.RtsProducerService;
 import com.hex.bigdata.udsp.thread.WaitQueueCallable;
+import com.hex.bigdata.udsp.thread.sync.ImSyncServiceCallable;
 import com.hex.bigdata.udsp.thread.sync.IqSyncServiceCallable;
 import com.hex.bigdata.udsp.thread.sync.OlqSyncServiceCallable;
 import com.hex.goframe.model.MessageResult;
@@ -88,6 +89,8 @@ public class ConsumerService {
     private IqSyncService iqSyncService;
     @Autowired
     private OlqSyncService olqSyncService;
+    @Autowired
+    private ImSyncService imSyncService;
     @Autowired
     private RtsSyncService rtsSyncService;
     @Autowired
@@ -199,6 +202,11 @@ public class ConsumerService {
             consumeRequest.setError(ErrorCode.ERROR_000004);
             return consumeRequest;
         } else {
+            //判断服务是否停用
+            if (ConsumerConstant.SERVICE_STATUS_STOP.equals(rcService.getStatus())) {
+                consumeRequest.setError(ErrorCode.ERROR_000017);
+                return consumeRequest;
+            }
             consumeRequest.setRcService(rcService);
             String serviceId = rcService.getPkId();
             String appType = rcService.getType();
@@ -345,6 +353,11 @@ public class ConsumerService {
                 consumeRequest.setError(ErrorCode.ERROR_000004);
                 return consumeRequest;
             } else {
+                //判断服务是否停用
+                if (ConsumerConstant.SERVICE_STATUS_STOP.equals(rcService.getStatus())) {
+                    consumeRequest.setError(ErrorCode.ERROR_000017);
+                    return consumeRequest;
+                }
                 consumeRequest.setRcService(rcService);
                 String serviceId = rcService.getPkId();
                 String serviceName = rcService.getName();
@@ -357,10 +370,12 @@ public class ConsumerService {
                 } else {
                     consumeRequest.setRcUserService(rcUserService);
                     //IP段控制
-                    if (StringUtils.isBlank(rcUserService.getIpSection())) {
+                    logger.info("内部请求跳过ip段");
+                    if (StringUtils.isNotBlank(rcUserService.getIpSection())) {
                         //没有拿到IP
                         if (StringUtils.isBlank(request.getRequestIp())) {
-                            // TODO ...
+                            consumeRequest.setError(ErrorCode.ERROR_000006);
+                            return consumeRequest;
                         }
                         boolean ipFlg = rcUserServiceService.checkIpSuitForSections(request.getRequestIp(), rcUserService.getIpSection());
                         if (!ipFlg) {
@@ -602,12 +617,11 @@ public class ConsumerService {
 
 
             //开始iq消费
+            runStart = System.currentTimeMillis();
             if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(type)) {
                 if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
                     logger.debug("execute IQ ASYNC STATUS");
-                    runStart = System.currentTimeMillis();
                     response = status(request.getConsumeId());
-                    runEnd = System.currentTimeMillis();
                 } else {
                     logger.debug("execute IQ ASYNC START");
                     sync = false;
@@ -621,7 +635,6 @@ public class ConsumerService {
                 }
             } else {
                 logger.debug("execute IQ SYNC START");
-                runStart = System.currentTimeMillis();
                 Future<Response> iqFuture = executorService.submit(new IqSyncServiceCallable(request.getData(), appId, page));
                 try {
                     response = iqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
@@ -632,7 +645,6 @@ public class ConsumerService {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName());
                     return response;
                 }
-                runEnd = System.currentTimeMillis();
             }
         } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(appType)) {
             //开始olq消费
@@ -643,9 +655,7 @@ public class ConsumerService {
                         this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000009.getValue(), ErrorCode.ERROR_000009.getName());
                         return response;
                     }
-                    runStart = System.currentTimeMillis();
                     response = status(request.getConsumeId());
-                    runEnd = System.currentTimeMillis();
                 } else {
                     logger.debug("execute OLQ ASYNC START");
                     if (StringUtils.isBlank(sql)) {
@@ -662,8 +672,15 @@ public class ConsumerService {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000009.getValue(), ErrorCode.ERROR_000009.getName());
                     return response;
                 }
-                runStart = System.currentTimeMillis();
-                Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(appId, new OLQQuerySql(sql)));
+                OLQQuerySql olqQuerySql = null;
+                if (null != request.getPage()) {
+                    MessageResult messageResult = this.olqApplicationService.getExecuteSQL(appId, sql, request.getPage());
+                    olqQuerySql = (OLQQuerySql) messageResult.getData();
+                } else {
+                    olqQuerySql = new OLQQuerySql(sql);
+                }
+
+                Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(appId, olqQuerySql));
                 try {
                     response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
@@ -673,7 +690,6 @@ public class ConsumerService {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName());
                     return response;
                 }
-                runEnd = System.currentTimeMillis();
             }
         } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(appType)) {
             //开始olqApp消费
@@ -684,9 +700,7 @@ public class ConsumerService {
                         this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000009.getValue(), ErrorCode.ERROR_000009.getName());
                         return response;
                     }
-                    runStart = System.currentTimeMillis();
                     response = status(request.getConsumeId());
-                    runEnd = System.currentTimeMillis();
                 } else {
                     logger.debug("execute OLQ_APP ASYNC START");
                     sync = false;
@@ -721,7 +735,6 @@ public class ConsumerService {
                 MessageResult messageResult = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData(), request.getPage());
                 if (messageResult.isStatus()) {
                     localFileName = CreateFileUtil.getFileName();
-                    runStart = System.currentTimeMillis();
                     OLQQuerySql olqQuerySql = (OLQQuerySql) messageResult.getData();
                     Future<Response> olqAppFuture = executorService.submit(new OlqSyncServiceCallable(dsId, olqQuerySql));
                     try {
@@ -734,7 +747,6 @@ public class ConsumerService {
                         this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName());
                         return response;
                     }
-                    runEnd = System.currentTimeMillis();
                 } else {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000013.getValue(), messageResult.getMessage());
                     return response;
@@ -774,7 +786,6 @@ public class ConsumerService {
                     return response;
                 }
                 response = mmRequestService.start(mcCurrent, appId, request);
-
             }
         } else if (RcConstant.UDSP_SERVICE_TYPE_RTS_PRODUCER.equalsIgnoreCase(appType)) {
             //实时流生产者输入参数检查
@@ -791,15 +802,24 @@ public class ConsumerService {
                 return response;
             }
             logger.debug("execute RTS_PRODUCER SYNC START");
-            runStart = System.currentTimeMillis();
             response = rtsSyncService.startProducer(appId, request.getDataStream());
-            runEnd = System.currentTimeMillis();
         } else if (RcConstant.UDSP_SERVICE_TYPE_RTS_CONSUMER.equalsIgnoreCase(appType)) {
             logger.debug("execute RTS_CONSUMER SYNC START");
-            runStart = System.currentTimeMillis();
             response = rtsSyncService.startConsumer(appId, request.getTimeout());
-            runEnd = System.currentTimeMillis();
+        } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equalsIgnoreCase(appType)) {
+            logger.debug("execute IM SYNC START");
+            Future<Response> imFuture = executorService.submit(new ImSyncServiceCallable(appId, request.getData()));
+            try {
+                response = imFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+                this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
+                return response;
+            } catch (Exception e) {
+                this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName());
+                return response;
+            }
         }
+        runEnd = System.currentTimeMillis();
 
         response.setConsumeId(mcCurrent.getPkId());
         long now = System.currentTimeMillis();
@@ -824,7 +844,6 @@ public class ConsumerService {
 
         return response;
     }
-
 
     /**
      * 写同步日志到数据库

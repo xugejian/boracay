@@ -1,7 +1,10 @@
 package com.hex.bigdata.udsp.mc.service;
 
+import com.hex.bigdata.udsp.common.constant.CacheMode;
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
+import com.hex.bigdata.udsp.common.constant.ServiceMode;
 import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
+import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
@@ -17,6 +20,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -39,6 +43,9 @@ public class McCurrentCountService {
     @Autowired
     private McCurrentService mcCurrentService;
 
+    @Autowired
+    private InitParamService initParamService;
+
     /**
      * Redis 分布式锁
      */
@@ -54,7 +61,8 @@ public class McCurrentCountService {
     public boolean addAsyncCurrent(McCurrent mcCurrent) {
         String key = mcCurrent.getUserName() + ":" + mcCurrent.getAppId() + ":" + mcCurrent.getAppType() + ":" + mcCurrent.getSyncType();
         synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
-            redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+            if (initParamService.isUseClusterRedisLock())
+                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 McCurrentCount mcCurrentCount = this.select(key);
                 if (mcCurrentCount == null) {
@@ -64,7 +72,8 @@ public class McCurrentCountService {
                 this.insert(key, mcCurrentCount);
                 return true;
             } finally {
-                redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                if (initParamService.isUseClusterRedisLock())
+                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
             }
         }
     }
@@ -78,7 +87,8 @@ public class McCurrentCountService {
     public boolean addSyncCurrent(McCurrent mcCurrent) {
         String key = mcCurrent.getUserName() + ":" + mcCurrent.getAppId() + ":" + mcCurrent.getAppType() + ":" + mcCurrent.getSyncType();
         synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
-            redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+            if (initParamService.isUseClusterRedisLock())
+                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 McCurrentCount mcCurrentCount = this.select(key);
                 if (mcCurrentCount == null) {
@@ -88,7 +98,8 @@ public class McCurrentCountService {
                 this.insert(key, mcCurrentCount);
                 return true;
             } finally {
-                redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                if (initParamService.isUseClusterRedisLock())
+                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
             }
         }
     }
@@ -102,7 +113,8 @@ public class McCurrentCountService {
     public boolean reduceAsyncCurrent(McCurrent mcCurrent) {
         String key = mcCurrent.getUserName() + ":" + mcCurrent.getAppId() + ":" + mcCurrent.getAppType() + ":" + mcCurrent.getSyncType();
         synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
-            redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+            if (initParamService.isUseClusterRedisLock())
+                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 this.mcCurrentService.delete(mcCurrent.getPkId());
                 McCurrentCount mcCurrentCount = this.select(key);
@@ -118,7 +130,8 @@ public class McCurrentCountService {
                 }
                 return true;
             } finally {
-                redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                if (initParamService.isUseClusterRedisLock())
+                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
             }
         }
     }
@@ -130,7 +143,8 @@ public class McCurrentCountService {
     public boolean reduceSyncCurrent(McCurrent mcCurrent) {
         String key = mcCurrent.getUserName() + ":" + mcCurrent.getAppId() + ":" + mcCurrent.getAppType() + ":" + mcCurrent.getSyncType();
         synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
-            redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+            if (initParamService.isUseClusterRedisLock())
+                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 this.mcCurrentService.delete(mcCurrent.getPkId());
                 McCurrentCount mcCurrentCount = this.select(key);
@@ -146,7 +160,8 @@ public class McCurrentCountService {
                 }
                 return true;
             } finally {
-                redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                if (initParamService.isUseClusterRedisLock())
+                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
             }
         }
     }

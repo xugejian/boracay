@@ -188,7 +188,7 @@ public class SolrProvider implements Provider {
             GenericObjectPool.Config config = new GenericObjectPool.Config();
             config.lifo = true;
             config.minIdle = 1;
-            config.maxActive = 10;
+            config.maxIdle = 10;
             config.maxWait = 3000;
             config.maxActive = 5;
             config.timeBetweenEvictionRunsMillis = 30000;

@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by PC on 2017/6/28.
  */
-public class RedisDataSource extends Datasource {
+public class RedisDatasource extends Datasource {
     private String ip;
     private int port;
     private String userName;
@@ -25,16 +25,12 @@ public class RedisDataSource extends Datasource {
     private String seprator = "\\007";
     private int maxNum = 65535;
 
-    public RedisDataSource(List<Property> properties) {
+    public RedisDatasource(List<Property> properties) {
         super(properties);
     }
 
-    public RedisDataSource(Map<String, Property> propertieMap) {
+    public RedisDatasource(Map<String, Property> propertieMap) {
         super(propertieMap);
-    }
-
-    public RedisDataSource(ComDatasource comDatasource, List<ComProperties> comPropertieList) {
-        super(comDatasource, comPropertieList);
     }
 
     public String getIp() {

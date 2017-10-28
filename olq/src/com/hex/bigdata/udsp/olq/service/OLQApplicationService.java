@@ -4,12 +4,10 @@ import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.DatasourceModel;
 import com.hex.bigdata.udsp.common.constant.DatasourceType;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
-import com.hex.bigdata.udsp.common.model.ComDatasource;
-import com.hex.bigdata.udsp.common.model.ComExcelParam;
-import com.hex.bigdata.udsp.common.model.ComExcelProperties;
-import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
+import com.hex.bigdata.udsp.common.model.*;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
+import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
@@ -17,10 +15,15 @@ import com.hex.bigdata.udsp.olq.constant.OLQConstant;
 import com.hex.bigdata.udsp.olq.dao.OLQApplicationMapper;
 import com.hex.bigdata.udsp.olq.dto.OLQApplicationDto;
 import com.hex.bigdata.udsp.olq.dto.OLQApplicationView;
+import com.hex.bigdata.udsp.olq.dto.OLQIndexDto;
 import com.hex.bigdata.udsp.olq.model.OLQApplication;
 import com.hex.bigdata.udsp.olq.model.OLQApplicationParam;
 import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
+import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
+import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
+import com.hex.bigdata.udsp.rc.model.RcService;
+import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
@@ -81,9 +84,12 @@ public class OLQApplicationService extends BaseService {
      */
     @Autowired
     private OLQApplicationParamService olqApplicationParamService;
-
     @Autowired
     private OlqProviderService olqProviderService;
+    @Autowired
+    private RcServiceService rcServiceService;
+    @Autowired
+    private ComPropertiesService comPropertiesService;
 
     /**
      * 分页查询
@@ -321,11 +327,11 @@ public class OLQApplicationService extends BaseService {
         //检查联机查询应用信息合法性校验
         OLQApplication olqApplication = olqApplicationDto.getOlqApplication();
         String olqDsName = olqApplication.getOlqDsName();
-        if (StringUtils.isBlank(olqDsName)){
+        if (StringUtils.isBlank(olqDsName)) {
             return new MessageResult(false, "数据源名称不能为空，请检查！");
         }
         //数据源名称
-        ComDatasource comDatasource = this.comDatasourceService.selectByModelAndName(DatasourceModel.OLQ.getValue(),olqDsName);
+        ComDatasource comDatasource = this.comDatasourceService.selectByModelAndName(DatasourceModel.OLQ.getValue(), olqDsName);
         if (comDatasource == null) {
             return new MessageResult(false, "数据源名称对应的数据源不存在，请检查！");
         }
@@ -443,6 +449,26 @@ public class OLQApplicationService extends BaseService {
 
     }
 
+    /**
+     * 获取分页查询SQL
+     *
+     * @param dsId
+     * @param querySql
+     * @param page
+     * @return
+     */
+    public MessageResult getExecuteSQL(String dsId, String querySql, com.hex.bigdata.udsp.common.provider.model.Page page) {
+
+        MessageResult messageResult = new MessageResult();
+        //数据源名称
+        ComDatasource comDatasource = this.comDatasourceService.select(dsId);
+
+        Provider provider = olqProviderService.getProviderImpl(comDatasource);
+        OLQQuerySql olqQuerySql = provider.getPageSql(querySql, page);
+        messageResult.setData(olqQuerySql);
+
+        return messageResult;
+    }
 
     /**
      * 获取分页查询SQL
@@ -530,8 +556,7 @@ public class OLQApplicationService extends BaseService {
         HSSFWorkbook workbook = null;
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
-        HSSFRow row;
-        HSSFCell cell;
+
         String seprator = FileUtil.getFileSeparator();
         // 模板文件位置
         String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_olqApplication.xls";
@@ -560,49 +585,7 @@ public class OLQApplicationService extends BaseService {
         comExcelParams.add(new ComExcelParam(3, 1, "describe"));
         comExcelParams.add(new ComExcelParam(3, 3, "olqSql"));
         for (OLQApplicationDto olqApplicationDto : olqApplicationDtos) {
-            sheet = workbook.createSheet();
-            //将前面样式内容复制到下载表中
-            int i = 0;
-            for (; i < 10; i++) {
-                try {
-                    ExcelCopyUtils.copyRow(sheet.createRow(i), sourceSheet.getRow(i), sheet.createDrawingPatriarch(), workbook);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            OLQApplication olqApp = olqApplicationDto.getOlqApplication();
-            olqApp.setOlqDsName(comDatasourceService.select(olqApp.getOlqDsId()).getName());
-            for (ComExcelParam comExcelParam : comExcelParams) {
-                try {
-                    Field field = olqApp.getClass().getDeclaredField(comExcelParam.getName());
-                    field.setAccessible(true);
-                    ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), field.get(olqApp) == null ? "" : field.get(olqApp).toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            List<OLQApplicationParam> olqApplicationParams = olqApplicationDto.getParams();
-
-            if (olqApplicationParams != null && olqApplicationParams.size() > 0) {
-                for (OLQApplicationParam applicationParam : olqApplicationParams) {
-                    row = sheet.createRow(i);
-                    cell = row.createCell(0);
-                    cell.setCellValue(applicationParam.getSeq());
-                    cell = row.createCell(1);
-                    cell.setCellValue(applicationParam.getParamName());
-                    cell = row.createCell(2);
-                    cell.setCellValue(applicationParam.getParamDesc());
-                    cell = row.createCell(3);
-                    cell.setCellValue(applicationParam.getDefaultValue());
-                    cell = row.createCell(4);
-                    if ("0".equals(applicationParam.getIsNeed())) {
-                        cell.setCellValue("是");
-                    } else {
-                        cell.setCellValue("否");
-                    }
-                    i++;
-                }
-            }
+            this.setWorkbookSheet(workbook, sourceSheet, comExcelParams, olqApplicationDto);
         }
         if (workbook != null) {
             try {
@@ -615,6 +598,148 @@ public class OLQApplicationService extends BaseService {
             }
         }
         return null;
+    }
+
+
+    /**
+     * 服务信息导出
+     *
+     * @param workbook
+     * @param rcUserService
+     */
+    public void setWorkbooksheet(HSSFWorkbook workbook, RcUserServiceView rcUserService) {
+        HSSFWorkbook sourceWork;
+        HSSFSheet sourceSheet = null;
+        String seprator = FileUtil.getFileSeparator();
+        String templateFile = ExcelCopyUtils.templatePath + seprator + "serviceTemplate.xls";
+        // 获取模板文件第一个Sheet对象
+        POIFSFileSystem sourceFile = null;
+
+        try {
+            sourceFile = new POIFSFileSystem(new FileInputStream(templateFile));
+            sourceWork = new HSSFWorkbook(sourceFile);
+            //联机查询应用为第三个sheet
+            sourceSheet = sourceWork.getSheetAt(2);
+            //创建表格
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        RcService rcService = null;
+        if (StringUtils.isNotBlank(rcUserService.getServiceId())) {
+            rcService = rcServiceService.select(rcUserService.getServiceId());
+        }
+        OLQApplicationDto olqApplicationDto = null;
+        if (null != rcService) {
+            olqApplicationDto = this.selectFullAppInfo(rcService.getAppId());
+        }
+
+        List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
+        comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
+        comExcelParams.add(new ComExcelParam(2, 3, "serviceDescribe"));
+        comExcelParams.add(new ComExcelParam(2, 5, "maxNum"));
+        comExcelParams.add(new ComExcelParam(3, 1, "maxSyncNum"));
+        comExcelParams.add(new ComExcelParam(3, 3, "maxAsyncNum"));
+        comExcelParams.add(new ComExcelParam(3, 5, "maxSyncWaitNum"));
+        comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
+        comExcelParams.add(new ComExcelParam(4, 1, "userId"));
+        comExcelParams.add(new ComExcelParam(4, 5, "userName"));
+        comExcelParams.add(new ComExcelParam(5, 1, "udspRequestUrl"));
+        long maxSize = 65535;
+
+        if (null != olqApplicationDto) {
+            List<ComProperties> comPropertiesList = comPropertiesService.selectByFkId(rcService.getAppId());
+            for (ComProperties item : comPropertiesList) {
+                if ("max.data.size".equals(item.getName())) {
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(item.getValue())) {
+                        maxSize = Long.valueOf(item.getValue());
+                    }
+                }
+            }
+        }
+        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService, maxSize, "");
+
+        HSSFSheet sheet;
+        sheet = workbook.createSheet();
+        //将前面样式内容复制到下载表中
+        int i = 0;
+        for (; i < 10; i++) {
+            try {
+                ExcelCopyUtils.copyRow(sheet.createRow(i), sourceSheet.getRow(i), sheet.createDrawingPatriarch(), workbook);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (ComExcelParam comExcelParam : comExcelParams) {
+            try {
+                Field field = serviceBaseInfo.getClass().getDeclaredField(comExcelParam.getName());
+                field.setAccessible(true);
+                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        this.setWorkbookSheetPart(sheet, olqApplicationDto, sourceSheet, workbook, new OLQIndexDto(i));
+    }
+
+    /**
+     * 设置信息到workbook
+     *
+     * @param workbook
+     * @param sourceSheet
+     * @param comExcelParams
+     * @param olqApplicationDto
+     */
+    public void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, OLQApplicationDto olqApplicationDto) {
+        HSSFSheet sheet = workbook.createSheet();
+        //将前面样式内容复制到下载表中
+        int i = 0;
+        for (; i < 10; i++) {
+            try {
+                ExcelCopyUtils.copyRow(sheet.createRow(i), sourceSheet.getRow(i), sheet.createDrawingPatriarch(), workbook);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        OLQApplication olqApp = olqApplicationDto.getOlqApplication();
+        olqApp.setOlqDsName(comDatasourceService.select(olqApp.getOlqDsId()).getName());
+        for (ComExcelParam comExcelParam : comExcelParams) {
+            try {
+                Field field = olqApp.getClass().getDeclaredField(comExcelParam.getName());
+                field.setAccessible(true);
+                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), field.get(olqApp) == null ? "" : field.get(olqApp).toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        this.setWorkbookSheetPart(sheet, olqApplicationDto, sourceSheet, workbook, new OLQIndexDto(i));
+    }
+
+    public void setWorkbookSheetPart(HSSFSheet sheet, OLQApplicationDto olqApplicationDto, HSSFSheet sourceSheet, HSSFWorkbook workbook, OLQIndexDto olqIndexDto) {
+        HSSFRow row;
+        HSSFCell cell;
+        int rowIndex = olqIndexDto.getRowIndex();
+        List<OLQApplicationParam> olqApplicationParams = olqApplicationDto.getParams();
+        if (olqApplicationParams != null && olqApplicationParams.size() > 0) {
+            for (OLQApplicationParam applicationParam : olqApplicationParams) {
+                row = sheet.createRow(rowIndex);
+                cell = row.createCell(0);
+                cell.setCellValue(applicationParam.getSeq());
+                cell = row.createCell(1);
+                cell.setCellValue(applicationParam.getParamName());
+                cell = row.createCell(2);
+                cell.setCellValue(applicationParam.getParamDesc());
+                cell = row.createCell(3);
+                cell.setCellValue(applicationParam.getDefaultValue());
+                cell = row.createCell(4);
+                if ("0".equals(applicationParam.getIsNeed())) {
+                    cell.setCellValue("是");
+                } else {
+                    cell.setCellValue("否");
+                }
+                rowIndex++;
+            }
+        }
     }
 
     public List<ComDatasource> selectOlqDataSource() {

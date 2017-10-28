@@ -306,11 +306,11 @@ public class ImMetadataController {
         return new MessageResult(status, message);
     }
 
-    @RequestMapping({"/checkSchemaExists/{dsId}/{tbName}"})
+    @RequestMapping({"/checkSchema/{dsId}"})
     @ResponseBody
-    public MessageResult checkSchemaExists(@PathVariable("dsId") String dsId, @PathVariable("tbName") String tbName) {
+    public MessageResult checkSchema(@PathVariable("dsId") String dsId, String tbName) {
         try {
-            if (imMetadataService.checkSchemaExists(dsId, tbName)) {
+            if (imMetadataService.checkSchema(dsId, tbName)) {
                 return new MessageResult(false, "表已经存在，不可使用！");
             }
         } catch (Exception e) {
@@ -319,9 +319,9 @@ public class ImMetadataController {
         return new MessageResult(true, "表不存在，可以使用！");
     }
 
-    @RequestMapping({"/getCloumnInfo/{dsId}/{tbName}"})
+    @RequestMapping({"/getCloumnInfo/{dsId}"})
     @ResponseBody
-    public MessageResult getCloumnInfo(@PathVariable("dsId") String dsId, @PathVariable("tbName") String tbName) {
+    public MessageResult getCloumnInfo(@PathVariable("dsId") String dsId, String tbName) {
         boolean status = true;
         String message = "获取外表字段信息成功！";
         List<MetadataCol> metadataCols = null;
@@ -330,7 +330,7 @@ public class ImMetadataController {
             message = "请求参数为空";
         } else {
             try {
-                if (!imMetadataService.checkSchemaExists(dsId, tbName)) {
+                if (!imMetadataService.checkSchema(dsId, tbName)) {
                     return new MessageResult(false, "外表不存在，请检查后重新输入！");
                 }
                 metadataCols = imMetadataService.getCloumnInfo(dsId, tbName);
@@ -410,7 +410,7 @@ public class ImMetadataController {
     @RequestMapping("getTargetMateData/{type}")
     @ResponseBody
     public MessageResult getTargetMateData(@PathVariable String type) {
-        List<ImMetadata> imMetadatas = null;
+        List<ImMetadataView> imMetadatas = null;
         try {
             imMetadatas = imMetadataService.selectTargetMateData(type);
         } catch (Exception e) {
@@ -418,4 +418,23 @@ public class ImMetadataController {
         }
         return new PageListResult(imMetadatas);
     }
+
+    /**
+     * 根据条件获取对应的元数据信息
+     *
+     * @param imMetadataView
+     * @return
+     */
+    @RequestMapping("selectByCondition")
+    @ResponseBody
+    public MessageResult selectMateDataByCondition(@RequestBody ImMetadataView imMetadataView) {
+        List<ImMetadataView> imMetadatas = null;
+        try {
+            imMetadatas = imMetadataService.selectMateDataByCondition(imMetadataView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new PageListResult(imMetadatas);
+    }
+
 }

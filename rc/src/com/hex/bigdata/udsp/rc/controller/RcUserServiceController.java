@@ -458,4 +458,19 @@ public class RcUserServiceController extends BaseController {
         }
         return filePath;
     }
+
+
+    @ResponseBody
+    @RequestMapping("/downStreamInfoDownload")
+    public String downStreamInfoDownload(@RequestBody RcUserService[] rcServices) {
+        // 写入Excel文件
+        String filePath = "";
+        try {
+            filePath = rcUserServiceService.downStreamInfoDownload(rcServices);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return filePath;
+    }
+
 }

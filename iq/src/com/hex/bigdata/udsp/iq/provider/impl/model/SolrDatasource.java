@@ -11,7 +11,6 @@ import java.util.Map;
  * Solr的数据源配置
  */
 public class SolrDatasource extends Datasource {
-    private String solrServers;
     private int maxNum = 65535;
 
     public SolrDatasource(List<Property> properties) {

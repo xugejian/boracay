@@ -68,12 +68,12 @@ public class LocalCache<T> implements Cache<T> {
 
     @Override
     public boolean insertCache(String key, T t) {
-        return insert(key, t);
+        return insert(key, cloneObj(t));
     }
 
     @Override
     public boolean updateCache(String key, T t) {
-        return update(key, t);
+        return update(key, cloneObj(t));
     }
 
     @Override
@@ -99,12 +99,12 @@ public class LocalCache<T> implements Cache<T> {
 
     @Override
     public boolean insertListCache(String key, List<T> list) {
-        return insert(key, list);
+        return insert(key, cloneList(list));
     }
 
     @Override
     public boolean updateListCache(String key, List<T> list) {
-        return update(key, list);
+        return update(key, cloneList(list));
     }
 
     @Override
@@ -142,7 +142,7 @@ public class LocalCache<T> implements Cache<T> {
                         .build();
                 cacheMap.put(timeout, cache);
             }
-            cache.put(key, t);
+            cache.put(key, cloneObj(t));
             return true;
         }
     }

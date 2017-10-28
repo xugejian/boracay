@@ -9,6 +9,7 @@ import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.HBaseConnectionPoolFactory;
+import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBasePage;
 import com.hex.bigdata.udsp.iq.provider.impl.model.SolrHBaseDatasource;
 import com.hex.bigdata.udsp.iq.provider.impl.model.SolrHBasePage;
@@ -206,6 +207,7 @@ public class SolrHBaseProvider implements Provider {
 
     //-------------------------------------------分割线---------------------------------------------
     private synchronized HBaseConnectionPoolFactory getDataSource(SolrHBaseDatasource datasource) {
+        HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getPropertyMap());
         String dsId = datasource.getId();
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<String, HBaseConnectionPoolFactory>();
@@ -215,14 +217,14 @@ public class SolrHBaseProvider implements Provider {
             GenericObjectPool.Config config = new GenericObjectPool.Config();
             config.lifo = true;
             config.minIdle = 1;
-            config.maxActive = 10;
+            config.maxIdle = 10;
             config.maxWait = 3000;
             config.maxActive = 5;
             config.timeBetweenEvictionRunsMillis = 30000;
             config.testWhileIdle = true;
             config.testOnBorrow = false;
             config.testOnReturn = false;
-            factory = new HBaseConnectionPoolFactory(config, datasource.getZkQuorum(), datasource.getZkPort());
+            factory = new HBaseConnectionPoolFactory(config, hBaseDatasource);
             dataSourcePool.put(dsId, factory);
         }
         return factory;
@@ -289,7 +291,7 @@ public class SolrHBaseProvider implements Provider {
                     sb.append(" AND " + name + ":(* NOT " + value + ")");
                 } else if (Operator.LK.equals(operator)) {
                     sb.append(" AND " + name + ":*" + value + "*");
-                }else if (Operator.IN.equals(operator)) {
+                } else if (Operator.IN.equals(operator)) {
                     //条件切分
                     if (StringUtils.isBlank(value)) {
                         continue;
@@ -298,10 +300,10 @@ public class SolrHBaseProvider implements Provider {
                     String[] stringArray = value.split(",");
                     for (int i = 0; i < stringArray.length; i++) {
                         sb.append(stringArray[i]);
-                        if (i<stringArray.length-1){
+                        if (i < stringArray.length - 1) {
                             sb.append(" or ");
                         }
-                        if (i == stringArray.length-1){
+                        if (i == stringArray.length - 1) {
                             sb.append(")");
                         }
                     }
@@ -441,7 +443,7 @@ public class SolrHBaseProvider implements Provider {
             byte[] family = datasource.getFamilyName();
             byte[] qualifier = datasource.getQulifierName();
             String fqSep = datasource.getSeprator();
-            map = get(table, rowkey, colMap ,family, qualifier ,fqSep);
+            map = get(table, rowkey, colMap, family, qualifier, fqSep);
         } finally {
             if (table != null) {
                 table.close();
@@ -453,24 +455,24 @@ public class SolrHBaseProvider implements Provider {
         return map;
     }
 
-    private Map<String, String> get(HTableInterface table, String rowkey, Map<Integer, String> colMap,byte[] family,byte[] qualifier,String fqSep) throws IOException {
+    private Map<String, String> get(HTableInterface table, String rowkey, Map<Integer, String> colMap, byte[] family, byte[] qualifier, String fqSep) throws IOException {
         Get get = new Get(Bytes.toBytes(rowkey));
         addColumn(get, family, qualifier);
-        return get(table, get, colMap, family, qualifier,fqSep);
+        return get(table, get, colMap, family, qualifier, fqSep);
     }
 
-    private Map<String, String> get(HTableInterface table, Get get, Map<Integer, String> colMap,byte[] family,byte[] qualifier,String fqSep) throws IOException {
+    private Map<String, String> get(HTableInterface table, Get get, Map<Integer, String> colMap, byte[] family, byte[] qualifier, String fqSep) throws IOException {
         Result r = table.get(get);
-        return getMap(r, colMap,family,qualifier,fqSep);
+        return getMap(r, colMap, family, qualifier, fqSep);
     }
 
-    private void addColumn(Get get,byte[] family,byte[] qualifier) {
+    private void addColumn(Get get, byte[] family, byte[] qualifier) {
         get.addColumn(family, qualifier);
     }
 
-    private Map<String, String> getMap(Result r, Map<Integer, String> colMap,byte[] family,byte[] qualifier,String fqSep) {
+    private Map<String, String> getMap(Result r, Map<Integer, String> colMap, byte[] family, byte[] qualifier, String fqSep) {
         Map<String, String> map = new HashMap<String, String>();
-        String fqVal = Bytes.toString(r.getValue(family,qualifier));
+        String fqVal = Bytes.toString(r.getValue(family, qualifier));
         if (fqVal == null) fqVal = "";
         String[] fqVals = fqVal.split(fqSep, -1);
         // 注：如果上线后又修改需求，需要添加字段，则该检查需要注释掉
@@ -487,54 +489,54 @@ public class SolrHBaseProvider implements Provider {
         return map;
     }
 
-    public boolean testDatasource(Datasource datasource){
+    public boolean testDatasource(Datasource datasource) {
         boolean HbaseCanConnection = true;
         boolean SolrCanConnection = false;
         SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource(datasource.getProperties());
         HConnection hConnection = null;
         HttpURLConnection connection = null;
         URL url = null;
-        try{
+        try {
             Configuration conf = HBaseConfiguration.create();
             conf.set("hbase.zookeeper.quorum", solrHBaseDatasource.getZkQuorum());
             conf.set("hbase.zookeeper.property.clientPort", solrHBaseDatasource.getZkPort());
-            conf.set("hbase.rpc.timeout","2");
-            conf.set("hbase.client.retries.number","3");
-            conf.set("zookeeper.recovery.retry","1");
-            hConnection =HConnectionManager.createConnection(conf);
-            if(hConnection == null || hConnection.isAborted()){
+            conf.set("hbase.rpc.timeout", "2");
+            conf.set("hbase.client.retries.number", "3");
+            conf.set("zookeeper.recovery.retry", "1");
+            hConnection = HConnectionManager.createConnection(conf);
+            if (hConnection == null || hConnection.isAborted()) {
                 HbaseCanConnection = false;
-            }else{
+            } else {
                 //尝试获取当中的表，如果获取抛异常则获取连接失败
                 hConnection.getAdmin().tableExists(TableName.valueOf("TEST"));
             }
-            if(HbaseCanConnection == true){
+            if (HbaseCanConnection == true) {
                 //测试获取solr连接
                 String[] tempServers = solrHBaseDatasource.getSolrServers().split(",");
 
                 for (int i = 0; i < tempServers.length; i++) {
-                    try{
-                        url =  new  URL("http://" + tempServers[i] + "/solr");
-                        connection = (HttpURLConnection)url.openConnection();
+                    try {
+                        url = new URL("http://" + tempServers[i] + "/solr");
+                        connection = (HttpURLConnection) url.openConnection();
                         connection.setDoInput(true);
                         connection.setDoOutput(true);
                         connection.setUseCaches(false);
                         connection.setInstanceFollowRedirects(true);
                         connection.connect();
-                        if(connection != null){
-                            SolrCanConnection  = true;
+                        if (connection != null) {
+                            SolrCanConnection = true;
                             break;
                         }
-                    }catch (Exception e){
-                        logger.debug("获取solr连接失败的地址为："+(url == null?"":url.toString()));
+                    } catch (Exception e) {
+                        logger.debug("获取solr连接失败的地址为：" + (url == null ? "" : url.toString()));
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             //e.printStackTrace();
             HbaseCanConnection = false;
-        }finally {
-            if(hConnection != null){
+        } finally {
+            if (hConnection != null) {
                 try {
                     hConnection.close();
                 } catch (IOException e) {
@@ -542,7 +544,7 @@ public class SolrHBaseProvider implements Provider {
                 }
             }
 
-            if(connection != null){
+            if (connection != null) {
                 connection.disconnect();
             }
         }

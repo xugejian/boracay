@@ -10,6 +10,7 @@ import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
+import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.bigdata.udsp.iq.dto.IqApplicationView;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
 import com.hex.bigdata.udsp.mm.dao.MmApplicationMapper;
@@ -84,6 +85,8 @@ public class RcServiceService {
     private RtsConsumerMapper rtsConsumerMapper;
     @Autowired
     private OLQApplicationService olqApplicationService;
+    @Autowired
+    private ImModelService imModelService;
 
 
     /**
@@ -96,6 +99,7 @@ public class RcServiceService {
     public String insert(RcService rcService) {
         String pkId = Util.uuid();
         rcService.setPkId(pkId);
+        rcService.setStatus(CommonConstant.SERVICE_STATUS_ENABLED);
         if (rcServiceMapper.insert(pkId, rcService)) {
             /*
             同时按照不同ID保存到内存中
@@ -266,6 +270,8 @@ public class RcServiceService {
             searchList = this.rtsConsumerService.select(new RtsConsumerView());
         } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
             searchList = this.olqApplicationService.selectAll();
+        }  else if (RcConstant.UDSP_SERVICE_TYPE_IM.equals(type)) {
+            searchList = this.imModelService.selectAll();
         } else {
             searchList = null;
         }

@@ -6,7 +6,7 @@ ${extends("/goframe/function_layout.httl")}
 	<!-- 查询区 -->
 	<div style="text-align:center;line-height:23px;padding:5px;">
 		<div>
-			<span>登陆Id:</span>
+			<span>登陆ID:</span>
 			<input id="searchUserId" class="nui-textbox" style="width:160px;" />
 			<a class="nui-button" style="width:50px;height:20px;" onclick="onClearClick">清除</a>
 		</div>
@@ -50,7 +50,7 @@ ${extends("/goframe/function_layout.httl")}
 					<div id="selectedList" class="nui-listbox" style="width:250px;height:220px;"  sortMode="client"
 					multiSelect="true" showCheckBox="true" showPager="false" idField="id"  >
 						<div property="columns">
-							<div field="userId" with="180" headerAlign="center" allowSort="true">登陆Id</div>
+							<div field="userId" with="180" headerAlign="center" allowSort="true">登陆ID</div>
 							<div field="userName" with="180" headerAlign="center" allowSort="true">登陆名</div>
 						</div>
                     </div>

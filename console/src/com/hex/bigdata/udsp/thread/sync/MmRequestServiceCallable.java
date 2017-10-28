@@ -20,7 +20,7 @@ public class MmRequestServiceCallable implements Callable<Response> {
     public MmRequestServiceCallable(ConsumeRequest consumeRequest, String appId) {
         this.consumeRequest = consumeRequest;
         this.appId = appId;
-        this.mmRequestService = (MmRequestService) WebApplicationContextUtil.getBean("mmRequestService");;
+        this.mmRequestService = (MmRequestService) WebApplicationContextUtil.getBean("mmRequestService");
     }
 
     @Override
