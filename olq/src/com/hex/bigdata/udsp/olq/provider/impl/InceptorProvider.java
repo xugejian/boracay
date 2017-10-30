@@ -7,7 +7,6 @@ import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
-import com.hex.bigdata.udsp.olq.provider.impl.model.HiveDatasource;
 import com.hex.bigdata.udsp.olq.provider.impl.model.InceptorDatasource;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
