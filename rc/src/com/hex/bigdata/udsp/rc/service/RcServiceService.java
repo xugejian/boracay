@@ -270,7 +270,7 @@ public class RcServiceService {
             searchList = this.rtsConsumerService.select(new RtsConsumerView());
         } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
             searchList = this.olqApplicationService.selectAll();
-        }  else if (RcConstant.UDSP_SERVICE_TYPE_IM.equals(type)) {
+        } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equals(type)) {
             searchList = this.imModelService.selectAll();
         } else {
             searchList = null;
@@ -325,25 +325,19 @@ public class RcServiceService {
      * @param appId
      * @return
      */
-    public boolean checkAppIdAndType(String type, String appId) {
-        return this.rcServiceMapper.selectRcServiceByAppIdAndType(type, appId) != null;
+    public boolean checkAppUsed(String type, String appId) {
+        return this.rcServiceMapper.selectByAppTypeAndAppId(type, appId) != null;
     }
 
-    public Map<String, String> checkApplicationsUsed(String model, Map<String, String>[] applications) {
-        Map<String, String> returnMap = null;
-        for (Map<String, String> application : applications) {
-            if (checkAppIdAndType(model, application.get("pkId"))) {
-                returnMap = new HashMap<>(2);
-                returnMap.put("status", "true");
-                if ("OLQ".equals(model)) {
-                    returnMap.put("message", "名称为：" + application.get("name") + "数据源已被应用！");
-                } else {
-                    returnMap.put("message", "名称为：" + application.get("name") + "应用已被注册！");
-                }
-                break;
-            }
-        }
-        return returnMap;
+    /**
+     * 根据应用名称和应用类型查找启用的服务注册信息
+     *
+     * @param type
+     * @param appId
+     * @return
+     */
+    public boolean checkAppUsedAndStart(String type, String appId) {
+        return this.rcServiceMapper.selectStartByAppTypeAndAppId(type, appId) != null;
     }
 
     /**
@@ -359,7 +353,7 @@ public class RcServiceService {
         for (RcService item : rcServices) {
             item = this.select(item.getPkId());
             item.setStatus(status);
-            boolean delFlg = this.rcServiceMapper.update(item.getPkId(),item);
+            boolean delFlg = this.rcServiceMapper.update(item.getPkId(), item);
             if (!delFlg) {
                 flag = false;
                 break;

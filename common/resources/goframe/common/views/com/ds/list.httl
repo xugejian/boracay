@@ -207,7 +207,26 @@ ${extends("/goframe/function_layout.httl")}
             nui.get("edit").disable();
             nui.get("remove").enable();
         }
-
+        if(model == "OLQ" && rows.length != 0){
+            var json = nui.encode(getRows(rows));
+            //grid1.loading("正在检查,请稍等...");
+            $.ajax({
+                url: "${basePath}/rc/service/checkAppUsed/OLQ",
+                type: 'POST',
+                data: json,
+                async:false,
+                cache: false,
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.status == true) {
+                        nui.alert(result.message, "提示");
+                        //grid1.unmask();
+                        nui.get("edit").disable();
+                        nui.get("remove").disable();
+                    }
+                }
+            });
+        }
     }
 
 //    /**

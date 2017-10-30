@@ -244,6 +244,24 @@ ${extends("/goframe/function_layout.httl")}
             });
             if (canRemove) nui.get("remove").enable();
         }
+        if(rows.length != 0){
+            var json = nui.encode(getRows(rows));
+            $.ajax({
+                url: "${basePath}/rc/service/checkAppUsed/IM",
+                type: 'POST',
+                data: json,
+                async:false,
+                cache: false,
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.status == true) {
+                        nui.alert(result.message, "提示");
+                        nui.get("edit").disable();
+                        nui.get("remove").disable();
+                    }
+                }
+            });
+        }
     }
 
     /**
