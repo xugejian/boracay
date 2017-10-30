@@ -1,7 +1,5 @@
 package com.hex.bigdata.udsp.iq.provider.impl.model;
 
-import com.hex.bigdata.udsp.common.model.ComDatasource;
-import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
 import org.apache.commons.lang3.StringUtils;
@@ -13,18 +11,6 @@ import java.util.Map;
  * Created by PC on 2017/6/28.
  */
 public class RedisDatasource extends Datasource {
-    private String ip;
-    private int port;
-    private String userName;
-    private String password;
-    private int max_idle;
-    private int max_total;
-    private int max_wait;
-    private int timeOut;
-    private boolean test_on_brrow;
-    private String seprator = "\\007";
-    private int maxNum = 65535;
-
     public RedisDatasource(List<Property> properties) {
         super(properties);
     }
@@ -98,22 +84,19 @@ public class RedisDatasource extends Datasource {
         return value;
     }
 
-    public String getSeprator(){
+    public String getSeprator() {
         String value = getProperty("redis.seprator").getValue();
-        if (StringUtils.isNotBlank(value))
-            seprator = value;
-        return seprator;
+        if (StringUtils.isBlank(value)) {
+            value = "\\007";
+        }
+        return value;
     }
 
     public int getMaxNum() {
         String value = getProperty("redis.max.data.size").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            try {
-                maxNum = Integer.valueOf(value);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("redis.max.data.size为一整数");
-            }
+        if (StringUtils.isBlank(value)) {
+            value = "65536";
         }
-        return maxNum;
+        return Integer.valueOf(value);
     }
 }

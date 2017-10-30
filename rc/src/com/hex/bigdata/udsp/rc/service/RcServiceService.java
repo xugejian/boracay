@@ -326,8 +326,7 @@ public class RcServiceService {
      * @return
      */
     public boolean checkAppIdAndType(String type, String appId) {
-        RcService rcService = this.rcServiceMapper.selectRcServiceByAppIdAndType(type, appId);
-        return rcService != null;
+        return this.rcServiceMapper.selectRcServiceByAppIdAndType(type, appId) != null;
     }
 
     public Map<String, String> checkApplicationsUsed(String model, Map<String, String>[] applications) {

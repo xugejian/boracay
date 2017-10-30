@@ -488,14 +488,14 @@ public class HBaseProvider implements Provider {
         return count;
     }
 
-    private List<Map<String, String>> scan(HTableInterface table,
-                                           Scan scan, Map<Integer, String> colMap, byte[] family, byte[] qualifier, String fqSep, String dataType) throws IOException {
+    private List<Map<String, String>> scan(HTableInterface table, Scan scan, Map<Integer, String> colMap,
+                                           byte[] family, byte[] qualifier, String fqSep, String dataType) throws IOException {
         ResultScanner rs = table.getScanner(scan);
         return getMaps(rs, colMap, family, qualifier, fqSep, dataType);
     }
 
-    private List<Map<String, String>> scan(HTableInterface table,
-                                           String startRow, String stopRow, Map<Integer, String> colMap, long maxSize, byte[] family, byte[] qualifier, String fqSep, String dataType) throws IOException {
+    private List<Map<String, String>> scan(HTableInterface table, String startRow, String stopRow, Map<Integer, String> colMap,
+                                           long maxSize, byte[] family, byte[] qualifier, String fqSep, String dataType) throws IOException {
         Scan scan = new Scan();
         addColumn(scan, family, qualifier);
         setRowScan(scan, startRow, stopRow);
@@ -550,8 +550,8 @@ public class HBaseProvider implements Provider {
         scan.setFilter(pageFilter);
     }
 
-    private List<Map<String, String>> getMaps(ResultScanner rs,
-                                              Map<Integer, String> colMap, byte[] family, byte[] qualifier, String fqSep, String dataType) {
+    private List<Map<String, String>> getMaps(ResultScanner rs, Map<Integer, String> colMap,
+                                              byte[] family, byte[] qualifier, String fqSep, String dataType) {
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         for (Result r : rs) {
             list.add(getMap(r, colMap, family, qualifier, fqSep, dataType));
@@ -577,11 +577,12 @@ public class HBaseProvider implements Provider {
         return list;
     }
 
-    private Map<String, String> getMap(Result r, Map<Integer, String> colMap, byte[] family, byte[] qualifier, String fqSep, String dataType) {
+    private Map<String, String> getMap(Result r, Map<Integer, String> colMap,
+                                       byte[] family, byte[] qualifier, String fqSep, String dataType) {
         Map<String, String> map = new HashMap<String, String>();
         String fqVal = Bytes.toString(r.getValue(family, qualifier));
         if (fqVal == null) fqVal = "";
-        if (dataType.equalsIgnoreCase("dsv")) {
+        if (dataType.equalsIgnoreCase("dsv")) { // 分隔符格式数据
             String[] fqVals = fqVal.split(fqSep, -1);
             // 注：如果上线后又修改需求，需要添加字段，则该检查需要注释掉
 //        if (colMap.size() != fqVals.length) {
@@ -594,7 +595,7 @@ public class HBaseProvider implements Provider {
                     map.put(colName, colVal);
                 }
             }
-        } else if (dataType.equalsIgnoreCase("json")) {
+        } else if (dataType.equalsIgnoreCase("json")) { // JSON MAP格式数据
             Map<String, Object> result = JSONUtil.parseJSON2Map(fqVal);
             Set<Integer> keys = colMap.keySet();
             for (Integer key : keys) {

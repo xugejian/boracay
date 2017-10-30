@@ -12,10 +12,6 @@ import java.util.Map;
  * Solr+HBase的数据源配置
  */
 public class SolrHBaseDatasource extends Datasource {
-    private int maxNum = 65535;
-    private String seprator = "\\007";
-    private String familyName = "f";
-    private String qulifierName = "q";
 
     public SolrHBaseDatasource(List<Property> properties) {
         super(properties);
@@ -95,40 +91,35 @@ public class SolrHBaseDatasource extends Datasource {
         return value;
     }
 
-
-    public String getSeprator(){
+    public String getSeprator() {
         String value = getProperty("hbase.fqSep").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            seprator = value;
+        if (StringUtils.isBlank(value)) {
+            value = "\\007";
         }
-        return seprator;
+        return value;
     }
 
-    public byte[] getFamilyName(){
+    public byte[] getFamilyName() {
         String value = getProperty("hbase.family.name").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            familyName = value;
+        if (StringUtils.isBlank(value)) {
+            value = "f";
         }
-        return Bytes.toBytes(familyName);
+        return Bytes.toBytes(value);
     }
 
-    public byte[] getQulifierName(){
+    public byte[] getQulifierName() {
         String value = getProperty("hbase.qulifier.name").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            qulifierName = value;
+        if (StringUtils.isBlank(value)) {
+            value = "q";
         }
-        return Bytes.toBytes(qulifierName);
+        return Bytes.toBytes(value);
     }
 
     public int getMaxNum() {
         String value = getProperty("max.data.size").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            try {
-                maxNum = Integer.valueOf(value);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("max.data.size为一整数");
-            }
+        if (StringUtils.isBlank(value)) {
+            value = "65536";
         }
-        return maxNum;
+        return Integer.valueOf(value);
     }
 }

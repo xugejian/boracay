@@ -42,15 +42,6 @@ public class OlqProviderController extends BaseController {
         logger.debug("connection " + dsId + " datasource execute SQL=" + sql + " defaultNum=" + defaultNum);
         List<Map<String, String>> records = null;
 
-        String sqlUpper = sql.toUpperCase().trim();
-        if (sqlUpper.startsWith("SELECT ") && !sqlUpper.contains("LIMIT")) {
-            if (sqlUpper.endsWith(";")) {
-                sql = sqlUpper.substring(0, sqlUpper.length() - 1) + " LIMIT " + defaultNum;
-            } else {
-                sql = sqlUpper + " LIMIT " + defaultNum;
-            }
-        }
-
         ResultData resultData = new ResultData();
         try {
             OLQResponse response = olqProviderService.select(dsId, sql);

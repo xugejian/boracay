@@ -1,12 +1,7 @@
 package com.hex.bigdata.udsp.olq.service;
 
-import com.hex.bigdata.udsp.common.constant.DatasourceModel;
-import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
-import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComExcelParam;
 import com.hex.bigdata.udsp.common.model.ComProperties;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;

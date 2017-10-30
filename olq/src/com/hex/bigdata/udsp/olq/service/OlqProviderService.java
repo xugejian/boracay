@@ -3,6 +3,7 @@ package com.hex.bigdata.udsp.olq.service;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
@@ -36,6 +37,17 @@ public class OlqProviderService extends BaseService {
     @Autowired
     private GFDictMapper gfDictMapper;
 
+    /**
+     * @param dsId
+     * @param sql
+     * @param page
+     * @return
+     */
+    public OLQQuerySql getPageSql(String dsId, String sql, Page page) {
+        Datasource datasource = getDatasource(dsId);
+        Provider provider = getProviderImpl(datasource);
+        return provider.getPageSql(sql, page);
+    }
 
     /**
      * 查询
@@ -72,14 +84,15 @@ public class OlqProviderService extends BaseService {
 
     /**
      * 元数据列信息插入到Map
+     *
      * @param rsmd
      * @return
      */
-    private LinkedHashMap<String,String> putColumnIntoMap(ResultSetMetaData rsmd){
-        LinkedHashMap<String,String> columnMap = new LinkedHashMap<>();
+    private LinkedHashMap<String, String> putColumnIntoMap(ResultSetMetaData rsmd) {
+        LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();
         try {
-            for (int i = 1; i <= rsmd.getColumnCount() ; i++) {
-                columnMap.put(rsmd.getColumnName(i),rsmd.getColumnTypeName(i));
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                columnMap.put(rsmd.getColumnName(i), rsmd.getColumnTypeName(i));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -143,6 +156,7 @@ public class OlqProviderService extends BaseService {
 
     /**
      * 得到生产接口的实例
+     *
      * @param datasource
      * @return
      */

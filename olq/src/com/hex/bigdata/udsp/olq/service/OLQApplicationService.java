@@ -458,15 +458,9 @@ public class OLQApplicationService extends BaseService {
      * @return
      */
     public MessageResult getExecuteSQL(String dsId, String querySql, com.hex.bigdata.udsp.common.provider.model.Page page) {
-
         MessageResult messageResult = new MessageResult();
-        //数据源名称
-        ComDatasource comDatasource = this.comDatasourceService.select(dsId);
-
-        Provider provider = olqProviderService.getProviderImpl(comDatasource);
-        OLQQuerySql olqQuerySql = provider.getPageSql(querySql, page);
+        OLQQuerySql olqQuerySql = olqProviderService.getPageSql(dsId, querySql, page);
         messageResult.setData(olqQuerySql);
-
         return messageResult;
     }
 
@@ -480,18 +474,12 @@ public class OLQApplicationService extends BaseService {
      */
     public MessageResult getExecuteSQL(OLQApplicationDto olqApplicationDto, Map<String, String> paramVals, com.hex.bigdata.udsp.common.provider.model.Page page) {
         MessageResult messageResult = this.getExecuteSQL(olqApplicationDto, paramVals);
-        if (!messageResult.isStatus()) {
-            return messageResult;
-        }
+        if (!messageResult.isStatus()) return messageResult;
         OLQApplication olqApplication = olqApplicationDto.getOlqApplication();
-        //数据源名称
-        ComDatasource comDatasource = this.comDatasourceService.select(olqApplication.getOlqDsId());
-
+        String dsId = olqApplication.getOlqDsId();
         String querySql = (String) messageResult.getData();
-        Provider provider = olqProviderService.getProviderImpl(comDatasource);
-        OLQQuerySql olqQuerySql = provider.getPageSql(querySql, page);
+        OLQQuerySql olqQuerySql = olqProviderService.getPageSql(dsId, querySql, page);
         messageResult.setData(olqQuerySql);
-
         return messageResult;
     }
 

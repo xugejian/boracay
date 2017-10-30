@@ -282,15 +282,15 @@ public class ImpalaProvider implements Provider {
         Integer startRow = (pageIndex - 1) * pageSize;
         StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(" )t ORDER BY 1 limit ");
+        pageSqlBuffer.append(" ) UDSP_VIEW ORDER BY 1 LIMIT ");
         pageSqlBuffer.append(pageSize);
-        pageSqlBuffer.append(" offset ");
+        pageSqlBuffer.append(" OFFSET ");
         pageSqlBuffer.append(startRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")t");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);

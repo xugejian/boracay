@@ -34,6 +34,7 @@ import com.hex.bigdata.udsp.olq.dto.OLQApplicationDto;
 import com.hex.bigdata.udsp.olq.model.OLQApplication;
 import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
+import com.hex.bigdata.udsp.olq.service.OlqProviderService;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
@@ -70,7 +71,11 @@ import java.util.concurrent.*;
 public class ConsumerService {
     private static Logger logger = LogManager.getLogger(ConsumerService.class);
     private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final ExecutorService executorService = new ThreadPoolExecutor(256, 2048, 30, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(1000));
+    private static final ExecutorService executorService = new ThreadPoolExecutor(256,
+            2048, 30, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(1000));
+
+    @Autowired
+    private UserService userService;
     @Autowired
     private RcServiceService rcServiceService;
     @Autowired
@@ -86,12 +91,6 @@ public class ConsumerService {
     @Autowired
     private RtsConsumerService rtsConsumerService;
     @Autowired
-    private IqSyncService iqSyncService;
-    @Autowired
-    private OlqSyncService olqSyncService;
-    @Autowired
-    private ImSyncService imSyncService;
-    @Autowired
     private RtsSyncService rtsSyncService;
     @Autowired
     private MmRequestService mmRequestService;
@@ -105,8 +104,6 @@ public class ConsumerService {
     private IqAppQueryColService iqAppQueryColService;
     @Autowired
     private RtsMatedataColService rtsMatedataColService;
-    @Autowired
-    private UserService userService;
     @Autowired
     private OLQApplicationService olqApplicationService;
     @Autowired
@@ -679,7 +676,6 @@ public class ConsumerService {
                 } else {
                     olqQuerySql = new OLQQuerySql(sql);
                 }
-
                 Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(appId, olqQuerySql));
                 try {
                     response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
