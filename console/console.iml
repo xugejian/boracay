@@ -35,7 +35,6 @@
     <orderEntry type="library" name="poi" level="project" />
     <orderEntry type="library" name="cxf" level="project" />
     <orderEntry type="library" name="redis" level="project" />
-    <orderEntry type="library" name="tzbesb" level="project" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="iq" />
     <orderEntry type="module" module-name="mc" />
