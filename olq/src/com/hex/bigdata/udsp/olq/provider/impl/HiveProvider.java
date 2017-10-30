@@ -286,29 +286,20 @@ public class HiveProvider implements Provider {
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
         Integer endRow = pageSize * pageIndex;
-        StringBuffer pageSqlBuffer = new StringBuffer("select * from (select row_number() over (order by 1) as rownum,table.*  FROM (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY 1) AS ROWNUM,UDSP_VIEW.*  FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(" )table)t where t.rownum between ");
+        pageSqlBuffer.append(" ) UDSP_VIEW ) UDSP_VIEW2 WHERE T.ROWNUM BETWEEN ");
         pageSqlBuffer.append(startRow);
-        pageSqlBuffer.append(" and  ");
+        pageSqlBuffer.append(" AND ");
         pageSqlBuffer.append(endRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")t");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
         return olqQuerySql;
-    }
-
-    public static void main(String[] args) {
-        String sql = "SELECT * FROM OMDATA.S01_SJYMB JYM";
-        Page page = new Page();
-        page.setPageIndex(2);
-        page.setPageSize(20);
-        HiveProvider hiveProvider = new HiveProvider();
-        System.out.println(hiveProvider.getPageSql(sql, page));
     }
 }

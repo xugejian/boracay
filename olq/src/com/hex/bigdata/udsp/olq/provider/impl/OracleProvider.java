@@ -310,31 +310,21 @@ public class OracleProvider implements Provider {
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
         Integer endRow = pageSize * pageIndex;
-        StringBuffer pageSqlBuffer = new StringBuffer("select * from ( select rownum row_num,t.* from (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (SELECT ROWNUM ROW_NUM, UDSP_VIEW.* FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(")t)n");
-        pageSqlBuffer.append(" where rownum>=");
+        pageSqlBuffer.append(") UDSP_VIEW ) UDSP_VIEW2");
+        pageSqlBuffer.append(" WHERE ROWNUM >=");
         pageSqlBuffer.append(startRow);
-        pageSqlBuffer.append(" and rownum<= ");
+        pageSqlBuffer.append(" AND ROWNUM <= ");
         pageSqlBuffer.append(endRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")t");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
         return olqQuerySql;
     }
-
-    public static void main(String[] args) {
-        String sql = "select PK_ID, NAME, DESCRIBE, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME from RC_SERVICE where DEL_FLG = '0' order by UPT_TIME desc, CRT_TIME desc, NAME";
-        Page page = new Page();
-        page.setPageIndex(2);
-        page.setPageSize(20);
-        OracleProvider oracleProvider = new OracleProvider();
-        System.out.println(oracleProvider.getPageSql(sql, page));
-    }
-
 }

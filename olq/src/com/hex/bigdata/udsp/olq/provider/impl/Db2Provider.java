@@ -281,32 +281,22 @@ public class Db2Provider implements Provider {
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
         Integer endRow = pageSize * pageIndex;
-        StringBuffer pageSqlBuffer = new StringBuffer("select * from (");
-        pageSqlBuffer.append("select row_number() over() AS rownum,t.* from (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (");
+        pageSqlBuffer.append("SELECT ROW_NUMBER() OVER() AS ROWNUM, UDSP_VIEW.* FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(")t)n");
-        pageSqlBuffer.append(" where rownum>=");
+        pageSqlBuffer.append(") UDSP_VIEW ) UDSP_VIEW2");
+        pageSqlBuffer.append(" WHERE ROWNUM >=");
         pageSqlBuffer.append(startRow);
-        pageSqlBuffer.append(" and rownum<= ");
+        pageSqlBuffer.append(" AND ROWNUM <= ");
         pageSqlBuffer.append(endRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
         return olqQuerySql;
     }
-
-    public static void main(String[] args) {
-        String sql = "select \"ID\", \"BNYE\", \"BWYE\"   from \"EASYCORE\".\"A\"";
-        Page page = new Page();
-        page.setPageIndex(2);
-        page.setPageSize(20);
-        Db2Provider db2Provider = new Db2Provider();
-        System.out.println(db2Provider.getPageSql(sql, page));
-    }
-
 }

@@ -283,29 +283,20 @@ public class MysqlProvider implements Provider {
         int pageIndex = page.getPageIndex();
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
-        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * from (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(")t  limit ");
+        pageSqlBuffer.append(") UDSP_VIEW LIMIT ");
         pageSqlBuffer.append(pageSize);
-        pageSqlBuffer.append(" offset ");
+        pageSqlBuffer.append(" OFFSET ");
         pageSqlBuffer.append(startRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")t");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
         return olqQuerySql;
-    }
-
-    public static void main(String[] args) {
-        String sql = "SELECT * from mysql.db LIMIT 3 OFFSET 0";
-        Page page = new Page();
-        page.setPageIndex(1);
-        page.setPageSize(20);
-        MysqlProvider mysqlProvider = new MysqlProvider();
-        System.out.println(mysqlProvider.getPageSql(sql, page));
     }
 }

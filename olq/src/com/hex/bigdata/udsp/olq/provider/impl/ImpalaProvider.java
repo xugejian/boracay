@@ -296,13 +296,4 @@ public class ImpalaProvider implements Provider {
         olqQuerySql.setPage(page);
         return olqQuerySql;
     }
-
-    public static void main(String[] args) {
-        String sql = "SELECT * FROM OMDATA.S01_SJYMB JYM";
-        Page page = new Page();
-        page.setPageIndex(1);
-        page.setPageSize(20);
-        ImpalaProvider impalaProvider = new ImpalaProvider();
-        System.out.println(impalaProvider.getPageSql(sql, page));
-    }
 }
