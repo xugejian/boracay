@@ -52,15 +52,16 @@ public class OlqProviderService extends BaseService {
     /**
      * 查询
      *
+     * @param consumeId
      * @param dsId
      * @param olqQuerySql
      * @return
      */
-    public OLQResponse select(String dsId, OLQQuerySql olqQuerySql) {
+    public OLQResponse select(String consumeId, String dsId, OLQQuerySql olqQuerySql) {
         Datasource datasource = getDatasource(dsId);
         OLQRequest request = new OLQRequest(datasource, olqQuerySql);
         Provider provider = getProviderImpl(datasource);
-        OLQResponse response = provider.execute(request);
+        OLQResponse response = provider.execute(consumeId, request);
         //java.sql.SQLException 未执行语句句柄，则放到各个实现类里面去
         //response.setColumns(this.putColumnIntoMap(response.getMetadata()));
         return response;
@@ -73,11 +74,11 @@ public class OlqProviderService extends BaseService {
      * @param sql
      * @return
      */
-    public OLQResponse select(String dsId, String sql) {
+    public OLQResponse select(String consumeId, String dsId, String sql) {
         Datasource datasource = getDatasource(dsId);
         OLQRequest request = new OLQRequest(datasource, new OLQQuerySql(sql));
         Provider provider = getProviderImpl(datasource);
-        OLQResponse response = provider.execute(request);
+        OLQResponse response = provider.execute(consumeId, request);
         return response;
     }
 
@@ -107,11 +108,11 @@ public class OlqProviderService extends BaseService {
      * @param sql
      * @return
      */
-    public OLQResponseFetch selectFetch(String dsId, String sql) {
+    public OLQResponseFetch selectFetch(String consumeId, String dsId, String sql) {
         Datasource datasource = getDatasource(dsId);
         OLQRequest request = new OLQRequest(datasource, new OLQQuerySql(sql));
         Provider provider = getProviderImpl(datasource);
-        OLQResponseFetch response = provider.executeFetch(request);
+        OLQResponseFetch response = provider.executeFetch(consumeId, request);
         return response;
     }
 

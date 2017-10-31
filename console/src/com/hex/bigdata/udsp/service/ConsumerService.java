@@ -733,7 +733,7 @@ public class ConsumerService {
                     MessageResult messageResult = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
                     if (messageResult.isStatus()) {
                         localFileName = CreateFileUtil.getFileName();
-                        ThreadPool.execute(new OlqAsyncService(consumeRequest, dsId, (String) messageResult.getData(), RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName, asyncCycleTimeInterval));
+                        ThreadPool.execute(new OlqAppAsyncService(consumeRequest, dsId, (String) messageResult.getData(), RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName, asyncCycleTimeInterval));
                     } else {
                         this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000013.getValue(), messageResult.getMessage());
                         return response;

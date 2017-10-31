@@ -27,9 +27,6 @@ public class RedisProvider implements Provider {
     private static final String rkSep = "|";
     private static final String tableColumnSeq = ":";
 
-    public void init(Datasource datasource) {
-    }
-
     public IqResponse query(IqRequest request) {
         return query(request,-1,-1);
     }
@@ -146,10 +143,6 @@ public class RedisProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    public synchronized void close(Datasource datasource) {
-        //
     }
 
     //-------------------------------------------分割线---------------------------------------------

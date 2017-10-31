@@ -224,7 +224,7 @@ public class HeartbeatService {
                 OLQApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 MessageResult messageResult = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, dsId, (String) messageResult.getData(), RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName));
+                ThreadPool.execute(new OlqAppAsyncService(consumeRequest, dsId, (String) messageResult.getData(), RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName));
             }
         }
         logger.info("转移服务IP为：" + downHostKey + "上的未完成的异步任务到本机【结束】");

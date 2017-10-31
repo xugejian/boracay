@@ -86,16 +86,7 @@ public class HiveProvider implements Provider {
         return conn;
     }
 
-    public void init(Datasource datasource) {
-        try {
-            HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
-            getConnection(hiveDatasource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public OLQResponse execute(OLQRequest request) {
+    public OLQResponse execute(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -114,6 +105,9 @@ public class HiveProvider implements Provider {
         try {
             conn = getConnection(hiveDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             //获取查询信息
             OLQQuerySql olqQuerySql = request.getOlqQuerySql();
             if (olqQuerySql.getPage() == null){
@@ -184,6 +178,7 @@ public class HiveProvider implements Provider {
                     e.printStackTrace();
                 }
             }
+            OLQCommUtil.removeStatement(consumeId);
         }
 
         long now = System.currentTimeMillis();
@@ -195,17 +190,6 @@ public class HiveProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    public synchronized void close(Datasource datasource) {
-        BasicDataSource dataSource = dataSourcePool.remove(datasource.getId());
-        if (dataSource != null) {
-            try {
-                dataSource.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public boolean testDatasource(Datasource datasource) {
@@ -235,7 +219,7 @@ public class HiveProvider implements Provider {
     }
 
     @Override
-    public OLQResponseFetch executeFetch(OLQRequest request) {
+    public OLQResponseFetch executeFetch(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -251,6 +235,9 @@ public class HiveProvider implements Provider {
         try {
             conn = getConnection(hiveDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             OLQQuerySql olqQuerySql = request.getOlqQuerySql();
             rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
             rs.setFetchSize(1000);

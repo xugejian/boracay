@@ -37,11 +37,6 @@ public class ElasticSearchProvider implements Provider {
     private static Map<String, ElasticSearchConnectionPoolFactory> dataSourcePool;
 
     @Override
-    public void init(Datasource datasource) {
-
-    }
-
-    @Override
     public IqResponse query(IqRequest request) {
         long bef = System.currentTimeMillis();
         IqResponse response = new IqResponse();
@@ -210,12 +205,6 @@ public class ElasticSearchProvider implements Provider {
             }
         }
         return elSearchPage;
-    }
-
-
-    @Override
-    public void close(Datasource datasource) {
-
     }
 
     @Override

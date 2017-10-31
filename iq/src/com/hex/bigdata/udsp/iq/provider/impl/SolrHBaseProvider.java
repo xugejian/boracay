@@ -61,11 +61,6 @@ public class SolrHBaseProvider implements Provider {
 
     private static Map<String, HBaseConnectionPoolFactory> dataSourcePool;
 
-    public void init(Datasource datasource) {
-        getDataSource(new SolrHBaseDatasource(datasource.getPropertyMap()));
-        logger.debug("init Solr+HBase Provider DataSource");
-    }
-
     public IqResponse query(IqRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
@@ -195,14 +190,6 @@ public class SolrHBaseProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    public synchronized void close(Datasource datasource) {
-        HBaseConnectionPoolFactory factory = dataSourcePool.remove(datasource.getId());
-        if (factory != null) {
-            factory.closePool();
-        }
-        logger.debug("close Solr+HBase Provider DataSource");
     }
 
     //-------------------------------------------分割线---------------------------------------------

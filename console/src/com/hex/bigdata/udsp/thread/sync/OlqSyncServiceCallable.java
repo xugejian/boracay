@@ -14,6 +14,8 @@ import java.util.concurrent.Callable;
  */
 public class OlqSyncServiceCallable<T> implements Callable<Response> {
 
+    private String consumeId;
+
     /**
      * 联机查询同步服务
      */
@@ -32,7 +34,8 @@ public class OlqSyncServiceCallable<T> implements Callable<Response> {
     public OlqSyncServiceCallable() {
     }
 
-    public OlqSyncServiceCallable(String appId, OLQQuerySql olqQuerySql) {
+    public OlqSyncServiceCallable(String consumeId, String appId, OLQQuerySql olqQuerySql) {
+        this.consumeId = consumeId;
         this.appId = appId;
         this.olqQuerySql = olqQuerySql;
         this.olqSyncService = (OlqSyncService) WebApplicationContextUtil.getBean("olqSyncService");
@@ -40,6 +43,6 @@ public class OlqSyncServiceCallable<T> implements Callable<Response> {
 
     @Override
     public Response call() throws Exception {
-        return olqSyncService.syncStart(appId, olqQuerySql);
+        return olqSyncService.syncStart(consumeId, appId, olqQuerySql);
     }
 }

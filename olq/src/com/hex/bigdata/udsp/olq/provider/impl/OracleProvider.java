@@ -30,20 +30,6 @@ public class OracleProvider implements Provider {
     private Logger logger = LogManager.getLogger(OracleProvider.class);
     private static Map<String, BasicDataSource> dataSourcePool;
 
-    /**
-     * 初始化
-     *
-     * @param datasource
-     */
-    public void init(Datasource datasource) {
-        try {
-            OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
-            getConnection(oracleDatasource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     private synchronized BasicDataSource getDataSource(OracleDatasource oracleDatasource) {
         String dsId = oracleDatasource.getId();
         if (dataSourcePool == null) {
@@ -106,7 +92,7 @@ public class OracleProvider implements Provider {
      * @param request
      * @return
      */
-    public OLQResponse execute(OLQRequest request) {
+    public OLQResponse execute(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -125,6 +111,9 @@ public class OracleProvider implements Provider {
         try {
             conn = getConnection(oracleDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             //获取查询信息
             OLQQuerySql olqQuerySql = request.getOlqQuerySql();
             if (olqQuerySql.getPage() == null){
@@ -192,6 +181,7 @@ public class OracleProvider implements Provider {
                     e.printStackTrace();
                 }
             }
+            OLQCommUtil.removeStatement(consumeId);
         }
 
         long now = System.currentTimeMillis();
@@ -203,22 +193,6 @@ public class OracleProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    /**
-     * 关闭数据源连接
-     *
-     * @param datasource
-     */
-    public void close(Datasource datasource) {
-        BasicDataSource dataSource = dataSourcePool.remove(datasource.getId());
-        if (dataSource != null) {
-            try {
-                dataSource.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**
@@ -259,7 +233,7 @@ public class OracleProvider implements Provider {
      * @param request
      * @return
      */
-    public OLQResponseFetch executeFetch(OLQRequest request) {
+    public OLQResponseFetch executeFetch(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -275,6 +249,9 @@ public class OracleProvider implements Provider {
         try {
             conn = getConnection(oracleDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             OLQQuerySql olqQuerySql = request.getOlqQuerySql();
             rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
             rs.setFetchSize(1000);

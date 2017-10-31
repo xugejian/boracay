@@ -9,14 +9,16 @@ import java.util.concurrent.Callable;
 
 public class OlqAppAsyncCallable implements Callable<OLQResponse>{
 
+    private String consumeId;
     private OlqSyncService olqSyncService;
     private McCurrent mcCurrent;
     private String appId;
     private String sql;
     private String fileName;
 
-    public OlqAppAsyncCallable(McCurrent mcCurrent, String appId, String sql, String fileName) {
+    public OlqAppAsyncCallable(String consumeId, McCurrent mcCurrent, String appId, String sql, String fileName) {
         this.olqSyncService = (OlqSyncService) WebApplicationContextUtil.getBean("olqSyncService");
+        this.consumeId = consumeId;
         this.mcCurrent = mcCurrent;
         this.appId = appId;
         this.sql = sql;
@@ -25,6 +27,6 @@ public class OlqAppAsyncCallable implements Callable<OLQResponse>{
 
     @Override
     public OLQResponse call() throws Exception {
-        return this.olqSyncService.asyncStart(this.appId,this.sql, this.fileName, this.mcCurrent.getUserName());
+        return this.olqSyncService.asyncStart(this.consumeId, this.appId,this.sql, this.fileName, this.mcCurrent.getUserName());
     }
 }

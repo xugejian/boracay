@@ -35,10 +35,6 @@ public class SolrProvider implements Provider {
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
     private static Map<String, SolrConnectionPoolFactory> dataSourcePool;
 
-    public void init(Datasource datasource) {
-        //
-    }
-
     public IqResponse query(IqRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
@@ -171,11 +167,7 @@ public class SolrProvider implements Provider {
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
     }
-
-    public synchronized void close(Datasource datasource) {
-        //
-    }
-
+    
     //-------------------------------------------分割线---------------------------------------------
 
     private synchronized SolrConnectionPoolFactory getDataSource(String collectionName, SolrDatasource datasource) {
