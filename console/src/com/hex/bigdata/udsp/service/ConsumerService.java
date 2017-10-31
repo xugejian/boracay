@@ -1,15 +1,16 @@
 package com.hex.bigdata.udsp.service;
 
 
-import com.hex.bigdata.udsp.dto.ConsumeRequest;
-import com.hex.bigdata.udsp.dto.QueueIsFullResult;
-import com.hex.bigdata.udsp.dto.WaitNumResult;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
+import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
+import com.hex.bigdata.udsp.dto.ConsumeRequest;
+import com.hex.bigdata.udsp.dto.QueueIsFullResult;
+import com.hex.bigdata.udsp.dto.WaitNumResult;
 import com.hex.bigdata.udsp.iq.model.IqAppQueryCol;
 import com.hex.bigdata.udsp.iq.model.IqApplication;
 import com.hex.bigdata.udsp.iq.service.IqAppQueryColService;
@@ -34,7 +35,7 @@ import com.hex.bigdata.udsp.olq.dto.OLQApplicationDto;
 import com.hex.bigdata.udsp.olq.model.OLQApplication;
 import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
-import com.hex.bigdata.udsp.olq.service.OlqProviderService;
+import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
@@ -61,6 +62,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.concurrent.*;
 
@@ -108,6 +111,8 @@ public class ConsumerService {
     private OLQApplicationService olqApplicationService;
     @Autowired
     private McWaitQueueService mcWaitQueueService;
+    @Autowired
+    private InitParamService initParamService;
 
     /**
      * 管理员用户最大同步并发数
@@ -470,6 +475,7 @@ public class ConsumerService {
      */
     public void setErrorResponse(Response response, Request request, long bef, String errorCode, String message) {
         String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+
         response.setStatus(Status.DEFEAT.getValue());
         response.setStatusCode(StatusCode.DEFEAT.getValue());
         response.setMessage(message);
@@ -567,7 +573,9 @@ public class ConsumerService {
         if (null != waitNumResult && waitNumResult.isIntoWaitQueue() && CommonConstant.REQUEST_SYNC.equalsIgnoreCase(waitNumResult.getWaitQueueSyncType())) {
             Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, syncCycleTimeInterval));
             try {
-                futureTask.get(rcUserService.getMaxSyncWaitTimeout(), TimeUnit.SECONDS);
+                long maxSyncWaitTimeout = rcUserService == null ?
+                        initParamService.getMaxSyncWaitTimeout() : rcUserService.getMaxSyncWaitTimeout();
+                futureTask.get(maxSyncWaitTimeout, TimeUnit.MILLISECONDS);
                 mcCurrentService.insert(mcCurrent);
                 mcCurrentCountService.addAsyncCurrent(mcCurrent);
             } catch (TimeoutException e) {
@@ -579,13 +587,17 @@ public class ConsumerService {
                 this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName());
                 return response;
             } finally {
+
             }
         }
+
         //解决应用测试的时候，没有配置同步、异步执行超时时间，则必须先进行判断
-        long maxSyncExecuteTimeout = rcUserService == null ? 10000 : rcUserService.getMaxSyncExecuteTimeout();
+        long maxSyncExecuteTimeout = rcUserService == null ?
+                initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
 
         //异步时文件
         String localFileName = "";
+        runStart = System.currentTimeMillis();
         //根据类型进入不同的处理逻辑
         if (RcConstant.UDSP_SERVICE_TYPE_IQ.equalsIgnoreCase(appType)) {
             //如果是查询状态的(entity=status),则检查ConsumeId，否则检查应用中必输参数。
@@ -611,10 +623,7 @@ public class ConsumerService {
                     return response;
                 }
             }
-
-
             //开始iq消费
-            runStart = System.currentTimeMillis();
             if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(type)) {
                 if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
                     logger.debug("execute IQ ASYNC STATUS");
@@ -634,7 +643,7 @@ public class ConsumerService {
                 logger.debug("execute IQ SYNC START");
                 Future<Response> iqFuture = executorService.submit(new IqSyncServiceCallable(request.getData(), appId, page));
                 try {
-                    response = iqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+                    response = iqFuture.get(maxSyncExecuteTimeout, TimeUnit.MILLISECONDS);
                 } catch (TimeoutException e) {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                     return response;
@@ -676,10 +685,21 @@ public class ConsumerService {
                 } else {
                     olqQuerySql = new OLQQuerySql(sql);
                 }
-                Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(appId, olqQuerySql));
+                String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+                Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(consumeId, appId, olqQuerySql));
                 try {
-                    response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+                    response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.MILLISECONDS);
                 } catch (TimeoutException e) {
+                    // 杀死正在执行的SQL
+                    Statement stmt = OLQCommUtil.removeStatement(consumeId);
+                    if (stmt != null) {
+                        try {
+                            stmt.cancel();
+                            stmt.close();
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                     return response;
                 } catch (Exception e) {
@@ -732,10 +752,21 @@ public class ConsumerService {
                 if (messageResult.isStatus()) {
                     localFileName = CreateFileUtil.getFileName();
                     OLQQuerySql olqQuerySql = (OLQQuerySql) messageResult.getData();
-                    Future<Response> olqAppFuture = executorService.submit(new OlqSyncServiceCallable(dsId, olqQuerySql));
+                    String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+                    Future<Response> olqAppFuture = executorService.submit(new OlqSyncServiceCallable(consumeId, dsId, olqQuerySql));
                     try {
-                        response = olqAppFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+                        response = olqAppFuture.get(maxSyncExecuteTimeout, TimeUnit.MILLISECONDS);
                     } catch (TimeoutException e) {
+                        // 杀死正在执行的SQL
+                        Statement stmt = OLQCommUtil.removeStatement(consumeId);
+                        if (stmt != null) {
+                            try {
+                                stmt.cancel();
+                                stmt.close();
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
                         this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                         return response;
                     } catch (Exception e) {
@@ -806,7 +837,7 @@ public class ConsumerService {
             logger.debug("execute IM SYNC START");
             Future<Response> imFuture = executorService.submit(new ImSyncServiceCallable(appId, request.getData()));
             try {
-                response = imFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+                response = imFuture.get(maxSyncExecuteTimeout, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
                 this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                 return response;

@@ -12,6 +12,7 @@ import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponseFetch;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
+import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +40,15 @@ public class OlqSyncService {
     /**
      * 同步运行
      *
+     * @param consumeId
      * @param dsId
      * @param olqQuerySql
      * @return
      */
-    public Response syncStart(String dsId, OLQQuerySql olqQuerySql) {
+    public Response syncStart(String consumeId, String dsId, OLQQuerySql olqQuerySql) {
         Response response = new Response();
         try {
-            OLQResponse olqResponse = olqProviderService.select(dsId, olqQuerySql);
+            OLQResponse olqResponse = olqProviderService.select(consumeId, dsId, olqQuerySql);
             response.setMessage(olqResponse.getMessage());
             response.setConsumeTime(olqResponse.getConsumeTime());
             response.setStatus(olqResponse.getStatus().getValue());
@@ -58,7 +60,7 @@ public class OlqSyncService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
-            response.setMessage(ErrorCode.ERROR_000007.getName() +"："+e.getMessage());
+            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
@@ -73,12 +75,12 @@ public class OlqSyncService {
      * @param sql
      * @return
      */
-    public OLQResponse asyncStart(String dsId, String sql, String fileName, String userName) {
+    public OLQResponse asyncStart(String consumeId, String dsId, String sql, String fileName, String userName) {
         Status status = Status.SUCCESS;
         StatusCode statusCode = StatusCode.SUCCESS;
         String message = "成功";
         String filePath = "";
-        OLQResponseFetch responseFetch = olqProviderService.selectFetch(dsId, sql);
+        OLQResponseFetch responseFetch = olqProviderService.selectFetch(consumeId, dsId, sql);
         Connection conn = responseFetch.getConnection();
         Statement stmt = responseFetch.getStatement();
         ResultSet rs = responseFetch.getResultSet();
@@ -142,6 +144,7 @@ public class OlqSyncService {
                     e.printStackTrace();
                 }
             }
+            OLQCommUtil.removeStatement(consumeId);
         }
 
         OLQResponse response = new OLQResponse();
