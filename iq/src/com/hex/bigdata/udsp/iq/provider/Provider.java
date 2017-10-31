@@ -1,8 +1,11 @@
 package com.hex.bigdata.udsp.iq.provider;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.iq.provider.model.IqRequest;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
+
+import java.util.List;
 
 /**
  * Created by junjiem on 2017-2-15.
@@ -34,5 +37,14 @@ public interface Provider {
      * @return
      */
     boolean testDatasource(Datasource datasource);
+
+    /**
+     * 获取字段信息
+     *
+     * @param datasource
+     * @param schemaName
+     * @return
+     */
+    List<MetadataCol> columnInfo(Datasource datasource, String schemaName);
 
 }

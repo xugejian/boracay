@@ -50,7 +50,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="tbName">表名：</label></th>
                     <td >
                         <input id="tbName" name="tbName" class="nui-textbox" style="width:99%" required="true"
-                               vtype="maxLength:64"/>
+                               vtype="maxLength:64" onblur="setCols"/>
                     </td>
                 </tr>
                 <tr>
@@ -179,6 +179,7 @@ ${extends("/goframe/function_layout.httl")}
     var grid2;
     var dsIdObj;
     var originName;
+    var originTbName;
 
     /**
      * 按需加载资源文件
@@ -742,5 +743,81 @@ ${extends("/goframe/function_layout.httl")}
         return row;
     }
 
+    /**
+     * 设置表字段信息
+     */
+    function setCols() {
+        var dsId = nui.get("dsId").getValue();
+        if (!dsId) {
+            nui.alert("请选择数据源！");
+            return;
+        }
+        var tbName = nui.get("tbName").getValue();
+        if (!tbName) return;
+        if (tbName == originTbName) return;
+        originTbName = tbName;
+        form1.loading("正在获取字段中,请稍等...");
+        grid1.clearRows();
+        grid2.clearRows();
+        $.post("${basePath}/iq/md/getColumnInfo/" + dsId, {
+            "tbName": tbName
+        }, function (result) {
+            if (result.status && result.data && result.data.length > 0) {
+                grid1.addRows(dealCols1(result.data));
+                grid2.addRows(dealCols2(result.data));
+            }
+            //nui.alert(result.message);
+            showMessage(result.message);
+            form1.unmask();
+        });
+    }
+
+    /**
+     * 处理外表字段
+     */
+    function dealCols1(data) {
+        var cols = [];
+        $.each(data, function (i, val) {
+            if(val.indexed) {
+                cols.push({
+                    "name": val.name,
+                    "describe": val.describe ? val.describe: val.name,
+                    "colType": val.type ? val.type : 'STRING',
+                    "length": val.length
+                });
+            }
+        });
+        return cols;
+    }
+    function dealCols2(data) {
+        var cols = [];
+        $.each(data, function (i, val) {
+            if(val.stored) {
+                cols.push({
+                    "name": val.name,
+                    "describe": val.describe ? val.describe: val.name,
+                    "colType": val.type ? val.type : 'STRING',
+                    "length": val.length
+                });
+            }
+        });
+        return cols;
+    }
+
+    /**
+     * 显示提示信息
+     */
+    function showMessage(message) {
+        nui.open({
+            url: "${basePath}/goframe/p/im.cm.message",
+            title: '提示信息',
+            width: 600,
+            height: 560,
+            onload: function () {
+                var iframe = this.getIFrameEl();
+                iframe.contentWindow.setData(message);
+            }
+        });
+    }
 </script>
 <!--#end-->

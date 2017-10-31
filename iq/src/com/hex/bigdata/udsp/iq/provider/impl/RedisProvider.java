@@ -4,6 +4,7 @@ import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.RedisConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.RedisDatasource;
@@ -273,6 +274,11 @@ public class RedisProvider implements Provider {
             }
         }
         return canConnection ;
+    }
+
+    @Override
+    public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
+        return null;
     }
 
 

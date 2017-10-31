@@ -6,14 +6,13 @@ import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.provider.model.Result;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.im.provider.model.*;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.ElasticSearchConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.ELSearchDatasource;
-import com.hex.bigdata.udsp.iq.provider.impl.model.elsearch.ELInnerHits;
-import com.hex.bigdata.udsp.iq.provider.impl.model.elsearch.ELOuterHits;
-import com.hex.bigdata.udsp.iq.provider.impl.model.elsearch.ELSearchPage;
-import com.hex.bigdata.udsp.iq.provider.impl.model.elsearch.ELsearchResponse;
+import com.hex.bigdata.udsp.iq.provider.impl.model.elsearch.*;
 import com.hex.bigdata.udsp.iq.provider.model.*;
+import com.hex.bigdata.udsp.iq.provider.model.Metadata;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.http.HttpHost;
@@ -65,17 +64,9 @@ public class ElasticSearchProvider implements Provider {
         page.setPageSize(maxSize);
 
         String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
-        String[] schemaArray = schemaName.split(".");
-        if (schemaArray.length != 2) {
-            //抛出异常
-
-        }
-        String indexName = schemaArray[0];
-        String typeName = schemaArray[1];
 
         try {
-            ELSearchPage elSearchPage = search(indexName, typeName, elSearchDatasource, queryString);
-
+            ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
             List<Map<String, Object>> list = elSearchPage.getRecords();
             List<Result> records = new ArrayList<Result>();
             for (Map<String, Object> map : list) {
@@ -130,16 +121,9 @@ public class ElasticSearchProvider implements Provider {
         page.setPageSize(pageSize);
 
         String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
-        String[] schemaArray = schemaName.split("\\.");
+
         try {
-            ELSearchPage elSearchPage = null;
-            if (schemaArray.length == 2) {
-                String indexName = schemaArray[0];
-                String typeName = schemaArray[1];
-                elSearchPage = search(indexName, typeName, elSearchDatasource, queryString);
-            } else {
-                elSearchPage = search(schemaName, elSearchDatasource, queryString);
-            }
+            ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
             List<Map<String, Object>> list = elSearchPage.getRecords();
             List<Result> records = new ArrayList<Result>();
             if (null != list && list.size() > 0) {
@@ -165,7 +149,7 @@ public class ElasticSearchProvider implements Provider {
         return response;
     }
 
-    private ELSearchPage search(String indexName, ELSearchDatasource datasource, String queryString) {
+    private ELSearchPage search(String schemaName, ELSearchDatasource datasource, String queryString, List<ReturnColumn> returnColumns) {
         ELSearchPage elSearchPage = new ELSearchPage();
         RestClient restClient = null;
         NStringEntity stringEntity = null;
@@ -173,7 +157,12 @@ public class ElasticSearchProvider implements Provider {
             stringEntity = new NStringEntity(queryString, "utf-8");
             restClient = getConnection(datasource);
             logger.info(queryString);
-            Response response = restClient.performRequest("GET", "/" + indexName + "/_search", Collections.<String, String>emptyMap(), stringEntity);
+            String schemaUrl = schemaName;
+            String[] schemaArray = schemaName.split("\\.");
+            if (schemaArray.length == 2) {
+                schemaUrl = schemaArray[0] + "/" + schemaArray[1];
+            }
+            Response response = restClient.performRequest("GET", "/" + schemaUrl + "/_search", Collections.<String, String>emptyMap(), stringEntity);
             String returnString = EntityUtils.toString(response.getEntity());
             JSONObject returnJsonObject = JSONUtil.parseJSON2Obj(returnString, JSONObject.class);
             JSONObject errorObject = (JSONObject) returnJsonObject.get("error");
@@ -184,12 +173,24 @@ public class ElasticSearchProvider implements Provider {
                 String errorReason = (String) errorObject.get("reason");
                 throw new RuntimeException(errortype + ":" + errorReason);
             }
-            ELsearchResponse eLsearchResponse = JSONObject.parseObject(returnString, ELsearchResponse.class);
+            ELSearchResponse eLsearchResponse = JSONObject.parseObject(returnString, ELSearchResponse.class);
             ELOuterHits elOuterHits = eLsearchResponse.getHits();
             List<ELInnerHits> elInnerHits = elOuterHits.getHits();
+            Map<String, String> colMap = getColMap(returnColumns);
             List<Map<String, Object>> recordes = new ArrayList<Map<String, Object>>();
+            Map<String, Object> recorde = null;
+            Map<String, Object> source = null;
+            String label = null;
             for (ELInnerHits item : elInnerHits) {
-                recordes.add(item.get_source());
+                source = item.get_source();
+                recorde = new HashMap<>();
+                for (Map.Entry<String, Object> entity : source.entrySet()) {
+                    label = colMap.get(entity.getKey());
+                    if (StringUtils.isNotBlank(label)) {
+                        recorde.put(label, entity.getValue());
+                    }
+                }
+                recordes.add(recorde);
             }
             elSearchPage.setRecords(recordes);
             //设置总量
@@ -206,45 +207,12 @@ public class ElasticSearchProvider implements Provider {
         return elSearchPage;
     }
 
-    private ELSearchPage search(String indexName, String typeName, ELSearchDatasource datasource, String queryString) {
-        ELSearchPage elSearchPage = new ELSearchPage();
-        RestClient restClient = null;
-        NStringEntity stringEntity = null;
-        try {
-            stringEntity = new NStringEntity(queryString, "utf-8");
-            restClient = getConnection(datasource);
-            logger.info(queryString);
-            Response response = restClient.performRequest("GET", "/" + indexName + "/" + typeName + "/_search", Collections.<String, String>emptyMap(), stringEntity);
-            String returnString = EntityUtils.toString(response.getEntity());
-            JSONObject returnJsonObject = JSONUtil.parseJSON2Obj(returnString, JSONObject.class);
-            JSONObject errorObject = (JSONObject) returnJsonObject.get("error");
-            logger.info("search_result:" + returnString);
-            if (null != errorObject) {
-                //查询报错抛出异常
-                String errortype = (String) errorObject.get("type");
-                String errorReason = (String) errorObject.get("reason");
-                throw new RuntimeException(errortype + ":" + errorReason);
-            }
-            ELsearchResponse eLsearchResponse = JSONObject.parseObject(returnString, ELsearchResponse.class);
-            ELOuterHits elOuterHits = eLsearchResponse.getHits();
-            List<ELInnerHits> elInnerHits = elOuterHits.getHits();
-            List<Map<String, Object>> recordes = new ArrayList<Map<String, Object>>();
-            for (ELInnerHits item : elInnerHits) {
-                recordes.add(item.get_source());
-            }
-            elSearchPage.setRecords(recordes);
-            //设置总量
-            elSearchPage.setTotalCount(elOuterHits.getTotal());
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (restClient != null) {
-                release(datasource, restClient);
-            }
+    private Map<String, String> getColMap(List<ReturnColumn> returnColumns) {
+        Map<String, String> colMap = new HashMap<>();
+        for (ReturnColumn column : returnColumns) {
+            colMap.put(column.getName(), column.getLabel());
         }
-        return elSearchPage;
+        return colMap;
     }
 
     @Override
@@ -274,6 +242,101 @@ public class ElasticSearchProvider implements Provider {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
+        List<MetadataCol> list = null;
+        MetadataCol col = null;
+        ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource.getPropertyMap());
+        RestClient restClient = null;
+        NStringEntity stringEntity = null;
+        Response response = null;
+        try {
+            stringEntity = new NStringEntity("", "utf-8");
+            restClient = getConnection(elSearchDatasource);
+            String schemaUrl = schemaName;
+            String[] schemaArray = schemaName.split("\\.");
+            if (schemaArray.length == 2) {
+                schemaUrl = schemaArray[0] + "/" + schemaArray[1];
+            }
+            response = restClient.performRequest("GET", "/" + schemaUrl, Collections.<String, String>emptyMap(), stringEntity);
+            String returnStr = EntityUtils.toString(response.getEntity());
+            JSONObject returnJsonObject = JSONUtil.parseJSON2Obj(returnStr, JSONObject.class);
+            JSONObject errorObject = (JSONObject) returnJsonObject.get("error");
+            logger.info("search_result:" + returnStr);
+            if (null != errorObject) {
+                throw new RuntimeException(returnStr);
+            }
+
+            JSONObject defaultObj = null;
+            if (schemaArray.length == 2) {
+                JSONObject schemaObj = (JSONObject) returnJsonObject.get(schemaArray[0]);
+                JSONObject mappingsObj = (JSONObject) schemaObj.get("mappings");
+                defaultObj = (JSONObject) mappingsObj.get(schemaArray[1]);
+            } else {
+                JSONObject schemaObj = (JSONObject) returnJsonObject.get(schemaName);
+                JSONObject mappingsObj = (JSONObject) schemaObj.get("mappings");
+                defaultObj = (JSONObject) mappingsObj.get("default");
+            }
+            JSONObject propertiesObj = (JSONObject) defaultObj.get("properties");
+            String propertiesStr = JSONUtil.parseObj2JSON(propertiesObj);
+            Map<String, ELSearchProperty> properties = JSONUtil.parseJSON2Map(propertiesStr, ELSearchProperty.class);
+            list = new ArrayList<>();
+            short i = 0;
+            for (Map.Entry<String, ELSearchProperty> entry : properties.entrySet()) {
+                String name = entry.getKey();
+                ELSearchProperty property = entry.getValue();
+                String index = property.getIndex();
+                String type = property.getType();
+                boolean store = property.isStore();
+
+                col = new MetadataCol();
+                col.setSeq(i);
+                col.setName(name);
+                col.setType(getColType(type));
+                col.setIndexed(StringUtils.isNotBlank(index) ? true : false);
+                col.setStored(store);
+
+                list.add(col);
+                i++;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (restClient != null) {
+                release(elSearchDatasource, restClient);
+            }
+        }
+        return list;
+    }
+
+    public static DataType getColType(String type) {
+        type = type.toUpperCase();
+        DataType dataType = null;
+        switch (type) {
+            case "STRING":
+                dataType = DataType.STRING;
+                break;
+            case "INT":
+                dataType = DataType.INT;
+                break;
+            case "FLOAT":
+                dataType = DataType.FLOAT;
+                break;
+            case "DOUBLE":
+                dataType = DataType.DOUBLE;
+                break;
+            case "DATE":
+                dataType = DataType.TIMESTAMP;
+                break;
+            case "BOOLEAN":
+                dataType = DataType.BOOLEAN;
+                break;
+            default:
+                dataType = DataType.STRING;
+        }
+        return dataType;
     }
 
     private void release(ELSearchDatasource datasource, RestClient restClient) {

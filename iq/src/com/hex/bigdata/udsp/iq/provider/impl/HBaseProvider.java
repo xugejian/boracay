@@ -4,12 +4,12 @@ import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBasePage;
 import com.hex.bigdata.udsp.iq.provider.model.*;
-import com.hex.bigdata.udsp.iq.util.IqCommonUtil;
 import com.hex.goframe.util.GFStringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -680,5 +680,10 @@ public class HBaseProvider implements Provider {
             }
         }
         return canConnection;
+    }
+
+    @Override
+    public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
+        return null;
     }
 }
