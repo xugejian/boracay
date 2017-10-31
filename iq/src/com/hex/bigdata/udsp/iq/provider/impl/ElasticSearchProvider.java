@@ -131,16 +131,15 @@ public class ElasticSearchProvider implements Provider {
 
         String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
         String[] schemaArray = schemaName.split("\\.");
-        if (schemaArray.length != 2) {
-            //抛出异常
-
-        }
-        String indexName = schemaArray[0];
-        String typeName = schemaArray[1];
-
         try {
-            ELSearchPage elSearchPage = search(indexName, typeName, elSearchDatasource, queryString);
-
+            ELSearchPage elSearchPage = null;
+            if (schemaArray.length == 2) {
+                String indexName = schemaArray[0];
+                String typeName = schemaArray[1];
+                elSearchPage = search(indexName, typeName, elSearchDatasource, queryString);
+            } else {
+                elSearchPage = search(schemaName, elSearchDatasource, queryString);
+            }
             List<Map<String, Object>> list = elSearchPage.getRecords();
             List<Result> records = new ArrayList<Result>();
             if (null != list && list.size() > 0) {
@@ -164,6 +163,47 @@ public class ElasticSearchProvider implements Provider {
         long consumeTime = now - bef;
         response.setConsumeTime(consumeTime);
         return response;
+    }
+
+    private ELSearchPage search(String indexName, ELSearchDatasource datasource, String queryString) {
+        ELSearchPage elSearchPage = new ELSearchPage();
+        RestClient restClient = null;
+        NStringEntity stringEntity = null;
+        try {
+            stringEntity = new NStringEntity(queryString, "utf-8");
+            restClient = getConnection(datasource);
+            logger.info(queryString);
+            Response response = restClient.performRequest("GET", "/" + indexName + "/_search", Collections.<String, String>emptyMap(), stringEntity);
+            String returnString = EntityUtils.toString(response.getEntity());
+            JSONObject returnJsonObject = JSONUtil.parseJSON2Obj(returnString, JSONObject.class);
+            JSONObject errorObject = (JSONObject) returnJsonObject.get("error");
+            logger.info("search_result:" + returnString);
+            if (null != errorObject) {
+                //查询报错抛出异常
+                String errortype = (String) errorObject.get("type");
+                String errorReason = (String) errorObject.get("reason");
+                throw new RuntimeException(errortype + ":" + errorReason);
+            }
+            ELsearchResponse eLsearchResponse = JSONObject.parseObject(returnString, ELsearchResponse.class);
+            ELOuterHits elOuterHits = eLsearchResponse.getHits();
+            List<ELInnerHits> elInnerHits = elOuterHits.getHits();
+            List<Map<String, Object>> recordes = new ArrayList<Map<String, Object>>();
+            for (ELInnerHits item : elInnerHits) {
+                recordes.add(item.get_source());
+            }
+            elSearchPage.setRecords(recordes);
+            //设置总量
+            elSearchPage.setTotalCount(elOuterHits.getTotal());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (restClient != null) {
+                release(datasource, restClient);
+            }
+        }
+        return elSearchPage;
     }
 
     private ELSearchPage search(String indexName, String typeName, ELSearchDatasource datasource, String queryString) {
@@ -361,7 +401,7 @@ public class ElasticSearchProvider implements Provider {
                 } else if (Operator.LK.equals(operator)) {
                     JSONObject likeObject = new JSONObject();
                     itemObject = new JSONObject();
-                    itemObject.put(name, value+"*");
+                    itemObject.put(name, value + "*");
                     likeObject.put("wildcard", itemObject);
                     mustObjects.add(likeObject);
                 } else if (Operator.IN.equals(operator)) {
