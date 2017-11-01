@@ -178,7 +178,7 @@ public class ConsumerService {
 
         Current mcCurrent = null;
         //外部调用必输参数检查
-        if (StringUtils.isBlank(serviceName) || StringUtils.isBlank(udspUser) || StringUtils.isBlank(appUser) || StringUtils.isBlank(udspPass) || StringUtils.isBlank(entity) || StringUtils.isBlank(type)) {
+        if (StringUtils.isBlank(serviceName) || StringUtils.isBlank(udspUser) || StringUtils.isBlank(udspPass) || StringUtils.isBlank(entity) || StringUtils.isBlank(type)) {
             consumeRequest.setError(ErrorCode.ERROR_000009);
             return consumeRequest;
         }
