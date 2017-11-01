@@ -575,7 +575,7 @@ public class ConsumerService {
             try {
                 long maxSyncWaitTimeout = rcUserService == null ?
                         initParamService.getMaxSyncWaitTimeout() : rcUserService.getMaxSyncWaitTimeout();
-                futureTask.get(maxSyncWaitTimeout, TimeUnit.MILLISECONDS);
+                futureTask.get(maxSyncWaitTimeout, TimeUnit.SECONDS);
                 mcCurrentService.insert(mcCurrent);
                 mcCurrentCountService.addAsyncCurrent(mcCurrent);
             } catch (TimeoutException e) {
@@ -643,7 +643,7 @@ public class ConsumerService {
                 logger.debug("execute IQ SYNC START");
                 Future<Response> iqFuture = executorService.submit(new IqSyncServiceCallable(request.getData(), appId, page));
                 try {
-                    response = iqFuture.get(maxSyncExecuteTimeout, TimeUnit.MILLISECONDS);
+                    response = iqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                     return response;
@@ -688,7 +688,7 @@ public class ConsumerService {
                 String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
                 Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(consumeId, appId, olqQuerySql));
                 try {
-                    response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.MILLISECONDS);
+                    response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     // 杀死正在执行的SQL
                     Statement stmt = OLQCommUtil.removeStatement(consumeId);
@@ -755,7 +755,7 @@ public class ConsumerService {
                     String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
                     Future<Response> olqAppFuture = executorService.submit(new OlqSyncServiceCallable(consumeId, dsId, olqQuerySql));
                     try {
-                        response = olqAppFuture.get(maxSyncExecuteTimeout, TimeUnit.MILLISECONDS);
+                        response = olqAppFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                     } catch (TimeoutException e) {
                         // 杀死正在执行的SQL
                         Statement stmt = OLQCommUtil.removeStatement(consumeId);
@@ -837,7 +837,7 @@ public class ConsumerService {
             logger.debug("execute IM SYNC START");
             Future<Response> imFuture = executorService.submit(new ImSyncServiceCallable(appId, request.getData()));
             try {
-                response = imFuture.get(maxSyncExecuteTimeout, TimeUnit.MILLISECONDS);
+                response = imFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                 return response;

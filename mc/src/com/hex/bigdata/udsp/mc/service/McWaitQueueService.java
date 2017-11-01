@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.mc.service;
 
 import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
+import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
@@ -49,6 +50,8 @@ public class McWaitQueueService {
     @Autowired
     private RedisDistributedLock redisLock;
 
+    @Autowired
+    private InitParamService initParamService;
 
     /**
      * 检查等待队列是否满了
@@ -62,8 +65,8 @@ public class McWaitQueueService {
         boolean isFull = false;
         QueueIsFullResult isFullResult = new QueueIsFullResult();
         synchronized (queueName.intern()) {
-            logger.info(Thread.currentThread().getName() + "queueName ：" + queueName);
-            redisLock.lock(queueName);// 分布式上锁 （主要防止多节点并发资源不同步问题）
+            if (initParamService.isUseClusterRedisLock())
+                redisLock.lock(queueName);// 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 McWaitQueue mcWaitQueue = this.select(queueName);
                 if (null == mcWaitQueue) {
@@ -88,7 +91,8 @@ public class McWaitQueueService {
                 mcWaitQueueMapper.insert(queueName, mcWaitQueue);
                 return isFullResult;
             } finally {
-                redisLock.unlock(queueName); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                if (initParamService.isUseClusterRedisLock())
+                    redisLock.unlock(queueName); // 分布式解锁 （主要防止多节点并发资源不同步问题）
             }
         }
     }
@@ -96,7 +100,8 @@ public class McWaitQueueService {
     public boolean checkWaitQueueIsFirst(McCurrent mcCurrent) {
         String queueName = this.getWaitQueueKey(mcCurrent);
         synchronized (queueName.intern()) {
-            redisLock.lock(queueName);// 分布式上锁 （主要防止多节点并发资源不同步问题）
+            if (initParamService.isUseClusterRedisLock())
+                redisLock.lock(queueName);// 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 McWaitQueue mcWaitQueue = this.select(queueName);
                 //本次请求加入队列
@@ -111,7 +116,8 @@ public class McWaitQueueService {
                 }
                 return flg;
             } finally {
-                redisLock.unlock(queueName); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                if (initParamService.isUseClusterRedisLock())
+                    redisLock.unlock(queueName); // 分布式解锁 （主要防止多节点并发资源不同步问题）
             }
 
         }

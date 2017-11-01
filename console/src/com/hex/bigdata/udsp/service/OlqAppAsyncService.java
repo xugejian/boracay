@@ -129,7 +129,7 @@ public class OlqAppAsyncService implements Runnable {
             try {
                 long maxAsyncWaitTimeout = rcUserService == null ?
                         initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
-                passFlg = futureTask.get(maxAsyncWaitTimeout, TimeUnit.MILLISECONDS);
+                passFlg = futureTask.get(maxAsyncWaitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 status = McConstant.MCLOG_STATUS_FAILED;
                 errorCode = ErrorCode.ERROR_000014.getValue();
@@ -152,7 +152,7 @@ public class OlqAppAsyncService implements Runnable {
             try {
                 long maxAsyncExecuteTimeout = rcUserService == null ?
                         initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
-                response = olqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.MILLISECONDS);
+                response = olqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 status = McConstant.MCLOG_STATUS_FAILED;
                 errorCode = ErrorCode.ERROR_000015.getValue();
