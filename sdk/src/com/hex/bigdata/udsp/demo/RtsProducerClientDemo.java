@@ -27,17 +27,12 @@ public class RtsProducerClientDemo {
      */
     private static Logger logger = LogManager.getLogger(RtsProducerClientDemo.class);
 
-    public static void main(String[] args) {
-        RtsProducerClientDemo demo = new RtsProducerClientDemo();
-        demo.syncStartTest();
-    }
-
-    public void syncStartTest() {
+    public void syncStart() {
         String url = "http://127.0.0.1:8088/udsp/http/consume";
         //创建自定义客户端
         RtsProducerClient rtsProducerClient = ConsumerClientFactory.createCustomClient(RtsProducerClient.class, url);
         //创建默认客户端,根据sdk.config.properties配置文件获取地址
-        //RtsProducerClient rtsProducerClient = ConsumerClientFactory.createDefaultClient(RtsProducerClient.class);
+        //RtsProducerClient rtsProducerClient = ConsumerClientFactory.createCustomClient(RtsProducerClient.class);
         //创建调用实体
         RtsProducerRequest producerRequest = new RtsProducerRequest();
         //基础参数设置-设置调用服务的名称
@@ -66,5 +61,8 @@ public class RtsProducerClientDemo {
         SyncPackResponse syncPackResponse = rtsProducerClient.syncStart(producerRequest);
     }
 
-
+    public static void main(String[] args) {
+        RtsProducerClientDemo demo = new RtsProducerClientDemo();
+        demo.syncStart();
+    }
 }

@@ -17,11 +17,11 @@ import com.hex.bigdata.udsp.iq.service.IqAppQueryColService;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
 import com.hex.bigdata.udsp.mc.constant.McConstant;
 import com.hex.bigdata.udsp.mc.model.McConsumeLog;
-import com.hex.bigdata.udsp.mc.model.McCurrent;
+import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
-import com.hex.bigdata.udsp.mc.service.McCurrentCountService;
-import com.hex.bigdata.udsp.mc.service.McCurrentService;
-import com.hex.bigdata.udsp.mc.service.McWaitQueueService;
+import com.hex.bigdata.udsp.mc.service.RunQueueService;
+import com.hex.bigdata.udsp.mc.service.CurrentService;
+import com.hex.bigdata.udsp.mc.service.WaitQueueService;
 import com.hex.bigdata.udsp.mc.util.McCommonUtil;
 import com.hex.bigdata.udsp.mm.dto.MmFullAppInfoView;
 import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
@@ -100,9 +100,9 @@ public class ConsumerService {
     @Autowired
     private MmApplicationService mmApplicationService;
     @Autowired
-    private McCurrentCountService mcCurrentCountService;
+    private RunQueueService runQueueService;
     @Autowired
-    private McCurrentService mcCurrentService;
+    private CurrentService mcCurrentService;
     @Autowired
     private IqAppQueryColService iqAppQueryColService;
     @Autowired
@@ -110,7 +110,7 @@ public class ConsumerService {
     @Autowired
     private OLQApplicationService olqApplicationService;
     @Autowired
-    private McWaitQueueService mcWaitQueueService;
+    private WaitQueueService mcWaitQueueService;
     @Autowired
     private InitParamService initParamService;
 
@@ -176,7 +176,7 @@ public class ConsumerService {
         String entity = request.getEntity();
         String type = request.getType();
 
-        McCurrent mcCurrent = null;
+        Current mcCurrent = null;
         //外部调用必输参数检查
         if (StringUtils.isBlank(serviceName) || StringUtils.isBlank(udspUser) || StringUtils.isBlank(appUser) || StringUtils.isBlank(udspPass) || StringUtils.isBlank(entity) || StringUtils.isBlank(type)) {
             consumeRequest.setError(ErrorCode.ERROR_000009);
@@ -314,7 +314,7 @@ public class ConsumerService {
         String appName = getAppName(appType, appId);
         request.setAppName(appName);
         request.setAppUser(udspUser);
-        McCurrent mcCurrent = null;
+        Current mcCurrent = null;
         String type = request.getType() == null ? "" : request.getType().toUpperCase();
         String entity = request.getEntity() == null ? "" : request.getEntity().toUpperCase();
 
@@ -337,10 +337,10 @@ public class ConsumerService {
             //McCurrentCountService mcCurrentCountService = McCurrentCountService.getInstance();
             if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)) {
                 //同步
-                mcCurrent = mcCurrentCountService.checkSyncCurrent(request, adminMaxAsyncNum);
+                mcCurrent = runQueueService.checkSyncCurrent(request, adminMaxAsyncNum);
             } else if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(type)) {
                 //异步
-                mcCurrent = mcCurrentCountService.checkAsyncCurrent(request, adminMaxSyncNum);
+                mcCurrent = runQueueService.checkAsyncCurrent(request, adminMaxSyncNum);
             }
             if (mcCurrent == null) {
                 consumeRequest.setError(ErrorCode.ERROR_000003);
@@ -428,7 +428,7 @@ public class ConsumerService {
      * @return
      */
     private Response consume(Request request, ConsumeRequest consumeRequest, long bef) {
-        McCurrent mcCurrent = consumeRequest.getMcCurrent();
+        Current mcCurrent = consumeRequest.getMcCurrent();
         ErrorCode errorCode = consumeRequest.getError();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         try {
@@ -454,12 +454,12 @@ public class ConsumerService {
             if (mcCurrent != null) {
                 logger.debug("从内存数据库中修改并发信息:" + mcCurrent.getPkId());
                 if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(request.getEntity())) {//所有的status
-                    this.mcCurrentCountService.reduceAsyncCurrent(mcCurrent);
+                    this.runQueueService.reduceAsyncCurrent(mcCurrent);
                 } else if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) { // 所有的同步
-                    this.mcCurrentCountService.reduceSyncCurrent(mcCurrent);
+                    this.runQueueService.reduceSyncCurrent(mcCurrent);
                 } else if (mcCurrent.getAppType().equalsIgnoreCase(RcConstant.UDSP_SERVICE_TYPE_MM)
                         && ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {// 模型的异步
-                    this.mcCurrentCountService.reduceAsyncCurrent(mcCurrent);
+                    this.runQueueService.reduceAsyncCurrent(mcCurrent);
                 }
             }
         }
@@ -547,7 +547,7 @@ public class ConsumerService {
      */
     public Response consume(Request request, ConsumeRequest consumeRequest) {
 
-        McCurrent mcCurrent = consumeRequest.getMcCurrent();
+        Current mcCurrent = consumeRequest.getMcCurrent();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         WaitNumResult waitNumResult = consumeRequest.getWaitNumResult();
 
@@ -573,11 +573,11 @@ public class ConsumerService {
         if (null != waitNumResult && waitNumResult.isIntoWaitQueue() && CommonConstant.REQUEST_SYNC.equalsIgnoreCase(waitNumResult.getWaitQueueSyncType())) {
             Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, syncCycleTimeInterval));
             try {
-                long maxSyncWaitTimeout = rcUserService == null ?
+                long maxSyncWaitTimeout = (rcUserService == null || rcUserService.getMaxSyncWaitTimeout() == 0) ?
                         initParamService.getMaxSyncWaitTimeout() : rcUserService.getMaxSyncWaitTimeout();
                 futureTask.get(maxSyncWaitTimeout, TimeUnit.SECONDS);
                 mcCurrentService.insert(mcCurrent);
-                mcCurrentCountService.addAsyncCurrent(mcCurrent);
+                runQueueService.addAsyncCurrent(mcCurrent);
             } catch (TimeoutException e) {
                 e.printStackTrace();
                 this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName());
@@ -592,7 +592,7 @@ public class ConsumerService {
         }
 
         //解决应用测试的时候，没有配置同步、异步执行超时时间，则必须先进行判断
-        long maxSyncExecuteTimeout = rcUserService == null ?
+        long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
                 initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
 
         //异步时文件
@@ -875,7 +875,7 @@ public class ConsumerService {
     /**
      * 写同步日志到数据库
      */
-    private void writeSyncLog(McCurrent mcCurrent, long bef, long now, long runStart, long runEnd, Request request, Response response) {
+    private void writeSyncLog(Current mcCurrent, long bef, long now, long runStart, long runEnd, Request request, Response response) {
         McConsumeLog mcConsumeLog = new McConsumeLog();
         mcConsumeLog.setPkId(mcCurrent.getPkId());
         mcConsumeLog.setRequestStartTime(UdspDateUtil.getDateString(bef));
@@ -939,7 +939,7 @@ public class ConsumerService {
         String message = "没有消费";
         String errorCode = "";
         Response response = new Response();
-        McCurrent selectMcCurrent = mcCurrentService.select(consumeId);
+        Current selectMcCurrent = mcCurrentService.select(consumeId);
         if (selectMcCurrent != null) {// 正在消费
             status = Status.RUNING;
             statusCode = StatusCode.RUNING;
@@ -989,16 +989,16 @@ public class ConsumerService {
      * @param rcUserService
      * @return
      */
-    private McCurrent checkCurrentNum(Request request, RcUserService rcUserService) {
-        McCurrent mcCurrent = null;
+    private Current checkCurrentNum(Request request, RcUserService rcUserService) {
+        Current mcCurrent = null;
         logger.info(Thread.currentThread().getId() + "检查执行队列-开始");
         //并发控制
         if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType())) {
             //同步
-            mcCurrent = mcCurrentCountService.checkSyncCurrent(request, rcUserService.getMaxSyncNum());
+            mcCurrent = runQueueService.checkSyncCurrent(request, rcUserService.getMaxSyncNum());
         } else if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(request.getType())) {
             //异步
-            mcCurrent = mcCurrentCountService.checkAsyncCurrent(request, rcUserService.getMaxAsyncNum());
+            mcCurrent = runQueueService.checkAsyncCurrent(request, rcUserService.getMaxAsyncNum());
         }
         logger.info(Thread.currentThread().getId() + "检查执行队列-结束");
         return mcCurrent;

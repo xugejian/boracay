@@ -30,23 +30,55 @@ public class NoSqlClientDemo {
      */
     private static Logger logger = LogManager.getLogger(NoSqlClientDemo.class);
 
-    public static void main(String[] args) {
-        NoSqlClientDemo noSqlClientDemo = new NoSqlClientDemo();
-        //noSqlClientDemo.iqAsyncStartTest();//交互查询-异步start接口示例
-        //noSqlClientDemo.iqAsyncStatusTest();//交互查询-异步status接口示例
-        noSqlClientDemo.iqSyncStartTest();//交互查询-同步start接口示例
-    }
-
     /**
-     * 交互查询/联机查询应用-异步start接口示例
+     * 交互查询/联机查询应用-同步start接口示例
      */
-    public void iqAsyncStartTest() {
+    public void syncStart() {
         //udsp请求连接
         String url = "http://127.0.0.1:8088/udsp/http/consume";
         //创建自定义客户端
         NoSqlClient noSqlClient = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
         //创建默认客户端,根据sdk.config.properties配置文件获取地址
-        //NoSqlClient noSqlClient=ConsumerClientFactory.createDefaultClient(NoSqlClient.class);
+        //NoSqlClient noSqlClient=ConsumerClientFactory.createCustomClient(NoSqlClient.class);
+        //创建请求实体
+        NoSqlRequest noSqlRequest = new NoSqlRequest();
+
+        //基础参数
+        noSqlRequest.setServiceName("message");
+        //基础参数设置-上层应用系统使用者工号
+        noSqlRequest.setAppUser("10940");
+        //基础参数设置-设置调用start接口
+        noSqlRequest.setEntity(SdkConstant.CONSUMER_ENTITY_START);
+        //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
+        noSqlRequest.setType(SdkConstant.CONSUMER_TYPE_SYNC);
+        //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
+        noSqlRequest.setUdspUser("test");
+        noSqlRequest.setToken("000000");
+
+        //设置业务参数-查询参数设置
+        Map<String, String> data = new HashMap<>();
+        data.put("client_no", "1113829408");
+        noSqlRequest.setData(data);
+
+        //设置业务参数-分页参数设置
+        Page page = new Page();
+        page.setPageSize(300);
+        page.setPageIndex(1);
+        noSqlRequest.setPage(page);
+        //调用并获取结果
+        SyncPackResponse syncPackResponse = noSqlClient.syncStart(noSqlRequest);
+    }
+
+    /**
+     * 交互查询/联机查询应用-异步start接口示例
+     */
+    public void asyncStart() {
+        //udsp请求连接
+        String url = "http://127.0.0.1:8088/udsp/http/consume";
+        //创建自定义客户端
+        NoSqlClient noSqlClient = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
+        //创建默认客户端,根据sdk.config.properties配置文件获取地址
+        //NoSqlClient noSqlClient=ConsumerClientFactory.createCustomClient(NoSqlClient.class);
         //创建请求实体
         NoSqlRequest noSqlRequest = new NoSqlRequest();
         //基础参数设置-设置调用服务的名称
@@ -80,13 +112,13 @@ public class NoSqlClientDemo {
     /**
      * 交互查询/联机查询应用-异步status接口示例
      */
-    public void iqAsyncStatusTest() {
+    public void asyncStatus() {
         //udsp请求连接
         String url = "http://127.0.0.1:8088/udsp/http/consume";
         //创建自定义客户端
         NoSqlClient noSqlClient = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
         //创建默认客户端,根据sdk.config.properties配置文件获取地址
-        //NoSqlClient noSqlClient=ConsumerClientFactory.createDefaultClient(NoSqlClient.class);
+        //NoSqlClient noSqlClient=ConsumerClientFactory.createCustomClient(NoSqlClient.class);
         //创建请求实体
         StatusRequest statusRequest = new StatusRequest();
         //基础参数设置-设置调用服务的名称
@@ -107,43 +139,10 @@ public class NoSqlClientDemo {
         StatusPackResponse statusResponse = noSqlClient.asyncStatus(statusRequest);
     }
 
-    /**
-     * 交互查询/联机查询应用-同步start接口示例
-     */
-    public void iqSyncStartTest() {
-        //udsp请求连接
-        String url = "http://127.0.0.1:8088/udsp/http/consume";
-        //创建自定义客户端
-        NoSqlClient noSqlClient = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
-        //创建默认客户端,根据sdk.config.properties配置文件获取地址
-        //NoSqlClient noSqlClient=ConsumerClientFactory.createDefaultClient(NoSqlClient.class);
-        //创建请求实体
-        NoSqlRequest noSqlRequest = new NoSqlRequest();
-
-        //基础参数
-        noSqlRequest.setServiceName("message");
-        //基础参数设置-上层应用系统使用者工号
-        noSqlRequest.setAppUser("10940");
-        //基础参数设置-设置调用start接口
-        noSqlRequest.setEntity(SdkConstant.CONSUMER_ENTITY_START);
-        //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
-        noSqlRequest.setType(SdkConstant.CONSUMER_TYPE_SYNC);
-        //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
-        noSqlRequest.setUdspUser("test");
-        noSqlRequest.setToken("000000");
-
-        //设置业务参数-查询参数设置
-        Map<String, String> data = new HashMap<>();
-        data.put("client_no", "1113829408");
-        noSqlRequest.setData(data);
-
-        //设置业务参数-分页参数设置
-        Page page = new Page();
-        page.setPageSize(300);
-        page.setPageIndex(1);
-        noSqlRequest.setPage(page);
-        //调用并获取结果
-        SyncPackResponse syncPackResponse = noSqlClient.syncStart(noSqlRequest);
+    public static void main(String[] args) {
+        NoSqlClientDemo demo = new NoSqlClientDemo();
+        demo.asyncStart();
+        demo.asyncStatus();
+        demo.syncStart();
     }
-
 }

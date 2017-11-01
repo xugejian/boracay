@@ -27,25 +27,18 @@ public class MmClientDemo {
      */
     private static Logger logger = LogManager.getLogger(FileClientDemo.class);
 
-    public static void main(String[] args) {
-        MmClientDemo mmClientDemo = new MmClientDemo();
-        //mmClientDemo.asyncStartTest();
-        mmClientDemo.syncStartTest();
-        mmClientDemo.asyncStatusTest();
-    }
-
     /**
      * 模型管理-同步start接口示例
      */
-    public void syncStartTest() {
+    public void syncStart() {
         //udsp请求连接
         String url = "http://127.0.0.1:8088/udsp/http/consume";
         //创建自定义客户端
-        MmClient mmClient= ConsumerClientFactory.createCustomClient(MmClient.class, url);
+        MmClient mmClient = ConsumerClientFactory.createCustomClient(MmClient.class, url);
         //创建默认客户端,根据sdk.config.properties配置文件获取地址
-        //MmClient mmClient=ConsumerClientFactory.createDefaultClient(MmClient.class);
+        //MmClient mmClient=ConsumerClientFactory.createCustomClient(MmClient.class);
         //创建请求实体
-        MmRequest mmRequest=new MmRequest();
+        MmRequest mmRequest = new MmRequest();
         //基础参数设置-设置调用服务的名称
         mmRequest.setServiceName("mmceshi002");
         //基础参数设置-上层应用系统使用者工号
@@ -59,9 +52,9 @@ public class MmClientDemo {
         mmRequest.setToken("002158");
 
         //设置业务参数-查询参数
-        Map<String, String> data=new HashMap<>();
+        Map<String, String> data = new HashMap<>();
         data.put("date", "20170503");
-        data.put("age","10");
+        data.put("age", "10");
         data.put("modelId", "10");
         data.put("pkId", "10");
         mmRequest.setData(data);
@@ -73,14 +66,14 @@ public class MmClientDemo {
     /**
      * 模型管理-异步start接口示例
      */
-    public void asyncStartTest() {
-        String url="http://127.0.0.1:8088/udsp/http/consume";
+    public void asyncStart() {
+        String url = "http://127.0.0.1:8088/udsp/http/consume";
         //创建自定义客户端
-        MmClient mmClient= ConsumerClientFactory.createCustomClient(MmClient.class, url);
+        MmClient mmClient = ConsumerClientFactory.createCustomClient(MmClient.class, url);
         //创建默认客户端,根据sdk.config.properties配置文件获取地址
-        //MmClient mmClient=ConsumerClientFactory.createDefaultClient(MmClient.class);
+        //MmClient mmClient=ConsumerClientFactory.createCustomClient(MmClient.class);
         //创建请求实体
-        MmRequest mmRequest=new MmRequest();
+        MmRequest mmRequest = new MmRequest();
         //基础参数设置-设置调用服务的名称
         mmRequest.setServiceName("mmceshi002");
         //基础参数设置-上层应用系统使用者工号
@@ -94,9 +87,9 @@ public class MmClientDemo {
         mmRequest.setToken("002158");
 
         //设置业务参数-查询参数
-        Map<String, String> data=new HashMap<>();
+        Map<String, String> data = new HashMap<>();
         data.put("date", "20170503");
-        data.put("age","10");
+        data.put("age", "10");
         data.put("modelId", "10");
         data.put("pkId", "10");
         mmRequest.setData(data);
@@ -107,13 +100,13 @@ public class MmClientDemo {
     /**
      * 模型管理-异步status接口示例
      */
-    public void asyncStatusTest() {
+    public void asyncStatus() {
         //udsp请求连接
         String url = "http://127.0.0.1:8088/udsp/http/consume";
         //创建自定义客户端
-        MmClient mmClient= ConsumerClientFactory.createCustomClient(MmClient.class, url);
+        MmClient mmClient = ConsumerClientFactory.createCustomClient(MmClient.class, url);
         //创建默认客户端,根据sdk.config.properties配置文件获取地址
-        //MmClient mmClient=MmClient.createIqDefaultClient();
+        //MmClient mmClient= ConsumerClientFactory.createCustomClient(MmClient.class);
         //创建请求实体
         StatusRequest statusRequest = new StatusRequest();
 
@@ -135,6 +128,10 @@ public class MmClientDemo {
         StatusPackResponse udspResponse = mmClient.asyncStatus(statusRequest);
     }
 
-
-
+    public static void main(String[] args) {
+        MmClientDemo demo = new MmClientDemo();
+        demo.syncStart();
+        demo.asyncStart();
+        demo.asyncStatus();
+    }
 }

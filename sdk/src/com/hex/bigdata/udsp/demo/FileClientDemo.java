@@ -16,12 +16,7 @@ public class FileClientDemo {
      */
     private static Logger logger = LogManager.getLogger(FileClientDemo.class);
 
-    public static void main(String[] args) {
-        //FileClientDemo fileClientDemo=new FileClientDemo();
-        //fileClientDemo.checkAndDownLoad2();
-    }
-
-    public void checkAndDownLoad(){
+    public void checkAndDownLoad() {
         FtpFileClient ftpFileClient = FtpFileClient.createDefaultFtpClient();
         String filePath = "/home/ftp/UDSP/20170519/98c06595fe634faa0f248867c031ca_20170519143454991.dat";
         boolean isArrived = true;
@@ -36,22 +31,22 @@ public class FileClientDemo {
         if (isArrived) {
             try {
                 //下载文件到指定目录
-                ftpFileClient.downloadFile(filePath,"C:\\Users\\PC\\Desktop");
+                ftpFileClient.downloadFile(filePath, "C:\\Users\\PC\\Desktop");
             } catch (Exception e) {
                 e.printStackTrace();
             }
             logger.info("文件下载成功");
-        }else {
+        } else {
             logger.info("文件未达到或文件不存在");
         }
     }
 
-    public void checkAndDownLoad2(){
+    public void checkAndDownLoad2() {
         //创建默认的FTP客户端
         //FtpFileClient ftpFileClient = FtpFileClient.createDefaultFtpClient();
 
         //创建带参数的FTP客户端
-        FtpFileClient ftpFileClient = FtpFileClient.createFtpClient("10.1.97.1",21,"UDSP","UDSP");
+        FtpFileClient ftpFileClient = FtpFileClient.createFtpClient("10.1.97.1", 21, "UDSP", "UDSP");
 
         String filePath = "/home/ftp/UDSP/20170519/98c06595fe63431faa0f248867c031ca_20170519143454991.dat";
         boolean isArrived = true;
@@ -66,14 +61,19 @@ public class FileClientDemo {
         if (isArrived) {
             try {
                 //重命名文件并下载到指定文件夹下
-                ftpFileClient.downloadFile(filePath,"123.txt","C:\\Users\\PC\\Desktop");
+                ftpFileClient.downloadFile(filePath, "123.txt", "C:\\Users\\PC\\Desktop");
             } catch (Exception e) {
                 e.printStackTrace();
             }
             logger.info("文件下载成功");
-        }else {
+        } else {
             logger.info("文件未达到或文件不存在");
         }
     }
 
+    public static void main(String[] args) {
+        FileClientDemo demo = new FileClientDemo();
+        demo.checkAndDownLoad();
+        demo.checkAndDownLoad2();
+    }
 }

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * DATE:2017/5/10
  * TIME:14:29
  */
-public class McCurrentCount implements Serializable {
+public class RunQueue implements Serializable {
 
     /**
      * 应用Id

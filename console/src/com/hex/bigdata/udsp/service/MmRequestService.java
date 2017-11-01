@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
-import com.hex.bigdata.udsp.mc.model.McCurrent;
+import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mm.dto.MmResponse;
 import com.hex.bigdata.udsp.mm.dto.MmResponseData;
 import com.hex.bigdata.udsp.mm.service.MmProviderService;
@@ -31,7 +31,7 @@ public class MmRequestService {
      * @param request   请求实体
      * @return
      */
-    public Response start(McCurrent mcCurrent, String appId, Request request) {
+    public Response start(Current mcCurrent, String appId, Request request) {
 
         Response response = new Response();
         MmResponse mmResponse = null;

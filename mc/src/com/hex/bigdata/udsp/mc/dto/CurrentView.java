@@ -1,13 +1,13 @@
 package com.hex.bigdata.udsp.mc.dto;
 
-import com.hex.bigdata.udsp.mc.model.McCurrent;
+import com.hex.bigdata.udsp.mc.model.Current;
 
 import java.io.Serializable;
 
 /**
  * Created by PC on 2017/3/9.
  */
-public class McCurrentView extends McCurrent implements Serializable {
+public class CurrentView extends Current implements Serializable {
     private String startTimeStart;
     private String startTimeEnd;
 

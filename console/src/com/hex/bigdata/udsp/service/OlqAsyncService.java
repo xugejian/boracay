@@ -10,10 +10,10 @@ import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.dto.WaitNumResult;
 import com.hex.bigdata.udsp.mc.constant.McConstant;
 import com.hex.bigdata.udsp.mc.model.McConsumeLog;
-import com.hex.bigdata.udsp.mc.model.McCurrent;
+import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
-import com.hex.bigdata.udsp.mc.service.McCurrentCountService;
-import com.hex.bigdata.udsp.mc.service.McCurrentService;
+import com.hex.bigdata.udsp.mc.service.RunQueueService;
+import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
 import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
@@ -40,8 +40,8 @@ public class OlqAsyncService implements Runnable {
 
     private OlqSyncService olqSyncService;
     private McConsumeLogService mcConsumeLogService;
-    private McCurrentCountService mcCurrentCountService;
-    private McCurrentService mcCurrentService;
+    private RunQueueService runQueueService;
+    private CurrentService mcCurrentService;
     private InitParamService initParamService;
 
     private ConsumeRequest consumeRequest;
@@ -54,8 +54,8 @@ public class OlqAsyncService implements Runnable {
     public OlqAsyncService(ConsumeRequest consumeRequest, String appId, String sql, String appType, String fileName) {
         this.olqSyncService = (OlqSyncService) WebApplicationContextUtil.getBean("olqSyncService");
         this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
-        this.mcCurrentCountService = (McCurrentCountService) WebApplicationContextUtil.getBean("mcCurrentCountService");
-        this.mcCurrentService = (McCurrentService) WebApplicationContextUtil.getBean("mcCurrentService");
+        this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
+        this.mcCurrentService = (CurrentService) WebApplicationContextUtil.getBean("currentService");
         this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
 
         this.consumeRequest = consumeRequest;
@@ -68,8 +68,8 @@ public class OlqAsyncService implements Runnable {
     public OlqAsyncService(ConsumeRequest consumeRequest, String appId, String sql, String appType, String fileName, long asyncCycleTimeInterval) {
         this.olqSyncService = (OlqSyncService) WebApplicationContextUtil.getBean("olqSyncService");
         this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
-        this.mcCurrentCountService = (McCurrentCountService) WebApplicationContextUtil.getBean("mcCurrentCountService");
-        this.mcCurrentService = (McCurrentService) WebApplicationContextUtil.getBean("mcCurrentService");
+        this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
+        this.mcCurrentService = (CurrentService) WebApplicationContextUtil.getBean("currentService");
         this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
 
         this.consumeRequest = consumeRequest;
@@ -90,13 +90,13 @@ public class OlqAsyncService implements Runnable {
             e.printStackTrace();
         } finally {
             //减少异步并发统计
-            mcCurrentCountService.reduceAsyncCurrent(consumeRequest.getMcCurrent());
+            runQueueService.reduceAsyncCurrent(consumeRequest.getMcCurrent());
         }
     }
 
     private void exec() {
         String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(consumeRequest));
-        McCurrent mcCurrent = consumeRequest.getMcCurrent();
+        Current mcCurrent = consumeRequest.getMcCurrent();
         McConsumeLog mcConsumeLog = new McConsumeLog();
         mcConsumeLog.setPkId(mcCurrent.getPkId());
         mcConsumeLog.setRequestContent(mcCurrent.getRequestContent());
@@ -117,7 +117,7 @@ public class OlqAsyncService implements Runnable {
             //任务进入等待队列
             Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, asyncCycleTimeInterval));
             try {
-                long maxAsyncWaitTimeout = rcUserService == null ?
+                long maxAsyncWaitTimeout = (rcUserService == null || rcUserService.getMaxAsyncWaitTimeout() == 0) ?
                         initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
                 passFlg = futureTask.get(maxAsyncWaitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
@@ -135,11 +135,11 @@ public class OlqAsyncService implements Runnable {
                 mcConsumeLog.setRunStartTime(format.format(calendar.getTime()));
                 //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- start
                 mcCurrentService.insert(mcCurrent);
-                mcCurrentCountService.addAsyncCurrent(mcCurrent);
+                runQueueService.addAsyncCurrent(mcCurrent);
                 //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- end
                 Future<OLQResponse> olqFutureTask = executorService.submit(new OlqAsyncCallable(consumeId, mcCurrent, this.appId, this.sql, this.fileName));
                 try {
-                    long maxAsyncExecuteTimeout = rcUserService == null ?
+                    long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
                             initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
                     response = olqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
