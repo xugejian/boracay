@@ -1,18 +1,20 @@
 package com.hex.bigdata.udsp.service;
 
+import com.hex.bigdata.udsp.common.service.InitParamService;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.dto.WaitNumResult;
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.mc.constant.McConstant;
 import com.hex.bigdata.udsp.mc.model.McConsumeLog;
-import com.hex.bigdata.udsp.mc.model.McCurrent;
+import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
-import com.hex.bigdata.udsp.mc.service.McCurrentCountService;
-import com.hex.bigdata.udsp.mc.service.McCurrentService;
-import com.hex.bigdata.udsp.mc.service.McWaitQueueService;
+import com.hex.bigdata.udsp.mc.service.RunQueueService;
+import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
+import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.thread.WaitQueueCallable;
 import com.hex.bigdata.udsp.thread.async.OlqAppAsyncCallable;
@@ -21,6 +23,8 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.*;
@@ -38,8 +42,9 @@ public class OlqAppAsyncService implements Runnable {
 
     private OlqSyncService olqSyncService;
     private McConsumeLogService mcConsumeLogService;
-    private McCurrentCountService mcCurrentCountService;
-    private McCurrentService mcCurrentService;
+    private RunQueueService runQueueService;
+    private CurrentService mcCurrentService;
+    private InitParamService initParamService;
 
     private ConsumeRequest consumeRequest;
     private String appId;
@@ -51,8 +56,9 @@ public class OlqAppAsyncService implements Runnable {
     public OlqAppAsyncService(ConsumeRequest consumeRequest, String appId, String sql, String appType, String fileName) {
         this.olqSyncService = (OlqSyncService) WebApplicationContextUtil.getBean("olqSyncService");
         this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
-        this.mcCurrentCountService = (McCurrentCountService) WebApplicationContextUtil.getBean("mcCurrentCountService");
-        this.mcCurrentService =(McCurrentService)WebApplicationContextUtil.getBean("mcCurrentService");
+        this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
+        this.mcCurrentService = (CurrentService) WebApplicationContextUtil.getBean("currentService");
+        this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
 
         this.consumeRequest = consumeRequest;
         this.appId = appId;
@@ -64,8 +70,9 @@ public class OlqAppAsyncService implements Runnable {
     public OlqAppAsyncService(ConsumeRequest consumeRequest, String appId, String sql, String appType, String fileName, long asyncCycleTimeInterval) {
         this.olqSyncService = (OlqSyncService) WebApplicationContextUtil.getBean("olqSyncService");
         this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
-        this.mcCurrentCountService = (McCurrentCountService) WebApplicationContextUtil.getBean("mcCurrentCountService");
-        this.mcCurrentService =(McCurrentService)WebApplicationContextUtil.getBean("mcCurrentService");
+        this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
+        this.mcCurrentService = (CurrentService) WebApplicationContextUtil.getBean("currentService");
+        this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
 
         this.consumeRequest = consumeRequest;
         this.appId = appId;
@@ -85,12 +92,13 @@ public class OlqAppAsyncService implements Runnable {
             e.printStackTrace();
         } finally {
             //减少异步并发统计
-            mcCurrentCountService.reduceAsyncCurrent(consumeRequest.getMcCurrent());
+            runQueueService.reduceAsyncCurrent(consumeRequest.getMcCurrent());
         }
     }
 
     private void exec() {
-        McCurrent mcCurrent = consumeRequest.getMcCurrent();
+        String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(consumeRequest));
+        Current mcCurrent = consumeRequest.getMcCurrent();
 
         McConsumeLog mcConsumeLog = new McConsumeLog();
         mcConsumeLog.setPkId(mcCurrent.getPkId());
@@ -111,13 +119,15 @@ public class OlqAppAsyncService implements Runnable {
         //判断是否进入等待队列，进入等待队列则进行等待
         WaitNumResult waitNumResult = consumeRequest.getWaitNumResult();
         RcUserService rcUserService = consumeRequest.getRcUserService();
-        McWaitQueueService mcWaitQueueService = consumeRequest.getMcWaitQueueService();
-        Boolean passFlg = false;
-        if (waitNumResult.isIntoWaitQueue()) {
+        boolean passFlg = true;
+        if (waitNumResult != null && waitNumResult.isIntoWaitQueue()) {
+            passFlg = false;
             //任务进入等待队列
             Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, asyncCycleTimeInterval));
             try {
-                passFlg = futureTask.get(rcUserService.getMaxAsyncWaitTimeout(), TimeUnit.SECONDS);
+                long maxAsyncWaitTimeout = (rcUserService == null || rcUserService.getMaxAsyncWaitTimeout() == 0) ?
+                        initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
+                passFlg = futureTask.get(maxAsyncWaitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 status = McConstant.MCLOG_STATUS_FAILED;
                 errorCode = ErrorCode.ERROR_000014.getValue();
@@ -129,53 +139,47 @@ public class OlqAppAsyncService implements Runnable {
             } finally {
                 //删除等待队列中的请求信息
             }
-            if (passFlg) {
-                mcConsumeLog.setRunStartTime(format.format(calendar.getTime()));
-                //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- start
-                mcCurrentService.insert(mcCurrent);
-                mcCurrentCountService.addAsyncCurrent(mcCurrent);
-                //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- end
-                Future<OLQResponse> olqFutureTask = executorService.submit(new OlqAppAsyncCallable(mcCurrent, this.appId, this.sql, this.fileName));
-                try {
-                    response = olqFutureTask.get(rcUserService.getMaxAsyncWaitTimeout(), TimeUnit.SECONDS);
-                } catch (TimeoutException e) {
-                    status = McConstant.MCLOG_STATUS_FAILED;
-                    errorCode = ErrorCode.ERROR_000015.getValue();
-                    message = ErrorCode.ERROR_000015.getName() + "：" + e.getMessage();
-                    mcConsumeLog.setRunEndTime(format.format(new Date()));
-                } catch (Exception e) {
-                    status = McConstant.MCLOG_STATUS_FAILED;
-                    errorCode = ErrorCode.ERROR_000007.getValue();
-                    message = ErrorCode.ERROR_000007.getName() + "：" + e.getMessage();
-                    mcConsumeLog.setRunEndTime(format.format(new Date()));
-                } finally {
-                    //删除执行队列中的请求信息
-                }
-                if (response != null) {
-                    mcConsumeLog.setResponseContent(response.getFilePath());
-                }
-                mcConsumeLog.setRunEndTime(format.format(new Date()));
-            }
-        } else {
+        }
+        if (passFlg) {
+            mcConsumeLog.setRunStartTime(format.format(calendar.getTime()));
+            //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- start
+            mcCurrentService.insert(mcCurrent);
+            runQueueService.addAsyncCurrent(mcCurrent);
+            //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- end
+            Future<OLQResponse> olqFutureTask = executorService.submit(new OlqAppAsyncCallable(consumeId, mcCurrent, this.appId, this.sql, this.fileName));
             try {
-                response = this.olqSyncService.asyncStart(this.appId, this.sql, this.fileName, mcCurrent.getUserName());
-                message = response.getMessage();
-                //内部调用失败
-                if (response.getStatus().getValue().equals(Status.DEFEAT.getValue())) {
-                    status = McConstant.MCLOG_STATUS_FAILED;
-                    errorCode = ErrorCode.ERROR_000007.getValue();
-                    message = ErrorCode.ERROR_000007.getName() + "：" + message;
+                long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncWaitTimeout() == 0) ?
+                        initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
+                response = olqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+                status = McConstant.MCLOG_STATUS_FAILED;
+                errorCode = ErrorCode.ERROR_000015.getValue();
+                message = ErrorCode.ERROR_000015.getName() + "：" + e.getMessage();
+                mcConsumeLog.setRunEndTime(format.format(new Date()));
+
+                // 杀死正在执行的SQL
+                Statement stmt = OLQCommUtil.removeStatement(consumeId);
+                if (stmt != null) {
+                    try {
+                        stmt.cancel();
+                        stmt.close();
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
                 }
-                calendar.add(Calendar.MILLISECOND, (int) response.getConsumeTime());
-                mcConsumeLog.setRunEndTime(format.format(calendar.getTime()));
+
             } catch (Exception e) {
-                e.printStackTrace();
                 status = McConstant.MCLOG_STATUS_FAILED;
                 errorCode = ErrorCode.ERROR_000007.getValue();
                 message = ErrorCode.ERROR_000007.getName() + "：" + e.getMessage();
+                mcConsumeLog.setRunEndTime(format.format(new Date()));
+            } finally {
+                //删除执行队列中的请求信息
+            }
+            if (response != null) {
+                mcConsumeLog.setResponseContent(response.getFilePath());
             }
             mcConsumeLog.setRunEndTime(format.format(new Date()));
-            mcConsumeLog.setResponseContent(response.getFilePath());
         }
 
         // 写日志到数据库和本地日志文件

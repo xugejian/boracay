@@ -349,11 +349,15 @@ ${extends("/goframe/function_layout.httl")}
         var yData3 = []; // MM Array
         var yData4 = []; // RTS_PRODUCER Array
         var yData5 = []; // RTS_CONSUMER Array
+        var yData6 = []; // OLQ_APP Array
+        var yData7 = []; // IM Array
         var dataMap1 = {}; // IQ Map
         var dataMap2 = {}; // OLQ Map
         var dataMap3 = {}; // MM Map
         var dataMap4 = {}; // RTS_PRODUCER Map
         var dataMap5 = {}; // RTS_CONSUMER Map
+        var dataMap6 = {}; // OLQ_APP Map
+        var dataMap7 = {}; // IM Map
         var befDatetime = new Date(new Date(datetime).getTime() - interval * 60000);
         //var name = "时间（分）";
         var milli = 60000;
@@ -405,6 +409,10 @@ ${extends("/goframe/function_layout.httl")}
                         dataMap4[key] = getVal(dataMap4, key, record.countNum);
                     else if ('RTS_CONSUMER' == record.appType)
                         dataMap5[key] = getVal(dataMap5, key, record.countNum);
+                    else if ('OLQ_APP' == record.appType)
+                        dataMap6[key] = getVal(dataMap6, key, record.countNum);
+                    else if ('IM' == record.appType)
+                        dataMap7[key] = getVal(dataMap7, key, record.countNum);
                 });
                 for (var i = 0; i < len; i++) {
                     var dt = nui.formatDate(new Date(befDatetime.getTime() + (i+1) * milli), format);
@@ -414,6 +422,8 @@ ${extends("/goframe/function_layout.httl")}
                     yData3[i] = getNum(dataMap3, dt);
                     yData4[i] = getNum(dataMap4, dt);
                     yData5[i] = getNum(dataMap5, dt);
+                    yData6[i] = getNum(dataMap6, dt);
+                    yData7[i] = getNum(dataMap7, dt);
                 }
                 var option = {
                     title: {
@@ -426,7 +436,7 @@ ${extends("/goframe/function_layout.httl")}
                         x: 'left',
                         y: 'center',
                         orient: 'vertical',
-                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者']
+                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者','联机查询应用','交互建模']
                     },
                     toolbox: {
                         show: true,
@@ -529,6 +539,32 @@ ${extends("/goframe/function_layout.httl")}
                                 }
                             },
                             data: yData5
+                        },
+                        {
+                            name: '联机查询应用',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData6
+                        },
+                        {
+                            name: '交互建模',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData7
                         }
                     ]
                 };
@@ -675,11 +711,15 @@ ${extends("/goframe/function_layout.httl")}
         var yData3 = []; // MM Array
         var yData4 = []; // RTS_PRODUCER Array
         var yData5 = []; // RTS_CONSUMER Array
+        var yData6 = []; // OLQ_APP Array
+        var yData7 = []; // IM Array
         var dataMap1 = {}; // IQ Map
         var dataMap2 = {}; // OLQ Map
         var dataMap3 = {}; // MM Map
         var dataMap4 = {}; // RTS_PRODUCER Map
         var dataMap5 = {}; // RTS_CONSUMER Map
+        var dataMap6 = {}; // OLQ_APP Map
+        var dataMap7 = {}; // IM Map
         $.ajax({
             url: "${basePath}/mc/stats/charts/chart4?datetime=" + datetime + "&interval=" + interval,
             type: 'POST',
@@ -702,30 +742,56 @@ ${extends("/goframe/function_layout.httl")}
                         dataMap3[key] = getVal(dataMap3, key, 0);
                         dataMap4[key] = getVal(dataMap4, key, 0);
                         dataMap5[key] = getVal(dataMap5, key, 0);
+                        dataMap6[key] = getVal(dataMap6, key, 0);
+                        dataMap7[key] = getVal(dataMap7, key, 0);
                     } else if ('OLQ' == record.appType) {
                         dataMap1[key] = getVal(dataMap1, key, 0);
                         dataMap2[key] = getVal(dataMap2, key, record.countNum);
                         dataMap3[key] = getVal(dataMap3, key, 0);
                         dataMap4[key] = getVal(dataMap4, key, 0);
                         dataMap5[key] = getVal(dataMap5, key, 0);
+                        dataMap6[key] = getVal(dataMap6, key, 0);
+                        dataMap7[key] = getVal(dataMap7, key, 0);
                     } else if ('MM' == record.appType) {
                         dataMap1[key] = getVal(dataMap1, key, 0);
                         dataMap2[key] = getVal(dataMap2, key, 0);
                         dataMap3[key] = getVal(dataMap3, key, record.countNum);
                         dataMap4[key] = getVal(dataMap4, key, 0);
                         dataMap5[key] = getVal(dataMap5, key, 0);
+                        dataMap6[key] = getVal(dataMap6, key, 0);
+                        dataMap7[key] = getVal(dataMap7, key, 0);
                     } else if ('RTS_PRODUCER' == record.appType) {
                         dataMap1[key] = getVal(dataMap1, key, 0);
                         dataMap2[key] = getVal(dataMap2, key, 0);
                         dataMap2[key] = getVal(dataMap2, key, 0);
                         dataMap4[key] = getVal(dataMap4, key, record.countNum);
                         dataMap5[key] = getVal(dataMap5, key, 0);
+                        dataMap6[key] = getVal(dataMap6, key, 0);
+                        dataMap7[key] = getVal(dataMap7, key, 0);
                     } else if ('RTS_CONSUMER' == record.appType) {
                         dataMap1[key] = getVal(dataMap1, key, 0);
                         dataMap2[key] = getVal(dataMap2, key, 0);
                         dataMap2[key] = getVal(dataMap2, key, 0);
                         dataMap3[key] = getVal(dataMap3, key, 0);
                         dataMap5[key] = getVal(dataMap5, key, record.countNum);
+                        dataMap6[key] = getVal(dataMap6, key, 0);
+                        dataMap7[key] = getVal(dataMap7, key, 0);
+                    }else if ('OLQ_APP' == record.appType) {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap3[key] = getVal(dataMap3, key, 0);
+                        dataMap5[key] = getVal(dataMap5, key, 0);
+                        dataMap6[key] = getVal(dataMap6, key, record.countNum);
+                        dataMap7[key] = getVal(dataMap7, key, 0);
+                    }else if ('IM' == record.appType) {
+                        dataMap1[key] = getVal(dataMap1, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap2[key] = getVal(dataMap2, key, 0);
+                        dataMap3[key] = getVal(dataMap3, key, 0);
+                        dataMap5[key] = getVal(dataMap5, key, 0);
+                        dataMap6[key] = getVal(dataMap6, key, 0);
+                        dataMap7[key] = getVal(dataMap7, key, record.countNum);
                     }
                 });
                 var i = 0;
@@ -736,6 +802,8 @@ ${extends("/goframe/function_layout.httl")}
                     yData3[i] = getNum(dataMap3, key);
                     yData4[i] = getNum(dataMap4, key);
                     yData5[i] = getNum(dataMap5, key);
+                    yData6[i] = getNum(dataMap6, key);
+                    yData7[i] = getNum(dataMap7, key);
                     i++;
                 }
                 var option = {
@@ -749,7 +817,7 @@ ${extends("/goframe/function_layout.httl")}
                         x: 'left',
                         y: 'center',
                         orient: 'vertical',
-                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者']
+                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者','联机查询应用','交互建模']
                     },
                     toolbox: {
                         show: true,
@@ -849,6 +917,34 @@ ${extends("/goframe/function_layout.httl")}
                                 }
                             },
                             data: yData5
+                        },
+                        {
+                            name: '联机查询应用',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData6
+                        },
+                        {
+                            name: '交互建模',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData7
                         }
                     ]
                 };

@@ -85,6 +85,8 @@ ${extends("/goframe/function_layout.httl")}
                             <input class="nui-button" iconCls="icon-reset" text="重置" onclick="onFormReset('form1')"/>
                             <span style="display:inline-block;width:25px;"></span>
                             <input class="nui-button" iconCls="icon-download" text="下载" onclick="downLoad()"/>
+                            <span style="display:inline-block;width:25px;"></span>
+                            <input class="nui-button" iconCls="icon-download" text="下游信息导出" onclick="downStreamDownLoad()"/>
                         </td>
                     </tr>
                 </table>
@@ -130,8 +132,10 @@ ${extends("/goframe/function_layout.httl")}
             <div field="serviceType" headerAlign="center" allowSort="true" renderer="renderServiceType">应用类型</div>
             <div field="userName" headerAlign="center" allowSort="true">用户名</div>
             <div field="ipSection" headerAlign="center" allowSort="true">IP段</div>
-            <div field="maxSyncNum" headerAlign="center" allowSort="true">最大同步并发数</div>
-            <div field="maxAsyncNum" headerAlign="center" allowSort="true">最大异步并发数</div>
+            <div field="maxSyncNum" headerAlign="center" allowSort="true">运行队列大小（同步）</div>
+            <div field="maxAsyncNum" headerAlign="center" allowSort="true">运行队列大小（异步）</div>
+            <div field="maxSyncWaitNum" headerAlign="center" allowSort="true">等待队列大小（同步）</div>
+            <div field="maxAsyncWaitNum" headerAlign="center" allowSort="true">等待队列大小（异步）</div>
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
             <div field="crtUser" headerAlign="center" allowSort="true">创建者</div>
             <!--<div name="operation" headerAlign="center" align="center" allowSort="true" renderer="operation">操作</div>-->
@@ -468,6 +472,34 @@ ${extends("/goframe/function_layout.httl")}
             }
         });
     }
+
+    function downStreamDownLoad(){
+        var rows = grid1.getSelecteds();
+        if (!rows || rows.length == 0) {
+            nui.alert("请至少选择一条记录!");
+            return;
+        }
+        var json = nui.encode(getRows(rows));
+        grid1.loading("正在导出中,请稍等...");
+        $.ajax({
+            url:"${basePath}/rc/userService/downStreamInfoDownload",
+            type : 'POST',
+            data : json,
+            cache : false,
+            contentType : 'application/json',
+            success : function(text) {
+                if (text != null && text.trim() != "") {
+                    $("#filePath").val(text);
+                    $("#downForm").submit();
+                    nui.alert("导出Excel成功", "系统提示");
+                } else {
+                    nui.alert("导出Excel失败", "系统提示");
+                }
+                grid1.unmask();
+            }
+        });
+    }
+
 </script>
 
 <!--#end-->

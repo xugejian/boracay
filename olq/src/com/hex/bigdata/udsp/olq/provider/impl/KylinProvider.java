@@ -11,6 +11,7 @@ import com.hex.bigdata.udsp.olq.provider.impl.model.KylinDatasource;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponseFetch;
+import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -84,16 +85,7 @@ public class KylinProvider implements Provider {
         return conn;
     }
 
-    public void init(Datasource datasource) {
-        try {
-            KylinDatasource kylinDatasource = new KylinDatasource(datasource.getPropertyMap());
-            getConnection(kylinDatasource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public OLQResponse execute(OLQRequest request) {
+    public OLQResponse execute(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -112,6 +104,9 @@ public class KylinProvider implements Provider {
         try {
             conn = getConnection(kylinDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             //获取查询信息
             OLQQuerySql olqQuerySql = request.getOlqQuerySql();
             if (olqQuerySql.getPage() == null){
@@ -121,7 +116,7 @@ public class KylinProvider implements Provider {
             }
             rs.setFetchSize(1000);
             ResultSetMetaData rsmd = rs.getMetaData();
-            response.setMetadata(rsmd);
+            //response.setMetadata(rsmd);
             int columnCount = rsmd.getColumnCount();
             int max_num_size = kylinDatasource.getMaxNum();
             while (rs.next()) {
@@ -152,6 +147,8 @@ public class KylinProvider implements Provider {
 
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
+            //设置返回列信息
+            response.setColumns(OLQCommUtil.putColumnIntoMap(rsmd));
         } catch (SQLException e) {
             e.printStackTrace();
             response.setStatus(Status.DEFEAT);
@@ -179,6 +176,7 @@ public class KylinProvider implements Provider {
                     e.printStackTrace();
                 }
             }
+            OLQCommUtil.removeStatement(consumeId);
         }
 
         long now = System.currentTimeMillis();
@@ -190,17 +188,6 @@ public class KylinProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    public synchronized void close(Datasource datasource) {
-        BasicDataSource dataSource = dataSourcePool.remove(datasource.getId());
-        if (dataSource != null) {
-            try {
-                dataSource.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public boolean testDatasource(Datasource datasource) {
@@ -230,7 +217,7 @@ public class KylinProvider implements Provider {
     }
 
     @Override
-    public OLQResponseFetch executeFetch(OLQRequest request) {
+    public OLQResponseFetch executeFetch(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -246,6 +233,9 @@ public class KylinProvider implements Provider {
         try {
             conn = getConnection(kylinDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             OLQQuerySql olqQuerySql = request.getOlqQuerySql();
             rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
             rs.setFetchSize(1000);
@@ -280,30 +270,21 @@ public class KylinProvider implements Provider {
         int pageIndex = page.getPageIndex();
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
-        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * from (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(")t  limit ");
+        pageSqlBuffer.append(") UDSP_VIEW  LIMIT ");
         pageSqlBuffer.append(pageSize);
-        pageSqlBuffer.append(" offset ");
+        pageSqlBuffer.append(" OFFSET ");
         pageSqlBuffer.append(startRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")t");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
         return olqQuerySql;
-    }
-
-    public static void main(String[] args) {
-        String sql = "SELECT * from edwapp.soa_khmrye";
-        Page page = new Page();
-        page.setPageIndex(1);
-        page.setPageSize(20);
-        KylinProvider kylinProvider = new KylinProvider();
-        System.out.println(kylinProvider.getPageSql(sql, page));
     }
 
 }

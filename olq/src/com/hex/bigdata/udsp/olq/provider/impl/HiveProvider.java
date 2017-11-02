@@ -11,6 +11,7 @@ import com.hex.bigdata.udsp.olq.provider.impl.model.HiveDatasource;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponseFetch;
+import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -85,16 +86,7 @@ public class HiveProvider implements Provider {
         return conn;
     }
 
-    public void init(Datasource datasource) {
-        try {
-            HiveDatasource hiveDatasource = new HiveDatasource(datasource.getPropertyMap());
-            getConnection(hiveDatasource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public OLQResponse execute(OLQRequest request) {
+    public OLQResponse execute(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -113,6 +105,9 @@ public class HiveProvider implements Provider {
         try {
             conn = getConnection(hiveDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             //获取查询信息
             OLQQuerySql olqQuerySql = request.getOlqQuerySql();
             if (olqQuerySql.getPage() == null){
@@ -123,7 +118,7 @@ public class HiveProvider implements Provider {
             rs.setFetchSize(1000);
             int max_num_size = hiveDatasource.getMaxNum();
             ResultSetMetaData rsmd = rs.getMetaData();
-            response.setMetadata(rsmd);
+            //response.setMetadata(rsmd);
             int columnCount = rsmd.getColumnCount();
             while (rs.next()) {
                 map = new LinkedHashMap<String, String>();
@@ -154,6 +149,8 @@ public class HiveProvider implements Provider {
             }
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
+            //设置返回列信息
+            response.setColumns(OLQCommUtil.putColumnIntoMap(rsmd));
         } catch (SQLException e) {
             e.printStackTrace();
             response.setStatus(Status.DEFEAT);
@@ -181,6 +178,7 @@ public class HiveProvider implements Provider {
                     e.printStackTrace();
                 }
             }
+            OLQCommUtil.removeStatement(consumeId);
         }
 
         long now = System.currentTimeMillis();
@@ -192,17 +190,6 @@ public class HiveProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    public synchronized void close(Datasource datasource) {
-        BasicDataSource dataSource = dataSourcePool.remove(datasource.getId());
-        if (dataSource != null) {
-            try {
-                dataSource.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public boolean testDatasource(Datasource datasource) {
@@ -232,7 +219,7 @@ public class HiveProvider implements Provider {
     }
 
     @Override
-    public OLQResponseFetch executeFetch(OLQRequest request) {
+    public OLQResponseFetch executeFetch(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -248,6 +235,9 @@ public class HiveProvider implements Provider {
         try {
             conn = getConnection(hiveDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             OLQQuerySql olqQuerySql = request.getOlqQuerySql();
             rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
             rs.setFetchSize(1000);
@@ -283,29 +273,20 @@ public class HiveProvider implements Provider {
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
         Integer endRow = pageSize * pageIndex;
-        StringBuffer pageSqlBuffer = new StringBuffer("select * from (select row_number() over (order by 1) as rownum,table.*  FROM (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY 1) AS ROWNUM,UDSP_VIEW.*  FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(" )table)t where t.rownum between ");
+        pageSqlBuffer.append(" ) UDSP_VIEW ) UDSP_VIEW2 WHERE T.ROWNUM BETWEEN ");
         pageSqlBuffer.append(startRow);
-        pageSqlBuffer.append(" and  ");
+        pageSqlBuffer.append(" AND ");
         pageSqlBuffer.append(endRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")t");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
         return olqQuerySql;
-    }
-
-    public static void main(String[] args) {
-        String sql = "SELECT * FROM OMDATA.S01_SJYMB JYM";
-        Page page = new Page();
-        page.setPageIndex(2);
-        page.setPageSize(20);
-        HiveProvider hiveProvider = new HiveProvider();
-        System.out.println(hiveProvider.getPageSql(sql, page));
     }
 }

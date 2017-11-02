@@ -293,8 +293,8 @@ public class ComDatasourceService extends BaseService {
         return comDatasourceMapper.checkSourceType(sourceId);
     }
 
-    public List<ComDatasource> selectEDs() {
-        return comDatasourceMapper.selectEDs();
+    public List<ComDatasource> selectEngineDs() {
+        return comDatasourceMapper.selectEngineDs();
     }
 }
 

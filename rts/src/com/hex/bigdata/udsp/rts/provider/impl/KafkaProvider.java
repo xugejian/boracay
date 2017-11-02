@@ -35,10 +35,6 @@ public class KafkaProvider implements Provider {
 
     private static Map<String, LinkedList<ConsumerConnector>> consumerDataSourcePool;
 
-    public void initProducerDataSource(ProducerDatasource producerDsConfig) {
-        getProducerDataSource(new KafkaProducerDsConfig(producerDsConfig.getPropertyMap()));
-    }
-
     private synchronized LinkedList<Producer<String, String>> getProducerDataSource(KafkaProducerDsConfig kakfaProducerDsConfig) {
         String dsId = kakfaProducerDsConfig.getId();
         if (producerDataSourcePool == null) {
@@ -90,17 +86,6 @@ public class KafkaProvider implements Provider {
 
     private void releaseProducer(KafkaProducerDsConfig kakfaProducerDsConfig, Producer<String, String> producer) {
         getProducerDataSource(kakfaProducerDsConfig).add(producer);
-    }
-
-    public synchronized void closeProducerDataSource(ProducerDatasource producerDsConfig) {
-        LinkedList<Producer<String, String>> dataSource = producerDataSourcePool.remove(producerDsConfig.getId());
-        if (dataSource != null) {
-            for (Producer<String, String> producer : dataSource) {
-                if (producer != null) {
-                    producer.close();
-                }
-            }
-        }
     }
 
     //-------------------------------------------ProducerApplication---------------------------------------------
@@ -256,20 +241,6 @@ public class KafkaProvider implements Provider {
     }
 
     //-------------------------------------------Consumer---------------------------------------------
-    public void initConsumerDataSource(ConsumerDatasource consumerDatasource) {
-        getConsumerDataSource(new KafkaConsumerDsConfig(consumerDatasource.getPropertyMap()));
-    }
-
-    public synchronized void closeConsumerDataSource(ConsumerDatasource consumerDsConfig) {
-        LinkedList<ConsumerConnector> dataSource = consumerDataSourcePool.remove(consumerDsConfig.getId());
-        if (dataSource != null) {
-            for (ConsumerConnector consumer : dataSource) {
-                if (consumer != null) {
-                    consumer.shutdown();
-                }
-            }
-        }
-    }
 
     private synchronized LinkedList<ConsumerConnector> getConsumerDataSource(KafkaConsumerDsConfig kakfaConsumerDsConfig) {
         String dsId = kakfaConsumerDsConfig.getId();
