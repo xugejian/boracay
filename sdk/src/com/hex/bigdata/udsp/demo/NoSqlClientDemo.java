@@ -40,7 +40,7 @@ public class NoSqlClientDemo {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
 //        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
-        //创建默认客户端,根据sdk.config.properties配置文件获取地址
+        //创建默认客户端,根据udsp.config.properties配置文件获取地址
         NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
 
         //创建请求实体
@@ -118,7 +118,7 @@ public class NoSqlClientDemo {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
 //        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
-        //创建默认客户端,根据sdk.config.properties配置文件获取地址
+        //创建默认客户端,根据udsp.config.properties配置文件获取地址
         NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
 
         //创建请求实体
@@ -181,7 +181,7 @@ public class NoSqlClientDemo {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
 //        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
-        //创建默认客户端,根据sdk.config.properties配置文件获取地址
+        //创建默认客户端,根据udsp.config.properties配置文件获取地址
         NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
 
         //创建请求实体

@@ -26,7 +26,7 @@ public class RtsConsumerClientDemo {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
 //        RtsConsumerClient client = ConsumerClientFactory.createCustomClient(RtsConsumerClient.class, url);
-        //创建默认客户端,根据sdk.config.properties配置文件获取地址
+        //创建默认客户端,根据udsp.config.properties配置文件获取地址
         RtsConsumerClient client = ConsumerClientFactory.createCustomClient(RtsConsumerClient.class);
 
         //创建请求实体
