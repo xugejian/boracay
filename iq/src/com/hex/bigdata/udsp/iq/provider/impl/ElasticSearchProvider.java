@@ -156,7 +156,7 @@ public class ElasticSearchProvider implements Provider {
         try {
             stringEntity = new NStringEntity(queryString, "utf-8");
             restClient = getConnection(datasource);
-            logger.info(queryString);
+            logger.debug(queryString);
             String schemaUrl = schemaName;
             String[] schemaArray = schemaName.split("\\.");
             if (schemaArray.length == 2) {
@@ -166,7 +166,7 @@ public class ElasticSearchProvider implements Provider {
             String returnString = EntityUtils.toString(response.getEntity());
             JSONObject returnJsonObject = JSONUtil.parseJSON2Obj(returnString, JSONObject.class);
             JSONObject errorObject = (JSONObject) returnJsonObject.get("error");
-            logger.info("search_result:" + returnString);
+            logger.debug("search_result:" + returnString);
             if (null != errorObject) {
                 //查询报错抛出异常
                 String errortype = (String) errorObject.get("type");
@@ -264,7 +264,7 @@ public class ElasticSearchProvider implements Provider {
             String returnStr = EntityUtils.toString(response.getEntity());
             JSONObject returnJsonObject = JSONUtil.parseJSON2Obj(returnStr, JSONObject.class);
             JSONObject errorObject = (JSONObject) returnJsonObject.get("error");
-            logger.info("search_result:" + returnStr);
+            logger.debug("search_result:" + returnStr);
             if (null != errorObject) {
                 throw new RuntimeException(returnStr);
             }
