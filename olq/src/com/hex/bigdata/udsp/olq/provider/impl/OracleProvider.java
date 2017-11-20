@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
+import com.hex.bigdata.udsp.olq.provider.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
 import com.hex.bigdata.udsp.olq.provider.impl.model.OracleDatasource;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
@@ -115,12 +115,19 @@ public class OracleProvider implements Provider {
             OLQCommUtil.putStatement(consumeId, stmt);
 
             //获取查询信息
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
-            if (olqQuerySql.getPage() == null){
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
+            if (olqQuerySql.getPage() == null) {
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
-            }else {
+            } else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
+            Page page = request.getPage();
+            if (page == null) {
+                rs = stmt.executeQuery(request.getSql());
+            } else {
+
+            }
+
             rs.setFetchSize(1000);
             ResultSetMetaData rsmd = rs.getMetaData();
             //response.setMetadata(rsmd);
@@ -140,10 +147,10 @@ public class OracleProvider implements Provider {
 
             //查询的记录数总数
             String totalSql = olqQuerySql.getTotalSql();
-            if (StringUtils.isNotBlank(totalSql)){
+            if (StringUtils.isNotBlank(totalSql)) {
                 rs = stmt.executeQuery(totalSql);
                 int totalCount = 0;
-                if (rs.next()){
+                if (rs.next()) {
                     totalCount = rs.getInt(1);
                 }
                 //设置总记录数
@@ -252,8 +259,12 @@ public class OracleProvider implements Provider {
 
             OLQCommUtil.putStatement(consumeId, stmt);
 
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
-            rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
+            if (olqQuerySql.getPage() == null) {
+                rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+            } else {
+                rs = stmt.executeQuery(olqQuerySql.getPageSql());
+            }
             rs.setFetchSize(1000);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
@@ -275,8 +286,7 @@ public class OracleProvider implements Provider {
         return response;
     }
 
-    @Override
-    public OLQQuerySql getPageSql(String sql, Page page) {
+    private OLQQuerySql getPageSql(String sql, Page page) {
         OLQQuerySql olqQuerySql = new OLQQuerySql(sql);
         if (page == null) {
             return olqQuerySql;

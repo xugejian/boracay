@@ -207,6 +207,7 @@ ${extends("/goframe/function_layout.httl")}
             nui.get("edit").disable();
             nui.get("remove").enable();
         }
+        var model = "${model}";
         if(model == "OLQ" && rows.length != 0){
             var json = nui.encode(getRows(rows));
             //grid1.loading("正在检查,请稍等...");

@@ -35,12 +35,10 @@ public class IqAsyncService implements Runnable {
     private static Logger logger = LoggerFactory.getLogger(IqAsyncService.class);
     private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
 
-    private IqSyncService iqSyncService;
     private McConsumeLogService mcConsumeLogService;
     private RunQueueService runQueueService;
     private CurrentService mcCurrentService;
     private InitParamService initParamService;
-
     private String appId;
     private Map<String, String> paraMap;
     private Page page;
@@ -49,42 +47,21 @@ public class IqAsyncService implements Runnable {
     private long asyncCycleTimeInterval;
 
     public IqAsyncService(ConsumeRequest consumeRequest, String appId, Map<String, String> paraMap, String fileName) {
-
-        this.iqSyncService = (IqSyncService) WebApplicationContextUtil.getBean("iqSyncService");
         this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
         this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
         this.mcCurrentService = (CurrentService) WebApplicationContextUtil.getBean("currentService");
         this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
-
         this.consumeRequest = consumeRequest;
         this.appId = appId;
         this.paraMap = paraMap;
         this.fileName = fileName;
-    }
-
-    public IqAsyncService(ConsumeRequest consumeRequest, String appId, Map<String, String> paraMap, String fileName, long asyncCycleTimeInterval) {
-
-        this.iqSyncService = (IqSyncService) WebApplicationContextUtil.getBean("iqSyncService");
-        this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
-        this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
-        this.mcCurrentService = (CurrentService) WebApplicationContextUtil.getBean("currentService");
-        this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
-
-        this.consumeRequest = consumeRequest;
-        this.appId = appId;
-        this.paraMap = paraMap;
-        this.fileName = fileName;
-        this.asyncCycleTimeInterval = asyncCycleTimeInterval;
     }
 
     public IqAsyncService(ConsumeRequest consumeRequest, String appId, Map<String, String> paraMap, Page page, String fileName) {
-
-        this.iqSyncService = (IqSyncService) WebApplicationContextUtil.getBean("iqSyncService");
         this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
         this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
         this.mcCurrentService = (CurrentService) WebApplicationContextUtil.getBean("currentService");
         this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
-
         this.consumeRequest = consumeRequest;
         this.appId = appId;
         this.paraMap = paraMap;
@@ -93,13 +70,10 @@ public class IqAsyncService implements Runnable {
     }
 
     public IqAsyncService(ConsumeRequest consumeRequest, String appId, Map<String, String> paraMap, Page page, String fileName, long asyncCycleTimeInterval) {
-
-        this.iqSyncService = (IqSyncService) WebApplicationContextUtil.getBean("iqSyncService");
         this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
         this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
         this.mcCurrentService = (CurrentService) WebApplicationContextUtil.getBean("currentService");
         this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
-
         this.consumeRequest = consumeRequest;
         this.appId = appId;
         this.paraMap = paraMap;

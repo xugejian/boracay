@@ -1,8 +1,6 @@
 package com.hex.bigdata.udsp.olq.provider;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Page;
-import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponseFetch;
@@ -36,13 +34,4 @@ public interface Provider {
      * @return
      */
     OLQResponseFetch executeFetch(String consumeId, OLQRequest request);
-
-    /**
-     * 获取分页SQL语句
-     *
-     * @param sql
-     * @param page
-     * @return
-     */
-    OLQQuerySql getPageSql(String sql, Page page);
 }

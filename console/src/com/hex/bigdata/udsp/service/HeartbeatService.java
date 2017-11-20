@@ -211,20 +211,16 @@ public class HeartbeatService {
             consumeRequest.setWaitNumResult(waitNumResult);
             //新增消费请求类作为参数-end
             if (RcConstant.UDSP_SERVICE_TYPE_IQ.equals(type)) {
-                Page page = request.getPage();
-                if (page != null && page.getPageIndex() > 0) {
-                    ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), page, localFileName));
-                } else {
-                    ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), localFileName));
-                }
+                ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), request.getPage(), localFileName));
             } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(type)) {
-                String sql = request.getSql();
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, sql, RcConstant.UDSP_SERVICE_TYPE_OLQ, localFileName));
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, request.getSql(), request.getPage(),
+                        RcConstant.UDSP_SERVICE_TYPE_OLQ, localFileName));
             } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
                 OLQApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
-                MessageResult messageResult = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                ThreadPool.execute(new OlqAppAsyncService(consumeRequest, dsId, (String) messageResult.getData(), RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName));
+                String sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, dsId, sql, request.getPage(),
+                        RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName));
             }
         }
         logger.info("转移服务IP为：" + downHostKey + "上的未完成的异步任务到本机【结束】");

@@ -1,75 +1,59 @@
-package com.hex.bigdata.udsp.demo;
+package com.hex.bigdata.udsp;
 
 import com.hex.bigdata.udsp.client.factory.ConsumerClientFactory;
-import com.hex.bigdata.udsp.client.impl.NoSqlClient;
+import com.hex.bigdata.udsp.client.impl.SqlClient;
 import com.hex.bigdata.udsp.constant.SdkConstant;
 import com.hex.bigdata.udsp.constant.StatusCode;
-import com.hex.bigdata.udsp.model.Page;
-import com.hex.bigdata.udsp.model.request.NoSqlRequest;
+import com.hex.bigdata.udsp.model.request.SqlRequest;
 import com.hex.bigdata.udsp.model.request.StatusRequest;
-import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
 import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
 import com.hex.bigdata.udsp.model.response.pack.StatusPackResponse;
 import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 交互查询/联机查询应用 请求DEMO
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/7/20
- * TIME:9:01
+ * 联机查询测试
  */
-public class NoSqlClientDemo {
-
+public class OlqDatasourceTest {
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(NoSqlClientDemo.class);
+    private static Logger logger = LogManager.getLogger(OlqDatasourceTest.class);
 
     /**
-     * 交互查询/联机查询应用-同步start接口示例
+     * SQL客户端查询同步start
      */
-    public void syncStart() {
+    @Test
+    private void syncStart() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
-//        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
+//        SqlClient client = ConsumerClientFactory.createCustomClient(SqlClient.class, url);
         //创建默认客户端,根据udsp.config.properties配置文件获取地址
-        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
+        SqlClient client = ConsumerClientFactory.createCustomClient(SqlClient.class);
 
         //创建请求实体
-        NoSqlRequest request = new NoSqlRequest();
-
-        //基础参数
-        request.setServiceName("message");
-        //基础参数设置-上层应用系统使用者工号
-        request.setAppUser("10940");
+        SqlRequest request = new SqlRequest();
+        //基础参数设置-设置调用服务的名称
+        request.setServiceName("core02");
         //基础参数设置-设置调用start接口
         request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
         request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
+
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("test");
         request.setToken("000000");
 
-        //设置业务参数-查询参数设置
-        Map<String, String> data = new HashMap<>();
-        data.put("client_no", "1113829408");
-        request.setData(data);
+        //设置业务参数-查询SQL
+        request.setSql("select * from cmdata.c01_cd_acct limit 1");
 
-        //设置业务参数-分页参数设置
-        Page page = new Page();
-        page.setPageSize(300);
-        page.setPageIndex(1);
-        request.setPage(page);
-
-        //调用并获取结果
+        //调用并获取返回结果
         SyncPackResponse response = client.syncStart(request);
 
         // 拆包响应对象
@@ -77,14 +61,6 @@ public class NoSqlClientDemo {
             logger.error("客户端异常");
         } else {
             if (StatusCode.SUCCESS == response.getStatusCode()) {
-                // 分页信息
-                page = response.getPage();
-                if (page != null) {
-                    logger.debug("当前页号：" + page.getPageIndex());
-                    logger.debug("当前页条数：" + page.getPageSize());
-                    logger.debug("总条数：" + page.getTotalCount());
-                    logger.debug("总页数：" + page.getTotalPage());
-                }
                 // 耗时
                 logger.debug("耗时：" + response.getConsumeTime());
                 // 消费ID
@@ -108,46 +84,34 @@ public class NoSqlClientDemo {
                 logger.error("错误信息：" + response.getMessage());
             }
         }
-
     }
 
     /**
-     * 交互查询/联机查询应用-异步start接口示例
+     * SQL客户端查询异步start
      */
-    public void asyncStart() {
+    @Test
+    private void asyncStart() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
-//        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
+//        SqlClient client = ConsumerClientFactory.createCustomClient(SqlClient.class, url);
         //创建默认客户端,根据udsp.config.properties配置文件获取地址
-        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
+        SqlClient client = ConsumerClientFactory.createCustomClient(SqlClient.class);
 
         //创建请求实体
-        NoSqlRequest request = new NoSqlRequest();
+        SqlRequest request = new SqlRequest();
         //基础参数设置-设置调用服务的名称
-        request.setServiceName("soa_jyls_app");
-        //基础参数设置-上层应用系统使用者工号
-        request.setAppUser("100940");
+        request.setServiceName("core02");
         //基础参数设置-设置调用start接口
         request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
         //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
         request.setType(SdkConstant.CONSUMER_TYPE_ASYNC);
-
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("test");
         request.setToken("000000");
+        //设置业务参数-查询SQL
+        request.setSql("select * from cmdata.c01_cd_acct limit 1");
 
-        //设置业务参数-查询参数设置
-        Map<String, String> data = new HashMap<>();
-        data.put("client_no", "1113829408");
-        request.setData(data);
-
-        //设置业务参数-分页参数设置
-        Page page = new Page();
-        page.setPageSize(300);
-        page.setPageIndex(1);
-        request.setPage(page);
-
-        //调用并获取结果
+        //调用并获取返回结果
         AsyncPackResponse response = client.asyncStart(request);
 
         // 拆包响应对象
@@ -175,33 +139,33 @@ public class NoSqlClientDemo {
     }
 
     /**
-     * 交互查询/联机查询应用-异步status接口示例
+     * SQL客户端查询异步status
      */
-    public void asyncStatus() {
+    @Test
+    private void asyncStatus() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
-//        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
+//        SqlClient client = ConsumerClientFactory.createCustomClient(SqlClient.class, url);
         //创建默认客户端,根据udsp.config.properties配置文件获取地址
-        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
+        SqlClient client = ConsumerClientFactory.createCustomClient(SqlClient.class);
 
         //创建请求实体
         StatusRequest request = new StatusRequest();
         //基础参数设置-设置调用服务的名称
-        request.setServiceName("soa_jyls_app");
-        //基础参数设置-上层应用系统使用者工号
-        request.setAppUser("10940");
-        //基础参数设置-设置调用status接口，查看任务状态
+        request.setServiceName("smart01");
+        //基础参数设置-设置调用status接口
         request.setEntity(SdkConstant.CONSUMER_ENTITY_STATUS);
-        //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
+        //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
         request.setType(SdkConstant.CONSUMER_TYPE_ASYNC);
+
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("test");
         request.setToken("000000");
 
         //设置业务参数-消费id
-        request.setConsumeId("955a0c14a55ebe727ff45f20939dfc97");
+        request.setConsumeId("a7f85c82a1c290c9316b7fa07a7a627");
 
-        //调用并获取结果
+        //调用并获取返回结果
         StatusPackResponse response = client.asyncStatus(request);
 
         // 拆包响应对象
@@ -222,12 +186,5 @@ public class NoSqlClientDemo {
                 logger.error("错误信息：" + response.getMessage());
             }
         }
-    }
-
-    public static void main(String[] args) {
-        NoSqlClientDemo demo = new NoSqlClientDemo();
-        demo.asyncStart();
-        demo.asyncStatus();
-        demo.syncStart();
     }
 }

@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.demo;
+package com.hex.bigdata.udsp;
 
 import com.hex.bigdata.udsp.client.factory.ConsumerClientFactory;
 import com.hex.bigdata.udsp.client.impl.NoSqlClient;
@@ -7,12 +7,12 @@ import com.hex.bigdata.udsp.constant.StatusCode;
 import com.hex.bigdata.udsp.model.Page;
 import com.hex.bigdata.udsp.model.request.NoSqlRequest;
 import com.hex.bigdata.udsp.model.request.StatusRequest;
-import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
 import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
 import com.hex.bigdata.udsp.model.response.pack.StatusPackResponse;
 import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -20,22 +20,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 交互查询/联机查询应用 请求DEMO
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/7/20
- * TIME:9:01
+ * 联机查询应用测试
  */
-public class NoSqlClientDemo {
+public class OlqApplicationTest {
 
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(NoSqlClientDemo.class);
+    private static Logger logger = LogManager.getLogger(OlqApplicationTest.class);
 
     /**
-     * 交互查询/联机查询应用-同步start接口示例
+     * 联机查询应用-同步start接口示例
      */
+    @Test
     public void syncStart() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
@@ -48,8 +45,6 @@ public class NoSqlClientDemo {
 
         //基础参数
         request.setServiceName("message");
-        //基础参数设置-上层应用系统使用者工号
-        request.setAppUser("10940");
         //基础参数设置-设置调用start接口
         request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
@@ -112,8 +107,9 @@ public class NoSqlClientDemo {
     }
 
     /**
-     * 交互查询/联机查询应用-异步start接口示例
+     * 联机查询应用-异步start接口示例
      */
+    @Test
     public void asyncStart() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
@@ -125,8 +121,6 @@ public class NoSqlClientDemo {
         NoSqlRequest request = new NoSqlRequest();
         //基础参数设置-设置调用服务的名称
         request.setServiceName("soa_jyls_app");
-        //基础参数设置-上层应用系统使用者工号
-        request.setAppUser("100940");
         //基础参数设置-设置调用start接口
         request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
         //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
@@ -175,8 +169,9 @@ public class NoSqlClientDemo {
     }
 
     /**
-     * 交互查询/联机查询应用-异步status接口示例
+     * 联机查询应用-异步status接口示例
      */
+    @Test
     public void asyncStatus() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
@@ -188,8 +183,6 @@ public class NoSqlClientDemo {
         StatusRequest request = new StatusRequest();
         //基础参数设置-设置调用服务的名称
         request.setServiceName("soa_jyls_app");
-        //基础参数设置-上层应用系统使用者工号
-        request.setAppUser("10940");
         //基础参数设置-设置调用status接口，查看任务状态
         request.setEntity(SdkConstant.CONSUMER_ENTITY_STATUS);
         //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
@@ -222,12 +215,5 @@ public class NoSqlClientDemo {
                 logger.error("错误信息：" + response.getMessage());
             }
         }
-    }
-
-    public static void main(String[] args) {
-        NoSqlClientDemo demo = new NoSqlClientDemo();
-        demo.asyncStart();
-        demo.asyncStatus();
-        demo.syncStart();
     }
 }

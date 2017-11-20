@@ -19,18 +19,23 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NoSqlClientTest {
+/**
+ * 交互查询测试
+ */
+public class IqApplicationTest {
 
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(NoSqlClientTest.class);
+    private static Logger logger = LogManager.getLogger(IqApplicationTest.class);
 
+    /**
+     * 交互查询-同步start接口示例
+     */
     @Test
     public void syncStart() {
-//        //udsp请求连接
+        //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
-//        //创建自定义客户端
 //        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
         //创建默认客户端,根据udsp.config.properties配置文件获取地址
         NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
@@ -39,25 +44,23 @@ public class NoSqlClientTest {
         NoSqlRequest request = new NoSqlRequest();
 
         //基础参数
-//        request.setServiceName("hds_cupatrxjnl");
-        request.setServiceName("hex_cupatrxjnl_service");
+        request.setServiceName("message");
         //基础参数设置-设置调用start接口
         request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
         request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
-        request.setUdspUser("admin");
+        request.setUdspUser("test");
         request.setToken("000000");
 
         //设置业务参数-查询参数设置
         Map<String, String> data = new HashMap<>();
-        data.put("limit", "100");
-        data.put("offset", "0");
+        data.put("client_no", "1113829408");
         request.setData(data);
 
         //设置业务参数-分页参数设置
         Page page = new Page();
-        page.setPageSize(20);
+        page.setPageSize(300);
         page.setPageIndex(1);
         request.setPage(page);
 
@@ -103,6 +106,9 @@ public class NoSqlClientTest {
 
     }
 
+    /**
+     * 交互查询-异步start接口示例
+     */
     @Test
     public void asyncStart() {
         //创建自定义客户端
@@ -115,8 +121,6 @@ public class NoSqlClientTest {
         NoSqlRequest request = new NoSqlRequest();
         //基础参数设置-设置调用服务的名称
         request.setServiceName("soa_jyls_app");
-        //基础参数设置-上层应用系统使用者工号
-        request.setAppUser("100940");
         //基础参数设置-设置调用start接口
         request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
         //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
@@ -164,6 +168,9 @@ public class NoSqlClientTest {
         }
     }
 
+    /**
+     * 交互查询-异步status接口示例
+     */
     @Test
     public void asyncStatus() {
         //创建自定义客户端
@@ -176,8 +183,6 @@ public class NoSqlClientTest {
         StatusRequest request = new StatusRequest();
         //基础参数设置-设置调用服务的名称
         request.setServiceName("soa_jyls_app");
-        //基础参数设置-上层应用系统使用者工号
-        request.setAppUser("10940");
         //基础参数设置-设置调用status接口，查看任务状态
         request.setEntity(SdkConstant.CONSUMER_ENTITY_STATUS);
         //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
@@ -197,10 +202,12 @@ public class NoSqlClientTest {
             logger.error("客户端异常");
         } else {
             if (StatusCode.SUCCESS == response.getStatusCode()) {
-                /**
-                 * 成功说明异步任务已经完成
-                 */
+                logger.info("异步消费完成");
                 // 可以继续执行FTP下载文件的操作
+            }
+            if (StatusCode.RUNING == response.getStatusCode()) {
+                logger.info("异步消费正在执行");
+                // 可以继续执行查看状态的操作
             } else {
                 logger.error("状态：" + response.getStatus());
                 logger.error("状态码：" + response.getStatusCode());
@@ -209,5 +216,4 @@ public class NoSqlClientTest {
             }
         }
     }
-
 }

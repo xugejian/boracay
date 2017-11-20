@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.olq.provider.model;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
+import com.hex.bigdata.udsp.common.provider.model.Page;
 
 /**
  * Created by junjiem on 2017-2-17.
@@ -12,17 +12,22 @@ public class OLQRequest {
      */
     private Datasource datasource;
 
-    /**
-     * 查询SQL对象
-     */
-    private OLQQuerySql olqQuerySql;
+    private String sql;
+
+    private Page page;
 
     public OLQRequest() {
     }
 
-    public OLQRequest(Datasource datasource, OLQQuerySql olqQuerySql) {
+    public OLQRequest(Datasource datasource, String sql, Page page) {
         this.datasource = datasource;
-        this.olqQuerySql = olqQuerySql;
+        this.sql = sql;
+        this.page = page;
+    }
+
+    public OLQRequest(Datasource datasource, String sql) {
+        this.datasource = datasource;
+        this.sql = sql;
     }
 
     public Datasource getDatasource() {
@@ -33,11 +38,19 @@ public class OLQRequest {
         this.datasource = datasource;
     }
 
-    public OLQQuerySql getOlqQuerySql() {
-        return olqQuerySql;
+    public String getSql() {
+        return sql;
     }
 
-    public void setOlqQuerySql(OLQQuerySql olqQuerySql) {
-        this.olqQuerySql = olqQuerySql;
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
     }
 }
