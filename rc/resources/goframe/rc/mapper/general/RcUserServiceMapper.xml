@@ -72,7 +72,7 @@
       CRT_USER = #{crtUser,jdbcType=VARCHAR},
       CRT_TIME = #{crtTime,jdbcType=VARCHAR},
       UPT_USER = #{uptUser,jdbcType=VARCHAR},
-      UPT_TIME = #{uptTime,jdbcType=VARCHAR},
+      UPT_TIME = #{uptTime,jdbcType=VARCHAR}
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">

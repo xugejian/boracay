@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.thread.sync;
 
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
-import com.hex.bigdata.udsp.mc.service.McCurrentCountService;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.service.MmRequestService;
 import com.hex.goframe.util.WebApplicationContextUtil;

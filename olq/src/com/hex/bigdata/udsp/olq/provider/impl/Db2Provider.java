@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
+import com.hex.bigdata.udsp.olq.provider.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
 import com.hex.bigdata.udsp.olq.provider.impl.model.DB2Datasource;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
@@ -85,16 +85,7 @@ public class Db2Provider implements Provider {
         return conn;
     }
 
-    public void init(Datasource datasource) {
-        try {
-            DB2Datasource db2Datasource = new DB2Datasource(datasource.getPropertyMap());
-            getConnection(db2Datasource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public OLQResponse execute(OLQRequest request) {
+    public OLQResponse execute(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -113,13 +104,17 @@ public class Db2Provider implements Provider {
         try {
             conn = getConnection(db2Datasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             //获取查询信息
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
             if (olqQuerySql.getPage() == null){
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
             }else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
+
             rs.setFetchSize(1000);
             ResultSetMetaData rsmd = rs.getMetaData();
             //response.setMetadata(rsmd);
@@ -179,6 +174,7 @@ public class Db2Provider implements Provider {
                     e.printStackTrace();
                 }
             }
+            OLQCommUtil.removeStatement(consumeId);
         }
 
         long now = System.currentTimeMillis();
@@ -190,17 +186,6 @@ public class Db2Provider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    public synchronized void close(Datasource datasource) {
-        BasicDataSource dataSource = dataSourcePool.remove(datasource.getId());
-        if (dataSource != null) {
-            try {
-                dataSource.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public boolean testDatasource(Datasource datasource) {
@@ -230,7 +215,7 @@ public class Db2Provider implements Provider {
     }
 
     @Override
-    public OLQResponseFetch executeFetch(OLQRequest request) {
+    public OLQResponseFetch executeFetch(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -246,8 +231,15 @@ public class Db2Provider implements Provider {
             DB2Datasource db2Datasource = new DB2Datasource(datasource.getPropertyMap());
             conn = getConnection(db2Datasource);
             stmt = conn.createStatement();
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
-            rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
+            if (olqQuerySql.getPage() == null){
+                rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+            }else {
+                rs = stmt.executeQuery(olqQuerySql.getPageSql());
+            }
             rs.setFetchSize(1000);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
@@ -269,8 +261,7 @@ public class Db2Provider implements Provider {
         return response;
     }
 
-    @Override
-    public OLQQuerySql getPageSql(String sql, Page page) {
+    private OLQQuerySql getPageSql(String sql, Page page) {
         OLQQuerySql olqQuerySql = new OLQQuerySql(sql);
         if (page == null) {
             return olqQuerySql;
@@ -281,32 +272,22 @@ public class Db2Provider implements Provider {
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
         Integer endRow = pageSize * pageIndex;
-        StringBuffer pageSqlBuffer = new StringBuffer("select * from (");
-        pageSqlBuffer.append("select row_number() over() AS rownum,t.* from (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (");
+        pageSqlBuffer.append("SELECT ROW_NUMBER() OVER() AS ROWNUM, UDSP_VIEW.* FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(")t)n");
-        pageSqlBuffer.append(" where rownum>=");
+        pageSqlBuffer.append(") UDSP_VIEW ) UDSP_VIEW2");
+        pageSqlBuffer.append(" WHERE ROWNUM >=");
         pageSqlBuffer.append(startRow);
-        pageSqlBuffer.append(" and rownum<= ");
+        pageSqlBuffer.append(" AND ROWNUM <= ");
         pageSqlBuffer.append(endRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
         return olqQuerySql;
     }
-
-    public static void main(String[] args) {
-        String sql = "select \"ID\", \"BNYE\", \"BWYE\"   from \"EASYCORE\".\"A\"";
-        Page page = new Page();
-        page.setPageIndex(2);
-        page.setPageSize(20);
-        Db2Provider db2Provider = new Db2Provider();
-        System.out.println(db2Provider.getPageSql(sql, page));
-    }
-
 }

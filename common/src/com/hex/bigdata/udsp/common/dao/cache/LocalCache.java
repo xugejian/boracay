@@ -6,6 +6,8 @@ import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -157,8 +159,20 @@ public class LocalCache<T> implements Cache<T> {
         T t = null;
         if (obj != null) {
             try {
-                t = (T) obj.getClass().newInstance();
-                ObjectUtil.copyObject(obj, t);
+                if (obj instanceof Integer) {
+                    t = (T) new Integer((Integer) obj);
+                } else if (obj instanceof Long) {
+                    t = (T) new Long((Long) obj);
+                } else if (obj instanceof Short) {
+                    t = (T) new Short((Short) obj);
+                } else if (obj instanceof Double) {
+                    t = (T) new Double((Double) obj);
+                } else if (obj instanceof Float) {
+                    t = (T) new Float((Float) obj);
+                } else {
+                    t = (T) obj.getClass().newInstance();
+                    ObjectUtil.copyObject(obj, t);
+                }
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {

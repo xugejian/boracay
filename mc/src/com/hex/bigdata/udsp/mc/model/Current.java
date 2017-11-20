@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.mc.model;
 
 import java.io.Serializable;
 
-public class McCurrent implements Serializable {
+public class Current implements Serializable {
     private String pkId;
 
     private String userName;

@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.mc.dto;
+package com.hex.bigdata.udsp.mc.model;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -7,12 +7,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
-public class McWaitQueue implements Serializable {
+public class WaitQueue implements Serializable {
 
-    public McWaitQueue() {
+    public WaitQueue() {
     }
 
-    public McWaitQueue(String queueName) {
+    public WaitQueue(String queueName) {
         this.queueName = queueName;
     }
 

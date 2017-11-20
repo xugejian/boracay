@@ -3,7 +3,7 @@ package com.hex.bigdata.udsp.iq.provider.impl.model.elsearch;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
 
-public class ELsearchResponse {
+public class ELSearchResponse {
     /**
      * 请求耗时（单位毫秒）
      */
@@ -60,7 +60,7 @@ public class ELsearchResponse {
 
     public static void main(String[] args) {
         String jsonString = "{\"took\":6,\"timed_out\":false,\"_shards\":{\"total\":5,\"successful\":5,\"skipped\":0,\"failed\":0},\"hits\":{\"total\":2,\"max_score\":null,\"hits\":[{\"_index\":\"megacorp\",\"_type\":\"employee\",\"_id\":\"9\",\"_score\":null,\"_source\":{\"acct_no\":\"1000008\",\"acct_name\":\"刘邦\"},\"sort\":[\"1000008\",28]},{\"_index\":\"megacorp\",\"_type\":\"employee\",\"_id\":\"10\",\"_score\":null,\"_source\":{\"acct_no\":\"1000009\",\"acct_name\":\"李莉\"},\"sort\":[\"1000009\",24]}]}}";
-        ELsearchResponse eLsearchResponse = JSONObject.parseObject(jsonString,ELsearchResponse.class);
+        ELSearchResponse eLsearchResponse = JSONObject.parseObject(jsonString,ELSearchResponse.class);
         //ELsearchResponse eLsearchResponse2 = JSONUtil.parseJSON2Obj(jsonString,ELsearchResponse.class);
         //JSONObject hitsJsonObject =eLsearchResponse2.getHits();
         //JSONArray innerHits = (JSONArray)hitsJsonObject.get("hits");

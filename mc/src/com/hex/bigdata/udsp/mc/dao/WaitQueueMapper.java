@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.mc.dao;
 
 import com.hex.bigdata.udsp.common.dao.base.SyncCacheMapper;
-import com.hex.bigdata.udsp.mc.dto.McWaitQueue;
+import com.hex.bigdata.udsp.mc.model.WaitQueue;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
  * TIME:14:35
  */
 @Repository
-public class McWaitQueueMapper extends SyncCacheMapper<McWaitQueue> {
+public class WaitQueueMapper extends SyncCacheMapper<WaitQueue> {
 
 }

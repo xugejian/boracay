@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
+import com.hex.bigdata.udsp.olq.provider.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
 import com.hex.bigdata.udsp.olq.provider.impl.model.OracleDatasource;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
@@ -29,20 +29,6 @@ public class OracleProvider implements Provider {
 
     private Logger logger = LogManager.getLogger(OracleProvider.class);
     private static Map<String, BasicDataSource> dataSourcePool;
-
-    /**
-     * 初始化
-     *
-     * @param datasource
-     */
-    public void init(Datasource datasource) {
-        try {
-            OracleDatasource oracleDatasource = new OracleDatasource(datasource.getPropertyMap());
-            getConnection(oracleDatasource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     private synchronized BasicDataSource getDataSource(OracleDatasource oracleDatasource) {
         String dsId = oracleDatasource.getId();
@@ -106,7 +92,7 @@ public class OracleProvider implements Provider {
      * @param request
      * @return
      */
-    public OLQResponse execute(OLQRequest request) {
+    public OLQResponse execute(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -125,13 +111,23 @@ public class OracleProvider implements Provider {
         try {
             conn = getConnection(oracleDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             //获取查询信息
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
-            if (olqQuerySql.getPage() == null){
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
+            if (olqQuerySql.getPage() == null) {
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
-            }else {
+            } else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
+            Page page = request.getPage();
+            if (page == null) {
+                rs = stmt.executeQuery(request.getSql());
+            } else {
+
+            }
+
             rs.setFetchSize(1000);
             ResultSetMetaData rsmd = rs.getMetaData();
             //response.setMetadata(rsmd);
@@ -151,10 +147,10 @@ public class OracleProvider implements Provider {
 
             //查询的记录数总数
             String totalSql = olqQuerySql.getTotalSql();
-            if (StringUtils.isNotBlank(totalSql)){
+            if (StringUtils.isNotBlank(totalSql)) {
                 rs = stmt.executeQuery(totalSql);
                 int totalCount = 0;
-                if (rs.next()){
+                if (rs.next()) {
                     totalCount = rs.getInt(1);
                 }
                 //设置总记录数
@@ -192,6 +188,7 @@ public class OracleProvider implements Provider {
                     e.printStackTrace();
                 }
             }
+            OLQCommUtil.removeStatement(consumeId);
         }
 
         long now = System.currentTimeMillis();
@@ -203,22 +200,6 @@ public class OracleProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    /**
-     * 关闭数据源连接
-     *
-     * @param datasource
-     */
-    public void close(Datasource datasource) {
-        BasicDataSource dataSource = dataSourcePool.remove(datasource.getId());
-        if (dataSource != null) {
-            try {
-                dataSource.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**
@@ -259,7 +240,7 @@ public class OracleProvider implements Provider {
      * @param request
      * @return
      */
-    public OLQResponseFetch executeFetch(OLQRequest request) {
+    public OLQResponseFetch executeFetch(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -275,8 +256,15 @@ public class OracleProvider implements Provider {
         try {
             conn = getConnection(oracleDatasource);
             stmt = conn.createStatement();
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
-            rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
+            if (olqQuerySql.getPage() == null) {
+                rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+            } else {
+                rs = stmt.executeQuery(olqQuerySql.getPageSql());
+            }
             rs.setFetchSize(1000);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
@@ -298,8 +286,7 @@ public class OracleProvider implements Provider {
         return response;
     }
 
-    @Override
-    public OLQQuerySql getPageSql(String sql, Page page) {
+    private OLQQuerySql getPageSql(String sql, Page page) {
         OLQQuerySql olqQuerySql = new OLQQuerySql(sql);
         if (page == null) {
             return olqQuerySql;
@@ -310,31 +297,21 @@ public class OracleProvider implements Provider {
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
         Integer endRow = pageSize * pageIndex;
-        StringBuffer pageSqlBuffer = new StringBuffer("select * from ( select rownum row_num,t.* from (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (SELECT ROWNUM ROW_NUM, UDSP_VIEW.* FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(")t)n");
-        pageSqlBuffer.append(" where rownum>=");
+        pageSqlBuffer.append(") UDSP_VIEW ) UDSP_VIEW2");
+        pageSqlBuffer.append(" WHERE ROWNUM >=");
         pageSqlBuffer.append(startRow);
-        pageSqlBuffer.append(" and rownum<= ");
+        pageSqlBuffer.append(" AND ROWNUM <= ");
         pageSqlBuffer.append(endRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")t");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
         return olqQuerySql;
     }
-
-    public static void main(String[] args) {
-        String sql = "select PK_ID, NAME, DESCRIBE, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME from RC_SERVICE where DEL_FLG = '0' order by UPT_TIME desc, CRT_TIME desc, NAME";
-        Page page = new Page();
-        page.setPageIndex(2);
-        page.setPageSize(20);
-        OracleProvider oracleProvider = new OracleProvider();
-        System.out.println(oracleProvider.getPageSql(sql, page));
-    }
-
 }

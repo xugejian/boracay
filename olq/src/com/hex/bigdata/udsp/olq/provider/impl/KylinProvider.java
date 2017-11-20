@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
+import com.hex.bigdata.udsp.olq.provider.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
 import com.hex.bigdata.udsp.olq.provider.impl.model.KylinDatasource;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
@@ -85,16 +85,7 @@ public class KylinProvider implements Provider {
         return conn;
     }
 
-    public void init(Datasource datasource) {
-        try {
-            KylinDatasource kylinDatasource = new KylinDatasource(datasource.getPropertyMap());
-            getConnection(kylinDatasource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public OLQResponse execute(OLQRequest request) {
+    public OLQResponse execute(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -113,8 +104,11 @@ public class KylinProvider implements Provider {
         try {
             conn = getConnection(kylinDatasource);
             stmt = conn.createStatement();
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
             //获取查询信息
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
             if (olqQuerySql.getPage() == null){
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
             }else {
@@ -182,6 +176,7 @@ public class KylinProvider implements Provider {
                     e.printStackTrace();
                 }
             }
+            OLQCommUtil.removeStatement(consumeId);
         }
 
         long now = System.currentTimeMillis();
@@ -193,17 +188,6 @@ public class KylinProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    public synchronized void close(Datasource datasource) {
-        BasicDataSource dataSource = dataSourcePool.remove(datasource.getId());
-        if (dataSource != null) {
-            try {
-                dataSource.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public boolean testDatasource(Datasource datasource) {
@@ -233,7 +217,7 @@ public class KylinProvider implements Provider {
     }
 
     @Override
-    public OLQResponseFetch executeFetch(OLQRequest request) {
+    public OLQResponseFetch executeFetch(String consumeId, OLQRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
@@ -249,8 +233,15 @@ public class KylinProvider implements Provider {
         try {
             conn = getConnection(kylinDatasource);
             stmt = conn.createStatement();
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
-            rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+
+            OLQCommUtil.putStatement(consumeId, stmt);
+
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
+            if (olqQuerySql.getPage() == null){
+                rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+            }else {
+                rs = stmt.executeQuery(olqQuerySql.getPageSql());
+            }
             rs.setFetchSize(1000);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
@@ -272,8 +263,7 @@ public class KylinProvider implements Provider {
         return response;
     }
 
-    @Override
-    public OLQQuerySql getPageSql(String sql, Page page) {
+    private OLQQuerySql getPageSql(String sql, Page page) {
         OLQQuerySql olqQuerySql = new OLQQuerySql(sql);
         if (page == null) {
             return olqQuerySql;
@@ -283,30 +273,21 @@ public class KylinProvider implements Provider {
         int pageIndex = page.getPageIndex();
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
-        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * from (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(")t  limit ");
+        pageSqlBuffer.append(") UDSP_VIEW  LIMIT ");
         pageSqlBuffer.append(pageSize);
-        pageSqlBuffer.append(" offset ");
+        pageSqlBuffer.append(" OFFSET ");
         pageSqlBuffer.append(startRow);
         olqQuerySql.setPageSql(pageSqlBuffer.toString());
         //总记录数查询SQL组装
-        StringBuffer totalSqlBuffer = new StringBuffer("select count(*) from (");
+        StringBuffer totalSqlBuffer = new StringBuffer("SELECT COUNT(1) FROM (");
         totalSqlBuffer.append(sql);
-        totalSqlBuffer.append(")t");
+        totalSqlBuffer.append(") UDSP_VIEW");
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
         return olqQuerySql;
-    }
-
-    public static void main(String[] args) {
-        String sql = "SELECT * from edwapp.soa_khmrye";
-        Page page = new Page();
-        page.setPageIndex(1);
-        page.setPageSize(20);
-        KylinProvider kylinProvider = new KylinProvider();
-        System.out.println(kylinProvider.getPageSql(sql, page));
     }
 
 }

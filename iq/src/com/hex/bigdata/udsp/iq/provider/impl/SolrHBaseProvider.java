@@ -1,5 +1,7 @@
 package com.hex.bigdata.udsp.iq.provider.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.common.constant.Order;
 import com.hex.bigdata.udsp.common.constant.Status;
@@ -7,12 +9,11 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.HBaseConnectionPoolFactory;
-import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
-import com.hex.bigdata.udsp.iq.provider.impl.model.HBasePage;
-import com.hex.bigdata.udsp.iq.provider.impl.model.SolrHBaseDatasource;
-import com.hex.bigdata.udsp.iq.provider.impl.model.SolrHBasePage;
+import com.hex.bigdata.udsp.iq.provider.impl.model.*;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
@@ -60,11 +61,6 @@ public class SolrHBaseProvider implements Provider {
     private static Logger logger = LoggerFactory.getLogger(SolrHBaseProvider.class);
 
     private static Map<String, HBaseConnectionPoolFactory> dataSourcePool;
-
-    public void init(Datasource datasource) {
-        getDataSource(new SolrHBaseDatasource(datasource.getPropertyMap()));
-        logger.debug("init Solr+HBase Provider DataSource");
-    }
 
     public IqResponse query(IqRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
@@ -195,14 +191,6 @@ public class SolrHBaseProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    public synchronized void close(Datasource datasource) {
-        HBaseConnectionPoolFactory factory = dataSourcePool.remove(datasource.getId());
-        if (factory != null) {
-            factory.closePool();
-        }
-        logger.debug("close Solr+HBase Provider DataSource");
     }
 
     //-------------------------------------------分割线---------------------------------------------
@@ -550,5 +538,45 @@ public class SolrHBaseProvider implements Provider {
         }
 
         return HbaseCanConnection && SolrCanConnection;
+    }
+
+    @Override
+    public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
+        SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
+        String solrServers = solrDatasource.getSolrServers();
+        return getColumns(schemaName, solrServers);
+    }
+
+    public List<MetadataCol> getColumns(String collectionName, String solrServers) {
+        if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {
+            return null;
+        }
+        String response = "";
+        String[] addresses = solrServers.split(",");
+        for (String solrServer : addresses) {
+            String url = "http://" + solrServer + "/solr/" + collectionName + "/schema/fields";
+            response = SolrUtil.sendGet(url, "");
+            if (StringUtils.isEmpty(response)) {
+                continue;
+            } else {
+                break;
+            }
+        }
+        JSONObject rs = JSONObject.parseObject(response);
+        JSONArray fields = (JSONArray) rs.get("fields");
+        List<MetadataCol> metadataCols = new ArrayList<>();
+        MetadataCol mdCol = null;
+        for (int i = 0; i < fields.size(); i++) {
+            mdCol = new MetadataCol();
+            mdCol.setSeq((short) i);
+            mdCol.setName((String) fields.getJSONObject(i).get("name"));
+            mdCol.setDescribe((String) fields.getJSONObject(i).get("name"));
+            mdCol.setType(SolrUtil.getColType((String) fields.getJSONObject(i).get("type")));
+            mdCol.setIndexed((boolean) fields.getJSONObject(i).get("indexed"));
+            mdCol.setStored((boolean) fields.getJSONObject(i).get("stored"));
+            mdCol.setPrimary(fields.getJSONObject(i).get("uniqueKey") == null ? false : true);
+            metadataCols.add(mdCol);
+        }
+        return metadataCols;
     }
 }

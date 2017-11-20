@@ -1,5 +1,5 @@
 prompt PL/SQL Developer import file
-prompt Created on 2017年10月9日 by PC
+prompt Created on 2017年11月20日 by JunjieM
 set feedback off
 set define off
 prompt Loading T_GF_APPLICATION...
@@ -21,378 +21,12 @@ values ('51', 'USER', '2017032102', 'role', 'default');
 insert into T_GF_AUTH_RIGHT (id, auth_id, user_id, auth_type, app_id)
 values ('1011', 'ADMIN', 'tomnic', 'role', 'default');
 insert into T_GF_AUTH_RIGHT (id, auth_id, user_id, auth_type, app_id)
+values ('2011', 'OLQ', 'ERS', 'role', 'default');
+insert into T_GF_AUTH_RIGHT (id, auth_id, user_id, auth_type, app_id)
 values ('1', 'ADMIN', 'admin', 'role', 'default');
 commit;
-prompt 7 records loaded
+prompt 8 records loaded
 prompt Loading T_GF_DICT...
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_ORDER_COL_TYPE', 'DESC', 'DESC', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'IQ', '交互查询', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'OLQ', '联机查询', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'MM', '模型管理', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'RTS_CONSUMER', '实时流-消费者', null, 5, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'RTS_PRODUCER', '实时流-生产者', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_CONSUME_LOG_STATUS', '0', '成功', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_CONSUME_LOG_STATUS', '1', '失败', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'MYSQL', 'com.hex.bigdata.udsp.olq.provider.impl.MysqlProvider', null, 4, null, null, 'default', '联机查询的mysql接口实现类');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'DB2', 'com.hex.bigdata.udsp.olq.provider.impl.Db2Provider', null, 6, null, null, 'default', '联机查询的db2接口实现类');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_OPERATION_LOG_TYPE', '1', '添加', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_OPERATION_LOG_TYPE', '2', '更新', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_OPERATION_LOG_TYPE', '3', '删除', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_OPERATION_LOG_TYPE', '4', '查询', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'username', 'Impala 用户名', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'IMPALA', 'com.hex.bigdata.udsp.olq.provider.impl.ImpalaProvider', null, 1, null, null, 'default', '联机查询的Impala接口实现类');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'HIVE', 'com.hex.bigdata.udsp.olq.provider.impl.HiveProvider', null, 2, null, null, 'default', '联机查询的Hive接口实现类');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MM_MODEL_STATUS', '2', '已发布', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MM_MODEL_STATUS', '0', '待上传', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'driver.class', 'Hive 驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'username', 'Hive 用户名', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_REQUEST_TYPE', '1', '外部请求', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SYNC_TYPE', 'ASYNC', '异步', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_TIMEOUT', '200', '200ms', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1 from dual');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_TYPE', 'HIVE', 'HIVE', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_ORDER_COL_TYPE', 'ASC', 'ASC', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_TYPE', 'HIVE', 'HIVE', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_TYPE', 'SOLR', 'SOLR', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_TYPE', 'HBASE', 'HBASE', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_TYPE', 'KAFKA', 'KAFKA', null, 5, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_STATUS', '2', '已建', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'driver.class', 'Hive 驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
-commit;
-prompt 100 records committed...
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'jdbc.url', 'Hive JDBC URL，如：jdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'password', 'Hive 密码', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'username', 'Hive 用户名', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.zk.port', 'HBase的Zookeeper的端口，如：2181', null, 2, null, null, 'default', '2181');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.zk.quorum', 'HBase的Zookeeper的集群IP，多个IP用逗号分隔，如：10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR', 'solr.servers', 'Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.zk.quorum', 'HBase的Zookeeper的集群IP，多个IP用逗号分隔，如：10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.zk.port', 'HBase的Zookeeper的端口，如：2181', null, 2, null, null, 'default', '2181');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'solr.servers', 'Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 10, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_TYPE', 'SOLR_HBASE', 'SOLR_HBASE', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_STATUS', '1', '未建', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'password', 'Impala 密码', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_REQUEST_TYPE', '0', '内部请求', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000002', '用户名密码错误', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_TIMEOUT', '1000', '1000ms', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'PGSQL', 'com.hex.bigdata.udsp.olq.provider.impl.PgsqlProvider', null, 5, null, null, 'default', '联机查询的pgsql接口实现类');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000004', '没有注册服务', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000006', '请求IP不在允许的IP段内', null, 6, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000007', '程序内部异常', null, 7, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000010', '调用类型或者ENTITY设置错误', null, 10, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '200002', '模型不支持该接口调用类型', null, 14, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000012', '查询消费状态过于频繁', null, 12, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_TIMEOUT', '2000', '2000ms', null, 5, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'ORACLE', 'com.hex.bigdata.udsp.olq.provider.impl.OracleProvider', null, 3, null, null, 'default', '联机查询的oracle接口实现类');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'driver.class', 'pgsql 驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_TYPE', 'ORACLE', 'ORACLE', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_TYPE', 'PGSQL', 'PGSQL', null, 5, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_TYPE', 'KYLIN', 'KYLIN', null, 7, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'KYLIN', 'com.hex.bigdata.udsp.olq.provider.impl.KylinProvider', null, 7, null, null, 'default', '联机查询的kylin接口实现类');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'jdbc.url', 'pgsql JDBC URL，如：jdbc:postgresql://${ip}:${port}', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'password', 'pgsql 密码', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'username', 'pgsql 用户名', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'driver.class', 'db2 驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'jdbc.url', 'db2 JDBC URL，如:jdbc:db2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'password', 'db2 密码', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'username', 'db2 用户名', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'driver.class', 'kylin 驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'jdbc.url', 'kylin JDBC URL，如：' || chr(9) || ' jdbc:kylin://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'password', 'kylin 密码', null, 4, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'username', 'kylin 用户名', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'driver.class', 'mysql 驱动类', null, 1, null, null, 'default', 'com.mysql.jdbc.Driver');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.retries.number', '客户端重试最大次数', null, 4, null, null, 'default', '3');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.recovery.retry', 'zookeeper的重试次数（zk的重试总次数是：hbase.client.retries.number * zookeeper.recovery.retry）', null, 6, null, null, 'default', '3');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.operation.timeout', 'HBase客户端发起一次数据操作直至得到响应之间总的超时时间，数据操作类型包括get、append、increment、delete、put等（毫秒）', null, 8, null, null, 'default', '30000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'metadata.broker.list', 'Kafka集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_ORACLE', 'database.name', '库名', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_ORACLE', 'select.sql', 'SQL语句', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_MYSQL', 'database.name', '库名', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_MYSQL', 'select.sql', 'SQL语句', null, 3, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_ELASTICSEARCH', 'elasticsearch.servers', 'elasticsearch集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9200,10.1.97.2:9200,10.1.97.3:9200', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_TYPE', 'ELASTICSEARCH', 'ELASTICSEARCH', null, 5, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_KAFKA', 'group.id', '消费组ID', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.rpc.timeout', '一次RPC请求的超时时间（毫秒）', null, 3, null, null, 'default', '5000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.pause', '重试的休眠时间（毫秒）', null, 5, null, null, 'default', '100');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.recovery.retry.intervalmill', 'zookeeper重试的休眠时间（毫秒）', null, 7, null, null, 'default', '200');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.regionserver.lease.period', 'scan操作超时时间（毫秒）', null, 9, null, null, 'default', '60000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_ELASTICSEARCH', 'elasticsearch.max.data.size', '最大返回数', null, 2, null, null, 'default', '65535');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_IMPL_CLASS', 'ELASTICSEARCH', 'com.hex.bigdata.udsp.iq.provider.impl.ELSearchProvider', null, 5, null, null, 'default', '交互查询elasticsearch接口实现类');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.fq.data.type', '结果数据类型，可选dsv、json，如果为dsv时hbase.fq.dsv.seprator生效', null, 7, null, null, 'default', 'dsv');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'max.data.size', '最大数据返回条数', null, 17, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('UDSP_COMMON_DATA_TYPE', 'VARCHAR', 'VARCHAR', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -416,9 +50,9 @@ values ('UDSP_COMMON_DATA_TYPE', 'FLOAT', 'FLOAT', null, 9, null, null, 'default
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('UDSP_COMMON_DATA_TYPE', 'TIMESTAMP', 'TIMESTAMP', null, 11, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'driver.class', 'Impala 驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+values ('OLQ_DS_PROPS_IMPALA', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'jdbc.url', 'Impala JDBC URL，如：无密码jdbc:hive2://${ip}:${port}/;auth=noSasl  有密码jdbc:hive2://${ip}:${port}/', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_IMPALA', 'jdbc.url', 'JDBC URL，如：无密码jdbc:hive2://${ip}:${port}/;auth=noSasl  有密码jdbc:hive2://${ip}:${port}/', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('MM_REQUEST_TYPE', '1', 'HTTP', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -427,8 +61,6 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IQ_APP_QUERY_COL_OPERATOR', 'right like', 'like右查询', null, 9, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_HBASE', 'hbase.family.name', 'hbase族名', null, 5, null, null, 'default', 'f');
-commit;
-prompt 200 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.family.name', 'hbase列族名字', null, 4, null, null, 'default', 'f');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -436,7 +68,7 @@ values ('IQ_DS_PROPS_HBASE', 'hbase.qulifier.name', 'hbase列名', null, 6, null, 
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.qulifier.name', 'hbase列名', null, 5, null, null, 'default', 'q');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.fqSep', '字段分隔符', null, 6, null, null, 'default', '\\007');
+values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.fqSep', '字段分隔符，如：|、||、\\007、\\t、\\036', null, 6, null, null, 'default', '\\007');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('UDSP_SERVICE_TYPE', 'OLQ_APP', '联机查询应用', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -444,9 +76,9 @@ values ('MM_MODEL_STATUS', '1', '待发布', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('MM_MODEL_STATUS', '3', '归档', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'jdbc.url', 'Hive JDBC URL，如：jdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_HIVE', 'jdbc.url', 'JDBC URL，如：jdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'password', 'Hive 密码', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_HIVE', 'password', '密码', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_HIVE', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -454,23 +86,23 @@ values ('OLQ_DS_PROPS_HIVE', 'max.wait', '最长等待时间，单位毫秒', null, 9, null
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_HIVE', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'jdbc.url', 'mysql JDBC URL，如：jdbc:mysql://${ip}:${port}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_MYSQL', 'jdbc.url', 'JDBC URL，如：jdbc:mysql://${ip}:${port}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'password', 'mysql 密码', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_MYSQL', 'password', '密码', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'username', 'mysql 用户名', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_MYSQL', 'username', '用户名', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'driver.class', 'oracle 驱动类', null, 1, null, null, 'default', 'oracle.jdbc.OracleDriver');
+values ('OLQ_DS_PROPS_ORACLE', 'driver.class', '驱动类', null, 1, null, null, 'default', 'oracle.jdbc.OracleDriver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'jdbc.url', 'oracle JDBC URL，如：jdbc:oracle:thin:@${ip}:${port}/${model}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_ORACLE', 'jdbc.url', 'JDBC URL，如：jdbc:oracle:thin:@${ip}:${port}/${model}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'password', 'oracle 密码', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_ORACLE', 'password', '密码', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'username', 'oracle 用户名', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_ORACLE', 'username', '用户名', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_TYPE', 'REDIS', 'REDIS', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_IMPL_CLASS', 'REDIS', 'com.hex.bigdata.udsp.iq.provider.impl.RedisProvider', null, 4, null, null, 'default', '交互查询redis接口实现类');
+values ('IQ_IMPL_CLASS', 'REDIS', 'com.hex.bigdata.udsp.iq.provider.impl.RedisProvider', null, 4, null, null, 'default', '交互查询Redis接口实现类');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_REDIS', 'redis.connection.ip', 'redis连接ip地址', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -550,15 +182,15 @@ values ('IM_IMPL_CLASS', 'MYSQL', 'com.hex.bigdata.udsp.im.provider.impl.MysqlPr
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.fq.data.type', '结果数据类型，可选dsv、json，如果为dsv时hbase.fq.dsv.seprator生效', null, 10, null, null, 'default', 'dsv');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_HBASE', 'hbase.fq.dsv.seprator', '结果数据分隔符，如：|、||、\\007、\\t、\\036', null, 8, null, null, 'default', '\\007');
+values ('IM_MD_PROPS_HBASE', 'hbase.fq.dsv.seprator', '结果数据分隔符，如：|、||、\007、\t、\036', null, 8, null, null, 'default', '\007');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_SOLR', 'solr.collection.name', 'Solr collection名称', null, 1, null, null, 'default', null);
+values ('IM_MODEL_PROPS_SOLR', 'solr.collection.name', 'collection名称', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_HBASE', 'hbase.fq.data.type', '结果数据类型，可选dsv、json，如果为dsv时hbase.fq.dsv.seprator生效', null, 7, null, null, 'default', 'dsv');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_TYPE', '0', '内表', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.fq.dsv.seprator', '结果数据分隔符，如：|、||、\\007、\\t、\\036', null, 11, null, null, 'default', '\\007');
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.fq.dsv.seprator', '结果数据分隔符，如：|、||、\007、\t、\036', null, 11, null, null, 'default', '\007');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_IMPL_CLASS', 'ORACLE', 'com.hex.bigdata.udsp.im.provider.impl.OracleProvider', null, 2, null, null, 'default', '交互建模的Oracle接口实现类');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -595,6 +227,8 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_IMPL_CLASS', 'HIVE', 'com.hex.bigdata.udsp.im.provider.impl.HiveProvider', null, 3, null, null, 'default', '交互建模的Hive接口实现类');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MODEL_FILTER_TYPE', '==', '等于', null, 1, null, null, 'default', null);
+commit;
+prompt 100 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_ORACLE', 'password', 'oracle 密码', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -629,8 +263,6 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_DS_PROPS_MYSQL', 'jdbc.url', 'mysql JDBC URL，如：jdbc:mysql://${ip}:${port}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_MYSQL', 'password', 'mysql 密码', null, 4, null, null, 'default', null);
-commit;
-prompt 300 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_MYSQL', 'username', 'mysql 用户名', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -684,7 +316,7 @@ values ('IM_DS_PROPS_KAFKA', 'zookeeper.connect', 'zookeeper集群的IP和端口地址，
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MODEL_FILTER_TYPE', '<=', '小于等于', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', '!=', '不等于', null, 7, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', '!=', '不等于', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MODEL_TYPE', '1', '批量', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -754,7 +386,7 @@ values ('OLQ_DS_TYPE', 'DB2', 'DB2', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OlQ_APP_COL_DATA_TYPE', 'STRING', 'STRING', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', 'like', '模糊匹配', null, 2, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', 'like', '模糊匹配', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MODEL_FILTER_TYPE', '>', '大于', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -797,6 +429,8 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('OLQ_DS_PROPS_PGSQL', 'max.data.size', '最大数据返回条数', null, 17, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_REDIS', 'redis.connection.port', 'redis连接端口号', null, 2, null, null, 'default', null);
+commit;
+prompt 200 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_HBASE', 'hbase.zk.port', 'HBase的Zookeeper的端口，如：2181', null, 2, null, null, 'default', '2181');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -831,10 +465,8 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('RTS_CONSUMER_PROPS_KAFKA', 'rebalance.retries.max', 'rebalance时的最大尝试次数', null, 8, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_APP_QUERY_COL_OPERATOR', '==', '等于', null, 1, null, null, 'default', null);
-commit;
-prompt 400 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', 'like', '模糊匹配', null, 2, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', 'like', '模糊匹配', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_APP_QUERY_COL_OPERATOR', '>', '大于', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -844,7 +476,7 @@ values ('IQ_APP_QUERY_COL_OPERATOR', '>=', '大于等于', null, 5, null, null, 'def
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_APP_QUERY_COL_OPERATOR', '<=', '小于等于', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', '!=', '不等于', null, 7, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', '!=', '不等于', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_TYPE', 'IMPALA', 'IMPALA', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -858,7 +490,7 @@ values ('IQ_MD_COL_TYPE', '1', '查询字段', null, 1, null, null, 'default', null)
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_DS_PROPS_KAFKA', 'metadata.broker.list', 'Kafka集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_IMPL_CLASS', 'KAFKA', 'com.hex.bigdata.udsp.rts.provider.impl.KafkaProvider', null, 1, null, null, 'default', '实时流的KAFKA接口实现类');
+values ('RTS_IMPL_CLASS', 'KAFKA', 'com.hex.bigdata.udsp.rts.provider.impl.KafkaProvider', null, 1, null, null, 'default', '实时流的Kafka接口实现类');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('COF_CARDTYPE', '1', '身份证', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -999,10 +631,380 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IQ_MD_COL_DATA_TYPE', 'TIMESTAMP', 'TIMESTAMP', null, 12, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_BATCH_JOB_STATUS', 'BUILDING', '正在构建', null, 2, null, null, 'default', null);
+commit;
+prompt 300 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_BATCH_JOB_STATUS', 'BUILD_FAIL', '构建失败', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_REALTIME_JOB_STATUS', 'STARTING', '开始启动', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_APP_ORDER_COL_TYPE', 'DESC', 'DESC', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_SERVICE_TYPE', 'IQ', '交互查询', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_SERVICE_TYPE', 'OLQ', '联机查询', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_SERVICE_TYPE', 'MM', '模型管理', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_SERVICE_TYPE', 'RTS_CONSUMER', '实时流-消费者', null, 5, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_SERVICE_TYPE', 'RTS_PRODUCER', '实时流-生产者', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('MC_CONSUME_LOG_STATUS', '0', '成功', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('MC_CONSUME_LOG_STATUS', '1', '失败', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_IMPL_CLASS', 'MYSQL', 'com.hex.bigdata.udsp.olq.provider.impl.MysqlProvider', null, 4, null, null, 'default', '联机查询的Mysql接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_IMPL_CLASS', 'DB2', 'com.hex.bigdata.udsp.olq.provider.impl.Db2Provider', null, 6, null, null, 'default', '联机查询的Db2接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('MC_OPERATION_LOG_TYPE', '1', '添加', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('MC_OPERATION_LOG_TYPE', '2', '更新', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('MC_OPERATION_LOG_TYPE', '3', '删除', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('MC_OPERATION_LOG_TYPE', '4', '查询', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'username', '用户名', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_IMPL_CLASS', 'IMPALA', 'com.hex.bigdata.udsp.olq.provider.impl.ImpalaProvider', null, 1, null, null, 'default', '联机查询的Impala接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_IMPL_CLASS', 'HIVE', 'com.hex.bigdata.udsp.olq.provider.impl.HiveProvider', null, 2, null, null, 'default', '联机查询的Hive接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('MM_MODEL_STATUS', '2', '已发布', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('MM_MODEL_STATUS', '0', '待上传', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'username', '用户名', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_REQUEST_TYPE', '1', '外部请求', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_SYNC_TYPE', 'ASYNC', '异步', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('RTS_CONSUMER_TIMEOUT', '200', '200ms', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1 from dual');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_TYPE', 'HIVE', 'HIVE', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_APP_ORDER_COL_TYPE', 'ASC', 'ASC', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1 from sysibm.sysdummy1');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_TYPE', 'HIVE', 'HIVE', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_TYPE', 'SOLR', 'SOLR', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_TYPE', 'HBASE', 'HBASE', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_TYPE', 'KAFKA', 'KAFKA', null, 5, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MD_STATUS', '2', '已建', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'driver.class', 'Hive 驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+commit;
+prompt 400 records committed...
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'jdbc.url', 'Hive JDBC URL，如：jdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'password', 'Hive 密码', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'username', 'Hive 用户名', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HBASE', 'hbase.zk.port', 'HBase的Zookeeper的端口，如：2181', null, 2, null, null, 'default', '2181');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HIVE', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_HBASE', 'hbase.zk.quorum', 'HBase的Zookeeper的集群IP，多个IP用逗号分隔，如：10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR', 'solr.servers', 'Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.zk.quorum', 'HBase的Zookeeper的集群IP，多个IP用逗号分隔，如：10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.zk.port', 'HBase的Zookeeper的端口，如：2181', null, 2, null, null, 'default', '2181');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'solr.servers', 'Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 10, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_TYPE', 'SOLR_HBASE', 'SOLR_HBASE', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MD_STATUS', '1', '未建', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'password', '密码', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_REQUEST_TYPE', '0', '内部请求', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000002', '用户名密码错误', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('RTS_CONSUMER_TIMEOUT', '1000', '1000ms', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_IMPL_CLASS', 'PGSQL', 'com.hex.bigdata.udsp.olq.provider.impl.PgsqlProvider', null, 5, null, null, 'default', '联机查询的Pgsql接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000004', '没有注册服务', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000006', '请求IP不在允许的IP段内', null, 6, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000007', '程序内部异常', null, 7, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000010', '调用类型或者ENTITY设置错误', null, 10, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '200002', '模型不支持该接口调用类型', null, 14, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000012', '查询消费状态过于频繁', null, 12, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('RTS_CONSUMER_TIMEOUT', '2000', '2000ms', null, 5, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_IMPL_CLASS', 'ORACLE', 'com.hex.bigdata.udsp.olq.provider.impl.OracleProvider', null, 3, null, null, 'default', '联机查询的Oracle接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_TYPE', 'ORACLE', 'ORACLE', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_TYPE', 'PGSQL', 'PGSQL', null, 5, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_TYPE', 'KYLIN', 'KYLIN', null, 7, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_IMPL_CLASS', 'KYLIN', 'com.hex.bigdata.udsp.olq.provider.impl.KylinProvider', null, 7, null, null, 'default', '联机查询的Kylin接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'jdbc.url', 'JDBC URL，如：jdbc:postgresql://${ip}:${port}', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'password', '密码', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'username', '用户名', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'jdbc.url', 'JDBC URL，如:jdbc:db2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'password', '密码', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'username', '用户名', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'jdbc.url', 'JDBC URL，如：' || chr(9) || ' jdbc:kylin://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'password', '密码', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'username', '用户名', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'driver.class', '驱动类', null, 1, null, null, 'default', 'com.mysql.jdbc.Driver');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.retries.number', '客户端重试最大次数', null, 4, null, null, 'default', '3');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.recovery.retry', 'zookeeper的重试次数（zk的重试总次数是：hbase.client.retries.number * zookeeper.recovery.retry）', null, 6, null, null, 'default', '3');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.operation.timeout', 'HBase客户端发起一次数据操作直至得到响应之间总的超时时间，数据操作类型包括get、append、increment、delete、put等（毫秒）', null, 8, null, null, 'default', '30000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_KAFKA', 'metadata.broker.list', 'Kafka集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_PROPS_ORACLE', 'database.name', '库名', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_PROPS_ORACLE', 'select.sql', 'SQL语句', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_PROPS_MYSQL', 'database.name', '库名', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_PROPS_MYSQL', 'select.sql', 'SQL语句', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_PROPS_ELASTICSEARCH', 'elasticsearch.servers', 'elasticsearch集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9200,10.1.97.2:9200,10.1.97.3:9200', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_TYPE', 'ELASTICSEARCH', 'ELASTICSEARCH', null, 5, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_PROPS_KAFKA', 'group.id', '消费组ID', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.rpc.timeout', '一次RPC请求的超时时间（毫秒）', null, 3, null, null, 'default', '5000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.pause', '重试的休眠时间（毫秒）', null, 5, null, null, 'default', '100');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.recovery.retry.intervalmill', 'zookeeper重试的休眠时间（毫秒）', null, 7, null, null, 'default', '200');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.regionserver.lease.period', 'scan操作超时时间（毫秒）', null, 9, null, null, 'default', '60000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_PROPS_ELASTICSEARCH', 'elasticsearch.max.data.size', '最大返回数', null, 2, null, null, 'default', '65535');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_PROPS_HBASE', 'hbase.fq.data.type', '结果数据类型，可选dsv、json，如果为dsv时hbase.fq.dsv.seprator生效', null, 7, null, null, 'default', 'dsv');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'max.data.size', '最大数据返回条数', null, 17, null, null, 'default', '65535');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_TYPE', 'INCEPTOR', 'INCEPTOR', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_REALTIME_JOB_STATUS', 'START_FAIL', '启动失败', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1015,6 +1017,10 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('AUTO_REFRESH_TIME', '2000', '2秒', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('AUTO_REFRESH_TIME', '5000', '5秒', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_PROPS_SOLR', 'violence.query', '是否暴力查询（true/false）', null, 2, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_PROPS_ORACLE', 'violence.query', '是否暴力查询（true/false）', null, 4, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MODEL_PROPS_HIVE', 'database.name', '库名', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1029,16 +1035,28 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_MODEL_STATUS', '1', '未建', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MODEL_STATUS', '2', '已建', null, 2, null, null, 'default', null);
+commit;
+prompt 500 records committed...
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_PROPS_HIVE', 'violence.query', '是否暴力查询（true/false）', null, 4, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_IMPL_CLASS', 'ELASTICSEARCH', 'com.hex.bigdata.udsp.iq.provider.impl.ElasticSearchProvider', null, 5, null, null, 'default', '交互查询ElasticSearch接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_PROPS_MYSQL', 'violence.query', '是否暴力查询（true/false）', null, 4, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('AUTO_REFRESH_TIME', '10000', '10秒', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('AUTO_REFRESH_TIME', '15000', '15秒', null, 4, null, null, 'default', null);
-commit;
-prompt 500 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('AUTO_REFRESH_TIME', '30000', '30秒', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('AUTO_REFRESH_TIME', '60000', '60秒', null, 6, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_SERVICE_TYPE', 'IM', '交互建模', null, 7, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_ORACLE', 'remarks.reporting', '是否允许获取表、字段注释', null, 17, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_FILTER_TYPE', 'in', 'in查询', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_BATCH_JOB_STATUS', 'READY_BUILD', '准备构建', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1051,8 +1069,46 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_REALTIME_JOB_STATUS', 'STOPING', '开始停止', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_REALTIME_JOB_STATUS', 'RUN_FAIL', '运行失败', null, 9, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MODEL_FILTER_TYPE', 'right like', 'like右查询', null, 9, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_IMPL_CLASS', 'INCEPTOR', 'com.hex.bigdata.udsp.olq.provider.impl.InceptorProvider', null, 8, null, null, 'default', '联机查询的Inceptor接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'initial.size', '初始连接数', null, 5, null, null, 'default', '5');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'jdbc.url', 'JDBC URL，如：jdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'max.active', '最大并发数', null, 8, null, null, 'default', '25');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'max.data.size', '最大数据返回条数', null, 17, null, null, 'default', '65535');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'max.idle', '最大连接数', null, 7, null, null, 'default', '50');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'max.wait', '最长等待时间，单位毫秒', null, 9, null, null, 'default', '3000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '60000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'min.idle', '最小空闲连接数', null, 6, null, null, 'default', '2');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'password', '密码', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'test.on.borrow', '是否从池中取出链接前进行检验', null, 15, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'test.while.idle', '是否被空闲链接回收器进行检验', null, 14, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'username', '用户名', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'validation.query', '验证链接的SQL语句，必须能返回一行及以上数据', null, 10, null, null, 'default', 'select 1 from system.dual');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'validation.query.timeout', '自动验证连接的时间', null, 11, null, null, 'default', '0');
 commit;
-prompt 508 records loaded
+prompt 535 records loaded
 prompt Loading T_GF_DICT_TYPE...
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IM_REALTIME_JOB_STATUS', '交互建模-实时作业状态', 'default');
@@ -1173,15 +1229,15 @@ values ('OLQ_IMPL_CLASS', '联机查询-接口实现类', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('UDSP_REQUEST_TYPE', '请求类型', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_ORACLE', '联机查询oracle数据源参数', 'default');
+values ('OLQ_DS_PROPS_ORACLE', '联机查询-数据源配置-ORACLE参数', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_MYSQL', '联机查询mysql数据源参数', 'default');
+values ('OLQ_DS_PROPS_MYSQL', '联机查询-数据源配置-MYSQL参数', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_KYLIN', '联机查询kylin数据源参数', 'default');
+values ('OLQ_DS_PROPS_KYLIN', '联机查询-数据源配置-KYLIN参数', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_DB2', '联机查询db2数据源参数', 'default');
+values ('OLQ_DS_PROPS_DB2', '联机查询-数据源配置-DB2参数', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_PGSQL', '联机查询pgsql数据源参数', 'default');
+values ('OLQ_DS_PROPS_PGSQL', '联机查询-数据源配置-PGSQL参数', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('UDSP_COMMON_DATA_TYPE', 'UDSP数据类型', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
@@ -1208,8 +1264,10 @@ insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IM_MODEL_ENGINE_TYPE', '交互建模-引擎数据源类型', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IM_BATCH_JOB_STATUS', '交互建模-批量作业状态', 'default');
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('OLQ_DS_PROPS_INCEPTOR', '联机查询-数据源配置-INCEPTOR配置', 'default');
 commit;
-prompt 77 records loaded
+prompt 78 records loaded
 prompt Loading T_GF_EMPLOYEE...
 insert into T_GF_EMPLOYEE (emp_id, job_id, user_name, sex, birthday, status, card_no, card_type, indate, outdate, otel, mobile_no, htel, haddress, hzipcode, pemail, create_date, app_id, orgid, emp_comment, oemail, managerid, managername)
 values ('7011', '1111', '111', 1, null, '1', null, '1', '2017-08-03', null, null, null, null, null, null, null, to_date('03-08-2017 16:18:01', 'dd-mm-yyyy hh24:mi:ss'), 'default', '1', null, null, null, null);
@@ -1386,8 +1444,10 @@ insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder
 values ('19021', 'IM.cm.model.list.edit', '交互建模>模型配置>编辑', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
 values ('19031', 'IM.cm.model.list.remove', '交互建模>模型配置>删除', null, null, null, null, 'default');
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('17041', 'IQ.cm.md.link', '交互查询>元数据配置>关联目标元数据', null, null, null, null, 'default');
 commit;
-prompt 68 records loaded
+prompt 69 records loaded
 prompt Loading T_GF_LOGINUSER...
 insert into T_GF_LOGINUSER (id, emp_id, user_id, user_name, password, status, menu_type, create_date, update_userid, app_id, user_comment, valid_startdate, valid_enddate)
 values ('10061', '7031', 'AR', '回单系统', '670b14728ad9902aecba32e22fa4f6bd', '1', null, to_date('15-08-2017 11:02:53', 'dd-mm-yyyy hh24:mi:ss'), null, 'default', null, null, null);
@@ -1542,15 +1602,15 @@ values ('GFUser', 1201, to_date('22-08-2017 17:26:57', 'dd-mm-yyyy hh24:mi:ss'))
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
 values ('GFMENU', 11500, to_date('29-09-2017 19:58:08', 'dd-mm-yyyy hh24:mi:ss'));
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
-values ('GF_RES_AUTH', 14100, to_date('29-09-2017 20:00:12', 'dd-mm-yyyy hh24:mi:ss'));
+values ('GF_RES_AUTH', 14400, to_date('26-10-2017 10:04:06', 'dd-mm-yyyy hh24:mi:ss'));
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
-values ('LOG_ID', 222400, to_date('09-10-2017 10:13:31', 'dd-mm-yyyy hh24:mi:ss'));
+values ('LOG_ID', 256700, to_date('20-11-2017 15:27:39', 'dd-mm-yyyy hh24:mi:ss'));
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
-values ('GFFuncation', 1701, to_date('10-07-2017 20:36:38', 'dd-mm-yyyy hh24:mi:ss'));
+values ('GFFuncation', 1801, to_date('26-10-2017 09:56:31', 'dd-mm-yyyy hh24:mi:ss'));
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
 values ('GFEMPLOYEE', 901, to_date('22-08-2017 17:26:57', 'dd-mm-yyyy hh24:mi:ss'));
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
-values ('GFAUTHRIGHT', 201, to_date('23-05-2017 11:00:47', 'dd-mm-yyyy hh24:mi:ss'));
+values ('GFAUTHRIGHT', 301, to_date('17-10-2017 16:47:52', 'dd-mm-yyyy hh24:mi:ss'));
 commit;
 prompt 7 records loaded
 prompt Loading T_GF_ORG...
@@ -1562,147 +1622,95 @@ prompt Loading T_GF_QUARTZ...
 prompt Table is empty
 prompt Loading T_GF_RES_AUTH...
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('141021', 'OLQ', 'role', '100091', 'default', 'menu');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('125001', 'USER', 'role', '105001', 'default', 'menu');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('125011', 'USER', 'role', '107001', 'default', 'menu');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('125021', 'USER', 'role', '108001', 'default', 'menu');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139001', 'ADMIN', 'role', 'RC.service.list.add', 'default', 'func');
+values ('141081', 'OLQ', 'role', 'OLQ.qm.test.search', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139011', 'ADMIN', 'role', 'RC.service.list.remove', 'default', 'func');
+values ('142691', 'ADMIN', 'role', 'IM.cm.model.list.create', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139021', 'ADMIN', 'role', 'RC.service.list.edit', 'default', 'func');
+values ('142701', 'ADMIN', 'role', 'IM.cm.ds.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139031', 'ADMIN', 'role', 'MM.model.list.add', 'default', 'func');
+values ('142711', 'ADMIN', 'role', 'IM.cm.ds.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139041', 'ADMIN', 'role', 'MM.model.list.edit', 'default', 'func');
+values ('142721', 'ADMIN', 'role', 'IM.cm.ds.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139051', 'ADMIN', 'role', 'MM.model.list.remove', 'default', 'func');
+values ('142731', 'ADMIN', 'role', 'IM.cm.md.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139061', 'ADMIN', 'role', 'MM.app.list.add', 'default', 'func');
+values ('142741', 'ADMIN', 'role', 'IM.cm.md.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139071', 'ADMIN', 'role', 'MM.app.list.edit', 'default', 'func');
+values ('142751', 'ADMIN', 'role', 'IM.cm.md.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139081', 'ADMIN', 'role', 'MM.app.list.remove', 'default', 'func');
+values ('142761', 'ADMIN', 'role', 'RC.service.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139091', 'ADMIN', 'role', 'RC.service.list.auth', 'default', 'func');
+values ('142771', 'ADMIN', 'role', 'RC.service.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139101', 'ADMIN', 'role', 'OLQ.qm.testapp.search', 'default', 'func');
+values ('142781', 'ADMIN', 'role', 'RC.service.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139111', 'ADMIN', 'role', 'OLQ.qm.testapp.download', 'default', 'func');
+values ('142791', 'ADMIN', 'role', 'MM.model.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139121', 'ADMIN', 'role', 'RC.userService.list.add', 'default', 'func');
+values ('142801', 'ADMIN', 'role', 'MM.model.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139131', 'ADMIN', 'role', 'RC.userService.list.edit', 'default', 'func');
+values ('142811', 'ADMIN', 'role', 'MM.model.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139141', 'ADMIN', 'role', 'RC.userService.listremove', 'default', 'func');
+values ('142821', 'ADMIN', 'role', 'MM.app.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139151', 'ADMIN', 'role', 'IQ.cm.md.list.add', 'default', 'func');
+values ('142831', 'ADMIN', 'role', 'MM.app.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139161', 'ADMIN', 'role', 'IQ.cm.md.list.edit', 'default', 'func');
+values ('142841', 'ADMIN', 'role', 'MM.app.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139171', 'ADMIN', 'role', 'IQ.cm.md.list.remove', 'default', 'func');
+values ('142851', 'ADMIN', 'role', 'RC.service.list.auth', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139181', 'ADMIN', 'role', 'IQ.cm.app.list.add', 'default', 'func');
+values ('142861', 'ADMIN', 'role', 'OLQ.qm.testapp.search', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139191', 'ADMIN', 'role', 'IQ.cm.app.list.edit', 'default', 'func');
+values ('142871', 'ADMIN', 'role', 'OLQ.qm.testapp.download', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139201', 'ADMIN', 'role', 'IQ.cm.app.list.remove', 'default', 'func');
+values ('142881', 'ADMIN', 'role', 'RC.userService.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139211', 'ADMIN', 'role', 'MM.contractor.list.add', 'default', 'func');
+values ('142891', 'ADMIN', 'role', 'RC.userService.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139221', 'ADMIN', 'role', 'MM.contractor.list.edit', 'default', 'func');
+values ('142901', 'ADMIN', 'role', 'RC.userService.listremove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139231', 'ADMIN', 'role', 'MM.contractor.list.remove', 'default', 'func');
+values ('142911', 'ADMIN', 'role', 'IQ.cm.md.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139241', 'ADMIN', 'role', 'IQ.qm.test.search', 'default', 'func');
+values ('142921', 'ADMIN', 'role', 'IQ.cm.md.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139251', 'ADMIN', 'role', 'RTS.qm.producer.test', 'default', 'func');
+values ('142931', 'ADMIN', 'role', 'IQ.cm.md.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139261', 'ADMIN', 'role', 'IQ.qm.test.download', 'default', 'func');
+values ('142941', 'ADMIN', 'role', 'IQ.cm.app.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139271', 'ADMIN', 'role', 'IQ.qm.app.search', 'default', 'func');
+values ('142951', 'ADMIN', 'role', 'IQ.cm.app.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139281', 'ADMIN', 'role', 'RTS.qm.consumer.test', 'default', 'func');
+values ('142961', 'ADMIN', 'role', 'IQ.cm.app.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139291', 'ADMIN', 'role', 'IQ.qm.app.download', 'default', 'func');
+values ('142971', 'ADMIN', 'role', 'MM.contractor.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139301', 'ADMIN', 'role', 'OLQ.qm.test.search', 'default', 'func');
+values ('142981', 'ADMIN', 'role', 'MM.contractor.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139311', 'ADMIN', 'role', 'OLQ.qm.test.download', 'default', 'func');
+values ('142991', 'ADMIN', 'role', 'MM.contractor.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139321', 'ADMIN', 'role', 'OLQ.qm.app.search', 'default', 'func');
+values ('143001', 'ADMIN', 'role', 'IQ.qm.test.search', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139331', 'ADMIN', 'role', 'OLQ.qm.app.download', 'default', 'func');
+values ('143011', 'ADMIN', 'role', 'RTS.qm.producer.test', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139341', 'ADMIN', 'role', 'RTS.cm.ds.list.add', 'default', 'func');
+values ('143021', 'ADMIN', 'role', 'IQ.qm.test.download', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139351', 'ADMIN', 'role', 'RTS.cm.ds.list.edit', 'default', 'func');
+values ('143031', 'ADMIN', 'role', 'IQ.qm.app.search', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139361', 'ADMIN', 'role', 'RTS.cm.ds.list.remove', 'default', 'func');
+values ('143041', 'ADMIN', 'role', 'RTS.qm.consumer.test', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139371', 'ADMIN', 'role', 'RTS.cm.producer.list.add', 'default', 'func');
+values ('143051', 'ADMIN', 'role', 'IQ.qm.app.download', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139381', 'ADMIN', 'role', 'RTS.cm.producer.list.edit', 'default', 'func');
+values ('143061', 'ADMIN', 'role', 'OLQ.qm.test.search', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139391', 'ADMIN', 'role', 'RTS.cm.producer.list.remove', 'default', 'func');
+values ('143071', 'ADMIN', 'role', 'OLQ.qm.test.download', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139401', 'ADMIN', 'role', 'RTS.cm.consumer.list.add', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139411', 'ADMIN', 'role', 'RTS.cm.consumer.list.edit', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139421', 'ADMIN', 'role', 'RTS.cm.consumer.list.remove', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139431', 'ADMIN', 'role', 'IQ.cm.ds.list.remove', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139441', 'ADMIN', 'role', 'RTS.cm.md.list.add', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139451', 'ADMIN', 'role', 'IQ.cm.ds.list.add', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139461', 'ADMIN', 'role', 'IQ.cm.ds.list.edit', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139471', 'ADMIN', 'role', 'RTS.cm.md.list.edit', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139481', 'ADMIN', 'role', 'RTS.cm.md.list.remove', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139491', 'ADMIN', 'role', 'OLQ.cm.ds.list.add', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139501', 'ADMIN', 'role', 'OLQ.cm.ds.list.edit', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139511', 'ADMIN', 'role', 'OLQ.cm.ds.list.remove', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139521', 'ADMIN', 'role', 'MM.qm.test.search', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139531', 'ADMIN', 'role', 'OLQ.cm.app.list.add', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139541', 'ADMIN', 'role', 'OLQ.cm.app.list.edit', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139551', 'ADMIN', 'role', 'OLQ.cm.app.list.remove', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139561', 'ADMIN', 'role', 'IM.cm.model.list.create', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139571', 'ADMIN', 'role', 'IM.cm.ds.list.add', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139581', 'ADMIN', 'role', 'IM.cm.ds.list.edit', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139591', 'ADMIN', 'role', 'IM.cm.ds.list.remove', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139601', 'ADMIN', 'role', 'IM.cm.md.list.add', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139611', 'ADMIN', 'role', 'IM.cm.md.list.edit', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139621', 'ADMIN', 'role', 'IM.cm.md.list.remove', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139631', 'ADMIN', 'role', 'RC.service.list.start', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139641', 'ADMIN', 'role', 'RC.service.list.stop', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139651', 'ADMIN', 'role', 'IM.cm.model.list.add', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139661', 'ADMIN', 'role', 'IM.cm.model.list.edit', 'default', 'func');
-insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('139671', 'ADMIN', 'role', 'IM.cm.model.list.remove', 'default', 'func');
+values ('143081', 'ADMIN', 'role', 'OLQ.qm.app.search', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('140001', 'ADMIN', 'role', '105001', 'default', 'menu');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
@@ -1761,8 +1769,6 @@ insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('140271', 'ADMIN', 'role', '100271', 'default', 'menu');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('140281', 'ADMIN', 'role', '115041', 'default', 'menu');
-commit;
-prompt 100 records committed...
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('140291', 'ADMIN', 'role', '115051', 'default', 'menu');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
@@ -1797,24 +1803,79 @@ insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('129451', 'USER', 'role', 'OLQ.qm.app.search', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('129461', 'USER', 'role', 'OLQ.qm.app.download', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143091', 'ADMIN', 'role', 'OLQ.qm.app.download', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143101', 'ADMIN', 'role', 'RTS.cm.ds.list.add', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143111', 'ADMIN', 'role', 'RTS.cm.ds.list.edit', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143121', 'ADMIN', 'role', 'RTS.cm.ds.list.remove', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143131', 'ADMIN', 'role', 'RTS.cm.producer.list.add', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143141', 'ADMIN', 'role', 'RTS.cm.producer.list.edit', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143151', 'ADMIN', 'role', 'RTS.cm.producer.list.remove', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143161', 'ADMIN', 'role', 'RTS.cm.consumer.list.add', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143171', 'ADMIN', 'role', 'RTS.cm.consumer.list.edit', 'default', 'func');
 commit;
-prompt 117 records loaded
+prompt 100 records committed...
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143181', 'ADMIN', 'role', 'RTS.cm.consumer.list.remove', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143191', 'ADMIN', 'role', 'IQ.cm.ds.list.remove', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143201', 'ADMIN', 'role', 'RTS.cm.md.list.add', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143211', 'ADMIN', 'role', 'IQ.cm.ds.list.add', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143221', 'ADMIN', 'role', 'IQ.cm.ds.list.edit', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143231', 'ADMIN', 'role', 'RTS.cm.md.list.edit', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143241', 'ADMIN', 'role', 'RTS.cm.md.list.remove', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143251', 'ADMIN', 'role', 'OLQ.cm.ds.list.add', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143261', 'ADMIN', 'role', 'OLQ.cm.ds.list.edit', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143271', 'ADMIN', 'role', 'OLQ.cm.ds.list.remove', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143281', 'ADMIN', 'role', 'MM.qm.test.search', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143291', 'ADMIN', 'role', 'OLQ.cm.app.list.add', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143301', 'ADMIN', 'role', 'OLQ.cm.app.list.edit', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143311', 'ADMIN', 'role', 'OLQ.cm.app.list.remove', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143321', 'ADMIN', 'role', 'RC.service.list.start', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143331', 'ADMIN', 'role', 'RC.service.list.stop', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143341', 'ADMIN', 'role', 'IM.cm.model.list.add', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143351', 'ADMIN', 'role', 'IM.cm.model.list.edit', 'default', 'func');
+insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
+values ('143361', 'ADMIN', 'role', 'IM.cm.model.list.remove', 'default', 'func');
+commit;
+prompt 119 records loaded
 prompt Loading T_GF_ROLE...
 insert into T_GF_ROLE (roleid, app_id, rolename, role_desc)
 values ('USER', 'default', '普通用户', null);
 insert into T_GF_ROLE (roleid, app_id, rolename, role_desc)
+values ('OLQ', 'default', '联机查询用户', '联机查询用户');
+insert into T_GF_ROLE (roleid, app_id, rolename, role_desc)
 values ('ADMIN', 'default', '系统管理员', null);
 commit;
-prompt 2 records loaded
+prompt 3 records loaded
 prompt Loading T_GF_SCHD_JOB...
 prompt Table is empty
 prompt Loading T_GF_TASK_POOL...
 prompt Table is empty
-prompt Loading T_GF_USER_SESSION...
-insert into T_GF_USER_SESSION (user_id, client_ip, login_time)
-values ('admin', '127.0.0.1', to_timestamp('09-10-2017 10:04:42.026000', 'dd-mm-yyyy hh24:mi:ss.ff'));
-commit;
-prompt 1 records loaded
 set feedback on
 set define on
 prompt Done.

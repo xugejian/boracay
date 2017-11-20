@@ -20,5 +20,6 @@
     <orderEntry type="module" module-name="mm" />
     <orderEntry type="module" module-name="olq" />
     <orderEntry type="module" module-name="rts" />
+    <orderEntry type="module" module-name="im" />
   </component>
 </module>

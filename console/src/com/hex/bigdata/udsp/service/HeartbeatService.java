@@ -13,10 +13,10 @@ import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.dto.WaitNumResult;
 import com.hex.bigdata.udsp.mc.constant.McConstant;
 import com.hex.bigdata.udsp.mc.model.McConsumeLog;
-import com.hex.bigdata.udsp.mc.model.McCurrent;
+import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
-import com.hex.bigdata.udsp.mc.service.McCurrentCountService;
-import com.hex.bigdata.udsp.mc.service.McCurrentService;
+import com.hex.bigdata.udsp.mc.service.RunQueueService;
+import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.model.HeartbeatInfo;
 import com.hex.bigdata.udsp.model.Request;
 import com.hex.bigdata.udsp.olq.dto.OLQApplicationDto;
@@ -61,10 +61,10 @@ public class HeartbeatService {
     private HeartbeatMapper heartbeatMapper;
 
     @Autowired
-    private McCurrentService mcCurrentNewService;
+    private CurrentService mcCurrentNewService;
 
     @Autowired
-    private McCurrentCountService mcCurrentCountService;
+    private RunQueueService runQueueService;
 
     @Autowired
     private McConsumeLogService mcConsumeLogService;
@@ -156,13 +156,13 @@ public class HeartbeatService {
     private void transferTask(String downHostKey) {
         logger.info("转移服务ID为：" + downHostKey + "上的未完成的异步任务到本机【开始】");
         //获取宕机机器任务
-        List<McCurrent> mcCurrentList = mcCurrentNewService.getMcCurrentByKey(downHostKey);
-        List<McCurrent> newCurrents = new ArrayList<>();
+        List<Current> mcCurrentList = mcCurrentNewService.getRunByHost(downHostKey);
+        List<Current> newCurrents = new ArrayList<>();
         if (mcCurrentList == null || mcCurrentList.size() == 0) {
             return;
         }
         //遍历并发信息，异步的并发重做
-        for (McCurrent mcCurrent : mcCurrentList) {
+        for (Current mcCurrent : mcCurrentList) {
             //如果是异步则进行处理
             if (CommonConstant.REQUEST_ASYNC.equals(mcCurrent.getSyncType())) {
                 newCurrents.add(mcCurrent);
@@ -170,7 +170,7 @@ public class HeartbeatService {
             // 删除宕机机器的并发记录
             mcCurrentNewService.delete(downHostKey, mcCurrent.getPkId());
         }
-        for (McCurrent mcCurrent : newCurrents) {
+        for (Current mcCurrent : newCurrents) {
             Map<String, Class> classMap = new HashMap<>();
             classMap.put(ConsumerConstant.CONSUME_RTS_DATASTREAM, Map.class);
             String requestContentJson = JSONUtil.parseObj2JSON(mcCurrent.getRequestContent());
@@ -182,7 +182,7 @@ public class HeartbeatService {
                 continue;
             }
             //并发检查
-            McCurrent returnMcCurrent = mcCurrentCountService.checkAsyncCurrent(request, mcCurrent.getMaxCurrentNum());
+            Current returnMcCurrent = runQueueService.checkAsyncCurrent(request, mcCurrent.getMaxCurrentNum());
             if (returnMcCurrent == null) {// 异常信息日志入库
                 McConsumeLog mcConsumeLog = new McConsumeLog();
                 mcConsumeLog.setRequestEndTime(DateUtil.format(new Date(), DateUtil.YYYY_MM_DDHHMISS));
@@ -211,22 +211,17 @@ public class HeartbeatService {
             consumeRequest.setWaitNumResult(waitNumResult);
             //新增消费请求类作为参数-end
             if (RcConstant.UDSP_SERVICE_TYPE_IQ.equals(type)) {
-                Page page = request.getPage();
-                if (page != null && page.getPageIndex() > 0) {
-                    ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), page, localFileName));
-                } else {
-                    ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), localFileName));
-                }
+                ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), request.getPage(), localFileName));
             } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(type)) {
-                String sql = request.getSql();
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, sql,RcConstant.UDSP_SERVICE_TYPE_OLQ,localFileName));
-            }else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)){
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, request.getSql(), request.getPage(),
+                        RcConstant.UDSP_SERVICE_TYPE_OLQ, localFileName));
+            } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
                 OLQApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
-                MessageResult messageResult = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, dsId, (String)messageResult.getData(),RcConstant.UDSP_SERVICE_TYPE_OLQ_APP,localFileName));
+                String sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, dsId, sql, request.getPage(),
+                        RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName));
             }
-
         }
         logger.info("转移服务IP为：" + downHostKey + "上的未完成的异步任务到本机【结束】");
     }

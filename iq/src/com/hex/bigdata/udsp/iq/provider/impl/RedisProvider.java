@@ -4,6 +4,7 @@ import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.RedisConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.RedisDatasource;
@@ -26,9 +27,6 @@ public class RedisProvider implements Provider {
     private static Map<String, RedisConnectionPoolFactory> dataSourcePool;
     private static final String rkSep = "|";
     private static final String tableColumnSeq = ":";
-
-    public void init(Datasource datasource) {
-    }
 
     public IqResponse query(IqRequest request) {
         return query(request,-1,-1);
@@ -146,10 +144,6 @@ public class RedisProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime() + " recordsSize=" + response.getRecords().size());
         return response;
-    }
-
-    public synchronized void close(Datasource datasource) {
-        //
     }
 
     //-------------------------------------------分割线---------------------------------------------
@@ -280,6 +274,11 @@ public class RedisProvider implements Provider {
             }
         }
         return canConnection ;
+    }
+
+    @Override
+    public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
+        return null;
     }
 
 

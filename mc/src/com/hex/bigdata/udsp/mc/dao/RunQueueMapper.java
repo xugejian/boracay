@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.mc.dao;
 
 import com.hex.bigdata.udsp.common.dao.base.SyncCacheMapper;
-import com.hex.bigdata.udsp.mc.model.McCurrentCount;
+import com.hex.bigdata.udsp.mc.model.RunQueue;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * TIME:14:35
  */
 @Repository
-public class McCurrentCountMapper extends SyncCacheMapper<McCurrentCount> {
+public class RunQueueMapper extends SyncCacheMapper<RunQueue> {
 
 }

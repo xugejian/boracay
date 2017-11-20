@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.mc.controller;
 
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.mc.dto.McCurrentView;
-import com.hex.bigdata.udsp.mc.model.McCurrent;
-import com.hex.bigdata.udsp.mc.service.McCurrentService;
+import com.hex.bigdata.udsp.mc.dto.CurrentView;
+import com.hex.bigdata.udsp.mc.model.Current;
+import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -24,19 +24,19 @@ import java.util.List;
  */
 @RequestMapping("/mc/current")
 @Controller
-public class McCurrentController extends BaseController {
-    private static Logger logger = LogManager.getLogger(McCurrentController.class);
+public class CurrentController extends BaseController {
+    private static Logger logger = LogManager.getLogger(CurrentController.class);
 
     @Autowired
-    private McCurrentService mcCurrentNewService;
+    private CurrentService currentService;
 
     @RequestMapping({"/page"})
     @ResponseBody
-    public PageListResult page(McCurrentView mcCurrentView, Page page) {
+    public PageListResult page(CurrentView mcCurrentView, Page page) {
         logger.debug("select search=" + JSONUtil.parseObj2JSON(mcCurrentView) + " page=" + JSONUtil.parseObj2JSON(page));
         PageListResult result = null;
         try {
-            result = mcCurrentNewService.select(mcCurrentView, page);
+            result = currentService.select(mcCurrentView, page);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("系统异常：" + e);
@@ -46,11 +46,11 @@ public class McCurrentController extends BaseController {
 
     @RequestMapping({"/select"})
     @ResponseBody
-    public PageListResult select(McCurrentView mcCurrentView) {
+    public PageListResult select(CurrentView mcCurrentView) {
         logger.debug("select search=" + JSONUtil.parseObj2JSON(mcCurrentView));
-        List<McCurrent> list = null;
+        List<Current> list = null;
         try {
-            list = mcCurrentNewService.select(mcCurrentView);
+            list = currentService.select(mcCurrentView);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("系统异常：" + e);
@@ -63,14 +63,14 @@ public class McCurrentController extends BaseController {
     public MessageResult selectByPkId(@PathVariable("pkId") String pkId) {
         boolean status = true;
         String message = "查询成功";
-        McCurrent mcCurrent = null;
+        Current mcCurrent = null;
         if (StringUtils.isBlank(pkId)) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
                 //mcCurrent = mcCurrentService.select(pkId);
-                mcCurrent = mcCurrentNewService.select(pkId);
+                mcCurrent = currentService.select(pkId);
             } catch (Exception e) {
                 e.printStackTrace();
                 status = false;
@@ -119,11 +119,11 @@ public class McCurrentController extends BaseController {
      */
     @RequestMapping({"/waitQueuePage"})
     @ResponseBody
-    public PageListResult waitQueuePage(McCurrentView mcCurrentView, Page page) {
+    public PageListResult waitQueuePage(CurrentView mcCurrentView, Page page) {
         logger.debug("select search=" + JSONUtil.parseObj2JSON(mcCurrentView) + " page=" + JSONUtil.parseObj2JSON(page));
         PageListResult result = null;
         try {
-            result = mcCurrentNewService.selectWaitQueue(mcCurrentView, page);
+            result = currentService.selectWait(mcCurrentView, page);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("系统异常：" + e);
@@ -141,13 +141,13 @@ public class McCurrentController extends BaseController {
     public MessageResult waitQueueSelectByPkId(@PathVariable("pkId") String pkId) {
         boolean status = true;
         String message = "查询成功";
-        McCurrent mcCurrent = null;
+        Current mcCurrent = null;
         if (StringUtils.isBlank(pkId)) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
-                mcCurrent = mcCurrentNewService.selectWaitQueue(pkId);
+                mcCurrent = currentService.selectWait(pkId);
             } catch (Exception e) {
                 e.printStackTrace();
                 status = false;

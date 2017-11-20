@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.mc.service;
 
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
-import com.hex.bigdata.udsp.mc.dao.McCurrentMapper;
-import com.hex.bigdata.udsp.mc.dto.McCurrentView;
-import com.hex.bigdata.udsp.mc.model.McCurrent;
+import com.hex.bigdata.udsp.mc.dao.CurrentMapper;
+import com.hex.bigdata.udsp.mc.dto.CurrentView;
+import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.model.PageListResult;
 import com.hex.goframe.service.BaseService;
@@ -19,18 +19,19 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Created by junjiem on 2017-2-23.
+ * 运行和等待信息的服务
  */
 @Service
-public class McCurrentService extends BaseService {
-    private static Logger logger = LoggerFactory.getLogger(McCurrentService.class);
+public class CurrentService extends BaseService {
+    private static Logger logger = LoggerFactory.getLogger(CurrentService.class);
 
     /**
-     * 并发信息的KEY
+     * 运行信息的KEY
      */
-    private static final String MC_CURRENT_KEY = "CURRENT";
+    private static final String MC_RUN_KEY = "RUN";
+
     /**
-     *
+     * 等待信息的KEY
      */
     private static final String MC_WAIT_KEY = "WAIT";
 
@@ -40,19 +41,19 @@ public class McCurrentService extends BaseService {
     private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
 
     @Autowired
-    private McCurrentMapper mcCurrentMapper;
+    private CurrentMapper mcCurrentMapper;
 
     @Transactional
-    public String insert(McCurrent mcCurrent) {
+    public String insert(Current mcCurrent) {
         mcCurrent.setHost(HOST_KEY);
-        if (mcCurrentMapper.insert(MC_CURRENT_KEY + ":" + HOST_KEY + ":" + mcCurrent.getPkId(), mcCurrent)) {
+        if (mcCurrentMapper.insert(MC_RUN_KEY + ":" + HOST_KEY + ":" + mcCurrent.getPkId(), mcCurrent)) {
             return mcCurrent.getPkId();
         }
         return "";
     }
 
     @Transactional
-    public String insertWaitQueue(McCurrent mcCurrent) {
+    public String insertWait(Current mcCurrent) {
         mcCurrent.setHost(HOST_KEY);
         if (mcCurrentMapper.insert(MC_WAIT_KEY + ":" + HOST_KEY + ":" + mcCurrent.getPkId(), mcCurrent)) {
             return mcCurrent.getPkId();
@@ -68,11 +69,11 @@ public class McCurrentService extends BaseService {
      */
     @Transactional
     public boolean delete(String pkId) {
-        return mcCurrentMapper.delete(MC_CURRENT_KEY + ":" + HOST_KEY + ":" + pkId);
+        return mcCurrentMapper.delete(MC_RUN_KEY + ":" + HOST_KEY + ":" + pkId);
     }
 
     @Transactional
-    public boolean deleteWaitQueue(String pkId) {
+    public boolean deleteWait(String pkId) {
         return mcCurrentMapper.delete(MC_WAIT_KEY + ":" + HOST_KEY + ":" + pkId);
     }
 
@@ -85,24 +86,24 @@ public class McCurrentService extends BaseService {
      */
     @Transactional
     public boolean delete(String hostKey, String pkId) {
-        return mcCurrentMapper.delete(MC_CURRENT_KEY + ":" + hostKey + ":" + pkId);
+        return mcCurrentMapper.delete(MC_RUN_KEY + ":" + hostKey + ":" + pkId);
     }
 
     @Transactional
-    public boolean deleteWaitQueue(String hostKey, String pkId) {
+    public boolean deleteWait(String hostKey, String pkId) {
         return mcCurrentMapper.delete(MC_WAIT_KEY + ":" + hostKey + ":" + pkId);
     }
 
-    public McCurrent select(String pkId) {
-        return mcCurrentMapper.select(MC_CURRENT_KEY + ":" + HOST_KEY + ":" + pkId);
+    public Current select(String pkId) {
+        return mcCurrentMapper.select(MC_RUN_KEY + ":" + HOST_KEY + ":" + pkId);
     }
 
-    public McCurrent selectWaitQueue(String pkId) {
+    public Current selectWait(String pkId) {
         return mcCurrentMapper.select(MC_WAIT_KEY + ":" + HOST_KEY + ":" + pkId);
     }
 
-    public List<McCurrent> select(McCurrentView mcCurrentView) {
-        return this.selectJob(mcCurrentView, MC_CURRENT_KEY);
+    public List<Current> select(CurrentView mcCurrentView) {
+        return this.selectJob(mcCurrentView, MC_RUN_KEY);
     }
 
     /**
@@ -112,8 +113,8 @@ public class McCurrentService extends BaseService {
      * @param page
      * @return
      */
-    public PageListResult select(McCurrentView mcCurrentView, Page page) {
-        return this.select(mcCurrentView, page, MC_CURRENT_KEY);
+    public PageListResult select(CurrentView mcCurrentView, Page page) {
+        return this.select(mcCurrentView, page, MC_RUN_KEY);
     }
 
     /**
@@ -123,7 +124,7 @@ public class McCurrentService extends BaseService {
      * @param page
      * @return
      */
-    public PageListResult selectWaitQueue(McCurrentView mcCurrentView, Page page) {
+    public PageListResult selectWait(CurrentView mcCurrentView, Page page) {
         return this.select(mcCurrentView, page, MC_WAIT_KEY);
     }
 
@@ -134,14 +135,14 @@ public class McCurrentService extends BaseService {
      * @param page
      * @return
      */
-    public PageListResult select(McCurrentView mcCurrentView, Page page, String selectType) {
-        List<McCurrent> mcCurrentList = selectJob(mcCurrentView, selectType);
+    public PageListResult select(CurrentView mcCurrentView, Page page, String selectType) {
+        List<Current> mcCurrentList = selectJob(mcCurrentView, selectType);
         int pageIndex = page.getPageIndex();
         int pageSize = page.getPageSize();
         int befNum = pageSize * (pageIndex - 1); // 不需要显示的数据条数
         if (befNum < 0) befNum = 0;
         int count = 0;
-        List<McCurrent> list = new ArrayList<>();
+        List<Current> list = new ArrayList<>();
         if (mcCurrentList == null || mcCurrentList.size() == 0) {
             return null;
         }
@@ -165,7 +166,7 @@ public class McCurrentService extends BaseService {
      * @param mcCurrentView
      * @return
      */
-    public List<McCurrent> selectJob(McCurrentView mcCurrentView, String selectType) {
+    public List<Current> selectJob(CurrentView mcCurrentView, String selectType) {
         String serviceName = mcCurrentView.getServiceName();
         String userName = mcCurrentView.getUserName();
         String requestContent = mcCurrentView.getRequestContent();
@@ -175,16 +176,16 @@ public class McCurrentService extends BaseService {
         String syncType = mcCurrentView.getSyncType();
         String host = mcCurrentView.getHost();
         //解决ConcurrentModificationException
-        List<McCurrent> mcCurrentList = new CopyOnWriteArrayList<McCurrent>();
+        List<Current> mcCurrentList = new CopyOnWriteArrayList<Current>();
 
-        List<McCurrent> tempList = this.selectCacheLike(selectType + ":");
+        List<Current> tempList = this.selectCacheLike(selectType + ":");
         if (tempList == null || tempList.size() == 0) {
             return null;
         }
         mcCurrentList.addAll(tempList);
 
         //过滤
-        for (McCurrent mcCurrent : mcCurrentList) {
+        for (Current mcCurrent : mcCurrentList) {
             if (StringUtils.isNotBlank(serviceName) && !mcCurrent.getServiceName().contains(serviceName)) {
                 mcCurrentList.remove(mcCurrent);
                 continue;
@@ -221,7 +222,7 @@ public class McCurrentService extends BaseService {
         return mcCurrentList;
     }
 
-    public List<McCurrent> selectCacheLike(String key) {
+    public List<Current> selectCacheLike(String key) {
         return mcCurrentMapper.selectLike(key);
     }
 
@@ -231,7 +232,7 @@ public class McCurrentService extends BaseService {
      * @param hostKey
      * @return
      */
-    public List<McCurrent> getMcCurrentByKey(String hostKey) {
-        return mcCurrentMapper.selectLike(MC_CURRENT_KEY + ":" + hostKey + ":");
+    public List<Current> getRunByHost(String hostKey) {
+        return mcCurrentMapper.selectLike(MC_RUN_KEY + ":" + hostKey + ":");
     }
 }

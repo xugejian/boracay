@@ -12,11 +12,6 @@ import java.util.Map;
  * HBase的数据源配置
  */
 public class HBaseDatasource extends Datasource {
-    private int maxNum = 65535;
-    private String fqDataType = "dsv";
-    private String dsvSeprator = "\\007";
-    private String familyName = "f";
-    private String qulifierName = "q";
 
     public HBaseDatasource(List<Property> properties) {
         super(properties);
@@ -89,48 +84,43 @@ public class HBaseDatasource extends Datasource {
         return value;
     }
 
+    public String getFqDataType() {
+        String value = getProperty("hbase.fq.data.type").getValue();
+        if (StringUtils.isBlank(value)) {
+            value = "dsv";
+        }
+        return value;
+    }
+
+    public String getDsvSeprator() {
+        String value = getProperty("hbase.fq.dsv.seprator").getValue();
+        if (StringUtils.isBlank(value)) {
+            value = "\\007";
+        }
+        return value;
+    }
+
+    public byte[] getFamilyName() {
+        String value = getProperty("hbase.family.name").getValue();
+        if (StringUtils.isBlank(value)) {
+            value = "f";
+        }
+        return Bytes.toBytes(value);
+    }
+
+    public byte[] getQulifierName() {
+        String value = getProperty("hbase.qulifier.name").getValue();
+        if (StringUtils.isNotBlank(value)) {
+            value = "q";
+        }
+        return Bytes.toBytes(value);
+    }
 
     public int getMaxNum() {
         String value = getProperty("hbase.max.data.size").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            try {
-                maxNum = Integer.valueOf(value);
-            } catch (Exception e) {
-                throw new IllegalArgumentException("hbase.max.data.size为一整数");
-            }
+        if (StringUtils.isBlank(value)) {
+            value = "65535";
         }
-        return maxNum;
-    }
-
-    public String getFqDataType(){
-        String value = getProperty("hbase.fq.data.type").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            fqDataType = value;
-        }
-        return fqDataType;
-    }
-
-    public String getDsvSeprator(){
-        String value = getProperty("hbase.fq.dsv.seprator").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            dsvSeprator = value;
-        }
-        return dsvSeprator;
-    }
-
-    public byte[] getFamilyName(){
-        String value = getProperty("hbase.family.name").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            familyName = value;
-        }
-        return Bytes.toBytes(familyName);
-    }
-
-    public byte[] getQulifierName(){
-        String value = getProperty("hbase.qulifier.name").getValue();
-        if (StringUtils.isNotBlank(value)) {
-            qulifierName = value;
-        }
-        return Bytes.toBytes(qulifierName);
+        return Integer.valueOf(value);
     }
 }

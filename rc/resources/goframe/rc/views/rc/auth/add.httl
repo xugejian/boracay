@@ -29,7 +29,6 @@ ${extends("/goframe/function_layout.httl")}
                     <td colspan="3">
                         <input id="userId" name="userId"class="nui-lookup" allowInput="false" popupWidth="450px;"textField="userName" valueField="userId"
                                popup="#gridPanel" grid="#serachGrid" style="width: 99%;"  emptyText="请选择用户" required="true"/>
-
                         <div id="gridPanel" class="nui-panel" title="header" iconCls="icon-add" style="width: 100%;height: 250px"
                              showToolbar="true" showCloseButton="true" showHeader="false" bodyStyle="padding:0" borderStyle="border:0">
                             <div property="toolbar" style="padding: 5px;padding-left:8px;text-align: center">
@@ -37,7 +36,6 @@ ${extends("/goframe/function_layout.httl")}
                                 <input id="keyText" class="nui-textbox" style="width: 160px" onenter="onSearchClick">
                                 <a class="nui-button" onclick="onSearchClick">Search</a>
                             </div>
-
                             <div id="serachGrid" class="nui-datagrid" style="width:100%;height:100%;"
                                  pageStyle="padding:2px;" multiSelect="true" idField="id" sortMode="client"
                                  url="${basePath}/rc/userService/selectNotRelationUsers"
@@ -59,50 +57,46 @@ ${extends("/goframe/function_layout.httl")}
 
                     </td>
                 </tr>
-
                 <tr>
                     <th class="nui-form-label"><label for="maxSyncNum">运行队列大小（同步）：</label></th>
                     <td>
-                        <input id="maxSyncNum" name="maxSyncNum"  class="nui-textbox"  style="width:97%" required="true" emptyText="100" value="100" vtype="int" />
+                        <input id="maxSyncNum" name="maxSyncNum"  class="nui-textbox"  style="width:97%" required="true" value="100" vtype="int" />
                     </td>
                     <th class="nui-form-label"><label for="maxAsyncNum">运行队列大小（异步）：</label></th>
                     <td>
-                        <input id="maxAsyncNum" name="maxAsyncNum"  class="nui-textbox"  style="width:97%" required="true" emptyText="100" value="100" vtype="int" />
+                        <input id="maxAsyncNum" name="maxAsyncNum"  class="nui-textbox"  style="width:97%" required="true" value="50" vtype="int" />
                     </td>
                 </tr>
                 <tr>
                     <th class="nui-form-label"><label for="maxSyncWaitNum">等待队列大小（同步）：</label></th>
                     <td>
-                        <input id="maxSyncWaitNum" name="maxSyncWaitNum"  class="nui-textbox"  style="width:97%" required="true" emptyText="10" value="0" vtype="int" />
+                        <input id="maxSyncWaitNum" name="maxSyncWaitNum"  class="nui-textbox"  style="width:97%" required="true" value="0" vtype="int" />
                     </td>
                     <th class="nui-form-label"><label for="maxAsyncWaitNum">等待队列大小（异步）：</label></th>
                     <td>
-                        <input id="maxAsyncWaitNum" name="maxAsyncWaitNum"  class="nui-textbox"  style="width:97%" required="true" emptyText="10" value="0" vtype="int" />
+                        <input id="maxAsyncWaitNum" name="maxAsyncWaitNum"  class="nui-textbox"  style="width:97%" required="true" value="0" vtype="int" />
                     </td>
                 </tr>
-
                 <tr>
-                    <th class="nui-form-label"><label for="maxSyncExecuteTimeout">运行超时时间（同步/单位：毫秒）：</label></th>
+                    <th class="nui-form-label"><label for="maxSyncExecuteTimeout">运行超时时间（同步/单位：秒）：</label></th>
                     <td>
-                        <input id="maxSyncExecuteTimeout" name="maxSyncExecuteTimeout"  class="nui-textbox"  style="width:97%" required="true" emptyText="3000" value="3000" vtype="int" />
+                        <input id="maxSyncExecuteTimeout" name="maxSyncExecuteTimeout"  class="nui-textbox"  style="width:97%" vtype="int" />
                     </td>
-                    <th class="nui-form-label"><label for="maxSyncWaitTimeout">等待超时时间（同步/单位：毫秒）：</label></th>
+                    <th class="nui-form-label"><label for="maxAsyncExecuteTimeout">运行超时时间（异步/单位：秒）：</label></th>
                     <td>
-                        <input id="maxSyncWaitTimeout" name="maxSyncWaitTimeout"  class="nui-textbox"  style="width:97%" required="true" emptyText="3000"  value="3000" vtype="int" />
+                        <input id="maxAsyncExecuteTimeout" name="maxAsyncExecuteTimeout"  class="nui-textbox"  style="width:97%" vtype="int" />
                     </td>
                 </tr>
-
                 <tr>
-                    <th class="nui-form-label"><label for="maxAsyncExecuteTimeout">运行超时时间（异步/单位：毫秒）：</label></th>
+                    <th class="nui-form-label"><label for="maxSyncWaitTimeout">等待超时时间（同步/单位：秒）：</label></th>
                     <td>
-                        <input id="maxAsyncExecuteTimeout" name="maxAsyncExecuteTimeout"  class="nui-textbox"  style="width:97%" required="true" emptyText="600000" value="600000" vtype="int" />
+                        <input id="maxSyncWaitTimeout" name="maxSyncWaitTimeout"  class="nui-textbox"  style="width:97%" vtype="int" />
                     </td>
-                    <th class="nui-form-label"><label for="maxAsyncWaitTimeout">等待超时时间（异步/单位：毫秒）：</label></th>
+                    <th class="nui-form-label"><label for="maxAsyncWaitTimeout">等待超时时间（异步/单位：秒）：</label></th>
                     <td>
-                        <input id="maxAsyncWaitTimeout" name="maxAsyncWaitTimeout"  class="nui-textbox"  style="width:97%" required="true" emptyText="600000"  value="600000" vtype="int" />
+                        <input id="maxAsyncWaitTimeout" name="maxAsyncWaitTimeout"  class="nui-textbox"  style="width:97%" vtype="int" />
                     </td>
                 </tr>
-
             </table>
         <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
             <a class="nui-button" style="" iconCls="icon-save" onclick="save" id="saveButton">保存</a>
