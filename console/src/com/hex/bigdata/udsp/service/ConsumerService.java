@@ -660,16 +660,7 @@ public class ConsumerService {
                 try {
                     response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
-                    // 杀死正在执行的SQL
-                    Statement stmt = OLQCommUtil.removeStatement(consumeId);
-                    if (stmt != null) {
-                        try {
-                            stmt.cancel();
-                            stmt.close();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
+                    cancel(consumeId); // 杀死正在执行的SQL
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                     return response;
                 } catch (Exception e) {
@@ -702,16 +693,7 @@ public class ConsumerService {
                 try {
                     response = olqAppFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
-                    // 杀死正在执行的SQL
-                    Statement stmt = OLQCommUtil.removeStatement(consumeId);
-                    if (stmt != null) {
-                        try {
-                            stmt.cancel();
-                            stmt.close();
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
+                    cancel(consumeId); // 杀死正在执行的SQL
                     this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
                     return response;
                 } catch (Exception e) {
@@ -775,6 +757,22 @@ public class ConsumerService {
         }
 
         return response;
+    }
+
+    /**
+     * 杀死正在执行的SQL
+     */
+    private void cancel(String consumeId) {
+        // 杀死正在执行的SQL
+        Statement stmt = OLQCommUtil.removeStatement(consumeId);
+        if (stmt != null) {
+            try {
+                stmt.cancel();
+                stmt.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
     /**

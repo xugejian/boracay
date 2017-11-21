@@ -918,7 +918,7 @@ values ('RTS_CONSUMER_TIMEOUT', '2000', '2000ms', null, 5, null, null, 'default'
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_IMPL_CLASS', 'ORACLE', 'com.hex.bigdata.udsp.olq.provider.impl.OracleProvider', null, 3, null, null, 'default', '联机查询的Oracle接口实现类');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+values ('OLQ_DS_PROPS_PGSQL', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.postgresql.Driver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_TYPE', 'ORACLE', 'ORACLE', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -950,7 +950,7 @@ values ('OLQ_DS_PROPS_PGSQL', 'password', '密码', null, 4, null, null, 'default'
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_PGSQL', 'username', '用户名', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+values ('OLQ_DS_PROPS_DB2', 'driver.class', '驱动类', null, 1, null, null, 'default', 'com.ibm.db2.jcc.DB2Driver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_DB2', 'jdbc.url', 'JDBC URL，如:jdbc:db2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -958,7 +958,7 @@ values ('OLQ_DS_PROPS_DB2', 'password', '密码', null, 4, null, null, 'default', 
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_DB2', 'username', '用户名', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+values ('OLQ_DS_PROPS_KYLIN', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.kylin.jdbc.Driver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_KYLIN', 'jdbc.url', 'JDBC URL，如：' || chr(9) || ' jdbc:kylin://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1604,7 +1604,7 @@ values ('GFMENU', 11500, to_date('29-09-2017 19:58:08', 'dd-mm-yyyy hh24:mi:ss')
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
 values ('GF_RES_AUTH', 14400, to_date('26-10-2017 10:04:06', 'dd-mm-yyyy hh24:mi:ss'));
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
-values ('LOG_ID', 256700, to_date('20-11-2017 15:27:39', 'dd-mm-yyyy hh24:mi:ss'));
+values ('LOG_ID', 256800, to_date('20-11-2017 16:25:11', 'dd-mm-yyyy hh24:mi:ss'));
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
 values ('GFFuncation', 1801, to_date('26-10-2017 09:56:31', 'dd-mm-yyyy hh24:mi:ss'));
 insert into T_GF_NEXTID (seq_type, next_id, last_time)
