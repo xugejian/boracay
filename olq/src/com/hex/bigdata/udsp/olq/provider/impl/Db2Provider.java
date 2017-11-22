@@ -109,9 +109,9 @@ public class Db2Provider implements Provider {
 
             //获取查询信息
             OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
-            if (olqQuerySql.getPage() == null){
+            if (olqQuerySql.getPage() == null) {
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
-            }else {
+            } else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
 
@@ -123,7 +123,7 @@ public class Db2Provider implements Provider {
             while (rs.next()) {
                 map = new LinkedHashMap<String, String>();
                 for (int i = 1; i <= columnCount; i++) {
-                    map.put(rsmd.getColumnLabel(i), rs.getString(i));
+                    map.put(rsmd.getColumnLabel(i), rs.getString(i) == null ? "" : rs.getString(i));
                 }
                 list.add(map);
                 count++;
@@ -133,10 +133,10 @@ public class Db2Provider implements Provider {
             }
             //查询的记录数总数
             String totalSql = olqQuerySql.getTotalSql();
-            if (StringUtils.isNotBlank(totalSql)){
+            if (StringUtils.isNotBlank(totalSql)) {
                 rs = stmt.executeQuery(totalSql);
                 int totalCount = 0;
-                if (rs.next()){
+                if (rs.next()) {
                     totalCount = rs.getInt(1);
                 }
                 //设置总记录数
@@ -235,9 +235,9 @@ public class Db2Provider implements Provider {
             OLQCommUtil.putStatement(consumeId, stmt);
 
             OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
-            if (olqQuerySql.getPage() == null){
+            if (olqQuerySql.getPage() == null) {
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
-            }else {
+            } else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
             rs.setFetchSize(1000);

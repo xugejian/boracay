@@ -1,7 +1,10 @@
 package com.hex.bigdata.udsp.service;
 
 
-import com.hex.bigdata.udsp.common.constant.*;
+import com.hex.bigdata.udsp.common.constant.CommonConstant;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.Status;
+import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
@@ -15,15 +18,13 @@ import com.hex.bigdata.udsp.iq.model.IqApplication;
 import com.hex.bigdata.udsp.iq.service.IqAppQueryColService;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
 import com.hex.bigdata.udsp.mc.constant.McConstant;
-import com.hex.bigdata.udsp.mc.model.McConsumeLog;
 import com.hex.bigdata.udsp.mc.model.Current;
+import com.hex.bigdata.udsp.mc.model.McConsumeLog;
+import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
-import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.mc.service.WaitQueueService;
 import com.hex.bigdata.udsp.mc.util.McCommonUtil;
-import com.hex.bigdata.udsp.mm.dto.MmFullAppInfoView;
-import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
 import com.hex.bigdata.udsp.mm.model.MmApplication;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
 import com.hex.bigdata.udsp.model.ExternalRequest;
@@ -32,16 +33,15 @@ import com.hex.bigdata.udsp.model.Request;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.olq.dto.OLQApplicationDto;
 import com.hex.bigdata.udsp.olq.model.OLQApplication;
-import com.hex.bigdata.udsp.olq.provider.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
 import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
+import com.hex.bigdata.udsp.rc.service.AlarmService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.bigdata.udsp.rc.service.RcUserServiceService;
 import com.hex.bigdata.udsp.rc.util.RcConstant;
 import com.hex.bigdata.udsp.rts.model.RtsConsumer;
-import com.hex.bigdata.udsp.rts.model.RtsMatedataCol;
 import com.hex.bigdata.udsp.rts.model.RtsProducer;
 import com.hex.bigdata.udsp.rts.service.RtsConsumerService;
 import com.hex.bigdata.udsp.rts.service.RtsMatedataColService;
@@ -61,6 +61,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
@@ -112,6 +113,8 @@ public class ConsumerService {
     private WaitQueueService mcWaitQueueService;
     @Autowired
     private InitParamService initParamService;
+    @Autowired
+    private AlarmService alarmService;
 
     /**
      * 管理员用户最大同步并发数
@@ -152,7 +155,7 @@ public class ConsumerService {
         ObjectUtil.copyObject(externalRequest, request);
 
         ConsumeRequest consumeRequest = checkBeforExternalConsume(request);
-        Response response = consume(request, consumeRequest, bef);
+        Response response = consume(consumeRequest, bef);
 
         long now = System.currentTimeMillis();
         long consumeTime = now - bef;
@@ -294,7 +297,7 @@ public class ConsumerService {
         ObjectUtil.copyObject(innerRequest, request);
 
         ConsumeRequest consumeRequest = checkBeforInnerConsume(request, isAdmin);
-        Response response = consume(request, consumeRequest, bef);
+        Response response = consume(consumeRequest, bef);
 
         if (response.getPage() != null && response.getPage().getPageIndex() >= 1) {
             response.getPage().setPageIndex(response.getPage().getPageIndex() - 1);
@@ -435,17 +438,17 @@ public class ConsumerService {
     /**
      * 消费
      *
-     * @param request
      * @param consumeRequest
      * @param bef
      * @return
      */
-    private Response consume(Request request, ConsumeRequest consumeRequest, long bef) {
+    private Response consume(ConsumeRequest consumeRequest, long bef) {
+        Request request = consumeRequest.getRequest();
         Current mcCurrent = consumeRequest.getMcCurrent();
         ErrorCode errorCode = consumeRequest.getError();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         try {
-            if (consumeRequest.getError() == null) {
+            if (errorCode == null) {
                 //如果并发对象为空，则从request获取
                 if (mcCurrent == null) {
                     if (!ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(request.getEntity())) {
@@ -460,10 +463,11 @@ public class ConsumerService {
                     //设置mcCurrent到消费请求对象consumeRequest中
                     consumeRequest.setMcCurrent(mcCurrent);
                 }
-                return consume(request, consumeRequest);
+                // 消费
+                return consume(consumeRequest);
             } else {
                 Response response = new Response();
-                this.setErrorResponse(response, request, bef, errorCode.getValue(), errorCode.getName());
+                this.setErrorResponse(response, consumeRequest, bef, errorCode.getValue(), errorCode.getName(), null);
                 return response;
             }
         } finally {
@@ -492,35 +496,76 @@ public class ConsumerService {
      * @param message
      * @return
      */
-    public void setErrorResponse(Response response, Request request, long bef, String errorCode, String message) {
-        String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+    public void setErrorResponse(Response response, ConsumeRequest consumeRequest, long bef, String errorCode, String message, String consumeId) {
+        Request request = consumeRequest.getRequest();
+        String appType = request.getAppType();
+//        String type = request.getType() == null ? "" : request.getType().toUpperCase();
+//        String entity = request.getEntity() == null ? "" : request.getEntity().toUpperCase();
+
+        long now = System.currentTimeMillis();
+        long consumeTime = now - bef;
+
+        /**
+         * OLQ或OLQ_APP执行超时时，取消正在执行的SQL
+         */
+        if ((RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(appType) || RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(appType))
+                && ErrorCode.ERROR_000015.getValue().equals(errorCode)) {
+            try {
+                cancel(consumeId);
+            } catch (SQLException e) {
+                message = "取消正在执行的SQL出错，错误信息：" + e.getMessage();
+            }
+        }
+
+        /**
+         * 当等待/执行超时，发送报警信息
+         */
+        if (ErrorCode.ERROR_000014.getValue().equals(errorCode) || ErrorCode.ERROR_000015.getValue().equals(errorCode)) {
+            RcUserService rcUserService = consumeRequest.getRcUserService();
+            long timout = 0;
+            if (ErrorCode.ERROR_000014.getValue().equals(errorCode)) {
+                timout = ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ?
+                        rcUserService.getMaxSyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
+            } else {
+                timout = ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ?
+                        rcUserService.getMaxSyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
+            }
+            String msg = "请求参数：\n" + JSONUtil.parseObj2JSON(request)
+                    + "\n告警信息：\n" + request.getUdspUser() + "用户"
+                    + (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ? "【同步】" : "【异步】")
+                    + "方式执行" + request.getServiceName() + "服务"
+                    + (ErrorCode.ERROR_000014.getValue().equals(errorCode) ? "【等待】" : "【执行】")
+                    + "超时，超时时间：" + timout + "秒，目前耗时：" + new BigDecimal((float) consumeTime / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒！";
+            try {
+                alarmService.send(rcUserService, msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                message = "发送警报出错，错误信息：" + e.getMessage();
+            }
+        }
+
+        if (StringUtils.isNotBlank(consumeId)) {
+            consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+        }
 
         response.setStatus(Status.DEFEAT.getValue());
         response.setStatusCode(StatusCode.DEFEAT.getValue());
         response.setMessage(message);
         response.setErrorCode(errorCode);
-
-        response.setConsumeId(consumeId);
-        long now = System.currentTimeMillis();
-        long consumeTime = now - bef;
         response.setConsumeTime(consumeTime);
-        McConsumeLog mcConsumeLog = new McConsumeLog();
-        mcConsumeLog.setRequestEndTime(UdspDateUtil.getDateString(now));
+        response.setConsumeId(consumeId);
 
-        mcConsumeLog.setRequestStartTime(UdspDateUtil.getDateString(bef));
+        McConsumeLog mcConsumeLog = new McConsumeLog();
         mcConsumeLog.setPkId(consumeId);
         mcConsumeLog.setResponseContent("");
         mcConsumeLog.setErrorCode(errorCode);
         mcConsumeLog.setMessage(message);
-
-        if (StringUtils.isBlank(request.getType())) {
-            mcConsumeLog.setSyncType("NULL");
-        } else if (CommonConstant.REQUEST_SYNC.equals(request.getType())) {
-            mcConsumeLog.setSyncType(request.getType());
-        }
+        mcConsumeLog.setRequestStartTime(UdspDateUtil.getDateString(bef));
+        mcConsumeLog.setRequestEndTime(UdspDateUtil.getDateString(now));
 
         //日志信息入库
         this.consumerLogToDb(request, mcConsumeLog, McConstant.MCLOG_STATUS_FAILED);
+
     }
 
     /**
@@ -531,6 +576,10 @@ public class ConsumerService {
      * @param status       结果状态(0：成功1：失败)
      */
     private void consumerLogToDb(Request request, McConsumeLog mcConsumeLog, String status) {
+        //同步/异步
+        if (StringUtils.isNotBlank(request.getType())) {
+            mcConsumeLog.setSyncType(request.getType().toUpperCase());
+        }
         //服务名称
         if (StringUtils.isNotBlank(request.getServiceName())) {
             mcConsumeLog.setServiceName(request.getServiceName());
@@ -551,7 +600,7 @@ public class ConsumerService {
         if (StringUtils.isNotBlank(request.getAppName())) {
             mcConsumeLog.setAppName(request.getAppName());
         }
-        //设置结果状态(0：成功1：失败)
+        //设置结果状态(0：成功 1：失败)
         mcConsumeLog.setStatus(status);
         mcConsumeLog.setRequestContent(JSONUtil.parseObj2JSON(request));
         mcConsumeLogService.insert(mcConsumeLog);
@@ -560,15 +609,16 @@ public class ConsumerService {
     /**
      * 开始消费
      *
-     * @param request
      * @param consumeRequest
      * @return
      */
-    public Response consume(Request request, ConsumeRequest consumeRequest) {
-
+    public Response consume(ConsumeRequest consumeRequest) {
+        Request request = consumeRequest.getRequest();
         Current mcCurrent = consumeRequest.getMcCurrent();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         WaitNumResult waitNumResult = consumeRequest.getWaitNumResult();
+
+        String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
 
         //如果任务在等待队列中，则mcCurrent带上等待任务的id
         if (null != waitNumResult && StringUtils.isNotBlank(waitNumResult.getWaitQueueTaskId())) {
@@ -598,13 +648,11 @@ public class ConsumerService {
                 mcCurrentService.insert(mcCurrent);
                 runQueueService.addAsyncCurrent(mcCurrent);
             } catch (TimeoutException e) {
-                e.printStackTrace();
-                this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName());
+                this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName(), consumeId);
                 return response;
             } catch (Exception e) {
-                e.printStackTrace();
-                this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(),
-                        ErrorCode.ERROR_000007.getName() + ":" + e.toString());
+                this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000007.getValue(),
+                        ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
                 return response;
             } finally {
 
@@ -635,10 +683,10 @@ public class ConsumerService {
                 try {
                     response = iqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
-                    this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
+                    this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), consumeId);
                     return response;
                 } catch (Exception e) {
-                    this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
+                    this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
                     return response;
                 }
             }
@@ -655,16 +703,14 @@ public class ConsumerService {
             } else if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
                     && ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
                 logger.debug("execute OLQ SYNC START");
-                String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
                 Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(consumeId, appId, sql, page));
                 try {
                     response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
-                    cancel(consumeId); // 杀死正在执行的SQL
-                    this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
+                    this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), consumeId);
                     return response;
                 } catch (Exception e) {
-                    this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
+                    this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
                     return response;
                 }
             }
@@ -688,17 +734,15 @@ public class ConsumerService {
                 OLQApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
                 Future<Response> olqAppFuture = executorService.submit(new OlqSyncServiceCallable(consumeId, dsId, sql, page));
                 try {
                     response = olqAppFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
-                    cancel(consumeId); // 杀死正在执行的SQL
-                    this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
+                    this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), consumeId);
                     return response;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
+                    this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
                     return response;
                 }
             }
@@ -729,10 +773,10 @@ public class ConsumerService {
             try {
                 response = imFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
-                this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName());
+                this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), consumeId);
                 return response;
             } catch (Exception e) {
-                this.setErrorResponse(response, request, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
+                this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
                 return response;
             }
         }
@@ -762,16 +806,12 @@ public class ConsumerService {
     /**
      * 杀死正在执行的SQL
      */
-    private void cancel(String consumeId) {
+    private void cancel(String consumeId) throws SQLException {
         // 杀死正在执行的SQL
         Statement stmt = OLQCommUtil.removeStatement(consumeId);
         if (stmt != null) {
-            try {
-                stmt.cancel();
-                stmt.close();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            stmt.cancel();
+            stmt.close();
         }
     }
 

@@ -115,6 +115,7 @@ public class InceptorProvider implements Provider {
             } else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
+
             rs.setFetchSize(1000);
             int max_num_size = inceptorDatasource.getMaxNum();
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -126,8 +127,8 @@ public class InceptorProvider implements Provider {
                     //map.put(rsmd.getColumnName(i), rs.getString(i));
                     String columnName = rsmd.getColumnLabel(i);
                     int index = columnName.indexOf(".");
-                    columnName = index == 1 ? columnName : columnName.substring(index + 1, columnName.length());
-                    map.put(columnName, rs.getString(i));
+                    columnName = (index == 1 ? columnName : columnName.substring(index + 1, columnName.length()));
+                    map.put(columnName, rs.getString(i) == null ? "" : rs.getString(i));
                 }
                 list.add(map);
                 count++;
@@ -237,9 +238,9 @@ public class InceptorProvider implements Provider {
             OLQCommUtil.putStatement(consumeId, stmt);
 
             OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
-            if (olqQuerySql.getPage() == null){
+            if (olqQuerySql.getPage() == null) {
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
-            }else {
+            } else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
             rs.setFetchSize(1000);

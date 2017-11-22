@@ -97,7 +97,6 @@ public class IqAsyncService implements Runnable {
     }
 
     private void exec() {
-
         Current mcCurrent = consumeRequest.getMcCurrent();
         McConsumeLog mcConsumeLog = new McConsumeLog();
         mcConsumeLog.setPkId(mcCurrent.getPkId());

@@ -121,12 +121,6 @@ public class OracleProvider implements Provider {
             } else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
-            Page page = request.getPage();
-            if (page == null) {
-                rs = stmt.executeQuery(request.getSql());
-            } else {
-
-            }
 
             rs.setFetchSize(1000);
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -136,7 +130,7 @@ public class OracleProvider implements Provider {
             while (rs.next()) {
                 map = new LinkedHashMap<String, String>();
                 for (int i = 1; i <= columnCount; i++) {
-                    map.put(rsmd.getColumnLabel(i), rs.getString(i));
+                    map.put(rsmd.getColumnLabel(i), rs.getString(i) == null ? "" : rs.getString(i));
                 }
                 list.add(map);
                 count++;
@@ -297,9 +291,9 @@ public class OracleProvider implements Provider {
         pageIndex = pageIndex == 0 ? 1 : pageIndex;
         Integer startRow = (pageIndex - 1) * pageSize;
         Integer endRow = pageSize * pageIndex;
-        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (SELECT ROWNUM ROW_NUM, UDSP_VIEW.* FROM (");
+        StringBuffer pageSqlBuffer = new StringBuffer("SELECT * FROM (");
         pageSqlBuffer.append(sql);
-        pageSqlBuffer.append(") UDSP_VIEW ) UDSP_VIEW2");
+        pageSqlBuffer.append(") UDSP_VIEW ");
         pageSqlBuffer.append(" WHERE ROWNUM >=");
         pageSqlBuffer.append(startRow);
         pageSqlBuffer.append(" AND ROWNUM <= ");
