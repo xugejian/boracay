@@ -117,9 +117,10 @@ public class OlqAsyncService implements Runnable {
         WaitNumResult waitNumResult = consumeRequest.getWaitNumResult();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         Boolean passFlg = false;
-        if (waitNumResult != null && waitNumResult.isIntoWaitQueue()) {
+        if (waitNumResult != null && !waitNumResult.isWaitQueueIsFull()) {
             //任务进入等待队列
-            Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, asyncCycleTimeInterval));
+            String waitQueueTaskId = waitNumResult.getWaitQueueTaskId();
+            Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, waitQueueTaskId, asyncCycleTimeInterval));
             try {
                 long maxAsyncWaitTimeout = (rcUserService == null || rcUserService.getMaxAsyncWaitTimeout() == 0) ?
                         initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
@@ -132,8 +133,6 @@ public class OlqAsyncService implements Runnable {
                 status = McConstant.MCLOG_STATUS_FAILED;
                 errorCode = ErrorCode.ERROR_000007.getValue();
                 message = ErrorCode.ERROR_000007.getName() + "：" + e.getMessage();
-            } finally {
-                //删除等待队列中的请求信息
             }
             if (passFlg) {
                 mcConsumeLog.setRunStartTime(format.format(calendar.getTime()));

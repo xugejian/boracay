@@ -63,12 +63,13 @@ public class WaitQueueService {
                 }
                 //若是等待队列未满，则请求进入
                 if (maxWaitNum > mcWaitQueue.getCurrentLenth()) {
-                    logger.info("等待队列最大长度：" + maxWaitNum + "，等待队列长度：" + mcWaitQueue.getCurrentLenth() + "，" + Thread.currentThread().getName() + "进入等待队列！");
+                    logger.debug("等待队列最大长度：" + maxWaitNum + "，等待队列长度：" + mcWaitQueue.getCurrentLenth() + "，" + Thread.currentThread().getName() + "进入等待队列！");
                     //本次请求加入队列
                     Current mcCurrent = McCommonUtil.getMcCurrent(request, maxWaitNum);
-                    isFullResult.setWaitQueueTaskId(mcCurrent.getPkId());
+                    String pkId = mcCurrent.getPkId();
+                    isFullResult.setWaitQueueTaskId(pkId);
                     //加入队列
-                    mcWaitQueue.offerElement(mcCurrent.getPkId());
+                    mcWaitQueue.offerElement(pkId);
                     //插入统计队列
                     mcCurrentService.insertWait(mcCurrent);
                 } else {
@@ -85,22 +86,19 @@ public class WaitQueueService {
         }
     }
 
-    public boolean checkWaitQueueIsFirst(Current mcCurrent) {
+    public boolean checkWaitQueueIsFirst(Current mcCurrent, String waitQueueTaskId) {
         String key = this.getKey(mcCurrent);
         synchronized (key.intern()) {
             if (initParamService.isUseClusterRedisLock())
                 redisLock.lock(key);// 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 WaitQueue mcWaitQueue = this.select(key);
-                //本次请求加入队列
-                String requestKey = mcCurrent.getWaitQueueTaskId();
-
-                boolean flg = mcWaitQueue.isFirstElement(requestKey);
+                boolean flg = mcWaitQueue.isFirstElement(waitQueueTaskId);
                 if (flg) {
                     //等待队列信息回写到缓存
-                    logger.info("将任务从等待队列中移除：" + Thread.currentThread().getName());
+                    logger.debug("将任务从等待队列中移除：" + Thread.currentThread().getName());
                     mcWaitQueueMapper.insert(key, mcWaitQueue);
-                    mcCurrentService.deleteWait(requestKey);
+                    mcCurrentService.deleteWait(waitQueueTaskId);
                 }
                 return flg;
             } finally {

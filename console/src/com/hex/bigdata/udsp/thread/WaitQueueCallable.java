@@ -15,6 +15,8 @@ public class WaitQueueCallable<T> implements Callable<Boolean> {
 
     private Current mcCurrent;
 
+    private String waitQueueTaskId;
+
     private RunQueueService runQueueService;
 
     private WaitQueueService mcWaitQueueService;
@@ -30,8 +32,9 @@ public class WaitQueueCallable<T> implements Callable<Boolean> {
         this.mcWaitQueueService = (WaitQueueService) WebApplicationContextUtil.getBean("waitQueueService");
     }
 
-    public WaitQueueCallable(Current mcCurrent, long sleepTime) {
+    public WaitQueueCallable(Current mcCurrent, String waitQueueTaskId, long sleepTime) {
         this.mcCurrent = mcCurrent;
+        this.waitQueueTaskId = waitQueueTaskId;
         this.sleepTime = sleepTime;
         this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
         this.mcWaitQueueService = (WaitQueueService) WebApplicationContextUtil.getBean("waitQueueService");
@@ -78,7 +81,7 @@ public class WaitQueueCallable<T> implements Callable<Boolean> {
                 continue;
             }
             //检查任务是否是第一个
-            isFirst = mcWaitQueueService.checkWaitQueueIsFirst(mcCurrent);
+            isFirst = mcWaitQueueService.checkWaitQueueIsFirst(mcCurrent, waitQueueTaskId);
             if (isFirst) {
                 return true;
             }

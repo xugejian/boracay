@@ -37,19 +37,18 @@ public class WaitQueue implements Serializable {
     private BlockingQueue<String> waitQueue = new LinkedBlockingQueue<String>();
 
     /**
-     * 判断element是不是队列第一个，
+     * 判断key是不是队列第一个，
      * 如果是第一个则移除并返回true
      * 如果不是第一个则返回false
      *
-     * @param element
+     * @param key
      * @return
      */
-    public boolean isFirstElement(String element) {
-        synchronized (element){
-            String firstElement = waitQueue.peek();
-            if (StringUtils.isNotBlank(element) && element.equals(firstElement)) {
+    public boolean isFirstElement(String key) {
+        synchronized (key){
+            String firstKey = waitQueue.peek();
+            if (StringUtils.isNotBlank(key) && key.equals(firstKey)) {
                 //获取并移除此队列的头，如果此队列为空，则返回 false。
-                System.out.println("移除");
                 waitQueue.poll();
                 return true;
             }
