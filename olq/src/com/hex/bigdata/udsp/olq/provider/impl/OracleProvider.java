@@ -130,7 +130,8 @@ public class OracleProvider implements Provider {
             while (rs.next()) {
                 map = new LinkedHashMap<String, String>();
                 for (int i = 1; i <= columnCount; i++) {
-                    map.put(rsmd.getColumnLabel(i), rs.getString(i) == null ? "" : rs.getString(i));
+                    // 值进行转义
+                    map.put(rsmd.getColumnLabel(i), rs.getString(i) == null ? "" : JSONUtil.encode(rs.getString(i)));
                 }
                 list.add(map);
                 count++;

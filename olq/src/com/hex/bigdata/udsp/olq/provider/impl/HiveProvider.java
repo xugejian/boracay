@@ -128,7 +128,7 @@ public class HiveProvider implements Provider {
                     String columnName = rsmd.getColumnLabel(i);
                     int index = columnName.indexOf(".");
                     columnName = (index == 1 ? columnName : columnName.substring(index + 1, columnName.length()));
-                    map.put(columnName, rs.getString(i) == null ? "" : rs.getString(i));
+                    map.put(columnName, rs.getString(i) == null ? "" : JSONUtil.encode(rs.getString(i)));
                 }
                 list.add(map);
                 count++;

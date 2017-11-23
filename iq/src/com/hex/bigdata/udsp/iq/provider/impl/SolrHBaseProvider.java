@@ -470,8 +470,7 @@ public class SolrHBaseProvider implements Provider {
         for (int i = 0; i < fqVals.length; i++) {
             String colName = colMap.get(i + 1);
             if (colName != null) {
-                String colVal = fqVals[i];
-                map.put(colName, colVal);
+                map.put(colName, JSONUtil.encode(fqVals[i]));
             }
         }
         return map;
