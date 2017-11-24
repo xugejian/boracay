@@ -38,7 +38,6 @@ public class McCommonUtil {
             mcCurrent.setAppId(request.getAppId());
             mcCurrent.setSyncType(request.getType().toUpperCase());
             mcCurrent.setPkId(consumeId);
-            mcCurrent.setSyncType(request.getType().toUpperCase());
             mcCurrent.setMaxCurrentNum(maxCurrentNum);
             String requestContent = "";
             if (ConsumerConstant.CONSUMER_REQUEST_TYPE_INNER.equalsIgnoreCase(request.getRequestType())) { // 内部请求

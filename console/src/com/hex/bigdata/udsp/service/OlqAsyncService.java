@@ -3,6 +3,7 @@ package com.hex.bigdata.udsp.service;
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
+import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
@@ -45,13 +46,14 @@ public class OlqAsyncService implements Runnable {
     private InitParamService initParamService;
 
     private ConsumeRequest consumeRequest;
-    private String appId;
+    private String dsId;
     private String sql;
+    private Page page;
     private String fileName;
     private String appType;
     private long asyncCycleTimeInterval;
 
-    public OlqAsyncService(ConsumeRequest consumeRequest, String appId, String sql, String appType, String fileName) {
+    public OlqAsyncService(ConsumeRequest consumeRequest, String dsId, String sql, Page page, String appType, String fileName) {
         this.olqSyncService = (OlqSyncService) WebApplicationContextUtil.getBean("olqSyncService");
         this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
         this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
@@ -59,13 +61,14 @@ public class OlqAsyncService implements Runnable {
         this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
 
         this.consumeRequest = consumeRequest;
-        this.appId = appId;
+        this.dsId = dsId;
         this.sql = sql;
+        this.page = page;
         this.appType = appType;
         this.fileName = fileName;
     }
 
-    public OlqAsyncService(ConsumeRequest consumeRequest, String appId, String sql, String appType, String fileName, long asyncCycleTimeInterval) {
+    public OlqAsyncService(ConsumeRequest consumeRequest, String dsId, String sql, Page page, String appType, String fileName, long asyncCycleTimeInterval) {
         this.olqSyncService = (OlqSyncService) WebApplicationContextUtil.getBean("olqSyncService");
         this.mcConsumeLogService = (McConsumeLogService) WebApplicationContextUtil.getBean("mcConsumeLogService");
         this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
@@ -73,8 +76,9 @@ public class OlqAsyncService implements Runnable {
         this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
 
         this.consumeRequest = consumeRequest;
-        this.appId = appId;
+        this.dsId = dsId;
         this.sql = sql;
+        this.page = page;
         this.appType = appType;
         this.fileName = fileName;
         this.asyncCycleTimeInterval = asyncCycleTimeInterval;
@@ -113,9 +117,10 @@ public class OlqAsyncService implements Runnable {
         WaitNumResult waitNumResult = consumeRequest.getWaitNumResult();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         Boolean passFlg = false;
-        if (waitNumResult != null && waitNumResult.isIntoWaitQueue()) {
+        if (waitNumResult != null && !waitNumResult.isWaitQueueIsFull()) {
             //任务进入等待队列
-            Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, asyncCycleTimeInterval));
+            String waitQueueTaskId = waitNumResult.getWaitQueueTaskId();
+            Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, waitQueueTaskId, asyncCycleTimeInterval));
             try {
                 long maxAsyncWaitTimeout = (rcUserService == null || rcUserService.getMaxAsyncWaitTimeout() == 0) ?
                         initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
@@ -128,8 +133,6 @@ public class OlqAsyncService implements Runnable {
                 status = McConstant.MCLOG_STATUS_FAILED;
                 errorCode = ErrorCode.ERROR_000007.getValue();
                 message = ErrorCode.ERROR_000007.getName() + "：" + e.getMessage();
-            } finally {
-                //删除等待队列中的请求信息
             }
             if (passFlg) {
                 mcConsumeLog.setRunStartTime(format.format(calendar.getTime()));
@@ -137,7 +140,7 @@ public class OlqAsyncService implements Runnable {
                 mcCurrentService.insert(mcCurrent);
                 runQueueService.addAsyncCurrent(mcCurrent);
                 //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- end
-                Future<OLQResponse> olqFutureTask = executorService.submit(new OlqAsyncCallable(consumeId, mcCurrent, this.appId, this.sql, this.fileName));
+                Future<OLQResponse> olqFutureTask = executorService.submit(new OlqAsyncCallable(consumeId, mcCurrent, this.dsId, this.sql, this.page, this.fileName));
                 try {
                     long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
                             initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
@@ -175,7 +178,7 @@ public class OlqAsyncService implements Runnable {
         } else {
             mcConsumeLog.setRunStartTime(format.format(calendar.getTime()));
             try {
-                response = this.olqSyncService.asyncStart(consumeId, this.appId, this.sql, this.fileName, mcCurrent.getUserName());
+                response = this.olqSyncService.asyncStart(consumeId, this.dsId, this.sql, this.page, this.fileName, mcCurrent.getUserName());
                 message = response.getMessage();
                 //内部调用失败
                 if (response.getStatus().getValue().equals(Status.DEFEAT.getValue())) {

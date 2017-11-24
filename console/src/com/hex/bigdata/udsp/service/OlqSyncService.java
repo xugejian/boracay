@@ -8,11 +8,12 @@ import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.FTPClientConfig;
 import com.hex.bigdata.udsp.common.util.FTPHelper;
 import com.hex.bigdata.udsp.model.Response;
-import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OLQResponseFetch;
+import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
 import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +37,25 @@ public class OlqSyncService {
 
     @Autowired
     private OlqProviderService olqProviderService;
+    @Autowired
+    private OLQApplicationService olqApplicationService;
 
     /**
      * 同步运行
      *
      * @param consumeId
      * @param dsId
-     * @param olqQuerySql
+     * @param sql
+     * @param page
      * @return
      */
-    public Response syncStart(String consumeId, String dsId, OLQQuerySql olqQuerySql) {
-        Response response = new Response();
+    public Response syncStart(String consumeId, String dsId, String sql, Page page) {
+        Response response = checkParam(sql);
+        if (response != null) return response;
+
+        response = new Response();
         try {
-            OLQResponse olqResponse = olqProviderService.select(consumeId, dsId, olqQuerySql);
+            OLQResponse olqResponse = olqProviderService.select(consumeId, dsId, sql, page);
             response.setMessage(olqResponse.getMessage());
             response.setConsumeTime(olqResponse.getConsumeTime());
             response.setStatus(olqResponse.getStatus().getValue());
@@ -68,6 +75,29 @@ public class OlqSyncService {
         return response;
     }
 
+    private Response checkParam(String sql) {
+        Response response = null;
+        if (StringUtils.isBlank(sql)) {
+            response = new Response();
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
+            response.setMessage(ErrorCode.ERROR_000009.getName());
+        }
+        return response;
+    }
+
+    private OLQResponse checkParam2(String sql) {
+        OLQResponse response = null;
+        if (StringUtils.isBlank(sql)) {
+            response = new OLQResponse();
+            response.setStatus(Status.DEFEAT);
+            response.setStatusCode(StatusCode.DEFEAT);
+            response.setMessage(ErrorCode.ERROR_000009.getName());
+        }
+        return response;
+    }
+
     /**
      * 异步运行
      *
@@ -75,12 +105,15 @@ public class OlqSyncService {
      * @param sql
      * @return
      */
-    public OLQResponse asyncStart(String consumeId, String dsId, String sql, String fileName, String userName) {
+    public OLQResponse asyncStart(String consumeId, String dsId, String sql, Page page, String fileName, String userName) {
+        OLQResponse response = checkParam2(sql);
+        if (response != null) return response;
+
         Status status = Status.SUCCESS;
         StatusCode statusCode = StatusCode.SUCCESS;
         String message = "成功";
         String filePath = "";
-        OLQResponseFetch responseFetch = olqProviderService.selectFetch(consumeId, dsId, sql);
+        OLQResponseFetch responseFetch = olqProviderService.selectFetch(consumeId, dsId, sql, page);
         Connection conn = responseFetch.getConnection();
         Statement stmt = responseFetch.getStatement();
         ResultSet rs = responseFetch.getResultSet();
@@ -147,7 +180,7 @@ public class OlqSyncService {
             OLQCommUtil.removeStatement(consumeId);
         }
 
-        OLQResponse response = new OLQResponse();
+        response = new OLQResponse();
         response.setFilePath(filePath);
         response.setMessage(message);
         response.setStatus(status);

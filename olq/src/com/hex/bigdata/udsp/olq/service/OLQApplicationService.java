@@ -2,10 +2,8 @@ package com.hex.bigdata.udsp.olq.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.DatasourceModel;
-import com.hex.bigdata.udsp.common.constant.DatasourceType;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.*;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
@@ -18,8 +16,6 @@ import com.hex.bigdata.udsp.olq.dto.OLQApplicationView;
 import com.hex.bigdata.udsp.olq.dto.OLQIndexDto;
 import com.hex.bigdata.udsp.olq.model.OLQApplication;
 import com.hex.bigdata.udsp.olq.model.OLQApplicationParam;
-import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
-import com.hex.bigdata.udsp.olq.provider.Provider;
 import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
 import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
 import com.hex.bigdata.udsp.rc.model.RcService;
@@ -433,77 +429,34 @@ public class OLQApplicationService extends BaseService {
         return paramNames;
     }
 
-    public static void main(String[] args) {
-
-        Map<String, String> paramVals = new HashMap<>();
-        paramVals.put("WBJYM", "303");
-
-        Set<String> inputParamsNames = paramVals.keySet();
-        String originalSql = "SELECT * FROM OMDATA.S01_SJYMB JYM WHERE JYM.WBJYM =${WBJYM}  and JYM =${WBJYM}  and JYM =${WBJYM}";
-
-        for (String param : inputParamsNames) {
-            originalSql = originalSql.replaceAll("\\$\\{" + param + "}", paramVals.get(param));
-        }
-
-        System.out.println(originalSql);
-
-    }
-
-    /**
-     * 获取分页查询SQL
-     *
-     * @param dsId
-     * @param querySql
-     * @param page
-     * @return
-     */
-    public MessageResult getExecuteSQL(String dsId, String querySql, com.hex.bigdata.udsp.common.provider.model.Page page) {
-        MessageResult messageResult = new MessageResult();
-        OLQQuerySql olqQuerySql = olqProviderService.getPageSql(dsId, querySql, page);
-        messageResult.setData(olqQuerySql);
-        return messageResult;
-    }
-
-    /**
-     * 获取分页查询SQL
-     *
-     * @param olqApplicationDto
-     * @param paramVals
-     * @param page
-     * @return
-     */
-    public MessageResult getExecuteSQL(OLQApplicationDto olqApplicationDto, Map<String, String> paramVals, com.hex.bigdata.udsp.common.provider.model.Page page) {
-        MessageResult messageResult = this.getExecuteSQL(olqApplicationDto, paramVals);
-        if (!messageResult.isStatus()) return messageResult;
-        OLQApplication olqApplication = olqApplicationDto.getOlqApplication();
-        String dsId = olqApplication.getOlqDsId();
-        String querySql = (String) messageResult.getData();
-        OLQQuerySql olqQuerySql = olqProviderService.getPageSql(dsId, querySql, page);
-        messageResult.setData(olqQuerySql);
-        return messageResult;
-    }
-
     /**
      * 根据应用配置信息、参数值获取sql语句
      *
-     * @param olqApplicationDto
+     * @param appId
      * @param paramVals
      * @return
      */
-    public MessageResult getExecuteSQL(OLQApplicationDto olqApplicationDto, Map<String, String> paramVals) {
-
+    public String getExecuteSQL(OLQApplicationDto olqApplicationDto, Map<String, String> paramVals) {
         //原生SQL语句
         String originalSql = olqApplicationDto.getOlqApplication().getOlqSql();
 
         //获取参数列表
         List<OLQApplicationParam> params = olqApplicationDto.getParams();
+        if (params == null || params.size() == 0) {
+            return originalSql;
+        }
+
+        if (paramVals == null || paramVals.size() == 0) {
+            throw new RuntimeException("传入参数值集合不能为空");
+        }
+
         Set<String> inputParamsNames = paramVals.keySet();
         if (params == null || params.size() == 0) {
-            return new MessageResult(true, "", originalSql);
+            return originalSql;
         } else if ((params != null && params.size() != 0) && (inputParamsNames != null || inputParamsNames.size() != 0)) {
             //比较个数
             if (params.size() != inputParamsNames.size()) {
-                return new MessageResult(false, "传入参数值的个数与参数个数不匹配");
+                throw new RuntimeException("传入参数值的个数与参数个数不匹配");
             }
             //比较参数名
             //检查参数名称是否完全一致
@@ -515,16 +468,16 @@ public class OLQApplicationService extends BaseService {
                 }
             }
             if (!containFlg) {
-                return new MessageResult(false, "传入参数值的个数与参数个数不匹配");
+                throw new RuntimeException("传入参数值的个数与参数个数不匹配");
             }
             //组装SQL
             for (String param : inputParamsNames) {
                 originalSql = originalSql.replaceAll("\\$\\{" + param + "}", paramVals.get(param));
             }
-            return new MessageResult(true, "", originalSql);
+            return originalSql;
 
         } else {
-            return new MessageResult(false, "传入参数值的个数与参数个数不匹配");
+            throw new RuntimeException("传入参数值的个数与参数个数不匹配");
         }
 
     }

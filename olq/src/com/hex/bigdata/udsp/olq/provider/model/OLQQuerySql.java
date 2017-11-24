@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.olq.model;
+package com.hex.bigdata.udsp.olq.provider.model;
 
 import com.hex.bigdata.udsp.common.provider.model.Page;
 

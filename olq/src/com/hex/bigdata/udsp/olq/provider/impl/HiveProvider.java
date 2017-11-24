@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.olq.model.OLQQuerySql;
+import com.hex.bigdata.udsp.olq.provider.model.OLQQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
 import com.hex.bigdata.udsp.olq.provider.impl.model.HiveDatasource;
 import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
@@ -109,12 +109,13 @@ public class HiveProvider implements Provider {
             OLQCommUtil.putStatement(consumeId, stmt);
 
             //获取查询信息
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
             if (olqQuerySql.getPage() == null){
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
             }else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
+
             rs.setFetchSize(1000);
             int max_num_size = hiveDatasource.getMaxNum();
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -126,8 +127,8 @@ public class HiveProvider implements Provider {
                     //map.put(rsmd.getColumnName(i), rs.getString(i));
                     String columnName = rsmd.getColumnLabel(i);
                     int index = columnName.indexOf(".");
-                    columnName = index == 1 ? columnName : columnName.substring(index + 1, columnName.length());
-                    map.put(columnName, rs.getString(i));
+                    columnName = (index == 1 ? columnName : columnName.substring(index + 1, columnName.length()));
+                    map.put(columnName, rs.getString(i) == null ? "" : JSONUtil.encode(rs.getString(i)));
                 }
                 list.add(map);
                 count++;
@@ -238,8 +239,12 @@ public class HiveProvider implements Provider {
 
             OLQCommUtil.putStatement(consumeId, stmt);
 
-            OLQQuerySql olqQuerySql = request.getOlqQuerySql();
-            rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
+            if (olqQuerySql.getPage() == null){
+                rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
+            }else {
+                rs = stmt.executeQuery(olqQuerySql.getPageSql());
+            }
             rs.setFetchSize(1000);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
@@ -261,8 +266,7 @@ public class HiveProvider implements Provider {
         return response;
     }
 
-    @Override
-    public OLQQuerySql getPageSql(String sql, Page page) {
+    private OLQQuerySql getPageSql(String sql, Page page) {
         OLQQuerySql olqQuerySql = new OLQQuerySql(sql);
         if (page == null) {
             return olqQuerySql;

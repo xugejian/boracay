@@ -37,6 +37,8 @@ public class RcUserService implements Serializable {
 
     private String uptTime;
 
+    private String alarmType; // 告警方式
+
     public String getPkId() {
         return pkId;
     }
@@ -173,4 +175,11 @@ public class RcUserService implements Serializable {
         this.uptTime = uptTime;
     }
 
+    public String getAlarmType() {
+        return alarmType;
+    }
+
+    public void setAlarmType(String alarmType) {
+        this.alarmType = alarmType;
+    }
 }

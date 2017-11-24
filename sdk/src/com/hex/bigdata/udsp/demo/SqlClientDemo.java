@@ -182,10 +182,12 @@ public class SqlClientDemo {
             logger.error("客户端异常");
         } else {
             if (StatusCode.SUCCESS == response.getStatusCode()) {
-                /**
-                 * 成功说明异步任务已经完成
-                 */
+                logger.info("异步消费完成");
                 // 可以继续执行FTP下载文件的操作
+            }
+            if (StatusCode.RUNING == response.getStatusCode()) {
+                logger.info("异步消费正在执行");
+                // 可以继续执行查看状态的操作
             } else {
                 logger.error("状态：" + response.getStatus());
                 logger.error("状态码：" + response.getStatusCode());
