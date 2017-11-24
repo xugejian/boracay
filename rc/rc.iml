@@ -21,5 +21,6 @@
     <orderEntry type="module" module-name="olq" />
     <orderEntry type="module" module-name="rts" />
     <orderEntry type="module" module-name="im" />
+    <orderEntry type="library" name="mail" level="project" />
   </component>
 </module>

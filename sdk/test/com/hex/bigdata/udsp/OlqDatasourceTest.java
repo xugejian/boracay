@@ -30,7 +30,7 @@ public class OlqDatasourceTest {
      * SQL客户端查询同步start
      */
     @Test
-    private void syncStart() {
+    public void syncStart() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
 //        SqlClient client = ConsumerClientFactory.createCustomClient(SqlClient.class, url);
@@ -40,18 +40,18 @@ public class OlqDatasourceTest {
         //创建请求实体
         SqlRequest request = new SqlRequest();
         //基础参数设置-设置调用服务的名称
-        request.setServiceName("core02");
+        request.setServiceName("dev_oracle");
         //基础参数设置-设置调用start接口
         request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
         request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
 
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
-        request.setUdspUser("test");
+        request.setUdspUser("IFE");
         request.setToken("000000");
 
         //设置业务参数-查询SQL
-        request.setSql("select * from cmdata.c01_cd_acct limit 1");
+        request.setSql("SELECT * FROM (select * from MC_CONSUME_LOG order by app_type, sync_type) UDSP_VIEW where ROWNUM >=0 AND ROWNUM <= 2000");
 
         //调用并获取返回结果
         SyncPackResponse response = client.syncStart(request);
@@ -65,11 +65,13 @@ public class OlqDatasourceTest {
                 logger.debug("耗时：" + response.getConsumeTime());
                 // 消费ID
                 logger.debug("消费ID：" + response.getConsumeId());
+                logger.debug("------------------------------------------------------------------");
                 // 字段信息
                 LinkedHashMap<String, String> returnColumns = response.getReturnColumns();
                 for (Map.Entry<String, String> entry : returnColumns.entrySet()) {
                     logger.debug("名称：" + entry.getKey() + "，类型：" + entry.getValue());
                 }
+                logger.debug("------------------------------------------------------------------");
                 // 数据信息
                 List<Map<String, String>> records = response.getRecords();
                 for (Map<String, String> record : records) {
@@ -90,7 +92,7 @@ public class OlqDatasourceTest {
      * SQL客户端查询异步start
      */
     @Test
-    private void asyncStart() {
+    public void asyncStart() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
 //        SqlClient client = ConsumerClientFactory.createCustomClient(SqlClient.class, url);
@@ -142,7 +144,7 @@ public class OlqDatasourceTest {
      * SQL客户端查询异步status
      */
     @Test
-    private void asyncStatus() {
+    public void asyncStatus() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
 //        SqlClient client = ConsumerClientFactory.createCustomClient(SqlClient.class, url);

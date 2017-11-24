@@ -115,6 +115,7 @@ public class HiveProvider implements Provider {
             }else {
                 rs = stmt.executeQuery(olqQuerySql.getPageSql());
             }
+
             rs.setFetchSize(1000);
             int max_num_size = hiveDatasource.getMaxNum();
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -126,8 +127,8 @@ public class HiveProvider implements Provider {
                     //map.put(rsmd.getColumnName(i), rs.getString(i));
                     String columnName = rsmd.getColumnLabel(i);
                     int index = columnName.indexOf(".");
-                    columnName = index == 1 ? columnName : columnName.substring(index + 1, columnName.length());
-                    map.put(columnName, rs.getString(i));
+                    columnName = (index == 1 ? columnName : columnName.substring(index + 1, columnName.length()));
+                    map.put(columnName, rs.getString(i) == null ? "" : JSONUtil.encode(rs.getString(i)));
                 }
                 list.add(map);
                 count++;

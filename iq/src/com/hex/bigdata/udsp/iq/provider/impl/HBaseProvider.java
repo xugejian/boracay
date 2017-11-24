@@ -99,8 +99,7 @@ public class HBaseProvider implements Provider {
         try {
             conn = getConnection(hBaseDatasource);
             hTable = conn.getTable(tbName);
-            list = scan(hTable,
-                    startRow, stopRow, colMap, maxSize, family, qualifier, fqSep, dataType);
+            list = scan(hTable, startRow, stopRow, colMap, maxSize, family, qualifier, fqSep, dataType);
             // 排序处理
             list = orderBy(list, orderColumns);
 
@@ -578,8 +577,7 @@ public class HBaseProvider implements Provider {
             for (int i = 0; i < fqVals.length; i++) {
                 String colName = colMap.get(i + 1);
                 if (colName != null) {
-                    String colVal = fqVals[i];
-                    map.put(colName, colVal);
+                    map.put(colName, JSONUtil.encode(fqVals[i]));
                 }
             }
         } else if (dataType.equalsIgnoreCase("json")) { // JSON MAP格式数据

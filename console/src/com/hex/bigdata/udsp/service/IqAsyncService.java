@@ -97,7 +97,6 @@ public class IqAsyncService implements Runnable {
     }
 
     private void exec() {
-
         Current mcCurrent = consumeRequest.getMcCurrent();
         McConsumeLog mcConsumeLog = new McConsumeLog();
         mcConsumeLog.setPkId(mcCurrent.getPkId());
@@ -115,9 +114,10 @@ public class IqAsyncService implements Runnable {
         WaitNumResult waitNumResult = consumeRequest.getWaitNumResult();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         boolean passFlg = true;
-        if (waitNumResult != null && waitNumResult.isIntoWaitQueue()) {//任务进入等待队列
+        if (waitNumResult != null && !waitNumResult.isWaitQueueIsFull()) {//任务进入等待队列
             passFlg = false;
-            Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, asyncCycleTimeInterval));
+            String waitQueueTaskId = waitNumResult.getWaitQueueTaskId();
+            Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, waitQueueTaskId, asyncCycleTimeInterval));
             try {
                 long maxAsyncWaitTimeout = (rcUserService == null || rcUserService.getMaxAsyncWaitTimeout() == 0) ?
                         initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
@@ -130,8 +130,6 @@ public class IqAsyncService implements Runnable {
                 status = McConstant.MCLOG_STATUS_FAILED;
                 errorCode = ErrorCode.ERROR_000007.getValue();
                 message = ErrorCode.ERROR_000007.getName() + "：" + e.getMessage();
-            } finally {
-                //删除等待队列中的请求信息
             }
         }
 

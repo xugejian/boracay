@@ -84,11 +84,13 @@ public class OlqApplicationTest {
                 logger.debug("耗时：" + response.getConsumeTime());
                 // 消费ID
                 logger.debug("消费ID：" + response.getConsumeId());
+                logger.debug("------------------------------------------------------------------");
                 // 字段信息
                 LinkedHashMap<String, String> returnColumns = response.getReturnColumns();
                 for (Map.Entry<String, String> entry : returnColumns.entrySet()) {
                     logger.debug("名称：" + entry.getKey() + "，类型：" + entry.getValue());
                 }
+                logger.debug("------------------------------------------------------------------");
                 // 数据信息
                 List<Map<String, String>> records = response.getRecords();
                 for (Map<String, String> record : records) {

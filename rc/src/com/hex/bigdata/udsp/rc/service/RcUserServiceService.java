@@ -1,11 +1,13 @@
 package com.hex.bigdata.udsp.rc.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
+import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
-import com.hex.bigdata.udsp.common.service.ComDatasourceService;
+import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
+import com.hex.bigdata.udsp.im.model.ImMetadataCol;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
 import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
@@ -13,6 +15,8 @@ import com.hex.bigdata.udsp.olq.service.OLQService;
 import com.hex.bigdata.udsp.rc.dao.RcUserServiceForUserIdAndServiceIdMapper;
 import com.hex.bigdata.udsp.rc.dao.RcUserServiceMapper;
 import com.hex.bigdata.udsp.rc.dto.IpSectionHelper;
+import com.hex.bigdata.udsp.rc.dto.RcUserServiceBatchDto;
+import com.hex.bigdata.udsp.rc.dto.RcUserServiceDto;
 import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
@@ -66,8 +70,6 @@ public class RcUserServiceService extends BaseService {
     @Autowired
     private RtsConsumerService rtsConsumerService;
     @Autowired
-    private ComDatasourceService comDatasourceService;
-    @Autowired
     private IqApplicationService iqApplicationService;
     @Autowired
     private OLQService olqService;
@@ -75,22 +77,46 @@ public class RcUserServiceService extends BaseService {
     private MmApplicationService mmApplicationService;
     @Autowired
     private OLQApplicationService olqApplicationService;
+    @Autowired
+    private ComPropertiesService comPropertiesService;
+
+    @Transactional
+    public String insert(RcUserServiceDto rcUserServiceDto) {
+        RcUserService rcUserService = rcUserServiceDto.getRcUserService();
+        String pkId = this.insert(rcUserService);
+        if (org.apache.commons.lang.StringUtils.isBlank(pkId)) {
+            return "";
+        }
+        comPropertiesService.insertList(pkId, rcUserServiceDto.getComPropertiesList());
+        return pkId;
+    }
 
     @Transactional
     public String insert(RcUserService rcUserService) {
         String pkId = Util.uuid();
         rcUserService.setPkId(pkId);
-
         if (checkBeforeInsetOrUpdate(rcUserService) && rcUserServiceMapper.insert(pkId, rcUserService)) {
             /*
             同时按照不同ID保存到内存中
              */
             String id = rcUserService.getUserId() + "|" + rcUserService.getServiceId();
             rcUserServiceForUserIdAndServiceIdMapper.insert(id, rcUserService);
-
             return pkId;
         }
         return "";
+    }
+
+    public boolean update(RcUserServiceDto rcUserServiceDto) {
+        RcUserService rcUserService = rcUserServiceDto.getRcUserService();
+        String pkId = rcUserService.getPkId();
+        if (!update(rcUserService)) {
+            return false;
+        }
+        if (!comPropertiesService.deleteByFkId(pkId)) {
+            return false;
+        }
+        comPropertiesService.insertList(pkId, rcUserServiceDto.getComPropertiesList());
+        return true;
     }
 
     /**
@@ -177,34 +203,43 @@ public class RcUserServiceService extends BaseService {
     /**
      * 批量新增
      *
-     * @param view
+     * @param rcUserServiceBatchDto
      * @return
      */
-    public boolean insertBatch(RcUserServiceView view) {
-        String userIds = view.getUserIds();
-        String serviceIds = view.getServiceIds();
+    @Transactional
+    public boolean insertBatch(RcUserServiceBatchDto rcUserServiceBatchDto) {
+        RcUserServiceView rcUserServiceView = rcUserServiceBatchDto.getRcUserServiceView();
+        List<ComProperties> comPropertiesList = rcUserServiceBatchDto.getComPropertiesList();
+        String userIds = rcUserServiceView.getUserIds();
+        String serviceIds = rcUserServiceView.getServiceIds();
         String[] serviceIdArray = serviceIds.split(",");
         String[] userIdArray = userIds.split(",");
-
         //插入前检查
-        if (!checkBeforeBatchInset(view)) {
+        if (!checkBeforeBatchInset(rcUserServiceView)) {
             return false;
         }
         //批量循环插入
         for (String serviceId : serviceIdArray) {
             for (String userId : userIdArray) {
-                RcUserService temp = new RcUserService();
-                temp.setServiceId(serviceId);
-                temp.setIpSection(view.getIpSection());
-                temp.setMaxSyncNum(view.getMaxSyncNum());
-                temp.setMaxAsyncNum(view.getMaxSyncNum());
-                temp.setUserId(userId);
-                this.insert(temp);
+                RcUserService service = new RcUserService();
+                service.setServiceId(serviceId);
+                service.setIpSection(rcUserServiceView.getIpSection());
+                service.setMaxSyncNum(rcUserServiceView.getMaxSyncNum());
+                service.setMaxAsyncNum(rcUserServiceView.getMaxSyncNum());
+                service.setMaxSyncExecuteTimeout(rcUserServiceView.getMaxSyncExecuteTimeout());
+                service.setMaxAsyncExecuteTimeout(rcUserServiceView.getMaxAsyncExecuteTimeout());
+                service.setMaxSyncWaitNum(rcUserServiceView.getMaxSyncWaitNum());
+                service.setMaxSyncWaitTimeout(rcUserServiceView.getMaxSyncWaitTimeout());
+                service.setMaxAsyncWaitNum(rcUserServiceView.getMaxAsyncWaitNum());
+                service.setMaxAsyncWaitTimeout(rcUserServiceView.getMaxAsyncWaitTimeout());
+                service.setAlarmType(rcUserServiceView.getAlarmType());
+                service.setUserId(userId);
+                String pkId = this.insert(service);
+                comPropertiesService.insertList(pkId, comPropertiesList);
             }
         }
         return true;
     }
-
 
     /**
      * 批量检查用户和服务关系是否存在

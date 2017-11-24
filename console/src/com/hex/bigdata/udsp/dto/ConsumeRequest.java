@@ -21,7 +21,7 @@ public class ConsumeRequest {
 
     private WaitNumResult waitNumResult;
 
-    private WaitQueueService mcWaitQueueService;
+    //private WaitQueueService mcWaitQueueService;
 
     public Request getRequest() {
         return request;
@@ -47,13 +47,13 @@ public class ConsumeRequest {
         this.error = error;
     }
 
-    public RcService getRcService() {
-        return rcService;
-    }
-
-    public void setRcService(RcService rcService) {
-        this.rcService = rcService;
-    }
+//    public RcService getRcService() {
+//        return rcService;
+//    }
+//
+//    public void setRcService(RcService rcService) {
+//        this.rcService = rcService;
+//    }
 
     public RcUserService getRcUserService() {
         return rcUserService;
@@ -71,11 +71,11 @@ public class ConsumeRequest {
         this.waitNumResult = waitNumResult;
     }
 
-    public WaitQueueService getMcWaitQueueService() {
-        return mcWaitQueueService;
-    }
-
-    public void setMcWaitQueueService(WaitQueueService mcWaitQueueService) {
-        this.mcWaitQueueService = mcWaitQueueService;
-    }
+//    public WaitQueueService getMcWaitQueueService() {
+//        return mcWaitQueueService;
+//    }
+//
+//    public void setMcWaitQueueService(WaitQueueService mcWaitQueueService) {
+//        this.mcWaitQueueService = mcWaitQueueService;
+//    }
 }
