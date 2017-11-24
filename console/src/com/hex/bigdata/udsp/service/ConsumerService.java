@@ -459,12 +459,19 @@ public class ConsumerService {
                 timout = ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ?
                         rcUserService.getMaxSyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
             }
-            String msg = "请求参数：\n" + JSONUtil.parseObj2JSON(request)
-                    + "\n告警信息：\n" + request.getUdspUser() + "用户"
+//            String msg = "请求参数：\n" + JSONUtil.parseObj2JSON(request)
+//                    + "\n告警信息：\n" + request.getUdspUser() + "用户"
+//                    + (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ? "【同步】" : "【异步】")
+//                    + "方式执行" + request.getServiceName() + "服务"
+//                    + (ErrorCode.ERROR_000014.getValue().equals(errorCode) ? "【等待】" : "【执行】")
+//                    + "超时，开始时间：" + UdspDateUtil.getDateString(bef) + "，超时时间：" + timout + "秒，总耗时："
+//                    + new BigDecimal((float) consumeTime / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒！";
+            String msg = request.getUdspUser() + "用户"
                     + (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ? "【同步】" : "【异步】")
                     + "方式执行" + request.getServiceName() + "服务"
                     + (ErrorCode.ERROR_000014.getValue().equals(errorCode) ? "【等待】" : "【执行】")
-                    + "超时，超时时间：" + timout + "秒，目前耗时：" + new BigDecimal((float) consumeTime / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒！";
+                    + "超时，开始时间：" + UdspDateUtil.getDateString(bef) + "，超时时间：" + timout + "秒，总耗时："
+                    + new BigDecimal((float) consumeTime / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒！";
             try {
                 alarmService.send(rcUserService, msg);
             } catch (Exception e) {
