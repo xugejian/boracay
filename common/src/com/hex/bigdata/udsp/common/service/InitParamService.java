@@ -10,6 +10,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class InitParamService {
+
+    /**
+     * 是否严格的控制分布式并发
+     */
+    @Value("${cluster_concurrency_control:true}")
+    private boolean clusterConcurrencyControl;
+
     /**
      * 服务模式（single、cluster）
      */
@@ -32,8 +39,10 @@ public class InitParamService {
      */
     public boolean isUseClusterRedisLock() {
         if (isUseClusterRedisLock == null) {
-            isUseClusterRedisLock = (ServiceMode.CLUSTER.getValue().equalsIgnoreCase(serviceMode)
-                    && CacheMode.REDIS.getValue().equalsIgnoreCase(cacheMode)) ? true : false;
+            isUseClusterRedisLock = clusterConcurrencyControl
+                    && (ServiceMode.CLUSTER.getValue().equalsIgnoreCase(serviceMode)
+                    && CacheMode.REDIS.getValue().equalsIgnoreCase(cacheMode))
+                    ? true : false;
         }
         return isUseClusterRedisLock;
     }

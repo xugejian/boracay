@@ -26,17 +26,17 @@ public class RedisDistributedLock {
     private static final String LOCKED = "LOCKED";
 
     /**
-     * 请求锁超时时间（ms）
+     * 请求锁超时时间（ms），为了避免死锁问题发生
      */
-    private static final long TIME_OUT = 60000l;
+    private static final long TIME_OUT = 3000l;
 
     /**
      * 检查锁是否解锁的休眠时间（ms）
      */
-    private static final long SLEEP_TIME = 3;
+    private static final long SLEEP_TIME = 1;
 
     /**
-     * 锁的有效时间
+     * 锁的有效时间(s)
      */
     public static final int EXPIRE = 1;
 
@@ -48,6 +48,7 @@ public class RedisDistributedLock {
      * @param key
      */
     public void lock(String key) {
+        logger.debug(key + "准备上锁！");
         String newkey = LOCK_KEY_PREFIX + key;
         if (redisTemplate == null) {
             redisTemplate = (RedisTemplate) WebApplicationContextUtil.getBean("redisLockTemplate");
@@ -58,10 +59,15 @@ public class RedisDistributedLock {
             long num = TIME_OUT / SLEEP_TIME;
             while (count < num) {
                 try {
+                    logger.debug(key + "请求锁！");
+                    // 请求锁成功说明锁没被其他线程保持
                     if (redisConnection.setNX(newkey.getBytes(), LOCKED.getBytes())) {
+                        logger.debug(key + "上锁！");
+                        // 上锁
                         redisTemplate.expire(newkey, EXPIRE, TimeUnit.SECONDS);
                         break;
                     }
+                    // 请求锁失败说明锁被其它线程保持，等待几毫秒后继续请求锁
                 } catch (Exception e) {
                     logger.error(e.getMessage() + " key: " + key);
                 }
@@ -87,6 +93,7 @@ public class RedisDistributedLock {
      * @param key
      */
     public void unlock(String key) {
+        logger.debug(key + "解锁！");
         String newkey = LOCK_KEY_PREFIX + key;
         try {
             redisTemplate.delete(newkey);
