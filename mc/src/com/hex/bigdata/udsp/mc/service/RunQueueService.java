@@ -68,28 +68,21 @@ public class RunQueueService {
 
     /**
      * 增加同步并发
+     * <p>
+     * 注：这里不需要上锁，上层调用的服务已经上锁，如果上锁且是同一把锁会导致延迟锁问题！
      *
      * @param mcCurrent
      * @return
      */
     public boolean addSyncCurrent(Current mcCurrent) {
         String key = this.getKey(mcCurrent);
-        synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
-            if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
-            try {
-                RunQueue runQueue = this.select(key);
-                if (runQueue == null) {
-                    runQueue = this.initalByKey(key);
-                }
-                runQueue.setCurrentSyncNum(runQueue.getCurrentSyncNum() + 1);
-                this.insert(key, runQueue);
-                return true;
-            } finally {
-                if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
-            }
+        RunQueue runQueue = this.select(key);
+        if (runQueue == null) {
+            runQueue = this.initalByKey(key);
         }
+        runQueue.setCurrentSyncNum(runQueue.getCurrentSyncNum() + 1);
+        this.insert(key, runQueue);
+        return true;
     }
 
     /**
