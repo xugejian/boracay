@@ -2,21 +2,21 @@ package com.hex.bigdata.udsp.olq.model;
 
 import java.io.Serializable;
 
-public class OLQApplicationParam  implements Serializable {
+public class OlqApplicationParam implements Serializable {
 
-    private int seq;
+    private int seq; // 位置
 
-    private String pkId;
+    private String pkId; // ID
 
-    private String paramName;
+    private String paramName; // 名称
 
-    private String paramDesc;
+    private String paramDesc; // 说明
 
-    private String defaultValue;
+    private String defaultValue; // 默认值
 
-    private String isNeed;
+    private String isNeed; // 是否必填
 
-    private String olqAppId;
+    private String olqAppId; // APP ID
 
     public int getSeq() {
         return seq;

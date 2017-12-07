@@ -1,13 +1,11 @@
 package com.hex.bigdata.udsp.olq.controller;
 
-import com.hex.bigdata.udsp.common.constant.DatasourceType;
-import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.olq.dto.OLQApplicationDto;
-import com.hex.bigdata.udsp.olq.dto.OLQApplicationView;
-import com.hex.bigdata.udsp.olq.model.OLQApplication;
-import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
+import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
+import com.hex.bigdata.udsp.olq.dto.OlqApplicationView;
+import com.hex.bigdata.udsp.olq.model.OlqApplication;
+import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -26,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 联机查询应用管理控制器
@@ -37,17 +34,17 @@ import java.util.Map;
  */
 @RequestMapping("/olq/app")
 @Controller
-public class OLQApplicationController extends BaseController {
+public class OlqApplicationController extends BaseController {
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(OLQApplicationController.class);
+    private static Logger logger = LogManager.getLogger(OlqApplicationController.class);
 
     /**
      * 联机查询-联机查询应用管理服务
      */
     @Autowired
-    private OLQApplicationService olqApplicationService;
+    private OlqApplicationService olqApplicationService;
 
     /**
      * 分页多条件查询
@@ -58,8 +55,8 @@ public class OLQApplicationController extends BaseController {
      */
     @RequestMapping({"/page"})
     @ResponseBody
-    public PageListResult queryRtsDatasources(OLQApplicationView olqApplicationView, Page page) {
-        List<OLQApplicationView> list = olqApplicationService.select(olqApplicationView, page);
+    public PageListResult queryRtsDatasources(OlqApplicationView olqApplicationView, Page page) {
+        List<OlqApplicationView> list = olqApplicationService.select(olqApplicationView, page);
         logger.debug("selectPage search=" + JSONUtil.parseObj2JSON(olqApplicationView) + " page=" + JSONUtil.parseObj2JSON(page));
         return new PageListResult(list, page);
     }
@@ -73,7 +70,7 @@ public class OLQApplicationController extends BaseController {
      */
     @RequestMapping({"/insert"})
     @ResponseBody
-    public MessageResult insert(@RequestBody OLQApplicationDto olqApplicationDto) {
+    public MessageResult insert(@RequestBody OlqApplicationDto olqApplicationDto) {
         boolean status = true;
         String message = "添加成功";
         if (olqApplicationDto == null) {
@@ -133,7 +130,6 @@ public class OLQApplicationController extends BaseController {
         return new MessageResult(status, message);
     }
 
-
     /**
      * 根据主键查询应用
      *
@@ -145,7 +141,7 @@ public class OLQApplicationController extends BaseController {
     public MessageResult select(@PathVariable("pkId") String pkId) {
         boolean status = true;
         String message = "查询成功";
-        OLQApplicationDto olqApplicationDto = null;
+        OlqApplicationDto olqApplicationDto = null;
         if (StringUtils.isBlank(pkId)) {
             status = false;
             message = "请求参数为空";
@@ -173,7 +169,7 @@ public class OLQApplicationController extends BaseController {
      */
     @RequestMapping({"/update"})
     @ResponseBody
-    public MessageResult update(@RequestBody OLQApplicationDto olqApplicationDto) {
+    public MessageResult update(@RequestBody OlqApplicationDto olqApplicationDto) {
         boolean status = true;
         String message = "更新成功";
         if (olqApplicationDto == null) {
@@ -206,7 +202,7 @@ public class OLQApplicationController extends BaseController {
      */
     @RequestMapping("/delete")
     @ResponseBody
-    public MessageResult delete(@RequestBody OLQApplication[] olqApplications) {
+    public MessageResult delete(@RequestBody OlqApplication[] olqApplications) {
         boolean status = true;
         String message = "删除成功";
         if (olqApplications.length == 0) {
@@ -241,7 +237,7 @@ public class OLQApplicationController extends BaseController {
     @RequestMapping({"/selectAll"})
     @ResponseBody
     public PageListResult select() {
-        List<OLQApplication> list = null;
+        List<OlqApplication> list = null;
         try {
             list = olqApplicationService.selectAll();
         } catch (Exception e) {
@@ -253,6 +249,7 @@ public class OLQApplicationController extends BaseController {
 
     /**
      * 根据服务名称查找服务信息
+     *
      * @param name
      * @return
      */
@@ -261,7 +258,7 @@ public class OLQApplicationController extends BaseController {
     public MessageResult selectByName(@PathVariable("name") String name) {
         boolean status = true;
         String message = "查询成功";
-        OLQApplicationDto olqApplicationDto = null;
+        OlqApplicationDto olqApplicationDto = null;
         if (StringUtils.isBlank(name)) {
             status = false;
             message = "请求参数为空";
@@ -281,6 +278,7 @@ public class OLQApplicationController extends BaseController {
         return new MessageResult(status, message, olqApplicationDto);
 
     }
+
     /**
      * 上传Excel配置文件
      *
@@ -318,7 +316,7 @@ public class OLQApplicationController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/download")
-    public String downloadExcel(@RequestBody OLQApplication[] olqApplications) {
+    public String downloadExcel(@RequestBody OlqApplication[] olqApplications) {
         // 写入Excel文件
         String filePath = "";
         try {
@@ -338,6 +336,18 @@ public class OLQApplicationController extends BaseController {
     @RequestMapping("/dslist")
     public List<ComDatasource> selectOlqDataSource() {
         return this.olqApplicationService.selectOlqDataSource();
+    }
+
+    /**
+     * 解析并获取参数集合
+     *
+     * @param sql
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/parseParams")
+    public MessageResult parseParams(@RequestBody String sql) {
+        return this.olqApplicationService.parseParams(sql);
     }
 
 }

@@ -2,7 +2,6 @@ package com.hex.bigdata.udsp.service;
 
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ThreadPool;
@@ -19,10 +18,9 @@ import com.hex.bigdata.udsp.mc.service.RunQueueService;
 import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.model.HeartbeatInfo;
 import com.hex.bigdata.udsp.model.Request;
-import com.hex.bigdata.udsp.olq.dto.OLQApplicationDto;
-import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
+import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
+import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
 import com.hex.bigdata.udsp.rc.util.RcConstant;
-import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.util.DateUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -70,7 +68,7 @@ public class HeartbeatService {
     private McConsumeLogService mcConsumeLogService;
 
     @Autowired
-    private OLQApplicationService olqApplicationService;
+    private OlqApplicationService olqApplicationService;
 
     /**
      * 发送本服务心跳。
@@ -216,7 +214,7 @@ public class HeartbeatService {
                 ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, request.getSql(), request.getPage(),
                         RcConstant.UDSP_SERVICE_TYPE_OLQ, localFileName));
             } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
-                OLQApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
+                OlqApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 String sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
                 ThreadPool.execute(new OlqAsyncService(consumeRequest, dsId, sql, request.getPage(),

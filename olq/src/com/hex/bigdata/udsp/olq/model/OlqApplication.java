@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.olq.model;
 
 import java.io.Serializable;
 
-public class OLQApplication implements Serializable{
+public class OlqApplication implements Serializable{
     private String pkId;
 
     private String name;

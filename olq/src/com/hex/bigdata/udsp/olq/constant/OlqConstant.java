@@ -6,7 +6,7 @@ package com.hex.bigdata.udsp.olq.constant;
  * DATE:2017/7/10
  * TIME:15:01
  */
-public class OLQConstant {
+public class OlqConstant {
     public static final  String OLQ_IS_NEED_CODE_YES = "0";
     public static final  String OLQ_IS_NEED_CODE_NO = "1";
     public static final  String OLQ_IS_NEED_CN_YES = "是";

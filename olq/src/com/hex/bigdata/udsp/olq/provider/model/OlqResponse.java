@@ -13,11 +13,11 @@ import java.util.Map;
 /**
  * Created by junjiem on 2017-2-15.
  */
-public class OLQResponse {
+public class OlqResponse {
     /**
      * 请求信息
      */
-    private OLQRequest request;
+    private OlqRequest request;
     /**
      * 元数据
      */
@@ -97,11 +97,11 @@ public class OLQResponse {
         this.consumeTime = consumeTime;
     }
 
-    public OLQRequest getRequest() {
+    public OlqRequest getRequest() {
         return request;
     }
 
-    public void setRequest(OLQRequest request) {
+    public void setRequest(OlqRequest request) {
         this.request = request;
     }
 
