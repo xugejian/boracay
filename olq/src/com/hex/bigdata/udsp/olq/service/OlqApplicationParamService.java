@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.olq.service;
 
-import com.hex.bigdata.udsp.olq.dao.OLQApplicationParamMapper;
-import com.hex.bigdata.udsp.olq.model.OLQApplicationParam;
+import com.hex.bigdata.udsp.olq.dao.OlqApplicationParamMapper;
+import com.hex.bigdata.udsp.olq.model.OlqApplicationParam;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.Util;
 import org.apache.commons.lang3.StringUtils;
@@ -21,30 +21,31 @@ import java.util.List;
  * TIME:10:48
  */
 @Service
-public class OLQApplicationParamService extends BaseService {
+public class OlqApplicationParamService extends BaseService {
 
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(OLQApplicationParamService.class);
+    private static Logger logger = LogManager.getLogger(OlqApplicationParamService.class);
 
     /**
      * 联机查询应用参数DAO层服务
      */
     @Autowired
-    private OLQApplicationParamMapper olqApplicationParamMapper;
+    private OlqApplicationParamMapper olqApplicationParamMapper;
 
     /**
      * 批量插入应用参数信息
+     *
      * @param paramList
      * @return
      */
     @Transactional
-    public boolean insertList(List<OLQApplicationParam> paramList,String olqApplicationId){
-        for (OLQApplicationParam item:paramList){
-            if(null == item.getIsNeed() || "否".equals(item.getIsNeed())){
+    public boolean insertList(List<OlqApplicationParam> paramList, String olqApplicationId) {
+        for (OlqApplicationParam item : paramList) {
+            if (null == item.getIsNeed() || "否".equals(item.getIsNeed())) {
                 item.setIsNeed("1");
-            }else if("是".equals(item.getIsNeed())){
+            } else if ("是".equals(item.getIsNeed())) {
                 item.setIsNeed("0");
             }
             item.setOlqAppId(olqApplicationId);
@@ -54,40 +55,32 @@ public class OLQApplicationParamService extends BaseService {
     }
 
     /**
-     *
      * @param param 插入参数
      * @return
      */
     @Transactional
-    public boolean insert(OLQApplicationParam  param){
-        if (StringUtils.isBlank(param.getIsNeed())){
+    public boolean insert(OlqApplicationParam param) {
+        if (StringUtils.isBlank(param.getIsNeed())) {
             param.setIsNeed("1");
         }
         String pkId = Util.uuid();
         param.setPkId(pkId);
-        return this.olqApplicationParamMapper.insert(pkId,param);
-    }
-
-    /**
-     * 通过AppId查询参数
-     * @param appId 应用id
-     * @return
-     */
-    public List<OLQApplicationParam> getParamsByAppId(String appId){
-        return this.olqApplicationParamMapper.selectList(appId);
+        return this.olqApplicationParamMapper.insert(pkId, param);
     }
 
     /**
      * 根据应用id查询传入参数
+     *
      * @param appId
      * @return
      */
-    public List<OLQApplicationParam> selectByAppId(String appId) {
+    public List<OlqApplicationParam> selectByAppId(String appId) {
         return this.olqApplicationParamMapper.selectList(appId);
     }
 
     /**
      * 根据appId删除参数信息
+     *
      * @param appId
      * @return
      */

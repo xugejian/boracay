@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.olq.provider;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
-import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
-import com.hex.bigdata.udsp.olq.provider.model.OLQResponseFetch;
+import com.hex.bigdata.udsp.olq.provider.model.OlqRequest;
+import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
+import com.hex.bigdata.udsp.olq.provider.model.OlqResponseFetch;
 
 /**
  * Created by junjiem on 2017-2-15.
@@ -17,7 +17,7 @@ public interface Provider {
      * @param request
      * @return
      */
-    OLQResponse execute(String consumeId, OLQRequest request);
+    OlqResponse execute(String consumeId, OlqRequest request);
 
     /**
      * 测试数据源
@@ -33,5 +33,5 @@ public interface Provider {
      * @param request
      * @return
      */
-    OLQResponseFetch executeFetch(String consumeId, OLQRequest request);
+    OlqResponseFetch executeFetch(String consumeId, OlqRequest request);
 }

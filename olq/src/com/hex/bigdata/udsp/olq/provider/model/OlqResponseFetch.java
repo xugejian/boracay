@@ -11,11 +11,11 @@ import java.sql.Statement;
 /**
  * Created by PC on 2017/5/22.
  */
-public class OLQResponseFetch {
+public class OlqResponseFetch {
     /**
      * 请求信息
      */
-    private OLQRequest request;
+    private OlqRequest request;
 
     /**
      *  结果集
@@ -57,11 +57,11 @@ public class OLQResponseFetch {
      */
     private Page page;
 
-    public OLQRequest getRequest() {
+    public OlqRequest getRequest() {
         return request;
     }
 
-    public void setRequest(OLQRequest request) {
+    public void setRequest(OlqRequest request) {
         this.request = request;
     }
 

@@ -6,7 +6,7 @@ import com.hex.bigdata.udsp.common.provider.model.Page;
 /**
  * Created by junjiem on 2017-2-17.
  */
-public class OLQRequest {
+public class OlqRequest {
     /**
      * 数据源信息
      */
@@ -16,16 +16,16 @@ public class OLQRequest {
 
     private Page page;
 
-    public OLQRequest() {
+    public OlqRequest() {
     }
 
-    public OLQRequest(Datasource datasource, String sql, Page page) {
+    public OlqRequest(Datasource datasource, String sql, Page page) {
         this.datasource = datasource;
         this.sql = sql;
         this.page = page;
     }
 
-    public OLQRequest(Datasource datasource, String sql) {
+    public OlqRequest(Datasource datasource, String sql) {
         this.datasource = datasource;
         this.sql = sql;
     }

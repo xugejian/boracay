@@ -15,8 +15,8 @@ import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
 import com.hex.bigdata.udsp.mc.service.CurrentService;
-import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
-import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
+import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
+import com.hex.bigdata.udsp.olq.utils.OlqCommUtil;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.thread.WaitQueueCallable;
 import com.hex.bigdata.udsp.thread.async.OlqAsyncCallable;
@@ -107,7 +107,7 @@ public class OlqAsyncService implements Runnable {
         mcConsumeLog.setServiceName(mcCurrent.getServiceName());
         mcConsumeLog.setUserName(mcCurrent.getUserName());
         mcConsumeLog.setRequestStartTime(mcCurrent.getStartTime());
-        OLQResponse response = null;
+        OlqResponse response = null;
         String status = "0";
         String errorCode = "";
         String message = "成功";
@@ -140,7 +140,7 @@ public class OlqAsyncService implements Runnable {
                 mcCurrentService.insert(mcCurrent);
                 runQueueService.addAsyncCurrent(mcCurrent);
                 //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- end
-                Future<OLQResponse> olqFutureTask = executorService.submit(new OlqAsyncCallable(consumeId, mcCurrent, this.dsId, this.sql, this.page, this.fileName));
+                Future<OlqResponse> olqFutureTask = executorService.submit(new OlqAsyncCallable(consumeId, mcCurrent, this.dsId, this.sql, this.page, this.fileName));
                 try {
                     long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
                             initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
@@ -152,7 +152,7 @@ public class OlqAsyncService implements Runnable {
                     mcConsumeLog.setRunEndTime(format.format(new Date()));
 
                     // 杀死正在执行的SQL
-                    Statement stmt = OLQCommUtil.removeStatement(consumeId);
+                    Statement stmt = OlqCommUtil.removeStatement(consumeId);
                     if (stmt != null) {
                         try {
                             stmt.cancel();

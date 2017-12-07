@@ -13,7 +13,7 @@ import java.util.Map;
  * DATE:2017/10/13
  * TIME:15:54
  */
-public class OLQCommUtil {
+public class OlqCommUtil {
 
     private static Map<String, Statement> statementPool = new HashMap<>();
 

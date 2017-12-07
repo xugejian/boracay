@@ -3,7 +3,6 @@ package com.hex.bigdata.udsp.rc.service;
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.constant.DatasourceModel;
-import com.hex.bigdata.udsp.common.constant.DatasourceType;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
@@ -15,7 +14,7 @@ import com.hex.bigdata.udsp.iq.dto.IqApplicationView;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
 import com.hex.bigdata.udsp.mm.dao.MmApplicationMapper;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
-import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
+import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
 import com.hex.bigdata.udsp.rc.dao.RcServiceForAppTypeAndAppIdMapper;
 import com.hex.bigdata.udsp.rc.dao.RcServiceForServiceNameMapper;
 import com.hex.bigdata.udsp.rc.dao.RcServiceMapper;
@@ -35,8 +34,6 @@ import com.hex.goframe.util.DateUtil;
 import com.hex.goframe.util.FileUtil;
 import com.hex.goframe.util.Util;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -84,7 +81,7 @@ public class RcServiceService {
     @Autowired
     private RtsConsumerMapper rtsConsumerMapper;
     @Autowired
-    private OLQApplicationService olqApplicationService;
+    private OlqApplicationService olqApplicationService;
     @Autowired
     private ImModelService imModelService;
 

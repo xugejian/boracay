@@ -30,10 +30,10 @@ import com.hex.bigdata.udsp.model.ExternalRequest;
 import com.hex.bigdata.udsp.model.InnerRequest;
 import com.hex.bigdata.udsp.model.Request;
 import com.hex.bigdata.udsp.model.Response;
-import com.hex.bigdata.udsp.olq.dto.OLQApplicationDto;
-import com.hex.bigdata.udsp.olq.model.OLQApplication;
-import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
-import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
+import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
+import com.hex.bigdata.udsp.olq.model.OlqApplication;
+import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
+import com.hex.bigdata.udsp.olq.utils.OlqCommUtil;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.service.AlarmService;
@@ -106,7 +106,7 @@ public class ConsumerService {
     @Autowired
     private RtsMatedataColService rtsMatedataColService;
     @Autowired
-    private OLQApplicationService olqApplicationService;
+    private OlqApplicationService olqApplicationService;
     @Autowired
     private WaitQueueService mcWaitQueueService;
     @Autowired
@@ -440,7 +440,7 @@ public class ConsumerService {
         if ((RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(appType) || RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(appType))
                 && ErrorCode.ERROR_000015.getValue().equals(errorCode)) {
             try {
-                OLQCommUtil.cancel(consumeId);
+                OlqCommUtil.cancel(consumeId);
             } catch (SQLException e) {
                 message = "取消正在执行的SQL出错，错误信息：" + e.getMessage();
             }
@@ -630,7 +630,7 @@ public class ConsumerService {
             } else if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(type)
                     && ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
                 logger.debug("execute OLQ_APP ASYNC START");
-                OLQApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
+                OlqApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 //mcCurrent.setAppName(olqApplicationDto.getOlqApplication().getName());
                 sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
@@ -639,7 +639,7 @@ public class ConsumerService {
             } else if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
                     && ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
                 logger.debug("execute OLQ_APP SYNC START");
-                OLQApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
+                OlqApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
                 Future<Response> olqAppFuture = executorService.submit(new OlqSyncServiceCallable(consumeId, dsId, sql, page));
@@ -771,7 +771,7 @@ public class ConsumerService {
             RtsConsumer rtsConsumer = rtsConsumerService.select(appId);
             appName = rtsConsumer.getName();
         } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equalsIgnoreCase(appType)) {
-            OLQApplication olqApplication = olqApplicationService.select(appId);
+            OlqApplication olqApplication = olqApplicationService.select(appId);
             appName = olqApplication.getName();
         }
         return appName;

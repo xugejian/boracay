@@ -8,9 +8,9 @@ import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.olq.provider.Provider;
-import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
-import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
-import com.hex.bigdata.udsp.olq.provider.model.OLQResponseFetch;
+import com.hex.bigdata.udsp.olq.provider.model.OlqRequest;
+import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
+import com.hex.bigdata.udsp.olq.provider.model.OlqResponseFetch;
 import com.hex.goframe.dao.GFDictMapper;
 import com.hex.goframe.model.GFDict;
 import com.hex.goframe.service.BaseService;
@@ -28,8 +28,10 @@ import java.util.List;
 public class OlqProviderService extends BaseService {
     @Autowired
     private ComDatasourceService comDatasourceService;
+
     @Autowired
     private ComPropertiesService comPropertiesService;
+
     @Autowired
     private GFDictMapper gfDictMapper;
 
@@ -42,11 +44,11 @@ public class OlqProviderService extends BaseService {
      * @param page
      * @return
      */
-    public OLQResponse select(String consumeId, String dsId, String sql, Page page) {
+    public OlqResponse select(String consumeId, String dsId, String sql, Page page) {
         Datasource datasource = getDatasource(dsId);
-        OLQRequest request = new OLQRequest(datasource, sql, page);
+        OlqRequest request = new OlqRequest(datasource, sql, page);
         Provider provider = getProviderImpl(datasource);
-        OLQResponse response = provider.execute(consumeId, request);
+        OlqResponse response = provider.execute(consumeId, request);
         return response;
     }
 
@@ -58,11 +60,11 @@ public class OlqProviderService extends BaseService {
      * @param page
      * @return
      */
-    public OLQResponseFetch selectFetch(String consumeId, String dsId, String sql, Page page) {
+    public OlqResponseFetch selectFetch(String consumeId, String dsId, String sql, Page page) {
         Datasource datasource = getDatasource(dsId);
-        OLQRequest request = new OLQRequest(datasource, sql, page);
+        OlqRequest request = new OlqRequest(datasource, sql, page);
         Provider provider = getProviderImpl(datasource);
-        OLQResponseFetch response = provider.executeFetch(consumeId, request);
+        OlqResponseFetch response = provider.executeFetch(consumeId, request);
         return response;
     }
 
@@ -97,21 +99,6 @@ public class OlqProviderService extends BaseService {
      * @return
      */
     private Provider getProviderImpl(Datasource datasource) {
-        String implClass = datasource.getImplClass();
-        if (StringUtils.isBlank(implClass)) {
-            GFDict gfDict = gfDictMapper.selectByPrimaryKey("OLQ_IMPL_CLASS", datasource.getType());
-            implClass = gfDict.getDictName();
-        }
-        return (Provider) ObjectUtil.newInstance(implClass);
-    }
-
-    /**
-     * 得到生产接口的实例
-     *
-     * @param datasource
-     * @return
-     */
-    public Provider getProviderImpl(ComDatasource datasource) {
         String implClass = datasource.getImplClass();
         if (StringUtils.isBlank(implClass)) {
             GFDict gfDict = gfDictMapper.selectByPrimaryKey("OLQ_IMPL_CLASS", datasource.getType());
