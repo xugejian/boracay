@@ -9,9 +9,9 @@ import com.hex.bigdata.udsp.common.provider.model.Page;
  * DATE:2017/7/14
  * TIME:14:17
  */
-public class OLQQuerySql {
+public class OlqQuerySql {
 
-    private OLQQuerySql() {
+    private OlqQuerySql() {
     }
 
 
@@ -20,7 +20,7 @@ public class OLQQuerySql {
      *
      * @param originalSql
      */
-    public OLQQuerySql(String originalSql) {
+    public OlqQuerySql(String originalSql) {
         if (originalSql.lastIndexOf(";") == originalSql.length()) {
             originalSql = originalSql.substring(0, originalSql.length() - 1);
         }
@@ -33,7 +33,7 @@ public class OLQQuerySql {
      * @param originalSql
      * @param page
      */
-    public OLQQuerySql(String originalSql, Page page) {
+    public OlqQuerySql(String originalSql, Page page) {
         if (originalSql.lastIndexOf(";") == originalSql.length()) {
             originalSql = originalSql.substring(0, originalSql.length() - 1);
         }

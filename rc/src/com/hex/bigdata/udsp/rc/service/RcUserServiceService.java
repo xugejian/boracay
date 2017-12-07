@@ -7,11 +7,10 @@ import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.im.model.ImMetadataCol;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
-import com.hex.bigdata.udsp.olq.service.OLQApplicationService;
-import com.hex.bigdata.udsp.olq.service.OLQService;
+import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
+import com.hex.bigdata.udsp.olq.service.OlqService;
 import com.hex.bigdata.udsp.rc.dao.RcUserServiceForUserIdAndServiceIdMapper;
 import com.hex.bigdata.udsp.rc.dao.RcUserServiceMapper;
 import com.hex.bigdata.udsp.rc.dto.IpSectionHelper;
@@ -72,11 +71,11 @@ public class RcUserServiceService extends BaseService {
     @Autowired
     private IqApplicationService iqApplicationService;
     @Autowired
-    private OLQService olqService;
+    private OlqService olqService;
     @Autowired
     private MmApplicationService mmApplicationService;
     @Autowired
-    private OLQApplicationService olqApplicationService;
+    private OlqApplicationService olqApplicationService;
     @Autowired
     private ComPropertiesService comPropertiesService;
 

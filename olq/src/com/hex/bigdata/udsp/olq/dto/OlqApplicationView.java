@@ -1,9 +1,6 @@
 package com.hex.bigdata.udsp.olq.dto;
 
-import com.hex.bigdata.udsp.olq.model.OLQApplication;
-import com.hex.bigdata.udsp.olq.model.OLQApplicationParam;
-
-import java.util.List;
+import com.hex.bigdata.udsp.olq.model.OlqApplication;
 
 /**
  * Created with IntelliJ IDEA
@@ -11,8 +8,9 @@ import java.util.List;
  * DATE:2017/6/26
  * TIME:10:52
  */
-public class OLQApplicationView extends OLQApplication {
+public class OlqApplicationView extends OlqApplication {
 
+    private String dsId;
     /**
      * 数据源名称
      */
@@ -40,6 +38,14 @@ public class OLQApplicationView extends OLQApplication {
      * 更新时间-结束时间
      */
     private String uptTimeEnd;
+
+    public String getDsId() {
+        return dsId;
+    }
+
+    public void setDsId(String dsId) {
+        this.dsId = dsId;
+    }
 
     public String getDsName() {
         return dsName;

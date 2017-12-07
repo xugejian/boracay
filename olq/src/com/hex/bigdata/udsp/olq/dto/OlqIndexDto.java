@@ -6,12 +6,12 @@ package com.hex.bigdata.udsp.olq.dto;
  * DATE:2017/10/12
  * TIME:9:49
  */
-public class OLQIndexDto {
+public class OlqIndexDto {
 
-    public OLQIndexDto() {
+    public OlqIndexDto() {
     }
 
-    public OLQIndexDto(int rowIndex) {
+    public OlqIndexDto(int rowIndex) {
         this.rowIndex = rowIndex;
     }
 

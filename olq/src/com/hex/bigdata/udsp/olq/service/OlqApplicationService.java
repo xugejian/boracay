@@ -9,13 +9,14 @@ import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.olq.constant.OLQConstant;
-import com.hex.bigdata.udsp.olq.dao.OLQApplicationMapper;
-import com.hex.bigdata.udsp.olq.dto.OLQApplicationDto;
-import com.hex.bigdata.udsp.olq.dto.OLQApplicationView;
-import com.hex.bigdata.udsp.olq.dto.OLQIndexDto;
-import com.hex.bigdata.udsp.olq.model.OLQApplication;
-import com.hex.bigdata.udsp.olq.model.OLQApplicationParam;
+import com.hex.bigdata.udsp.olq.constant.OlqConstant;
+import com.hex.bigdata.udsp.olq.dao.OlqApplicationMapper;
+import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
+import com.hex.bigdata.udsp.olq.dto.OlqApplicationView;
+import com.hex.bigdata.udsp.olq.dto.OlqIndexDto;
+import com.hex.bigdata.udsp.olq.model.OlqApplication;
+import com.hex.bigdata.udsp.olq.model.OlqApplicationParam;
+import com.hex.bigdata.udsp.olq.utils.SqlExpressionEvaluator;
 import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
 import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
 import com.hex.bigdata.udsp.rc.model.RcService;
@@ -45,8 +46,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -57,17 +56,18 @@ import java.util.regex.Pattern;
  * TIME:10:48
  */
 @Service
-public class OLQApplicationService extends BaseService {
+public class OlqApplicationService extends BaseService {
+
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(OLQApplicationService.class);
+    private static Logger logger = LogManager.getLogger(OlqApplicationService.class);
 
     /**
      * 联机查询应用管理DAO层服务
      */
     @Autowired
-    private OLQApplicationMapper olqApplicationMapper;
+    private OlqApplicationMapper olqApplicationMapper;
 
     /**
      * 数据源服务
@@ -79,11 +79,11 @@ public class OLQApplicationService extends BaseService {
      * 占位符参数服务
      */
     @Autowired
-    private OLQApplicationParamService olqApplicationParamService;
-    @Autowired
-    private OlqProviderService olqProviderService;
+    private OlqApplicationParamService olqApplicationParamService;
+
     @Autowired
     private RcServiceService rcServiceService;
+
     @Autowired
     private ComPropertiesService comPropertiesService;
 
@@ -94,7 +94,7 @@ public class OLQApplicationService extends BaseService {
      * @param page
      * @return
      */
-    public List<OLQApplicationView> select(OLQApplicationView olqApplicationView, Page page) {
+    public List<OlqApplicationView> select(OlqApplicationView olqApplicationView, Page page) {
         return this.olqApplicationMapper.selectPage(olqApplicationView, page);
     }
 
@@ -105,12 +105,12 @@ public class OLQApplicationService extends BaseService {
      * @return
      */
     @Transactional
-    public String insert(OLQApplicationDto oLQApplicationDto) {
+    public String insert(OlqApplicationDto oLQApplicationDto) {
         String pkId = Util.uuid();
-        OLQApplication olqApplication = oLQApplicationDto.getOlqApplication();
+        OlqApplication olqApplication = oLQApplicationDto.getOlqApplication();
         olqApplication.setPkId(pkId);
         this.olqApplicationMapper.insert(pkId, olqApplication);
-        List<OLQApplicationParam> params = oLQApplicationDto.getParams();
+        List<OlqApplicationParam> params = oLQApplicationDto.getParams();
         if (params != null && params.size() != 0) {
             olqApplicationParamService.insertList(params, pkId);
         }
@@ -122,9 +122,9 @@ public class OLQApplicationService extends BaseService {
      * @return
      */
     @Transactional
-    public boolean update(OLQApplicationDto oLQApplicationDto) {
+    public boolean update(OlqApplicationDto oLQApplicationDto) {
         //应用信息更新到数据库
-        OLQApplication olqApplication = oLQApplicationDto.getOlqApplication();
+        OlqApplication olqApplication = oLQApplicationDto.getOlqApplication();
         boolean updateFlg = this.olqApplicationMapper.update(olqApplication.getPkId(), olqApplication);
         if (!updateFlg) {
             logger.info("更新联机查询应用信息失败！,参数信息如下：【" + oLQApplicationDto.toString() + "】");
@@ -137,7 +137,7 @@ public class OLQApplicationService extends BaseService {
             logger.info("删除更新联机查询应用参数信息失败！");
             return delFlg;
         }
-        List<OLQApplicationParam> params = oLQApplicationDto.getParams();
+        List<OlqApplicationParam> params = oLQApplicationDto.getParams();
         boolean insertFlg = true;
         if (params != null && params.size() != 0) {
             insertFlg = this.olqApplicationParamService.insertList(params, pkId);
@@ -152,7 +152,7 @@ public class OLQApplicationService extends BaseService {
      * @return
      */
     public boolean checekUniqueName(String name) {
-        OLQApplication olqApplication = this.olqApplicationMapper.selectByName(name);
+        OlqApplication olqApplication = this.olqApplicationMapper.selectByName(name);
         return olqApplication != null;
     }
 
@@ -162,7 +162,7 @@ public class OLQApplicationService extends BaseService {
      * @param name
      * @return
      */
-    public OLQApplication selectByName(String name) {
+    public OlqApplication selectByName(String name) {
         return this.olqApplicationMapper.selectByName(name);
     }
 
@@ -172,15 +172,14 @@ public class OLQApplicationService extends BaseService {
      * @param name
      * @return
      */
-    public OLQApplicationDto selectFullInfoByName(String name) {
-        OLQApplicationDto olqApplicationDto = new OLQApplicationDto();
-
-        OLQApplication olqApplication = this.olqApplicationMapper.selectByName(name);
+    public OlqApplicationDto selectFullInfoByName(String name) {
+        OlqApplicationDto olqApplicationDto = new OlqApplicationDto();
+        OlqApplication olqApplication = this.olqApplicationMapper.selectByName(name);
         if (olqApplication == null) {
             return null;
         }
         olqApplicationDto.setOlqApplication(olqApplication);
-        List<OLQApplicationParam> olqApplicationParams = this.olqApplicationParamService.selectByAppId(olqApplication.getPkId());
+        List<OlqApplicationParam> olqApplicationParams = this.olqApplicationParamService.selectByAppId(olqApplication.getPkId());
         olqApplicationDto.setParams(olqApplicationParams);
         return olqApplicationDto;
     }
@@ -191,7 +190,7 @@ public class OLQApplicationService extends BaseService {
      * @param pkId
      * @return
      */
-    public OLQApplication select(String pkId) {
+    public OlqApplication select(String pkId) {
         return this.olqApplicationMapper.select(pkId);
     }
 
@@ -201,15 +200,15 @@ public class OLQApplicationService extends BaseService {
      * @param pkId
      * @return
      */
-    public OLQApplicationDto selectFullAppInfo(String pkId) {
+    public OlqApplicationDto selectFullAppInfo(String pkId) {
         if (StringUtils.isBlank(pkId)) {
             return null;
         }
-        OLQApplicationDto applicationDto = new OLQApplicationDto();
-        OLQApplication olqApplication = this.select(pkId);
+        OlqApplicationDto applicationDto = new OlqApplicationDto();
+        OlqApplication olqApplication = this.select(pkId);
         if (olqApplication != null) {
             applicationDto.setOlqApplication(olqApplication);
-            List<OLQApplicationParam> olqApplicationParams = this.olqApplicationParamService.selectByAppId(pkId);
+            List<OlqApplicationParam> olqApplicationParams = this.olqApplicationParamService.selectByAppId(pkId);
             applicationDto.setParams(olqApplicationParams);
         }
         return applicationDto;
@@ -222,11 +221,37 @@ public class OLQApplicationService extends BaseService {
      * @return
      */
     @Transactional
-    public boolean delete(OLQApplication[] olqApplications) {
-        for (OLQApplication olqApplication : olqApplications) {
+    public boolean delete(OlqApplication[] olqApplications) {
+        for (OlqApplication olqApplication : olqApplications) {
             this.olqApplicationMapper.delete(olqApplication.getPkId());
         }
         return true;
+    }
+
+    /**
+     * 解析并获取参数集合
+     *
+     * @param sql
+     * @return
+     */
+    public MessageResult parseParams(String sql) {
+        Map<String, Boolean> map = null;
+        try {
+            map = SqlExpressionEvaluator.parseParamMap(sql);
+        } catch (Exception e) {
+            return new MessageResult(false, e.getMessage());
+        }
+        List<OlqApplicationParam> params = new ArrayList<>();
+        if (map != null && map.size() > 0) {
+            for (Map.Entry<String, Boolean> entry : map.entrySet()) {
+                OlqApplicationParam param = new OlqApplicationParam();
+                param.setParamName(entry.getKey());
+                param.setParamDesc(entry.getKey());
+                param.setIsNeed(entry.getValue() ? "0" : "1");
+                params.add(param);
+            }
+        }
+        return new MessageResult(true, "解析参数成功！", params);
     }
 
     /**
@@ -234,7 +259,7 @@ public class OLQApplicationService extends BaseService {
      *
      * @return
      */
-    public List<OLQApplication> selectAll() {
+    public List<OlqApplication> selectAll() {
         return this.olqApplicationMapper.selectAll();
     }
 
@@ -245,7 +270,6 @@ public class OLQApplicationService extends BaseService {
      * @return
      */
     public MessageResult uploadExcel(String uploadFilePath) {
-
         File uploadFile = new File(uploadFilePath);
         FileInputStream in = null;
         try {
@@ -257,40 +281,33 @@ public class OLQApplicationService extends BaseService {
             comExcelParams.add(new ComExcelParam(2, 5, "note"));
             comExcelParams.add(new ComExcelParam(3, 1, "describe"));
             comExcelParams.add(new ComExcelParam(3, 3, "olqSql"));
-
             dataSourceContent.setComExcelParams(comExcelParams);
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
-
-            comExcelPropertiesList.add(new ComExcelProperties("参数字段", "com.hex.bigdata.udsp.olq.model.OLQApplicationParam", 10, 0, 1, ComExcelEnums.OLQApplicationParamCoumn.getAllNums()));
-
+            comExcelPropertiesList.add(new ComExcelProperties("参数字段",
+                    "com.hex.bigdata.udsp.olq.model.OLQApplicationParam",
+                    10, 0, 1,
+                    ComExcelEnums.OLQApplicationParamCoumn.getAllNums()));
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");
-
             in = new FileInputStream(uploadFile);
             HSSFWorkbook hfb = new HSSFWorkbook(in);
             HSSFSheet sheet;
-
             for (int i = 0, activeIndex = hfb.getNumberOfSheets(); i < activeIndex; i++) {
                 sheet = hfb.getSheetAt(i);
                 Map<String, List> uploadExcelModel = ExcelUploadhelper.getUploadExcelModel(sheet, dataSourceContent);
-
-                List<OLQApplication> olqApplications = (List<OLQApplication>) uploadExcelModel.get("com.hex.bigdata.udsp.olq.model.OLQApplication");
-                OLQApplication olqApplication = olqApplications.get(0);
+                List<OlqApplication> olqApplications = (List<OlqApplication>) uploadExcelModel.get("com.hex.bigdata.udsp.olq.model.OLQApplication");
+                OlqApplication olqApplication = olqApplications.get(0);
                 //数据合法性检查
                 if (StringUtils.isNotBlank(olqApplication.getName()) && this.selectByName(olqApplication.getName()) != null) {
                     return new MessageResult(false, "第" + (i + 1) + "个名称已存在！");
                 }
-
-                List<OLQApplicationParam> olqApplicationParams = (List<OLQApplicationParam>) uploadExcelModel.get("com.hex.bigdata.udsp.olq.model.OLQApplicationParam");
-                OLQApplicationDto olqApplicationDto = new OLQApplicationDto();
+                List<OlqApplicationParam> olqApplicationParams = (List<OlqApplicationParam>) uploadExcelModel.get("com.hex.bigdata.udsp.olq.model.OLQApplicationParam");
+                OlqApplicationDto olqApplicationDto = new OlqApplicationDto();
                 olqApplicationDto.setOlqApplication(olqApplication);
                 olqApplicationDto.setParams(olqApplicationParams);
-
                 MessageResult messageResult = this.uploadCheck(olqApplicationDto);
-                if (!messageResult.isStatus()) {
-                    return messageResult;
-                }
-                olqApplicationDto = (OLQApplicationDto) messageResult.getData();
+                if (!messageResult.isStatus()) return messageResult;
+                olqApplicationDto = (OlqApplicationDto) messageResult.getData();
                 String olqPkId = this.insert(olqApplicationDto);
                 if (StringUtils.isBlank(olqPkId)) {
                     return new MessageResult(false, "第" + (i + 1) + "个sheet保存失败！");
@@ -308,7 +325,6 @@ public class OLQApplicationService extends BaseService {
                 }
             }
         }
-
         return new MessageResult(true, "上传成功！");
     }
 
@@ -319,9 +335,9 @@ public class OLQApplicationService extends BaseService {
      * @param olqApplicationDto
      * @return
      */
-    public MessageResult uploadCheck(OLQApplicationDto olqApplicationDto) {
+    public MessageResult uploadCheck(OlqApplicationDto olqApplicationDto) {
         //检查联机查询应用信息合法性校验
-        OLQApplication olqApplication = olqApplicationDto.getOlqApplication();
+        OlqApplication olqApplication = olqApplicationDto.getOlqApplication();
         String olqDsName = olqApplication.getOlqDsName();
         if (StringUtils.isBlank(olqDsName)) {
             return new MessageResult(false, "数据源名称不能为空，请检查！");
@@ -350,18 +366,22 @@ public class OLQApplicationService extends BaseService {
         if (StringUtils.isBlank(olqSql)) {
             return new MessageResult(false, "联机查询应用SQL不能为空！");
         }
-        //参数意义校验
-        List<String> paramNames = new ArrayList<String>();
+        List<String> paramNames = null;
         try {
-            paramNames = getParamNamesFromSql(olqSql);
-        } catch (IllegalArgumentException e) {
-            return new MessageResult(false, "应用查询SQL语句中的参数名称为空！");
+            paramNames = SqlExpressionEvaluator.parseParams2(olqSql);
+        } catch (Exception e) {
+            return new MessageResult(false, e.getMessage());
         }
-        List<OLQApplicationParam> paramObjects = olqApplicationDto.getParams();
-        if ((paramNames == null || paramNames.size() == 0) && (paramObjects == null || paramObjects.size() == 0)) {
+//        if (paramNames == null || paramNames.size() == 0) {
+//            return new MessageResult(false, "应用查询SQL语句中的参数名称为空！");
+//        }
+        List<OlqApplicationParam> paramObjects = olqApplicationDto.getParams();
+        if ((paramNames == null || paramNames.size() == 0)
+                && (paramObjects == null || paramObjects.size() == 0)) {
             //二者都为空
             return new MessageResult(true, "检查完成，数据正确！", olqApplicationDto);
-        } else if ((paramNames != null && paramNames.size() > 0) && (paramObjects != null || paramObjects.size() > 0)) {
+        } else if ((paramNames != null && paramNames.size() > 0)
+                && (paramObjects != null || paramObjects.size() > 0)) {
             //二者都不为空
             //检查参数个数是否一致
             if (paramNames.size() != paramObjects.size()) {
@@ -369,7 +389,7 @@ public class OLQApplicationService extends BaseService {
             }
             //检查参数名称是否完全一致
             boolean containFlg = true;
-            for (OLQApplicationParam param : paramObjects) {
+            for (OlqApplicationParam param : paramObjects) {
                 if (!paramNames.contains(param.getParamName())) {
                     containFlg = false;
                     break;
@@ -381,7 +401,7 @@ public class OLQApplicationService extends BaseService {
             StringBuffer checkResult = new StringBuffer("");
             //检查参数列合法性
             for (int i = 0; i < paramObjects.size(); i++) {
-                OLQApplicationParam param = paramObjects.get(i);
+                OlqApplicationParam param = paramObjects.get(i);
                 int seq = param.getSeq();
                 String paramDesc = param.getParamDesc();
                 if (StringUtils.isBlank(paramDesc)) {
@@ -390,10 +410,10 @@ public class OLQApplicationService extends BaseService {
                 String isNeed = param.getIsNeed();
                 if (StringUtils.isBlank(isNeed)) {
                     checkResult.append("序号为" + seq + "的参数必填的值不能为空；");
-                } else if (OLQConstant.OLQ_IS_NEED_CN_YES.equals(isNeed)) {
-                    param.setIsNeed(OLQConstant.OLQ_IS_NEED_CODE_YES);
-                } else if (OLQConstant.OLQ_IS_NEED_CN_NO.equals(isNeed)) {
-                    param.setIsNeed(OLQConstant.OLQ_IS_NEED_CODE_NO);
+                } else if (OlqConstant.OLQ_IS_NEED_CN_YES.equals(isNeed)) {
+                    param.setIsNeed(OlqConstant.OLQ_IS_NEED_CODE_YES);
+                } else if (OlqConstant.OLQ_IS_NEED_CN_NO.equals(isNeed)) {
+                    param.setIsNeed(OlqConstant.OLQ_IS_NEED_CODE_NO);
                 } else {
                     checkResult.append("序号为" + seq + "的参数是必填的值非法，请输入是或否；");
                 }
@@ -407,90 +427,71 @@ public class OLQApplicationService extends BaseService {
         return new MessageResult(true, "检查完成，数据正确！", olqApplicationDto);
     }
 
-
-    /**
-     * 从sql语句中获取参数名称
-     *
-     * @param olqSql
-     * @return
-     */
-    public List<String> getParamNamesFromSql(String olqSql) {
-        String regEx = "\\$\\{\\w{1,}}";
-        Pattern pattern = Pattern.compile(regEx);
-        List<String> paramNames = new ArrayList<String>();
-        Matcher macther = pattern.matcher(olqSql);
-        while (macther.find()) {
-            String param = macther.group(0);
-            if (StringUtils.isBlank(param)) {
-                throw new IllegalArgumentException("参数名称为空");
-            }
-            paramNames.add(param.substring(2, param.length() - 1));
-        }
-        return paramNames;
-    }
-
     /**
      * 根据应用配置信息、参数值获取sql语句
      *
-     * @param appId
+     * @param olqApplicationDto
      * @param paramVals
      * @return
      */
-    public String getExecuteSQL(OLQApplicationDto olqApplicationDto, Map<String, String> paramVals) {
-        //原生SQL语句
-        String originalSql = olqApplicationDto.getOlqApplication().getOlqSql();
+    public String getExecuteSQL(OlqApplicationDto olqApplicationDto, Map<String, String> paramVals) {
+        String sql = olqApplicationDto.getOlqApplication().getOlqSql();
+        List<OlqApplicationParam> appParams = olqApplicationDto.getParams();
+        if (appParams == null || appParams.size() == 0) return sql;
+        checkParam(appParams, paramVals); // 检查传入参数
+        sql = SqlExpressionEvaluator.parseSql(sql, paramVals); // 解析字符串并批量替换表达式
+        logger.info("SQL:" + sql);
+        return sql;
+    }
 
-        //获取参数列表
-        List<OLQApplicationParam> params = olqApplicationDto.getParams();
-        if (params == null || params.size() == 0) {
-            return originalSql;
-        }
 
+    /**
+     * 检查传入参数
+     *
+     * @param paramVals
+     */
+    public void checkParam(List<OlqApplicationParam> appParams, Map<String, String> paramVals) {
         if (paramVals == null || paramVals.size() == 0) {
-            throw new RuntimeException("传入参数值集合不能为空");
+            throw new RuntimeException("传入参数值集合不能为空!");
         }
-
-        Set<String> inputParamsNames = paramVals.keySet();
-        if (params == null || params.size() == 0) {
-            return originalSql;
-        } else if ((params != null && params.size() != 0) && (inputParamsNames != null || inputParamsNames.size() != 0)) {
-            //比较个数
-            if (params.size() != inputParamsNames.size()) {
-                throw new RuntimeException("传入参数值的个数与参数个数不匹配");
+        //比较个数
+        if (appParams.size() != paramVals.size()) {
+            throw new RuntimeException("传入参数值的个数与参数个数不匹配!");
+        }
+        //检查参数名称是否完全一致
+        Set<String> paramValsSet = paramVals.keySet();
+        for (OlqApplicationParam appParam : appParams) {
+            if (!paramValsSet.contains(appParam.getParamName())) {
+                throw new RuntimeException("传入参数值的名称与参数名称不匹配!");
             }
-            //比较参数名
-            //检查参数名称是否完全一致
-            boolean containFlg = true;
-            for (OLQApplicationParam param : params) {
-                if (!inputParamsNames.contains(param.getParamName())) {
-                    containFlg = false;
-                    break;
+        }
+        boolean flg = false;
+        String message = "";
+        for (OlqApplicationParam appParam : appParams) {
+            String name = appParam.getParamName();
+            String isNeed = appParam.getIsNeed(); // 是否必输，0：是 1：否
+            String value = paramVals.get(name);
+            if ("0".equals(isNeed)) { // 必输
+                if (StringUtils.isBlank(value)) {
+                    flg = true;
+                    message += name + "是必输参数!";
                 }
             }
-            if (!containFlg) {
-                throw new RuntimeException("传入参数值的个数与参数个数不匹配");
-            }
-            //组装SQL
-            for (String param : inputParamsNames) {
-                originalSql = originalSql.replaceAll("\\$\\{" + param + "}", paramVals.get(param));
-            }
-            return originalSql;
-
-        } else {
-            throw new RuntimeException("传入参数值的个数与参数个数不匹配");
         }
-
+        if (flg) {
+            throw new RuntimeException(message);
+        }
     }
 
     /**
      * @param olqApplications
      * @return
      */
-    public String downloadExcel(OLQApplication[] olqApplications) {
+    public String downloadExcel(OlqApplication[] olqApplications) {
         //查询出olqApplication所有信息
-        List<OLQApplicationDto> olqApplicationDtos = new ArrayList<>();
+        List<OlqApplicationDto> olqApplicationDtos = new ArrayList<>();
 
-        for (OLQApplication olqApplication : olqApplications) {
+        for (OlqApplication olqApplication : olqApplications) {
             olqApplicationDtos.add(this.selectFullAppInfo(olqApplication.getPkId()));
         }
 
@@ -525,7 +526,7 @@ public class OLQApplicationService extends BaseService {
         comExcelParams.add(new ComExcelParam(2, 5, "note"));
         comExcelParams.add(new ComExcelParam(3, 1, "describe"));
         comExcelParams.add(new ComExcelParam(3, 3, "olqSql"));
-        for (OLQApplicationDto olqApplicationDto : olqApplicationDtos) {
+        for (OlqApplicationDto olqApplicationDto : olqApplicationDtos) {
             this.setWorkbookSheet(workbook, sourceSheet, comExcelParams, olqApplicationDto);
         }
         if (workbook != null) {
@@ -540,7 +541,6 @@ public class OLQApplicationService extends BaseService {
         }
         return null;
     }
-
 
     /**
      * 服务信息导出
@@ -569,7 +569,7 @@ public class OLQApplicationService extends BaseService {
         if (StringUtils.isNotBlank(rcUserService.getServiceId())) {
             rcService = rcServiceService.select(rcUserService.getServiceId());
         }
-        OLQApplicationDto olqApplicationDto = null;
+        OlqApplicationDto olqApplicationDto = null;
         if (null != rcService) {
             olqApplicationDto = this.selectFullAppInfo(rcService.getAppId());
         }
@@ -620,7 +620,7 @@ public class OLQApplicationService extends BaseService {
                 e.printStackTrace();
             }
         }
-        this.setWorkbookSheetPart(sheet, olqApplicationDto, sourceSheet, workbook, new OLQIndexDto(i));
+        this.setWorkbookSheetPart(sheet, olqApplicationDto, sourceSheet, workbook, new OlqIndexDto(i));
     }
 
     /**
@@ -631,7 +631,7 @@ public class OLQApplicationService extends BaseService {
      * @param comExcelParams
      * @param olqApplicationDto
      */
-    public void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, OLQApplicationDto olqApplicationDto) {
+    public void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, OlqApplicationDto olqApplicationDto) {
         HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
         int i = 0;
@@ -642,7 +642,7 @@ public class OLQApplicationService extends BaseService {
                 e.printStackTrace();
             }
         }
-        OLQApplication olqApp = olqApplicationDto.getOlqApplication();
+        OlqApplication olqApp = olqApplicationDto.getOlqApplication();
         olqApp.setOlqDsName(comDatasourceService.select(olqApp.getOlqDsId()).getName());
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
@@ -653,16 +653,16 @@ public class OLQApplicationService extends BaseService {
                 e.printStackTrace();
             }
         }
-        this.setWorkbookSheetPart(sheet, olqApplicationDto, sourceSheet, workbook, new OLQIndexDto(i));
+        this.setWorkbookSheetPart(sheet, olqApplicationDto, sourceSheet, workbook, new OlqIndexDto(i));
     }
 
-    public void setWorkbookSheetPart(HSSFSheet sheet, OLQApplicationDto olqApplicationDto, HSSFSheet sourceSheet, HSSFWorkbook workbook, OLQIndexDto olqIndexDto) {
+    public void setWorkbookSheetPart(HSSFSheet sheet, OlqApplicationDto olqApplicationDto, HSSFSheet sourceSheet, HSSFWorkbook workbook, OlqIndexDto olqIndexDto) {
         HSSFRow row;
         HSSFCell cell;
         int rowIndex = olqIndexDto.getRowIndex();
-        List<OLQApplicationParam> olqApplicationParams = olqApplicationDto.getParams();
+        List<OlqApplicationParam> olqApplicationParams = olqApplicationDto.getParams();
         if (olqApplicationParams != null && olqApplicationParams.size() > 0) {
-            for (OLQApplicationParam applicationParam : olqApplicationParams) {
+            for (OlqApplicationParam applicationParam : olqApplicationParams) {
                 row = sheet.createRow(rowIndex);
                 cell = row.createCell(0);
                 cell.setCellValue(applicationParam.getSeq());
@@ -688,5 +688,10 @@ public class OLQApplicationService extends BaseService {
         datasourceView.setModel(DatasourceModel.OLQ.getValue());
         List<ComDatasource> searchList = comDatasourceService.select(datasourceView);
         return searchList;
+    }
+
+
+    public static void main(String[] args) {
+
     }
 }

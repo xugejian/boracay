@@ -32,11 +32,11 @@ import java.util.List;
  * TIME:19:22
  */
 @Service
-public class OLQService extends BaseService {
+public class OlqService extends BaseService {
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(OLQApplicationService.class);
+    private static Logger logger = LogManager.getLogger(OlqApplicationService.class);
 
     @Autowired
     private RcServiceService rcServiceService;
@@ -54,9 +54,9 @@ public class OLQService extends BaseService {
         HSSFSheet sourceSheet = null;
         String seprator = FileUtil.getFileSeparator();
         String templateFile = ExcelCopyUtils.templatePath + seprator + "serviceTemplate.xls";
+
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
-
         try {
             sourceFile = new POIFSFileSystem(new FileInputStream(templateFile));
             sourceWork = new HSSFWorkbook(sourceFile);
@@ -66,11 +66,11 @@ public class OLQService extends BaseService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         RcService rcService = null;
         if (StringUtils.isNotBlank(rcUserService.getServiceId())) {
             rcService = rcServiceService.select(rcUserService.getServiceId());
         }
-
 
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
@@ -83,12 +83,13 @@ public class OLQService extends BaseService {
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
         comExcelParams.add(new ComExcelParam(4, 5, "userName"));
         comExcelParams.add(new ComExcelParam(5, 1, "udspRequestUrl"));
+
         long maxSize = 65535;
         if (null != rcService) {
             List<ComProperties> comPropertiesList = comPropertiesService.selectByFkId(rcService.getAppId());
-            for (ComProperties item:comPropertiesList){
-                if ("max.data.size".equals(item.getName())){
-                    if (StringUtils.isNotBlank(item.getValue())){
+            for (ComProperties item : comPropertiesList) {
+                if ("max.data.size".equals(item.getName())) {
+                    if (StringUtils.isNotBlank(item.getValue())) {
                         maxSize = Long.valueOf(item.getValue());
                     }
                 }
@@ -96,7 +97,6 @@ public class OLQService extends BaseService {
         }
 
         ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService, maxSize, "");
-
         HSSFSheet sheet;
         sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中

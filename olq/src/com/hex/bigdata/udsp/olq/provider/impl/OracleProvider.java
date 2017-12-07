@@ -5,13 +5,13 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.olq.provider.model.OLQQuerySql;
+import com.hex.bigdata.udsp.olq.provider.model.OlqQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
 import com.hex.bigdata.udsp.olq.provider.impl.model.OracleDatasource;
-import com.hex.bigdata.udsp.olq.provider.model.OLQRequest;
-import com.hex.bigdata.udsp.olq.provider.model.OLQResponse;
-import com.hex.bigdata.udsp.olq.provider.model.OLQResponseFetch;
-import com.hex.bigdata.udsp.olq.utils.OLQCommUtil;
+import com.hex.bigdata.udsp.olq.provider.model.OlqRequest;
+import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
+import com.hex.bigdata.udsp.olq.provider.model.OlqResponseFetch;
+import com.hex.bigdata.udsp.olq.utils.OlqCommUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -92,11 +92,11 @@ public class OracleProvider implements Provider {
      * @param request
      * @return
      */
-    public OLQResponse execute(String consumeId, OLQRequest request) {
+    public OlqResponse execute(String consumeId, OlqRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
-        OLQResponse response = new OLQResponse();
+        OlqResponse response = new OlqResponse();
         response.setRequest(request);
 
         Datasource datasource = request.getDatasource();
@@ -112,10 +112,10 @@ public class OracleProvider implements Provider {
             conn = getConnection(oracleDatasource);
             stmt = conn.createStatement();
 
-            OLQCommUtil.putStatement(consumeId, stmt);
+            OlqCommUtil.putStatement(consumeId, stmt);
 
             //获取查询信息
-            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
+            OlqQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
             if (olqQuerySql.getPage() == null) {
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
             } else {
@@ -155,7 +155,7 @@ public class OracleProvider implements Provider {
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
             //设置返回列信息
-            response.setColumns(OLQCommUtil.putColumnIntoMap(rsmd));
+            response.setColumns(OlqCommUtil.putColumnIntoMap(rsmd));
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(Status.DEFEAT);
@@ -183,7 +183,7 @@ public class OracleProvider implements Provider {
                     e.printStackTrace();
                 }
             }
-            OLQCommUtil.removeStatement(consumeId);
+            OlqCommUtil.removeStatement(consumeId);
         }
 
         long now = System.currentTimeMillis();
@@ -235,11 +235,11 @@ public class OracleProvider implements Provider {
      * @param request
      * @return
      */
-    public OLQResponseFetch executeFetch(String consumeId, OLQRequest request) {
+    public OlqResponseFetch executeFetch(String consumeId, OlqRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
-        OLQResponseFetch response = new OLQResponseFetch();
+        OlqResponseFetch response = new OlqResponseFetch();
         response.setRequest(request);
 
         Datasource datasource = request.getDatasource();
@@ -252,9 +252,9 @@ public class OracleProvider implements Provider {
             conn = getConnection(oracleDatasource);
             stmt = conn.createStatement();
 
-            OLQCommUtil.putStatement(consumeId, stmt);
+            OlqCommUtil.putStatement(consumeId, stmt);
 
-            OLQQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
+            OlqQuerySql olqQuerySql = getPageSql(request.getSql(), request.getPage());
             if (olqQuerySql.getPage() == null) {
                 rs = stmt.executeQuery(olqQuerySql.getOriginalSql());
             } else {
@@ -281,8 +281,8 @@ public class OracleProvider implements Provider {
         return response;
     }
 
-    private OLQQuerySql getPageSql(String sql, Page page) {
-        OLQQuerySql olqQuerySql = new OLQQuerySql(sql);
+    private OlqQuerySql getPageSql(String sql, Page page) {
+        OlqQuerySql olqQuerySql = new OlqQuerySql(sql);
         if (page == null) {
             return olqQuerySql;
         }
