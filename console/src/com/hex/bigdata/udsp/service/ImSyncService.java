@@ -3,6 +3,7 @@ package com.hex.bigdata.udsp.service;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.im.constant.ModelType;
 import com.hex.bigdata.udsp.im.provider.model.Model;
 import com.hex.bigdata.udsp.im.service.BatchJobService;
@@ -48,7 +49,6 @@ public class ImSyncService {
             response.setStatus(Status.SUCCESS.getValue());
             response.setStatusCode(StatusCode.SUCCESS.getValue());
         } catch (Exception e) {
-            logger.error(e.getMessage());
             e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());

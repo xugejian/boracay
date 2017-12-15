@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.controller;
 
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
@@ -55,7 +56,8 @@ public class RestfulController extends BaseController {
         } catch (Exception e) {
             //处理异常，返回respone
             Response response = new Response();
-            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef, ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
+            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef,
+                    ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
             return response;
         }
         //获取并设置客户端请求的IP

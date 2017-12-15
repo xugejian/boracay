@@ -53,7 +53,7 @@ public class OlqService extends BaseService {
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
         String seprator = FileUtil.getFileSeparator();
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "serviceTemplate.xls";
+        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_allServiceInfo.xls";
 
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;

@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.im.model;
 
 import java.io.Serializable;
 
-public class ImMetadata implements Serializable {
+public class ImMetadata  implements Serializable {
     private String pkId;
 
     private String dsId;

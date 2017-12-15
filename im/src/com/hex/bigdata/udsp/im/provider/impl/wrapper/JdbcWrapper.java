@@ -3,6 +3,7 @@ package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
@@ -68,7 +69,7 @@ public abstract class JdbcWrapper extends Wrapper implements BatchTargetProvider
             conn = JdbcUtil.getConnection(datasource);
             metadataCols = getMetadataCols(conn, dbName, tbName);
         } catch (SQLException e) {
-            logger.warn(e.getMessage());
+            logger.warn(ExceptionUtil.getMessage(e));
         } finally {
             com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
         }
@@ -112,7 +113,7 @@ public abstract class JdbcWrapper extends Wrapper implements BatchTargetProvider
                 }
             }
         } catch (SQLException e) {
-            logger.warn(e.getMessage());
+            logger.warn(ExceptionUtil.getMessage(e));
         } finally {
             com.hex.bigdata.metadata.db.util.JdbcUtil.close(rs);
             com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
@@ -375,7 +376,7 @@ public abstract class JdbcWrapper extends Wrapper implements BatchTargetProvider
             stmt = conn.createStatement();
             stmt.executeQuery(sql);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(ExceptionUtil.getMessage(e));
             if (e.getMessage().indexOf("doesn't exist") != -1
                     || e.getMessage().indexOf("ORA-00942") != -1
                     || e.getMessage().indexOf("Table not found") != -1) {

@@ -2,6 +2,7 @@ package com.hex.bigdata.udsp.im.service;
 
 import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
 import com.hex.bigdata.udsp.common.service.InitParamService;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;

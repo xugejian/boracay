@@ -57,7 +57,7 @@ ${extends("/goframe/function_layout.httl")}
                         </td>
                         <td class="tit roleLabel" style="width: 100px;text-align: right">用户名：</td>
                         <td class="roleText" style="width: 25%">
-                            <input name="userName" class="nui-textbox" style="width:98%;"/>
+                            <input name="userId" class="nui-textbox" style="width:98%;"/>
                         </td>
                     </tr>
                     <tr>
@@ -136,7 +136,7 @@ ${extends("/goframe/function_layout.httl")}
             <div type="checkcolumn" width="20"></div>
             <div field="serviceName" headerAlign="center" allowSort="true">服务名称</div>
             <div field="serviceType" headerAlign="center" allowSort="true" renderer="renderServiceType">应用类型</div>
-            <div field="userName" headerAlign="center" allowSort="true">用户名</div>
+            <div field="userId" headerAlign="center" allowSort="true">用户名</div>
             <div field="ipSection" headerAlign="center" allowSort="true">IP段</div>
             <div field="maxSyncNum" headerAlign="center" allowSort="true">运行队列大小（同步）</div>
             <div field="maxAsyncNum" headerAlign="center" allowSort="true">运行队列大小（异步）</div>

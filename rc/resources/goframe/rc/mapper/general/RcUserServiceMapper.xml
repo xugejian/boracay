@@ -115,6 +115,7 @@
         <if test="serviceId!='' and serviceId!=null ">and rcus.SERVICE_ID = #{serviceId}</if>
         <if test="serviceName!='' and serviceName!=null ">and rcs.NAME like '%'||#{serviceName}||'%'</if>
         <if test="serviceType!='' and serviceType!=null ">and rcs.TYPE=#{serviceType}</if>
+        <if test="userId!='' and userId!=null ">and rcus.USER_ID like '%'||#{userId}||'%'</if>
         <if test="userName!='' and userName!=null ">and gfuser.user_name like '%'||#{userName}||'%'</if>
         <if test="crtTimeStart!=null and crtTimeStart!='' ">and rcus.CRT_TIME >= #{crtTimeStart}</if>
         <if test="crtTimeEnd!=null and crtTimeEnd!='' ">and #{crtTimeEnd} >= rcus.CRT_TIME</if>

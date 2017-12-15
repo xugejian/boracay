@@ -7,6 +7,7 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.provider.model.Result;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.FTPClientConfig;
 import com.hex.bigdata.udsp.common.util.FTPHelper;
 import com.hex.bigdata.udsp.iq.model.IqAppQueryCol;
@@ -76,7 +77,6 @@ public class IqSyncService {
             }
             response.setReturnColumns(iqResponse.getColumns());
         } catch (Exception e) {
-            logger.error(e.getMessage());
             e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
@@ -171,8 +171,13 @@ public class IqSyncService {
                 ftpHelper.connectFTPServer();
                 ftpHelper.uploadFile(localDataFilePath, dataFileName, ftpFileDir);
                 ftpHelper.uploadFile(localFlgFilePath, flgFileName, ftpFileDir);
+                //filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
+                filePath = ftpDataFilePath;
+                message = localDataFilePath;
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                status = Status.DEFEAT;
+                statusCode = StatusCode.DEFEAT;
+                message = "FTP上传失败！" + e.getMessage();
                 e.printStackTrace();
             } finally {
                 try {
@@ -181,13 +186,10 @@ public class IqSyncService {
                     e.printStackTrace();
                 }
             }
-            //filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
-            filePath = ftpDataFilePath;
-            message = localDataFilePath;
         } else {
             status = Status.DEFEAT;
             statusCode = StatusCode.DEFEAT;
-            message = "失败";
+            message = response.getMessage();
         }
         response.setFilePath(filePath);
         response.setMessage(message);

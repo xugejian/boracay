@@ -34,6 +34,7 @@ public class OlqApplicationTest {
      */
     @Test
     public void syncStart() {
+        long bef = System.currentTimeMillis();
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
 //        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
@@ -50,7 +51,7 @@ public class OlqApplicationTest {
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
         request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
-        request.setUdspUser("test");
+        request.setUdspUser("tomnic");
         request.setToken("000000");
 
         //设置业务参数-查询参数设置
@@ -66,6 +67,9 @@ public class OlqApplicationTest {
 
         //调用并获取结果
         SyncPackResponse response = client.syncStart(request);
+        long now = System.currentTimeMillis();
+        long consumeTime = now - bef;
+        logger.info("实际耗时：" + consumeTime);
 
         // 拆包响应对象
         if (response == null) {
@@ -75,15 +79,15 @@ public class OlqApplicationTest {
                 // 分页信息
                 page = response.getPage();
                 if (page != null) {
-                    logger.debug("当前页号：" + page.getPageIndex());
-                    logger.debug("当前页条数：" + page.getPageSize());
-                    logger.debug("总条数：" + page.getTotalCount());
-                    logger.debug("总页数：" + page.getTotalPage());
+                    logger.info("当前页号：" + page.getPageIndex());
+                    logger.info("当前页条数：" + page.getPageSize());
+                    logger.info("总条数：" + page.getTotalCount());
+                    logger.info("总页数：" + page.getTotalPage());
                 }
                 // 耗时
-                logger.debug("耗时：" + response.getConsumeTime());
+                logger.info("耗时：" + response.getConsumeTime());
                 // 消费ID
-                logger.debug("消费ID：" + response.getConsumeId());
+                logger.info("消费ID：" + response.getConsumeId());
                 logger.debug("------------------------------------------------------------------");
                 // 字段信息
                 LinkedHashMap<String, String> returnColumns = response.getReturnColumns();

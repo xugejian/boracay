@@ -4,6 +4,7 @@ import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.olq.provider.model.OlqQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
@@ -148,7 +149,7 @@ public class Db2Provider implements Provider {
             //设置返回列信息
             response.setColumns(OlqCommUtil.putColumnIntoMap(rsmd));
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(ExceptionUtil.getMessage(e));
             response.setStatus(Status.DEFEAT);
             response.setStatusCode(StatusCode.DEFEAT);
             response.setMessage(e.getMessage());
@@ -244,7 +245,7 @@ public class Db2Provider implements Provider {
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(ExceptionUtil.getMessage(e));
             response.setStatus(Status.DEFEAT);
             response.setStatusCode(StatusCode.DEFEAT);
             response.setMessage(e.getMessage());
