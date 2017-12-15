@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.thread;
 
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.im.service.BatchJobService;
 import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -60,12 +61,10 @@ public class HiveGetLogThread extends Thread {
                     }
                     Thread.currentThread().sleep(queryLogIntervalMs);
                 } catch (SQLException e) { // 防止while里面报错，导致一直退不出循环
-                    e.printStackTrace();
-                    logger.warn(e.getMessage());
+                    logger.warn(ExceptionUtil.getMessage(e));
                     return;
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    logger.warn(e.getMessage());
+                    logger.warn(ExceptionUtil.getMessage(e));
                     return;
                 }
             }

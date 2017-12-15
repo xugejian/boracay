@@ -902,7 +902,7 @@ public class SolrUtil {
         try {
             res = solrServer.query(query);
         } catch (SolrServerException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             res = null;
         }
         return res;

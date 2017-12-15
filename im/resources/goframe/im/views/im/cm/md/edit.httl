@@ -625,8 +625,10 @@ ${extends("/goframe/function_layout.httl")}
     var count1 = 0;
     function colNameBeforeShowPopup(e) {
         // --下拉选项变化--
+        var dsId = nui.get("dsId").getValue();
+        var tbName = nui.get("tbName").getValue();
         if (count1 == 0) {
-            e.source.load("${basePath}/im/md/getCloumnInfo/" + nui.get("dsId").getValue() + "/" + nui.get("tbName").getValue());
+            e.source.load("${basePath}/im/md/getCloumnInfo2?dsId=" + dsId + "&tbName=" + tbName);
             count1++;
         }
     }
@@ -763,6 +765,7 @@ ${extends("/goframe/function_layout.httl")}
      * 设置外表字段信息
      */
     function setCols() {
+        count1 = 0;
         var type = nui.get("type").getValue();
         var dsId = nui.get("dsId").getValue();
         if (!dsId) {

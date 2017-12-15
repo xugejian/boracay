@@ -7,6 +7,7 @@ import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.iq.dao.IqApplicationMapper;
 import com.hex.bigdata.udsp.iq.dao.IqMetadataMapper;
 import com.hex.bigdata.udsp.iq.dto.IqApplicationPropsView;
@@ -290,7 +291,7 @@ public class IqApplicationService extends BaseService {
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
         String seprator = FileUtil.getFileSeparator();
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "serviceTemplate.xls";
+        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_allServiceInfo.xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
 

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -304,6 +305,14 @@ public class ImMetadataController {
             logger.error(message);
         }
         return new MessageResult(status, message);
+    }
+
+    @RequestMapping({"/getCloumnInfo2"})
+    @ResponseBody
+    public MessageResult getCloumnInfo2(HttpServletRequest request) {
+        String dsId = request.getParameter("dsId");
+        String tbName = request.getParameter("tbName");
+        return getCloumnInfo(dsId, tbName);
     }
 
     @RequestMapping({"/checkSchema/{dsId}"})

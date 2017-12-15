@@ -366,8 +366,6 @@ ${extends("/goframe/function_layout.httl")}
         });
     }
 
-
-
     //源数据源改变时改变参数列表
     function srcSourceChange() {
         //将参数配置栏和字段映射栏重置

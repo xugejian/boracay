@@ -110,7 +110,7 @@ public class HBaseDatasource extends Datasource {
 
     public byte[] getQulifierName() {
         String value = getProperty("hbase.qulifier.name").getValue();
-        if (StringUtils.isNotBlank(value)) {
+        if (StringUtils.isBlank(value)) {
             value = "q";
         }
         return Bytes.toBytes(value);

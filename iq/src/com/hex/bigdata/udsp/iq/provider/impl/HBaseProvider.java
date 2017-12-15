@@ -3,6 +3,7 @@ package com.hex.bigdata.udsp.iq.provider.impl;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.iq.provider.Provider;
@@ -279,7 +280,7 @@ public class HBaseProvider implements Provider {
         try {
             return getDataSource(datasource).getConnection();
         } catch (Exception e) {
-            logger.warn(e.getMessage());
+            logger.warn(ExceptionUtil.getMessage(e));
             return null;
         }
     }

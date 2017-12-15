@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.common.lock;
 
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,12 +70,12 @@ public class RedisDistributedLock {
                     }
                     // 请求锁失败说明锁被其它线程保持，等待几毫秒后继续请求锁
                 } catch (Exception e) {
-                    logger.error(e.getMessage() + " key: " + key);
+                    logger.error(ExceptionUtil.getMessage(e) + " key: " + key);
                 }
                 try {
                     Thread.sleep(SLEEP_TIME);
                 } catch (Exception e) {
-                    logger.error(e.getMessage() + " key: " + key);
+                    logger.error(ExceptionUtil.getMessage(e) + " key: " + key);
                 }
                 count++;
             }
@@ -98,7 +99,7 @@ public class RedisDistributedLock {
         try {
             redisTemplate.delete(newkey);
         } catch (Exception e) {
-            logger.error(e.getMessage() + " key: " + key);
+            logger.error(ExceptionUtil.getMessage(e) + " key: " + key);
         }
     }
 

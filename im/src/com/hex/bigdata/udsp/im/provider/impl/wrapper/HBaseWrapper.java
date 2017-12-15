@@ -2,6 +2,7 @@ package com.hex.bigdata.udsp.im.provider.impl.wrapper;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.util.CharUtil;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
 import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
@@ -226,7 +227,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetProvide
             try {
                 len = Integer.valueOf(length);
             } catch (Exception e) {
-                logger.debug(e.getMessage());
+                logger.debug(ExceptionUtil.getMessage(e));
             }
         }
         return len;
