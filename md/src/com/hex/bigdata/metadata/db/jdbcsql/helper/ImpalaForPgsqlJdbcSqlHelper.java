@@ -37,14 +37,9 @@ public class ImpalaForPgsqlJdbcSqlHelper extends BaseJdbcSqlHelper {
     public String getTablesSql(String dbName) {
         return "SELECT"
                 + " TAB.\"TBL_NAME\" " + Constant.TB_NAME
-                + " ,TP.\"PARAM_VALUE\" " + Constant.TB_COMMENT
-                + " FROM \"TBLS\" TAB"
-                + " INNER JOIN \"DBS\" DB"
-                + " ON TAB.\"DB_ID\" = DB.\"DB_ID\""
-                + " LEFT JOIN \"TABLE_PARAMS\" TP"
-                + " ON TAB.\"TBL_ID\" = TP.\"TBL_ID\""
-                + " AND TP.\"PARAM_KEY\" = 'comment'"
-                + " WHERE DB.\"NAME\" = '" + dbName.toLowerCase() + "'"
+                + " FROM \"TBLS\" TAB, \"DBS\" DB"
+                + " WHERE TAB.\"DB_ID\" = DB.\"DB_ID\""
+                + "  AND DB.\"NAME\" = '" + dbName.toLowerCase() + "'"
                 + " ORDER BY TAB.\"TBL_NAME\"";
     }
 
