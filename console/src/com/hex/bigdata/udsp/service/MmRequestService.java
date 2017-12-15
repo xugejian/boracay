@@ -4,6 +4,7 @@ import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
 import com.hex.bigdata.udsp.mc.model.Current;
@@ -71,7 +72,7 @@ public class MmRequestService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
+            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" +e.getMessage());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());

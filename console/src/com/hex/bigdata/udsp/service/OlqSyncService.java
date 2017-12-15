@@ -5,6 +5,7 @@ import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Page;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.FTPClientConfig;
 import com.hex.bigdata.udsp.common.util.FTPHelper;
 import com.hex.bigdata.udsp.model.Response;
@@ -66,7 +67,8 @@ public class OlqSyncService {
                 response.setReturnColumns(olqResponse.getColumns());
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(ExceptionUtil.getMessage(e));
+            e.printStackTrace();
             response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
@@ -132,10 +134,14 @@ public class OlqSyncService {
                     ftpHelper.connectFTPServer();
                     ftpHelper.uploadFile(localDataFilePath, dataFileName, ftpFileDir);
                     ftpHelper.uploadFile(localFlgFilePath, flgFileName, ftpFileDir);
+                    //filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
+                    filePath = ftpDataFilePath;
+                    message = localDataFilePath;
                 } catch (Exception e) {
                     status = Status.DEFEAT;
                     statusCode = StatusCode.DEFEAT;
-                    message = "FTP上传失败";
+                    message = "FTP上传失败！" + e.getMessage();
+                    e.printStackTrace();
                 } finally {
                     try {
                         ftpHelper.closeFTPClient();
@@ -143,13 +149,11 @@ public class OlqSyncService {
                         e.printStackTrace();
                     }
                 }
-                //filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
-                filePath = ftpDataFilePath;
-                message = localDataFilePath;
+
             } else {
                 status = Status.DEFEAT;
                 statusCode = StatusCode.DEFEAT;
-                message = "查询结果集失败";
+                message = response.getMessage();
             }
         } catch (Exception e) {
             status = Status.DEFEAT;

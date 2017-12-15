@@ -820,7 +820,7 @@ public class ComExcelEnums {
         }
     }
 
-    public enum OLQApplicationParamCoumn implements ExcelProperty {
+    public enum OlqApplicationParamCoumn implements ExcelProperty {
         Excel_0("seq", "0"),
         Excel_1("paramName", "1"),
         Excel_2("paramDesc", "2"),
@@ -830,9 +830,9 @@ public class ComExcelEnums {
         private String value;
         private String name;
 
-        private static List<OLQApplicationParamCoumn> enums;
+        private static List<OlqApplicationParamCoumn> enums;
 
-        private OLQApplicationParamCoumn(String na, String va) {
+        private OlqApplicationParamCoumn(String na, String va) {
             value = va;
             name = na;
         }

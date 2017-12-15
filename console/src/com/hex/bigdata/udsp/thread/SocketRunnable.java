@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.thread;
 
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
@@ -82,7 +83,8 @@ public class SocketRunnable implements Runnable {
         } catch (Exception e) {
             //处理异常，返回respone
             Response response = new Response();
-            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef, ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
+            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef,
+                    ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
             return JSONUtil.parseObj2JSON(response);
         }
         externalRequest.setRequestIp(requestIp);

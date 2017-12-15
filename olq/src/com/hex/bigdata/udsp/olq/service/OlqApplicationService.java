@@ -9,6 +9,7 @@ import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.olq.constant.OlqConstant;
 import com.hex.bigdata.udsp.olq.dao.OlqApplicationMapper;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
@@ -274,7 +275,7 @@ public class OlqApplicationService extends BaseService {
         FileInputStream in = null;
         try {
             ComUploadExcelContent dataSourceContent = new ComUploadExcelContent();
-            dataSourceContent.setClassName("com.hex.bigdata.udsp.olq.model.OLQApplication");
+            dataSourceContent.setClassName("com.hex.bigdata.udsp.olq.model.OlqApplication");
             List<ComExcelParam> comExcelParams = new ArrayList<>();
             comExcelParams.add(new ComExcelParam(2, 1, "name"));
             comExcelParams.add(new ComExcelParam(2, 3, "olqDsName"));
@@ -284,9 +285,9 @@ public class OlqApplicationService extends BaseService {
             dataSourceContent.setComExcelParams(comExcelParams);
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
             comExcelPropertiesList.add(new ComExcelProperties("参数字段",
-                    "com.hex.bigdata.udsp.olq.model.OLQApplicationParam",
+                    "com.hex.bigdata.udsp.olq.model.OlqApplicationParam",
                     10, 0, 1,
-                    ComExcelEnums.OLQApplicationParamCoumn.getAllNums()));
+                    ComExcelEnums.OlqApplicationParamCoumn.getAllNums()));
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");
             in = new FileInputStream(uploadFile);
@@ -295,13 +296,13 @@ public class OlqApplicationService extends BaseService {
             for (int i = 0, activeIndex = hfb.getNumberOfSheets(); i < activeIndex; i++) {
                 sheet = hfb.getSheetAt(i);
                 Map<String, List> uploadExcelModel = ExcelUploadhelper.getUploadExcelModel(sheet, dataSourceContent);
-                List<OlqApplication> olqApplications = (List<OlqApplication>) uploadExcelModel.get("com.hex.bigdata.udsp.olq.model.OLQApplication");
+                List<OlqApplication> olqApplications = (List<OlqApplication>) uploadExcelModel.get("com.hex.bigdata.udsp.olq.model.OlqApplication");
                 OlqApplication olqApplication = olqApplications.get(0);
                 //数据合法性检查
                 if (StringUtils.isNotBlank(olqApplication.getName()) && this.selectByName(olqApplication.getName()) != null) {
                     return new MessageResult(false, "第" + (i + 1) + "个名称已存在！");
                 }
-                List<OlqApplicationParam> olqApplicationParams = (List<OlqApplicationParam>) uploadExcelModel.get("com.hex.bigdata.udsp.olq.model.OLQApplicationParam");
+                List<OlqApplicationParam> olqApplicationParams = (List<OlqApplicationParam>) uploadExcelModel.get("com.hex.bigdata.udsp.olq.model.OlqApplicationParam");
                 OlqApplicationDto olqApplicationDto = new OlqApplicationDto();
                 olqApplicationDto.setOlqApplication(olqApplication);
                 olqApplicationDto.setParams(olqApplicationParams);
@@ -552,7 +553,7 @@ public class OlqApplicationService extends BaseService {
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
         String seprator = FileUtil.getFileSeparator();
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "serviceTemplate.xls";
+        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_allServiceInfo.xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
 

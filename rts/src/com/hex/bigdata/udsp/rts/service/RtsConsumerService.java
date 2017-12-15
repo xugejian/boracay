@@ -9,6 +9,7 @@ import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
 import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
 import com.hex.bigdata.udsp.rc.model.RcService;
@@ -357,7 +358,7 @@ public class RtsConsumerService extends BaseService {
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
         String seprator = FileUtil.getFileSeparator();
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "serviceTemplate.xls";
+        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_allServiceInfo.xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
 

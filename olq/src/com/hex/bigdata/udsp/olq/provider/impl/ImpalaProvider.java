@@ -4,6 +4,7 @@ import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.olq.provider.model.OlqQuerySql;
 import com.hex.bigdata.udsp.olq.provider.Provider;
@@ -148,7 +149,7 @@ public class ImpalaProvider implements Provider {
             //设置返回列信息
             response.setColumns(OlqCommUtil.putColumnIntoMap(rsmd));
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error(ExceptionUtil.getMessage(e));
             response.setStatus(Status.DEFEAT);
             response.setStatusCode(StatusCode.DEFEAT);
             response.setMessage(e.getMessage());
@@ -157,21 +158,21 @@ public class ImpalaProvider implements Provider {
                 try {
                     rs.close();
                 } catch (SQLException e) {
-                    logger.error(e.getMessage());
+                    e.printStackTrace();
                 }
             }
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    logger.error(e.getMessage());
+                    e.printStackTrace();
                 }
             }
             if (conn != null) {
                 try {
                     conn.close();
                 } catch (SQLException e) {
-                    logger.error(e.getMessage());
+                    e.printStackTrace();
                 }
             }
             OlqCommUtil.removeStatement(consumeId);
@@ -201,13 +202,13 @@ public class ImpalaProvider implements Provider {
             }
         } catch (Exception e) {
             canConnection = false;
-            logger.error(e.getMessage());
+            logger.error(ExceptionUtil.getMessage(e));
         } finally {
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    logger.error(e.getMessage());
+                    logger.error(ExceptionUtil.getMessage(e));
                 }
             }
         }

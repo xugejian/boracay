@@ -2,6 +2,7 @@ package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KafkaDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KafkaModel;
@@ -73,7 +74,7 @@ public class KafkaProvider extends KafkaWrapper {
                         }
                         return metadataCols;
                     } catch (Exception e) {
-                        logger.warn(e.getMessage());
+                        logger.warn(ExceptionUtil.getMessage(e));
                     }
                 }
             }
@@ -81,8 +82,7 @@ public class KafkaProvider extends KafkaWrapper {
             logger.debug("KAFKA消费超时！");
             return metadataCols;
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.warn(e.getMessage());
+            logger.warn(ExceptionUtil.getMessage(e));
         } finally {
             KafkaUtil.close(consumer);
         }
