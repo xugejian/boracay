@@ -16,10 +16,7 @@ import java.util.Map;
 
 /**
  * 模型管理调用示例
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/17
- * TIME:19:52
+ *
  */
 public class MmClientDemo {
     /**

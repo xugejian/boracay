@@ -20,11 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * SQL客户端查询DEMO
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/7/20
- * TIME:20:03
+ * 交互查询调用示例
  */
 public class SqlClientDemo {
     /**

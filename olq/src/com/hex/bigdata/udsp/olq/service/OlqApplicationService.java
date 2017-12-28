@@ -445,7 +445,6 @@ public class OlqApplicationService extends BaseService {
         return sql;
     }
 
-
     /**
      * 检查传入参数
      *
@@ -455,27 +454,19 @@ public class OlqApplicationService extends BaseService {
         if (paramVals == null || paramVals.size() == 0) {
             throw new RuntimeException("传入参数值集合不能为空!");
         }
-        //比较个数
-        if (appParams.size() != paramVals.size()) {
-            throw new RuntimeException("传入参数值的个数与参数个数不匹配!");
-        }
-        //检查参数名称是否完全一致
-        Set<String> paramValsSet = paramVals.keySet();
-        for (OlqApplicationParam appParam : appParams) {
-            if (!paramValsSet.contains(appParam.getParamName())) {
-                throw new RuntimeException("传入参数值的名称与参数名称不匹配!");
-            }
-        }
         boolean flg = false;
         String message = "";
         for (OlqApplicationParam appParam : appParams) {
             String name = appParam.getParamName();
             String isNeed = appParam.getIsNeed(); // 是否必输，0：是 1：否
+            String defaultValue = appParam.getDefaultValue(); // 默认值
             String value = paramVals.get(name);
-            if ("0".equals(isNeed)) { // 必输
-                if (StringUtils.isBlank(value)) {
+            if (StringUtils.isBlank(value)) { // 没有传入值
+                if (StringUtils.isNotBlank(defaultValue)) { // 有默认值
+                    paramVals.put(name, defaultValue);
+                } else if ("0".equals(isNeed) && StringUtils.isBlank(defaultValue)) { // 必输且没有默认值
                     flg = true;
-                    message += name + "是必输参数!";
+                    message += name + "是必输参数且没有默认值，需要客户端传入非空值!";
                 }
             }
         }
