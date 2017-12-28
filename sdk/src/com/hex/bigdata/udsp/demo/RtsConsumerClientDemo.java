@@ -10,11 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 实时流消费者服务DEMO
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/17
- * TIME:19:53
+ * 实时流消费者调用示例
+ *
  */
 public class RtsConsumerClientDemo {
     /**

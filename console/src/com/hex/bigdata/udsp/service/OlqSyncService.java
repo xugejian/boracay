@@ -11,7 +11,6 @@ import com.hex.bigdata.udsp.common.util.FTPHelper;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponseFetch;
-import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
 import com.hex.bigdata.udsp.olq.utils.OlqCommUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -38,8 +37,6 @@ public class OlqSyncService {
 
     @Autowired
     private OlqProviderService olqProviderService;
-    @Autowired
-    private OlqApplicationService olqApplicationService;
 
     /**
      * 同步运行
@@ -51,7 +48,7 @@ public class OlqSyncService {
      * @return
      */
     public Response syncStart(String consumeId, String dsId, String sql, Page page) {
-        Response response = checkParam(sql);
+        Response response = checkResponseParam(sql);
         if (response != null) return response;
 
         response = new Response();
@@ -62,10 +59,8 @@ public class OlqSyncService {
             response.setStatus(olqResponse.getStatus().getValue());
             response.setStatusCode(olqResponse.getStatusCode().getValue());
             response.setRecords(olqResponse.getRecords());
-            if (olqResponse != null && olqResponse.getColumns() != null) {
-                //返回字段名称及类型
-                response.setReturnColumns(olqResponse.getColumns());
-            }
+            response.setReturnColumns(olqResponse.getColumns());
+            response.setPage(olqResponse.getPage());
         } catch (Exception e) {
             logger.error(ExceptionUtil.getMessage(e));
             e.printStackTrace();
@@ -77,7 +72,7 @@ public class OlqSyncService {
         return response;
     }
 
-    private Response checkParam(String sql) {
+    private Response checkResponseParam(String sql) {
         Response response = null;
         if (StringUtils.isBlank(sql)) {
             response = new Response();
@@ -89,7 +84,7 @@ public class OlqSyncService {
         return response;
     }
 
-    private OlqResponse checkParam2(String sql) {
+    private OlqResponse checkOlqResponseParam(String sql) {
         OlqResponse response = null;
         if (StringUtils.isBlank(sql)) {
             response = new OlqResponse();
@@ -108,7 +103,7 @@ public class OlqSyncService {
      * @return
      */
     public OlqResponse asyncStart(String consumeId, String dsId, String sql, Page page, String fileName, String userName) {
-        OlqResponse response = checkParam2(sql);
+        OlqResponse response = checkOlqResponseParam(sql);
         if (response != null) return response;
 
         Status status = Status.SUCCESS;

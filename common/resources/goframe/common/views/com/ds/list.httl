@@ -220,7 +220,7 @@ ${extends("/goframe/function_layout.httl")}
                 contentType: 'application/json',
                 success: function (result) {
                     if (result.status == true) {
-                        nui.alert(result.message, "提示");
+                        //nui.alert(result.message, "提示");
                         //grid1.unmask();
                         nui.get("edit").disable();
                         nui.get("remove").disable();
