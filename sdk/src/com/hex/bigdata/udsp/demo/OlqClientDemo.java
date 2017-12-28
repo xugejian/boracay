@@ -13,10 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * 联机查询调用示例
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/17
- * TIME:14:31
+ *
  */
 @Deprecated
 public class OlqClientDemo {

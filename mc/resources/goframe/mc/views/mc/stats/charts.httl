@@ -71,6 +71,14 @@ ${extends("/goframe/function_layout.httl")}
                     <div id="chart6" style="height:100%;width:100%;"></div>
                 </td>
             </tr>
+            <tr>
+                <td style="height:300px;width:49%;">
+                    <div id="chart7" style="height:100%;width:100%;"></div>
+                </td>
+                <td style="height:300px;width:49%;">
+                    <div id="chart8" style="height:100%;width:100%;"></div>
+                </td>
+            </tr>
         </table>
 
     </div>
@@ -85,6 +93,7 @@ ${extends("/goframe/function_layout.httl")}
     var chart4;
     var chart5;
     var chart6;
+    var chart7;
 
     /**
      * 按需加载资源文件
@@ -98,6 +107,7 @@ ${extends("/goframe/function_layout.httl")}
         chart4 = ec.init(document.getElementById('chart4'));
         chart5 = ec.init(document.getElementById('chart5'));
         chart6 = ec.init(document.getElementById('chart6'));
+        chart7 = ec.init(document.getElementById('chart7'));
     });
 
     /**
@@ -129,6 +139,10 @@ ${extends("/goframe/function_layout.httl")}
             optionChart5(datetime, interval);
             // 6、服务维度-分应用类型的消费统计
             optionChart6(datetime, interval);
+            // 7、服务维度-同步请求的耗时统计
+            optionChart7(datetime, interval);
+            // 8、服务维度-异步请求的耗时统计
+            optionChart8(datetime, interval);
             setTimeout(function () {
                 form1.unmask();
             }, 1000);
@@ -436,7 +450,7 @@ ${extends("/goframe/function_layout.httl")}
                         x: 'left',
                         y: 'center',
                         orient: 'vertical',
-                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者','联机查询应用','交互建模']
+                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者', '联机查询应用', '交互建模']
                     },
                     toolbox: {
                         show: true,
@@ -1114,19 +1128,21 @@ ${extends("/goframe/function_layout.httl")}
                         dataMap2[key] = getVal(dataMap2, key, record.countNum);
                     }
                 });
-                xData = ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者'];
+                xData = ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者', '交互建模'];
 
                 yData1[0] = getNum(dataMap1, "IQ");
                 yData1[1] = getNum(dataMap1, "OLQ");
                 yData1[2] = getNum(dataMap1, "MM");
                 yData1[3] = getNum(dataMap1, "RTS_PRODUCER");
                 yData1[4] = getNum(dataMap1, "RTS_CONSUMER");
+                yData1[5] = getNum(dataMap1, "IM");
 
                 yData2[0] = getNum(dataMap2, "IQ");
                 yData2[1] = getNum(dataMap2, "OLQ");
                 yData2[2] = getNum(dataMap2, "MM");
                 yData2[3] = getNum(dataMap2, "RTS_PRODUCER");
                 yData2[4] = getNum(dataMap2, "RTS_CONSUMER");
+                yData2[5] = getNum(dataMap2, "IM");
 
                 var option = {
                     title: {
@@ -1206,6 +1222,280 @@ ${extends("/goframe/function_layout.httl")}
                     chart6 = echarts.init(document.getElementById('chart6'));
                     chart6.clear();
                     chart6.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+    /**
+     * 服务名维度-同步请求的耗时统计
+     */
+    function optionChart7(datetime, interval) {
+        var xData = [];
+        var yData1 = []; // 最大耗时Array
+        var yData2 = []; // 平均耗时Array
+        var yData3 = []; // 最小耗时Array
+        var dataMap1 = {}; // 最大耗时Map
+        var dataMap2 = {}; // 平均耗时Map
+        var dataMap3 = {}; // 最小耗时Map
+        $.ajax({
+            url: "${basePath}/mc/stats/charts/chart7?datetime=" + datetime + "&interval=" + interval,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.serviceName;
+                    dataMap1[key] = record.maxTime;
+                    dataMap2[key] = record.avgTime;
+                    dataMap3[key] = record.minTime;
+                });
+                var i = 0;
+                for (var key in dataMap1) {
+                    xData[i] = key;
+                    yData1[i] = getNum(dataMap1, key);
+                    yData2[i] = getNum(dataMap2, key);
+                    yData3[i] = getNum(dataMap3, key);
+                    i++;
+                }
+                var option = {
+                    title: {
+                        text: '时间维度-同步请求的耗时统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['最大耗时', '平均耗时', '最小耗时']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    dataZoom: {
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis: [
+                        {
+                            //name: name,
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（秒）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '最大耗时',
+                            type: 'line',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '平均耗时',
+                            type: 'line',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        },
+                        {
+                            name: '最小耗时',
+                            type: 'line',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData3
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    chart7 = echarts.init(document.getElementById('chart7'));
+                    chart7.clear();
+                    chart7.setOption(option, true);
+                }, 500);
+            }
+        });
+    }
+
+    /**
+     * 服务名维度-异步请求的耗时统计
+     */
+    function optionChart8(datetime, interval) {
+        var xData = [];
+        var yData1 = []; // 最大耗时Array
+        var yData2 = []; // 平均耗时Array
+        var yData3 = []; // 最小耗时Array
+        var dataMap1 = {}; // 最大耗时Map
+        var dataMap2 = {}; // 平均耗时Map
+        var dataMap3 = {}; // 最小耗时Map
+        $.ajax({
+            url: "${basePath}/mc/stats/charts/chart8?datetime=" + datetime + "&interval=" + interval,
+            type: 'POST',
+            data: {},
+            async: true,
+            cache: true,
+            contentType: 'application/json',
+            success: function (result) {
+                //console.log(result);
+                if (result.status == false) {
+                    nui.alert(result.message, "提示");
+                    return;
+                }
+                var data = result.data;
+                $.each(data, function (_index, record) {
+                    var key = record.serviceName;
+                    dataMap1[key] = record.maxTime;
+                    dataMap2[key] = record.avgTime;
+                    dataMap3[key] = record.minTime;
+                });
+                var i = 0;
+                for (var key in dataMap1) {
+                    xData[i] = key;
+                    yData1[i] = getNum(dataMap1, key);
+                    yData2[i] = getNum(dataMap2, key);
+                    yData3[i] = getNum(dataMap3, key);
+                    i++;
+                }
+                var option = {
+                    title: {
+                        text: '时间维度-异步请求的耗时统计'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: 'left',
+                        y: 'center',
+                        orient: 'vertical',
+                        data: ['最大耗时', '平均耗时', '最小耗时']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    grid: {
+                        x: '25%',
+                        y: '20%',
+                        x2: '5%',
+                        y2: '20%'
+                    },
+                    dataZoom: {
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis: [
+                        {
+                            //name: name,
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLine: {onZero: false},
+                            data: xData
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: '消费数（秒）',
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '最大耗时',
+                            type: 'line',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData1
+                        },
+                        {
+                            name: '平均耗时',
+                            type: 'line',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData2
+                        },
+                        {
+                            name: '最小耗时',
+                            type: 'line',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: yData3
+                        }
+                    ]
+                };
+                //console.log(option);
+                setTimeout(function () {
+                    chart8 = echarts.init(document.getElementById('chart8'));
+                    chart8.clear();
+                    chart8.setOption(option, true);
                 }, 500);
             }
         });

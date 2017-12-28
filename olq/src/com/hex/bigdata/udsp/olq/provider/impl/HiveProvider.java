@@ -292,6 +292,9 @@ public class HiveProvider implements Provider {
         olqQuerySql.setTotalSql(totalSqlBuffer.toString());
         //page设置
         olqQuerySql.setPage(page);
+        logger.debug("配置的源SQL:\n" + olqQuerySql.getOriginalSql());
+        logger.debug("分页查询SQL:\n" + olqQuerySql.getPageSql());
+        logger.debug("查询总数SQL:\n" + olqQuerySql.getTotalSql());
         return olqQuerySql;
     }
 }

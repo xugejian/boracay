@@ -2,12 +2,13 @@ package com.hex.bigdata.udsp.demo;
 
 import com.hex.bigdata.udsp.client.factory.ConsumerClientFactory;
 import com.hex.bigdata.udsp.client.impl.NoSqlClient;
+import com.hex.bigdata.udsp.client.impl.OlqAppClient;
 import com.hex.bigdata.udsp.constant.SdkConstant;
 import com.hex.bigdata.udsp.constant.StatusCode;
 import com.hex.bigdata.udsp.model.Page;
 import com.hex.bigdata.udsp.model.request.NoSqlRequest;
+import com.hex.bigdata.udsp.model.request.OlqAppRequest;
 import com.hex.bigdata.udsp.model.request.StatusRequest;
-import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
 import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
 import com.hex.bigdata.udsp.model.response.pack.StatusPackResponse;
 import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
@@ -20,15 +21,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 交互查询/联机查询应用调用示例
+ * 联机查询应用调用示例
  *
  */
-public class NoSqlClientDemo {
+@Deprecated
+public class OlqAppClientDemo {
 
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(NoSqlClientDemo.class);
+    private static Logger logger = LogManager.getLogger(OlqAppClientDemo.class);
 
     /**
      * 交互查询/联机查询应用-同步start接口示例
@@ -36,12 +38,12 @@ public class NoSqlClientDemo {
     public void syncStart() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
-//        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
+//        OlqAppClient client = ConsumerClientFactory.createCustomClient(OlqAppClient.class, url);
         //创建默认客户端,根据udsp.config.properties配置文件获取地址
-        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
+        OlqAppClient client = ConsumerClientFactory.createCustomClient(OlqAppClient.class);
 
         //创建请求实体
-        NoSqlRequest request = new NoSqlRequest();
+        OlqAppRequest request = new OlqAppRequest();
 
         //基础参数
         request.setServiceName("message");
@@ -117,12 +119,12 @@ public class NoSqlClientDemo {
     public void asyncStart() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
-//        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
+//        OlqAppClient client = ConsumerClientFactory.createCustomClient(OlqAppClient.class, url);
         //创建默认客户端,根据udsp.config.properties配置文件获取地址
-        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
+        OlqAppClient client = ConsumerClientFactory.createCustomClient(OlqAppClient.class);
 
         //创建请求实体
-        NoSqlRequest request = new NoSqlRequest();
+        OlqAppRequest request = new OlqAppRequest();
         //基础参数设置-设置调用服务的名称
         request.setServiceName("soa_jyls_app");
         //基础参数设置-上层应用系统使用者工号
@@ -180,9 +182,9 @@ public class NoSqlClientDemo {
     public void asyncStatus() {
         //创建自定义客户端
 //        String url = "http://127.0.0.1:8088/udsp/http/consume";
-//        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
+//        OlqAppClient client = ConsumerClientFactory.createCustomClient(OlqAppClient.class, url);
         //创建默认客户端,根据udsp.config.properties配置文件获取地址
-        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
+        OlqAppClient client = ConsumerClientFactory.createCustomClient(OlqAppClient.class);
 
         //创建请求实体
         StatusRequest request = new StatusRequest();
@@ -225,7 +227,7 @@ public class NoSqlClientDemo {
     }
 
     public static void main(String[] args) {
-        NoSqlClientDemo demo = new NoSqlClientDemo();
+        OlqAppClientDemo demo = new OlqAppClientDemo();
         demo.asyncStart();
         demo.asyncStatus();
         demo.syncStart();

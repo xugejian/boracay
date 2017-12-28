@@ -10,6 +10,8 @@ import com.hex.bigdata.udsp.model.request.StatusRequest;
 import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
 import com.hex.bigdata.udsp.model.response.pack.StatusPackResponse;
 import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
+import net.sf.json.JSONArray;
+import net.sf.json.util.JSONUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -36,7 +38,7 @@ public class OlqApplicationTest {
     public void syncStart() {
         long bef = System.currentTimeMillis();
         //创建自定义客户端
-//        String url = "http://127.0.0.1:8088/udsp/http/consume";
+//        String url = "http://10.1.97.3:9081/udsp/http/consume";
 //        NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class, url);
         //创建默认客户端,根据udsp.config.properties配置文件获取地址
         NoSqlClient client = ConsumerClientFactory.createCustomClient(NoSqlClient.class);
@@ -45,24 +47,24 @@ public class OlqApplicationTest {
         NoSqlRequest request = new NoSqlRequest();
 
         //基础参数
-        request.setServiceName("message");
+        request.setServiceName("olq_d56_cust_contact");
         //基础参数设置-设置调用start接口
         request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
         request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
-        request.setUdspUser("tomnic");
+        request.setUdspUser("BOS");
         request.setToken("000000");
 
         //设置业务参数-查询参数设置
         Map<String, String> data = new HashMap<>();
-        data.put("client_no", "1113829408");
+        data.put("custId", "1301943896");
         request.setData(data);
 
         //设置业务参数-分页参数设置
         Page page = new Page();
-        page.setPageSize(300);
-        page.setPageIndex(1);
+        page.setPageSize(10);
+        page.setPageIndex(2);
         request.setPage(page);
 
         //调用并获取结果
@@ -88,19 +90,22 @@ public class OlqApplicationTest {
                 logger.info("耗时：" + response.getConsumeTime());
                 // 消费ID
                 logger.info("消费ID：" + response.getConsumeId());
-                logger.debug("------------------------------------------------------------------");
+                logger.info("------------------------------------------------------------------");
                 // 字段信息
                 LinkedHashMap<String, String> returnColumns = response.getReturnColumns();
                 for (Map.Entry<String, String> entry : returnColumns.entrySet()) {
-                    logger.debug("名称：" + entry.getKey() + "，类型：" + entry.getValue());
+                    logger.info("名称：" + entry.getKey() + "，类型：" + entry.getValue());
                 }
-                logger.debug("------------------------------------------------------------------");
+                logger.info("------------------------------------------------------------------");
                 // 数据信息
                 List<Map<String, String>> records = response.getRecords();
+                int count = 1;
                 for (Map<String, String> record : records) {
+                    logger.info("+++++++++++++++++++++( " + count + " )++++++++++++++++++++++");
                     for (Map.Entry<String, String> entry : record.entrySet()) {
-                        logger.debug("名称：" + entry.getKey() + "，值：" + entry.getValue());
+                        logger.info("名称：" + entry.getKey() + "，值：" + entry.getValue());
                     }
+                    count++;
                 }
             } else {
                 logger.error("状态：" + response.getStatus());

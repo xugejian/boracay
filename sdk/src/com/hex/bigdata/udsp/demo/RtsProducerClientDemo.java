@@ -15,11 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 实时流生产者服务
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/17
- * TIME:19:53
+ * 实时流生产者调用示例
  */
 public class RtsProducerClientDemo {
     /**

@@ -148,10 +148,8 @@ ${extends("/goframe/function_layout.httl")}
             <div field="requestType" headerAlign="center" allowSort="true" renderer="renderRequestType">请求类型</div>
             <div field="syncType" headerAlign="center" allowSort="true" renderer="renderSyncType">同步/异步</div>
             <div field="requestContent" headerAlign="center" allowSort="true">请求内容</div>
-            <!--
             <div field="requestStartTime" headerAlign="center" allowSort="true" renderer="timeFormat">请求开始时间</div>
             <div field="requestEndTime" headerAlign="center" allowSort="true" renderer="timeFormat">请求结束时间</div>
-            -->
             <div field="requestInterval" headerAlign="center" renderer="renderRequestInterval">请求耗时（s）</div>
             <!--
             <div field="runStartTime" headerAlign="center" allowSort="true" renderer="timeFormat">执行开始时间</div>

@@ -5,10 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/17
- * TIME:19:53
+ * FTP下载文件示例
  */
 public class FileClientDemo {
     /**
