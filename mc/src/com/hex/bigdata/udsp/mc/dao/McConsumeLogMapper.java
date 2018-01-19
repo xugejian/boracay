@@ -22,7 +22,7 @@ public class McConsumeLogMapper extends AsyncInsertMapper<McConsumeLog> {
     protected boolean insertExe(McConsumeLog mcConsumeLog) {
         String requestContent = mcConsumeLog.getRequestContent();
         if (StringUtils.isNotBlank(requestContent) && requestContent.length() > 4000) {
-            mcConsumeLog.setResponseContent(requestContent.substring(0, 4000));
+            mcConsumeLog.setRequestContent(requestContent.substring(0, 4000));
         }
         try {
             return this.sqlSessionTemplate.insert("com.hex.bigdata.udsp.mc.dao.McConsumeLogMapper.insert", mcConsumeLog) == 1;
