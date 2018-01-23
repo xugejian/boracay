@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.rts.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
+import com.hex.bigdata.udsp.common.dao.ComPropertiesMapper;
 import com.hex.bigdata.udsp.common.model.ComExcelParam;
 import com.hex.bigdata.udsp.common.model.ComExcelProperties;
 import com.hex.bigdata.udsp.common.model.ComProperties;
@@ -80,6 +81,9 @@ public class RtsConsumerService extends BaseService {
 
     @Autowired
     private RcServiceService rcServiceService;
+
+    @Autowired
+    private ComPropertiesMapper comPropertiesMapper;
 
     private static List<ComExcelParam> comExcelParams;
 
@@ -431,7 +435,7 @@ public class RtsConsumerService extends BaseService {
     public void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, RtsConsumer rtsConsumer) {
 
         HSSFSheet sheet;
-        sheet = workbook.createSheet();
+//        sheet = workbook.createSheet();
 
         sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
@@ -464,19 +468,19 @@ public class RtsConsumerService extends BaseService {
         HSSFRow row;
         HSSFCell cell;
         int rowIndex = rtsIndexDto.getRowIndex();
-        List<RtsMatedataCol> rtsMatedataCols = rtsMatedataColService.selectByMdId(rtsConsumer.getMdId());
-        if (rtsMatedataCols.size() > 0) {
+        List<ComProperties> comPropertieses = comPropertiesMapper.selectList(rtsConsumer.getPkId());
+        if (comPropertieses.size() > 0) {
             int k = 1;
-            for (RtsMatedataCol rtsMatedataCol : rtsMatedataCols) {
+            for (ComProperties comPropertiese : comPropertieses) {
                 row = sheet.createRow(rowIndex);
                 cell = row.createCell(0);
                 cell.setCellValue(k);
                 cell = row.createCell(1);
-                cell.setCellValue(rtsMatedataCol.getName());
+                cell.setCellValue(comPropertiese.getName());
                 cell = row.createCell(2);
-                cell.setCellValue(rtsMatedataCol.getType());
+                cell.setCellValue(comPropertiese.getValue());
                 cell = row.createCell(3);
-                cell.setCellValue(rtsMatedataCol.getDescribe());
+                cell.setCellValue(comPropertiese.getDescribe());
                 rowIndex++;
                 k++;
             }
