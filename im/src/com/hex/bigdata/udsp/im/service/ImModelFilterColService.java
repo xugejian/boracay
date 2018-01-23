@@ -11,7 +11,7 @@ import java.util.List;
  * Created by jintian on 2017/9/11.
  */
 @Service
-public class ImModelFilterService {
+public class ImModelFilterColService {
 
     @Autowired
     private ImModelFilterColMapper imModelFilterColMapper;
