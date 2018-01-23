@@ -893,54 +893,6 @@ alter table MM_CONTRACTOR
   add constraint MM_CONTRACTOR_ID primary key (PK_ID);
 
 prompt
-prompt Creating table MM_MODEL_FILE
-prompt ============================
-prompt
-create table MM_MODEL_FILE
-(
-  pk_id      VARCHAR2(32) not null,
-  model_id   VARCHAR2(32) not null,
-  name       VARCHAR2(64) not null,
-  describe   VARCHAR2(256),
-  ver_num    VARCHAR2(32) not null,
-  ver_note   VARCHAR2(256),
-  path       VARCHAR2(256) not null,
-  content    BLOB,
-  start_time VARCHAR2(32) not null,
-  end_time   VARCHAR2(32) not null,
-  operation  CHAR(1) not null
-)
-;
-comment on table MM_MODEL_FILE
-  is '模型管理-文件管理';
-comment on column MM_MODEL_FILE.pk_id
-  is '主键';
-comment on column MM_MODEL_FILE.model_id
-  is '模型ID';
-comment on column MM_MODEL_FILE.name
-  is '名称';
-comment on column MM_MODEL_FILE.describe
-  is '说明';
-comment on column MM_MODEL_FILE.ver_num
-  is '版本号';
-comment on column MM_MODEL_FILE.ver_note
-  is '版本注释';
-comment on column MM_MODEL_FILE.path
-  is '路径';
-comment on column MM_MODEL_FILE.content
-  is '内容';
-comment on column MM_MODEL_FILE.start_time
-  is '拉链表，开始时间';
-comment on column MM_MODEL_FILE.end_time
-  is '拉链表，结束时间';
-comment on column MM_MODEL_FILE.operation
-  is '操作（1：添加、更新；2：删除）';
-create index IDX_MM_MF_MMID_STIME_ETIME on MM_MODEL_FILE (MODEL_ID, START_TIME, END_TIME);
-create index IDX_MM_MF_STIME_ETIME on MM_MODEL_FILE (START_TIME, END_TIME);
-alter table MM_MODEL_FILE
-  add constraint PK_MM_MODEL_FILE primary key (PK_ID);
-
-prompt
 prompt Creating table MM_MODEL_INFO
 prompt ============================
 prompt
@@ -1038,35 +990,6 @@ comment on column MM_MODEL_PARAM.col_type
 create index IDX_MM_MODEL_PARAM_MMID on MM_MODEL_PARAM (MM_ID);
 alter table MM_MODEL_PARAM
   add constraint PK_MM_MODEL_PARAM primary key (PK_ID);
-
-prompt
-prompt Creating table MM_MODEL_VER
-prompt ===========================
-prompt
-create table MM_MODEL_VER
-(
-  pk_id      VARCHAR2(32) not null,
-  model_name VARCHAR2(256) not null,
-  ver_num    NUMBER(10) not null,
-  ver_note   VARCHAR2(4000),
-  crt_time   VARCHAR2(20) not null,
-  ver_name   VARCHAR2(256)
-)
-;
-comment on column MM_MODEL_VER.pk_id
-  is '主键';
-comment on column MM_MODEL_VER.model_name
-  is '模型名称';
-comment on column MM_MODEL_VER.ver_num
-  is '版本号';
-comment on column MM_MODEL_VER.ver_note
-  is '版本备注';
-comment on column MM_MODEL_VER.crt_time
-  is '创建时间';
-comment on column MM_MODEL_VER.ver_name
-  is '版本名称';
-alter table MM_MODEL_VER
-  add constraint PK_MM_MODEL_VER primary key (PK_ID);
 
 prompt
 prompt Creating table OLQ_APPLICATION
@@ -1220,7 +1143,8 @@ create table RC_USER_SERVICE
   max_async_wait_timeout    NUMBER(10) default 600000 not null,
   max_sync_execute_timeout  NUMBER(10) default 3000 not null,
   max_async_execute_timeout NUMBER(10) default 600000 not null,
-  status                    CHAR(1) default 0 not null
+  status                    CHAR(1) default 0 not null,
+  ALARM_TYPE				VARCHAR2(32) default 'NONE' not null
 )
 ;
 comment on column RC_USER_SERVICE.pk_id
@@ -1259,6 +1183,8 @@ comment on column RC_USER_SERVICE.max_async_execute_timeout
   is '异步最大执行超时时间';
 comment on column RC_USER_SERVICE.status
   is '启停标志（0：启动，1：停用）';
+comment on column RC_USER_SERVICE.ALARM_TYPE
+  is '告警方式（NONE、MAIL、...）';
 create index IDX_RC_USER_SERVICE_DF on RC_USER_SERVICE (DEL_FLG);
 create index IDX_RC_USER_SERVICE_DF_SID on RC_USER_SERVICE (DEL_FLG, SERVICE_ID);
 create index IDX_RC_USER_SERVICE_DF_SID_UID on RC_USER_SERVICE (DEL_FLG, SERVICE_ID, USER_ID);
