@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hex.bigdata.udsp.mm.dao.ModelParamMapper" >
-  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.mm.model.ModelParam" >
+<mapper namespace="com.hex.bigdata.udsp.mm.dao.MmModelParamMapper" >
+  <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.mm.model.MmModelParam" >
     <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
     <result column="MM_ID" property="mmId" jdbcType="VARCHAR" />
     <result column="SEQ" property="seq" jdbcType="DECIMAL" />
@@ -16,7 +16,7 @@
     delete from MM_MODEL_PARAM
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.hex.bigdata.udsp.mm.model.ModelParam" >
+  <insert id="insert" parameterType="com.hex.bigdata.udsp.mm.model.MmModelParam" >
     insert into MM_MODEL_PARAM (PK_ID, MM_ID, SEQ, 
       NAME, DESCRIBE, TYPE, 
       LENGTH, NOTE, COL_TYPE
@@ -26,7 +26,7 @@
       #{length,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{colType,jdbcType=VARCHAR}
       )
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.mm.model.ModelParam" >
+  <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.mm.model.MmModelParam" >
     update MM_MODEL_PARAM
     set MM_ID = #{mmId,jdbcType=VARCHAR},
       SEQ = #{seq,jdbcType=DECIMAL},
@@ -47,7 +47,7 @@
     select PK_ID, MM_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, NOTE, COL_TYPE
     from MM_MODEL_PARAM
   </select>
-  <select id="select" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mm.model.ModelParam">
+  <select id="select" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mm.model.MmModelParam">
     select PK_ID, MM_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, NOTE, COL_TYPE
     from MM_MODEL_PARAM
     <trim prefix="WHERE" prefixOverrides="AND |OR ">

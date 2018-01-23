@@ -8,7 +8,7 @@ import java.io.Serializable;
  * DATE:2017/4/12
  * TIME:14:42
  */
-public class Contractor implements Serializable {
+public class MmContractor implements Serializable {
     /**
      * 主键
      */

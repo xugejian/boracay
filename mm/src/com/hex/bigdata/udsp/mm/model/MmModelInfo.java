@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.mm.model;
 
 import java.io.Serializable;
 
-public class ModelInfo implements Serializable {
+public class MmModelInfo implements Serializable {
     private String pkId;
 
     private String name;

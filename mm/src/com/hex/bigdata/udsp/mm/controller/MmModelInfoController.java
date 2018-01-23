@@ -2,9 +2,9 @@ package com.hex.bigdata.udsp.mm.controller;
 
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.mm.dto.MmCollocateParamView;
-import com.hex.bigdata.udsp.mm.dto.ModelInfoView;
-import com.hex.bigdata.udsp.mm.model.ModelInfo;
-import com.hex.bigdata.udsp.mm.service.ModelInfoService;
+import com.hex.bigdata.udsp.mm.dto.MmModelInfoView;
+import com.hex.bigdata.udsp.mm.model.MmModelInfo;
+import com.hex.bigdata.udsp.mm.service.MmModelInfoService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -34,17 +34,17 @@ import java.util.Map;
  */
 @RequestMapping("/mm/modelInfo/")
 @Controller
-public class ModelInfoController extends BaseController {
+public class MmModelInfoController extends BaseController {
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(ModelInfoController.class);
+    private static Logger logger = LogManager.getLogger(MmModelInfoController.class);
 
     /**
      * 模型管理-模型基础信息管理服务
      */
     @Autowired
-    private ModelInfoService modelInfoService;
+    private MmModelInfoService modelInfoService;
 
     /**
      * 分页多条件查询
@@ -54,8 +54,8 @@ public class ModelInfoController extends BaseController {
      */
     @RequestMapping({"/page"})
     @ResponseBody
-    public PageListResult queryRtsDatasources(ModelInfoView modelInfoView, Page page) {
-        List<ModelInfoView> list = modelInfoService.select(modelInfoView, page);
+    public PageListResult queryRtsDatasources(MmModelInfoView modelInfoView, Page page) {
+        List<MmModelInfoView> list = modelInfoService.select(modelInfoView, page);
         logger.debug("selectPage search=" + JSONUtil.parseObj2JSON(modelInfoView) + " page=" + JSONUtil.parseObj2JSON(page));
         return new PageListResult(list, page);
     }
@@ -101,7 +101,7 @@ public class ModelInfoController extends BaseController {
     @RequestMapping({"/select"})
     @ResponseBody
     public PageListResult select() {
-        List<ModelInfo> list = null;
+        List<MmModelInfo> list = null;
         try {
             list = modelInfoService.selectAll();
         } catch (Exception e) {
@@ -151,7 +151,7 @@ public class ModelInfoController extends BaseController {
     public MessageResult select(@PathVariable("pkId") String pkId) {
         boolean status = true;
         String message = "查询成功";
-        ModelInfo modelInfo = null;
+        MmModelInfo modelInfo = null;
         if (StringUtils.isBlank(pkId)) {
             status = false;
             message = "请求参数为空";
@@ -200,7 +200,7 @@ public class ModelInfoController extends BaseController {
 
     @RequestMapping("/delete")
     @ResponseBody
-    public MessageResult delete(@RequestBody ModelInfo[] modelInfos) {
+    public MessageResult delete(@RequestBody MmModelInfo[] modelInfos) {
         boolean status = true;
         String message = "删除成功";
         if (modelInfos.length == 0) {
@@ -226,7 +226,7 @@ public class ModelInfoController extends BaseController {
     public MessageResult checkDepend(@PathVariable("modelId") String modelId) {
         boolean status = true;
         String message = "不存在依赖";
-        ModelInfo modelInfo = null;
+        MmModelInfo modelInfo = null;
         if (StringUtils.isBlank(modelId)) {
             status = false;
             message = "请求参数为空";
@@ -277,7 +277,7 @@ public class ModelInfoController extends BaseController {
 
     @ResponseBody
     @RequestMapping("/download")
-    public String createExcel(@RequestBody ModelInfo[] modelInfos){
+    public String createExcel(@RequestBody MmModelInfo[] modelInfos){
         // 写入Excel文件
         String filePath = "";
         try {

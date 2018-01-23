@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.mm.service;
 
-import com.hex.bigdata.udsp.mm.dao.ModelParamMapper;
-import com.hex.bigdata.udsp.mm.model.ModelParam;
+import com.hex.bigdata.udsp.mm.dao.MmModelParamMapper;
+import com.hex.bigdata.udsp.mm.model.MmModelParam;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.Util;
@@ -18,13 +18,13 @@ import java.util.List;
  * TIME:14:43
  */
 @Service
-public class ModelParamService extends BaseService {
+public class MmModelParamService extends BaseService {
 
     @Autowired
-    private ModelParamMapper modelParamMapper;
+    private MmModelParamMapper modelParamMapper;
 
     @Transactional
-    public String insert(ModelParam modelParam) {
+    public String insert(MmModelParam modelParam) {
         String pkId = Util.uuid();
         modelParam.setPkId(pkId);
         if (modelParamMapper.insert(modelParam.getPkId(), modelParam)) {
@@ -34,7 +34,7 @@ public class ModelParamService extends BaseService {
     }
 
     @Transactional
-    public boolean update(ModelParam modelParam) {
+    public boolean update(MmModelParam modelParam) {
         return modelParamMapper.update(modelParam.getPkId(), modelParam);
     }
 
@@ -48,29 +48,29 @@ public class ModelParamService extends BaseService {
         return modelParamMapper.deleteByMmId(mmId);
     }
 
-    public ModelParam select(String pkId) {
+    public MmModelParam select(String pkId) {
         return modelParamMapper.select(pkId);
     }
 
-    public List<ModelParam> select(ModelParam modelParam, Page page) {
+    public List<MmModelParam> select(MmModelParam modelParam, Page page) {
         return modelParamMapper.select(modelParam, page);
     }
 
-    public List<ModelParam> select(String mmId, String type) {
+    public List<MmModelParam> select(String mmId, String type) {
         return modelParamMapper.select(mmId, type);
     }
 
-    public List<ModelParam> select(ModelParam modelParam) {
+    public List<MmModelParam> select(MmModelParam modelParam) {
         return modelParamMapper.select(modelParam);
     }
 
-    public List<ModelParam> selectByMmId(String mmId) {
+    public List<MmModelParam> selectByMmId(String mmId) {
         return modelParamMapper.selectByMmId(mmId);
     }
 
     @Transactional
-    public boolean insertQueryColList(String mmId, List<ModelParam> modelParams) {
-        for (ModelParam modelParam : modelParams) {
+    public boolean insertQueryColList(String mmId, List<MmModelParam> modelParams) {
+        for (MmModelParam modelParam : modelParams) {
             modelParam.setPkId(Util.uuid());
             modelParam.setMmId(mmId);
             modelParam.setType("1");
@@ -79,11 +79,11 @@ public class ModelParamService extends BaseService {
     }
 
     @Transactional
-    public boolean insertReturnColList(String mmId, List<ModelParam> modelParams) {
+    public boolean insertReturnColList(String mmId, List<MmModelParam> modelParams) {
         if (modelParams == null) {
             return true;
         }
-        for (ModelParam modelParam : modelParams) {
+        for (MmModelParam modelParam : modelParams) {
             modelParam.setPkId(Util.uuid());
             modelParam.setMmId(mmId);
             modelParam.setType("2");

@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.mm.controller;
 
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.mm.dto.ContractorView;
-import com.hex.bigdata.udsp.mm.model.Contractor;
-import com.hex.bigdata.udsp.mm.service.ContractorService;
+import com.hex.bigdata.udsp.mm.dto.MmContractorView;
+import com.hex.bigdata.udsp.mm.model.MmContractor;
+import com.hex.bigdata.udsp.mm.service.MmContractorService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -32,17 +32,17 @@ import java.util.Map;
  */
 @RequestMapping("/mm/contractor/")
 @Controller
-public class ContractorController extends BaseController{
+public class MmContractorController extends BaseController{
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(ContractorController.class);
+    private static Logger logger = LogManager.getLogger(MmContractorController.class);
 
     /**
      * 模型管理-模型基础信息管理服务
      */
     @Autowired
-    private ContractorService contractorService;
+    private MmContractorService contractorService;
 
     /**
      * 分页多条件查询
@@ -52,8 +52,8 @@ public class ContractorController extends BaseController{
      */
     @RequestMapping({"/page"})
     @ResponseBody
-    public PageListResult queryRtsDatasources(ContractorView contractorView, Page page) {
-        List<ContractorView> list = contractorService.select(contractorView, page);
+    public PageListResult queryRtsDatasources(MmContractorView contractorView, Page page) {
+        List<MmContractorView> list = contractorService.select(contractorView, page);
         logger.debug("selectPage search=" + JSONUtil.parseObj2JSON(contractorView) + " page=" + JSONUtil.parseObj2JSON(page));
         return new PageListResult(list, page);
     }
@@ -66,7 +66,7 @@ public class ContractorController extends BaseController{
      */
     @RequestMapping({"/insert"})
     @ResponseBody
-    public MessageResult insert(@RequestBody Contractor contractor) {
+    public MessageResult insert(@RequestBody MmContractor contractor) {
         boolean status = true;
         String message = "添加成功";
         if (contractor == null) {
@@ -132,7 +132,7 @@ public class ContractorController extends BaseController{
     public MessageResult select(@PathVariable("pkId") String pkId) {
         boolean status = true;
         String message = "查询成功";
-        Contractor contractor = null;
+        MmContractor contractor = null;
         if (StringUtils.isBlank(pkId)) {
             status = false;
             message = "请求参数为空";
@@ -154,7 +154,7 @@ public class ContractorController extends BaseController{
 
     @RequestMapping({"/update"})
     @ResponseBody
-    public MessageResult update(@RequestBody Contractor contractor) {
+    public MessageResult update(@RequestBody MmContractor contractor) {
         boolean status = true;
         String message = "更新成功";
         if (contractor == null) {
@@ -181,7 +181,7 @@ public class ContractorController extends BaseController{
 
     @RequestMapping("/delete")
     @ResponseBody
-    public MessageResult delete(@RequestBody Contractor[] contractors) {
+    public MessageResult delete(@RequestBody MmContractor[] contractors) {
         boolean status = true;
         String message = "删除成功";
         if (contractors.length == 0) {
@@ -211,7 +211,7 @@ public class ContractorController extends BaseController{
     @RequestMapping({"/select"})
     @ResponseBody
     public PageListResult select() {
-        List<Contractor> list = null;
+        List<MmContractor> list = null;
         try {
             list = contractorService.selectAll();
         } catch (Exception e) {
@@ -248,7 +248,7 @@ public class ContractorController extends BaseController{
 
     @ResponseBody
     @RequestMapping("/download")
-    public String createExcel(@RequestBody Contractor[] contractors){
+    public String createExcel(@RequestBody MmContractor[] contractors){
         // 写入Excel文件
         String filePath = "";
         try {

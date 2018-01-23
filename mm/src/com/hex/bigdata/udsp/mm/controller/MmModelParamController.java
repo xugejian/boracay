@@ -1,8 +1,8 @@
 package com.hex.bigdata.udsp.mm.controller;
 
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.mm.model.ModelParam;
-import com.hex.bigdata.udsp.mm.service.ModelParamService;
+import com.hex.bigdata.udsp.mm.model.MmModelParam;
+import com.hex.bigdata.udsp.mm.service.MmModelParamService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -25,18 +25,18 @@ import java.util.List;
  */
 @RequestMapping("/mm/params/")
 @Controller
-public class ModelParamController extends BaseController {
+public class MmModelParamController extends BaseController {
     
-    private static Logger logger = LogManager.getLogger(ModelParamController.class);
+    private static Logger logger = LogManager.getLogger(MmModelParamController.class);
 
     @Autowired
-    private ModelParamService modelParamService;
+    private MmModelParamService modelParamService;
 
     @RequestMapping({"/page"})
     @ResponseBody
-    public PageListResult page(ModelParam modelParam, Page page) {
+    public PageListResult page(MmModelParam modelParam, Page page) {
         logger.debug("select search=" + JSONUtil.parseObj2JSON(modelParam) + " page=" + JSONUtil.parseObj2JSON(page));
-        List<ModelParam> list = null;
+        List<MmModelParam> list = null;
         try {
             list = modelParamService.select(modelParam, page);
         } catch (Exception e) {
@@ -48,9 +48,9 @@ public class ModelParamController extends BaseController {
 
     @RequestMapping({"/select"})
     @ResponseBody
-    public PageListResult select(ModelParam modelParam) {
+    public PageListResult select(MmModelParam modelParam) {
         logger.debug("select search=" + JSONUtil.parseObj2JSON(modelParam));
-        List<ModelParam> list = null;
+        List<MmModelParam> list = null;
         try {
             list = modelParamService.select(modelParam);
         } catch (Exception e) {
@@ -64,7 +64,7 @@ public class ModelParamController extends BaseController {
     @ResponseBody
     public MessageResult selectByPkId(@PathVariable("pkId") String pkId) {
         logger.debug("select pkId=" + pkId);
-        ModelParam modelParam = null;
+        MmModelParam modelParam = null;
         try {
             modelParam = modelParamService.select(pkId);
         } catch (Exception e) {
@@ -78,7 +78,7 @@ public class ModelParamController extends BaseController {
     @ResponseBody
     public MessageResult selectByPkIdAndType(@PathVariable("mmId") String mmId, @PathVariable("type") String type) {
         logger.debug("select mmId=" + mmId + ",type=" + type);
-        List<ModelParam> list = null;
+        List<MmModelParam> list = null;
         try {
             list = modelParamService.select(mmId, type);
         } catch (Exception e) {

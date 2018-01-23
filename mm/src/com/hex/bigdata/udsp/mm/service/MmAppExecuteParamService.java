@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.mm.service;
 
-import com.hex.bigdata.udsp.mm.dao.ExecuteParamMapper;
+import com.hex.bigdata.udsp.mm.dao.MmAppExecuteParamMapper;
 import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.Util;
@@ -17,10 +17,10 @@ import java.util.List;
  * TIME:9:15
  */
 @Service
-public class ExecuteParamService extends BaseService {
+public class MmAppExecuteParamService extends BaseService {
 
     @Autowired
-    private ExecuteParamMapper executeParamMapper;
+    private MmAppExecuteParamMapper executeParamMapper;
 
     @Transactional
     public String insert(MmAppExecuteParam executeParam) {

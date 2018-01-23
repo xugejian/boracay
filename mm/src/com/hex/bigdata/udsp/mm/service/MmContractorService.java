@@ -6,11 +6,10 @@ import com.hex.bigdata.udsp.common.service.FtpUserManagerService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
-import com.hex.bigdata.udsp.mm.dao.ContractorMapper;
-import com.hex.bigdata.udsp.mm.dto.ContractorView;
-import com.hex.bigdata.udsp.mm.model.Contractor;
-import com.hex.bigdata.udsp.mm.model.ModelInfo;
+import com.hex.bigdata.udsp.mm.dao.MmContractorMapper;
+import com.hex.bigdata.udsp.mm.dto.MmContractorView;
+import com.hex.bigdata.udsp.mm.model.MmContractor;
+import com.hex.bigdata.udsp.mm.model.MmModelInfo;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
@@ -44,30 +43,30 @@ import java.util.Map;
  * TIME:19:11
  */
 @Service
-public class ContractorService extends BaseService {
+public class MmContractorService extends BaseService {
 
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger(ContractorService.class);
+    private static Logger logger = LogManager.getLogger(MmContractorService.class);
 
     /**
      * 模型管理-模型基础信息管理Dao层服务
      */
     @Autowired
-    private ContractorMapper contractorMapper;
+    private MmContractorMapper contractorMapper;
 
     /**
      * 模型服务
      */
     @Autowired
-    private ModelInfoService modelInfoService;
+    private MmModelInfoService modelInfoService;
 
     @Autowired
     private FtpUserManagerService ftpUserManagerService;
 
     @Transactional
-    public String insert(Contractor contractor) {
+    public String insert(MmContractor contractor) {
         String pkId = Util.uuid();
         String ftpUsername = contractor.getName();
         String ftpPassword = contractor.getFtpPassword();
@@ -87,7 +86,7 @@ public class ContractorService extends BaseService {
      * @return
      */
     @Transactional
-    public boolean update(Contractor modelInfo) {
+    public boolean update(MmContractor modelInfo) {
         boolean result = false;
         String ftpUserName = modelInfo.getName();
         String ftpPassword = modelInfo.getFtpPassword();
@@ -110,7 +109,7 @@ public class ContractorService extends BaseService {
      */
     @Transactional
     public boolean delete(String pkId) {
-        Contractor contractor = contractorMapper.select(pkId);
+        MmContractor contractor = contractorMapper.select(pkId);
         ftpUserManagerService.delProducerFtpUser(contractor.getName());
         return contractorMapper.delete(pkId);
     }
@@ -121,7 +120,7 @@ public class ContractorService extends BaseService {
      * @param pkId
      * @return
      */
-    public Contractor select(String pkId) {
+    public MmContractor select(String pkId) {
         return contractorMapper.select(pkId);
     }
 
@@ -132,7 +131,7 @@ public class ContractorService extends BaseService {
      * @param page           分页参数
      * @return
      */
-    public List<ContractorView> select(ContractorView contractorView, Page page) {
+    public List<MmContractorView> select(MmContractorView contractorView, Page page) {
         return contractorMapper.selectPage(contractorView, page);
     }
 
@@ -143,7 +142,7 @@ public class ContractorService extends BaseService {
      * @return 存在返回true，不存在返回false
      */
     public boolean checekUniqueName(String name) {
-        Contractor contractor = this.contractorMapper.selectByName(name);
+        MmContractor contractor = this.contractorMapper.selectByName(name);
         return contractor != null;
     }
 
@@ -154,13 +153,13 @@ public class ContractorService extends BaseService {
      * @return
      */
     @Transactional
-    public MessageResult delete(Contractor[] contractors) {
+    public MessageResult delete(MmContractor[] contractors) {
         boolean flag = true;
         StringBuffer message = new StringBuffer("");
-        for (Contractor contractor : contractors) {
+        for (MmContractor contractor : contractors) {
             String pkId = contractor.getPkId();
             //检查是否存在下游依赖
-            List<ModelInfo> modelInfos = modelInfoService.selectByContractorId(pkId);
+            List<MmModelInfo> modelInfos = modelInfoService.selectByContractorId(pkId);
             //存在下游依赖
             if (modelInfos != null && modelInfos.size() > 0) {
                 flag = false;
@@ -184,7 +183,7 @@ public class ContractorService extends BaseService {
      *
      * @return
      */
-    public List<Contractor> selectAll() {
+    public List<MmContractor> selectAll() {
         return contractorMapper.selectAll();
     }
 
@@ -212,10 +211,10 @@ public class ContractorService extends BaseService {
             sheet = hfb.getSheetAt(0);
 
             Map<String,List> uploadExcelModel = ExcelUploadhelper.getUploadExcelModel(sheet, dataSourceContent);
-            List<Contractor> contractorList = (List<Contractor>)uploadExcelModel.get("com.hex.bigdata.udsp.mm.model.Contractor");
+            List<MmContractor> contractorList = (List<MmContractor>)uploadExcelModel.get("com.hex.bigdata.udsp.mm.model.Contractor");
             String inseResult;
             int i = 1;
-            for (Contractor contractor : contractorList){
+            for (MmContractor contractor : contractorList){
 
                 if(contractorMapper.selectByName(contractor.getName()) != null){
                     resultMap.put("status","false");
@@ -248,7 +247,7 @@ public class ContractorService extends BaseService {
         return resultMap;
     }
 
-    public String createExcel(Contractor[] contractors) {
+    public String createExcel(MmContractor[] contractors) {
         HSSFWorkbook workbook = null;
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
@@ -257,10 +256,10 @@ public class ContractorService extends BaseService {
         HSSFCell cell;
         String seprator = FileUtil.getFileSeparator();
         //模板文件位置
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_mmcontractor.xls";
+        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_mmContractor.xls";
         // 下载地址
         String dirPath = CreateFileUtil.getLocalDirPath();
-        dirPath += seprator+ "download_mmcontractor_excel_"+ DateUtil.format(new Date(), "yyyyMMddHHmmss")+".xls";
+        dirPath += seprator+ "download_mmContractor_excel_"+ DateUtil.format(new Date(), "yyyyMMddHHmmss")+".xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
 
@@ -279,9 +278,9 @@ public class ContractorService extends BaseService {
         }
 
         int i = 1;
-        for(Contractor contractor : contractors){
+        for(MmContractor contractor : contractors){
             //设置内容
-            Contractor mmcontractor = contractorMapper.select(contractor.getPkId());
+            MmContractor mmcontractor = contractorMapper.select(contractor.getPkId());
             row = sheet.createRow(i);
             cell = row.createCell(0);
             cell.setCellValue(i);

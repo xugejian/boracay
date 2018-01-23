@@ -1,16 +1,16 @@
 package com.hex.bigdata.udsp.mm.dto;
 
-import com.hex.bigdata.udsp.mm.model.Contractor;
+import com.hex.bigdata.udsp.mm.model.MmModelInfo;
 
 import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA
  * Author: tomnic.wang
- * DATE:2017/4/12
- * TIME:19:08
+ * DATE:2017/4/7
+ * TIME:10:05
  */
-public class ContractorView extends Contractor implements Serializable {
+public class MmModelInfoView extends MmModelInfo implements Serializable {
     /**
      * 创建时间查询时间范围-开始时间
      */

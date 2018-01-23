@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.mm.service;
 
-import com.hex.bigdata.udsp.mm.dao.ReturnParamMapper;
+import com.hex.bigdata.udsp.mm.dao.MmAppReturnParamMapper;
 import com.hex.bigdata.udsp.mm.model.MmAppReturnParam;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.Util;
@@ -17,10 +17,10 @@ import java.util.List;
  * TIME:9:16
  */
 @Service
-public class ReturnParamService extends BaseService {
+public class MmAppReturnParamService extends BaseService {
 
     @Autowired
-    private ReturnParamMapper returnParamMapper;
+    private MmAppReturnParamMapper returnParamMapper;
 
     @Transactional
     public String insert(MmAppReturnParam returnParam) {

@@ -6,14 +6,13 @@ import com.hex.bigdata.udsp.common.model.ComExcelProperties;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
-import com.hex.bigdata.udsp.mm.dao.ContractorMapper;
-import com.hex.bigdata.udsp.mm.dao.ModelInfoMapper;
+import com.hex.bigdata.udsp.mm.dao.MmContractorMapper;
+import com.hex.bigdata.udsp.mm.dao.MmModelInfoMapper;
 import com.hex.bigdata.udsp.mm.dto.MmCollocateParamView;
-import com.hex.bigdata.udsp.mm.dto.ModelInfoView;
+import com.hex.bigdata.udsp.mm.dto.MmModelInfoView;
 import com.hex.bigdata.udsp.mm.model.MmApplication;
-import com.hex.bigdata.udsp.mm.model.ModelInfo;
-import com.hex.bigdata.udsp.mm.model.ModelParam;
+import com.hex.bigdata.udsp.mm.model.MmModelInfo;
+import com.hex.bigdata.udsp.mm.model.MmModelParam;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
@@ -44,20 +43,20 @@ import java.util.*;
  * TIME:9:17
  */
 @Service
-public class ModelInfoService extends BaseService {
+public class MmModelInfoService extends BaseService {
     /**
      * 模型管理-模型基础信息管理Dao层服务
      */
     @Autowired
-    private ModelInfoMapper modelInfoMapper;
+    private MmModelInfoMapper modelInfoMapper;
 
     @Autowired
-    private ModelParamService modelParamService;
+    private MmModelParamService modelParamService;
 
     @Autowired
     private MmApplicationService mmApplicationService;
     @Autowired
-    private ContractorMapper contractorMapper;
+    private MmContractorMapper contractorMapper;
 
     private static  List<ComExcelParam> comExcelParams = new ArrayList<>();
     static {
@@ -71,7 +70,7 @@ public class ModelInfoService extends BaseService {
 
 
     @Transactional
-    public String insert(ModelInfo modelInfo) {
+    public String insert(MmModelInfo modelInfo) {
         String pkId = Util.uuid();
         modelInfo.setPkId(pkId);
         if (modelInfoMapper.insert(pkId, modelInfo)) {
@@ -104,7 +103,7 @@ public class ModelInfoService extends BaseService {
      * @return
      */
     @Transactional
-    public boolean update(ModelInfo modelInfo) {
+    public boolean update(MmModelInfo modelInfo) {
         return modelInfoMapper.update(modelInfo.getPkId(), modelInfo);
     }
 
@@ -116,7 +115,7 @@ public class ModelInfoService extends BaseService {
      */
     @Transactional
     public boolean update(MmCollocateParamView mmCollocateParamView) {
-        ModelInfo modelInfo = mmCollocateParamView.getModelInfo();
+        MmModelInfo modelInfo = mmCollocateParamView.getModelInfo();
 
         String mmId = modelInfo.getPkId();
         if (!this.update(modelInfo)) {
@@ -147,7 +146,7 @@ public class ModelInfoService extends BaseService {
      * @param pkId
      * @return
      */
-    public ModelInfo select(String pkId) {
+    public MmModelInfo select(String pkId) {
         return modelInfoMapper.select(pkId);
     }
 
@@ -158,7 +157,7 @@ public class ModelInfoService extends BaseService {
      * @param page            分页参数
      * @return
      */
-    public List<ModelInfoView> select(ModelInfoView rtsMatedataView, Page page) {
+    public List<MmModelInfoView> select(MmModelInfoView rtsMatedataView, Page page) {
         return modelInfoMapper.selectPage(rtsMatedataView, page);
     }
 
@@ -169,7 +168,7 @@ public class ModelInfoService extends BaseService {
      * @return 存在返回true，不存在返回false
      */
     public boolean checekUniqueName(String name) {
-        ModelInfo rtsMatedata = this.modelInfoMapper.selectByName(name);
+        MmModelInfo rtsMatedata = this.modelInfoMapper.selectByName(name);
         return rtsMatedata != null;
     }
 
@@ -180,10 +179,10 @@ public class ModelInfoService extends BaseService {
      * @return
      */
     @Transactional
-    public MessageResult delete(ModelInfo[] modelInfos) {
+    public MessageResult delete(MmModelInfo[] modelInfos) {
         boolean flag = true;
         StringBuffer message = new StringBuffer("");
-        for (ModelInfo modelInfo : modelInfos) {
+        for (MmModelInfo modelInfo : modelInfos) {
             String pkId = modelInfo.getPkId();
             //检查依赖
             List<MmApplication> mmApplications = mmApplicationService.selectByModelId(pkId);
@@ -210,7 +209,7 @@ public class ModelInfoService extends BaseService {
      *
      * @return
      */
-    public List<ModelInfo> selectAll() {
+    public List<MmModelInfo> selectAll() {
         return this.modelInfoMapper.selectAll();
     }
 
@@ -220,7 +219,7 @@ public class ModelInfoService extends BaseService {
      * @param contractorId
      * @return
      */
-    public List<ModelInfo> selectByContractorId(String contractorId) {
+    public List<MmModelInfo> selectByContractorId(String contractorId) {
         return this.modelInfoMapper.selectByContractorId(contractorId);
     }
 
@@ -266,8 +265,8 @@ public class ModelInfoService extends BaseService {
             for(int i = 0 ,activeIndex =  hfb.getNumberOfSheets();i < activeIndex;i++){
                 sheet = hfb.getSheetAt(i);
                 Map<String,List> uploadExcelModel = ExcelUploadhelper.getUploadExcelModel(sheet, dataSourceContent);
-                List<ModelInfo> modelInfos = (List<ModelInfo>)uploadExcelModel.get("com.hex.bigdata.udsp.mm.model.ModelInfo");
-                ModelInfo modelInfo = modelInfos.get(0);
+                List<MmModelInfo> modelInfos = (List<MmModelInfo>)uploadExcelModel.get("com.hex.bigdata.udsp.mm.model.ModelInfo");
+                MmModelInfo modelInfo = modelInfos.get(0);
                 if(modelInfoMapper.selectByName(modelInfo.getName()) != null){
                     resultMap.put("status","false");
                     resultMap.put("message","第" + (i+1) + "个名称重复！");
@@ -282,8 +281,8 @@ public class ModelInfoService extends BaseService {
                 modelInfo.setContractor(contractorMapper.selectByName(modelInfo.getContractor()).getPkId());
                 String pkId = insert(modelInfo);
 
-                List<ModelParam> modelQueryParam = (List<ModelParam>)uploadExcelModel.get("com.hex.bigdata.udsp.mm.model.ModelParam");
-                List<ModelParam> modelReturnParam = (List<ModelParam>)uploadExcelModel.get("com.hex.bigdata.udsp.mm.model.ModelParam1");
+                List<MmModelParam> modelQueryParam = (List<MmModelParam>)uploadExcelModel.get("com.hex.bigdata.udsp.mm.model.ModelParam");
+                List<MmModelParam> modelReturnParam = (List<MmModelParam>)uploadExcelModel.get("com.hex.bigdata.udsp.mm.model.ModelParam1");
 
                 boolean insertQuery = modelParamService.insertQueryColList(pkId, modelQueryParam);
                 boolean insertReturn = modelParamService.insertReturnColList(pkId, modelReturnParam);
@@ -312,7 +311,7 @@ public class ModelInfoService extends BaseService {
         return resultMap;
     }
 
-    public String createExcel(ModelInfo[] modelInfos) {
+    public String createExcel(MmModelInfo[] modelInfos) {
         HSSFWorkbook workbook = null;
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
@@ -351,7 +350,7 @@ public class ModelInfoService extends BaseService {
         comExcelParams.add(new ComExcelParam(1,5,"note"));
         comExcelParams.add(new ComExcelParam(2,1,"modelType"));
         comExcelParams.add(new ComExcelParam(2,3,"describe"));
-        for(ModelInfo modelInfo : modelInfos){
+        for(MmModelInfo modelInfo : modelInfos){
             sheet = workbook.createSheet();
             //将前面样式内容复制到下载表中
             int i = 0;
@@ -364,7 +363,7 @@ public class ModelInfoService extends BaseService {
             }
 
             //设置内容
-            ModelInfo model = modelInfoMapper.select(modelInfo.getPkId());
+            MmModelInfo model = modelInfoMapper.select(modelInfo.getPkId());
             //设置厂商名字
             model.setContractor(contractorMapper.select(model.getContractor()).getName());
             for(ComExcelParam comExcelParam : comExcelParams){
@@ -376,9 +375,9 @@ public class ModelInfoService extends BaseService {
                     e.printStackTrace();
                 }
             }
-            List<ModelParam> modelQueryCols = modelParamService.select(modelInfo.getPkId(),"1");
+            List<MmModelParam> modelQueryCols = modelParamService.select(modelInfo.getPkId(),"1");
             if(modelQueryCols.size() > 0){
-                for(ModelParam modelQueryCol : modelQueryCols){
+                for(MmModelParam modelQueryCol : modelQueryCols){
                     row = sheet.createRow(i);
                     cell = row.createCell(0);
                     cell.setCellValue(modelQueryCol.getSeq());
@@ -401,9 +400,9 @@ public class ModelInfoService extends BaseService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            List<ModelParam> modelReturnCols = modelParamService.select(modelInfo.getPkId(), "2");
+            List<MmModelParam> modelReturnCols = modelParamService.select(modelInfo.getPkId(), "2");
             if(modelQueryCols.size() > 0){
-                for(ModelParam modelReturnCol : modelReturnCols){
+                for(MmModelParam modelReturnCol : modelReturnCols){
                     row = sheet.createRow(i);
                     cell = row.createCell(0);
                     cell.setCellValue(modelReturnCol.getSeq());
