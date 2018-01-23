@@ -22,5 +22,6 @@
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="console" />
     <orderEntry type="module" module-name="md" />
+    <orderEntry type="module" module-name="rc" />
   </component>
 </module>

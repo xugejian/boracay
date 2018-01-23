@@ -1,11 +1,13 @@
 package com.hex.bigdata.udsp.rts.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
+import com.hex.bigdata.udsp.common.dao.ComPropertiesMapper;
 import com.hex.bigdata.udsp.common.model.ComExcelParam;
 import com.hex.bigdata.udsp.common.model.ComExcelProperties;
 import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
+import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
@@ -79,6 +81,19 @@ public class RtsProducerService extends BaseService {
 
     @Autowired
     private RcServiceService rcServiceService;
+
+    @Autowired
+    private ComPropertiesMapper comPropertiesMapper;
+
+    private static List<ComExcelParam> comExcelParams;
+
+    static {
+        comExcelParams = new ArrayList<>();
+        comExcelParams.add(new ComExcelParam(1, 1, "name"));
+        comExcelParams.add(new ComExcelParam(1, 3, "mdId"));
+        comExcelParams.add(new ComExcelParam(2, 1, "describe"));
+        comExcelParams.add(new ComExcelParam(3, 1, "note"));
+    }
 
     @Transactional
     public String insert(RtsProducer rtsProducer) {
@@ -300,6 +315,7 @@ public class RtsProducerService extends BaseService {
         return resultMap;
     }
 
+
     public String createExcel(RtsProducer[] rtsProducers) {
         HSSFWorkbook workbook = null;
         HSSFWorkbook sourceWork;
@@ -307,23 +323,16 @@ public class RtsProducerService extends BaseService {
         HSSFRow row;
         HSSFCell cell;
         String seprator = FileUtil.getFileSeparator();
-        String dirPath = FileUtil.getWebPath("/");
         //模板文件位置
         String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_rtsProducer.xls";
-        // 判断是否存在，不存在则创建
-        dirPath += seprator + "TEMP_DOWNLOAD";
-        File file = new File(dirPath);
-        // 判断文件是否存在
-        if (!file.exists()) {
-            FileUtil.mkdir(dirPath);
-        }
+        // 下载地址
+        String dirPath = CreateFileUtil.getLocalDirPath();
         dirPath += seprator + "download_rtsProducer_excel_" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
 
         try {
-            sourceFile = new POIFSFileSystem(new FileInputStream(
-                    templateFile));
+            sourceFile = new POIFSFileSystem(new FileInputStream(templateFile));
 
             sourceWork = new HSSFWorkbook(sourceFile);
             sourceSheet = sourceWork.getSheetAt(0);
@@ -332,18 +341,11 @@ public class RtsProducerService extends BaseService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        HSSFSheet sheet;
-        List<ComExcelParam> comExcelParams = new ArrayList<>();
-        comExcelParams.add(new ComExcelParam(1, 1, "name"));
-        comExcelParams.add(new ComExcelParam(1, 3, "mdId"));
-        comExcelParams.add(new ComExcelParam(2, 1, "describe"));
-        comExcelParams.add(new ComExcelParam(3, 1, "note"));
 
         for (RtsProducer rtsProducer : rtsProducers) {
-            sheet = workbook.createSheet();
-
-
+            this.setWorkbookSheet(workbook, sourceSheet, comExcelParams, rtsProducer);
         }
+
         if (workbook != null) {
             try {
                 FileOutputStream stream = new FileOutputStream(dirPath);
@@ -368,7 +370,7 @@ public class RtsProducerService extends BaseService {
         try {
             sourceFile = new POIFSFileSystem(new FileInputStream(templateFile));
             sourceWork = new HSSFWorkbook(sourceFile);
-            sourceSheet = sourceWork.getSheetAt(4);
+            sourceSheet = sourceWork.getSheetAt(5);
             //创建表格
         } catch (IOException e) {
             e.printStackTrace();
@@ -386,15 +388,17 @@ public class RtsProducerService extends BaseService {
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
         comExcelParams.add(new ComExcelParam(2, 3, "serviceDescribe"));
+        comExcelParams.add(new ComExcelParam(2, 5, "maxNum"));
         comExcelParams.add(new ComExcelParam(3, 1, "maxSyncNum"));
         comExcelParams.add(new ComExcelParam(3, 3, "maxAsyncNum"));
         comExcelParams.add(new ComExcelParam(3, 5, "maxSyncWaitNum"));
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
         comExcelParams.add(new ComExcelParam(4, 5, "userName"));
+        comExcelParams.add(new ComExcelParam(5, 1, "udspRequestUrl"));
         long maxSize = 65535;
 
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
+        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService, maxSize, "");
 
         HSSFSheet sheet;
         sheet = workbook.createSheet();
@@ -421,8 +425,19 @@ public class RtsProducerService extends BaseService {
         this.setWorkbookSheetPart(sheet, rtsProducer, sourceSheet, workbook, rtsIndexDto);
     }
 
+    /**
+     * 设置信息到workbook
+     *
+     * @param workbook
+     * @param sourceSheet
+     * @param comExcelParams
+     * @param rtsProducer
+     */
     public void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, RtsProducer rtsProducer) {
+
         HSSFSheet sheet;
+//        sheet = workbook.createSheet();
+
         sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
         int i = 0;
@@ -454,19 +469,19 @@ public class RtsProducerService extends BaseService {
         HSSFRow row;
         HSSFCell cell;
         int rowIndex = rtsIndexDto.getRowIndex();
-        List<RtsMatedataCol> rtsMatedataCols = rtsMatedataColService.selectByMdId(rtsProducer.getMdId());
-        if (rtsMatedataCols.size() > 0) {
+        List<ComProperties> comPropertieses = comPropertiesMapper.selectList(rtsProducer.getPkId());
+        if (comPropertieses.size() > 0) {
             int k = 1;
-            for (RtsMatedataCol rtsMatedataCol : rtsMatedataCols) {
+            for (ComProperties comPropertiese : comPropertieses) {
                 row = sheet.createRow(rowIndex);
                 cell = row.createCell(0);
                 cell.setCellValue(k);
                 cell = row.createCell(1);
-                cell.setCellValue(rtsMatedataCol.getName());
+                cell.setCellValue(comPropertiese.getName());
                 cell = row.createCell(2);
-                cell.setCellValue(rtsMatedataCol.getType());
+                cell.setCellValue(comPropertiese.getValue());
                 cell = row.createCell(3);
-                cell.setCellValue(rtsMatedataCol.getDescribe());
+                cell.setCellValue(comPropertiese.getDescribe());
                 rowIndex++;
                 k++;
             }
