@@ -239,7 +239,6 @@ public class RcServiceController extends BaseController {
         return new MessageResult(status, message);
     }
 
-
     @RequestMapping({"/selectApps/{type}"})
     @ResponseBody
     public MessageResult selectApps(@PathVariable("type") String type) {
@@ -263,6 +262,38 @@ public class RcServiceController extends BaseController {
             logger.warn(message);
         }
         return new MessageResult(status, message, apps);
+    }
+
+    @RequestMapping({"/selectAppName/{type}/{appId}"})
+    @ResponseBody
+    public MessageResult selectAppName(@PathVariable("type") String type, @PathVariable("appId") String appId) {
+        boolean status = true;
+        String message = "查询成功";
+        Object app = null;
+        if (StringUtils.isBlank(type)) {
+            status = false;
+            message = "请求参数type为空";
+        } else if (StringUtils.isBlank(appId)) {
+            status = false;
+            message = "请求参数appId为空";
+        } else {
+            try {
+                app = this.rcServiceService.selectAppName(type, appId);
+            } catch (Exception e) {
+                status = false;
+                message = "系统异常：" + e.getMessage();
+            }
+            if (app == null) {
+                status = false;
+                message = "警告：应用不存在，或已被删除！";
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.warn(message);
+        }
+        return new MessageResult(status, message, app);
     }
 
     @RequestMapping({"/selectServices/{serviceType}"})

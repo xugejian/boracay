@@ -1,22 +1,23 @@
-package com.hex.bigdata.udsp.iq.provider.impl.model;
+package com.hex.bigdata.udsp.iq.provider.impl.model.solr;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * Solr+HBase查询的分页类
+ * Solr查询的分页类
  */
-public class SolrHBasePage {
-    private List<String> records; // 每页记录集合，只存储id值
+public class SolrPage {
+    private List<Map<String, Object>> records; // 每页记录集合
     private int pageIndex; // 当前页
     private int pageSize; // 默认的每页显示条数
     private int totalCount; // 总记录数
     private int totalPage; // 总页数
 
-    public SolrHBasePage() {
+    public SolrPage() {
         super();
     }
 
-    public SolrHBasePage(List<String> records, int pageIndex, int pageSize, int totalCount) {
+    public SolrPage(List<Map<String, Object>> records, int pageIndex, int pageSize, int totalCount) {
         this.pageSize = pageSize;
         this.pageIndex = pageIndex;
         this.totalCount = totalCount;
@@ -25,11 +26,11 @@ public class SolrHBasePage {
                 : (totalCount / pageSize + 1);
     }
 
-    public List<String> getRecords() {
+    public List<Map<String, Object>> getRecords() {
         return records;
     }
 
-    public void setRecords(List<String> records) {
+    public void setRecords(List<Map<String, Object>> records) {
         this.records = records;
     }
 

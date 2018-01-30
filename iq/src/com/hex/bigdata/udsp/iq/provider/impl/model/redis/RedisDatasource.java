@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.iq.provider.impl.model;
+package com.hex.bigdata.udsp.iq.provider.impl.model.redis;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;

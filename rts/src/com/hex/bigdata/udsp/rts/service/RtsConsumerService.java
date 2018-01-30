@@ -157,8 +157,12 @@ public class RtsConsumerService extends BaseService {
      * @param rtsConsumerView 查询参数
      * @return
      */
-    public List<RtsConsumer> select(RtsConsumerView rtsConsumerView) {
+    public List<RtsConsumerView> select(RtsConsumerView rtsConsumerView) {
         return rtsConsumerMapper.select(rtsConsumerView);
+    }
+
+    public List<RtsConsumer> selectAll() {
+        return rtsConsumerMapper.selectAll();
     }
 
     /**
@@ -204,7 +208,7 @@ public class RtsConsumerService extends BaseService {
         //更新基础信息
         boolean updateFlg = this.rtsConsumerMapper.update(pkId, rtsConsumer);
         //删除旧的的配置参数信息
-        boolean delFlg = comPropertiesService.deleteByFkId(pkId);
+        boolean delFlg = comPropertiesService.deleteList(pkId);
         if (delFlg) {
             //插入新的配置参数信息
             List<ComProperties> comPropertiesList = rtsConsumerProsView.getComPropertiesList();

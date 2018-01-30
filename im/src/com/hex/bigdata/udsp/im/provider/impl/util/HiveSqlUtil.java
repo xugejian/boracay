@@ -3,7 +3,7 @@ package com.hex.bigdata.udsp.im.provider.impl.util;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.*;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
@@ -11,6 +11,9 @@ import java.util.List;
  * Created by JunjieM on 2017-9-6.
  */
 public class HiveSqlUtil {
+    private static final String UDSP_VIEW = "UDSP_VIEW";
+    private static final String UDSP_HBASE_VIEW = "UDSP_HBASE_VIEW";
+
     /**
      * 创建常规表
      *
@@ -111,9 +114,8 @@ public class HiveSqlUtil {
                                 List<String> partitionColumns, List<String> selectColumns,
                                 String selectTableName, List<WhereProperty> whereProperties) {
         return "INSERT" + getOverwrite(isOverwrite) + " TABLE "
-                + insertTableName + getPartitionKey(partitionColumns)
-                + "\n SELECT " + getSelectColumns(selectColumns) + "\n FROM "
-                + selectTableName + getWhere(whereProperties);
+                + insertTableName + getPartitionKey(partitionColumns) + "\n"
+                + select(selectColumns, selectTableName, whereProperties);
     }
 
     /**
@@ -131,9 +133,36 @@ public class HiveSqlUtil {
                                  List<String> partitionColumns, List<String> selectColumns,
                                  String selectSql, List<WhereProperty> whereProperties) {
         return "INSERT" + getOverwrite(isOverwrite) + " TABLE "
-                + insertTableName + getPartitionKey(partitionColumns)
-                + "\n SELECT " + getSelectColumns2(selectColumns) + "\n FROM (\n"
-                + selectSql + "\n) UDSP_VIEW " + getWhere2(whereProperties);
+                + insertTableName + getPartitionKey(partitionColumns) + "\n"
+                + select2(selectColumns, selectSql, whereProperties);
+    }
+
+    /**
+     * 目标表是HBase类型且有自定义sql时重新生成自定义sql语句
+     *
+     * @param selectColumns
+     * @param selectSql
+     * @param whereProperties
+     * @return
+     */
+    public static String selectByHBase(List<String> selectColumns,
+                                       String selectSql, List<WhereProperty> whereProperties) {
+        return "SELECT " + getSelectColumns(selectColumns) + "\n FROM (\n"
+                + selectSql + "\n) " + UDSP_HBASE_VIEW + " " + getWhere2(whereProperties);
+    }
+
+    /**
+     * 查询SQL
+     *
+     * @param selectColumns
+     * @param selectSql
+     * @param whereProperties
+     * @return
+     */
+    public static String select2(List<String> selectColumns,
+                                 String selectSql, List<WhereProperty> whereProperties) {
+        return "SELECT " + getSelectColumns2(selectColumns) + "\n FROM (\n"
+                + selectSql + "\n) " + UDSP_VIEW + " " + getWhere2(whereProperties);
     }
 
     public static String createDatabase(boolean ifNotExists, String databaseName) {
@@ -194,7 +223,7 @@ public class HiveSqlUtil {
                 if (StringUtils.isBlank(name) || StringUtils.isBlank(value) || operator == null)
                     continue;
                 sql += (count == 0 ? "\n WHERE " : " AND ");
-                sql += "UDSP_VIEW." + name + SqlUtil.getCondition(value, type, operator);
+                sql += UDSP_VIEW + "." + name + SqlUtil.getCondition(value, type, operator);
                 count++;
             }
         }
@@ -215,13 +244,13 @@ public class HiveSqlUtil {
     }
 
     private static String getSelectColumns2(List<String> columns) {
-        String sql = " UDSP_VIEW.* ";
+        String sql = " " + UDSP_VIEW + ".* ";
         if (columns != null && columns.size() != 0) {
             sql = "";
             for (int i = 0; i < columns.size(); i++) {
                 String name = columns.get(i);
                 sql += (i == 0 ? "" : ",");
-                sql += (StringUtils.isBlank(name) || "NULL".equalsIgnoreCase(name)) ? "NULL" : "UDSP_VIEW." + name;
+                sql += (StringUtils.isBlank(name) || "NULL".equalsIgnoreCase(name)) ? "NULL" : UDSP_VIEW + "." + name;
             }
         }
         return sql;
@@ -319,7 +348,7 @@ public class HiveSqlUtil {
                     continue;
                 sql += (count == 0 ? "\n" : "\n,");
                 sql += colName + " " + getColType(dataType, length);
-                if (StringUtils.isNoneBlank(colComment)) {
+                if (StringUtils.isNotBlank(colComment)) {
                     sql += " COMMENT '" + colComment + "'";
                 }
                 count++;

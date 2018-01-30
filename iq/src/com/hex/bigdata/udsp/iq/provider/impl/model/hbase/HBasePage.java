@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.iq.provider.impl.model;
+package com.hex.bigdata.udsp.iq.provider.impl.model.hbase;
 
 import java.util.List;
 import java.util.Map;
