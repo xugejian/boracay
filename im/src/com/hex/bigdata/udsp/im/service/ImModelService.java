@@ -8,6 +8,7 @@ import com.hex.bigdata.udsp.common.dao.ComPropertiesMapper;
 import com.hex.bigdata.udsp.common.model.*;
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.im.constant.*;
 import com.hex.bigdata.udsp.im.dao.*;
@@ -59,7 +60,7 @@ public class ImModelService {
     private ImModelMappingMapper imModelMappingMapper;
 
     @Autowired
-    private ComPropertiesMapper comPropertiesMapper;
+    private ComPropertiesService comPropertiesService;
 
     @Autowired
     private ImModelUpdateKeyMapper imModelUpdateKeyMapper;
@@ -119,7 +120,7 @@ public class ImModelService {
             throw new RuntimeException("保存【映射字段】异常");
         }
         List<ComProperties> comPropertiesList = imModelViews.getComPropertiesList();
-        if (comPropertiesList != null && !comPropertiesMapper.insertModelComProperties(pkId, comPropertiesList)) {
+        if (comPropertiesList != null && !comPropertiesService.insertList(pkId, comPropertiesList)) {
             throw new RuntimeException("保存【参数配置栏】信息异常");
         }
         //添加更新字段
@@ -173,7 +174,7 @@ public class ImModelService {
             throw new RuntimeException("更新【映射字段】异常");
         }
         List<ComProperties> comPropertiesList = imModelViews.getComPropertiesList();
-        if (!comPropertiesMapper.deleteList(pkId) || !comPropertiesMapper.insertModelComProperties(pkId, comPropertiesList)) {
+        if (!comPropertiesService.deleteList(pkId) || !comPropertiesService.insertList(pkId, comPropertiesList)) {
             throw new RuntimeException("更新【参数配置栏】信息异常");
         }
 
@@ -208,8 +209,8 @@ public class ImModelService {
         return true;
     }
 
-    public List<ImModelView> selectPage(ImModelView imModelView, Page page) {
-        return imModelMapper.selectPage(imModelView, page);
+    public List<ImModelView> select(ImModelView imModelView, Page page) {
+        return imModelMapper.select(imModelView, page);
     }
 
     public boolean delete(ImModel[] imModels) throws Exception {
@@ -224,7 +225,7 @@ public class ImModelService {
         return true;
     }
 
-    public ImModel selectByPkId(String pkId) {
+    public ImModel select(String pkId) {
         return imModelMapper.select(pkId);
     }
 
@@ -236,7 +237,7 @@ public class ImModelService {
         //根据元数据获取相关信息
         Model model = new Model(Arrays.asList(properties));
         ComDatasource comDatasource = comDatasourceMapper.select(srcDataSourceId);
-        List<ComProperties> comProperties = comPropertiesMapper.selectByFkId(srcDataSourceId);
+        List<ComProperties> comProperties = comPropertiesService.selectList(srcDataSourceId);
         Datasource datasource = new Datasource(comDatasource, comProperties);
         // 由于该实现类和模型中的实现类不一样故制为空
         datasource.setImplClass("");
@@ -245,11 +246,6 @@ public class ImModelService {
         return imProviderService.getCloumnInfo(model);
     }
 
-    /**
-     * 查询模型配置信息
-     *
-     * @return
-     */
     public List<ImModel> selectAll() {
         return imModelMapper.selectAll();
     }
@@ -457,7 +453,7 @@ public class ImModelService {
             }
 
             //设置参数栏
-            List<ComProperties> comProperties = comPropertiesMapper.selectByFkId(imModel.getPkId());
+            List<ComProperties> comProperties = comPropertiesService.selectList(imModel.getPkId());
             if (comProperties.size() > 0) {
                 int k = 1;
                 for (ComProperties comProperty : comProperties) {
@@ -579,7 +575,7 @@ public class ImModelService {
     }
 
     public Model getModel(String pkId, ModelFilterCol[] modelFilterCols) throws Exception {
-        Model model = getModelByImModel(selectByPkId(pkId));
+        Model model = getModelByImModel(select(pkId));
         //设置其过滤字段
         if (modelFilterCols != null) {
             for (ModelFilterCol modelFilterCol : modelFilterCols) {
@@ -594,7 +590,7 @@ public class ImModelService {
     }
 
     public Model getModel(String pkId, Map<String, String> datas) throws Exception {
-        Model model = getModelByImModel(selectByPkId(pkId));
+        Model model = getModelByImModel(select(pkId));
         //设置其过滤字段
         if (datas != null) {
             for (Map.Entry<String, String> entry : datas.entrySet()) {
@@ -612,7 +608,7 @@ public class ImModelService {
     public Model getModelByImModel(ImModel imModel) throws Exception {
         String pkId = imModel.getPkId();
         //修改comProperties为继承property类比较好,设计有问题，冗余
-        List<ComProperties> properties = comPropertiesMapper.selectByFkId(pkId);
+        List<ComProperties> properties = comPropertiesService.selectList(pkId);
         List<Property> propertyList = new ArrayList<>(properties.size());
         Property property;
         for (ComProperties comProperties : properties) {
@@ -672,7 +668,7 @@ public class ImModelService {
 
     private Metadata getMateDataById(String mdId) throws Exception {
 
-        List<ComProperties> comProperties = comPropertiesMapper.selectByFkId(mdId);
+        List<ComProperties> comProperties = comPropertiesService.selectList(mdId);
         Metadata metadata = new Metadata(PropertyUtil.convertToPropertyList(comProperties));
         //设置metadata的基础信息
         ImMetadata imMetadata = imMetadataMapper.select(mdId);
@@ -744,7 +740,7 @@ public class ImModelService {
             return null;
         }
         ComDatasource comDatasource = comDatasourceMapper.select(id);
-        List<ComProperties> comProperties = comPropertiesMapper.selectByFkId(id);
+        List<ComProperties> comProperties = comPropertiesService.selectList(id);
         return new Datasource(comDatasource, comProperties);
     }
 
@@ -818,7 +814,7 @@ public class ImModelService {
         }
         ImModel imModel = null;
         if (null != rcService) {
-            imModel = selectByPkId(rcService.getAppId());
+            imModel = select(rcService.getAppId());
         }
 
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();

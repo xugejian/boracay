@@ -158,6 +158,10 @@ public class RtsProducerService extends BaseService {
         return rtsProducerMapper.select(rtsProConfigView);
     }
 
+    public List<RtsProducer> selectAll() {
+        return rtsProducerMapper.selectAll();
+    }
+
     /**
      * 新增实时流数据源实体
      *
@@ -199,15 +203,16 @@ public class RtsProducerService extends BaseService {
         RtsProducer rtsProducer = rtsProducerProsView.getRtsProducer();
         String pkId = rtsProducer.getPkId();
         //更新基础信息
-        boolean updateFlg = this.rtsProducerMapper.update(pkId, rtsProducer);
-        //删除旧的的配置参数信息
-        boolean delFlg = comPropertiesService.deleteByFkId(pkId);
-        if (delFlg) {
-            //插入新的配置参数信息
-            List<ComProperties> comPropertiesList = rtsProducerProsView.getComPropertiesList();
-            comPropertiesService.insertList(pkId, comPropertiesList);
+        if (!rtsProducerMapper.update(pkId, rtsProducer)) {
+            return false;
         }
-        return true;
+        //删除旧的的配置参数信息
+        if (!comPropertiesService.deleteList(pkId)) {
+            return false;
+        }
+        //插入新的配置参数信息
+        List<ComProperties> comPropertiesList = rtsProducerProsView.getComPropertiesList();
+        return comPropertiesService.insertList(pkId, comPropertiesList);
     }
 
     /**

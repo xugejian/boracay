@@ -308,7 +308,7 @@ ${extends("/goframe/function_layout.httl")}
         }
         var saveData = {
             "rcUserService": baseData,
-            "comPropertiesList": propsData
+            "alarmProperties": propsData
         };
         //console.warn(saveData);
         return saveData;

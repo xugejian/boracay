@@ -1049,7 +1049,7 @@ create table OLQ_APPLICATION_PARAM
   param_desc    VARCHAR2(256) not null,
   default_value VARCHAR2(64),
   is_need       CHAR(1) not null,
-  olq_app_id    VARCHAR2(32) not null,
+  app_id    VARCHAR2(32) not null,
   seq           NUMBER(3)
 )
 ;
@@ -1063,7 +1063,7 @@ comment on column OLQ_APPLICATION_PARAM.default_value
   is '默认值';
 comment on column OLQ_APPLICATION_PARAM.is_need
   is '是否必输，0：必输，1：不必输';
-comment on column OLQ_APPLICATION_PARAM.olq_app_id
+comment on column OLQ_APPLICATION_PARAM.app_id
   is '应用ID';
 comment on column OLQ_APPLICATION_PARAM.seq
   is '序号';

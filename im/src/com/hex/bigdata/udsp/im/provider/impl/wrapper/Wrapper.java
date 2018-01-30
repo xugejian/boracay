@@ -111,6 +111,7 @@ public abstract class Wrapper {
         String eDsId = eDs.getId();
         Datasource tDs = metadata.getDatasource();
         String tDsId = tDs.getId();
+        String tDsType = tDs.getType();
 
         // 获取是否暴力查询
         /*
@@ -136,6 +137,7 @@ public abstract class Wrapper {
         String selectSql = null;
         String selectTableName = null;
         String insertTableName = null;
+        String insertSql = null;
         try {
 
             if (sDsId.equals(eDsId)) { // 源、引擎的数据源相同
@@ -160,11 +162,37 @@ public abstract class Wrapper {
                 insertTableName = getTargetTableName(id);
             }
 
-            // 插入目标表
-            insert(key, eHiveDs, metadata, modelMappings, selectSql, selectTableName, insertTableName, modelFilterCols);
+            List<String> selectColumns = getSelectColumns(modelMappings, metadata);
+
+            // 目标表是HBase类型
+            if (DatasourceType.HBASE.getValue().equals(tDsType)) {
+                // 新的select sql
+                if (StringUtils.isNotBlank(selectSql)) {
+                    selectSql = HiveSqlUtil.selectByHBase(selectColumns, selectSql, getWhereProperties(modelFilterCols));
+                } else {
+                    selectSql = HiveSqlUtil.select(selectColumns, selectTableName, getWhereProperties(modelFilterCols));
+                }
+                // 新的select column集合，必须在下面
+                selectColumns = new ArrayList<>();
+                selectColumns.add("KEY");
+                selectColumns.add("VAL");
+            }
+
+            // 生成插入目标表SQL
+            if (StringUtils.isNotBlank(selectSql)) {
+                insertSql = HiveSqlUtil.insert2(false, insertTableName, null,
+                        selectColumns, selectSql, getWhereProperties(modelFilterCols));
+            } else {
+                insertSql = HiveSqlUtil.insert(false, insertTableName, null,
+                        selectColumns, selectTableName, getWhereProperties(modelFilterCols));
+            }
+
+            // 执行SQL
+            HiveJdbcUtil.executeUpdate(key, eHiveDs, insertSql);
 
         } finally {
-            if (!violenceQuery) { // 非暴力查询
+            // 源、引擎的数据源不同且非暴力查询
+            if (!sDsId.equals(eDsId) && !violenceQuery) {
                 dropSourceEngineSchema(model, selectTableName); // 删除动态源引擎Schema
             }
         }
@@ -202,20 +230,6 @@ public abstract class Wrapper {
             list.add(modelMapping);
         }
         return list;
-    }
-
-    private void insert(String key, HiveDatasource eHiveDs, Metadata metadata, List<ModelMapping> modelMappings,
-                        String selectSql, String selectTableName, String insertTableName,
-                        List<ModelFilterCol> modelFilterCols) throws SQLException {
-        String insertSql = null;
-        if (StringUtils.isNotBlank(selectSql)) {
-            insertSql = HiveSqlUtil.insert2(false, insertTableName, null,
-                    getSelectColumns(modelMappings, metadata), selectSql, getWhereProperties(modelFilterCols));
-        } else {
-            insertSql = HiveSqlUtil.insert(false, insertTableName, null,
-                    getSelectColumns(modelMappings, metadata), selectTableName, getWhereProperties(modelFilterCols));
-        }
-        HiveJdbcUtil.executeUpdate(key, eHiveDs, insertSql);
     }
 
     /**

@@ -44,10 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -246,34 +243,56 @@ public class RcServiceService {
     }
 
     /**
-     * 根据类型查询应用
+     * 根据类型查询应用信息列表
      *
      * @param type
      * @return
      */
-
     public List selectApps(String type) {
-        List searchList = new ArrayList();
+        List searchList = null;
         if (RcConstant.UDSP_SERVICE_TYPE_IQ.equals(type)) {
-            searchList = this.iqApplicationService.select(new IqApplicationView());
+            searchList = this.iqApplicationService.selectAll();
         } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equals(type)) {
-            ComDatasourceView datasourceView = new ComDatasourceView();
-            datasourceView.setModel(DatasourceModel.OLQ.getValue());
-            searchList = comDatasourceService.select(datasourceView);
+            searchList = comDatasourceService.selectByModel(DatasourceModel.OLQ.getValue());
         } else if (RcConstant.UDSP_SERVICE_TYPE_MM.equals(type)) {
             searchList = mmApplicationService.selectAll();
         } else if (RcConstant.UDSP_SERVICE_TYPE_RTS_PRODUCER.equals(type)) {
-            searchList = this.rtsProducerService.select(new RtsProducerView());
+            searchList = this.rtsProducerService.selectAll();
         } else if (RcConstant.UDSP_SERVICE_TYPE_RTS_CONSUMER.equals(type)) {
-            searchList = this.rtsConsumerService.select(new RtsConsumerView());
+            searchList = this.rtsConsumerService.selectAll();
         } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
             searchList = this.olqApplicationService.selectAll();
         } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equals(type)) {
             searchList = this.imModelService.selectAll();
-        } else {
-            searchList = null;
         }
         return searchList;
+    }
+
+    /**
+     * 根据类型和主键查询应用信息
+     *
+     * @param type
+     * @param appId
+     * @return
+     */
+    public Object selectAppName(String type, String appId) {
+        Object app = null;
+        if (RcConstant.UDSP_SERVICE_TYPE_IQ.equals(type)) {
+            app = this.iqApplicationService.select(appId);
+        } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equals(type)) {
+            app = comDatasourceService.select(appId);
+        } else if (RcConstant.UDSP_SERVICE_TYPE_MM.equals(type)) {
+            app = mmApplicationService.select(appId);
+        } else if (RcConstant.UDSP_SERVICE_TYPE_RTS_PRODUCER.equals(type)) {
+            app = this.rtsProducerService.select(appId);
+        } else if (RcConstant.UDSP_SERVICE_TYPE_RTS_CONSUMER.equals(type)) {
+            app = this.rtsConsumerService.select(appId);
+        } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
+            app = this.olqApplicationService.select(appId);
+        } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equals(type)) {
+            app = this.imModelService.select(appId);
+        }
+        return app;
     }
 
     /**
@@ -555,6 +574,4 @@ public class RcServiceService {
         }
         return null;
     }
-
-
 }
