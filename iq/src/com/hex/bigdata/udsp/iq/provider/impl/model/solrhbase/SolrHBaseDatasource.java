@@ -1,15 +1,24 @@
-package com.hex.bigdata.udsp.im.provider.impl.model.datasource;
+package com.hex.bigdata.udsp.iq.provider.impl.model.solrhbase;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.provider.model.Property;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.hbase.util.Bytes;
+
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by JunjieM on 2017-9-5.
+ * Solr+HBase的数据源配置
  */
 public class SolrHBaseDatasource extends Datasource {
 
-    public SolrHBaseDatasource(Datasource datasource) {
-        super(datasource);
+    public SolrHBaseDatasource(List<Property> properties) {
+        super(properties);
+    }
+
+    public SolrHBaseDatasource(Map<String, Property> propertieMap) {
+        super(propertieMap);
     }
 
     public String getZkQuorum() {
@@ -75,13 +84,6 @@ public class SolrHBaseDatasource extends Datasource {
         return value;
     }
 
-    public String getClientScannerTimeoutPeriod() {
-        String value = getProperty("hbase.client.scanner.timeout.period").getValue();
-        if (StringUtils.isBlank(value))
-            value = "60000";
-        return value;
-    }
-
     public String getSolrServers() {
         String value = getProperty("solr.servers").getValue();
         if (StringUtils.isBlank(value))
@@ -89,10 +91,35 @@ public class SolrHBaseDatasource extends Datasource {
         return value;
     }
 
-    public String getSolrUrl() {
-        String value = getProperty("solr.url").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("solr.url不能为空");
+    public String getSeprator() {
+        String value = getProperty("hbase.fqSep").getValue();
+        if (StringUtils.isBlank(value)) {
+            value = "\\007";
+        }
         return value;
+    }
+
+    public byte[] getFamilyName() {
+        String value = getProperty("hbase.family.name").getValue();
+        if (StringUtils.isBlank(value)) {
+            value = "f";
+        }
+        return Bytes.toBytes(value);
+    }
+
+    public byte[] getQulifierName() {
+        String value = getProperty("hbase.qulifier.name").getValue();
+        if (StringUtils.isBlank(value)) {
+            value = "q";
+        }
+        return Bytes.toBytes(value);
+    }
+
+    public int getMaxNum() {
+        String value = getProperty("max.data.size").getValue();
+        if (StringUtils.isBlank(value)) {
+            value = "65536";
+        }
+        return Integer.valueOf(value);
     }
 }
