@@ -656,7 +656,7 @@ ${extends("/goframe/function_layout.httl")}
         var row = {};
         row.describe = value.describe;
         row.name = value.name;
-        row.length = "";
+        row.length = value.length;
         row.note = "";
         row.colType = value.type;
         return row;
@@ -666,7 +666,7 @@ ${extends("/goframe/function_layout.httl")}
         var row = {};
         row.describe = value.describe;
         row.name = value.name;
-        row.length = "";
+        row.length = value.length;
         row.note = "";
         row.colType = value.type;
         return row;

@@ -35,12 +35,12 @@ ${extends("/goframe/function_layout.httl")}
                        id="remove">删除</a>
                     #end
                     #if(hasPermission("RC.service.list.start"))
-                    <a class="nui-button" iconCls="icon-ok" plain="true" onclick="start_service" enabled="false"
-                       id="start_service">启用</a>
+                    <a class="nui-button" iconCls="icon-ok" plain="true" onclick="startService" enabled="false"
+                       id="startService">启用</a>
                     #end
                     #if(hasPermission("RC.service.list.stop"))
-                    <a class="nui-button" iconCls="icon-no" plain="true" onclick="stop_service" enabled="false"
-                       id="stop_service">停用</a>
+                    <a class="nui-button" iconCls="icon-no" plain="true" onclick="stopService" enabled="false"
+                       id="stopService">停用</a>
                     #end
                 </td>
             </tr>
@@ -206,18 +206,18 @@ ${extends("/goframe/function_layout.httl")}
         if (rows.length == 1) {
             nui.get("edit").enable();
             nui.get("remove").enable();
-            nui.get("start_service").enable();
-            nui.get("stop_service").enable();
+            nui.get("startService").enable();
+            nui.get("stopService").enable();
         } else if (rows.length == 0) {
             nui.get("edit").disable();
             nui.get("remove").disable();
-            nui.get("start_service").disable();
-            nui.get("stop_service").disable();
+            nui.get("startService").disable();
+            nui.get("stopService").disable();
         } else {
             nui.get("edit").disable();
             nui.get("remove").enable();
-            nui.get("start_service").enable();
-            nui.get("stop_service").enable();
+            nui.get("startService").enable();
+            nui.get("stopService").enable();
         }
 
     }
@@ -381,15 +381,15 @@ ${extends("/goframe/function_layout.httl")}
     }
 
 
-    function start_service() {
-        change_serviceStatus("0");
+    function startService() {
+        changeServiceStatus("0");
     }
 
-    function stop_service() {
-        change_serviceStatus("1");
+    function stopService() {
+        changeServiceStatus("1");
     }
 
-    function change_serviceStatus(type) {
+    function changeServiceStatus(type) {
         var rows = grid1.getSelecteds();
         if (!rows) {
             nui.alert("请至少选择一条记录!");
@@ -398,7 +398,7 @@ ${extends("/goframe/function_layout.httl")}
         var json = nui.encode(getRows(rows));
         grid1.loading("正在修改服务状态,请稍等...");
         $.ajax({
-            url: "${basePath}/rc/service/shangeStatus/" + type,
+            url: "${basePath}/rc/service/changeStatus/" + type,
             type: 'POST',
             data: json,
             cache: false,
@@ -503,7 +503,9 @@ ${extends("/goframe/function_layout.httl")}
             contentType: 'application/json',
             success: function (result) {
                 if (result.status) {
-                    if(result.data) appName = result.data.name;
+                    if(result.data) {
+                        appName = result.data.name;
+                    }
                 } else {
                     appName = "<font color='red'>" + result.message + "</font>";
                 }

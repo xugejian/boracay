@@ -1,7 +1,7 @@
--------------------------------------------
--- Export file for user UDSP@BIGDATA     --
--- Created by PC on 2017/10/26, 16:33:01 --
--------------------------------------------
+-----------------------------------------
+-- Export file for user UDSP@BIGDATA   --
+-- Created by PC on 2018/2/1, 10:36:10 --
+-----------------------------------------
 
 set define off
 spool UDSP_CREATE_TABLES.log
@@ -330,9 +330,9 @@ create table IM_MODEL_MAPPING
   type     VARCHAR2(32) not null,
   length   VARCHAR2(32),
   describe VARCHAR2(256) not null,
-  indexed  CHAR(1) not null,
-  primary  CHAR(1),
-  stored   CHAR(1) not null
+  indexed  CHAR(1) default 1 not null,
+  primary  CHAR(1) default 1 not null,
+  stored   CHAR(1) default 1 not null
 )
 ;
 comment on table IM_MODEL_MAPPING
@@ -1049,7 +1049,7 @@ create table OLQ_APPLICATION_PARAM
   param_desc    VARCHAR2(256) not null,
   default_value VARCHAR2(64),
   is_need       CHAR(1) not null,
-  app_id    VARCHAR2(32) not null,
+  app_id        VARCHAR2(32) not null,
   seq           NUMBER(3)
 )
 ;
@@ -1144,7 +1144,7 @@ create table RC_USER_SERVICE
   max_sync_execute_timeout  NUMBER(10) default 3000 not null,
   max_async_execute_timeout NUMBER(10) default 600000 not null,
   status                    CHAR(1) default 0 not null,
-  ALARM_TYPE				VARCHAR2(32) default 'NONE' not null
+  alarm_type                VARCHAR2(32) default 'NONE' not null
 )
 ;
 comment on column RC_USER_SERVICE.pk_id
@@ -1183,7 +1183,7 @@ comment on column RC_USER_SERVICE.max_async_execute_timeout
   is '异步最大执行超时时间';
 comment on column RC_USER_SERVICE.status
   is '启停标志（0：启动，1：停用）';
-comment on column RC_USER_SERVICE.ALARM_TYPE
+comment on column RC_USER_SERVICE.alarm_type
   is '告警方式（NONE、MAIL、...）';
 create index IDX_RC_USER_SERVICE_DF on RC_USER_SERVICE (DEL_FLG);
 create index IDX_RC_USER_SERVICE_DF_SID on RC_USER_SERVICE (DEL_FLG, SERVICE_ID);
@@ -1366,5 +1366,6 @@ create index IDX_RTS_PER_DELFLG_MDID on RTS_PRODUCRER_CONFIG (DEL_FLG, MD_ID);
 create index IDX_RTS_PER_DELFLG_NAME on RTS_PRODUCRER_CONFIG (DEL_FLG, NAME);
 alter table RTS_PRODUCRER_CONFIG
   add constraint PK_RTS_PRODUCRER_CONFIG primary key (PK_ID);
+
 
 spool off

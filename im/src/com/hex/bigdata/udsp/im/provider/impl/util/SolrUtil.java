@@ -842,16 +842,15 @@ public class SolrUtil {
 
     public static String getQuery(List<WhereProperty> whereProperties) {
         StringBuffer queryConditons = new StringBuffer("*:*");
-        String name = null;
-        String value = null;
-        Operator operator = null;
-        for (WhereProperty property : whereProperties) {
-            name = property.getName();
-            value = property.getValue();
-            operator = property.getOperator();
-            if (StringUtils.isBlank(name) || StringUtils.isBlank(value) || operator == null)
-                continue;
-            queryConditons.append(" AND " + name + getCondition(value, operator));
+        if (whereProperties != null && whereProperties.size() != 0) {
+            for (WhereProperty property : whereProperties) {
+                String name = property.getName();
+                String value = property.getValue();
+                Operator operator = property.getOperator();
+                if (StringUtils.isBlank(name) || StringUtils.isBlank(value) || operator == null)
+                    continue;
+                queryConditons.append(" AND " + name + getCondition(value, operator));
+            }
         }
         return queryConditons.toString();
     }

@@ -139,6 +139,7 @@ public abstract class Wrapper {
         String insertTableName = null;
         String insertSql = null;
         try {
+            List<WhereProperty> whereProperties = getWhereProperties(modelFilterCols);
 
             if (sDsId.equals(eDsId)) { // 源、引擎的数据源相同
                 HiveModel hiveModel = new HiveModel(model);
@@ -152,6 +153,8 @@ public abstract class Wrapper {
                     // 创建动态的源引擎Schema
                     ImProviderService imProviderService = (ImProviderService) WebApplicationContextUtil.getBean("imProviderService");
                     imProviderService.createSourceEngineSchema(model, selectTableName);
+                    // 过滤条件清空
+                    whereProperties = null;
                 }
             }
 
@@ -164,27 +167,31 @@ public abstract class Wrapper {
 
             List<String> selectColumns = getSelectColumns(modelMappings, metadata);
 
-            // 目标表是HBase类型
-            if (DatasourceType.HBASE.getValue().equals(tDsType)) {
+            // 目标表是HBase类型，或者目标是SOLR+HBASE类型且key是以HBASE开头
+            if (DatasourceType.HBASE.getValue().equals(tDsType)
+                    || (DatasourceType.SOLR_HBASE.getValue().equals(tDsType) && key.startsWith(DatasourceType.HBASE.getValue()))
+                    ) {
                 // 新的select sql
                 if (StringUtils.isNotBlank(selectSql)) {
-                    selectSql = HiveSqlUtil.selectByHBase(selectColumns, selectSql, getWhereProperties(modelFilterCols));
+                    selectSql = HiveSqlUtil.selectByHBase(selectColumns, selectSql, whereProperties);
                 } else {
-                    selectSql = HiveSqlUtil.select(selectColumns, selectTableName, getWhereProperties(modelFilterCols));
+                    selectSql = HiveSqlUtil.select(selectColumns, selectTableName, whereProperties);
                 }
-                // 新的select column集合，必须在下面
+                // 生成新的集合，必须在下面
                 selectColumns = new ArrayList<>();
                 selectColumns.add("KEY");
                 selectColumns.add("VAL");
+                // 过滤条件清空，必须在下面
+                whereProperties = null;
             }
 
             // 生成插入目标表SQL
             if (StringUtils.isNotBlank(selectSql)) {
                 insertSql = HiveSqlUtil.insert2(false, insertTableName, null,
-                        selectColumns, selectSql, getWhereProperties(modelFilterCols));
+                        selectColumns, selectSql, whereProperties);
             } else {
                 insertSql = HiveSqlUtil.insert(false, insertTableName, null,
-                        selectColumns, selectTableName, getWhereProperties(modelFilterCols));
+                        selectColumns, selectTableName, whereProperties);
             }
 
             // 执行SQL
