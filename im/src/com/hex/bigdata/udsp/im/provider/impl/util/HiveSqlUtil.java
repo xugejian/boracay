@@ -148,7 +148,7 @@ public class HiveSqlUtil {
     public static String selectByHBase(List<String> selectColumns,
                                        String selectSql, List<WhereProperty> whereProperties) {
         return "SELECT " + getSelectColumns(selectColumns) + "\n FROM (\n"
-                + selectSql + "\n) " + UDSP_HBASE_VIEW + " " + getWhere2(whereProperties);
+                + selectSql + "\n) " + UDSP_HBASE_VIEW + " " + getWhere(UDSP_HBASE_VIEW, whereProperties);
     }
 
     /**
@@ -161,8 +161,8 @@ public class HiveSqlUtil {
      */
     public static String select2(List<String> selectColumns,
                                  String selectSql, List<WhereProperty> whereProperties) {
-        return "SELECT " + getSelectColumns2(selectColumns) + "\n FROM (\n"
-                + selectSql + "\n) " + UDSP_VIEW + " " + getWhere2(whereProperties);
+        return "SELECT " + getSelectColumns(UDSP_VIEW, selectColumns) + "\n FROM (\n"
+                + selectSql + "\n) " + UDSP_VIEW + " " + getWhere(UDSP_VIEW, whereProperties);
     }
 
     public static String createDatabase(boolean ifNotExists, String databaseName) {
@@ -207,7 +207,7 @@ public class HiveSqlUtil {
         return sql;
     }
 
-    private static String getWhere2(List<WhereProperty> whereProperties) {
+    private static String getWhere(String alias, List<WhereProperty> whereProperties) {
         String sql = "";
         String name = null;
         String value = null;
@@ -223,7 +223,7 @@ public class HiveSqlUtil {
                 if (StringUtils.isBlank(name) || StringUtils.isBlank(value) || operator == null)
                     continue;
                 sql += (count == 0 ? "\n WHERE " : " AND ");
-                sql += UDSP_VIEW + "." + name + SqlUtil.getCondition(value, type, operator);
+                sql += alias + "." + name + SqlUtil.getCondition(value, type, operator);
                 count++;
             }
         }
@@ -243,14 +243,14 @@ public class HiveSqlUtil {
         return sql;
     }
 
-    private static String getSelectColumns2(List<String> columns) {
-        String sql = " " + UDSP_VIEW + ".* ";
+    private static String getSelectColumns(String alias, List<String> columns) {
+        String sql = " " + alias + ".* ";
         if (columns != null && columns.size() != 0) {
             sql = "";
             for (int i = 0; i < columns.size(); i++) {
                 String name = columns.get(i);
                 sql += (i == 0 ? "" : ",");
-                sql += (StringUtils.isBlank(name) || "NULL".equalsIgnoreCase(name)) ? "NULL" : UDSP_VIEW + "." + name;
+                sql += (StringUtils.isBlank(name) || "NULL".equalsIgnoreCase(name)) ? "NULL" : alias + "." + name;
             }
         }
         return sql;

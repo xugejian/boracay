@@ -3,15 +3,12 @@ package com.hex.bigdata.udsp.rc.service;
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.constant.DatasourceModel;
-import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.im.service.ImModelService;
-import com.hex.bigdata.udsp.iq.dto.IqApplicationView;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
 import com.hex.bigdata.udsp.mm.dao.MmApplicationMapper;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
@@ -25,8 +22,6 @@ import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.util.RcConstant;
 import com.hex.bigdata.udsp.rts.dao.RtsConsumerMapper;
 import com.hex.bigdata.udsp.rts.dao.RtsProducerMapper;
-import com.hex.bigdata.udsp.rts.dto.RtsConsumerView;
-import com.hex.bigdata.udsp.rts.dto.RtsProducerView;
 import com.hex.bigdata.udsp.rts.service.RtsConsumerService;
 import com.hex.bigdata.udsp.rts.service.RtsProducerService;
 import com.hex.goframe.model.MessageResult;
@@ -44,8 +39,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA
@@ -125,7 +126,6 @@ public class RcServiceService {
             rcServiceForServiceNameMapper.update(id1, rcService);
             String id2 = rcService.getType() + "|" + rcService.getAppId();
             rcServiceForAppTypeAndAppIdMapper.update(id2, rcService);
-
             return true;
         }
         return false;
@@ -231,8 +231,7 @@ public class RcServiceService {
         boolean flag = true;
         for (RcService rcService : rcServices) {
             String pkId = rcService.getPkId();
-            boolean delFlg = delete(pkId);
-            if (!delFlg) {
+            if (!delete(pkId)) {
                 flag = false;
                 break;
             }
@@ -366,17 +365,21 @@ public class RcServiceService {
      */
     @Transactional
     public boolean statusChange(RcService[] rcServices, String status) {
-        boolean flag = true;
-        for (RcService item : rcServices) {
-            item = this.select(item.getPkId());
-            item.setStatus(status);
-            boolean delFlg = this.rcServiceMapper.update(item.getPkId(), item);
-            if (!delFlg) {
-                flag = false;
-                break;
+        for (RcService rcService : rcServices) {
+            String pkId = rcService.getPkId();
+            rcService = this.select(pkId);
+            rcService.setStatus(status);
+            if (rcServiceMapper.update(pkId, rcService)) {
+                /*
+                同时按照不同ID在内存中更新
+                 */
+                String id1 = rcService.getName();
+                rcServiceForServiceNameMapper.update(id1, rcService);
+                String id2 = rcService.getType() + "|" + rcService.getAppId();
+                rcServiceForAppTypeAndAppIdMapper.update(id2, rcService);
             }
         }
-        return flag;
+        return true;
     }
 
     /**

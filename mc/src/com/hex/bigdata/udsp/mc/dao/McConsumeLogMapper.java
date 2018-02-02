@@ -47,4 +47,15 @@ public class McConsumeLogMapper extends AsyncInsertMapper<McConsumeLog> {
         return this.sqlSessionTemplate.selectList(
                 "com.hex.bigdata.udsp.mc.dao.McConsumeLogMapper.select", mcConsumeLogView);
     }
+
+    /**
+     * 清空某天和其之前的消费日志数据
+     *
+     * @param date
+     * @return
+     */
+    public boolean clean(String date) {
+        return this.sqlSessionTemplate.update(
+                "com.hex.bigdata.udsp.mc.dao.McConsumeLogMapper.clean", date) >= 0;
+    }
 }

@@ -1,5 +1,10 @@
+-----------------------------------------
+-- Export file for user UDSP@BIGDATA   --
+-- Created by PC on 2018/2/1, 10:37:17 --
+-----------------------------------------
+
 set define off
-spool UDSP_CREATE_TABLES.log
+spool UDSP_META_TABLES.log
 
 prompt
 prompt Creating table T_GF_APPLICATION
