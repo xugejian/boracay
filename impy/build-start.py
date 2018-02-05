@@ -164,12 +164,11 @@ try:
     util.debug("response:" + response)
     responseJson = JSONDecoder().decode(response)
     status = responseJson['status'].__str__()
-    message = responseJson['message'].__str__()
-    errorCode = responseJson['errorCode'].__str__()
-    consumeTime = responseJson['consumeTime'].__str__()
     if status == 'DEFEAT':
+		message = responseJson['message'].__str__()
         raise DcpException(ExitCode.EXIT_ERROR, '请求构建数据' + serviceName + ' ' + bizDate + '失败\n错误信息如下：\n' + message)
     elif status == 'SUCCESS':
+		consumeTime = responseJson['consumeTime'].__str__()
         util.exit(ExitCode.EXIT_SUCCESS, '请求构建数据执行成功!' + serviceName + ' ' + bizDate + ' 耗时：' + consumeTime)
 except DcpException as e:
     errInfo = "错误编码：" + str(e.code) + "  错误信息:" + e.message
