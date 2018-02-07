@@ -58,7 +58,7 @@ public class ComDatasourceMapper extends SyncMapper<ComDatasource> {
     }
 
     public List<ComDatasource> selectByModel(String model) {
-        return this.sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.common.dao.ComDatasourceMapper.selectByModel", model);
+        return this.sqlSessionTemplate.selectList("com.hex.bigdata.udsp.common.dao.ComDatasourceMapper.selectByModel", model);
     }
 
     public ComDatasource selectByModelAndName(String model, String name) {
