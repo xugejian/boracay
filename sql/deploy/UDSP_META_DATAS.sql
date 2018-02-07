@@ -526,7 +526,7 @@ values ('IM_MD_PROPS_HBASE', 'hbase.split.policy', 'HBase 分区策略类', null, 4, 
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_HBASE', 'hbase.family', 'HBase 族名', null, 5, null, null, 'default', 'f');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR', 'solr.shards', 'Solr 分片数（小于等于solr.max.shards.per.node*节点数）', null, 1, null, null, 'default', null);
+values ('IM_MD_PROPS_SOLR', 'solr.shards', 'Solr 分片数（solr.shards*solr.replicas<=solr.max.shards.per.node*节点数）', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_SOLR', 'solr.replicas', 'Solr 副本数', null, 2, null, null, 'default', '2');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -536,7 +536,7 @@ values ('IM_MD_PROPS_SOLR_HBASE', 'solr.max.shards.per.node', 'Solr 单节点最大分
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_SOLR_HBASE', 'solr.replicas', 'Solr 副本数', null, 2, null, null, 'default', '2');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'solr.shards', 'Solr 分片数（小于等于solr.max.shards.per.node*节点数）', null, 1, null, null, 'default', null);
+values ('IM_MD_PROPS_SOLR_HBASE', 'solr.shards', 'Solr 分片数（solr.shards*solr.replicas<=solr.max.shards.per.node*节点数）', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.compression', 'HBase 压缩格式', null, 5, null, null, 'default', 'snappy');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
