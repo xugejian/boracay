@@ -56,8 +56,8 @@ ${extends("/goframe/function_layout.httl")}
                                dictTypeId="IM_MODEL_UPDATE_TYPE" value="3" multiSelect="false" required="false"/>
                     </td>
                     <th id="updateKey1" style="display:none;" class="nui-form-label"><label for="updateKey">更新主键：</label></th>
-                    <td id="updateKey2">
-                        <input style="width:100%;display:none;" id="updateKey" name="updateKey" class="nui-buttonedit"
+                    <td id="updateKey2" style="display:none;">
+                        <input style="width:100%;" id="updateKey" name="updateKey" class="nui-buttonedit"
                                onbuttonclick="showTargetCols" required="false"/>
                     </td>
                 </tr>
