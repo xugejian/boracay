@@ -6,10 +6,15 @@ import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KuduDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.KuduMetadata;
 import com.hex.bigdata.udsp.im.provider.impl.util.KuduUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
+import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import org.apache.commons.lang.StringUtils;
+import org.apache.kudu.ColumnSchema;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +27,7 @@ import java.util.List;
 public abstract class KuduWrapper extends Wrapper implements BatchSourceProvider, BatchTargetProvider, RealtimeTargetProvider {
     private static Logger logger = LogManager.getLogger(KuduWrapper.class);
 
-    protected static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "org.apache.hadoop.hive.kudu.KuduStorageHandler";
+    protected static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.kudu.KuduStorageHandler";
 
     /**
      * 增量插入
@@ -107,5 +112,59 @@ public abstract class KuduWrapper extends Wrapper implements BatchSourceProvider
     protected void emptyDatas(Metadata metadata) throws Exception {
         KuduMetadata kuduMetadata = new KuduMetadata(metadata);
         KuduUtil.emptyHTable(kuduMetadata);
+    }
+
+    protected List<MetadataCol> getColumns(KuduDatasource datasource, String tableName) {
+        List<ColumnSchema> columns = KuduUtil.getColumns(datasource, tableName);
+        if (columns == null) return null;
+        List<MetadataCol> mdCols = new ArrayList<>();
+        MetadataCol mdCol = null;
+        ColumnSchema column = null;
+        for (int i = 0; i < columns.size(); i++) {
+            column = columns.get(i);
+            mdCol = new MetadataCol();
+            mdCol.setSeq((short) (i + 1));
+            mdCol.setName(column.getName());
+            mdCol.setDescribe(mdCol.getName());
+            mdCol.setType(KuduUtil.getColType(column.getType()));
+            mdCol.setPrimary(column.isKey());
+            mdCol.setIndexed(false);
+            mdCol.setStored(true);
+            mdCols.add(mdCol);
+        }
+        return mdCols;
+    }
+
+    protected List<TableColumn> getTargetColumns(List<ModelMapping> modelMappings) {
+        List<TableColumn> columns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings) {
+            MetadataCol metadataCol = mapping.getMetadataCol();
+            String dataType = getDataType(metadataCol.getType(), metadataCol.getLength());
+            columns.add(new TableColumn(metadataCol.getName(), dataType, metadataCol.getDescribe()));
+        }
+        return columns;
+    }
+
+    protected List<TableColumn> getSourceColumns(List<ModelMapping> modelMappings) {
+        List<TableColumn> columns = new ArrayList<>();
+        for (ModelMapping mapping : modelMappings) {
+            String dataType = getDataType(mapping.getType(), mapping.getLength());
+            columns.add(new TableColumn(mapping.getName(), dataType, mapping.getDescribe()));
+        }
+        return columns;
+    }
+
+    protected List<TblProperty> getSourceTblProperties(KuduDatasource datasource, String tableName) {
+        List<TblProperty> tblProperties = new ArrayList<>();
+        tblProperties.add(new TblProperty("kudu.master.addresses", datasource.getKuduMasterHosts())); // Kudu服务器地址
+        tblProperties.add(new TblProperty("kudu.table.name", tableName)); // Kudu表名
+        return tblProperties;
+    }
+
+    protected List<TblProperty> getTargetTblProperties(KuduDatasource datasource, String tableName) {
+        List<TblProperty> tblProperties = new ArrayList<>();
+        tblProperties.add(new TblProperty("kudu.master.addresses", datasource.getKuduMasterHosts())); // Kudu服务器地址
+        tblProperties.add(new TblProperty("kudu.table.name", tableName)); // Kudu表名
+        return tblProperties;
     }
 }

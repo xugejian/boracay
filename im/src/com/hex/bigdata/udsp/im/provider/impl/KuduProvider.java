@@ -1,18 +1,23 @@
 package com.hex.bigdata.udsp.im.provider.impl;
 
 import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KuduDatasource;
 import com.hex.bigdata.udsp.im.provider.impl.model.metadata.KuduMetadata;
+import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KuduModel;
+import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.KuduUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.KuduWrapper;
 import com.hex.bigdata.udsp.im.provider.model.Metadata;
 import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.im.provider.model.Model;
-import org.apache.kudu.ColumnSchema;
+import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
 import org.apache.kudu.client.KuduClient;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,24 +45,7 @@ public class KuduProvider extends KuduWrapper {
     public List<MetadataCol> columnInfo(Metadata metadata) {
         KuduDatasource datasource = new KuduDatasource(metadata.getDatasource());
         String tableName = metadata.getTbName();
-        List<ColumnSchema> columns = KuduUtil.getColumns(datasource, tableName);
-        if (columns == null) return null;
-        List<MetadataCol> mdCols = new ArrayList<>();
-        MetadataCol mdCol = null;
-        ColumnSchema column = null;
-        for (int i = 0; i < columns.size(); i++) {
-            column = columns.get(i);
-            mdCol = new MetadataCol();
-            mdCol.setSeq((short) (i + 1));
-            mdCol.setName(column.getName());
-            mdCol.setDescribe(mdCol.getName());
-            mdCol.setType(KuduUtil.getColType(column.getType()));
-            mdCol.setPrimary(column.isKey());
-            mdCol.setIndexed(false);
-            mdCol.setStored(true);
-            mdCols.add(mdCol);
-        }
-        return mdCols;
+        return getColumns(datasource, tableName);
     }
 
     @Override
@@ -82,21 +70,61 @@ public class KuduProvider extends KuduWrapper {
 
     @Override
     public void createTargetEngineSchema(Model model) throws Exception {
-
+        Metadata metadata = model.getTargetMetadata();
+        HiveDatasource eHiveDs = new HiveDatasource(model.getEngineDatasource());
+        KuduMetadata kuduMetadata = new KuduMetadata(metadata);
+        KuduDatasource kuduDs = new KuduDatasource(metadata.getDatasource());
+        List<ModelMapping> modelMappings = model.getModelMappings();
+        String tableName = getTargetTableName(model.getId());
+        String kuduTableName = kuduMetadata.getTbName();
+        List<TableColumn> tableColumns = getTargetColumns(modelMappings);
+        List<TblProperty> tblProperties = getTargetTblProperties(kuduDs, kuduTableName);
+        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
+                tableColumns, "目标的Hive引擎表", null,
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, tblProperties);
+        JdbcUtil.executeUpdate(eHiveDs, sql);
     }
 
+    /**
+     * 创建源引擎Schema
+     *
+     * @param model
+     * @throws Exception
+     */
     @Override
     public void createSourceEngineSchema(Model model) throws Exception {
-
+        HiveDatasource eHiveDs = new HiveDatasource(model.getEngineDatasource());
+        String id = model.getId();
+        KuduModel kuduModel = new KuduModel(model);
+        String kuduTableName = kuduModel.getKuduTableName();
+        String engineSchemaName = getSourceTableName(id);
+        KuduDatasource kuduDs = new KuduDatasource(model.getSourceDatasource());
+        List<ModelMapping> modelMappings = model.getModelMappings();
+        List<TableColumn> tableColumns = getSourceColumns(modelMappings);
+        List<TblProperty> tblProperties = getSourceTblProperties(kuduDs, kuduTableName);
+        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, engineSchemaName,
+                tableColumns, "源的Hive引擎表", null,
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, tblProperties);
+        JdbcUtil.createEngineSchema(eHiveDs, HIVE_ENGINE_DATABASE_NAME, sql);
     }
 
+    /**
+     * 创建源引擎Schema（只针对非暴力查询模式时使用）
+     *
+     * @param model
+     * @param engineSchemaName
+     * @throws Exception
+     */
     @Override
     public void createSourceEngineSchema(Model model, String engineSchemaName) throws Exception {
-
+        throw new RuntimeException("Kudu表作为源时不支持非暴力查询！");
     }
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
-        return null;
+        KuduDatasource kuduDatasource = new KuduDatasource(model.getSourceDatasource());
+        KuduModel kuduModel = new KuduModel(model.getProperties(), model.getSourceDatasource());
+        String kuduTableName = kuduModel.getKuduTableName();
+        return getColumns(kuduDatasource, kuduTableName);
     }
 }

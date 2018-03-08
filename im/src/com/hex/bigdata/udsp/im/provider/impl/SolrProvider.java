@@ -10,6 +10,7 @@ import com.hex.bigdata.udsp.im.provider.impl.model.modeling.SolrModel;
 import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.provider.impl.util.SolrUtil;
+import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
 import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.provider.impl.wrapper.SolrWrapper;
@@ -104,6 +105,37 @@ public class SolrProvider extends SolrWrapper {
         return getColumns(collectionName, solrServers);
     }
 
+    /**
+     * 创建源引擎Schema
+     *
+     * @param model
+     * @throws Exception
+     */
+    @Override
+    public void createSourceEngineSchema(Model model) throws Exception {
+        HiveDatasource eHiveDs = new HiveDatasource(model.getEngineDatasource());
+        String id = model.getId();
+        SolrModel solrModel = new SolrModel(model);
+        String collectionName = solrModel.getCollectionName();
+        String engineSchemaName = getSourceTableName(id);
+        SolrDatasource solrDs = new SolrDatasource(model.getSourceDatasource());
+        List<ModelMapping> modelMappings = model.getModelMappings();
+        String pkName = getSourcePrimaryKey(modelMappings);
+        List<TableColumn> tableColumns = getSourceColumns(modelMappings);
+        List<TblProperty> tblProperties = getSourceTblProperties(solrDs, pkName, collectionName, modelMappings, "*:*");
+        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, engineSchemaName,
+                tableColumns, "源的Hive引擎表", null,
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, tblProperties);
+        JdbcUtil.createEngineSchema(eHiveDs, HIVE_ENGINE_DATABASE_NAME, sql);
+    }
+
+    /**
+     * 创建源引擎Schema（只针对非暴力查询模式时使用）
+     *
+     * @param model
+     * @param engineSchemaName
+     * @throws Exception
+     */
     @Override
     public void createSourceEngineSchema(Model model, String engineSchemaName) throws Exception {
         HiveDatasource eHiveDs = new HiveDatasource(model.getEngineDatasource());
@@ -114,9 +146,10 @@ public class SolrProvider extends SolrWrapper {
         String pkName = getSourcePrimaryKey(modelMappings);
         List<WhereProperty> whereProperties = getWhereProperties(model.getModelFilterCols());
         String solrQuery = SolrUtil.getQuery(whereProperties);
+        List<TableColumn> tableColumns = getSourceColumns(modelMappings);
         List<TblProperty> tblProperties = getSourceTblProperties(solrDs, pkName, collectionName, modelMappings, solrQuery);
         String sql = HiveSqlUtil.createStorageHandlerTable(true, true, engineSchemaName,
-                getSourceColumns(modelMappings), "源的Hive引擎表", null,
+                tableColumns, "源的Hive引擎表", null,
                 HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, tblProperties);
         JdbcUtil.createEngineSchema(eHiveDs, HIVE_ENGINE_DATABASE_NAME, sql);
     }
@@ -131,9 +164,11 @@ public class SolrProvider extends SolrWrapper {
         String pkName = getTargetPrimaryKey(modelMappings);
         String tableName = getTargetTableName(model.getId());
         String collectionName = solrMetadata.getTbName();
+        List<TableColumn> tableColumns = getTargetColumns(modelMappings);
+        List<TblProperty> tblProperties = getTargetTblProperties(solrDs, pkName, collectionName, modelMappings);
         String sql = HiveSqlUtil.createStorageHandlerTable(true, true, tableName,
-                getTargetColumns(modelMappings), "目标的Hive引擎表", null,
-                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, getTargetTblProperties(solrDs, pkName, collectionName, modelMappings));
+                tableColumns, "目标的Hive引擎表", null,
+                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, tblProperties);
         JdbcUtil.executeUpdate(eHiveDs, sql);
     }
 
