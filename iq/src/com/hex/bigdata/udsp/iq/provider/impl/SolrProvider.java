@@ -179,7 +179,7 @@ public class SolrProvider implements Provider {
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<String, SolrConnectionPoolFactory>();
         }
-        SolrConnectionPoolFactory factory = dataSourcePool.get(dsId);
+        SolrConnectionPoolFactory factory = dataSourcePool.remove(dsId);
         if (factory == null) {
             GenericObjectPool.Config config = new GenericObjectPool.Config();
             config.lifo = true;
@@ -192,8 +192,8 @@ public class SolrProvider implements Provider {
             config.testOnBorrow = false;
             config.testOnReturn = false;
             factory = new SolrConnectionPoolFactory(config, datasource.getSolrServers(), collectionName);
-            dataSourcePool.put(dsId, factory);
         }
+        dataSourcePool.put(dsId, factory);
         return factory;
     }
 

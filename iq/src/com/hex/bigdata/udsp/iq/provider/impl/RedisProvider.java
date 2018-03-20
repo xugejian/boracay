@@ -153,11 +153,11 @@ public class RedisProvider implements Provider {
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<String, RedisConnectionPoolFactory>();
         }
-        RedisConnectionPoolFactory factory = dataSourcePool.get(dsId);
+        RedisConnectionPoolFactory factory = dataSourcePool.remove(dsId);
         if (factory == null) {
             factory = new RedisConnectionPoolFactory(datasource);
-            dataSourcePool.put(dsId, factory);
         }
+        dataSourcePool.put(dsId, factory);
         return factory;
     }
 

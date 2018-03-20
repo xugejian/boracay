@@ -31,7 +31,7 @@ public class KuduUtil {
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<>();
         }
-        KuduClientPoolFactory factory = dataSourcePool.get(dsId);
+        KuduClientPoolFactory factory = dataSourcePool.remove(dsId);
         if (factory == null) {
             GenericObjectPool.Config config = new GenericObjectPool.Config();
             config.lifo = true;

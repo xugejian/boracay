@@ -33,8 +33,8 @@ public abstract class JdbcProvider implements Provider {
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<>();
         }
-        BasicDataSource dataSource = dataSourcePool.get(dsId);
-        if (dataSource == null) {
+        BasicDataSource dataSource = dataSourcePool.remove(dsId);
+        if (dataSource == null || dataSource.isClosed()) {
             dataSource = new BasicDataSource();
             /**
              * 基础配置
@@ -106,9 +106,8 @@ public abstract class JdbcProvider implements Provider {
             // 是否在归还到池中前进行检验（推荐false），为true时会很影响性能
             if (StringUtils.isNotBlank(datasource.getTestOnReturn()))
                 dataSource.setTestOnReturn(Boolean.valueOf(datasource.getTestOnReturn()));
-
-            dataSourcePool.put(dsId, dataSource);
         }
+        dataSourcePool.put(dsId, dataSource);
         return dataSource;
     }
 

@@ -25,8 +25,8 @@ public class JdbcUtil {
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<>();
         }
-        BasicDataSource dataSource = dataSourcePool.get(dsId);
-        if (dataSource == null) {
+        BasicDataSource dataSource = dataSourcePool.remove(dsId);
+        if (dataSource == null || dataSource.isClosed()) {
             dataSource = new BasicDataSource();
             /**
              * 基础配置
@@ -107,8 +107,8 @@ public class JdbcUtil {
             // 解决mysql获取元数据时获取字段注释
             if (StringUtils.isNotBlank(datasource.getUserInformationSchema()))
                 dataSource.addConnectionProperty("userInformationSchema", datasource.getUserInformationSchema());
-            dataSourcePool.put(dsId, dataSource);
         }
+        dataSourcePool.put(dsId, dataSource);
         return dataSource;
     }
 
