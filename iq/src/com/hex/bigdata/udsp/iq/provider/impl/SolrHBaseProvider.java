@@ -204,7 +204,7 @@ public class SolrHBaseProvider implements Provider {
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<String, HBaseConnectionPoolFactory>();
         }
-        HBaseConnectionPoolFactory factory = dataSourcePool.get(dsId);
+        HBaseConnectionPoolFactory factory = dataSourcePool.remove(dsId);
         if (factory == null) {
             GenericObjectPool.Config config = new GenericObjectPool.Config();
             config.lifo = true;
@@ -217,8 +217,8 @@ public class SolrHBaseProvider implements Provider {
             config.testOnBorrow = false;
             config.testOnReturn = false;
             factory = new HBaseConnectionPoolFactory(config, hBaseDatasource);
-            dataSourcePool.put(dsId, factory);
         }
+        dataSourcePool.put(dsId, factory);
         return factory;
     }
 

@@ -258,7 +258,7 @@ public class HBaseProvider implements Provider {
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<String, HBaseConnectionPoolFactory>();
         }
-        HBaseConnectionPoolFactory factory = dataSourcePool.get(dsId);
+        HBaseConnectionPoolFactory factory = dataSourcePool.remove(dsId);
         if (factory == null) {
             GenericObjectPool.Config config = new GenericObjectPool.Config();
             config.lifo = true;
