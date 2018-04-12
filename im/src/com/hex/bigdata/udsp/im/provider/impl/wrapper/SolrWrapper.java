@@ -54,21 +54,23 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceProvider
 
     protected List<TblProperty> getSourceTblProperties(SolrDatasource datasource, String pkName, String collectionName,
                                                        List<ModelMapping> modelMappings, String solrQuery) {
+        if (StringUtils.isBlank(pkName)) {
+            throw new IllegalArgumentException("主键字段不能为空");
+        }
+
         List<TblProperty> tblProperties = new ArrayList<>();
         tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl())); // zookeeper地址、端口和目录
         if (StringUtils.isBlank(solrQuery)) solrQuery = "*:*";
         tblProperties.add(new TblProperty("solr.query", solrQuery)); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1000")); // 批量大小
-        if (StringUtils.isBlank(pkName)) {
-            throw new IllegalArgumentException("主键字段不能为空");
-        }
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名
         tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式，Default：0
         tblProperties.add(new TblProperty("collection.name", collectionName)); // Solr Collection Name
-        // Hive字段和Solr字段对应
+
         if (modelMappings == null || modelMappings.size() == 0) {
             throw new IllegalArgumentException("映射字段不能为空");
         }
+
         List<String> list = new ArrayList<>();
         for (ModelMapping modelMapping : modelMappings) {
             list.add(modelMapping.getName());
@@ -79,20 +81,22 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceProvider
 
     protected List<TblProperty> getTargetTblProperties(SolrDatasource datasource, String pkName, String collectionName,
                                                        List<ModelMapping> modelMappings) {
+        if (StringUtils.isBlank(pkName)) {
+            throw new IllegalArgumentException("主键字段不能为空");
+        }
+
         List<TblProperty> tblProperties = new ArrayList<>();
         tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl())); // zookeeper地址、端口和目录
         tblProperties.add(new TblProperty("solr.query", "*:*")); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1000")); // 批量大小
-        if (StringUtils.isBlank(pkName)) {
-            throw new IllegalArgumentException("主键字段不能为空");
-        }
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名
         tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式，Default：0
         tblProperties.add(new TblProperty("collection.name", collectionName)); // Solr Collection Name
-        // Hive字段和Solr字段对应
+
         if (modelMappings == null || modelMappings.size() == 0) {
             throw new IllegalArgumentException("映射字段不能为空");
         }
+
         List<String> list = new ArrayList<>();
         for (ModelMapping modelMapping : modelMappings) {
             list.add(modelMapping.getMetadataCol().getName());
@@ -251,22 +255,4 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceProvider
         String collectionName = metadata.getTbName();
         SolrUtil.deleteAll(solrDatasource, collectionName);
     }
-
-    @Override
-    public void createSourceEngineSchema(Model model) throws Exception {
-        HiveDatasource eHiveDs = new HiveDatasource(model.getEngineDatasource());
-        String id = model.getId();
-        SolrModel solrModel = new SolrModel(model);
-        String collectionName = solrModel.getCollectionName();
-        String engineSchemaName = getSourceTableName(id);
-        SolrDatasource solrDs = new SolrDatasource(model.getSourceDatasource());
-        List<ModelMapping> modelMappings = model.getModelMappings();
-        String pkName = getSourcePrimaryKey(modelMappings);
-        List<TblProperty> tblProperties = getSourceTblProperties(solrDs, pkName, collectionName, modelMappings, "*:*");
-        String sql = HiveSqlUtil.createStorageHandlerTable(true, true, engineSchemaName,
-                getSourceColumns(modelMappings), "源的Hive引擎表", null,
-                HIVE_ENGINE_STORAGE_HANDLER_CLASS, null, tblProperties);
-        JdbcUtil.createEngineSchema(eHiveDs, HIVE_ENGINE_DATABASE_NAME, sql);
-    }
-
 }
