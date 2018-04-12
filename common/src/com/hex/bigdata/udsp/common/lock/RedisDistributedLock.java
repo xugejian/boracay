@@ -61,14 +61,22 @@ public class RedisDistributedLock {
             while (count < num) {
                 try {
                     logger.debug(key + "请求锁！");
-                    // 请求锁成功说明锁没被其他线程保持
-                    if (redisConnection.setNX(newkey.getBytes(), LOCKED.getBytes())) {
-                        logger.debug(key + "上锁！");
-                        // 上锁
-                        redisTemplate.expire(newkey, EXPIRE, TimeUnit.SECONDS);
-                        break;
+                    /**
+                     * 理论上这里也会出现同时进入的问题，也需要上锁，但是上什么锁呢？
+                     * 如果只上单机锁则只能锁本机，对于分布式服务无效；
+                     * 而如果上分布式锁，这个方法就是为了解决分布式锁的！
+                     * 本人无解。。。。。。。。！
+                     */
+                    synchronized (key.intern()) {
+                        // 请求锁成功说明锁没被其他线程保持
+                        if (redisConnection.setNX(newkey.getBytes(), LOCKED.getBytes())) {
+                            logger.debug(key + "上锁！");
+                            // 上锁
+                            redisTemplate.expire(newkey, EXPIRE, TimeUnit.SECONDS);
+                            break;
+                        }
+                        // 请求锁失败说明锁被其它线程保持，等待几毫秒后继续请求锁
                     }
-                    // 请求锁失败说明锁被其它线程保持，等待几毫秒后继续请求锁
                 } catch (Exception e) {
                     logger.error(ExceptionUtil.getMessage(e) + " key: " + key);
                 }

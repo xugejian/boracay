@@ -52,11 +52,13 @@ public class RunQueueService {
             if (initParamService.isUseClusterRedisLock())
                 redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
+                logger.debug("增加" + key + "异步并发！");
                 RunQueue runQueue = this.select(key);
                 if (runQueue == null) {
                     runQueue = this.initalByKey(key);
                 }
                 runQueue.setCurrentAsyncNum(runQueue.getCurrentAsyncNum() + 1);
+                logger.debug("增加" + key + "异步并发后并发数==>" + runQueue.getCurrentAsyncNum());
                 this.insert(key, runQueue);
                 return true;
             } finally {
@@ -76,13 +78,24 @@ public class RunQueueService {
      */
     public boolean addSyncCurrent(Current mcCurrent) {
         String key = this.getKey(mcCurrent);
-        RunQueue runQueue = this.select(key);
-        if (runQueue == null) {
-            runQueue = this.initalByKey(key);
+        synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
+            if (initParamService.isUseClusterRedisLock())
+                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+            try {
+                logger.debug("增加" + key + "同步并发！");
+                RunQueue runQueue = this.select(key);
+                if (runQueue == null) {
+                    runQueue = this.initalByKey(key);
+                }
+                runQueue.setCurrentSyncNum(runQueue.getCurrentSyncNum() + 1);
+                logger.debug("增加" + key + "同步并发后并发数==>" + runQueue.getCurrentSyncNum());
+                this.insert(key, runQueue);
+                return true;
+            } finally {
+                if (initParamService.isUseClusterRedisLock())
+                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+            }
         }
-        runQueue.setCurrentSyncNum(runQueue.getCurrentSyncNum() + 1);
-        this.insert(key, runQueue);
-        return true;
     }
 
     /**
@@ -91,22 +104,25 @@ public class RunQueueService {
      * @param mcCurrent
      * @return
      */
+
     public boolean reduceAsyncCurrent(Current mcCurrent) {
         String key = this.getKey(mcCurrent);
         synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
             if (initParamService.isUseClusterRedisLock())
                 redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
+                logger.debug("减少" + key + "异步并发！");
                 this.mcCurrentService.delete(mcCurrent.getPkId());
                 RunQueue runQueue = this.select(key);
                 if (runQueue != null) {
                     int currentAsyncNum = runQueue.getCurrentAsyncNum();
-                    if (currentAsyncNum >= 1) {
+                    if (currentAsyncNum > 1) {
                         currentAsyncNum = currentAsyncNum - 1;
                     } else {
                         currentAsyncNum = 0;
                     }
                     runQueue.setCurrentAsyncNum(currentAsyncNum);
+                    logger.debug("减少" + key + "异步并发后并发数==>" + runQueue.getCurrentAsyncNum());
                     this.insert(key, runQueue);
                 }
                 return true;
@@ -127,16 +143,18 @@ public class RunQueueService {
             if (initParamService.isUseClusterRedisLock())
                 redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
+                logger.debug("减少" + key + "同步并发！");
                 this.mcCurrentService.delete(mcCurrent.getPkId());
                 RunQueue runQueue = this.select(key);
                 if (runQueue != null) {
                     int currentSyncNum = runQueue.getCurrentSyncNum();
-                    if (currentSyncNum >= 1) {
+                    if (currentSyncNum > 1) {
                         currentSyncNum = currentSyncNum - 1;
                     } else {
                         currentSyncNum = 0;
                     }
                     runQueue.setCurrentSyncNum(currentSyncNum);
+                    logger.debug("减少" + key + "同步并发后并发数==>" + runQueue.getCurrentSyncNum());
                     this.insert(key, runQueue);
                 }
                 return true;
@@ -167,13 +185,14 @@ public class RunQueueService {
      * @return
      */
     private RunQueue initalByKey(String key) {
+        logger.debug("初始化并发数控制实体！");
         String[] keys = key.split("\\:");
         RunQueue runQueue = new RunQueue();
-        if (keys.length >= 4) {
-            runQueue.setUserId(keys[0]);
-            runQueue.setAppId(keys[1]);
-            runQueue.setAppType(keys[2]);
-            runQueue.setSyncType(keys[3]);
+        if (keys.length >= 5) {
+            runQueue.setUserId(keys[1]);
+            runQueue.setAppId(keys[2]);
+            runQueue.setAppType(keys[3]);
+            runQueue.setSyncType(keys[4]);
         }
         return runQueue;
     }
@@ -192,13 +211,7 @@ public class RunQueueService {
                 redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 RunQueue runQueue = this.select(key);
-                if (runQueue == null) {
-                    Current mcCurrent = McCommonUtil.getMcCurrent(request, maxCurrentNum);
-                    this.addAsyncCurrent(mcCurrent);
-                    this.mcCurrentService.insert(mcCurrent);
-                    return mcCurrent;
-                }
-                if (runQueue.getCurrentAsyncNum() < maxCurrentNum) {
+                if (runQueue == null || runQueue.getCurrentAsyncNum() < maxCurrentNum) {
                     Current mcCurrent = McCommonUtil.getMcCurrent(request, maxCurrentNum);
                     this.addAsyncCurrent(mcCurrent);
                     this.mcCurrentService.insert(mcCurrent);
@@ -227,13 +240,7 @@ public class RunQueueService {
                 redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 RunQueue runQueue = this.select(key);
-                if (runQueue == null) {
-                    Current mcCurrent = McCommonUtil.getMcCurrent(request, maxCurrentNum);
-                    this.addSyncCurrent(mcCurrent);
-                    this.mcCurrentService.insert(mcCurrent);
-                    return mcCurrent;
-                }
-                if (runQueue.getCurrentSyncNum() < maxCurrentNum) {
+                if (runQueue == null || runQueue.getCurrentSyncNum() < maxCurrentNum) {
                     Current mcCurrent = McCommonUtil.getMcCurrent(request, maxCurrentNum);
                     this.addSyncCurrent(mcCurrent);
                     this.mcCurrentService.insert(mcCurrent);
