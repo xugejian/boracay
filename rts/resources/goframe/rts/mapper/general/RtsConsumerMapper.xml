@@ -5,7 +5,7 @@
     <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
     <result column="MD_ID" property="mdId" jdbcType="VARCHAR" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
-    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR" />
     <result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" />
     <result column="NOTE" property="note" jdbcType="VARCHAR" />
     <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
@@ -26,7 +26,7 @@
   </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.rts.model.RtsConsumer" >
     insert into RTS_CUSTOMER_CONFIG (PK_ID, MD_ID, NAME, 
-      DESCRIBE, GROUP_ID,
+      DESCRIPTION, GROUP_ID,
       NOTE, DEL_FLG, CRT_USER, 
       CRT_TIME, UPT_USER, UPT_TIME
       )
@@ -41,7 +41,7 @@
     set
       MD_ID = #{mdId,jdbcType=VARCHAR},
       NAME = #{name,jdbcType=VARCHAR},
-      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      DESCRIPTION = #{describe,jdbcType=VARCHAR},
       GROUP_ID = #{groupId,jdbcType=VARCHAR},
       NOTE = #{note,jdbcType=VARCHAR},
       DEL_FLG = #{delFlg,jdbcType=CHAR},
@@ -52,13 +52,13 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, MD_ID, NAME, DESCRIBE, GROUP_ID, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
+    select PK_ID, MD_ID, NAME, DESCRIPTION, GROUP_ID, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
     UPT_USER, UPT_TIME
     from RTS_CUSTOMER_CONFIG
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, MD_ID, NAME, DESCRIBE, GROUP_ID, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
+    select PK_ID, MD_ID, NAME, DESCRIPTION, GROUP_ID, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
     UPT_USER, UPT_TIME
     from RTS_CUSTOMER_CONFIG
     where DEL_FLG = '0'
@@ -72,7 +72,7 @@
   </update>
 
   <select id="selectPage" resultMap="FullResultMap" parameterType="com.hex.bigdata.udsp.rts.dto.RtsConsumerProsView">
-    select cc.PK_ID, cc.MD_ID, cc.NAME, cc.DESCRIBE, cc.GROUP_ID, cc.NOTE, cc.DEL_FLG, cc.CRT_USER, cc.CRT_TIME,
+    select cc.PK_ID, cc.MD_ID, cc.NAME, cc.DESCRIPTION, cc.GROUP_ID, cc.NOTE, cc.DEL_FLG, cc.CRT_USER, cc.CRT_TIME,
     cc.UPT_USER, cc.UPT_TIME,md.NAME as MD_NAME,md.TOPIC as MD_TOPIC,ds.NAME as DS_NAME,ds.TYPE as DS_TYPE
     from RTS_CUSTOMER_CONFIG cc
     LEFT JOIN RTS_METADATA md
@@ -86,7 +86,7 @@
     <if test="mdName!='' and mdName!=null ">and md.NAME  like '%'||#{mdName}||'%'</if>
     <if test="mdTopic!='' and mdTopic!=null ">and md.TOPIC  like '%'||#{mdTopic}||'%'</if>
     <if test="dsType!='' and dsType!=null ">and ds.TYPE = #{dsType}</if>
-    <if test="describe!='' and describe!=null ">and cc.DESCRIBE like '%'||#{describe}||'%'</if>
+    <if test="describe!='' and describe!=null ">and cc.DESCRIPTION like '%'||#{describe}||'%'</if>
     <if test="note!='' and note!=null ">and cc.NOTE like '%'||#{note}||'%'</if>
     <if test="groupId!='' and groupId!=null ">and cc.GROUP_ID LIKE '%'||#{groupId}||'%'</if>
     <if test="crtTimeStart!=null and crtTimeStart!='' ">and cc.CRT_TIME >= #{crtTimeStart}</if>
@@ -99,7 +99,7 @@
   </select>
 
   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, MD_ID, NAME, DESCRIBE, GROUP_ID, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
+    select PK_ID, MD_ID, NAME, DESCRIPTION, GROUP_ID, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
     UPT_USER, UPT_TIME
     from RTS_CUSTOMER_CONFIG
     where DEL_FLG = '0'

@@ -5,7 +5,7 @@
     <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
     <result column="SEQ" property="seq" jdbcType="DECIMAL" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
-    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR" />
     <result column="IS_NEED" property="isNeed" jdbcType="CHAR" />
     <result column="DEFAULT_VAL" property="defaultVal" jdbcType="VARCHAR" />
     <result column="APP_ID" property="appId" jdbcType="VARCHAR" />
@@ -16,7 +16,7 @@
   </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.mm.model.MmAppExecuteParam" >
     insert into MM_APPLICATION_EXECUTE_PARAM (PK_ID, SEQ, NAME, 
-      DESCRIBE, IS_NEED, DEFAULT_VAL,APP_ID
+      DESCRIPTION, IS_NEED, DEFAULT_VAL,APP_ID
       )
     values (#{pkId,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, 
       #{describe,jdbcType=VARCHAR}, #{isNeed,jdbcType=CHAR}, #{defaultVal,jdbcType=VARCHAR},
@@ -26,25 +26,25 @@
     update MM_APPLICATION_EXECUTE_PARAM
     set SEQ = #{seq,jdbcType=DECIMAL},
       NAME = #{name,jdbcType=VARCHAR},
-      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      DESCRIPTION = #{describe,jdbcType=VARCHAR},
       IS_NEED = #{isNeed,jdbcType=CHAR},
       DEFAULT_VAL = #{defaultVal,jdbcType=VARCHAR},
       APP_ID=#{appId,jdbcType=VARCHAR}
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, SEQ, NAME, DESCRIBE, IS_NEED, DEFAULT_VAL,APP_ID
+    select PK_ID, SEQ, NAME, DESCRIPTION, IS_NEED, DEFAULT_VAL,APP_ID
     from MM_APPLICATION_EXECUTE_PARAM
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
 
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, SEQ, NAME, DESCRIBE, IS_NEED, DEFAULT_VAL,APP_ID
+    select PK_ID, SEQ, NAME, DESCRIPTION, IS_NEED, DEFAULT_VAL,APP_ID
     from MM_APPLICATION_EXECUTE_PARAM
   </select>
 
   <select id="selectListByFkId" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select maep.PK_ID, maep.SEQ, maep.NAME, maep.DESCRIBE,maep.APP_ID,maep.IS_NEED,maep.DEFAULT_VAL
+    select maep.PK_ID, maep.SEQ, maep.NAME, maep.DESCRIPTION,maep.APP_ID,maep.IS_NEED,maep.DEFAULT_VAL
     from MM_APPLICATION_EXECUTE_PARAM maep
     where APP_ID = #{fkId,jdbcType=VARCHAR}
   </select>

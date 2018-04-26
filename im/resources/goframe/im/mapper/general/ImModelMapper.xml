@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.im.model.ImModel">
         <id column="PK_ID" property="pkId" jdbcType="VARCHAR"/>
         <result column="NAME" property="name" jdbcType="VARCHAR"/>
-        <result column="DESCRIBE" property="describe" jdbcType="VARCHAR"/>
+        <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR"/>
         <result column="S_DS_ID" property="sourceDsId" jdbcType="VARCHAR"/>
         <result column="T_MD_ID" property="targetMdId" jdbcType="VARCHAR"/>
         <result column="NOTE" property="note" jdbcType="VARCHAR"/>
@@ -30,7 +30,7 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </delete>
     <insert id="insert" parameterType="com.hex.bigdata.udsp.im.model.ImModel">
-    insert into IM_MODEL (PK_ID, NAME, DESCRIBE, 
+    insert into IM_MODEL (PK_ID, NAME, DESCRIPTION,
       S_DS_ID, T_MD_ID,
       NOTE, DEL_FLG, CRT_USER, 
       CRT_TIME, UPT_USER, UPT_TIME, 
@@ -45,7 +45,7 @@
     <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.im.model.ImModel">
     update IM_MODEL
     set NAME = #{name,jdbcType=VARCHAR},
-      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      DESCRIPTION = #{describe,jdbcType=VARCHAR},
       S_DS_ID = #{sourceDsId,jdbcType=VARCHAR},
       T_MD_ID = #{targetMdId,jdbcType=VARCHAR},
       NOTE = #{note,jdbcType=VARCHAR},
@@ -60,14 +60,14 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
+    select PK_ID, NAME, DESCRIPTION, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
     CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
     where PK_ID = #{pkId,jdbcType=VARCHAR}
     and DEL_FLG = '0'
   </select>
     <select id="selectAll" resultMap="BaseResultMap">
-    select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
+    select PK_ID, NAME, DESCRIPTION, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
     CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
     where DEL_FLG = '0'
@@ -75,7 +75,7 @@
   </select>
 
     <select id="select" resultMap="ImModelView" parameterType="com.hex.bigdata.udsp.im.dto.ImModelView">
-        select IM.PK_ID, IM.NAME, IM.DESCRIBE, IM.S_DS_ID, IM.T_MD_ID, IM.NOTE, IM.DEL_FLG, IM.CRT_USER,
+        select IM.PK_ID, IM.NAME, IM.DESCRIPTION, IM.S_DS_ID, IM.T_MD_ID, IM.NOTE, IM.DEL_FLG, IM.CRT_USER,
         IM.CRT_TIME, IM.UPT_USER, IM.UPT_TIME, IM.TYPE, IM.BUILD_MODE, IM.UPDATE_MODE,IM.E_DS_ID,IM.STATUS,CD.NAME
         S_DS_NAME,IMM.NAME T_MD_NAME
         from IM_MODEL IM
@@ -87,7 +87,7 @@
         and IMM.DEL_FLG = '0'
         where IM.DEL_FLG = '0'
         <if test="name != null and name != ''">and IM.NAME like '%' || #{name} || '%'</if>
-        <if test="describe != null and describe != ''">and IM.DESCRIBE like '%' || #{describe} || '%'</if>
+        <if test="describe != null and describe != ''">and IM.DESCRIPTION like '%' || #{describe} || '%'</if>
         <if test="targetMdId != null and targetMdId != ''">and IM.T_MD_ID = #{targetMdId}</if>
         <if test="type != null and type != ''">and IM.TYPE = #{type}</if>
         <if test="sourceDsId != null and sourceDsId != ''">and IM.S_DS_ID = #{sourceDsId}</if>
@@ -100,7 +100,7 @@
     </select>
 
     <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select PK_ID, NAME, DESCRIBE, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
+    select PK_ID, NAME, DESCRIPTION, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
     CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
     where NAME = #{modelName,jdbcType=VARCHAR}
