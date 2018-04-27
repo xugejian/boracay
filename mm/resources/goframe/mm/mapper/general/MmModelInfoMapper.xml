@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.mm.model.MmModelInfo" >
     <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
-    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR" />
     <result column="VER_NOTE" property="verNote" jdbcType="VARCHAR" />
     <result column="VER_NUM" property="verNum" jdbcType="VARCHAR" />
     <result column="STATUS" property="status" jdbcType="CHAR" />
@@ -25,7 +25,7 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.mm.model.MmModelInfo" >
-    insert into MM_MODEL_INFO (PK_ID, NAME, DESCRIBE, 
+    insert into MM_MODEL_INFO (PK_ID, NAME, DESCRIPTION,
       VER_NOTE, VER_NUM, STATUS, 
       NOTE, DEL_FLG, CRT_USER, 
       CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR,MODEL_TYPE)
@@ -38,7 +38,7 @@
   <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.mm.model.MmModelInfo" >
     update MM_MODEL_INFO
     set NAME = #{name,jdbcType=VARCHAR},
-      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      DESCRIPTION = #{describe,jdbcType=VARCHAR},
       VER_NOTE = #{verNote,jdbcType=VARCHAR},
       VER_NUM = #{verNum,jdbcType=VARCHAR},
       STATUS = #{status,jdbcType=CHAR},
@@ -53,20 +53,20 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, NAME, DESCRIBE, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER, 
+    select PK_ID, NAME, DESCRIPTION, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER,
     CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR,MODEL_TYPE
     from MM_MODEL_INFO
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, NAME, DESCRIBE, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER, 
+    select PK_ID, NAME, DESCRIPTION, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER,
     CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR
     from MM_MODEL_INFO
     where DEL_FLG = '0'
   </select>
 
   <select id="selectByName" resultMap="BaseResultMap" >
-    select PK_ID, NAME, DESCRIBE, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER,
+    select PK_ID, NAME, DESCRIPTION, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER,
     CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR
     from MM_MODEL_INFO
     where DEL_FLG = '0'
@@ -79,7 +79,7 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectPage" resultMap="FullResultMap" parameterType="com.hex.bigdata.udsp.mm.dto.MmModelInfoView">
-    select mmi.PK_ID, mmi.NAME, mmi.DESCRIBE, mmi.VER_NOTE, mmi.VER_NUM, mmi.STATUS,
+    select mmi.PK_ID, mmi.NAME, mmi.DESCRIPTION, mmi.VER_NOTE, mmi.VER_NUM, mmi.STATUS,
     mmi.NOTE, mmi.DEL_FLG, mmi.CRT_USER,
     mmi.CRT_TIME, mmi.UPT_USER, mmi.UPT_TIME,mc.cn_name AS CONTRACTOR,mmi.MODEL_TYPE
     from udsp.MM_MODEL_INFO mmi
@@ -87,7 +87,7 @@
     on mmi.contractor = mc.pk_id
     where mmi.DEL_FLG = '0'
     <if test="name!='' and name!=null ">and mmi.NAME like '%'||#{name}||'%'</if>
-    <if test="describe!='' and describe!=null ">and mmi.DESCRIBE like '%'||#{describe}||'%'</if>
+    <if test="describe!='' and describe!=null ">and mmi.DESCRIPTION like '%'||#{describe}||'%'</if>
     <if test="verNote!='' and verNote!=null ">and mmi.VER_NOTE =#{verNote}</if>
     <if test="status!='' and status!=null ">and mmi.STATUS = #{status}</if>
     <if test="note!='' and note!=null ">and mmi.NOTE = #{note}</if>
@@ -102,7 +102,7 @@
   </select>
 
   <select id="selectByContractorId" resultMap="BaseResultMap" >
-    select PK_ID, NAME, DESCRIBE, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER,
+    select PK_ID, NAME, DESCRIPTION, VER_NOTE, VER_NUM, STATUS, NOTE, DEL_FLG, CRT_USER,
     CRT_TIME, UPT_USER, UPT_TIME,CONTRACTOR
     from MM_MODEL_INFO
     where DEL_FLG = '0' AND CONTRACTOR = #{contractorId,jdbcType=VARCHAR}
