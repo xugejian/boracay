@@ -64,7 +64,6 @@
     CRT_TIME, UPT_USER, UPT_TIME, TYPE, BUILD_MODE, UPDATE_MODE,E_DS_ID,STATUS
     from IM_MODEL
     where PK_ID = #{pkId,jdbcType=VARCHAR}
-    and DEL_FLG = '0'
   </select>
     <select id="selectAll" resultMap="BaseResultMap">
     select PK_ID, NAME, DESCRIPTION, S_DS_ID, T_MD_ID, NOTE, DEL_FLG, CRT_USER,
