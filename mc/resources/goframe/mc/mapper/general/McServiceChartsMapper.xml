@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.mc.dto.McServiceChartsView">
         <id column="PK_ID" property="pkId" jdbcType="VARCHAR"/>
         <result column="NAME" property="name" jdbcType="VARCHAR"/>
-        <result column="DESCRIBE" property="describe" jdbcType="VARCHAR"/>
+        <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR"/>
         <result column="TYPE" property="type" jdbcType="VARCHAR"/>
         <result column="APP_ID" property="appId" jdbcType="VARCHAR"/>
         <result column="DEL_FLG" property="delFlg" jdbcType="CHAR"/>
@@ -27,7 +27,7 @@
             parameterType="com.hex.bigdata.udsp.mc.dto.McServiceChartsView">
         select rcservice.PK_ID,
            rcservice.NAME,
-           rcservice.DESCRIBE,
+           rcservice.DESCRIPTION,
            rcservice.TYPE,
            rcservice.APP_ID,
            rcservice.DEL_FLG,
@@ -71,7 +71,7 @@
      where rcservice.DEL_FLG = '0'
      <if test="type!=null and type!=''">AND rcservice.TYPE = #{type}</if>
      <if test="name!=null and name!=''">AND rcservice.NAME LIKE '%' || #{name} || '%'</if>
-     <if test="describe!=null and describe!=''">AND rcservice.DESCRIBE LIKE '%' || #{describe} || '%'</if>
+     <if test="describe!=null and describe!=''">AND rcservice.DESCRIPTION LIKE '%' || #{describe} || '%'</if>
      order by success_count desc;
     </select>
 

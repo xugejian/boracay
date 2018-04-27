@@ -10,9 +10,9 @@
     <result column="NOTE" property="note" jdbcType="VARCHAR" />
     <result column="TYPE" property="type" jdbcType="VARCHAR" />
     <result column="LENGTH" property="length" jdbcType="VARCHAR" />
-    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR" />
     <result column="INDEXED" property="indexed" jdbcType="CHAR" />
-    <result column="PRIMARY" property="primary" jdbcType="CHAR" />
+    <result column="UNIQUEKEY" property="primary" jdbcType="CHAR" />
     <result column="STORED" property="stored" jdbcType="CHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
@@ -21,7 +21,7 @@
   </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.im.model.ImModelMapping" >
     insert into IM_MODEL_MAPPING (PK_ID, MODEL_ID, SEQ, 
-      NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE,INDEXED,PRIMARY,STORED)
+      NAME, COL_ID, NOTE, TYPE, LENGTH, DESCRIPTION, INDEXED, UNIQUEKEY, STORED)
     values (#{pkId,jdbcType=VARCHAR}, #{modelId,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, 
       #{name,jdbcType=VARCHAR}, #{colId,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR},
       #{type,jdbcType=VARCHAR},#{length,jdbcType=VARCHAR},#{describe,jdbcType=VARCHAR},
@@ -37,18 +37,18 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE,INDEXED,PRIMARY,STORED
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE, TYPE, LENGTH, DESCRIPTION, INDEXED, UNIQUEKEY, STORED
     from IM_MODEL_MAPPING
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE,TYPE,LENGTH,DESCRIBE,INDEXED,PRIMARY,STORED
+    select PK_ID, MODEL_ID, SEQ, NAME, COL_ID, NOTE, TYPE, LENGTH, DESCRIPTION, INDEXED, UNIQUEKEY, STORED
     from IM_MODEL_MAPPING
   </select>
 
   <select id="selectByMid" parameterType="java.lang.String" resultMap="BaseResultMap" >
-    select IMM.PK_ID, IMM.MODEL_ID, IMM.SEQ, IMM.NAME, IMM.COL_ID, IMM.NOTE,IMM.TYPE,IMM.LENGTH,IMM.DESCRIBE,
-      IMM.INDEXED,IMM.PRIMARY,IMM.STORED
+    select IMM.PK_ID, IMM.MODEL_ID, IMM.SEQ, IMM.NAME, IMM.COL_ID, IMM.NOTE,IMM.TYPE,IMM.LENGTH,IMM.DESCRIPTION,
+      IMM.INDEXED,IMM.UNIQUEKEY,IMM.STORED
     from IM_MODEL_MAPPING IMM
     where IMM.MODEL_ID = #{mid}
     ORDER BY IMM.SEQ asc
@@ -60,8 +60,8 @@
   </delete>
 
   <select id="selectByModelId" resultMap="BaseResultMap" parameterType="java.lang.String">
-    SELECT IMM.PK_ID, IMM.MODEL_ID, IMM.SEQ, IMM.NAME, IMC.NAME COL_ID, IMM.NOTE,IMM.TYPE,IMM.LENGTH,IMM.DESCRIBE,
-      IMM.INDEXED,IMM.PRIMARY,IMM.STORED
+    SELECT IMM.PK_ID, IMM.MODEL_ID, IMM.SEQ, IMM.NAME, IMC.NAME COL_ID, IMM.NOTE,IMM.TYPE,IMM.LENGTH,IMM.DESCRIPTION,
+      IMM.INDEXED,IMM.UNIQUEKEY,IMM.STORED
     FROM IM_MODEL_MAPPING IMM
     LEFT JOIN IM_METADATA_COLUMN IMC
     ON IMC.PK_ID = IMM.COL_ID

@@ -6,7 +6,7 @@
     <result column="APP_ID" property="appId" jdbcType="VARCHAR" />
     <result column="SEQ" property="seq" jdbcType="DECIMAL" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
-    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR" />
     <result column="TYPE" property="type" jdbcType="VARCHAR" />
     <result column="LENGTH" property="length" jdbcType="VARCHAR" />
     <result column="IS_NEED" property="isNeed" jdbcType="CHAR" />
@@ -22,7 +22,7 @@
   </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.iq.model.IqAppQueryCol" >
     insert into IQ_APPLICATION_QUERY_COLUMN (PK_ID, APP_ID, SEQ, 
-      NAME, DESCRIBE, TYPE, 
+      NAME, DESCRIPTION, TYPE,
       LENGTH, IS_NEED, DEFAULT_VAL, 
       OPERATOR, LABEL, IS_OFFER_OUT,NOTE
       )
@@ -38,7 +38,7 @@
     set APP_ID = #{appId,jdbcType=VARCHAR},
       SEQ = #{seq,jdbcType=DECIMAL},
       NAME = #{name,jdbcType=VARCHAR},
-      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      DESCRIPTION = #{describe,jdbcType=VARCHAR},
       TYPE = #{type,jdbcType=VARCHAR},
       LENGTH = #{length,jdbcType=VARCHAR},
       IS_NEED = #{isNeed,jdbcType=CHAR},
@@ -50,18 +50,18 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, APP_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, IS_NEED, DEFAULT_VAL, OPERATOR, 
+    select PK_ID, APP_ID, SEQ, NAME, DESCRIPTION, TYPE, LENGTH, IS_NEED, DEFAULT_VAL, OPERATOR,
     LABEL, IS_OFFER_OUT,NOTE
     from IQ_APPLICATION_QUERY_COLUMN
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, APP_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, IS_NEED, DEFAULT_VAL, OPERATOR, 
+    select PK_ID, APP_ID, SEQ, NAME, DESCRIPTION, TYPE, LENGTH, IS_NEED, DEFAULT_VAL, OPERATOR,
     LABEL, IS_OFFER_OUT,NOTE
     from IQ_APPLICATION_QUERY_COLUMN
   </select>
   <select id="select" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.iq.model.IqAppQueryCol">
-    select PK_ID, APP_ID, SEQ, NAME, DESCRIBE, TYPE, LENGTH, IS_NEED, DEFAULT_VAL, OPERATOR,
+    select PK_ID, APP_ID, SEQ, NAME, DESCRIPTION, TYPE, LENGTH, IS_NEED, DEFAULT_VAL, OPERATOR,
     LABEL, IS_OFFER_OUT,NOTE
     from IQ_APPLICATION_QUERY_COLUMN
     <trim prefix="WHERE" prefixOverrides="AND |OR ">
@@ -69,7 +69,7 @@
       <if test="appId!='' and appId!=null ">and APP_ID = #{appId}</if>
       <if test="seq!='' and seq!=null ">and SEQ = #{seq}</if>
       <if test="name!='' and name!=null ">and NAME like '%'||#{name}||'%'</if>
-      <if test="describe!='' and describe!=null ">and DESCRIBE like '%'||#{describe}||'%'</if>
+      <if test="describe!='' and describe!=null ">and DESCRIPTION like '%'||#{describe}||'%'</if>
       <if test="type!='' and type!=null ">and TYPE = #{type}</if>
       <if test="length!='' and length!=null ">and LENGTH = #{length}</if>
       <if test="isNeed!='' and isNeed!=null ">and IS_NEED = #{isNeed}</if>

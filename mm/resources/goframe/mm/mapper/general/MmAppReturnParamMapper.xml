@@ -5,7 +5,7 @@
     <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
     <result column="SEQ" property="seq" jdbcType="DECIMAL" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
-    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR" />
     <result column="APP_ID" property="appId" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
@@ -14,7 +14,7 @@
   </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.mm.model.MmAppReturnParam" >
     insert into MM_APPLICATION_RETURN_PARAM (PK_ID, SEQ, NAME, 
-      DESCRIBE,APP_ID)
+      DESCRIPTION,APP_ID)
     values (#{pkId,jdbcType=VARCHAR}, #{seq,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, 
       #{describe,jdbcType=VARCHAR},#{appId,jdbcType=VARCHAR})
   </insert>
@@ -22,22 +22,22 @@
     update MM_APPLICATION_RETURN_PARAM
     set SEQ = #{seq,jdbcType=DECIMAL},
       NAME = #{name,jdbcType=VARCHAR},
-      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      DESCRIPTION = #{describe,jdbcType=VARCHAR},
       APP_ID=#{appId,jdbcType=VARCHAR}
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, SEQ, NAME, DESCRIBE,APP_ID
+    select PK_ID, SEQ, NAME, DESCRIPTION,APP_ID
     from MM_APPLICATION_RETURN_PARAM
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, SEQ, NAME, DESCRIBE,APP_ID
+    select PK_ID, SEQ, NAME, DESCRIPTION,APP_ID
     from MM_APPLICATION_RETURN_PARAM
   </select>
 
   <select id="selectListByFkId" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, SEQ, NAME, DESCRIBE,APP_ID
+    select PK_ID, SEQ, NAME, DESCRIPTION,APP_ID
     from MM_APPLICATION_RETURN_PARAM
     where APP_ID = #{appId,jdbcType=VARCHAR}
   </select>
