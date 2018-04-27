@@ -1,4 +1,4 @@
------------------------------------------
+ï»¿-----------------------------------------
 -- Export file for user UDSP@BIGDATA   --
 -- Created by PC on 2018/2/1, 10:36:10 --
 -----------------------------------------
@@ -27,29 +27,29 @@ create table COM_DATASOURCE
 )
 ;
 comment on column COM_DATASOURCE.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column COM_DATASOURCE.name
-  is 'Ãû³Æ((Î¨Ò»¡¢Ó¢ÎÄ)';
+  is 'åç§°((å”¯ä¸€ã€è‹±æ–‡)';
 comment on column COM_DATASOURCE.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column COM_DATASOURCE.type
-  is 'Êı¾İÔ´ÀàĞÍ';
+  is 'æ•°æ®æºç±»å‹';
 comment on column COM_DATASOURCE.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column COM_DATASOURCE.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤';
 comment on column COM_DATASOURCE.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column COM_DATASOURCE.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column COM_DATASOURCE.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column COM_DATASOURCE.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column COM_DATASOURCE.impl_class
-  is '½Ó¿ÚÊµÏÖÀà';
+  is 'æ¥å£å®ç°ç±»';
 comment on column COM_DATASOURCE.model
-  is 'ËùÊôÄ£¿é£¨IQ¡¢OLQ¡¢RTS¡¢IM£©';
+  is 'æ‰€å±æ¨¡å—ï¼ˆIQã€OLQã€RTSã€IMï¼‰';
 create index IDX_COM_DS_DELFLG on COM_DATASOURCE (DEL_FLG);
 create index IDX_COM_DS_DELFLG_MODEL_NAME on COM_DATASOURCE (DEL_FLG, MODEL, NAME);
 alter table COM_DATASOURCE
@@ -70,17 +70,17 @@ create table COM_OPERATION_LOG
 )
 ;
 comment on column COM_OPERATION_LOG.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column COM_OPERATION_LOG.action_type
-  is '²Ù×÷ÀàĞÍ£¨1Ìí¼Ó 2¸üĞÂ 3É¾³ı 4²éÑ¯£©';
+  is 'æ“ä½œç±»å‹ï¼ˆ1æ·»åŠ  2æ›´æ–° 3åˆ é™¤ 4æŸ¥è¯¢ï¼‰';
 comment on column COM_OPERATION_LOG.action_url
-  is '²Ù×÷URL';
+  is 'æ“ä½œURL';
 comment on column COM_OPERATION_LOG.action_user
-  is '²Ù×÷ÓÃ»§';
+  is 'æ“ä½œç”¨æˆ·';
 comment on column COM_OPERATION_LOG.action_time
-  is '²Ù×÷Ê±¼ä';
+  is 'æ“ä½œæ—¶é—´';
 comment on column COM_OPERATION_LOG.action_content
-  is '²Ù×÷ĞÅÏ¢';
+  is 'æ“ä½œä¿¡æ¯';
 alter table COM_OPERATION_LOG
   add constraint PK_MC_PROPERTIES_LOG primary key (PK_ID);
 
@@ -98,15 +98,15 @@ create table COM_PROPERTIES
 )
 ;
 comment on column COM_PROPERTIES.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column COM_PROPERTIES.fk_id
-  is 'Íâ¼üID';
+  is 'å¤–é”®ID';
 comment on column COM_PROPERTIES.name
-  is 'Ãû³Æ';
+  is 'åç§°';
 comment on column COM_PROPERTIES.value
-  is 'ÊıÖµ';
+  is 'æ•°å€¼';
 comment on column COM_PROPERTIES.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 alter table COM_PROPERTIES
   add constraint PK_PROPERTIES primary key (PK_ID);
 
@@ -132,33 +132,33 @@ create table IM_METADATA
 )
 ;
 comment on table IM_METADATA
-  is '½»»¥½¨Ä£-ÔªÊı¾İÅäÖÃ';
+  is 'äº¤äº’å»ºæ¨¡-å…ƒæ•°æ®é…ç½®';
 comment on column IM_METADATA.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IM_METADATA.ds_id
-  is 'Êı¾İÔ´ID';
+  is 'æ•°æ®æºID';
 comment on column IM_METADATA.name
-  is 'Ãû³Æ/±íÃû((Î¨Ò»¡¢Ó¢ÎÄ)';
+  is 'åç§°/è¡¨å((å”¯ä¸€ã€è‹±æ–‡)';
 comment on column IM_METADATA.describe
-  is 'ËµÃ÷/±íËµÃ÷';
+  is 'è¯´æ˜/è¡¨è¯´æ˜';
 comment on column IM_METADATA.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column IM_METADATA.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı£©';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤ï¼‰';
 comment on column IM_METADATA.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column IM_METADATA.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column IM_METADATA.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column IM_METADATA.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column IM_METADATA.tb_name
-  is '¿â±í';
+  is 'åº“è¡¨';
 comment on column IM_METADATA.status
-  is '×´Ì¬£¨1£ºÎ´½¨£¬2£ºÒÑ½¨£©';
+  is 'çŠ¶æ€ï¼ˆ1ï¼šæœªå»ºï¼Œ2ï¼šå·²å»ºï¼‰';
 comment on column IM_METADATA.type
-  is 'ÀàĞÍ£¨1£ºÄÚ±í£¬2£ºÍâ±í£©';
+  is 'ç±»å‹ï¼ˆ1ï¼šå†…è¡¨ï¼Œ2ï¼šå¤–è¡¨ï¼‰';
 alter table IM_METADATA
   add constraint PK_IM_MATEDATA primary key (PK_ID);
 
@@ -182,29 +182,29 @@ create table IM_METADATA_COLUMN
 )
 ;
 comment on table IM_METADATA_COLUMN
-  is '½»»¥½¨Ä£-ÔªÊı¾İ×Ö¶Î';
+  is 'äº¤äº’å»ºæ¨¡-å…ƒæ•°æ®å­—æ®µ';
 comment on column IM_METADATA_COLUMN.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IM_METADATA_COLUMN.md_id
-  is 'ÔªÊı¾İID';
+  is 'å…ƒæ•°æ®ID';
 comment on column IM_METADATA_COLUMN.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 comment on column IM_METADATA_COLUMN.name
-  is 'Ãû³Æ£¨Î¨Ò»¡¢Ó¢ÎÄ£©';
+  is 'åç§°ï¼ˆå”¯ä¸€ã€è‹±æ–‡ï¼‰';
 comment on column IM_METADATA_COLUMN.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column IM_METADATA_COLUMN.type
-  is 'ÀàĞÍ';
+  is 'ç±»å‹';
 comment on column IM_METADATA_COLUMN.length
-  is '³¤¶È';
+  is 'é•¿åº¦';
 comment on column IM_METADATA_COLUMN.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column IM_METADATA_COLUMN.indexed
-  is 'Ë÷Òı£¨0£ºÊÇ£»1£º·ñ£©';
+  is 'ç´¢å¼•ï¼ˆ0ï¼šæ˜¯ï¼›1ï¼šå¦ï¼‰';
 comment on column IM_METADATA_COLUMN.primary
-  is 'Ö÷¼ü£¨0£ºÊÇ£»1£º·ñ£©';
+  is 'ä¸»é”®ï¼ˆ0ï¼šæ˜¯ï¼›1ï¼šå¦ï¼‰';
 comment on column IM_METADATA_COLUMN.stored
-  is '´æ´¢£¨0£ºÊÇ£»1£º·ñ£©';
+  is 'å­˜å‚¨ï¼ˆ0ï¼šæ˜¯ï¼›1ï¼šå¦ï¼‰';
 alter table IM_METADATA_COLUMN
   add constraint PK_IM_MATEDATA_COL primary key (PK_ID);
 
@@ -233,39 +233,39 @@ create table IM_MODEL
 )
 ;
 comment on table IM_MODEL
-  is '½»»¥½¨Ä£-Ä£ĞÍÅäÖÃ';
+  is 'äº¤äº’å»ºæ¨¡-æ¨¡å‹é…ç½®';
 comment on column IM_MODEL.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IM_MODEL.name
-  is 'Ãû³Æ';
+  is 'åç§°';
 comment on column IM_MODEL.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column IM_MODEL.s_ds_id
-  is 'Ô´Êı¾İÔ´ID';
+  is 'æºæ•°æ®æºID';
 comment on column IM_MODEL.t_md_id
-  is 'Ä¿±êÔªÊı¾İID';
+  is 'ç›®æ ‡å…ƒæ•°æ®ID';
 comment on column IM_MODEL.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column IM_MODEL.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı£©';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤ï¼‰';
 comment on column IM_MODEL.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column IM_MODEL.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column IM_MODEL.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column IM_MODEL.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column IM_MODEL.type
-  is 'ÀàĞÍ£¨1£ºÅúÁ¿ 2£ºÊµÊ±£©';
+  is 'ç±»å‹ï¼ˆ1ï¼šæ‰¹é‡ 2ï¼šå®æ—¶ï¼‰';
 comment on column IM_MODEL.build_mode
-  is '¹¹½¨²ßÂÔ£¨1£ºÔöÁ¿£¬2£ºÈ«Á¿£©';
+  is 'æ„å»ºç­–ç•¥ï¼ˆ1ï¼šå¢é‡ï¼Œ2ï¼šå…¨é‡ï¼‰';
 comment on column IM_MODEL.update_mode
-  is '¸üĞÂ²ßÂÔ£¨1¡¢Æ¥Åä¸üĞÂ 2¡¢¸üĞÂ¡¢²åÈë 3¡¢ÔöÁ¿²åÈë£¬Ä¬ÈÏ£º2£©';
+  is 'æ›´æ–°ç­–ç•¥ï¼ˆ1ã€åŒ¹é…æ›´æ–° 2ã€æ›´æ–°ã€æ’å…¥ 3ã€å¢é‡æ’å…¥ï¼Œé»˜è®¤ï¼š2ï¼‰';
 comment on column IM_MODEL.e_ds_id
-  is 'ÒıÇæÊı¾İÔ´ID';
+  is 'å¼•æ“æ•°æ®æºID';
 comment on column IM_MODEL.status
-  is '×´Ì¬£¨1£ºÎ´½¨£¬2£ºÒÑ½¨£©';
+  is 'çŠ¶æ€ï¼ˆ1ï¼šæœªå»ºï¼Œ2ï¼šå·²å»ºï¼‰';
 alter table IM_MODEL
   add constraint PK_IM_MODEL primary key (PK_ID);
 
@@ -289,29 +289,29 @@ create table IM_MODEL_FILTER_COLUMN
 )
 ;
 comment on table IM_MODEL_FILTER_COLUMN
-  is '½»»¥Ä£ĞÍ-Ä£ĞÍ¹ıÂË×Ö¶Î';
+  is 'äº¤äº’æ¨¡å‹-æ¨¡å‹è¿‡æ»¤å­—æ®µ';
 comment on column IM_MODEL_FILTER_COLUMN.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IM_MODEL_FILTER_COLUMN.model_id
-  is 'Ä£ĞÍID';
+  is 'æ¨¡å‹ID';
 comment on column IM_MODEL_FILTER_COLUMN.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 comment on column IM_MODEL_FILTER_COLUMN.name
-  is 'Ãû³Æ((Ó¢ÎÄ)';
+  is 'åç§°((è‹±æ–‡)';
 comment on column IM_MODEL_FILTER_COLUMN.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column IM_MODEL_FILTER_COLUMN.type
-  is 'ÀàĞÍ';
+  is 'ç±»å‹';
 comment on column IM_MODEL_FILTER_COLUMN.length
-  is '³¤¶È';
+  is 'é•¿åº¦';
 comment on column IM_MODEL_FILTER_COLUMN.is_need
-  is 'ÊÇ·ñ±ØÊä£¨0£ºÊÇ£»1£º·ñ£©';
+  is 'æ˜¯å¦å¿…è¾“ï¼ˆ0ï¼šæ˜¯ï¼›1ï¼šå¦ï¼‰';
 comment on column IM_MODEL_FILTER_COLUMN.default_val
-  is 'Ä¬ÈÏÖµ';
+  is 'é»˜è®¤å€¼';
 comment on column IM_MODEL_FILTER_COLUMN.operator
-  is '²Ù×÷·û';
+  is 'æ“ä½œç¬¦';
 comment on column IM_MODEL_FILTER_COLUMN.label
-  is '±ğÃû';
+  is 'åˆ«å';
 alter table IM_MODEL_FILTER_COLUMN
   add constraint PK_IM_MODEL_FILTER_COL primary key (PK_ID);
 
@@ -336,31 +336,31 @@ create table IM_MODEL_MAPPING
 )
 ;
 comment on table IM_MODEL_MAPPING
-  is '½»»¥½¨Ä£-Ä£ĞÍ×Ö¶ÎÓ³Éä';
+  is 'äº¤äº’å»ºæ¨¡-æ¨¡å‹å­—æ®µæ˜ å°„';
 comment on column IM_MODEL_MAPPING.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IM_MODEL_MAPPING.model_id
-  is 'Ä£ĞÍID';
+  is 'æ¨¡å‹ID';
 comment on column IM_MODEL_MAPPING.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 comment on column IM_MODEL_MAPPING.name
-  is 'Ô´ÔªÊı¾İ×Ö¶ÎÃû³Æ';
+  is 'æºå…ƒæ•°æ®å­—æ®µåç§°';
 comment on column IM_MODEL_MAPPING.col_id
-  is 'Ä¿±êÔªÊı¾İ×Ö¶ÎID';
+  is 'ç›®æ ‡å…ƒæ•°æ®å­—æ®µID';
 comment on column IM_MODEL_MAPPING.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column IM_MODEL_MAPPING.type
-  is 'Ô´ÔªÊı¾İ×Ö¶ÎÀàĞÍ';
+  is 'æºå…ƒæ•°æ®å­—æ®µç±»å‹';
 comment on column IM_MODEL_MAPPING.length
-  is 'Ô´ÔªÊı¾İ×Ö¶Î³¤¶È';
+  is 'æºå…ƒæ•°æ®å­—æ®µé•¿åº¦';
 comment on column IM_MODEL_MAPPING.describe
-  is 'Ô´ÔªÊı¾İ×Ö¶ÎËµÃ÷';
+  is 'æºå…ƒæ•°æ®å­—æ®µè¯´æ˜';
 comment on column IM_MODEL_MAPPING.indexed
-  is 'Ô´ÔªÊı¾İ×Ö¶ÎË÷Òı£¨0£ºÊÇ£»1£º·ñ£©';
+  is 'æºå…ƒæ•°æ®å­—æ®µç´¢å¼•ï¼ˆ0ï¼šæ˜¯ï¼›1ï¼šå¦ï¼‰';
 comment on column IM_MODEL_MAPPING.primary
-  is 'Ô´ÔªÊı¾İ×Ö¶ÎÖ÷¼ü£¨0£ºÊÇ£»1£º·ñ£©';
+  is 'æºå…ƒæ•°æ®å­—æ®µä¸»é”®ï¼ˆ0ï¼šæ˜¯ï¼›1ï¼šå¦ï¼‰';
 comment on column IM_MODEL_MAPPING.stored
-  is 'Ô´ÔªÊı¾İ×Ö¶Î´æ´¢£¨0£ºÊÇ£»1£º·ñ£©';
+  is 'æºå…ƒæ•°æ®å­—æ®µå­˜å‚¨ï¼ˆ0ï¼šæ˜¯ï¼›1ï¼šå¦ï¼‰';
 alter table IM_MODEL_MAPPING
   add constraint PK_IM_MODEL_MAPPING primary key (PK_ID);
 
@@ -376,13 +376,13 @@ create table IM_MODEL_UPDATE_KEY
 )
 ;
 comment on table IM_MODEL_UPDATE_KEY
-  is '½»»¥½¨Ä£-Ä£ĞÍ¸üĞÂ¼üÖµ';
+  is 'äº¤äº’å»ºæ¨¡-æ¨¡å‹æ›´æ–°é”®å€¼';
 comment on column IM_MODEL_UPDATE_KEY.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IM_MODEL_UPDATE_KEY.col_id
-  is 'Ä¿±êÔªÊı¾İ×Ö¶ÎID';
+  is 'ç›®æ ‡å…ƒæ•°æ®å­—æ®µID';
 comment on column IM_MODEL_UPDATE_KEY.model_id
-  is 'Ä£ĞÍID';
+  is 'æ¨¡å‹ID';
 alter table IM_MODEL_UPDATE_KEY
   add constraint PK_IM_MODEL_UPDATE_KEY primary key (PK_ID);
 
@@ -406,29 +406,29 @@ create table IQ_APPLICATION
 )
 ;
 comment on table IQ_APPLICATION
-  is '½»»¥²éÑ¯-Ó¦ÓÃ±í';
+  is 'äº¤äº’æŸ¥è¯¢-åº”ç”¨è¡¨';
 comment on column IQ_APPLICATION.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IQ_APPLICATION.md_id
-  is 'ÔªÊı¾İID';
+  is 'å…ƒæ•°æ®ID';
 comment on column IQ_APPLICATION.name
-  is 'Ãû³Æ(Î¨Ò»¡¢Ó¢ÎÄ)';
+  is 'åç§°(å”¯ä¸€ã€è‹±æ–‡)';
 comment on column IQ_APPLICATION.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column IQ_APPLICATION.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column IQ_APPLICATION.max_num
-  is '×î´ó·µ»ØÊı';
+  is 'æœ€å¤§è¿”å›æ•°';
 comment on column IQ_APPLICATION.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı£©';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤ï¼‰';
 comment on column IQ_APPLICATION.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column IQ_APPLICATION.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column IQ_APPLICATION.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column IQ_APPLICATION.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 create index IDX_IQ_APP_DELFLG on IQ_APPLICATION (DEL_FLG);
 create index IDX_IQ_APP_DELFLG_MDID on IQ_APPLICATION (DEL_FLG, MD_ID);
 create index IDX_IQ_APP_DELFLG_NAME on IQ_APPLICATION (DEL_FLG, NAME);
@@ -452,23 +452,23 @@ create table IQ_APPLICATION_ORDER_COLUMN
 )
 ;
 comment on table IQ_APPLICATION_ORDER_COLUMN
-  is '½»»¥²éÑ¯-ÅÅĞò²ÎÊı';
+  is 'äº¤äº’æŸ¥è¯¢-æ’åºå‚æ•°';
 comment on column IQ_APPLICATION_ORDER_COLUMN.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IQ_APPLICATION_ORDER_COLUMN.app_id
-  is 'Ó¦ÓÃID';
+  is 'åº”ç”¨ID';
 comment on column IQ_APPLICATION_ORDER_COLUMN.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 comment on column IQ_APPLICATION_ORDER_COLUMN.name
-  is 'Ãû³Æ((Ó¢ÎÄ)';
+  is 'åç§°((è‹±æ–‡)';
 comment on column IQ_APPLICATION_ORDER_COLUMN.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column IQ_APPLICATION_ORDER_COLUMN.type
-  is 'ÀàĞÍ';
+  is 'ç±»å‹';
 comment on column IQ_APPLICATION_ORDER_COLUMN.order_type
-  is 'ÅÅĞòÀàĞÍ(ASC¡¢DESC)';
+  is 'æ’åºç±»å‹(ASCã€DESC)';
 comment on column IQ_APPLICATION_ORDER_COLUMN.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 create index IDX_IQ_APP_ORDER_COL_APPID on IQ_APPLICATION_ORDER_COLUMN (APP_ID);
 alter table IQ_APPLICATION_ORDER_COLUMN
   add constraint PK_IQ_APPLICATION_ORDER_COLUMN primary key (PK_ID);
@@ -495,33 +495,33 @@ create table IQ_APPLICATION_QUERY_COLUMN
 )
 ;
 comment on table IQ_APPLICATION_QUERY_COLUMN
-  is '½»»¥²éÑ¯-²éÑ¯²ÎÊı±í';
+  is 'äº¤äº’æŸ¥è¯¢-æŸ¥è¯¢å‚æ•°è¡¨';
 comment on column IQ_APPLICATION_QUERY_COLUMN.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IQ_APPLICATION_QUERY_COLUMN.app_id
-  is 'Ó¦ÓÃID';
+  is 'åº”ç”¨ID';
 comment on column IQ_APPLICATION_QUERY_COLUMN.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 comment on column IQ_APPLICATION_QUERY_COLUMN.name
-  is 'Ãû³Æ((Ó¢ÎÄ)';
+  is 'åç§°((è‹±æ–‡)';
 comment on column IQ_APPLICATION_QUERY_COLUMN.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column IQ_APPLICATION_QUERY_COLUMN.type
-  is 'ÀàĞÍ';
+  is 'ç±»å‹';
 comment on column IQ_APPLICATION_QUERY_COLUMN.length
-  is '³¤¶È';
+  is 'é•¿åº¦';
 comment on column IQ_APPLICATION_QUERY_COLUMN.is_need
-  is 'ÊÇ·ñ±ØÊä£¨0£ºÊÇ£»1£º·ñ£©';
+  is 'æ˜¯å¦å¿…è¾“ï¼ˆ0ï¼šæ˜¯ï¼›1ï¼šå¦ï¼‰';
 comment on column IQ_APPLICATION_QUERY_COLUMN.default_val
-  is 'Ä¬ÈÏÖµ';
+  is 'é»˜è®¤å€¼';
 comment on column IQ_APPLICATION_QUERY_COLUMN.operator
-  is '²Ù×÷·û';
+  is 'æ“ä½œç¬¦';
 comment on column IQ_APPLICATION_QUERY_COLUMN.label
-  is '±ğÃû';
+  is 'åˆ«å';
 comment on column IQ_APPLICATION_QUERY_COLUMN.is_offer_out
-  is 'ÊÇ·ñ¿ª·Å(0£ºÊÇ£»1£º·ñ)';
+  is 'æ˜¯å¦å¼€æ”¾(0ï¼šæ˜¯ï¼›1ï¼šå¦)';
 comment on column IQ_APPLICATION_QUERY_COLUMN.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 create index IDX_IQ_APP_QUERY_COL_APPID on IQ_APPLICATION_QUERY_COLUMN (APP_ID);
 alter table IQ_APPLICATION_QUERY_COLUMN
   add constraint PK_IQ_APPLICATION_QUERY_COLUMN primary key (PK_ID);
@@ -545,27 +545,27 @@ create table IQ_APPLICATION_RETURN_COLUMN
 )
 ;
 comment on table IQ_APPLICATION_RETURN_COLUMN
-  is '½»»¥²éÑ¯-·µ»Ø²ÎÊı±í';
+  is 'äº¤äº’æŸ¥è¯¢-è¿”å›å‚æ•°è¡¨';
 comment on column IQ_APPLICATION_RETURN_COLUMN.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IQ_APPLICATION_RETURN_COLUMN.app_id
-  is 'Ó¦ÓÃID';
+  is 'åº”ç”¨ID';
 comment on column IQ_APPLICATION_RETURN_COLUMN.name
-  is 'Ãû³Æ((Î¨Ò»¡¢Ó¢ÎÄ)';
+  is 'åç§°((å”¯ä¸€ã€è‹±æ–‡)';
 comment on column IQ_APPLICATION_RETURN_COLUMN.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column IQ_APPLICATION_RETURN_COLUMN.type
-  is 'ÀàĞÍ';
+  is 'ç±»å‹';
 comment on column IQ_APPLICATION_RETURN_COLUMN.stats
-  is 'Í³¼Æº¯Êı';
+  is 'ç»Ÿè®¡å‡½æ•°';
 comment on column IQ_APPLICATION_RETURN_COLUMN.label
-  is '±ğÃû';
+  is 'åˆ«å';
 comment on column IQ_APPLICATION_RETURN_COLUMN.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 comment on column IQ_APPLICATION_RETURN_COLUMN.length
-  is '³¤¶È';
+  is 'é•¿åº¦';
 comment on column IQ_APPLICATION_RETURN_COLUMN.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 create index IDX_IQ_APP_RETURN_COL_APPID on IQ_APPLICATION_RETURN_COLUMN (APP_ID);
 alter table IQ_APPLICATION_RETURN_COLUMN
   add constraint PK_IQ_APPLICATION_RETURN_COLUM primary key (PK_ID);
@@ -590,29 +590,29 @@ create table IQ_METADATA
 )
 ;
 comment on table IQ_METADATA
-  is '½»»¥Ê½²éÑ¯-ÔªÊı¾İ¼¯';
+  is 'äº¤äº’å¼æŸ¥è¯¢-å…ƒæ•°æ®é›†';
 comment on column IQ_METADATA.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IQ_METADATA.ds_id
-  is 'Êı¾İÔ´ID';
+  is 'æ•°æ®æºID';
 comment on column IQ_METADATA.name
-  is 'Ãû³Æ/±íÃû((Î¨Ò»¡¢Ó¢ÎÄ)';
+  is 'åç§°/è¡¨å((å”¯ä¸€ã€è‹±æ–‡)';
 comment on column IQ_METADATA.describe
-  is 'ËµÃ÷/±íËµÃ÷';
+  is 'è¯´æ˜/è¡¨è¯´æ˜';
 comment on column IQ_METADATA.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column IQ_METADATA.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı£©';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤ï¼‰';
 comment on column IQ_METADATA.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column IQ_METADATA.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column IQ_METADATA.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column IQ_METADATA.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column IQ_METADATA.tb_name
-  is '±íÃû';
+  is 'è¡¨å';
 create index IDX_IQ_MD_DELFLG on IQ_METADATA (DEL_FLG);
 create index IDX_IQ_MD_DELFLG_DSID on IQ_METADATA (DEL_FLG, DS_ID);
 create index IDX_IQ_MD_DELFLG_NAME on IQ_METADATA (DEL_FLG, NAME);
@@ -637,25 +637,25 @@ create table IQ_METADATA_COLUMN
 )
 ;
 comment on table IQ_METADATA_COLUMN
-  is '½»»¥²éÑ¯-ÔªÊı¾İ×Ö¶ÎÁĞ±í';
+  is 'äº¤äº’æŸ¥è¯¢-å…ƒæ•°æ®å­—æ®µåˆ—è¡¨';
 comment on column IQ_METADATA_COLUMN.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column IQ_METADATA_COLUMN.md_id
-  is 'ÔªÊı¾İID';
+  is 'å…ƒæ•°æ®ID';
 comment on column IQ_METADATA_COLUMN.seq
-  is 'ĞòºÅ£¨ºÍÀàĞÍÒ»ÆğÈ·¶¨Î¨Ò»£©';
+  is 'åºå·ï¼ˆå’Œç±»å‹ä¸€èµ·ç¡®å®šå”¯ä¸€ï¼‰';
 comment on column IQ_METADATA_COLUMN.name
-  is 'Ãû³Æ((Î¨Ò»¡¢Ó¢ÎÄ)';
+  is 'åç§°((å”¯ä¸€ã€è‹±æ–‡)';
 comment on column IQ_METADATA_COLUMN.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column IQ_METADATA_COLUMN.type
-  is 'ÀàĞÍ(1¡¢²éÑ¯×Ö¶Î£»2¡¢·µ»Ø×Ö¶Î)';
+  is 'ç±»å‹(1ã€æŸ¥è¯¢å­—æ®µï¼›2ã€è¿”å›å­—æ®µ)';
 comment on column IQ_METADATA_COLUMN.length
-  is '³¤¶È';
+  is 'é•¿åº¦';
 comment on column IQ_METADATA_COLUMN.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column IQ_METADATA_COLUMN.col_type
-  is '×Ö¶ÎÀàĞÍ';
+  is 'å­—æ®µç±»å‹';
 create index IDX_IQ_MD_COL_MDID on IQ_METADATA_COLUMN (MD_ID);
 alter table IQ_METADATA_COLUMN
   add constraint PK_IQ_METADATA_COLUMN primary key (PK_ID);
@@ -685,39 +685,39 @@ create table MC_CONSUME_LOG
 )
 ;
 comment on table MC_CONSUME_LOG
-  is '¼à¿ØÖĞĞÄ-Ïû·ÑÈÕÖ¾';
+  is 'ç›‘æ§ä¸­å¿ƒ-æ¶ˆè´¹æ—¥å¿—';
 comment on column MC_CONSUME_LOG.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column MC_CONSUME_LOG.user_name
-  is 'ÓÃ»§Ãû';
+  is 'ç”¨æˆ·å';
 comment on column MC_CONSUME_LOG.service_name
-  is '·şÎñÃû';
+  is 'æœåŠ¡å';
 comment on column MC_CONSUME_LOG.request_content
-  is 'ÇëÇóÄÚÈİ';
+  is 'è¯·æ±‚å†…å®¹';
 comment on column MC_CONSUME_LOG.request_start_time
-  is 'ÇëÇó¿ªÊ¼Ê±¼ä';
+  is 'è¯·æ±‚å¼€å§‹æ—¶é—´';
 comment on column MC_CONSUME_LOG.request_end_time
-  is 'ÇëÇó½áÊøÊ±¼ä';
+  is 'è¯·æ±‚ç»“æŸæ—¶é—´';
 comment on column MC_CONSUME_LOG.run_start_time
-  is 'Ö´ĞĞ¿ªÊ¼Ê±¼ä';
+  is 'æ‰§è¡Œå¼€å§‹æ—¶é—´';
 comment on column MC_CONSUME_LOG.run_end_time
-  is 'Ö´ĞĞ½áÊøÊ±¼ä';
+  is 'æ‰§è¡Œç»“æŸæ—¶é—´';
 comment on column MC_CONSUME_LOG.response_content
-  is 'ÏìÓ¦ÄÚÈİ£¨ÎÄ¼şÂ·¾¶¡¢ÉÙÁ¿µÄÏûÏ¢ĞÅÏ¢£©';
+  is 'å“åº”å†…å®¹ï¼ˆæ–‡ä»¶è·¯å¾„ã€å°‘é‡çš„æ¶ˆæ¯ä¿¡æ¯ï¼‰';
 comment on column MC_CONSUME_LOG.status
-  is '½á¹û×´Ì¬(0£º³É¹¦1£ºÊ§°Ü)';
+  is 'ç»“æœçŠ¶æ€(0ï¼šæˆåŠŸ1ï¼šå¤±è´¥)';
 comment on column MC_CONSUME_LOG.error_code
-  is '´íÎó±àÂë£¬ÓëUDSP´íÎó±àÂëÏàÍ¬';
+  is 'é”™è¯¯ç¼–ç ï¼Œä¸UDSPé”™è¯¯ç¼–ç ç›¸åŒ';
 comment on column MC_CONSUME_LOG.app_type
-  is 'Ó¦ÓÃÀàĞÍ£¨IQ¡¢OLQ¡¢MM¡¢RTS_PRODUCER¡¢RTS_CONSUMER£©';
+  is 'åº”ç”¨ç±»å‹ï¼ˆIQã€OLQã€MMã€RTS_PRODUCERã€RTS_CONSUMERï¼‰';
 comment on column MC_CONSUME_LOG.request_type
-  is 'ÇëÇóÀàĞÍ£¨0£ºÄÚ²¿ÇëÇó 1£ºÍâ²¿ÇëÇó£©';
+  is 'è¯·æ±‚ç±»å‹ï¼ˆ0ï¼šå†…éƒ¨è¯·æ±‚ 1ï¼šå¤–éƒ¨è¯·æ±‚ï¼‰';
 comment on column MC_CONSUME_LOG.app_name
-  is 'Ó¦ÓÃÃû';
+  is 'åº”ç”¨å';
 comment on column MC_CONSUME_LOG.message
-  is '´íÎóĞÅÏ¢»òÆäËûÏûÏ¢ÌáÊ¾';
+  is 'é”™è¯¯ä¿¡æ¯æˆ–å…¶ä»–æ¶ˆæ¯æç¤º';
 comment on column MC_CONSUME_LOG.sync_type
-  is 'Í¬²½/Òì²½';
+  is 'åŒæ­¥/å¼‚æ­¥';
 alter table MC_CONSUME_LOG
   add constraint PK_MC_CONSUME_LOG primary key (PK_ID);
 
@@ -741,29 +741,29 @@ create table MM_APPLICATION
 )
 ;
 comment on table MM_APPLICATION
-  is 'Ä£ĞÍ¹ÜÀí-Ó¦ÓÃ±í';
+  is 'æ¨¡å‹ç®¡ç†-åº”ç”¨è¡¨';
 comment on column MM_APPLICATION.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column MM_APPLICATION.model_id
-  is 'Ä£ĞÍID';
+  is 'æ¨¡å‹ID';
 comment on column MM_APPLICATION.name
-  is 'Ãû³Æ((Ó¢ÎÄ¡¢Î¨Ò»)';
+  is 'åç§°((è‹±æ–‡ã€å”¯ä¸€)';
 comment on column MM_APPLICATION.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column MM_APPLICATION.max_num
-  is '×î´ó·µ»ØÊı';
+  is 'æœ€å¤§è¿”å›æ•°';
 comment on column MM_APPLICATION.del_flg
-  is 'É¾³ı±êÖ¾(0£ºÎ´É¾³ı£¬1£ºÉ¾³ı)';
+  is 'åˆ é™¤æ ‡å¿—(0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤)';
 comment on column MM_APPLICATION.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column MM_APPLICATION.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column MM_APPLICATION.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column MM_APPLICATION.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column MM_APPLICATION.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 create index IDX_MM_APP_DELFLG on MM_APPLICATION (DEL_FLG);
 alter table MM_APPLICATION
   add constraint PK_MM_APPLICATION primary key (PK_ID);
@@ -784,21 +784,21 @@ create table MM_APPLICATION_EXECUTE_PARAM
 )
 ;
 comment on table MM_APPLICATION_EXECUTE_PARAM
-  is 'Ä£ĞÍ¹ÜÀí-Ö´ĞĞ²ÎÊı±í';
+  is 'æ¨¡å‹ç®¡ç†-æ‰§è¡Œå‚æ•°è¡¨';
 comment on column MM_APPLICATION_EXECUTE_PARAM.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column MM_APPLICATION_EXECUTE_PARAM.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 comment on column MM_APPLICATION_EXECUTE_PARAM.name
-  is 'Ãû³Æ((Ó¢ÎÄ)';
+  is 'åç§°((è‹±æ–‡)';
 comment on column MM_APPLICATION_EXECUTE_PARAM.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column MM_APPLICATION_EXECUTE_PARAM.is_need
-  is 'ÊÇ·ñ±ØÊä£¨0:ÊÇ£»1£º·ñ£©';
+  is 'æ˜¯å¦å¿…è¾“ï¼ˆ0:æ˜¯ï¼›1ï¼šå¦ï¼‰';
 comment on column MM_APPLICATION_EXECUTE_PARAM.default_val
-  is 'Ä¬ÈÏÖµ';
+  is 'é»˜è®¤å€¼';
 comment on column MM_APPLICATION_EXECUTE_PARAM.app_id
-  is 'Ä£ĞÍÓ¦ÓÃID';
+  is 'æ¨¡å‹åº”ç”¨ID';
 create index IDX_MM_APP_EXE_APPID on MM_APPLICATION_EXECUTE_PARAM (APP_ID);
 alter table MM_APPLICATION_EXECUTE_PARAM
   add constraint PK_MM_APPLICATION_EXECUTE_PARA primary key (PK_ID);
@@ -817,17 +817,17 @@ create table MM_APPLICATION_RETURN_PARAM
 )
 ;
 comment on table MM_APPLICATION_RETURN_PARAM
-  is 'Ä£ĞÍ¹ÜÀí-·µ»Ø²ÎÊı±í';
+  is 'æ¨¡å‹ç®¡ç†-è¿”å›å‚æ•°è¡¨';
 comment on column MM_APPLICATION_RETURN_PARAM.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column MM_APPLICATION_RETURN_PARAM.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 comment on column MM_APPLICATION_RETURN_PARAM.name
-  is 'Ãû³Æ((Ó¢ÎÄ)';
+  is 'åç§°((è‹±æ–‡)';
 comment on column MM_APPLICATION_RETURN_PARAM.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column MM_APPLICATION_RETURN_PARAM.app_id
-  is 'Ä£ĞÍÓ¦ÓÃID';
+  is 'æ¨¡å‹åº”ç”¨ID';
 create index IDX_MM_APP_RET_APPID on MM_APPLICATION_RETURN_PARAM (APP_ID);
 alter table MM_APPLICATION_RETURN_PARAM
   add constraint PK_MM_APPLICATION_RETURN_PARAM primary key (PK_ID);
@@ -856,37 +856,37 @@ create table MM_CONTRACTOR
 )
 ;
 comment on table MM_CONTRACTOR
-  is 'Ä£ĞÍ¹ÜÀí-³§ÉÌ¹ÜÀí';
+  is 'æ¨¡å‹ç®¡ç†-å‚å•†ç®¡ç†';
 comment on column MM_CONTRACTOR.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column MM_CONTRACTOR.name
-  is 'Ó¢ÎÄÃû³Æ';
+  is 'è‹±æ–‡åç§°';
 comment on column MM_CONTRACTOR.http_url
-  is 'Ô¶³ÌÁ¬½Ó';
+  is 'è¿œç¨‹è¿æ¥';
 comment on column MM_CONTRACTOR.principal
-  is '¸ºÔğÈË';
+  is 'è´Ÿè´£äºº';
 comment on column MM_CONTRACTOR.mobile
-  is '¸ºÔğµç»°';
+  is 'è´Ÿè´£ç”µè¯';
 comment on column MM_CONTRACTOR.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column MM_CONTRACTOR.del_flg
-  is 'É¾³ı±êÖ¾(0£ºÎ´É¾³ı£¬1£ºÉ¾³ı)';
+  is 'åˆ é™¤æ ‡å¿—(0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤)';
 comment on column MM_CONTRACTOR.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column MM_CONTRACTOR.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column MM_CONTRACTOR.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column MM_CONTRACTOR.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column MM_CONTRACTOR.extend_field1
-  is 'Ô¤Áô×Ö¶Î1';
+  is 'é¢„ç•™å­—æ®µ1';
 comment on column MM_CONTRACTOR.extend_field2
-  is 'Ô¤Áô×Ö¶Î2';
+  is 'é¢„ç•™å­—æ®µ2';
 comment on column MM_CONTRACTOR.cn_name
-  is 'ÖĞÎÄÃû³Æ';
+  is 'ä¸­æ–‡åç§°';
 comment on column MM_CONTRACTOR.ftp_password
-  is 'ftpµÇÂ½ÃÜÂë';
+  is 'ftpç™»é™†å¯†ç ';
 create index IDX_MM_CONT_DELFLG on MM_CONTRACTOR (DEL_FLG);
 create index IDX_MM_CONT_DELFLG_NAME on MM_CONTRACTOR (DEL_FLG, NAME);
 alter table MM_CONTRACTOR
@@ -915,35 +915,35 @@ create table MM_MODEL_INFO
 )
 ;
 comment on table MM_MODEL_INFO
-  is 'Ä£ĞÍ¹ÜÀí-Ä£ĞÍĞÅÏ¢±í';
+  is 'æ¨¡å‹ç®¡ç†-æ¨¡å‹ä¿¡æ¯è¡¨';
 comment on column MM_MODEL_INFO.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column MM_MODEL_INFO.name
-  is 'Ãû³Æ((Ó¢ÎÄ¡¢Î¨Ò»)';
+  is 'åç§°((è‹±æ–‡ã€å”¯ä¸€)';
 comment on column MM_MODEL_INFO.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column MM_MODEL_INFO.ver_note
-  is '°æ±¾×¢ÊÍ';
+  is 'ç‰ˆæœ¬æ³¨é‡Š';
 comment on column MM_MODEL_INFO.ver_num
-  is '°æ±¾ºÅ';
+  is 'ç‰ˆæœ¬å·';
 comment on column MM_MODEL_INFO.status
-  is '·¢²¼×´Ì¬(1£º´ı·¢²¼£»2£ºÒÑ·¢²¼£»3£º¹éµµ)';
+  is 'å‘å¸ƒçŠ¶æ€(1ï¼šå¾…å‘å¸ƒï¼›2ï¼šå·²å‘å¸ƒï¼›3ï¼šå½’æ¡£)';
 comment on column MM_MODEL_INFO.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column MM_MODEL_INFO.del_flg
-  is 'É¾³ı±êÖ¾(0£ºÎ´É¾³ı£¬1£ºÉ¾³ı)';
+  is 'åˆ é™¤æ ‡å¿—(0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤)';
 comment on column MM_MODEL_INFO.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column MM_MODEL_INFO.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column MM_MODEL_INFO.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column MM_MODEL_INFO.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column MM_MODEL_INFO.contractor
-  is 'Ä£ĞÍ¿ª·¢³§ÉÌID';
+  is 'æ¨¡å‹å¼€å‘å‚å•†ID';
 comment on column MM_MODEL_INFO.model_type
-  is '1£ºÍ¬²½£»2£ºÒì²½£»3£ºÅú´¦Àí£¬¶à¸öÓÃ¶ººÅ·Ö¸ô';
+  is '1ï¼šåŒæ­¥ï¼›2ï¼šå¼‚æ­¥ï¼›3ï¼šæ‰¹å¤„ç†ï¼Œå¤šä¸ªç”¨é€—å·åˆ†éš”';
 create index IDX_MM_MODEL_INFO_DELFLG on MM_MODEL_INFO (DEL_FLG);
 create index IDX_MM_MODEL_INFO_DELFLG_CONID on MM_MODEL_INFO (DEL_FLG, CONTRACTOR);
 create index IDX_MM_MODEL_INFO_DELFLG_NAME on MM_MODEL_INFO (DEL_FLG, NAME);
@@ -968,25 +968,25 @@ create table MM_MODEL_PARAM
 )
 ;
 comment on table MM_MODEL_PARAM
-  is 'Ä£ĞÍ¹ÜÀí-Ä£ĞÍ×Ö¶ÎÁĞ±í';
+  is 'æ¨¡å‹ç®¡ç†-æ¨¡å‹å­—æ®µåˆ—è¡¨';
 comment on column MM_MODEL_PARAM.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column MM_MODEL_PARAM.mm_id
-  is 'Ä£ĞÍID';
+  is 'æ¨¡å‹ID';
 comment on column MM_MODEL_PARAM.seq
-  is 'ĞòºÅ£¨ºÍÀàĞÍÒ»ÆğÈ·¶¨Î¨Ò»£©';
+  is 'åºå·ï¼ˆå’Œç±»å‹ä¸€èµ·ç¡®å®šå”¯ä¸€ï¼‰';
 comment on column MM_MODEL_PARAM.name
-  is 'Ãû³Æ((Î¨Ò»¡¢Ó¢ÎÄ)';
+  is 'åç§°((å”¯ä¸€ã€è‹±æ–‡)';
 comment on column MM_MODEL_PARAM.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column MM_MODEL_PARAM.type
-  is 'ÀàĞÍ(1¡¢²éÑ¯×Ö¶Î£»2¡¢·µ»Ø×Ö¶Î)';
+  is 'ç±»å‹(1ã€æŸ¥è¯¢å­—æ®µï¼›2ã€è¿”å›å­—æ®µ)';
 comment on column MM_MODEL_PARAM.length
-  is '³¤¶È';
+  is 'é•¿åº¦';
 comment on column MM_MODEL_PARAM.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column MM_MODEL_PARAM.col_type
-  is '×Ö¶ÎÀàĞÍ';
+  is 'å­—æ®µç±»å‹';
 create index IDX_MM_MODEL_PARAM_MMID on MM_MODEL_PARAM (MM_ID);
 alter table MM_MODEL_PARAM
   add constraint PK_MM_MODEL_PARAM primary key (PK_ID);
@@ -1012,29 +1012,29 @@ create table OLQ_APPLICATION
 )
 ;
 comment on column OLQ_APPLICATION.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column OLQ_APPLICATION.olq_ds_id
-  is 'Áª»ú²éÑ¯Êı¾İÔ´ID';
+  is 'è”æœºæŸ¥è¯¢æ•°æ®æºID';
 comment on column OLQ_APPLICATION.max_num
-  is '×î´ó·µ»ØÊı';
+  is 'æœ€å¤§è¿”å›æ•°';
 comment on column OLQ_APPLICATION.del_flg
-  is 'É¾³ı±êÖ¾(0£ºÎ´É¾³ı£¬1£ºÉ¾³ı)';
+  is 'åˆ é™¤æ ‡å¿—(0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤)';
 comment on column OLQ_APPLICATION.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column OLQ_APPLICATION.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column OLQ_APPLICATION.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column OLQ_APPLICATION.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column OLQ_APPLICATION.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column OLQ_APPLICATION.name
-  is 'Ãû³Æ';
+  is 'åç§°';
 comment on column OLQ_APPLICATION.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column OLQ_APPLICATION.olq_sql
-  is 'Ó¦ÓÃÅäÖÃµÄSQLÓï¾ä';
+  is 'åº”ç”¨é…ç½®çš„SQLè¯­å¥';
 alter table OLQ_APPLICATION
   add constraint OLQ_APPLICATION_PKID primary key (PK_ID);
 
@@ -1054,19 +1054,19 @@ create table OLQ_APPLICATION_PARAM
 )
 ;
 comment on column OLQ_APPLICATION_PARAM.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column OLQ_APPLICATION_PARAM.param_name
-  is '²ÎÊıÃû³Æ';
+  is 'å‚æ•°åç§°';
 comment on column OLQ_APPLICATION_PARAM.param_desc
-  is '²ÎÊıËµÃ÷';
+  is 'å‚æ•°è¯´æ˜';
 comment on column OLQ_APPLICATION_PARAM.default_value
-  is 'Ä¬ÈÏÖµ';
+  is 'é»˜è®¤å€¼';
 comment on column OLQ_APPLICATION_PARAM.is_need
-  is 'ÊÇ·ñ±ØÊä£¬0£º±ØÊä£¬1£º²»±ØÊä';
+  is 'æ˜¯å¦å¿…è¾“ï¼Œ0ï¼šå¿…è¾“ï¼Œ1ï¼šä¸å¿…è¾“';
 comment on column OLQ_APPLICATION_PARAM.app_id
-  is 'Ó¦ÓÃID';
+  is 'åº”ç”¨ID';
 comment on column OLQ_APPLICATION_PARAM.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 alter table OLQ_APPLICATION_PARAM
   add constraint OLQ_APPLICATION_PARAM_PKID primary key (PK_ID);
 
@@ -1090,29 +1090,29 @@ create table RC_SERVICE
 )
 ;
 comment on table RC_SERVICE
-  is '×¢²áÖĞĞÄ-·şÎñ×¢²á±í';
+  is 'æ³¨å†Œä¸­å¿ƒ-æœåŠ¡æ³¨å†Œè¡¨';
 comment on column RC_SERVICE.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column RC_SERVICE.name
-  is 'Ãû³Æ';
+  is 'åç§°';
 comment on column RC_SERVICE.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column RC_SERVICE.type
-  is 'ÀàĞÍ£¨IQ£º½»»¥²éÑ¯£»MM£ºÄ£ĞÍ¹ÜÀí£»OLQ£ºÁª»ú²éÑ¯£»RTS-CUS£ºÊµÊ±Á÷Ïû·ÑÕß£»RTS-PRO£ºÊµÊ±Á÷Éú²úÕß£©';
+  is 'ç±»å‹ï¼ˆIQï¼šäº¤äº’æŸ¥è¯¢ï¼›MMï¼šæ¨¡å‹ç®¡ç†ï¼›OLQï¼šè”æœºæŸ¥è¯¢ï¼›RTS-CUSï¼šå®æ—¶æµæ¶ˆè´¹è€…ï¼›RTS-PROï¼šå®æ—¶æµç”Ÿäº§è€…ï¼‰';
 comment on column RC_SERVICE.app_id
-  is 'Ó¦ÓÃID';
+  is 'åº”ç”¨ID';
 comment on column RC_SERVICE.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı£©';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤ï¼‰';
 comment on column RC_SERVICE.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column RC_SERVICE.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column RC_SERVICE.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column RC_SERVICE.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column RC_SERVICE.status
-  is 'ÆôÍ£±êÖ¾£¨0£ºÆô¶¯£¬1£ºÍ£ÓÃ£©';
+  is 'å¯åœæ ‡å¿—ï¼ˆ0ï¼šå¯åŠ¨ï¼Œ1ï¼šåœç”¨ï¼‰';
 create index IDX_RC_SERVICE_DF on RC_SERVICE (DEL_FLG);
 create index IDX_RC_SERVICE_DF_NAME on RC_SERVICE (DEL_FLG, NAME);
 create index IDX_RC_SERVICE_DF_TYPE on RC_SERVICE (DEL_FLG, TYPE);
@@ -1148,43 +1148,43 @@ create table RC_USER_SERVICE
 )
 ;
 comment on column RC_USER_SERVICE.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column RC_USER_SERVICE.user_id
-  is 'ÓÃ»§ID';
+  is 'ç”¨æˆ·ID';
 comment on column RC_USER_SERVICE.service_id
-  is '·şÎñID';
+  is 'æœåŠ¡ID';
 comment on column RC_USER_SERVICE.ip_section
-  is 'IP¶Î';
+  is 'IPæ®µ';
 comment on column RC_USER_SERVICE.max_sync_num
-  is '×î´óÍ¬²½²¢·¢Êı';
+  is 'æœ€å¤§åŒæ­¥å¹¶å‘æ•°';
 comment on column RC_USER_SERVICE.max_async_num
-  is '×î´óÒì²½²¢·¢Êı';
+  is 'æœ€å¤§å¼‚æ­¥å¹¶å‘æ•°';
 comment on column RC_USER_SERVICE.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı£©';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤ï¼‰';
 comment on column RC_USER_SERVICE.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column RC_USER_SERVICE.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column RC_USER_SERVICE.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column RC_USER_SERVICE.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column RC_USER_SERVICE.max_sync_wait_num
-  is '×î´óÍ¬²½¶ÓÁĞµÈ´ıÊı';
+  is 'æœ€å¤§åŒæ­¥é˜Ÿåˆ—ç­‰å¾…æ•°';
 comment on column RC_USER_SERVICE.max_async_wait_num
-  is '×î´óÒì²½¶ÓÁĞµÈ´ıÊı';
+  is 'æœ€å¤§å¼‚æ­¥é˜Ÿåˆ—ç­‰å¾…æ•°';
 comment on column RC_USER_SERVICE.max_sync_wait_timeout
-  is 'Í¬²½×î´óµÈ´ı³¬Ê±Ê±¼ä';
+  is 'åŒæ­¥æœ€å¤§ç­‰å¾…è¶…æ—¶æ—¶é—´';
 comment on column RC_USER_SERVICE.max_async_wait_timeout
-  is 'Òì²½×î´óµÈ´ı³¬Ê±Ê±¼ä';
+  is 'å¼‚æ­¥æœ€å¤§ç­‰å¾…è¶…æ—¶æ—¶é—´';
 comment on column RC_USER_SERVICE.max_sync_execute_timeout
-  is 'Í¬²½×î´óÖ´ĞĞ³¬Ê±Ê±¼ä';
+  is 'åŒæ­¥æœ€å¤§æ‰§è¡Œè¶…æ—¶æ—¶é—´';
 comment on column RC_USER_SERVICE.max_async_execute_timeout
-  is 'Òì²½×î´óÖ´ĞĞ³¬Ê±Ê±¼ä';
+  is 'å¼‚æ­¥æœ€å¤§æ‰§è¡Œè¶…æ—¶æ—¶é—´';
 comment on column RC_USER_SERVICE.status
-  is 'ÆôÍ£±êÖ¾£¨0£ºÆô¶¯£¬1£ºÍ£ÓÃ£©';
+  is 'å¯åœæ ‡å¿—ï¼ˆ0ï¼šå¯åŠ¨ï¼Œ1ï¼šåœç”¨ï¼‰';
 comment on column RC_USER_SERVICE.alarm_type
-  is '¸æ¾¯·½Ê½£¨NONE¡¢MAIL¡¢...£©';
+  is 'å‘Šè­¦æ–¹å¼ï¼ˆNONEã€MAILã€...ï¼‰';
 create index IDX_RC_USER_SERVICE_DF on RC_USER_SERVICE (DEL_FLG);
 create index IDX_RC_USER_SERVICE_DF_SID on RC_USER_SERVICE (DEL_FLG, SERVICE_ID);
 create index IDX_RC_USER_SERVICE_DF_SID_UID on RC_USER_SERVICE (DEL_FLG, SERVICE_ID, USER_ID);
@@ -1211,29 +1211,29 @@ create table RTS_CUSTOMER_CONFIG
 )
 ;
 comment on table RTS_CUSTOMER_CONFIG
-  is 'ÊµÊ±Á÷-Ïû·ÑÕßÅäÖÃ';
+  is 'å®æ—¶æµ-æ¶ˆè´¹è€…é…ç½®';
 comment on column RTS_CUSTOMER_CONFIG.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column RTS_CUSTOMER_CONFIG.md_id
-  is 'ÔªÊı¾İID';
+  is 'å…ƒæ•°æ®ID';
 comment on column RTS_CUSTOMER_CONFIG.name
-  is 'Ãû³Æ';
+  is 'åç§°';
 comment on column RTS_CUSTOMER_CONFIG.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column RTS_CUSTOMER_CONFIG.group_id
-  is '×é';
+  is 'ç»„';
 comment on column RTS_CUSTOMER_CONFIG.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column RTS_CUSTOMER_CONFIG.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı£©';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤ï¼‰';
 comment on column RTS_CUSTOMER_CONFIG.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column RTS_CUSTOMER_CONFIG.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column RTS_CUSTOMER_CONFIG.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column RTS_CUSTOMER_CONFIG.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 create index IDX_RTS_CER_DELFLG on RTS_CUSTOMER_CONFIG (DEL_FLG);
 create index IDX_RTS_CER_DELFLG_MDID on RTS_CUSTOMER_CONFIG (DEL_FLG, MD_ID);
 create index IDX_RTS_CER_DELFLG_NAME on RTS_CUSTOMER_CONFIG (DEL_FLG, NAME);
@@ -1260,29 +1260,29 @@ create table RTS_METADATA
 )
 ;
 comment on table RTS_METADATA
-  is 'ÊµÊ±Á÷-ÔªÊı¾İÅäÖÃ';
+  is 'å®æ—¶æµ-å…ƒæ•°æ®é…ç½®';
 comment on column RTS_METADATA.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column RTS_METADATA.ds_id
-  is 'Êı¾İÔ´ID';
+  is 'æ•°æ®æºID';
 comment on column RTS_METADATA.name
-  is 'Ãû³Æ(Ó¢ÎÄ)';
+  is 'åç§°(è‹±æ–‡)';
 comment on column RTS_METADATA.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column RTS_METADATA.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column RTS_METADATA.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı£©';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤ï¼‰';
 comment on column RTS_METADATA.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column RTS_METADATA.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column RTS_METADATA.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column RTS_METADATA.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 comment on column RTS_METADATA.topic
-  is 'Ö÷Ìâ';
+  is 'ä¸»é¢˜';
 create index IDX_RTS_MD_DELFLG on RTS_METADATA (DEL_FLG);
 create index IDX_RTS_MD_DELFLG_DSID on RTS_METADATA (DEL_FLG, DS_ID);
 create index IDX_RTS_MD_DELFLG_NAME on RTS_METADATA (DEL_FLG, NAME);
@@ -1304,19 +1304,19 @@ create table RTS_METADATA_COLUMN
 )
 ;
 comment on table RTS_METADATA_COLUMN
-  is 'ÊµÊ±Á÷-ÔªÊı¾İ×Ö¶Î±í';
+  is 'å®æ—¶æµ-å…ƒæ•°æ®å­—æ®µè¡¨';
 comment on column RTS_METADATA_COLUMN.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column RTS_METADATA_COLUMN.md_id
-  is 'ÔªÊı¾İID';
+  is 'å…ƒæ•°æ®ID';
 comment on column RTS_METADATA_COLUMN.seq
-  is 'ĞòºÅ';
+  is 'åºå·';
 comment on column RTS_METADATA_COLUMN.name
-  is 'Ãû³Æ((Î¨Ò»¡¢Ó¢ÎÄ)';
+  is 'åç§°((å”¯ä¸€ã€è‹±æ–‡)';
 comment on column RTS_METADATA_COLUMN.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column RTS_METADATA_COLUMN.type
-  is 'ÀàĞÍ';
+  is 'ç±»å‹';
 create index IDX_RTS_MD_COL_MDID on RTS_METADATA_COLUMN (MD_ID);
 alter table RTS_METADATA_COLUMN
   add constraint PK_RTS_METADATA_COLUMN primary key (PK_ID);
@@ -1340,32 +1340,82 @@ create table RTS_PRODUCRER_CONFIG
 )
 ;
 comment on table RTS_PRODUCRER_CONFIG
-  is 'ÊµÊ±Á÷-Éú²úÕßÅäÖÃ';
+  is 'å®æ—¶æµ-ç”Ÿäº§è€…é…ç½®';
 comment on column RTS_PRODUCRER_CONFIG.pk_id
-  is 'Ö÷¼ü';
+  is 'ä¸»é”®';
 comment on column RTS_PRODUCRER_CONFIG.md_id
-  is 'ÔªÊı¾İID';
+  is 'å…ƒæ•°æ®ID';
 comment on column RTS_PRODUCRER_CONFIG.name
-  is 'Ãû³Æ£¨Ó¢ÎÄ£©';
+  is 'åç§°ï¼ˆè‹±æ–‡ï¼‰';
 comment on column RTS_PRODUCRER_CONFIG.describe
-  is 'ËµÃ÷';
+  is 'è¯´æ˜';
 comment on column RTS_PRODUCRER_CONFIG.note
-  is '±¸×¢';
+  is 'å¤‡æ³¨';
 comment on column RTS_PRODUCRER_CONFIG.del_flg
-  is 'É¾³ı±êÖ¾£¨0£ºÎ´É¾³ı£¬1£ºÉ¾³ı£©';
+  is 'åˆ é™¤æ ‡å¿—ï¼ˆ0ï¼šæœªåˆ é™¤ï¼Œ1ï¼šåˆ é™¤ï¼‰';
 comment on column RTS_PRODUCRER_CONFIG.crt_user
-  is '´´½¨Õß';
+  is 'åˆ›å»ºè€…';
 comment on column RTS_PRODUCRER_CONFIG.crt_time
-  is '´´½¨Ê±¼ä';
+  is 'åˆ›å»ºæ—¶é—´';
 comment on column RTS_PRODUCRER_CONFIG.upt_user
-  is '¸üĞÂÕß';
+  is 'æ›´æ–°è€…';
 comment on column RTS_PRODUCRER_CONFIG.upt_time
-  is '¸üĞÂÊ±¼ä';
+  is 'æ›´æ–°æ—¶é—´';
 create index IDX_RTS_PER_DELFLG on RTS_PRODUCRER_CONFIG (DEL_FLG);
 create index IDX_RTS_PER_DELFLG_MDID on RTS_PRODUCRER_CONFIG (DEL_FLG, MD_ID);
 create index IDX_RTS_PER_DELFLG_NAME on RTS_PRODUCRER_CONFIG (DEL_FLG, NAME);
 alter table RTS_PRODUCRER_CONFIG
   add constraint PK_RTS_PRODUCRER_CONFIG primary key (PK_ID);
 
+
+-- ä¿®æ”¹è¡¨çš„å­—æ®µåç§° DESCRIBE æ”¹ä¸º DESCRIPTION
+alter table COM_DATASOURCE rename column DESCRIBE to DESCRIPTION;
+alter table COM_PROPERTIES rename column DESCRIBE to DESCRIPTION;
+alter table IM_METADATA rename column DESCRIBE to DESCRIPTION;
+alter table IM_MODEL rename column DESCRIBE to DESCRIPTION;
+alter table IM_MODEL_FILTER_COLUMN rename column DESCRIBE to DESCRIPTION;
+alter table IM_METADATA_COLUMN rename column DESCRIBE to DESCRIPTION;
+alter table IM_MODEL_MAPPING rename column DESCRIBE to DESCRIPTION;
+alter table IQ_APPLICATION rename column DESCRIBE to DESCRIPTION;
+alter table IQ_APPLICATION_RETURN_COLUMN rename column DESCRIBE to DESCRIPTION;
+alter table IQ_APPLICATION_ORDER_COLUMN rename column DESCRIBE to DESCRIPTION;
+alter table IQ_APPLICATION_QUERY_COLUMN rename column DESCRIBE to DESCRIPTION;
+alter table IQ_METADATA rename column DESCRIBE to DESCRIPTION;
+alter table IQ_METADATA_COLUMN rename column DESCRIBE to DESCRIPTION;
+alter table OLQ_APPLICATION rename column DESCRIBE to DESCRIPTION;
+alter table MM_MODEL_INFO rename column DESCRIBE to DESCRIPTION;
+alter table MM_APPLICATION rename column DESCRIBE to DESCRIPTION;
+alter table MM_APPLICATION_RETURN_PARAM rename column DESCRIBE to DESCRIPTION;
+alter table MM_APPLICATION_EXECUTE_PARAM rename column DESCRIBE to DESCRIPTION;
+alter table MM_MODEL_PARAM rename column DESCRIBE to DESCRIPTION;
+alter table RC_SERVICE rename column DESCRIBE to DESCRIPTION;
+alter table RTS_CUSTOMER_CONFIG rename column DESCRIBE to DESCRIPTION;
+alter table RTS_METADATA rename column DESCRIBE to DESCRIPTION;
+alter table RTS_METADATA_COLUMN rename column DESCRIBE to DESCRIPTION;
+alter table RTS_PRODUCRER_CONFIG rename column DESCRIBE to DESCRIPTION;
+
+-- ä¿®æ”¹è¡¨çš„å­—æ®µåç§° PRIMARY æ”¹ä¸º UNIQUEKEY
+alter table IM_METADATA_COLUMN rename column PRIMARY to UNIQUEKEY;
+alter table IM_MODEL_MAPPING rename column PRIMARY to UNIQUEKEY;
+
+-- IM_METADATAè¡¨æ·»åŠ ç´¢å¼•
+create index IDX_IM_MD_DELFLG on IM_METADATA (DEL_FLG);
+create index IDX_IM_MD_DELFLG_NAME on IM_METADATA (DEL_FLG, NAME);
+
+-- IM_METADATA_COLUMNè¡¨æ·»åŠ ç´¢å¼•
+create index IDX_IM_MD_COL_MDID on IM_METADATA_COLUMN (MD_ID);
+
+-- IM_MODELè¡¨æ·»åŠ ç´¢å¼•
+create index IDX_IM_MODEL_DELFLG on IM_MODEL (DEL_FLG);
+create index IDX_IM_MODEL_DELFLG_NAME on IM_MODEL (DEL_FLG, NAME);
+
+-- IM_MODEL_FILTER_COLUMNè¡¨æ·»åŠ ç´¢å¼•
+create index IDX_IM_MODEL_FILTER_MODELID on IM_MODEL_FILTER_COLUMN (MODEL_ID);
+
+-- IM_MODEL_MAPPINGè¡¨æ·»åŠ ç´¢å¼•
+create index IDX_IM_MODEL_MAPPING_MODELID on IM_MODEL_MAPPING (MODEL_ID);
+
+-- IM_MODEL_UPDATE_KEYè¡¨æ·»åŠ ç´¢å¼•
+create index IDX_IM_MODEL_UPDATEKEY_MODELID on IM_MODEL_UPDATE_KEY (MODEL_ID);
 
 spool off

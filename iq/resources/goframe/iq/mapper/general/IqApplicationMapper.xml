@@ -5,7 +5,7 @@
     <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
     <result column="MD_ID" property="mdId" jdbcType="VARCHAR" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
-    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR" />
     <result column="NOTE" property="note" jdbcType="VARCHAR" />
     <result column="MAX_NUM" property="maxNum" jdbcType="DECIMAL" />
     <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
@@ -27,7 +27,7 @@
   </update>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.iq.model.IqApplication" >
     insert into IQ_APPLICATION (PK_ID, MD_ID, NAME, 
-      DESCRIBE, NOTE, MAX_NUM, 
+      DESCRIPTION, NOTE, MAX_NUM,
       DEL_FLG, CRT_USER, CRT_TIME, 
       UPT_USER, UPT_TIME)
     values (#{pkId,jdbcType=VARCHAR}, #{mdId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
@@ -39,7 +39,7 @@
     update IQ_APPLICATION
     set MD_ID = #{mdId,jdbcType=VARCHAR},
       NAME = #{name,jdbcType=VARCHAR},
-      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      DESCRIPTION = #{describe,jdbcType=VARCHAR},
       NOTE = #{note,jdbcType=VARCHAR},
       MAX_NUM = #{maxNum,jdbcType=DECIMAL},
       DEL_FLG = #{delFlg,jdbcType=CHAR},
@@ -50,27 +50,27 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, MD_ID, NAME, DESCRIBE, NOTE, MAX_NUM, DEL_FLG, CRT_USER, CRT_TIME, 
+    select PK_ID, MD_ID, NAME, DESCRIPTION, NOTE, MAX_NUM, DEL_FLG, CRT_USER, CRT_TIME,
     UPT_USER, UPT_TIME
     from IQ_APPLICATION
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, MD_ID, NAME, DESCRIBE, NOTE, MAX_NUM, DEL_FLG, CRT_USER, CRT_TIME, 
+    select PK_ID, MD_ID, NAME, DESCRIPTION, NOTE, MAX_NUM, DEL_FLG, CRT_USER, CRT_TIME,
     UPT_USER, UPT_TIME
     from IQ_APPLICATION
     where DEL_FLG = '0'
   </select>
   <select id="select" resultMap="IqApplicationView" parameterType="com.hex.bigdata.udsp.iq.dto.IqApplicationView" >
-    select app.PK_ID, app.MD_ID, app.NAME, app.DESCRIBE, app.NOTE, app.MAX_NUM, app.DEL_FLG, app.CRT_USER, app.CRT_TIME,
-    app.UPT_USER, app.UPT_TIME, md.NAME as MD_NAME, md.DESCRIBE as MD_DESC
+    select app.PK_ID, app.MD_ID, app.NAME, app.DESCRIPTION, app.NOTE, app.MAX_NUM, app.DEL_FLG, app.CRT_USER, app.CRT_TIME,
+    app.UPT_USER, app.UPT_TIME, md.NAME as MD_NAME, md.DESCRIPTION as MD_DESC
     from IQ_APPLICATION app
     left join IQ_METADATA md
     on app.MD_ID = md.PK_ID
     where app.DEL_FLG = '0'
     <if test="pkId!='' and pkId!=null ">and app.PK_ID = #{pkId}</if>
     <if test="name!='' and name!=null ">and app.NAME like '%'||#{name}||'%'</if>
-    <if test="describe!='' and describe!=null ">and app.DESCRIBE like '%'||#{describe}||'%'</if>
+    <if test="describe!='' and describe!=null ">and app.DESCRIPTION like '%'||#{describe}||'%'</if>
     <if test="note!='' and note!=null ">and app.NOTE like '%'||#{note}||'%'</if>
     <if test="mdId!='' and mdId!=null ">and app.MD_ID = #{mdId}</if>
     <if test="crtTimeStart!=null and crtTimeStart!='' ">and app.CRT_TIME >= #{crtTimeStart}</if>
@@ -82,7 +82,7 @@
     order by app.UPT_TIME desc, app.CRT_TIME desc, app.NAME asc
   </select>
   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, MD_ID, NAME, DESCRIBE, NOTE, MAX_NUM, DEL_FLG, CRT_USER, CRT_TIME,
+    select PK_ID, MD_ID, NAME, DESCRIPTION, NOTE, MAX_NUM, DEL_FLG, CRT_USER, CRT_TIME,
     UPT_USER, UPT_TIME
     from IQ_APPLICATION
     where DEL_FLG = '0'

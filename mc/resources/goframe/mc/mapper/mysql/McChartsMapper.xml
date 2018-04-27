@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hex.bigdata.udsp.mc.dao.McChartsMapper">
+    <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.mc.dto.McChartsView">
+        <result column="DATETIME" property="datetime" jdbcType="VARCHAR"/>
+        <result column="APP_TYPE" property="appType" jdbcType="VARCHAR"/>
+        <result column="SERVICE_NAME" property="serviceName" jdbcType="VARCHAR"/>
+        <result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+        <result column="COUNT_NUM" property="countNum" jdbcType="DECIMAL"/>
+        <result column="STATUS" property="status" jdbcType="CHAR"/>
+        <result column="SYNC_TYPE" property="syncType" jdbcType="CHAR"/>
+        <result column="MAX_TIME" property="maxTime" jdbcType="DECIMAL"/>
+        <result column="MIN_TIME" property="minTime" jdbcType="DECIMAL"/>
+        <result column="AVG_TIME" property="avgTime" jdbcType="DECIMAL"/>
+    </resultMap>
+    <select id="chart1Second" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+        select substr(REQUEST_END_TIME,0,19) as DATETIME, STATUS, COUNT(1) as COUNT_NUM
+        from MC_CONSUME_LOG
+        where REQUEST_END_TIME >= #{timeStart}
+        and #{timeEnd} >= REQUEST_END_TIME
+        <if test="serviceName!=null and serviceName!=''">AND SERVICE_NAME = #{serviceName}</if>
+        <if test="userName!=null and userName!=''">AND USER_NAME = #{userName}</if>
+        group by substr(REQUEST_END_TIME,0,19), STATUS
+        order by substr(REQUEST_END_TIME,0,19) asc, STATUS asc
+    </select>
+    <select id="chart1Minute" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+        select substr(REQUEST_END_TIME,0,16) as DATETIME, STATUS, COUNT(1) as COUNT_NUM
+        from MC_CONSUME_LOG
+        where REQUEST_END_TIME >= #{timeStart}
+        and #{timeEnd} >= REQUEST_END_TIME
+        <if test="serviceName!=null and serviceName!=''">AND SERVICE_NAME = #{serviceName}</if>
+        <if test="userName!=null and userName!=''">AND USER_NAME = #{userName}</if>
+        group by substr(REQUEST_END_TIME,0,16), STATUS
+        order by substr(REQUEST_END_TIME,0,16) asc, STATUS asc
+    </select>
+    <select id="chart1Hour" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+        select substr(REQUEST_END_TIME,0,13) as DATETIME, STATUS, COUNT(1) as COUNT_NUM
+        from MC_CONSUME_LOG
+        where REQUEST_END_TIME >= #{timeStart}
+        and #{timeEnd} >= REQUEST_END_TIME
+        <if test="serviceName!=null and serviceName!=''">AND SERVICE_NAME = #{serviceName}</if>
+        <if test="userName!=null and userName!=''">AND USER_NAME = #{userName}</if>
+        group by substr(REQUEST_END_TIME,0,13), STATUS
+        order by substr(REQUEST_END_TIME,0,13) asc, STATUS asc
+    </select>
+    <select id="chart1Day" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+        select substr(REQUEST_END_TIME,0,10) as DATETIME, STATUS, COUNT(1) as COUNT_NUM
+        from MC_CONSUME_LOG
+        where REQUEST_END_TIME >= #{timeStart}
+        and #{timeEnd} >= REQUEST_END_TIME
+        <if test="serviceName!=null and serviceName!=''">AND SERVICE_NAME = #{serviceName}</if>
+        <if test="userName!=null and userName!=''">AND USER_NAME = #{userName}</if>
+        group by substr(REQUEST_END_TIME,0,10), STATUS
+        order by substr(REQUEST_END_TIME,0,10) asc, STATUS asc
+    </select>
+
+    <select id="chart2Second" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+    select substr(REQUEST_END_TIME,0,19) as DATETIME, APP_TYPE, COUNT(1) as COUNT_NUM
+    from MC_CONSUME_LOG
+    where REQUEST_END_TIME >= #{timeStart}
+    and #{timeEnd} >= REQUEST_END_TIME
+    group by substr(REQUEST_END_TIME,0,19), APP_TYPE
+    order by substr(REQUEST_END_TIME,0,19) asc, APP_TYPE asc
+  </select>
+    <select id="chart2Minute" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+    select substr(REQUEST_END_TIME,0,16) as DATETIME, APP_TYPE, COUNT(1) as COUNT_NUM
+    from MC_CONSUME_LOG
+    where REQUEST_END_TIME >= #{timeStart}
+    and #{timeEnd} >= REQUEST_END_TIME
+    group by substr(REQUEST_END_TIME,0,16), APP_TYPE
+    order by substr(REQUEST_END_TIME,0,16) asc, APP_TYPE asc
+  </select>
+    <select id="chart2Hour" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+    select substr(REQUEST_END_TIME,0,13) as DATETIME, APP_TYPE, COUNT(1) as COUNT_NUM
+    from MC_CONSUME_LOG
+    where REQUEST_END_TIME >= #{timeStart}
+    and #{timeEnd} >= REQUEST_END_TIME
+    group by substr(REQUEST_END_TIME,0,13), APP_TYPE
+    order by substr(REQUEST_END_TIME,0,13) asc, APP_TYPE asc
+  </select>
+    <select id="chart2Day" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+    select substr(REQUEST_END_TIME,0,10) as DATETIME, APP_TYPE, COUNT(1) as COUNT_NUM
+    from MC_CONSUME_LOG
+    where REQUEST_END_TIME >= #{timeStart}
+    and #{timeEnd} >= REQUEST_END_TIME
+    group by substr(REQUEST_END_TIME,0,10), APP_TYPE
+    order by substr(REQUEST_END_TIME,0,10) asc, APP_TYPE asc
+  </select>
+
+    <select id="chart3" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+        select USER_NAME, STATUS, COUNT(1) as COUNT_NUM
+        from MC_CONSUME_LOG
+        where REQUEST_END_TIME >= #{timeStart}
+        and #{timeEnd} >= REQUEST_END_TIME
+        <if test="serviceName!=null and serviceName!=''">AND SERVICE_NAME = #{serviceName}</if>
+        <if test="userName!=null and userName!=''">AND USER_NAME = #{userName}</if>
+        group by USER_NAME, STATUS
+        order by USER_NAME asc, STATUS asc
+    </select>
+
+    <select id="chart4" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+    select USER_NAME, APP_TYPE, COUNT(1) as COUNT_NUM
+    from MC_CONSUME_LOG
+    where REQUEST_END_TIME >= #{timeStart}
+    and #{timeEnd} >= REQUEST_END_TIME
+    group by USER_NAME, APP_TYPE
+    order by USER_NAME asc, APP_TYPE asc
+  </select>
+
+    <select id="chart5" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+    select SERVICE_NAME, STATUS, COUNT(1) as COUNT_NUM
+    from MC_CONSUME_LOG
+    where REQUEST_END_TIME >= #{timeStart}
+    and #{timeEnd} >= REQUEST_END_TIME
+    group by SERVICE_NAME, STATUS
+    order by SERVICE_NAME asc, STATUS asc
+  </select>
+
+    <select id="chart6" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+    select APP_TYPE, STATUS, COUNT(1) as COUNT_NUM
+    from MC_CONSUME_LOG
+    where REQUEST_END_TIME >= #{timeStart}
+    and #{timeEnd} >= REQUEST_END_TIME
+    group by APP_TYPE, STATUS
+    order by APP_TYPE asc, STATUS asc
+  </select>
+
+    <select id="chart7" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+    SELECT T.SERVICE_NAME,
+          MAX(T.S_TIME) AS MAX_TIME,
+          MIN(T.S_TIME) AS MIN_TIME,
+          ROUND(AVG(T.S_TIME), 3) AS AVG_TIME
+     FROM (SELECT SERVICE_NAME,
+                  (((UNIX_TIMESTAMP(STR_TO_DATE(SUBSTR(REQUEST_END_TIME, 1, 19), '%Y-%m-%d %H:%i:%s')) -
+                    UNIX_TIMESTAMP(STR_TO_DATE(SUBSTR(REQUEST_START_TIME, 1, 19), '%Y-%m-%d %H:%i:%s'))) * 1000) +
+                    (cast(SUBSTR(REQUEST_END_TIME, 21, 3) as SIGNED) - cast(SUBSTR(REQUEST_START_TIME, 21, 3) as SIGNED))
+                  ) / 1000 S_TIME
+             FROM MC_CONSUME_LOG
+            WHERE REQUEST_END_TIME >= #{timeStart}
+              AND #{timeEnd} >= REQUEST_END_TIME
+              AND SYNC_TYPE = 'SYNC') T
+    GROUP BY T.SERVICE_NAME
+    ORDER BY T.SERVICE_NAME ASC
+  </select>
+
+    <select id="chart8" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mc.dto.McChartsView">
+    SELECT T.SERVICE_NAME,
+          MAX(T.S_TIME) AS MAX_TIME,
+          MIN(T.S_TIME) AS MIN_TIME,
+          ROUND(AVG(T.S_TIME), 3) AS AVG_TIME
+     FROM (SELECT SERVICE_NAME,
+                  (((UNIX_TIMESTAMP(STR_TO_DATE(SUBSTR(REQUEST_END_TIME, 1, 19), '%Y-%m-%d %H:%i:%s')) -
+                    UNIX_TIMESTAMP(STR_TO_DATE(SUBSTR(REQUEST_START_TIME, 1, 19), '%Y-%m-%d %H:%i:%s'))) * 1000) +
+                    (cast(SUBSTR(REQUEST_END_TIME, 21, 3) as SIGNED) - cast(SUBSTR(REQUEST_START_TIME, 21, 3) as SIGNED))
+                  ) / 1000 S_TIME
+             FROM MC_CONSUME_LOG
+            WHERE REQUEST_END_TIME >= #{timeStart}
+              AND #{timeEnd} >= REQUEST_END_TIME
+              AND SYNC_TYPE = 'ASYNC') T
+    GROUP BY T.SERVICE_NAME
+    ORDER BY T.SERVICE_NAME ASC
+  </select>
+</mapper>
