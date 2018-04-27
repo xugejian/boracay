@@ -361,7 +361,7 @@ public class ElasticSearchProvider implements Provider {
         if (dataSourcePool == null) {
             dataSourcePool = new HashMap<String, ElasticSearchConnectionPoolFactory>();
         }
-        ElasticSearchConnectionPoolFactory factory = dataSourcePool.get(dsId);
+        ElasticSearchConnectionPoolFactory factory = dataSourcePool.remove(dsId);
         if (factory == null) {
             GenericObjectPool.Config config = new GenericObjectPool.Config();
             config.lifo = true;
@@ -374,8 +374,8 @@ public class ElasticSearchProvider implements Provider {
             config.testOnBorrow = false;
             config.testOnReturn = false;
             factory = new ElasticSearchConnectionPoolFactory(config, datasource.getElasticsearchServers());
-            dataSourcePool.put(dsId, factory);
         }
+        dataSourcePool.put(dsId, factory);
         return factory;
     }
 

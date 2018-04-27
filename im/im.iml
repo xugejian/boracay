@@ -19,6 +19,7 @@
     <orderEntry type="library" name="kafka" level="project" />
     <orderEntry type="library" name="solr" level="project" />
     <orderEntry type="library" name="hive" level="project" />
+    <orderEntry type="library" exported="" name="kudu" level="project" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="console" />
     <orderEntry type="module" module-name="md" />
