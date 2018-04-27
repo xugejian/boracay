@@ -1,10 +1,10 @@
-prompt PL/SQL Developer import file
-prompt Created on 2018Äê2ÔÂ1ÈÕ by PC
+ï»¿prompt PL/SQL Developer import file
+prompt Created on 2018å¹´2æœˆ1æ—¥ by PC
 set feedback off
 set define off
 prompt Loading T_GF_APPLICATION...
 insert into T_GF_APPLICATION (app_code, app_name, app_comment, app_status)
-values ('default', 'ÏµÍ³¹ÜÀíÆ½Ì¨', 'ÏµÍ³¹ÜÀíÆ½Ì¨', 1);
+values ('default', 'ç³»ç»Ÿç®¡ç†å¹³å°', 'ç³»ç»Ÿç®¡ç†å¹³å°', 1);
 commit;
 prompt 1 records loaded
 prompt Loading T_GF_AUTH_RIGHT...
@@ -32,193 +32,193 @@ values ('IQ_MD_COL_DATA_TYPE', 'TINYINT', 'TINYINT', null, 11, null, null, 'defa
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_MD_COL_DATA_TYPE', 'TIMESTAMP', 'TIMESTAMP', null, 12, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_BATCH_JOB_STATUS', 'BUILDING', 'ÕıÔÚ¹¹½¨', null, 2, null, null, 'default', null);
+values ('IM_BATCH_JOB_STATUS', 'BUILDING', 'æ­£åœ¨æ„å»º', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_BATCH_JOB_STATUS', 'BUILD_FAIL', '¹¹½¨Ê§°Ü', null, 4, null, null, 'default', null);
+values ('IM_BATCH_JOB_STATUS', 'BUILD_FAIL', 'æ„å»ºå¤±è´¥', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_REALTIME_JOB_STATUS', 'STARTING', '¿ªÊ¼Æô¶¯', null, 2, null, null, 'default', null);
+values ('IM_REALTIME_JOB_STATUS', 'STARTING', 'å¼€å§‹å¯åŠ¨', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_APP_ORDER_COL_TYPE', 'DESC', 'DESC', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'IQ', '½»»¥²éÑ¯', null, 1, null, null, 'default', null);
+values ('UDSP_SERVICE_TYPE', 'IQ', 'äº¤äº’æŸ¥è¯¢', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'OLQ', 'Áª»ú²éÑ¯', null, 2, null, null, 'default', null);
+values ('UDSP_SERVICE_TYPE', 'OLQ', 'è”æœºæŸ¥è¯¢', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'MM', 'Ä£ĞÍ¹ÜÀí', null, 3, null, null, 'default', null);
+values ('UDSP_SERVICE_TYPE', 'MM', 'æ¨¡å‹ç®¡ç†', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'RTS_CONSUMER', 'ÊµÊ±Á÷-Ïû·ÑÕß', null, 5, null, null, 'default', null);
+values ('UDSP_SERVICE_TYPE', 'RTS_CONSUMER', 'å®æ—¶æµ-æ¶ˆè´¹è€…', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'RTS_PRODUCER', 'ÊµÊ±Á÷-Éú²úÕß', null, 4, null, null, 'default', null);
+values ('UDSP_SERVICE_TYPE', 'RTS_PRODUCER', 'å®æ—¶æµ-ç”Ÿäº§è€…', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_CONSUME_LOG_STATUS', '0', '³É¹¦', null, 1, null, null, 'default', null);
+values ('MC_CONSUME_LOG_STATUS', '0', 'æˆåŠŸ', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_CONSUME_LOG_STATUS', '1', 'Ê§°Ü', null, 2, null, null, 'default', null);
+values ('MC_CONSUME_LOG_STATUS', '1', 'å¤±è´¥', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'MYSQL', 'com.hex.bigdata.udsp.olq.provider.impl.MysqlProvider', null, 4, null, null, 'default', 'Áª»ú²éÑ¯µÄMysql½Ó¿ÚÊµÏÖÀà');
+values ('OLQ_IMPL_CLASS', 'MYSQL', 'com.hex.bigdata.udsp.olq.provider.impl.MysqlProvider', null, 4, null, null, 'default', 'è”æœºæŸ¥è¯¢çš„Mysqlæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'DB2', 'com.hex.bigdata.udsp.olq.provider.impl.Db2Provider', null, 6, null, null, 'default', 'Áª»ú²éÑ¯µÄDb2½Ó¿ÚÊµÏÖÀà');
+values ('OLQ_IMPL_CLASS', 'DB2', 'com.hex.bigdata.udsp.olq.provider.impl.Db2Provider', null, 6, null, null, 'default', 'è”æœºæŸ¥è¯¢çš„Db2æ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('OLQ_DS_PROPS_MYSQL', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('OLQ_DS_PROPS_ORACLE', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('OLQ_DS_PROPS_ORACLE', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('OLQ_DS_PROPS_ORACLE', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_OPERATION_LOG_TYPE', '1', 'Ìí¼Ó', null, 1, null, null, 'default', null);
+values ('MC_OPERATION_LOG_TYPE', '1', 'æ·»åŠ ', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_OPERATION_LOG_TYPE', '2', '¸üĞÂ', null, 2, null, null, 'default', null);
+values ('MC_OPERATION_LOG_TYPE', '2', 'æ›´æ–°', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_OPERATION_LOG_TYPE', '3', 'É¾³ı', null, 3, null, null, 'default', null);
+values ('MC_OPERATION_LOG_TYPE', '3', 'åˆ é™¤', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MC_OPERATION_LOG_TYPE', '4', '²éÑ¯', null, 4, null, null, 'default', null);
+values ('MC_OPERATION_LOG_TYPE', '4', 'æŸ¥è¯¢', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'username', 'ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_IMPALA', 'username', 'ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('OLQ_DS_PROPS_IMPALA', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('OLQ_DS_PROPS_IMPALA', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'validation.query.timeout', 'ÑéÖ¤ÓĞĞ§Á¬½ÓµÄ³¬Ê±Ê±¼ä', null, 11, null, null, 'default', '0');
+values ('OLQ_DS_PROPS_IMPALA', 'validation.query.timeout', 'éªŒè¯æœ‰æ•ˆè¿æ¥çš„è¶…æ—¶æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('OLQ_DS_PROPS_IMPALA', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('OLQ_DS_PROPS_IMPALA', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_IMPALA', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'IMPALA', 'com.hex.bigdata.udsp.olq.provider.impl.ImpalaProvider', null, 1, null, null, 'default', 'Áª»ú²éÑ¯µÄImpala½Ó¿ÚÊµÏÖÀà');
+values ('OLQ_IMPL_CLASS', 'IMPALA', 'com.hex.bigdata.udsp.olq.provider.impl.ImpalaProvider', null, 1, null, null, 'default', 'è”æœºæŸ¥è¯¢çš„Impalaæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'HIVE', 'com.hex.bigdata.udsp.olq.provider.impl.HiveProvider', null, 2, null, null, 'default', 'Áª»ú²éÑ¯µÄHive½Ó¿ÚÊµÏÖÀà');
+values ('OLQ_IMPL_CLASS', 'HIVE', 'com.hex.bigdata.udsp.olq.provider.impl.HiveProvider', null, 2, null, null, 'default', 'è”æœºæŸ¥è¯¢çš„Hiveæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MM_MODEL_STATUS', '2', 'ÒÑ·¢²¼', null, 3, null, null, 'default', null);
+values ('MM_MODEL_STATUS', '2', 'å·²å‘å¸ƒ', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MM_MODEL_STATUS', '0', '´ıÉÏ´«', null, 1, null, null, 'default', null);
+values ('MM_MODEL_STATUS', '0', 'å¾…ä¸Šä¼ ', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'driver.class', 'Çı¶¯Àà', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+values ('OLQ_DS_PROPS_HIVE', 'driver.class', 'é©±åŠ¨ç±»', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'username', 'ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_HIVE', 'username', 'ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('OLQ_DS_PROPS_HIVE', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('OLQ_DS_PROPS_HIVE', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('OLQ_DS_PROPS_HIVE', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1');
+values ('OLQ_DS_PROPS_HIVE', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('OLQ_DS_PROPS_HIVE', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_HIVE', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_HIVE', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_REQUEST_TYPE', '1', 'Íâ²¿ÇëÇó', null, 2, null, null, 'default', null);
+values ('UDSP_REQUEST_TYPE', '1', 'å¤–éƒ¨è¯·æ±‚', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SYNC_TYPE', 'ASYNC', 'Òì²½', null, 2, null, null, 'default', null);
+values ('UDSP_SYNC_TYPE', 'ASYNC', 'å¼‚æ­¥', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_CONSUMER_TIMEOUT', '200', '200ms', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('OLQ_DS_PROPS_ORACLE', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('OLQ_DS_PROPS_ORACLE', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('OLQ_DS_PROPS_ORACLE', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_ORACLE', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_ORACLE', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_ORACLE', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('OLQ_DS_PROPS_ORACLE', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1 from dual');
+values ('OLQ_DS_PROPS_ORACLE', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1 from dual');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'validation.query.timeout', 'ÑéÖ¤ÓĞĞ§Á¬½ÓµÄ³¬Ê±Ê±¼ä', null, 11, null, null, 'default', '0');
+values ('OLQ_DS_PROPS_ORACLE', 'validation.query.timeout', 'éªŒè¯æœ‰æ•ˆè¿æ¥çš„è¶…æ—¶æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('OLQ_DS_PROPS_MYSQL', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('OLQ_DS_PROPS_MYSQL', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('OLQ_DS_PROPS_MYSQL', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('OLQ_DS_PROPS_MYSQL', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('OLQ_DS_PROPS_MYSQL', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_MYSQL', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_MYSQL', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_MYSQL', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('OLQ_DS_PROPS_MYSQL', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1');
+values ('OLQ_DS_PROPS_MYSQL', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'validation.query.timeout', 'ÑéÖ¤ÓĞĞ§Á¬½ÓµÄ³¬Ê±Ê±¼ä', null, 11, null, null, 'default', '0');
+values ('OLQ_DS_PROPS_MYSQL', 'validation.query.timeout', 'éªŒè¯æœ‰æ•ˆè¿æ¥çš„è¶…æ—¶æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('OLQ_DS_PROPS_KYLIN', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('OLQ_DS_PROPS_KYLIN', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('OLQ_DS_PROPS_KYLIN', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('OLQ_DS_PROPS_KYLIN', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('OLQ_DS_PROPS_KYLIN', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('OLQ_DS_PROPS_KYLIN', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_KYLIN', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_KYLIN', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_KYLIN', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('OLQ_DS_PROPS_KYLIN', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1');
+values ('OLQ_DS_PROPS_KYLIN', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'validation.query.timeout', 'ÑéÖ¤ÓĞĞ§Á¬½ÓµÄ³¬Ê±Ê±¼ä', null, 11, null, null, 'default', '0');
+values ('OLQ_DS_PROPS_KYLIN', 'validation.query.timeout', 'éªŒè¯æœ‰æ•ˆè¿æ¥çš„è¶…æ—¶æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('OLQ_DS_PROPS_DB2', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('OLQ_DS_PROPS_DB2', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('OLQ_DS_PROPS_DB2', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('OLQ_DS_PROPS_DB2', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('OLQ_DS_PROPS_DB2', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_TYPE', 'HIVE', 'HIVE', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_APP_ORDER_COL_TYPE', 'ASC', 'ASC', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('OLQ_DS_PROPS_DB2', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_DB2', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_DB2', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_DB2', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('OLQ_DS_PROPS_DB2', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1 from sysibm.sysdummy1');
+values ('OLQ_DS_PROPS_DB2', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1 from sysibm.sysdummy1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'validation.query.timeout', 'ÑéÖ¤ÓĞĞ§Á¬½ÓµÄ³¬Ê±Ê±¼ä', null, 11, null, null, 'default', '0');
+values ('OLQ_DS_PROPS_DB2', 'validation.query.timeout', 'éªŒè¯æœ‰æ•ˆè¿æ¥çš„è¶…æ—¶æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('OLQ_DS_PROPS_PGSQL', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('OLQ_DS_PROPS_PGSQL', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('OLQ_DS_PROPS_PGSQL', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('OLQ_DS_PROPS_PGSQL', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TYPE', 'HIVE', 'HIVE', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -230,95 +230,95 @@ values ('IM_DS_TYPE', 'KAFKA', 'KAFKA', null, 5, null, null, 'default', null);
 commit;
 prompt 100 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_STATUS', '2', 'ÒÑ½¨', null, 2, null, null, 'default', null);
+values ('IM_MD_STATUS', '2', 'å·²å»º', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'driver.class', 'Hive Çı¶¯Àà', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+values ('IM_DS_PROPS_HIVE', 'driver.class', 'Hive é©±åŠ¨ç±»', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('IM_DS_PROPS_HIVE', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('IM_DS_PROPS_HIVE', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('IM_DS_PROPS_HIVE', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'jdbc.url', 'Hive JDBC URL£¬Èç£ºjdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+values ('IM_DS_PROPS_HIVE', 'jdbc.url', 'Hive JDBC URLï¼Œå¦‚ï¼šjdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'password', 'Hive ÃÜÂë', null, 4, null, null, 'default', null);
+values ('IM_DS_PROPS_HIVE', 'password', 'Hive å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('IM_DS_PROPS_HIVE', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('IM_DS_PROPS_HIVE', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'validation.query.timeout', '×Ô¶¯ÑéÖ¤Á¬½ÓµÄÊ±¼ä', null, 11, null, null, 'default', '0');
+values ('IM_DS_PROPS_HIVE', 'validation.query.timeout', 'è‡ªåŠ¨éªŒè¯è¿æ¥çš„æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('IM_DS_PROPS_HIVE', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('IM_DS_PROPS_HIVE', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'username', 'Hive ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('IM_DS_PROPS_HIVE', 'username', 'Hive ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.zk.port', 'HBaseµÄZookeeperµÄ¶Ë¿Ú£¬Èç£º2181', null, 2, null, null, 'default', '2181');
+values ('IM_DS_PROPS_HBASE', 'hbase.zk.port', 'HBaseçš„Zookeeperçš„ç«¯å£ï¼Œå¦‚ï¼š2181', null, 2, null, null, 'default', '2181');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('IM_DS_PROPS_HIVE', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('IM_DS_PROPS_HIVE', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('IM_DS_PROPS_HIVE', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1');
+values ('IM_DS_PROPS_HIVE', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.zk.quorum', 'HBaseµÄZookeeperµÄ¼¯ÈºIP£¬¶à¸öIPÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
+values ('IM_DS_PROPS_HBASE', 'hbase.zk.quorum', 'HBaseçš„Zookeeperçš„é›†ç¾¤IPï¼Œå¤šä¸ªIPç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR', 'solr.servers', 'Solr¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 1, null, null, 'default', null);
+values ('IM_DS_PROPS_SOLR', 'solr.servers', 'Solré›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.zk.quorum', 'HBaseµÄZookeeperµÄ¼¯ÈºIP£¬¶à¸öIPÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.zk.quorum', 'HBaseçš„Zookeeperçš„é›†ç¾¤IPï¼Œå¤šä¸ªIPç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.zk.port', 'HBaseµÄZookeeperµÄ¶Ë¿Ú£¬Èç£º2181', null, 2, null, null, 'default', '2181');
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.zk.port', 'HBaseçš„Zookeeperçš„ç«¯å£ï¼Œå¦‚ï¼š2181', null, 2, null, null, 'default', '2181');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'solr.servers', 'Solr¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 11, null, null, 'default', null);
+values ('IM_DS_PROPS_SOLR_HBASE', 'solr.servers', 'Solré›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 11, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TYPE', 'SOLR_HBASE', 'SOLR_HBASE', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_STATUS', '1', 'Î´½¨', null, 1, null, null, 'default', null);
+values ('IM_MD_STATUS', '1', 'æœªå»º', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('OLQ_DS_PROPS_IMPALA', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'password', 'ÃÜÂë', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_IMPALA', 'password', 'å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('OLQ_DS_PROPS_IMPALA', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('OLQ_DS_PROPS_IMPALA', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1');
+values ('OLQ_DS_PROPS_IMPALA', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_IMPALA', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_IMPALA', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_REQUEST_TYPE', '0', 'ÄÚ²¿ÇëÇó', null, 1, null, null, 'default', null);
+values ('UDSP_REQUEST_TYPE', '0', 'å†…éƒ¨è¯·æ±‚', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000002', 'ÓÃ»§ÃûÃÜÂë´íÎó', null, 2, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000002', 'ç”¨æˆ·åå¯†ç é”™è¯¯', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_CONSUMER_TIMEOUT', '1000', '1000ms', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'PGSQL', 'com.hex.bigdata.udsp.olq.provider.impl.PgsqlProvider', null, 5, null, null, 'default', 'Áª»ú²éÑ¯µÄPgsql½Ó¿ÚÊµÏÖÀà');
+values ('OLQ_IMPL_CLASS', 'PGSQL', 'com.hex.bigdata.udsp.olq.provider.impl.PgsqlProvider', null, 5, null, null, 'default', 'è”æœºæŸ¥è¯¢çš„Pgsqlæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000004', 'Ã»ÓĞ×¢²á·şÎñ', null, 4, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000004', 'æ²¡æœ‰æ³¨å†ŒæœåŠ¡', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000006', 'ÇëÇóIP²»ÔÚÔÊĞíµÄIP¶ÎÄÚ', null, 6, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000006', 'è¯·æ±‚IPä¸åœ¨å…è®¸çš„IPæ®µå†…', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000007', '³ÌĞòÄÚ²¿Òì³£', null, 7, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000007', 'ç¨‹åºå†…éƒ¨å¼‚å¸¸', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000010', 'µ÷ÓÃÀàĞÍ»òÕßENTITYÉèÖÃ´íÎó', null, 10, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000010', 'è°ƒç”¨ç±»å‹æˆ–è€…ENTITYè®¾ç½®é”™è¯¯', null, 10, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '200002', 'Ä£ĞÍ²»Ö§³Ö¸Ã½Ó¿Úµ÷ÓÃÀàĞÍ', null, 200002, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '200002', 'æ¨¡å‹ä¸æ”¯æŒè¯¥æ¥å£è°ƒç”¨ç±»å‹', null, 200002, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000012', '²éÑ¯Ïû·Ñ×´Ì¬¹ıÓÚÆµ·±', null, 12, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000012', 'æŸ¥è¯¢æ¶ˆè´¹çŠ¶æ€è¿‡äºé¢‘ç¹', null, 12, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_CONSUMER_TIMEOUT', '2000', '2000ms', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'ORACLE', 'com.hex.bigdata.udsp.olq.provider.impl.OracleProvider', null, 3, null, null, 'default', 'Áª»ú²éÑ¯µÄOracle½Ó¿ÚÊµÏÖÀà');
+values ('OLQ_IMPL_CLASS', 'ORACLE', 'com.hex.bigdata.udsp.olq.provider.impl.OracleProvider', null, 3, null, null, 'default', 'è”æœºæŸ¥è¯¢çš„Oracleæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'driver.class', 'Çı¶¯Àà', null, 1, null, null, 'default', 'org.postgresql.Driver');
+values ('OLQ_DS_PROPS_PGSQL', 'driver.class', 'é©±åŠ¨ç±»', null, 1, null, null, 'default', 'org.postgresql.Driver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_TYPE', 'ORACLE', 'ORACLE', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -326,85 +326,85 @@ values ('OLQ_DS_TYPE', 'PGSQL', 'PGSQL', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_TYPE', 'KYLIN', 'KYLIN', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'KYLIN', 'com.hex.bigdata.udsp.olq.provider.impl.KylinProvider', null, 7, null, null, 'default', 'Áª»ú²éÑ¯µÄKylin½Ó¿ÚÊµÏÖÀà');
+values ('OLQ_IMPL_CLASS', 'KYLIN', 'com.hex.bigdata.udsp.olq.provider.impl.KylinProvider', null, 7, null, null, 'default', 'è”æœºæŸ¥è¯¢çš„Kylinæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('OLQ_DS_PROPS_PGSQL', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('OLQ_DS_PROPS_PGSQL', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_PGSQL', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_PGSQL', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_PGSQL', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('OLQ_DS_PROPS_PGSQL', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1');
+values ('OLQ_DS_PROPS_PGSQL', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'validation.query.timeout', 'ÑéÖ¤ÓĞĞ§Á¬½ÓµÄ³¬Ê±Ê±¼ä', null, 11, null, null, 'default', '0');
+values ('OLQ_DS_PROPS_PGSQL', 'validation.query.timeout', 'éªŒè¯æœ‰æ•ˆè¿æ¥çš„è¶…æ—¶æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'jdbc.url', 'JDBC URL£¬Èç£ºjdbc:postgresql://${ip}:${port}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_PGSQL', 'jdbc.url', 'JDBC URLï¼Œå¦‚ï¼šjdbc:postgresql://${ip}:${port}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'password', 'ÃÜÂë', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_PGSQL', 'password', 'å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'username', 'ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_PGSQL', 'username', 'ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'driver.class', 'Çı¶¯Àà', null, 1, null, null, 'default', 'com.ibm.db2.jcc.DB2Driver');
+values ('OLQ_DS_PROPS_DB2', 'driver.class', 'é©±åŠ¨ç±»', null, 1, null, null, 'default', 'com.ibm.db2.jcc.DB2Driver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'jdbc.url', 'JDBC URL£¬Èç:jdbc:db2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_DB2', 'jdbc.url', 'JDBC URLï¼Œå¦‚:jdbc:db2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'password', 'ÃÜÂë', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_DB2', 'password', 'å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'username', 'ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_DB2', 'username', 'ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'driver.class', 'Çı¶¯Àà', null, 1, null, null, 'default', 'org.apache.kylin.jdbc.Driver');
+values ('OLQ_DS_PROPS_KYLIN', 'driver.class', 'é©±åŠ¨ç±»', null, 1, null, null, 'default', 'org.apache.kylin.jdbc.Driver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'jdbc.url', 'JDBC URL£¬Èç£º' || chr(9) || ' jdbc:kylin://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_KYLIN', 'jdbc.url', 'JDBC URLï¼Œå¦‚ï¼š' || chr(9) || ' jdbc:kylin://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'password', 'ÃÜÂë', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_KYLIN', 'password', 'å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'username', 'ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_KYLIN', 'username', 'ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'driver.class', 'Çı¶¯Àà', null, 1, null, null, 'default', 'com.mysql.jdbc.Driver');
+values ('OLQ_DS_PROPS_MYSQL', 'driver.class', 'é©±åŠ¨ç±»', null, 1, null, null, 'default', 'com.mysql.jdbc.Driver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.retries.number', '¿Í»§¶ËÖØÊÔ×î´ó´ÎÊı', null, 4, null, null, 'default', '3');
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.retries.number', 'å®¢æˆ·ç«¯é‡è¯•æœ€å¤§æ¬¡æ•°', null, 4, null, null, 'default', '3');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.recovery.retry', 'zookeeperµÄÖØÊÔ´ÎÊı£¨zkµÄÖØÊÔ×Ü´ÎÊıÊÇ£ºhbase.client.retries.number * zookeeper.recovery.retry£©', null, 6, null, null, 'default', '3');
+values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.recovery.retry', 'zookeeperçš„é‡è¯•æ¬¡æ•°ï¼ˆzkçš„é‡è¯•æ€»æ¬¡æ•°æ˜¯ï¼šhbase.client.retries.number * zookeeper.recovery.retryï¼‰', null, 6, null, null, 'default', '3');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.operation.timeout', 'HBase¿Í»§¶Ë·¢ÆğÒ»´ÎÊı¾İ²Ù×÷Ö±ÖÁµÃµ½ÏìÓ¦Ö®¼ä×ÜµÄ³¬Ê±Ê±¼ä£¬Êı¾İ²Ù×÷ÀàĞÍ°üÀ¨get¡¢append¡¢increment¡¢delete¡¢putµÈ£¨ºÁÃë£©', null, 8, null, null, 'default', '30000');
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.operation.timeout', 'HBaseå®¢æˆ·ç«¯å‘èµ·ä¸€æ¬¡æ•°æ®æ“ä½œç›´è‡³å¾—åˆ°å“åº”ä¹‹é—´æ€»çš„è¶…æ—¶æ—¶é—´ï¼Œæ•°æ®æ“ä½œç±»å‹åŒ…æ‹¬getã€appendã€incrementã€deleteã€putç­‰ï¼ˆæ¯«ç§’ï¼‰', null, 8, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'metadata.broker.list', 'Kafka¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
+values ('IM_DS_PROPS_KAFKA', 'metadata.broker.list', 'Kafkaé›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_ORACLE', 'database.name', '¿âÃû', null, 1, null, null, 'default', null);
+values ('IM_MODEL_PROPS_ORACLE', 'database.name', 'åº“å', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_ORACLE', 'select.sql', 'SQLÓï¾ä', null, 3, null, null, 'default', null);
+values ('IM_MODEL_PROPS_ORACLE', 'select.sql', 'SQLè¯­å¥', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_MYSQL', 'database.name', '¿âÃû', null, 1, null, null, 'default', null);
+values ('IM_MODEL_PROPS_MYSQL', 'database.name', 'åº“å', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_MYSQL', 'select.sql', 'SQLÓï¾ä', null, 3, null, null, 'default', null);
+values ('IM_MODEL_PROPS_MYSQL', 'select.sql', 'SQLè¯­å¥', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_ELASTICSEARCH', 'elasticsearch.servers', 'elasticsearch¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:9200,10.1.97.2:9200,10.1.97.3:9200', null, 1, null, null, 'default', null);
+values ('IQ_DS_PROPS_ELASTICSEARCH', 'elasticsearch.servers', 'elasticsearché›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:9200,10.1.97.2:9200,10.1.97.3:9200', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_TYPE', 'ELASTICSEARCH', 'ELASTICSEARCH', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_KAFKA', 'group.id', 'Ïû·Ñ×éID', null, 2, null, null, 'default', null);
+values ('IM_MODEL_PROPS_KAFKA', 'group.id', 'æ¶ˆè´¹ç»„ID', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.rpc.timeout', 'Ò»´ÎRPCÇëÇóµÄ³¬Ê±Ê±¼ä£¨ºÁÃë£©', null, 3, null, null, 'default', '5000');
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.rpc.timeout', 'ä¸€æ¬¡RPCè¯·æ±‚çš„è¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰', null, 3, null, null, 'default', '5000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.pause', 'ÖØÊÔµÄĞİÃßÊ±¼ä£¨ºÁÃë£©', null, 5, null, null, 'default', '100');
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.pause', 'é‡è¯•çš„ä¼‘çœ æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰', null, 5, null, null, 'default', '100');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.recovery.retry.intervalmill', 'zookeeperÖØÊÔµÄĞİÃßÊ±¼ä£¨ºÁÃë£©', null, 7, null, null, 'default', '200');
+values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.recovery.retry.intervalmill', 'zookeeperé‡è¯•çš„ä¼‘çœ æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰', null, 7, null, null, 'default', '200');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.regionserver.lease.period', 'scan²Ù×÷³¬Ê±Ê±¼ä£¨ºÁÃë£©[ÒÑ±»ÆúÓÃ]', null, 9, null, null, 'default', '60000');
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.regionserver.lease.period', 'scanæ“ä½œè¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰[å·²è¢«å¼ƒç”¨]', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_IMPALA', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_HIVE', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_ORACLE', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('OLQ_DS_PROPS_ORACLE', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('UDSP_COMMON_DATA_TYPE', 'TINYINT', 'TINYINT', null, 10, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -420,75 +420,75 @@ values ('UDSP_COMMON_DATA_TYPE', 'FLOAT', 'FLOAT', null, 9, null, null, 'default
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('UDSP_COMMON_DATA_TYPE', 'TIMESTAMP', 'TIMESTAMP', null, 11, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'driver.class', 'Çı¶¯Àà', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+values ('OLQ_DS_PROPS_IMPALA', 'driver.class', 'é©±åŠ¨ç±»', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'jdbc.url', 'JDBC URL£¬Èç£ºÎŞÃÜÂëjdbc:hive2://${ip}:${port}/;auth=noSasl  ÓĞÃÜÂëjdbc:hive2://${ip}:${port}/', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_IMPALA', 'jdbc.url', 'JDBC URLï¼Œå¦‚ï¼šæ— å¯†ç jdbc:hive2://${ip}:${port}/;auth=noSasl  æœ‰å¯†ç jdbc:hive2://${ip}:${port}/', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('MM_REQUEST_TYPE', '1', 'HTTP', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_CONSUMER_TIMEOUT', '500', '500ms', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', 'right like', 'likeÓÒ²éÑ¯', null, 9, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', 'right like', 'likeå³æŸ¥è¯¢', null, 9, null, null, 'default', null);
 commit;
 prompt 200 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.family.name', 'hbase×åÃû', null, 5, null, null, 'default', 'f');
+values ('IQ_DS_PROPS_HBASE', 'hbase.family.name', 'hbaseæ—å', null, 5, null, null, 'default', 'f');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.family.name', 'hbaseÁĞ×åÃû×Ö', null, 4, null, null, 'default', 'f');
+values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.family.name', 'hbaseåˆ—æ—åå­—', null, 4, null, null, 'default', 'f');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.qulifier.name', 'hbaseÁĞÃû', null, 6, null, null, 'default', 'q');
+values ('IQ_DS_PROPS_HBASE', 'hbase.qulifier.name', 'hbaseåˆ—å', null, 6, null, null, 'default', 'q');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.qulifier.name', 'hbaseÁĞÃû', null, 5, null, null, 'default', 'q');
+values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.qulifier.name', 'hbaseåˆ—å', null, 5, null, null, 'default', 'q');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.fqSep', '×Ö¶Î·Ö¸ô·û£¬Èç£º|¡¢||¡¢\007¡¢\t¡¢\036', null, 6, null, null, 'default', '\007');
+values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.fqSep', 'å­—æ®µåˆ†éš”ç¬¦ï¼Œå¦‚ï¼š|ã€||ã€\007ã€\tã€\036', null, 6, null, null, 'default', '\007');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'OLQ_APP', 'Áª»ú²éÑ¯Ó¦ÓÃ', null, 6, null, null, 'default', null);
+values ('UDSP_SERVICE_TYPE', 'OLQ_APP', 'è”æœºæŸ¥è¯¢åº”ç”¨', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MM_MODEL_STATUS', '1', '´ı·¢²¼', null, 2, null, null, 'default', null);
+values ('MM_MODEL_STATUS', '1', 'å¾…å‘å¸ƒ', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('MM_MODEL_STATUS', '3', '¹éµµ', null, 4, null, null, 'default', null);
+values ('MM_MODEL_STATUS', '3', 'å½’æ¡£', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'jdbc.url', 'JDBC URL£¬Èç£ºjdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_HIVE', 'jdbc.url', 'JDBC URLï¼Œå¦‚ï¼šjdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'password', 'ÃÜÂë', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_HIVE', 'password', 'å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('OLQ_DS_PROPS_HIVE', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('OLQ_DS_PROPS_HIVE', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'validation.query.timeout', 'ÑéÖ¤ÓĞĞ§Á¬½ÓµÄ³¬Ê±Ê±¼ä', null, 11, null, null, 'default', '0');
+values ('OLQ_DS_PROPS_HIVE', 'validation.query.timeout', 'éªŒè¯æœ‰æ•ˆè¿æ¥çš„è¶…æ—¶æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'jdbc.url', 'JDBC URL£¬Èç£ºjdbc:mysql://${ip}:${port}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_MYSQL', 'jdbc.url', 'JDBC URLï¼Œå¦‚ï¼šjdbc:mysql://${ip}:${port}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'password', 'ÃÜÂë', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_MYSQL', 'password', 'å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'username', 'ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_MYSQL', 'username', 'ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'driver.class', 'Çı¶¯Àà', null, 1, null, null, 'default', 'oracle.jdbc.OracleDriver');
+values ('OLQ_DS_PROPS_ORACLE', 'driver.class', 'é©±åŠ¨ç±»', null, 1, null, null, 'default', 'oracle.jdbc.OracleDriver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'jdbc.url', 'JDBC URL£¬Èç£ºjdbc:oracle:thin:@${ip}:${port}/${model}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_ORACLE', 'jdbc.url', 'JDBC URLï¼Œå¦‚ï¼šjdbc:oracle:thin:@${ip}:${port}/${model}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'password', 'ÃÜÂë', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_ORACLE', 'password', 'å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'username', 'ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_ORACLE', 'username', 'ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_TYPE', 'REDIS', 'REDIS', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_IMPL_CLASS', 'REDIS', 'com.hex.bigdata.udsp.iq.provider.impl.RedisProvider', null, 4, null, null, 'default', '½»»¥²éÑ¯Redis½Ó¿ÚÊµÏÖÀà');
+values ('IQ_IMPL_CLASS', 'REDIS', 'com.hex.bigdata.udsp.iq.provider.impl.RedisProvider', null, 4, null, null, 'default', 'äº¤äº’æŸ¥è¯¢Redisæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.connection.ip', 'redisÁ¬½ÓipµØÖ·', null, 1, null, null, 'default', null);
+values ('IQ_DS_PROPS_REDIS', 'redis.connection.ip', 'redisè¿æ¥ipåœ°å€', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.connection.password', 'redisÁ¬½ÓÃÜÂë', null, 4, null, null, 'default', null);
+values ('IQ_DS_PROPS_REDIS', 'redis.connection.password', 'redisè¿æ¥å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.max.wait', 'redisÁ¬½Ó×î³¤µÈ´ıÊ±¼ä', null, 7, null, null, 'default', '1000');
+values ('IQ_DS_PROPS_REDIS', 'redis.max.wait', 'redisè¿æ¥æœ€é•¿ç­‰å¾…æ—¶é—´', null, 7, null, null, 'default', '1000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.test.on.brrow', 'redisÁ¬½ÓÊÇ·ñ¼ì²éÁ¬Í¨ĞÔ', null, 9, null, null, 'default', 'true');
+values ('IQ_DS_PROPS_REDIS', 'redis.test.on.brrow', 'redisè¿æ¥æ˜¯å¦æ£€æŸ¥è¿é€šæ€§', null, 9, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.connection.user', 'redisÁ¬½ÓÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('IQ_DS_PROPS_REDIS', 'redis.connection.user', 'redisè¿æ¥ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'max.data.size', '×î´óÊı¾İ·µ»ØÌõÊı', null, 19, null, null, 'default', '65535');
+values ('OLQ_DS_PROPS_DB2', 'max.data.size', 'æœ€å¤§æ•°æ®è¿”å›æ¡æ•°', null, 19, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_ORACLE', 'max.data.size', '×î´óÊı¾İ·µ»ØÌõÊı', null, 19, null, null, 'default', '65535');
+values ('OLQ_DS_PROPS_ORACLE', 'max.data.size', 'æœ€å¤§æ•°æ®è¿”å›æ¡æ•°', null, 19, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OlQ_APP_COL_DATA_TYPE', 'VARCHAR', 'VARCHAR', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -500,11 +500,11 @@ values ('OlQ_APP_COL_DATA_TYPE', 'BOOLEAN', 'BOOLEAN', null, 8, null, null, 'def
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OlQ_APP_COL_DATA_TYPE', 'TINYINT', 'TINYINT', null, 10, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('OLQ_DS_PROPS_HIVE', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_HIVE', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SYNC_TYPE', 'SYNC', 'Í¬²½', null, 1, null, null, 'default', null);
+values ('UDSP_SYNC_TYPE', 'SYNC', 'åŒæ­¥', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_SOURCE_BATCH_TYPE', 'ORACLE', 'ORACLE', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -522,57 +522,57 @@ values ('IM_DS_TARGET_REALTIME_TYPE', 'ORACLE', 'ORACLE', null, 4, null, null, '
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TARGET_REALTIME_TYPE', 'MYSQL', 'MYSQL', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_HBASE', 'hbase.split.policy', 'HBase ·ÖÇø²ßÂÔÀà', null, 4, null, null, 'default', 'org.apache.hadoop.hbase.regionserver.ConstantSizeRegionSplitPolicy');
+values ('IM_MD_PROPS_HBASE', 'hbase.split.policy', 'HBase åˆ†åŒºç­–ç•¥ç±»', null, 4, null, null, 'default', 'org.apache.hadoop.hbase.regionserver.ConstantSizeRegionSplitPolicy');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_HBASE', 'hbase.family', 'HBase ×åÃû', null, 5, null, null, 'default', 'f');
+values ('IM_MD_PROPS_HBASE', 'hbase.family', 'HBase æ—å', null, 5, null, null, 'default', 'f');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR', 'solr.shards', 'Solr ·ÖÆ¬Êı£¨solr.shards*solr.replicas<=solr.max.shards.per.node*½ÚµãÊı£©', null, 1, null, null, 'default', null);
+values ('IM_MD_PROPS_SOLR', 'solr.shards', 'Solr åˆ†ç‰‡æ•°ï¼ˆsolr.shards*solr.replicas<=solr.max.shards.per.node*èŠ‚ç‚¹æ•°ï¼‰', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR', 'solr.replicas', 'Solr ¸±±¾Êı', null, 2, null, null, 'default', '2');
+values ('IM_MD_PROPS_SOLR', 'solr.replicas', 'Solr å‰¯æœ¬æ•°', null, 2, null, null, 'default', '2');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR', 'solr.max.shards.per.node', 'Solr µ¥½Úµã×î´ó·ÖÆ¬Êı', null, 3, null, null, 'default', '2');
+values ('IM_MD_PROPS_SOLR', 'solr.max.shards.per.node', 'Solr å•èŠ‚ç‚¹æœ€å¤§åˆ†ç‰‡æ•°', null, 3, null, null, 'default', '2');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'solr.max.shards.per.node', 'Solr µ¥½Úµã×î´ó·ÖÆ¬Êı', null, 3, null, null, 'default', '2');
+values ('IM_MD_PROPS_SOLR_HBASE', 'solr.max.shards.per.node', 'Solr å•èŠ‚ç‚¹æœ€å¤§åˆ†ç‰‡æ•°', null, 3, null, null, 'default', '2');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'solr.replicas', 'Solr ¸±±¾Êı', null, 2, null, null, 'default', '2');
+values ('IM_MD_PROPS_SOLR_HBASE', 'solr.replicas', 'Solr å‰¯æœ¬æ•°', null, 2, null, null, 'default', '2');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'solr.shards', 'Solr ·ÖÆ¬Êı£¨solr.shards*solr.replicas<=solr.max.shards.per.node*½ÚµãÊı£©', null, 1, null, null, 'default', null);
+values ('IM_MD_PROPS_SOLR_HBASE', 'solr.shards', 'Solr åˆ†ç‰‡æ•°ï¼ˆsolr.shards*solr.replicas<=solr.max.shards.per.node*èŠ‚ç‚¹æ•°ï¼‰', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.compression', 'HBase Ñ¹Ëõ¸ñÊ½', null, 5, null, null, 'default', 'snappy');
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.compression', 'HBase å‹ç¼©æ ¼å¼', null, 5, null, null, 'default', 'snappy');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.family', 'HBase ×åÃû', null, 8, null, null, 'default', 'f');
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.family', 'HBase æ—å', null, 8, null, null, 'default', 'f');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.method', 'HBase ·½·¨', null, 6, null, null, 'default', 'table_att');
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.method', 'HBase æ–¹æ³•', null, 6, null, null, 'default', 'table_att');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.qualifier', 'HBase ÁĞÃû', null, 9, null, null, 'default', 'q');
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.qualifier', 'HBase åˆ—å', null, 9, null, null, 'default', 'q');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.region.num', 'HBase RegionÊıÁ¿', null, 4, null, null, 'default', null);
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.region.num', 'HBase Regionæ•°é‡', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.split.policy', 'HBase ·ÖÇø²ßÂÔÀà', null, 7, null, null, 'default', 'org.apache.hadoop.hbase.regionserver.ConstantSizeRegionSplitPolicy');
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.split.policy', 'HBase åˆ†åŒºç­–ç•¥ç±»', null, 7, null, null, 'default', 'org.apache.hadoop.hbase.regionserver.ConstantSizeRegionSplitPolicy');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_IMPL_CLASS', 'MYSQL', 'com.hex.bigdata.udsp.im.provider.impl.MysqlProvider', null, 1, null, null, 'default', '½»»¥½¨Ä£µÄMysql½Ó¿ÚÊµÏÖÀà');
+values ('IM_IMPL_CLASS', 'MYSQL', 'com.hex.bigdata.udsp.im.provider.impl.MysqlProvider', null, 1, null, null, 'default', 'äº¤äº’å»ºæ¨¡çš„Mysqlæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.fq.data.type', '½á¹ûÊı¾İÀàĞÍ£¬¿ÉÑ¡dsv¡¢json£¬Èç¹ûÎªdsvÊ±hbase.fq.dsv.sepratorÉúĞ§', null, 10, null, null, 'default', 'dsv');
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.fq.data.type', 'ç»“æœæ•°æ®ç±»å‹ï¼Œå¯é€‰dsvã€jsonï¼Œå¦‚æœä¸ºdsvæ—¶hbase.fq.dsv.sepratorç”Ÿæ•ˆ', null, 10, null, null, 'default', 'dsv');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_HBASE', 'hbase.fq.dsv.seprator', '½á¹ûÊı¾İ·Ö¸ô·û£¬Èç£º|¡¢||¡¢\007¡¢\t¡¢\036', null, 8, null, null, 'default', '\007');
+values ('IM_MD_PROPS_HBASE', 'hbase.fq.dsv.seprator', 'ç»“æœæ•°æ®åˆ†éš”ç¬¦ï¼Œå¦‚ï¼š|ã€||ã€\007ã€\tã€\036', null, 8, null, null, 'default', '\007');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_SOLR', 'solr.collection.name', 'collectionÃû³Æ', null, 1, null, null, 'default', null);
+values ('IM_MODEL_PROPS_SOLR', 'solr.collection.name', 'collectionåç§°', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_HBASE', 'hbase.fq.data.type', '½á¹ûÊı¾İÀàĞÍ£¬¿ÉÑ¡dsv¡¢json£¬Èç¹ûÎªdsvÊ±hbase.fq.dsv.sepratorÉúĞ§', null, 7, null, null, 'default', 'dsv');
+values ('IM_MD_PROPS_HBASE', 'hbase.fq.data.type', 'ç»“æœæ•°æ®ç±»å‹ï¼Œå¯é€‰dsvã€jsonï¼Œå¦‚æœä¸ºdsvæ—¶hbase.fq.dsv.sepratorç”Ÿæ•ˆ', null, 7, null, null, 'default', 'dsv');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_TYPE', '0', 'ÄÚ±í', null, 1, null, null, 'default', null);
+values ('IM_MD_TYPE', '0', 'å†…è¡¨', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.fq.dsv.seprator', '½á¹ûÊı¾İ·Ö¸ô·û£¬Èç£º|¡¢||¡¢\007¡¢\t¡¢\036', null, 11, null, null, 'default', '\007');
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.fq.dsv.seprator', 'ç»“æœæ•°æ®åˆ†éš”ç¬¦ï¼Œå¦‚ï¼š|ã€||ã€\007ã€\tã€\036', null, 11, null, null, 'default', '\007');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_IMPL_CLASS', 'ORACLE', 'com.hex.bigdata.udsp.im.provider.impl.OracleProvider', null, 2, null, null, 'default', '½»»¥½¨Ä£µÄOracle½Ó¿ÚÊµÏÖÀà');
+values ('IM_IMPL_CLASS', 'ORACLE', 'com.hex.bigdata.udsp.im.provider.impl.OracleProvider', null, 2, null, null, 'default', 'äº¤äº’å»ºæ¨¡çš„Oracleæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_BUILD_TYPE', '1', 'ÔöÁ¿', null, 1, null, null, 'default', null);
+values ('IM_MODEL_BUILD_TYPE', '1', 'å¢é‡', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_BUILD_TYPE', '2', 'È«Á¿', null, 2, null, null, 'default', null);
+values ('IM_MODEL_BUILD_TYPE', '2', 'å…¨é‡', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_UPDATE_TYPE', '1', 'Æ¥Åä¸üĞÂ', null, 1, null, null, 'default', null);
+values ('IM_MODEL_UPDATE_TYPE', '1', 'åŒ¹é…æ›´æ–°', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_UPDATE_TYPE', '2', '¸üĞÂ²åÈë', null, 2, null, null, 'default', null);
+values ('IM_MODEL_UPDATE_TYPE', '2', 'æ›´æ–°æ’å…¥', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('UDSP_COMMON_DATA_TYPE', 'VARCHAR', 'VARCHAR', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -582,7 +582,7 @@ values ('UDSP_COMMON_DATA_TYPE', 'BIGINT', 'BIGINT', null, 6, null, null, 'defau
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('UDSP_COMMON_DATA_TYPE', 'BOOLEAN', 'BOOLEAN', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_UPDATE_TYPE', '3', 'ÔöÁ¿²åÈë', null, 3, null, null, 'default', null);
+values ('IM_MODEL_UPDATE_TYPE', '3', 'å¢é‡æ’å…¥', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TYPE', 'ORACLE', 'ORACLE', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -590,7 +590,7 @@ values ('IM_DS_TYPE', 'MYSQL', 'MYSQL', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_SOURCE_BATCH_TYPE', 'HIVE', 'HIVE', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'driver.class', 'oracle Çı¶¯Àà', null, 1, null, null, 'default', 'oracle.jdbc.OracleDriver');
+values ('IM_DS_PROPS_ORACLE', 'driver.class', 'oracle é©±åŠ¨ç±»', null, 1, null, null, 'default', 'oracle.jdbc.OracleDriver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_SOURCE_BATCH_TYPE', 'SOLR', 'SOLR', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -604,159 +604,159 @@ values ('IM_DS_TARGET_REALTIME_TYPE', 'HBASE', 'HBASE', null, 2, null, null, 'de
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TARGET_REALTIME_TYPE', 'SOLR_HBASE', 'SOLR_HBASE', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_IMPL_CLASS', 'HIVE', 'com.hex.bigdata.udsp.im.provider.impl.HiveProvider', null, 3, null, null, 'default', '½»»¥½¨Ä£µÄHive½Ó¿ÚÊµÏÖÀà');
+values ('IM_IMPL_CLASS', 'HIVE', 'com.hex.bigdata.udsp.im.provider.impl.HiveProvider', null, 3, null, null, 'default', 'äº¤äº’å»ºæ¨¡çš„Hiveæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', '==', 'µÈÓÚ', null, 1, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', '==', 'ç­‰äº', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'password', 'oracle ÃÜÂë', null, 4, null, null, 'default', null);
+values ('IM_DS_PROPS_ORACLE', 'password', 'oracle å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'username', 'oracle ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('IM_DS_PROPS_ORACLE', 'username', 'oracle ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', '<', 'Ğ¡ÓÚ', null, 4, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', '<', 'å°äº', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('IM_DS_PROPS_ORACLE', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('IM_DS_PROPS_ORACLE', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('IM_DS_PROPS_ORACLE', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('IM_DS_PROPS_ORACLE', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('IM_DS_PROPS_ORACLE', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('IM_DS_PROPS_ORACLE', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('IM_DS_PROPS_ORACLE', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('IM_DS_PROPS_ORACLE', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('IM_DS_PROPS_ORACLE', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 commit;
 prompt 300 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('IM_DS_PROPS_ORACLE', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1 from dual');
+values ('IM_DS_PROPS_ORACLE', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1 from dual');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'validation.query.timeout', '×Ô¶¯ÑéÖ¤Á¬½ÓµÄÊ±¼ä', null, 11, null, null, 'default', '0');
+values ('IM_DS_PROPS_ORACLE', 'validation.query.timeout', 'è‡ªåŠ¨éªŒè¯è¿æ¥çš„æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'jdbc.url', 'mysql JDBC URL£¬Èç£ºjdbc:mysql://${ip}:${port}', null, 2, null, null, 'default', null);
+values ('IM_DS_PROPS_MYSQL', 'jdbc.url', 'mysql JDBC URLï¼Œå¦‚ï¼šjdbc:mysql://${ip}:${port}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'password', 'mysql ÃÜÂë', null, 4, null, null, 'default', null);
+values ('IM_DS_PROPS_MYSQL', 'password', 'mysql å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'username', 'mysql ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('IM_DS_PROPS_MYSQL', 'username', 'mysql ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_TYPE', '1', 'Íâ±í', null, 2, null, null, 'default', null);
+values ('IM_MD_TYPE', '1', 'å¤–è¡¨', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('IM_DS_PROPS_MYSQL', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('IM_DS_PROPS_MYSQL', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('IM_DS_PROPS_MYSQL', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('IM_DS_PROPS_MYSQL', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('IM_DS_PROPS_MYSQL', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('IM_DS_PROPS_MYSQL', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('IM_DS_PROPS_MYSQL', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('IM_DS_PROPS_MYSQL', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('IM_DS_PROPS_MYSQL', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('IM_DS_PROPS_MYSQL', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1');
+values ('IM_DS_PROPS_MYSQL', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'validation.query.timeout', '×Ô¶¯ÑéÖ¤Á¬½ÓµÄÊ±¼ä', null, 11, null, null, 'default', '0');
+values ('IM_DS_PROPS_MYSQL', 'validation.query.timeout', 'è‡ªåŠ¨éªŒè¯è¿æ¥çš„æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'driver.class', 'mysql Çı¶¯Àà', null, 1, null, null, 'default', 'com.mysql.jdbc.Driver');
+values ('IM_DS_PROPS_MYSQL', 'driver.class', 'mysql é©±åŠ¨ç±»', null, 1, null, null, 'default', 'com.mysql.jdbc.Driver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', '>=', '´óÓÚµÈÓÚ', null, 5, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', '>=', 'å¤§äºç­‰äº', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'zookeeper.connection.timeout.ms', '»§¶ËÁ¬½ÓzookeeperµÄ×î´ó³¬Ê±Ê±¼ä', null, 4, null, null, 'default', '6000');
+values ('IM_DS_PROPS_KAFKA', 'zookeeper.connection.timeout.ms', 'æˆ·ç«¯è¿æ¥zookeeperçš„æœ€å¤§è¶…æ—¶æ—¶é—´', null, 4, null, null, 'default', '6000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'zookeeper.sync.time.ms', 'zookeeperÍ¬²½Ê±¼ä', null, 5, null, null, 'default', '2000');
+values ('IM_DS_PROPS_KAFKA', 'zookeeper.sync.time.ms', 'zookeeperåŒæ­¥æ—¶é—´', null, 5, null, null, 'default', '2000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'auto.commit.enable', 'Èç¹ûtrue,consumer¶¨ÆÚµØÍùzookeeperĞ´ÈëÃ¿¸ö·ÖÇøµÄoffset', null, 6, null, null, 'default', 'true');
+values ('IM_DS_PROPS_KAFKA', 'auto.commit.enable', 'å¦‚æœtrue,consumerå®šæœŸåœ°å¾€zookeeperå†™å…¥æ¯ä¸ªåˆ†åŒºçš„offset', null, 6, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'auto.commit.interval.ms', 'Ïû·ÑÕßÏòzookeeper·¢ËÍoffsetµÄÊ±¼ä', null, 7, null, null, 'default', '60000');
+values ('IM_DS_PROPS_KAFKA', 'auto.commit.interval.ms', 'æ¶ˆè´¹è€…å‘zookeeperå‘é€offsetçš„æ—¶é—´', null, 7, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'rebalance.retries.max', 'rebalanceÊ±µÄ×î´ó³¢ÊÔ´ÎÊı', null, 8, null, null, 'default', '10');
+values ('IM_DS_PROPS_KAFKA', 'rebalance.retries.max', 'rebalanceæ—¶çš„æœ€å¤§å°è¯•æ¬¡æ•°', null, 8, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'zookeeper.session.timeout.ms', 'Á¬½ÓzookeeperµÄsession³¬Ê±Ê±¼ä', null, 3, null, null, 'default', '5000');
+values ('IM_DS_PROPS_KAFKA', 'zookeeper.session.timeout.ms', 'è¿æ¥zookeeperçš„sessionè¶…æ—¶æ—¶é—´', null, 3, null, null, 'default', '5000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'rebalance.backoff.ms', 'Æ½ºâ²¹³¥ÖØÊÔ¼ä¸ôÊ±¼ä', null, 9, null, null, 'default', '2000');
+values ('IM_DS_PROPS_KAFKA', 'rebalance.backoff.ms', 'å¹³è¡¡è¡¥å¿é‡è¯•é—´éš”æ—¶é—´', null, 9, null, null, 'default', '2000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'auto.offset.reset', 'offset³õÊ¼»¯»òÕß´ïµ½ÉÏÏßÊ±µÄ´¦Àí·½Ê½', null, 10, null, null, 'default', 'largest');
+values ('IM_DS_PROPS_KAFKA', 'auto.offset.reset', 'offsetåˆå§‹åŒ–æˆ–è€…è¾¾åˆ°ä¸Šçº¿æ—¶çš„å¤„ç†æ–¹å¼', null, 10, null, null, 'default', 'largest');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA', 'zookeeper.connect', 'zookeeper¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181', null, 2, null, null, 'default', null);
+values ('IM_DS_PROPS_KAFKA', 'zookeeper.connect', 'zookeeperé›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', '<=', 'Ğ¡ÓÚµÈÓÚ', null, 6, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', '<=', 'å°äºç­‰äº', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', '!=', '²»µÈÓÚ', null, 2, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', '!=', 'ä¸ç­‰äº', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_TYPE', '1', 'ÅúÁ¿', null, 1, null, null, 'default', null);
+values ('IM_MODEL_TYPE', '1', 'æ‰¹é‡', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_TYPE', '2', 'ÊµÊ±', null, 2, null, null, 'default', null);
+values ('IM_MODEL_TYPE', '2', 'å®æ—¶', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_IMPL_CLASS', 'SOLR', 'com.hex.bigdata.udsp.im.provider.impl.SolrProvider', null, 4, null, null, 'default', '½»»¥½¨Ä£µÄSolr½Ó¿ÚÊµÏÖÀà');
+values ('IM_IMPL_CLASS', 'SOLR', 'com.hex.bigdata.udsp.im.provider.impl.SolrProvider', null, 4, null, null, 'default', 'äº¤äº’å»ºæ¨¡çš„Solræ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR', 'solr.url', 'zookeeperµØÖ·¡¢¶Ë¿ÚºÍÄ¿Â¼£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 2, null, null, 'default', null);
+values ('IM_DS_PROPS_SOLR', 'solr.url', 'zookeeperåœ°å€ã€ç«¯å£å’Œç›®å½•ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'solr.url', 'SolrµÄzookeeperµØÖ·¡¢¶Ë¿ÚºÍÄ¿Â¼£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 12, null, null, 'default', null);
+values ('IM_DS_PROPS_SOLR_HBASE', 'solr.url', 'Solrçš„zookeeperåœ°å€ã€ç«¯å£å’Œç›®å½•ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 12, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_IMPL_CLASS', 'SOLR_HBASE', 'com.hex.bigdata.udsp.im.provider.impl.SolrHBaseProvider', null, 7, null, null, 'default', '½»»¥½¨Ä£µÄSolr+HBase½Ó¿ÚÊµÏÖÀà');
+values ('IM_IMPL_CLASS', 'SOLR_HBASE', 'com.hex.bigdata.udsp.im.provider.impl.SolrHBaseProvider', null, 7, null, null, 'default', 'äº¤äº’å»ºæ¨¡çš„Solr+HBaseæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_IMPL_CLASS', 'HBASE', 'com.hex.bigdata.udsp.im.provider.impl.HBaseProvider', null, 5, null, null, 'default', '½»»¥½¨Ä£µÄHBase½Ó¿ÚÊµÏÖÀà');
+values ('IM_IMPL_CLASS', 'HBASE', 'com.hex.bigdata.udsp.im.provider.impl.HBaseProvider', null, 5, null, null, 'default', 'äº¤äº’å»ºæ¨¡çš„HBaseæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_IMPL_CLASS', 'KAFKA', 'com.hex.bigdata.udsp.im.provider.impl.KafkaProvider', null, 6, null, null, 'default', '½»»¥½¨Ä£µÄKafka½Ó¿ÚÊµÏÖÀà');
+values ('IM_IMPL_CLASS', 'KAFKA', 'com.hex.bigdata.udsp.im.provider.impl.KafkaProvider', null, 6, null, null, 'default', 'äº¤äº’å»ºæ¨¡çš„Kafkaæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_ENGINE_TYPE', 'HIVE', 'hiveÀàĞÍÊı¾İÔ´', null, 1, null, null, 'default', null);
+values ('IM_MODEL_ENGINE_TYPE', 'HIVE', 'hiveç±»å‹æ•°æ®æº', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_SERVICE_STATUS', '0', 'ÆôÓÃ', null, 1, null, null, 'default', null);
+values ('RC_SERVICE_STATUS', '0', 'å¯ç”¨', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_KAFKA', 'topic', 'Ö÷Ìâ', null, 1, null, null, 'default', null);
+values ('IM_MODEL_PROPS_KAFKA', 'topic', 'ä¸»é¢˜', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TARGET_TYPE', 'SOLR_HBASE', 'SOLR_HBASE', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_SERVICE_STATUS', '1', 'Í£ÓÃ', null, 2, null, null, 'default', null);
+values ('RC_SERVICE_STATUS', '1', 'åœç”¨', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_KAFKA', 'consumer.timeout.ms', 'Ïû·Ñ³¬Ê±Ê±¼ä£¨ºÁÃë£©', null, 3, null, null, 'default', '1000');
+values ('IM_MODEL_PROPS_KAFKA', 'consumer.timeout.ms', 'æ¶ˆè´¹è¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰', null, 3, null, null, 'default', '1000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_KAFKA', 'consumer.cron.expression', 'Ïû·Ñ¼Æ»®ÈÎÎñ±í´ïÊ½', null, 4, null, null, 'default', '0/2 * * * * ?');
+values ('IM_MODEL_PROPS_KAFKA', 'consumer.cron.expression', 'æ¶ˆè´¹è®¡åˆ’ä»»åŠ¡è¡¨è¾¾å¼', null, 4, null, null, 'default', '0/2 * * * * ?');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.rpc.timeout', 'Ò»´ÎRPCÇëÇóµÄ³¬Ê±Ê±¼ä£¨ºÁÃë£©', null, 3, null, null, 'default', '5000');
+values ('IM_DS_PROPS_HBASE', 'hbase.rpc.timeout', 'ä¸€æ¬¡RPCè¯·æ±‚çš„è¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰', null, 3, null, null, 'default', '5000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.client.retries.number', '¿Í»§¶ËÖØÊÔ×î´ó´ÎÊı', null, 4, null, null, 'default', '3');
+values ('IM_DS_PROPS_HBASE', 'hbase.client.retries.number', 'å®¢æˆ·ç«¯é‡è¯•æœ€å¤§æ¬¡æ•°', null, 4, null, null, 'default', '3');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.client.pause', 'ÖØÊÔµÄĞİÃßÊ±¼ä£¨ºÁÃë£©', null, 5, null, null, 'default', '100');
+values ('IM_DS_PROPS_HBASE', 'hbase.client.pause', 'é‡è¯•çš„ä¼‘çœ æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰', null, 5, null, null, 'default', '100');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'zookeeper.recovery.retry', 'zookeeperµÄÖØÊÔ´ÎÊı£¨zkµÄÖØÊÔ×Ü´ÎÊıÊÇ£ºhbase.client.retries.number * zookeeper.recovery.retry£©', null, 6, null, null, 'default', '3');
+values ('IM_DS_PROPS_HBASE', 'zookeeper.recovery.retry', 'zookeeperçš„é‡è¯•æ¬¡æ•°ï¼ˆzkçš„é‡è¯•æ€»æ¬¡æ•°æ˜¯ï¼šhbase.client.retries.number * zookeeper.recovery.retryï¼‰', null, 6, null, null, 'default', '3');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'zookeeper.recovery.retry.intervalmill', 'zookeeperÖØÊÔµÄĞİÃßÊ±¼ä£¨ºÁÃë£©', null, 7, null, null, 'default', '200');
+values ('IM_DS_PROPS_HBASE', 'zookeeper.recovery.retry.intervalmill', 'zookeeperé‡è¯•çš„ä¼‘çœ æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰', null, 7, null, null, 'default', '200');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.client.operation.timeout', 'HBase¿Í»§¶Ë·¢ÆğÒ»´ÎÊı¾İ²Ù×÷Ö±ÖÁµÃµ½ÏìÓ¦Ö®¼ä×ÜµÄ³¬Ê±Ê±¼ä£¬Êı¾İ²Ù×÷ÀàĞÍ°üÀ¨get¡¢append¡¢increment¡¢delete¡¢putµÈ£¨ºÁÃë£©', null, 8, null, null, 'default', '30000');
+values ('IM_DS_PROPS_HBASE', 'hbase.client.operation.timeout', 'HBaseå®¢æˆ·ç«¯å‘èµ·ä¸€æ¬¡æ•°æ®æ“ä½œç›´è‡³å¾—åˆ°å“åº”ä¹‹é—´æ€»çš„è¶…æ—¶æ—¶é—´ï¼Œæ•°æ®æ“ä½œç±»å‹åŒ…æ‹¬getã€appendã€incrementã€deleteã€putç­‰ï¼ˆæ¯«ç§’ï¼‰', null, 8, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.regionserver.lease.period', 'scan²Ù×÷³¬Ê±Ê±¼ä£¨ºÁÃë£©[ÒÑ±»ÆúÓÃ]', null, 9, null, null, 'default', '60000');
+values ('IM_DS_PROPS_HBASE', 'hbase.regionserver.lease.period', 'scanæ“ä½œè¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰[å·²è¢«å¼ƒç”¨]', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000001', 'È¨ÏŞ²»×ã', null, 1, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000001', 'æƒé™ä¸è¶³', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000003', 'ÔËĞĞ¶ÓÁĞÒÑÂú', null, 3, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000003', 'è¿è¡Œé˜Ÿåˆ—å·²æ»¡', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000005', '²ÎÊı½âÎöÊ§°Ü', null, 5, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000005', 'å‚æ•°è§£æå¤±è´¥', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000008', 'Ã»ÓĞÊÚÈ¨·şÎñ', null, 8, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000008', 'æ²¡æœ‰æˆæƒæœåŠ¡', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000009', '±ØÊä²ÎÊıÎª¿Õ', null, 9, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000009', 'å¿…è¾“å‚æ•°ä¸ºç©º', null, 9, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000099', 'ÆäËû´íÎó', null, 99, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000099', 'å…¶ä»–é”™è¯¯', null, 99, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '200001', 'Ä£ĞÍ½Ó¿ÚÎŞÏìÓ¦', null, 200001, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '200001', 'æ¨¡å‹æ¥å£æ— å“åº”', null, 200001, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000011', 'µ±Ç°Ïû·Ñid²»´æÔÚ', null, 11, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000011', 'å½“å‰æ¶ˆè´¹idä¸å­˜åœ¨', null, 11, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_CONSUMER_TIMEOUT', '100', '100ms', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -766,9 +766,9 @@ values ('OLQ_DS_TYPE', 'DB2', 'DB2', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OlQ_APP_COL_DATA_TYPE', 'STRING', 'STRING', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', 'like', 'Ä£ºıÆ¥Åä', null, 7, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', 'like', 'æ¨¡ç³ŠåŒ¹é…', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', '>', '´óÓÚ', null, 3, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', '>', 'å¤§äº', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TARGET_TYPE', 'SOLR', 'SOLR', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -782,15 +782,15 @@ values ('IM_DS_TARGET_TYPE', 'ORACLE', 'ORACLE', null, 5, null, null, 'default',
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TARGET_TYPE', 'MYSQL', 'MYSQL', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_HBASE', 'hbase.region.num', 'HBase RegionÊıÁ¿', null, 1, null, null, 'default', null);
+values ('IM_MD_PROPS_HBASE', 'hbase.region.num', 'HBase Regionæ•°é‡', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_HBASE', 'hbase.compression', 'HBase Ñ¹Ëõ¸ñÊ½', null, 2, null, null, 'default', 'snappy');
+values ('IM_MD_PROPS_HBASE', 'hbase.compression', 'HBase å‹ç¼©æ ¼å¼', null, 2, null, null, 'default', 'snappy');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_HBASE', 'hbase.method', 'HBase ·½·¨', null, 3, null, null, 'default', 'table_att');
+values ('IM_MD_PROPS_HBASE', 'hbase.method', 'HBase æ–¹æ³•', null, 3, null, null, 'default', 'table_att');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_HBASE', 'hbase.qualifier', 'HBase ÁĞÃû', null, 6, null, null, 'default', 'q');
+values ('IM_MD_PROPS_HBASE', 'hbase.qualifier', 'HBase åˆ—å', null, 6, null, null, 'default', 'q');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'jdbc.url', 'oracle JDBC URL£¬Èç£ºjdbc:oracle:thin:@${ip}:${port}/${model}', null, 2, null, null, 'default', null);
+values ('IM_DS_PROPS_ORACLE', 'jdbc.url', 'oracle JDBC URLï¼Œå¦‚ï¼šjdbc:oracle:thin:@${ip}:${port}/${model}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OlQ_APP_COL_DATA_TYPE', 'INT', 'INT', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -800,141 +800,141 @@ values ('OlQ_APP_COL_DATA_TYPE', 'FLOAT', 'FLOAT', null, 9, null, null, 'default
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OlQ_APP_COL_DATA_TYPE', 'TIMESTAMP', 'TIMESTAMP', null, 11, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'max.data.size', '×î´óÊı¾İ·µ»ØÌõÊı', null, 19, null, null, 'default', '65535');
+values ('OLQ_DS_PROPS_IMPALA', 'max.data.size', 'æœ€å¤§æ•°æ®è¿”å›æ¡æ•°', null, 19, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'max.data.size', '×î´óÊı¾İ·µ»ØÌõÊı', null, 19, null, null, 'default', '65535');
+values ('OLQ_DS_PROPS_MYSQL', 'max.data.size', 'æœ€å¤§æ•°æ®è¿”å›æ¡æ•°', null, 19, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'max.data.size', '×î´óÊı¾İ·µ»ØÌõÊı', null, 19, null, null, 'default', '65535');
+values ('OLQ_DS_PROPS_KYLIN', 'max.data.size', 'æœ€å¤§æ•°æ®è¿”å›æ¡æ•°', null, 19, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'max.data.size', '×î´óÊı¾İ·µ»ØÌõÊı', null, 19, null, null, 'default', '65535');
+values ('OLQ_DS_PROPS_PGSQL', 'max.data.size', 'æœ€å¤§æ•°æ®è¿”å›æ¡æ•°', null, 19, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.connection.port', 'redisÁ¬½Ó¶Ë¿ÚºÅ', null, 2, null, null, 'default', null);
+values ('IQ_DS_PROPS_REDIS', 'redis.connection.port', 'redisè¿æ¥ç«¯å£å·', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.zk.port', 'HBaseµÄZookeeperµÄ¶Ë¿Ú£¬Èç£º2181', null, 2, null, null, 'default', '2181');
+values ('IQ_DS_PROPS_HBASE', 'hbase.zk.port', 'HBaseçš„Zookeeperçš„ç«¯å£ï¼Œå¦‚ï¼š2181', null, 2, null, null, 'default', '2181');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_TYPE', 'SOLR', 'SOLR', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR', 'solr.servers', 'Solr¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 1, null, null, 'default', null);
+values ('IQ_DS_PROPS_SOLR', 'solr.servers', 'Solré›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.zk.quorum', 'HBaseµÄZookeeperµÄ¼¯ÈºIP£¬¶à¸öIPÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
+values ('IQ_DS_PROPS_HBASE', 'hbase.zk.quorum', 'HBaseçš„Zookeeperçš„é›†ç¾¤IPï¼Œå¤šä¸ªIPç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_TYPE', 'SOLR_HBASE', 'SOLR_HBASE', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.zk.quorum', 'HBaseµÄZookeeperµÄ¼¯ÈºIP£¬¶à¸öIPÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
+values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.zk.quorum', 'HBaseçš„Zookeeperçš„é›†ç¾¤IPï¼Œå¤šä¸ªIPç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.zk.port', 'HBaseµÄZookeeperµÄ¶Ë¿Ú£¬Èç£º2181', null, 2, null, null, 'default', '2181');
+values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.zk.port', 'HBaseçš„Zookeeperçš„ç«¯å£ï¼Œå¦‚ï¼š2181', null, 2, null, null, 'default', '2181');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'solr.servers', 'Solr¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 3, null, null, 'default', null);
+values ('IQ_DS_PROPS_SOLR_HBASE', 'solr.servers', 'Solré›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'zookeeper.connection.timeout.ms', '»§¶ËÁ¬½ÓzookeeperµÄ×î´ó³¬Ê±Ê±¼ä', null, 3, null, null, 'default', '6000');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'zookeeper.connection.timeout.ms', 'æˆ·ç«¯è¿æ¥zookeeperçš„æœ€å¤§è¶…æ—¶æ—¶é—´', null, 3, null, null, 'default', '6000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OlQ_APP_COL_DATA_TYPE', 'DECIMAL', 'DECIMAL', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_IMPL_CLASS', 'HBASE', 'com.hex.bigdata.udsp.iq.provider.impl.HBaseProvider', null, 2, null, null, 'default', '½»»¥²éÑ¯µÄHBase½Ó¿ÚÊµÏÖÀà');
+values ('IQ_IMPL_CLASS', 'HBASE', 'com.hex.bigdata.udsp.iq.provider.impl.HBaseProvider', null, 2, null, null, 'default', 'äº¤äº’æŸ¥è¯¢çš„HBaseæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'zookeeper.sync.time.ms', 'zookeeperÍ¬²½Ê±¼ä', null, 4, null, null, 'default', '2000');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'zookeeper.sync.time.ms', 'zookeeperåŒæ­¥æ—¶é—´', null, 4, null, null, 'default', '2000');
 commit;
 prompt 400 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'consumer.timeout.ms', 'Ïû·ÑÕß³¬Ê±Ê±¼ä', null, 5, null, null, 'default', '-1');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'consumer.timeout.ms', 'æ¶ˆè´¹è€…è¶…æ—¶æ—¶é—´', null, 5, null, null, 'default', '-1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'auto.commit.enable', 'Èç¹ûtrue,consumer¶¨ÆÚµØÍùzookeeperĞ´ÈëÃ¿¸ö·ÖÇøµÄoffset', null, 6, null, null, 'default', 'true');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'auto.commit.enable', 'å¦‚æœtrue,consumerå®šæœŸåœ°å¾€zookeeperå†™å…¥æ¯ä¸ªåˆ†åŒºçš„offset', null, 6, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'auto.commit.interval.ms', 'Ïû·ÑÕßÏòzookeeper·¢ËÍoffsetµÄÊ±¼ä', null, 7, null, null, 'default', '60000');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'auto.commit.interval.ms', 'æ¶ˆè´¹è€…å‘zookeeperå‘é€offsetçš„æ—¶é—´', null, 7, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'rebalance.retries.max', 'rebalanceÊ±µÄ×î´ó³¢ÊÔ´ÎÊı', null, 8, null, null, 'default', '10');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'rebalance.retries.max', 'rebalanceæ—¶çš„æœ€å¤§å°è¯•æ¬¡æ•°', null, 8, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', '==', 'µÈÓÚ', null, 1, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', '==', 'ç­‰äº', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', 'like', 'Ä£ºıÆ¥Åä', null, 7, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', 'like', 'æ¨¡ç³ŠåŒ¹é…', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', '>', '´óÓÚ', null, 3, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', '>', 'å¤§äº', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', '<', 'Ğ¡ÓÚ', null, 4, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', '<', 'å°äº', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', '>=', '´óÓÚµÈÓÚ', null, 5, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', '>=', 'å¤§äºç­‰äº', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', '<=', 'Ğ¡ÓÚµÈÓÚ', null, 6, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', '<=', 'å°äºç­‰äº', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', '!=', '²»µÈÓÚ', null, 2, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', '!=', 'ä¸ç­‰äº', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_TYPE', 'IMPALA', 'IMPALA', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_IMPL_CLASS', 'SOLR_HBASE', 'com.hex.bigdata.udsp.iq.provider.impl.SolrHBaseProvider', null, 3, null, null, 'default', '½»»¥²éÑ¯µÄSolr+HBase½Ó¿ÚÊµÏÖÀà');
+values ('IQ_IMPL_CLASS', 'SOLR_HBASE', 'com.hex.bigdata.udsp.iq.provider.impl.SolrHBaseProvider', null, 3, null, null, 'default', 'äº¤äº’æŸ¥è¯¢çš„Solr+HBaseæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_TYPE', 'HBASE', 'HBASE', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_DS_TYPE', 'KAFKA', 'KAFKA', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_MD_COL_TYPE', '1', '²éÑ¯×Ö¶Î', null, 1, null, null, 'default', null);
+values ('IQ_MD_COL_TYPE', '1', 'æŸ¥è¯¢å­—æ®µ', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_DS_PROPS_KAFKA', 'metadata.broker.list', 'Kafka¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
+values ('RTS_DS_PROPS_KAFKA', 'metadata.broker.list', 'Kafkaé›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_IMPL_CLASS', 'KAFKA', 'com.hex.bigdata.udsp.rts.provider.impl.KafkaProvider', null, 1, null, null, 'default', 'ÊµÊ±Á÷µÄKafka½Ó¿ÚÊµÏÖÀà');
+values ('RTS_IMPL_CLASS', 'KAFKA', 'com.hex.bigdata.udsp.rts.provider.impl.KafkaProvider', null, 1, null, null, 'default', 'å®æ—¶æµçš„Kafkaæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_CARDTYPE', '1', 'Éí·İÖ¤', null, null, null, null, 'default', null);
+values ('COF_CARDTYPE', '1', 'èº«ä»½è¯', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_CARDTYPE', '2', '¾ü¹ÙÖ¤', null, null, null, null, 'default', null);
+values ('COF_CARDTYPE', '2', 'å†›å®˜è¯', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_EMPSTATUS', '1', 'Õı³£', null, null, null, null, 'default', null);
+values ('COF_EMPSTATUS', '1', 'æ­£å¸¸', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_EMPSTATUS', '2', 'ÀëÖ°', null, null, null, null, 'default', null);
+values ('COF_EMPSTATUS', '2', 'ç¦»èŒ', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_GENDER', '1', 'ÄĞ', null, null, null, null, 'default', null);
+values ('COF_GENDER', '1', 'ç”·', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_GENDER', '2', 'Å®', null, null, null, null, 'default', null);
+values ('COF_GENDER', '2', 'å¥³', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_GENDER', '3', 'Î´Öª', null, null, null, null, 'default', null);
+values ('COF_GENDER', '3', 'æœªçŸ¥', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_ORGTYPE', '1', '×Ü¹«Ë¾', null, null, null, null, 'default', null);
+values ('COF_ORGTYPE', '1', 'æ€»å…¬å¸', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_ORGTYPE', '2', '×Ü¹«Ë¾²¿ÃÅ', null, null, null, null, 'default', null);
+values ('COF_ORGTYPE', '2', 'æ€»å…¬å¸éƒ¨é—¨', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_ORGTYPE', '3', '·Ö¹«Ë¾', null, null, null, null, 'default', null);
+values ('COF_ORGTYPE', '3', 'åˆ†å…¬å¸', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_ORGTYPE', '4', '·Ö¹«Ë¾²¿ÃÅ', null, null, null, null, 'default', null);
+values ('COF_ORGTYPE', '4', 'åˆ†å…¬å¸éƒ¨é—¨', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_USERSTATUS', '1', 'ÆôÓÃ', null, null, null, null, 'default', null);
+values ('COF_USERSTATUS', '1', 'å¯ç”¨', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_USERSTATUS', '2 ', 'Í£ÓÃ', null, null, null, null, 'default', null);
+values ('COF_USERSTATUS', '2 ', 'åœç”¨', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_YESORNO', '1', 'ÊÇ', null, null, null, null, 'default', null);
+values ('COF_YESORNO', '1', 'æ˜¯', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('COF_YESORNO', '2', '·ñ', null, null, null, null, 'default', null);
+values ('COF_YESORNO', '2', 'å¦', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('EXPE_DIR', '1', 'ÕıÏòÖ¸±ê', null, null, null, null, 'default', null);
+values ('EXPE_DIR', '1', 'æ­£å‘æŒ‡æ ‡', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('EXPE_DIR', '2', '·´ÏòÖ¸±ê', null, null, null, null, 'default', null);
+values ('EXPE_DIR', '2', 'åå‘æŒ‡æ ‡', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('GF_STRATEGIC_DIMENSIONS', 'C', '¿Í»§', null, null, null, null, 'default', null);
+values ('GF_STRATEGIC_DIMENSIONS', 'C', 'å®¢æˆ·', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('GF_STRATEGIC_DIMENSIONS', 'F', '²ÆÎñ', null, null, null, null, 'default', null);
+values ('GF_STRATEGIC_DIMENSIONS', 'F', 'è´¢åŠ¡', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('GF_STRATEGIC_DIMENSIONS', 'L', '´´ĞÂ·¢Õ¹', null, null, null, null, 'default', null);
+values ('GF_STRATEGIC_DIMENSIONS', 'L', 'åˆ›æ–°å‘å±•', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('GF_STRATEGIC_DIMENSIONS', 'P', 'ÄÚ²¿ÔËÓª', null, null, null, null, 'default', null);
+values ('GF_STRATEGIC_DIMENSIONS', 'P', 'å†…éƒ¨è¿è¥', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('KF_LEVEL', '1', 'Ò»¼¶Ö¸±ê', null, null, null, null, 'default', null);
+values ('KF_LEVEL', '1', 'ä¸€çº§æŒ‡æ ‡', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('KF_LEVEL', '2', '¶ş¼¶Ö¸±ê', null, null, null, null, 'default', null);
+values ('KF_LEVEL', '2', 'äºŒçº§æŒ‡æ ‡', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('NUM_PROP', '1', 'Ê±ÆÚÖµ', null, null, null, null, 'default', null);
+values ('NUM_PROP', '1', 'æ—¶æœŸå€¼', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('NUM_PROP', '2', 'Ê±µãÖµ', null, null, null, null, 'default', null);
+values ('NUM_PROP', '2', 'æ—¶ç‚¹å€¼', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('SCHEDULE_TYPE', 'quartz', 'QUARTZ', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('SCHEDULE_TYPE', 'cron4j', 'CRON4J', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('APP_SERVER', 'serverA', 'A·şÎñÆ÷', null, null, null, null, 'default', null);
+values ('APP_SERVER', 'serverA', 'AæœåŠ¡å™¨', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('APP_SERVER', 'serverB', 'B·şÎñÆ÷', null, null, null, null, 'default', null);
+values ('APP_SERVER', 'serverB', 'BæœåŠ¡å™¨', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('LOGIN_CONF', 'USE_USERSESSION', '0', null, null, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_MD_COL_TYPE', '2', '·µ»Ø×Ö¶Î', null, 2, null, null, 'default', null);
+values ('IQ_MD_COL_TYPE', '2', 'è¿”å›å­—æ®µ', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_IMPL_CLASS', 'SOLR', 'com.hex.bigdata.udsp.iq.provider.impl.SolrProvider', null, 1, null, null, 'default', '½»»¥²éÑ¯µÄSolr½Ó¿ÚÊµÏÖÀà');
+values ('IQ_IMPL_CLASS', 'SOLR', 'com.hex.bigdata.udsp.iq.provider.impl.SolrProvider', null, 1, null, null, 'default', 'äº¤äº’æŸ¥è¯¢çš„Solræ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_APP_RETURN_COL_STATS', 'none', 'none', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -950,41 +950,41 @@ values ('IQ_APP_RETURN_COL_STATS', 'min', 'min', null, 6, null, null, 'default',
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_APP_RETURN_COL_STATS', 'concat', 'concat', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_PRODUCER_PROPS_KAFKA', 'key.serializer.class', 'key¶ÔÏóµÄserializerÀà', null, 3, null, null, 'default', 'kafka.serializer.StringEncoder');
+values ('RTS_PRODUCER_PROPS_KAFKA', 'key.serializer.class', 'keyå¯¹è±¡çš„serializerç±»', null, 3, null, null, 'default', 'kafka.serializer.StringEncoder');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_PRODUCER_PROPS_KAFKA', 'request.required.acks', 'ÇëÇóÈ·ÈÏÄ£Ê½', null, 4, null, null, 'default', '0');
+values ('RTS_PRODUCER_PROPS_KAFKA', 'request.required.acks', 'è¯·æ±‚ç¡®è®¤æ¨¡å¼', null, 4, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'zookeeper.session.timeout.ms', 'Á¬½ÓzookeeperµÄsession³¬Ê±Ê±¼ä', null, 2, null, null, 'default', '5000');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'zookeeper.session.timeout.ms', 'è¿æ¥zookeeperçš„sessionè¶…æ—¶æ—¶é—´', null, 2, null, null, 'default', '5000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'rebalance.backoff.ms', 'Æ½ºâ²¹³¥ÖØÊÔ¼ä¸ôÊ±¼ä', null, 9, null, null, 'default', '2000');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'rebalance.backoff.ms', 'å¹³è¡¡è¡¥å¿é‡è¯•é—´éš”æ—¶é—´', null, 9, null, null, 'default', '2000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'auto.offset.reset', 'offset³õÊ¼»¯»òÕß´ïµ½ÉÏÏßÊ±µÄ´¦Àí·½Ê½', null, 10, null, null, 'default', 'largest');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'auto.offset.reset', 'offsetåˆå§‹åŒ–æˆ–è€…è¾¾åˆ°ä¸Šçº¿æ—¶çš„å¤„ç†æ–¹å¼', null, 10, null, null, 'default', 'largest');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.max.idle', 'redisÁ¬½Ó×î´ó¿ÕÏĞÊı', null, 5, null, null, 'default', '10000');
+values ('IQ_DS_PROPS_REDIS', 'redis.max.idle', 'redisè¿æ¥æœ€å¤§ç©ºé—²æ•°', null, 5, null, null, 'default', '10000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.max.timeOut', 'redisÁ¬½Ó×î´ó³¬Ê±Ê±¼ä', null, 6, null, null, 'default', null);
+values ('IQ_DS_PROPS_REDIS', 'redis.max.timeOut', 'redisè¿æ¥æœ€å¤§è¶…æ—¶æ—¶é—´', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.max.total', 'redisÁ¬½Ó³Ø×î´óÁ¬½ÓÊı', null, 8, null, null, 'default', '20000');
+values ('IQ_DS_PROPS_REDIS', 'redis.max.total', 'redisè¿æ¥æ± æœ€å¤§è¿æ¥æ•°', null, 8, null, null, 'default', '20000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_PRODUCER_PROPS_KAFKA', 'serializer.class', 'ĞòÁĞ»¯Àà', null, 2, null, null, 'default', 'kafka.serializer.StringEncoder');
+values ('RTS_PRODUCER_PROPS_KAFKA', 'serializer.class', 'åºåˆ—åŒ–ç±»', null, 2, null, null, 'default', 'kafka.serializer.StringEncoder');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'max.data.size', '×î´ó·µ»ØÊı', null, 7, null, null, 'default', '65535');
+values ('IQ_DS_PROPS_SOLR_HBASE', 'max.data.size', 'æœ€å¤§è¿”å›æ•°', null, 7, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_PRODUCER_PROPS_KAFKA', 'metadata.broker.list', 'Kafka¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
+values ('RTS_PRODUCER_PROPS_KAFKA', 'metadata.broker.list', 'Kafkaé›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.seprator', '½á¹ûÊı¾İ·Ö¸ô·û', null, 10, null, null, 'default', '\007');
+values ('IQ_DS_PROPS_REDIS', 'redis.seprator', 'ç»“æœæ•°æ®åˆ†éš”ç¬¦', null, 10, null, null, 'default', '\007');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.max.data.size', '×î´ó·µ»ØÊı', null, 3, null, null, 'default', '65536');
+values ('IQ_DS_PROPS_HBASE', 'hbase.max.data.size', 'æœ€å¤§è¿”å›æ•°', null, 3, null, null, 'default', '65536');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.fq.dsv.seprator', '½á¹ûÊı¾İ·Ö¸ô·û£¬Èç£º|¡¢||¡¢\007¡¢\t¡¢\036', null, 8, null, null, 'default', '\007');
+values ('IQ_DS_PROPS_HBASE', 'hbase.fq.dsv.seprator', 'ç»“æœæ•°æ®åˆ†éš”ç¬¦ï¼Œå¦‚ï¼š|ã€||ã€\007ã€\tã€\036', null, 8, null, null, 'default', '\007');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR', 'solr.max.data.size', '×î´ó·µ»ØÊı', null, 2, null, null, 'default', '65535');
+values ('IQ_DS_PROPS_SOLR', 'solr.max.data.size', 'æœ€å¤§è¿”å›æ•°', null, 2, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'zookeeper.connect', 'zookeeper¼¯ÈºµÄIPºÍ¶Ë¿ÚµØÖ·£¬¶à¸öµØÖ·ÓÃ¶ººÅ·Ö¸ô£¬Èç£º10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181', null, 1, null, null, 'default', null);
+values ('RTS_CONSUMER_PROPS_KAFKA', 'zookeeper.connect', 'zookeeperé›†ç¾¤çš„IPå’Œç«¯å£åœ°å€ï¼Œå¤šä¸ªåœ°å€ç”¨é€—å·åˆ†éš”ï¼Œå¦‚ï¼š10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_REDIS', 'redis.max.data.size', 'redis²éÑ¯·µ»ØÊı¾İ×î´óÌõÊı', null, 11, null, null, 'default', '65535');
+values ('IQ_DS_PROPS_REDIS', 'redis.max.data.size', 'redisæŸ¥è¯¢è¿”å›æ•°æ®æœ€å¤§æ¡æ•°', null, 11, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_APP_QUERY_COL_OPERATOR', 'in', 'in²éÑ¯', null, 8, null, null, 'default', null);
+values ('IQ_APP_QUERY_COL_OPERATOR', 'in', 'inæŸ¥è¯¢', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_MD_COL_DATA_TYPE', 'VARCHAR', 'VARCHAR', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1006,364 +1006,364 @@ values ('IQ_MD_COL_DATA_TYPE', 'DOUBLE', 'DOUBLE', null, 9, null, null, 'default
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_MD_COL_DATA_TYPE', 'FLOAT', 'FLOAT', null, 10, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_ELASTICSEARCH', 'elasticsearch.max.data.size', '×î´ó·µ»ØÊı', null, 2, null, null, 'default', '65535');
+values ('IQ_DS_PROPS_ELASTICSEARCH', 'elasticsearch.max.data.size', 'æœ€å¤§è¿”å›æ•°', null, 2, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.fq.data.type', '½á¹ûÊı¾İÀàĞÍ£¬¿ÉÑ¡dsv¡¢json£¬Èç¹ûÎªdsvÊ±hbase.fq.dsv.sepratorÉúĞ§', null, 7, null, null, 'default', 'dsv');
+values ('IQ_DS_PROPS_HBASE', 'hbase.fq.data.type', 'ç»“æœæ•°æ®ç±»å‹ï¼Œå¯é€‰dsvã€jsonï¼Œå¦‚æœä¸ºdsvæ—¶hbase.fq.dsv.sepratorç”Ÿæ•ˆ', null, 7, null, null, 'default', 'dsv');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'max.data.size', '×î´óÊı¾İ·µ»ØÌõÊı', null, 19, null, null, 'default', '65535');
+values ('OLQ_DS_PROPS_HIVE', 'max.data.size', 'æœ€å¤§æ•°æ®è¿”å›æ¡æ•°', null, 19, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000018', 'ÔËĞĞ¶ÓÁĞÒÑÂúÇÒÎ´¿ªÆôµÈ´ı¶ÓÁĞ', null, 18, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000018', 'è¿è¡Œé˜Ÿåˆ—å·²æ»¡ä¸”æœªå¼€å¯ç­‰å¾…é˜Ÿåˆ—', null, 18, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_TYPE', 'INCEPTOR', 'INCEPTOR', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_TYPE', 'MAIL', '·¢ËÍÓÊ¼ş', null, 2, null, null, 'default', null);
+values ('RC_ALARM_TYPE', 'MAIL', 'å‘é€é‚®ä»¶', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.host', 'SMTP·şÎñÆ÷µØÖ·£¨±ØÌî£©', null, 1, null, null, 'default', null);
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.host', 'SMTPæœåŠ¡å™¨åœ°å€ï¼ˆå¿…å¡«ï¼‰', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.port', 'SMTP·şÎñÆ÷¶Ë¿Ú£¨±ØÌî£©', null, 2, 'RC_ALARM_PROPS_MAIL', null, 'default', null);
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.port', 'SMTPæœåŠ¡å™¨ç«¯å£ï¼ˆå¿…å¡«ï¼‰', null, 2, 'RC_ALARM_PROPS_MAIL', null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.ssl.check.server.identity', 'ÊÇ·ñ¼ì²é·şÎñµÄÉí·İ', null, 4, null, null, 'default', 'true');
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.ssl.check.server.identity', 'æ˜¯å¦æ£€æŸ¥æœåŠ¡çš„èº«ä»½', null, 4, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.password', 'ÃÜÂë', null, 6, null, null, 'default', null);
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.password', 'å¯†ç ', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.cc', '³­ËÍ', null, 8, null, null, 'default', null);
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.cc', 'æŠ„é€', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.subject', 'Ö÷Ìâ', null, 10, null, null, 'default', null);
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.subject', 'ä¸»é¢˜', null, 10, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_TYPE', 'NONE', '²»¸æ¾¯', null, 1, null, null, 'default', null);
+values ('RC_ALARM_TYPE', 'NONE', 'ä¸å‘Šè­¦', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000013', 'µ÷ÓÃ²ÎÊıÒì³£', null, 13, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000013', 'è°ƒç”¨å‚æ•°å¼‚å¸¸', null, 13, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000015', 'Ö´ĞĞ³¬Ê±', null, 15, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000015', 'æ‰§è¡Œè¶…æ—¶', null, 15, null, null, 'default', null);
 commit;
 prompt 500 records committed...
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000017', '·şÎñÍ£ÓÃ', null, 17, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000017', 'æœåŠ¡åœç”¨', null, 17, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '200004', 'Ä£ĞÍµ÷ÓÃÆäËûÒì³£', null, 200004, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '200004', 'æ¨¡å‹è°ƒç”¨å…¶ä»–å¼‚å¸¸', null, 200004, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_REALTIME_JOB_STATUS', 'START_FAIL', 'Æô¶¯Ê§°Ü', null, 4, null, null, 'default', null);
+values ('IM_REALTIME_JOB_STATUS', 'START_FAIL', 'å¯åŠ¨å¤±è´¥', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_REALTIME_JOB_STATUS', 'READY_STOP', '×¼±¸Í£Ö¹', null, 5, null, null, 'default', null);
+values ('IM_REALTIME_JOB_STATUS', 'READY_STOP', 'å‡†å¤‡åœæ­¢', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_REALTIME_JOB_STATUS', 'STOP_SUCCESS', 'Í£Ö¹³É¹¦', null, 7, null, null, 'default', null);
+values ('IM_REALTIME_JOB_STATUS', 'STOP_SUCCESS', 'åœæ­¢æˆåŠŸ', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_REALTIME_JOB_STATUS', 'STOP_FAIL', 'Í£Ö¹Ê§°Ü', null, 8, null, null, 'default', null);
+values ('IM_REALTIME_JOB_STATUS', 'STOP_FAIL', 'åœæ­¢å¤±è´¥', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('AUTO_REFRESH_TIME', '2000', '2Ãë', null, 1, null, null, 'default', null);
+values ('AUTO_REFRESH_TIME', '2000', '2ç§’', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('AUTO_REFRESH_TIME', '5000', '5Ãë', null, 2, null, null, 'default', null);
+values ('AUTO_REFRESH_TIME', '5000', '5ç§’', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_SOLR', 'violence.query', 'ÊÇ·ñ±©Á¦²éÑ¯£¨true/false£©', null, 2, null, null, 'default', 'false');
+values ('IM_MODEL_PROPS_SOLR', 'violence.query', 'æ˜¯å¦æš´åŠ›æŸ¥è¯¢ï¼ˆtrue/falseï¼‰', null, 2, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_ORACLE', 'violence.query', 'ÊÇ·ñ±©Á¦²éÑ¯£¨true/false£©', null, 4, null, null, 'default', 'false');
+values ('IM_MODEL_PROPS_ORACLE', 'violence.query', 'æ˜¯å¦æš´åŠ›æŸ¥è¯¢ï¼ˆtrue/falseï¼‰', null, 4, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_HIVE', 'database.name', '¿âÃû', null, 1, null, null, 'default', null);
+values ('IM_MODEL_PROPS_HIVE', 'database.name', 'åº“å', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_HIVE', 'table.name', '±íÃû', null, 2, null, null, 'default', null);
+values ('IM_MODEL_PROPS_HIVE', 'table.name', 'è¡¨å', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_HIVE', 'select.sql', 'SQLÓï¾ä', null, 3, null, null, 'default', null);
+values ('IM_MODEL_PROPS_HIVE', 'select.sql', 'SQLè¯­å¥', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_ORACLE', 'table.name', '±íÃû', null, 2, null, null, 'default', null);
+values ('IM_MODEL_PROPS_ORACLE', 'table.name', 'è¡¨å', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_MYSQL', 'table.name', '±íÃû', null, 2, null, null, 'default', null);
+values ('IM_MODEL_PROPS_MYSQL', 'table.name', 'è¡¨å', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_STATUS', '1', 'Î´½¨', null, 1, null, null, 'default', null);
+values ('IM_MODEL_STATUS', '1', 'æœªå»º', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_STATUS', '2', 'ÒÑ½¨', null, 2, null, null, 'default', null);
+values ('IM_MODEL_STATUS', '2', 'å·²å»º', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_HIVE', 'violence.query', 'ÊÇ·ñ±©Á¦²éÑ¯£¨true/false£©', null, 4, null, null, 'default', 'false');
+values ('IM_MODEL_PROPS_HIVE', 'violence.query', 'æ˜¯å¦æš´åŠ›æŸ¥è¯¢ï¼ˆtrue/falseï¼‰', null, 4, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_IMPL_CLASS', 'ELASTICSEARCH', 'com.hex.bigdata.udsp.iq.provider.impl.ElasticSearchProvider', null, 5, null, null, 'default', '½»»¥²éÑ¯ElasticSearch½Ó¿ÚÊµÏÖÀà');
+values ('IQ_IMPL_CLASS', 'ELASTICSEARCH', 'com.hex.bigdata.udsp.iq.provider.impl.ElasticSearchProvider', null, 5, null, null, 'default', 'äº¤äº’æŸ¥è¯¢ElasticSearchæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_MYSQL', 'violence.query', 'ÊÇ·ñ±©Á¦²éÑ¯£¨true/false£©', null, 4, null, null, 'default', 'false');
+values ('IM_MODEL_PROPS_MYSQL', 'violence.query', 'æ˜¯å¦æš´åŠ›æŸ¥è¯¢ï¼ˆtrue/falseï¼‰', null, 4, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('AUTO_REFRESH_TIME', '10000', '10Ãë', null, 3, null, null, 'default', null);
+values ('AUTO_REFRESH_TIME', '10000', '10ç§’', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('AUTO_REFRESH_TIME', '15000', '15Ãë', null, 4, null, null, 'default', null);
+values ('AUTO_REFRESH_TIME', '15000', '15ç§’', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('AUTO_REFRESH_TIME', '30000', '30Ãë', null, 5, null, null, 'default', null);
+values ('AUTO_REFRESH_TIME', '30000', '30ç§’', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('AUTO_REFRESH_TIME', '60000', '60Ãë', null, 6, null, null, 'default', null);
+values ('AUTO_REFRESH_TIME', '60000', '60ç§’', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_SERVICE_TYPE', 'IM', '½»»¥½¨Ä£', null, 7, null, null, 'default', null);
+values ('UDSP_SERVICE_TYPE', 'IM', 'äº¤äº’å»ºæ¨¡', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'remarks.reporting', 'ÊÇ·ñÔÊĞí»ñÈ¡±í¡¢×Ö¶Î×¢ÊÍ', null, 19, null, null, 'default', 'true');
+values ('IM_DS_PROPS_ORACLE', 'remarks.reporting', 'æ˜¯å¦å…è®¸è·å–è¡¨ã€å­—æ®µæ³¨é‡Š', null, 19, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', 'in', 'in²éÑ¯', null, 8, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', 'in', 'inæŸ¥è¯¢', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_BATCH_JOB_STATUS', 'READY_BUILD', '×¼±¸¹¹½¨', null, 1, null, null, 'default', null);
+values ('IM_BATCH_JOB_STATUS', 'READY_BUILD', 'å‡†å¤‡æ„å»º', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_BATCH_JOB_STATUS', 'BUILD_SUCCESS', '¹¹½¨³É¹¦', null, 3, null, null, 'default', null);
+values ('IM_BATCH_JOB_STATUS', 'BUILD_SUCCESS', 'æ„å»ºæˆåŠŸ', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_REALTIME_JOB_STATUS', 'READY_START', '×¼±¸Æô¶¯', null, 1, null, null, 'default', null);
+values ('IM_REALTIME_JOB_STATUS', 'READY_START', 'å‡†å¤‡å¯åŠ¨', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_REALTIME_JOB_STATUS', 'RUNNING', 'ÕıÔÚÔËĞĞ', null, 3, null, null, 'default', null);
+values ('IM_REALTIME_JOB_STATUS', 'RUNNING', 'æ­£åœ¨è¿è¡Œ', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_REALTIME_JOB_STATUS', 'STOPING', '¿ªÊ¼Í£Ö¹', null, 6, null, null, 'default', null);
+values ('IM_REALTIME_JOB_STATUS', 'STOPING', 'å¼€å§‹åœæ­¢', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_REALTIME_JOB_STATUS', 'RUN_FAIL', 'ÔËĞĞÊ§°Ü', null, 9, null, null, 'default', null);
+values ('IM_REALTIME_JOB_STATUS', 'RUN_FAIL', 'è¿è¡Œå¤±è´¥', null, 9, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_FILTER_TYPE', 'right like', 'likeÓÒ²éÑ¯', null, 9, null, null, 'default', null);
+values ('IM_MODEL_FILTER_TYPE', 'right like', 'likeå³æŸ¥è¯¢', null, 9, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_IMPL_CLASS', 'INCEPTOR', 'com.hex.bigdata.udsp.olq.provider.impl.InceptorProvider', null, 8, null, null, 'default', 'Áª»ú²éÑ¯µÄInceptor½Ó¿ÚÊµÏÖÀà');
+values ('OLQ_IMPL_CLASS', 'INCEPTOR', 'com.hex.bigdata.udsp.olq.provider.impl.InceptorProvider', null, 8, null, null, 'default', 'è”æœºæŸ¥è¯¢çš„Inceptoræ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '200003', 'Ä£ĞÍ²ÎÊı´íÎó', null, 200003, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '200003', 'æ¨¡å‹å‚æ•°é”™è¯¯', null, 200003, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000014', 'µÈ´ı³¬Ê±', null, 14, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000014', 'ç­‰å¾…è¶…æ—¶', null, 14, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('UDSP_CONSUME_ERROR_CODE', '000016', 'µÈ´ı¶ÓÁĞÒÑÂú', null, 16, null, null, 'default', null);
+values ('UDSP_CONSUME_ERROR_CODE', '000016', 'ç­‰å¾…é˜Ÿåˆ—å·²æ»¡', null, 16, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_IMPL_CLASS', 'MAIL', 'com.hex.bigdata.udsp.rc.alarm.impl.MailAlarm', null, 1, null, null, 'default', '×¢²áÖĞĞÄµÄMAIL½Ó¿ÚÊµÏÖÀà');
+values ('RC_IMPL_CLASS', 'MAIL', 'com.hex.bigdata.udsp.rc.alarm.impl.MailAlarm', null, 1, null, null, 'default', 'æ³¨å†Œä¸­å¿ƒçš„MAILæ¥å£å®ç°ç±»');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.from', '·¢¼şÈË£¨±ØÌî£©', null, 3, null, null, 'default', null);
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.from', 'å‘ä»¶äººï¼ˆå¿…å¡«ï¼‰', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.username', 'ÓÃ»§Ãû', null, 5, null, null, 'default', null);
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.username', 'ç”¨æˆ·å', null, 5, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.to', 'ÊÕ¼şÈË£¨±ØÌî£©', null, 7, null, null, 'default', null);
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.to', 'æ”¶ä»¶äººï¼ˆå¿…å¡«ï¼‰', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.bcc', 'ÃÜËÍ', null, 9, null, null, 'default', null);
+values ('RC_ALARM_PROPS_MAIL', 'mail.smtp.bcc', 'å¯†é€', null, 9, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'driver.class', 'Çı¶¯Àà', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
+values ('OLQ_DS_PROPS_INCEPTOR', 'driver.class', 'é©±åŠ¨ç±»', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'initial.size', '³õÊ¼Á¬½ÓÊı', null, 5, null, null, 'default', '1');
+values ('OLQ_DS_PROPS_INCEPTOR', 'initial.size', 'åˆå§‹è¿æ¥æ•°', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'jdbc.url', 'JDBC URL£¬Èç£ºjdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
+values ('OLQ_DS_PROPS_INCEPTOR', 'jdbc.url', 'JDBC URLï¼Œå¦‚ï¼šjdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'max.active', '×î´ó²¢·¢Êı', null, 8, null, null, 'default', '25');
+values ('OLQ_DS_PROPS_INCEPTOR', 'max.active', 'æœ€å¤§å¹¶å‘æ•°', null, 8, null, null, 'default', '25');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'max.data.size', '×î´óÊı¾İ·µ»ØÌõÊı', null, 19, null, null, 'default', '65535');
+values ('OLQ_DS_PROPS_INCEPTOR', 'max.data.size', 'æœ€å¤§æ•°æ®è¿”å›æ¡æ•°', null, 19, null, null, 'default', '65535');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'max.idle', '×î´ó¿ÕÏĞÁ¬½ÓÊı', null, 7, null, null, 'default', '20');
+values ('OLQ_DS_PROPS_INCEPTOR', 'max.idle', 'æœ€å¤§ç©ºé—²è¿æ¥æ•°', null, 7, null, null, 'default', '20');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'max.wait', '×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ºÁÃë', null, 9, null, null, 'default', '60000');
+values ('OLQ_DS_PROPS_INCEPTOR', 'max.wait', 'æœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½æ¯«ç§’', null, 9, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'min.evictable.idle.time.millis', '¿ÕÏĞÁ¬½ÓNºÁÃëÖĞºóÊÍ·Å', null, 13, null, null, 'default', '1800000');
+values ('OLQ_DS_PROPS_INCEPTOR', 'min.evictable.idle.time.millis', 'ç©ºé—²è¿æ¥Næ¯«ç§’ä¸­åé‡Šæ”¾', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'min.idle', '×îĞ¡¿ÕÏĞÁ¬½ÓÊı', null, 6, null, null, 'default', '10');
+values ('OLQ_DS_PROPS_INCEPTOR', 'min.idle', 'æœ€å°ç©ºé—²è¿æ¥æ•°', null, 6, null, null, 'default', '10');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'password', 'ÃÜÂë', null, 4, null, null, 'default', null);
+values ('OLQ_DS_PROPS_INCEPTOR', 'password', 'å¯†ç ', null, 4, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'test.on.borrow', 'ÊÇ·ñ´Ó³ØÖĞÈ¡³öÁ´½ÓÇ°½øĞĞ¼ìÑé', null, 15, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_INCEPTOR', 'test.on.borrow', 'æ˜¯å¦ä»æ± ä¸­å–å‡ºé“¾æ¥å‰è¿›è¡Œæ£€éªŒ', null, 15, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'test.on.return', 'ÊÇ·ñÔÚ¹é»¹µ½³ØÖĞÇ°½øĞĞ¼ìÑé', null, 16, null, null, 'default', 'false');
+values ('OLQ_DS_PROPS_INCEPTOR', 'test.on.return', 'æ˜¯å¦åœ¨å½’è¿˜åˆ°æ± ä¸­å‰è¿›è¡Œæ£€éªŒ', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'test.while.idle', 'ÊÇ·ñ±»ÎŞĞ§Á´½ÓÏú»ÙÆ÷½øĞĞ¼ìÑé', null, 14, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_INCEPTOR', 'test.while.idle', 'æ˜¯å¦è¢«æ— æ•ˆé“¾æ¥é”€æ¯å™¨è¿›è¡Œæ£€éªŒ', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'time.between.eviction.runs.millis', 'NºÁÃë¼ì²âÒ»´ÎÊÇ·ñÓĞËÀµôµÄÏß³Ì', null, 12, null, null, 'default', '30000');
+values ('OLQ_DS_PROPS_INCEPTOR', 'time.between.eviction.runs.millis', 'Næ¯«ç§’æ£€æµ‹ä¸€æ¬¡æ˜¯å¦æœ‰æ­»æ‰çš„çº¿ç¨‹', null, 12, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'username', 'ÓÃ»§Ãû', null, 3, null, null, 'default', null);
+values ('OLQ_DS_PROPS_INCEPTOR', 'username', 'ç”¨æˆ·å', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'validation.query', 'ÑéÖ¤Á´½ÓµÄSQLÓï¾ä£¬±ØĞëÄÜ·µ»ØÒ»ĞĞ¼°ÒÔÉÏÊı¾İ', null, 10, null, null, 'default', 'select 1 from system.dual');
+values ('OLQ_DS_PROPS_INCEPTOR', 'validation.query', 'éªŒè¯é“¾æ¥çš„SQLè¯­å¥ï¼Œå¿…é¡»èƒ½è¿”å›ä¸€è¡ŒåŠä»¥ä¸Šæ•°æ®', null, 10, null, null, 'default', 'select 1 from system.dual');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'validation.query.timeout', 'ÑéÖ¤ÓĞĞ§Á¬½ÓµÄ³¬Ê±Ê±¼ä', null, 11, null, null, 'default', '0');
+values ('OLQ_DS_PROPS_INCEPTOR', 'validation.query.timeout', 'éªŒè¯æœ‰æ•ˆè¿æ¥çš„è¶…æ—¶æ—¶é—´', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('IM_DS_PROPS_MYSQL', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('IM_DS_PROPS_MYSQL', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('IM_DS_PROPS_ORACLE', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('OLQ_DS_PROPS_MYSQL', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_KYLIN', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('OLQ_DS_PROPS_DB2', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_INCEPTOR', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('OLQ_DS_PROPS_PGSQL', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.scanner.timeout.period', 'scan²Ù×÷³¬Ê±Ê±¼ä£¨ºÁÃë£©', null, 10, null, null, 'default', '60000');
+values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.scanner.timeout.period', 'scanæ“ä½œè¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰', null, 10, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.client.scanner.timeout.period', 'scan²Ù×÷³¬Ê±Ê±¼ä£¨ºÁÃë£©', null, 10, null, null, 'default', '60000');
+values ('IM_DS_PROPS_HBASE', 'hbase.client.scanner.timeout.period', 'scanæ“ä½œè¶…æ—¶æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰', null, 10, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_HIVE', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('OLQ_DS_PROPS_HIVE', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_MYSQL', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_MYSQL', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_KYLIN', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('OLQ_DS_PROPS_KYLIN', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_PGSQL', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_PGSQL', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_INCEPTOR', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('OLQ_DS_PROPS_INCEPTOR', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DB2', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('OLQ_DS_PROPS_DB2', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_MYSQL', 'user.information.schema', 'ÊÇ·ñÔÊĞí»ñÈ¡±í¡¢×Ö¶Î×¢ÊÍ', null, 19, null, null, 'default', 'true');
+values ('IM_DS_PROPS_MYSQL', 'user.information.schema', 'æ˜¯å¦å…è®¸è·å–è¡¨ã€å­—æ®µæ³¨é‡Š', null, 19, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_IMPALA', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('OLQ_DS_PROPS_IMPALA', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'remove.abandoned', 'ÊÇ·ñ½øĞĞÃ»ÓÃÁ¬½ÓµÄ»ØÊÕ', null, 18, null, null, 'default', 'true');
+values ('IM_DS_PROPS_HIVE', 'remove.abandoned', 'æ˜¯å¦è¿›è¡Œæ²¡ç”¨è¿æ¥çš„å›æ”¶', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HIVE', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('IM_DS_PROPS_HIVE', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_ORACLE', 'remove.abandoned.timeout', '»ØÊÕÃ»ÓÃµÄÁ¬½Ó³¬Ê±Ê±¼ä', null, 17, null, null, 'default', '180000');
+values ('IM_DS_PROPS_ORACLE', 'remove.abandoned.timeout', 'å›æ”¶æ²¡ç”¨çš„è¿æ¥è¶…æ—¶æ—¶é—´', null, 17, null, null, 'default', '180000');
 commit;
 prompt 581 records loaded
 prompt Loading T_GF_DICT_TYPE...
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RC_ALARM_PROPS_MAIL', '×¢²áÖĞĞÄ-¾¯±¨²ÎÊı-MAIL£¨µç×ÓÓÊ¼ş£©', 'default');
+values ('RC_ALARM_PROPS_MAIL', 'æ³¨å†Œä¸­å¿ƒ-è­¦æŠ¥å‚æ•°-MAILï¼ˆç”µå­é‚®ä»¶ï¼‰', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RC_ALARM_TYPE', '×¢²áÖĞĞÄ-¾¯±¨ÀàĞÍ', 'default');
+values ('RC_ALARM_TYPE', 'æ³¨å†Œä¸­å¿ƒ-è­¦æŠ¥ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RC_IMPL_CLASS', '×¢²áÖĞĞÄ-½Ó¿ÚÊµÏÖÀà', 'default');
+values ('RC_IMPL_CLASS', 'æ³¨å†Œä¸­å¿ƒ-æ¥å£å®ç°ç±»', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_REALTIME_JOB_STATUS', '½»»¥½¨Ä£-ÊµÊ±×÷Òµ×´Ì¬', 'default');
+values ('IM_REALTIME_JOB_STATUS', 'äº¤äº’å»ºæ¨¡-å®æ—¶ä½œä¸šçŠ¶æ€', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('AUTO_REFRESH_TIME', '×Ô¶¯Ë¢ĞÂÊ±¼ä', 'default');
+values ('AUTO_REFRESH_TIME', 'è‡ªåŠ¨åˆ·æ–°æ—¶é—´', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_STATUS', '½»»¥½¨Ä£-½»»¥½¨Ä£×´Ì¬', 'default');
+values ('IM_MODEL_STATUS', 'äº¤äº’å»ºæ¨¡-äº¤äº’å»ºæ¨¡çŠ¶æ€', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_PROPS_HIVE', '½»»¥½¨Ä£-Ä£ĞÍ²ÎÊı-HIVE', 'default');
+values ('IM_MODEL_PROPS_HIVE', 'äº¤äº’å»ºæ¨¡-æ¨¡å‹å‚æ•°-HIVE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_PROPS_ORACLE', '½»»¥½¨Ä£-Ä£ĞÍ²ÎÊı-ORACLE', 'default');
+values ('IM_MODEL_PROPS_ORACLE', 'äº¤äº’å»ºæ¨¡-æ¨¡å‹å‚æ•°-ORACLE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_PROPS_MYSQL', '½»»¥½¨Ä£-Ä£ĞÍ²ÎÊı-MYSQL', 'default');
+values ('IM_MODEL_PROPS_MYSQL', 'äº¤äº’å»ºæ¨¡-æ¨¡å‹å‚æ•°-MYSQL', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_IMPL_CLASS', '½»»¥½¨Ä£-½Ó¿ÚÊµÏÖÀà', 'default');
+values ('IM_IMPL_CLASS', 'äº¤äº’å»ºæ¨¡-æ¥å£å®ç°ç±»', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_PROPS_MYSQL', '½»»¥½¨Ä£-Êı¾İÔ´ÅäÖÃ-MYSQL', 'default');
+values ('IM_DS_PROPS_MYSQL', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºé…ç½®-MYSQL', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_BUILD_TYPE', '½»»¥½¨Ä£-¹¹½¨Ä£ĞÍ²ßÂÔ', 'default');
+values ('IM_MODEL_BUILD_TYPE', 'äº¤äº’å»ºæ¨¡-æ„å»ºæ¨¡å‹ç­–ç•¥', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_UPDATE_TYPE', '½»»¥½¨Ä£-¸üĞÂ²ßÂÔ', 'default');
+values ('IM_MODEL_UPDATE_TYPE', 'äº¤äº’å»ºæ¨¡-æ›´æ–°ç­–ç•¥', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_TYPE', '½»»¥½¨Ä£-Ô´Êı¾İÔ´ÀàĞÍ', 'default');
+values ('IM_MODEL_TYPE', 'äº¤äº’å»ºæ¨¡-æºæ•°æ®æºç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_TARGET_BATCH_TYPE', '½»»¥½¨Ä£-Êı¾İÔ´ÀàĞÍ£¨Ä¿±ê¡¢ÅúÁ¿£©', 'default');
+values ('IM_DS_TARGET_BATCH_TYPE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºç±»å‹ï¼ˆç›®æ ‡ã€æ‰¹é‡ï¼‰', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_TARGET_TYPE', '½»»¥½¨Ä£-Êı¾İÔ´ÀàĞÍ£¨Ä¿±ê£©', 'default');
+values ('IM_DS_TARGET_TYPE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºç±»å‹ï¼ˆç›®æ ‡ï¼‰', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_TARGET_REALTIME_TYPE', '½»»¥½¨Ä£-Êı¾İÔ´ÀàĞÍ£¨Ä¿±ê¡¢ÊµÊ±£©', 'default');
+values ('IM_DS_TARGET_REALTIME_TYPE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºç±»å‹ï¼ˆç›®æ ‡ã€å®æ—¶ï¼‰', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MD_PROPS_SOLR', '½»»¥½¨Ä£-ÔªÊı¾İ²ÎÊı-SOLR', 'default');
+values ('IM_MD_PROPS_SOLR', 'äº¤äº’å»ºæ¨¡-å…ƒæ•°æ®å‚æ•°-SOLR', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MD_PROPS_HBASE', '½»»¥½¨Ä£-ÔªÊı¾İ²ÎÊı-HBASE', 'default');
+values ('IM_MD_PROPS_HBASE', 'äº¤äº’å»ºæ¨¡-å…ƒæ•°æ®å‚æ•°-HBASE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MD_PROPS_SOLR_HBASE', '½»»¥½¨Ä£-ÔªÊı¾İ²ÎÊı-SOLR+HBASE', 'default');
+values ('IM_MD_PROPS_SOLR_HBASE', 'äº¤äº’å»ºæ¨¡-å…ƒæ•°æ®å‚æ•°-SOLR+HBASE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RC_SERVICE_STATUS', '×¢²áÖĞĞÄ-·şÎñÆôÍ£×´Ì¬', 'default');
+values ('RC_SERVICE_STATUS', 'æ³¨å†Œä¸­å¿ƒ-æœåŠ¡å¯åœçŠ¶æ€', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_PROPS_SOLR_HBASE', '½»»¥½¨Ä£-Êı¾İÔ´ÅäÖÃ-SOLR_HBASE', 'default');
+values ('IM_DS_PROPS_SOLR_HBASE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºé…ç½®-SOLR_HBASE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_PROPS_KAFKA', '½»»¥½¨Ä£-Êı¾İÔ´ÅäÖÃ-KAFKA', 'default');
+values ('IM_DS_PROPS_KAFKA', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºé…ç½®-KAFKA', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_TYPE', '½»»¥½¨Ä£-Êı¾İÔ´ÀàĞÍ', 'default');
+values ('IM_DS_TYPE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MD_TYPE', '½»»¥½¨Ä£-ÔªÊı¾İÀàĞÍ', 'default');
+values ('IM_MD_TYPE', 'äº¤äº’å»ºæ¨¡-å…ƒæ•°æ®ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MD_STATUS', '½»»¥½¨Ä£-ÔªÊı¾İ×´Ì¬', 'default');
+values ('IM_MD_STATUS', 'äº¤äº’å»ºæ¨¡-å…ƒæ•°æ®çŠ¶æ€', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_IMPALA', 'Áª»ú²éÑ¯-Êı¾İÔ´ÅäÖÃ-IMPALA²ÎÊı', 'default');
+values ('OLQ_DS_PROPS_IMPALA', 'è”æœºæŸ¥è¯¢-æ•°æ®æºé…ç½®-IMPALAå‚æ•°', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('UDSP_CONSUME_ERROR_CODE', 'UDSPÏû·Ñ½Ó¿Ú´íÎó±àÂë', 'default');
+values ('UDSP_CONSUME_ERROR_CODE', 'UDSPæ¶ˆè´¹æ¥å£é”™è¯¯ç¼–ç ', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RTS_CONSUMER_TIMEOUT', 'Ïû·ÑÕßÏû·Ñ³¬Ê±Ê±¼ä', 'default');
+values ('RTS_CONSUMER_TIMEOUT', 'æ¶ˆè´¹è€…æ¶ˆè´¹è¶…æ—¶æ—¶é—´', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('MM_REQUEST_TYPE', 'Ä£ĞÍÓ¦ÓÃ³ÌĞòÇëÇóÀàĞÍ', 'default');
+values ('MM_REQUEST_TYPE', 'æ¨¡å‹åº”ç”¨ç¨‹åºè¯·æ±‚ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OlQ_APP_COL_DATA_TYPE', 'Áª»ú²éÓ¦ÓÃÊı¾İÁĞÀàĞÍ', 'default');
+values ('OlQ_APP_COL_DATA_TYPE', 'è”æœºæŸ¥åº”ç”¨æ•°æ®åˆ—ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_DS_TYPE', '½»»¥²éÑ¯-Êı¾İÔ´ÀàĞÍ', 'default');
+values ('IQ_DS_TYPE', 'äº¤äº’æŸ¥è¯¢-æ•°æ®æºç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_DS_PROPS_HBASE', '½»»¥²éÑ¯-Êı¾İÔ´ÅäÖÃ-HBASE', 'default');
+values ('IQ_DS_PROPS_HBASE', 'äº¤äº’æŸ¥è¯¢-æ•°æ®æºé…ç½®-HBASE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_DS_PROPS_SOLR', '½»»¥²éÑ¯-Êı¾İÔ´ÅäÖÃ-SOLR', 'default');
+values ('IQ_DS_PROPS_SOLR', 'äº¤äº’æŸ¥è¯¢-æ•°æ®æºé…ç½®-SOLR', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_DS_PROPS_REDIS', '½»»¥²éÑ¯redis²éÑ¯', 'default');
+values ('IQ_DS_PROPS_REDIS', 'äº¤äº’æŸ¥è¯¢redisæŸ¥è¯¢', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_DS_PROPS_SOLR_HBASE', '½»»¥²éÑ¯-Êı¾İÔ´ÅäÖÃ-SOLR_HBASE', 'default');
+values ('IQ_DS_PROPS_SOLR_HBASE', 'äº¤äº’æŸ¥è¯¢-æ•°æ®æºé…ç½®-SOLR_HBASE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_APP_ORDER_COL_TYPE', '½»»¥²éÑ¯-Ó¦ÓÃÅäÖÃ-ÅÅĞò×Ö¶Î-ÅÅĞòÀàĞÍ', 'default');
+values ('IQ_APP_ORDER_COL_TYPE', 'äº¤äº’æŸ¥è¯¢-åº”ç”¨é…ç½®-æ’åºå­—æ®µ-æ’åºç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RTS_DS_TYPE', 'ÊµÊ±Á÷-Êı¾İÔ´ÀàĞÍ', 'default');
+values ('RTS_DS_TYPE', 'å®æ—¶æµ-æ•°æ®æºç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_MD_COL_TYPE', '½»»¥²éÑ¯-ÔªÊı¾İÅäÖÃ-×Ö¶ÎĞÅÏ¢-ËùÊôÀàĞÍ', 'default');
+values ('IQ_MD_COL_TYPE', 'äº¤äº’æŸ¥è¯¢-å…ƒæ•°æ®é…ç½®-å­—æ®µä¿¡æ¯-æ‰€å±ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RTS_CONSUMER_PROPS_KAFKA', 'ÊµÊ±Á÷-Ïû·ÑÕßÅäÖÃ-KAFKA', 'default');
+values ('RTS_CONSUMER_PROPS_KAFKA', 'å®æ—¶æµ-æ¶ˆè´¹è€…é…ç½®-KAFKA', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RTS_IMPL_CLASS', 'ÊµÊ±Á÷-½Ó¿ÚÊµÏÖÀà', 'default');
+values ('RTS_IMPL_CLASS', 'å®æ—¶æµ-æ¥å£å®ç°ç±»', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('COF_CARDTYPE', 'Ö¤¼şÀàĞÍ', 'default');
+values ('COF_CARDTYPE', 'è¯ä»¶ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('COF_EMPSTATUS', 'ÈëÖ°×´Ì¬', 'default');
+values ('COF_EMPSTATUS', 'å…¥èŒçŠ¶æ€', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('SCHEDULE_TYPE', 'µ÷¶ÈÀàĞÍ', 'default');
+values ('SCHEDULE_TYPE', 'è°ƒåº¦ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('APP_SERVER', 'Ó¦ÓÃ·şÎñÆ÷', 'default');
+values ('APP_SERVER', 'åº”ç”¨æœåŠ¡å™¨', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('DICT_SERVER', '×Öµä·şÎñ', 'default');
+values ('DICT_SERVER', 'å­—å…¸æœåŠ¡', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('LOGIN_CONF', 'µÇÂ¼ÅäÖÃ', 'default');
+values ('LOGIN_CONF', 'ç™»å½•é…ç½®', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_APP_QUERY_COL_OPERATOR', '½»»¥²éÑ¯-Ó¦ÓÃÅäÖÃ-²éÑ¯×Ö¶Î-²Ù×÷·û', 'default');
+values ('IQ_APP_QUERY_COL_OPERATOR', 'äº¤äº’æŸ¥è¯¢-åº”ç”¨é…ç½®-æŸ¥è¯¢å­—æ®µ-æ“ä½œç¬¦', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_APP_RETURN_COL_STATS', '½»»¥²éÑ¯-Ó¦ÓÃÅäÖÃ-·µ»Ø×Ö¶Î-Í³¼Æº¯Êı', 'default');
+values ('IQ_APP_RETURN_COL_STATS', 'äº¤äº’æŸ¥è¯¢-åº”ç”¨é…ç½®-è¿”å›å­—æ®µ-ç»Ÿè®¡å‡½æ•°', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_IMPL_CLASS', '½»»¥²éÑ¯-½Ó¿ÚÊµÏÖÀà', 'default');
+values ('IQ_IMPL_CLASS', 'äº¤äº’æŸ¥è¯¢-æ¥å£å®ç°ç±»', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RTS_DS_PROPS_KAFKA', 'ÊµÊ±Á÷-Êı¾İÔ´ÅäÖÃ-KAFKA', 'default');
+values ('RTS_DS_PROPS_KAFKA', 'å®æ—¶æµ-æ•°æ®æºé…ç½®-KAFKA', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('RTS_PRODUCER_PROPS_KAFKA', 'ÊµÊ±Á÷-Éú²úÕßÅäÖÃ-KAFKA', 'default');
+values ('RTS_PRODUCER_PROPS_KAFKA', 'å®æ—¶æµ-ç”Ÿäº§è€…é…ç½®-KAFKA', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_MD_COL_DATA_TYPE', '½»»¥²éÑ¯-ÔªÊı¾İÅäÖÃ-×Ö¶ÎÊı¾İÀàĞÍ', 'default');
+values ('IQ_MD_COL_DATA_TYPE', 'äº¤äº’æŸ¥è¯¢-å…ƒæ•°æ®é…ç½®-å­—æ®µæ•°æ®ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_TYPE', 'Áª»ú²éÑ¯-Êı¾İÔ´ÀàĞÍ', 'default');
+values ('OLQ_DS_TYPE', 'è”æœºæŸ¥è¯¢-æ•°æ®æºç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('MC_CONSUME_LOG_STATUS', '¼à¿ØÖĞĞÄ-Ïû·ÑÈÕÖ¾-½á¹û×´Ì¬', 'default');
+values ('MC_CONSUME_LOG_STATUS', 'ç›‘æ§ä¸­å¿ƒ-æ¶ˆè´¹æ—¥å¿—-ç»“æœçŠ¶æ€', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('MC_OPERATION_LOG_TYPE', '¼à¿ØÖĞĞÄ-²Ù×÷ÈÕÖ¾-²Ù×÷ÀàĞÍ', 'default');
+values ('MC_OPERATION_LOG_TYPE', 'ç›‘æ§ä¸­å¿ƒ-æ“ä½œæ—¥å¿—-æ“ä½œç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('MM_MODEL_STATUS', 'Ä£ĞÍ×´Ì¬', 'default');
+values ('MM_MODEL_STATUS', 'æ¨¡å‹çŠ¶æ€', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_HIVE', 'Áª»ú²éÑ¯-Êı¾İÔ´ÅäÖÃ-HIVE²ÎÊı', 'default');
+values ('OLQ_DS_PROPS_HIVE', 'è”æœºæŸ¥è¯¢-æ•°æ®æºé…ç½®-HIVEå‚æ•°', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('UDSP_SYNC_TYPE', 'Í¬²½/Òì²½', 'default');
+values ('UDSP_SYNC_TYPE', 'åŒæ­¥/å¼‚æ­¥', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('UDSP_SERVICE_TYPE', 'Ó¦ÓÃÀàĞÍ', 'default');
+values ('UDSP_SERVICE_TYPE', 'åº”ç”¨ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_IMPL_CLASS', 'Áª»ú²éÑ¯-½Ó¿ÚÊµÏÖÀà', 'default');
+values ('OLQ_IMPL_CLASS', 'è”æœºæŸ¥è¯¢-æ¥å£å®ç°ç±»', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('UDSP_REQUEST_TYPE', 'ÇëÇóÀàĞÍ', 'default');
+values ('UDSP_REQUEST_TYPE', 'è¯·æ±‚ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_ORACLE', 'Áª»ú²éÑ¯-Êı¾İÔ´ÅäÖÃ-ORACLE²ÎÊı', 'default');
+values ('OLQ_DS_PROPS_ORACLE', 'è”æœºæŸ¥è¯¢-æ•°æ®æºé…ç½®-ORACLEå‚æ•°', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_MYSQL', 'Áª»ú²éÑ¯-Êı¾İÔ´ÅäÖÃ-MYSQL²ÎÊı', 'default');
+values ('OLQ_DS_PROPS_MYSQL', 'è”æœºæŸ¥è¯¢-æ•°æ®æºé…ç½®-MYSQLå‚æ•°', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_KYLIN', 'Áª»ú²éÑ¯-Êı¾İÔ´ÅäÖÃ-KYLIN²ÎÊı', 'default');
+values ('OLQ_DS_PROPS_KYLIN', 'è”æœºæŸ¥è¯¢-æ•°æ®æºé…ç½®-KYLINå‚æ•°', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_DB2', 'Áª»ú²éÑ¯-Êı¾İÔ´ÅäÖÃ-DB2²ÎÊı', 'default');
+values ('OLQ_DS_PROPS_DB2', 'è”æœºæŸ¥è¯¢-æ•°æ®æºé…ç½®-DB2å‚æ•°', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_PGSQL', 'Áª»ú²éÑ¯-Êı¾İÔ´ÅäÖÃ-PGSQL²ÎÊı', 'default');
+values ('OLQ_DS_PROPS_PGSQL', 'è”æœºæŸ¥è¯¢-æ•°æ®æºé…ç½®-PGSQLå‚æ•°', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('UDSP_COMMON_DATA_TYPE', 'UDSPÊı¾İÀàĞÍ', 'default');
+values ('UDSP_COMMON_DATA_TYPE', 'UDSPæ•°æ®ç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_PROPS_HIVE', '½»»¥½¨Ä£-Êı¾İÔ´ÅäÖÃ-HIVE²ÎÊı', 'default');
+values ('IM_DS_PROPS_HIVE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºé…ç½®-HIVEå‚æ•°', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_PROPS_HBASE', '½»»¥½¨Ä£-Êı¾İÔ´ÅäÖÃ-HBASE', 'default');
+values ('IM_DS_PROPS_HBASE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºé…ç½®-HBASE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_PROPS_SOLR', '½»»¥½¨Ä£-Êı¾İÔ´ÅäÖÃ-SOLR', 'default');
+values ('IM_DS_PROPS_SOLR', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºé…ç½®-SOLR', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_DS_PROPS_ELASTICSEARCH', '½»»¥²éÑ¯-Êı¾İÔ´ÅäÖÃ-ELASTICSEARCH', 'default');
+values ('IQ_DS_PROPS_ELASTICSEARCH', 'äº¤äº’æŸ¥è¯¢-æ•°æ®æºé…ç½®-ELASTICSEARCH', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_PROPS_ORACLE', '½»»¥½¨Ä£-Êı¾İÔ´ÅäÖÃ-ORACLE', 'default');
+values ('IM_DS_PROPS_ORACLE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºé…ç½®-ORACLE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_SOURCE_BATCH_TYPE', '½»»¥½¨Ä£-Êı¾İÔ´ÀàĞÍ£¨Ô´£©', 'default');
+values ('IM_DS_SOURCE_BATCH_TYPE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºç±»å‹ï¼ˆæºï¼‰', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_SOURCE_REALTIME_TYPE', '½»»¥½¨Ä£-Êı¾İÔ´ÀàĞÍ£¨Ô´¡¢ÊµÊ±£©', 'default');
+values ('IM_DS_SOURCE_REALTIME_TYPE', 'äº¤äº’å»ºæ¨¡-æ•°æ®æºç±»å‹ï¼ˆæºã€å®æ—¶ï¼‰', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_FILTER_TYPE', '½»»¥½¨Ä£-¹ıÂË×Ö¶Î²Ù×÷ÀàĞÍ', 'default');
+values ('IM_MODEL_FILTER_TYPE', 'äº¤äº’å»ºæ¨¡-è¿‡æ»¤å­—æ®µæ“ä½œç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_PROPS_SOLR', '½»»¥½¨Ä£-Ä£ĞÍ²ÎÊı-SOLR', 'default');
+values ('IM_MODEL_PROPS_SOLR', 'äº¤äº’å»ºæ¨¡-æ¨¡å‹å‚æ•°-SOLR', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_PROPS_KAFKA', '½»»¥½¨Ä£-Ä£ĞÍ²ÎÊı-KAFKA', 'default');
+values ('IM_MODEL_PROPS_KAFKA', 'äº¤äº’å»ºæ¨¡-æ¨¡å‹å‚æ•°-KAFKA', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_ENGINE_TYPE', '½»»¥½¨Ä£-ÒıÇæÊı¾İÔ´ÀàĞÍ', 'default');
+values ('IM_MODEL_ENGINE_TYPE', 'äº¤äº’å»ºæ¨¡-å¼•æ“æ•°æ®æºç±»å‹', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_BATCH_JOB_STATUS', '½»»¥½¨Ä£-ÅúÁ¿×÷Òµ×´Ì¬', 'default');
+values ('IM_BATCH_JOB_STATUS', 'äº¤äº’å»ºæ¨¡-æ‰¹é‡ä½œä¸šçŠ¶æ€', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('OLQ_DS_PROPS_INCEPTOR', 'Áª»ú²éÑ¯-Êı¾İÔ´ÅäÖÃ-INCEPTORÅäÖÃ', 'default');
+values ('OLQ_DS_PROPS_INCEPTOR', 'è”æœºæŸ¥è¯¢-æ•°æ®æºé…ç½®-INCEPTORé…ç½®', 'default');
 commit;
 prompt 81 records loaded
 prompt Loading T_GF_EMPLOYEE...
@@ -1373,141 +1373,141 @@ commit;
 prompt 1 records loaded
 prompt Loading T_GF_FUNCATION...
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('20011', 'IM.cm.model.list.create', '½»»¥½¨Ä£>Ä£ĞÍÅäÖÃ>´´½¨', null, null, null, null, 'default');
+values ('20011', 'IM.cm.model.list.create', 'äº¤äº’å»ºæ¨¡>æ¨¡å‹é…ç½®>åˆ›å»º', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('17011', 'IM.cm.ds.list.add', '½»»¥½¨Ä£>Êı¾İÔ´ÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('17011', 'IM.cm.ds.list.add', 'äº¤äº’å»ºæ¨¡>æ•°æ®æºé…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('17021', 'IM.cm.ds.list.edit', '½»»¥½¨Ä£>Êı¾İÔ´ÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('17021', 'IM.cm.ds.list.edit', 'äº¤äº’å»ºæ¨¡>æ•°æ®æºé…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('17031', 'IM.cm.ds.list.remove', '½»»¥½¨Ä£>Êı¾İÔ´ÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('17031', 'IM.cm.ds.list.remove', 'äº¤äº’å»ºæ¨¡>æ•°æ®æºé…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('18011', 'IM.cm.md.list.add', '½»»¥½¨Ä£>ÔªÊı¾İÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('18011', 'IM.cm.md.list.add', 'äº¤äº’å»ºæ¨¡>å…ƒæ•°æ®é…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('18021', 'IM.cm.md.list.edit', '½»»¥½¨Ä£>ÔªÊı¾İÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('18021', 'IM.cm.md.list.edit', 'äº¤äº’å»ºæ¨¡>å…ƒæ•°æ®é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('18031', 'IM.cm.md.list.remove', '½»»¥½¨Ä£>ÔªÊı¾İÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('18031', 'IM.cm.md.list.remove', 'äº¤äº’å»ºæ¨¡>å…ƒæ•°æ®é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('8011', 'RC.service.list.add', '×¢²áÖĞĞÄ>ÓÃ»§×¢²á>Ìí¼Ó', null, null, null, null, 'default');
+values ('8011', 'RC.service.list.add', 'æ³¨å†Œä¸­å¿ƒ>ç”¨æˆ·æ³¨å†Œ>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('8021', 'RC.service.list.remove', '×¢²áÖĞĞÄ>·şÎñ×¢²á>É¾³ı', null, null, null, null, 'default');
+values ('8021', 'RC.service.list.remove', 'æ³¨å†Œä¸­å¿ƒ>æœåŠ¡æ³¨å†Œ>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('8031', 'RC.service.list.edit', '×¢²áÖĞĞÄ>·şÎñ×¢²á>±à¼­', null, null, null, null, 'default');
+values ('8031', 'RC.service.list.edit', 'æ³¨å†Œä¸­å¿ƒ>æœåŠ¡æ³¨å†Œ>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('10011', 'MM.model.list.add', 'Ä£ĞÍ¹ÜÀí>Ä£ĞÍÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('10011', 'MM.model.list.add', 'æ¨¡å‹ç®¡ç†>æ¨¡å‹é…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('10021', 'MM.model.list.edit', 'Ä£ĞÍ¹ÜÀí>Ä£ĞÍÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('10021', 'MM.model.list.edit', 'æ¨¡å‹ç®¡ç†>æ¨¡å‹é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('10031', 'MM.model.list.remove', 'Ä£ĞÍ¹ÜÀí>Ä£ĞÍÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('10031', 'MM.model.list.remove', 'æ¨¡å‹ç®¡ç†>æ¨¡å‹é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('11011', 'MM.app.list.add', 'Ä£ĞÍ¹ÜÀí>Ó¦ÓÃÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('11011', 'MM.app.list.add', 'æ¨¡å‹ç®¡ç†>åº”ç”¨é…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('11021', 'MM.app.list.edit', 'Ä£ĞÍ¹ÜÀí>Ó¦ÓÃÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('11021', 'MM.app.list.edit', 'æ¨¡å‹ç®¡ç†>åº”ç”¨é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('11031', 'MM.app.list.remove', 'Ä£ĞÍ¹ÜÀí>Ó¦ÓÃÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('11031', 'MM.app.list.remove', 'æ¨¡å‹ç®¡ç†>åº”ç”¨é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('16011', 'OLQ.qm.testapp.search', 'Áª»ú²éÑ¯>OLQÓ¦ÓÃ²âÊÔ>²éÑ¯', null, null, null, null, 'default');
+values ('16011', 'OLQ.qm.testapp.search', 'è”æœºæŸ¥è¯¢>OLQåº”ç”¨æµ‹è¯•>æŸ¥è¯¢', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('16021', 'OLQ.qm.testapp.download', 'Áª»ú²éÑ¯>OLQÓ¦ÓÃ²âÊÔ>ÏÂÔØ', null, null, null, null, 'default');
+values ('16021', 'OLQ.qm.testapp.download', 'è”æœºæŸ¥è¯¢>OLQåº”ç”¨æµ‹è¯•>ä¸‹è½½', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('9011', 'RC.userService.list.add', '×¢²áÖĞĞÄ>ÓÃ»§×¢²á>Ìí¼Ó', null, null, null, null, 'default');
+values ('9011', 'RC.userService.list.add', 'æ³¨å†Œä¸­å¿ƒ>ç”¨æˆ·æ³¨å†Œ>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('9021', 'RC.userService.list.edit', '×¢²áÖĞĞÄ>ÓÃ»§×¢²á>±à¼­', null, null, null, null, 'default');
+values ('9021', 'RC.userService.list.edit', 'æ³¨å†Œä¸­å¿ƒ>ç”¨æˆ·æ³¨å†Œ>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('9031', 'RC.userService.listremove', '×¢²áÖĞĞÄ>ÓÃ»§×¢²á>É¾³ı', null, null, null, null, 'default');
+values ('9031', 'RC.userService.listremove', 'æ³¨å†Œä¸­å¿ƒ>ç”¨æˆ·æ³¨å†Œ>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('13011', 'IQ.cm.md.list.add', '½»»¥²éÑ¯>ÅäÖÃ¹ÜÀí>ÔªÊı¾İÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('13011', 'IQ.cm.md.list.add', 'äº¤äº’æŸ¥è¯¢>é…ç½®ç®¡ç†>å…ƒæ•°æ®é…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('13021', 'IQ.cm.md.list.edit', '½»»¥²éÑ¯>ÅäÖÃ¹ÜÀí>ÔªÊı¾İÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('13021', 'IQ.cm.md.list.edit', 'äº¤äº’æŸ¥è¯¢>é…ç½®ç®¡ç†>å…ƒæ•°æ®é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('13031', 'IQ.cm.md.list.remove', '½»»¥²éÑ¯>ÅäÖÃ¹ÜÀí>ÔªÊı¾İÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('13031', 'IQ.cm.md.list.remove', 'äº¤äº’æŸ¥è¯¢>é…ç½®ç®¡ç†>å…ƒæ•°æ®é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('13041', 'IQ.cm.app.list.add', '½»»¥²éÑ¯>ÅäÖÃ¹ÜÀí>Ó¦ÓÃÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('13041', 'IQ.cm.app.list.add', 'äº¤äº’æŸ¥è¯¢>é…ç½®ç®¡ç†>åº”ç”¨é…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('13051', 'IQ.cm.app.list.edit', '½»»¥²éÑ¯>ÅäÖÃ¹ÜÀí>Ó¦ÓÃÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('13051', 'IQ.cm.app.list.edit', 'äº¤äº’æŸ¥è¯¢>é…ç½®ç®¡ç†>åº”ç”¨é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('13061', 'IQ.cm.app.list.remove', '½»»¥²éÑ¯>ÅäÖÃ¹ÜÀí>Ó¦ÓÃÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('13061', 'IQ.cm.app.list.remove', 'äº¤äº’æŸ¥è¯¢>é…ç½®ç®¡ç†>åº”ç”¨é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('12011', 'MM.contractor.list.add', 'Ä£ĞÍ¹ÜÀí>³§ÉÌ¹ÜÀí>Ìí¼Ó', null, null, null, null, 'default');
+values ('12011', 'MM.contractor.list.add', 'æ¨¡å‹ç®¡ç†>å‚å•†ç®¡ç†>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('12021', 'MM.contractor.list.edit', 'Ä£ĞÍ¹ÜÀí>³§ÉÌ¹ÜÀí>±à¼­', null, null, null, null, 'default');
+values ('12021', 'MM.contractor.list.edit', 'æ¨¡å‹ç®¡ç†>å‚å•†ç®¡ç†>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('12031', 'MM.contractor.list.remove', 'Ä£ĞÍ¹ÜÀí>³§ÉÌ¹ÜÀí>É¾³ı', null, null, null, null, 'default');
+values ('12031', 'MM.contractor.list.remove', 'æ¨¡å‹ç®¡ç†>å‚å•†ç®¡ç†>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14011', 'IQ.qm.test.search', '½»»¥²éÑ¯>Ó¦ÓÃ²âÊÔ>²éÑ¯', null, null, null, null, 'default');
+values ('14011', 'IQ.qm.test.search', 'äº¤äº’æŸ¥è¯¢>åº”ç”¨æµ‹è¯•>æŸ¥è¯¢', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14141', 'RTS.qm.producer.test', 'ÊµÊ±Á÷>Ó¦ÓÃ²âÊÔ>Éú²úÕß²âÊÔ', null, null, null, null, 'default');
+values ('14141', 'RTS.qm.producer.test', 'å®æ—¶æµ>åº”ç”¨æµ‹è¯•>ç”Ÿäº§è€…æµ‹è¯•', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14031', 'IQ.qm.test.download', '½»»¥²éÑ¯>Ó¦ÓÃ²âÊÔ>ÏÂÔØ', null, null, null, null, 'default');
+values ('14031', 'IQ.qm.test.download', 'äº¤äº’æŸ¥è¯¢>åº”ç”¨æµ‹è¯•>ä¸‹è½½', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14041', 'IQ.qm.app.search', '½»»¥²éÑ¯>Ó¦ÓÃÊµÀı>²éÑ¯', null, null, null, null, 'default');
+values ('14041', 'IQ.qm.app.search', 'äº¤äº’æŸ¥è¯¢>åº”ç”¨å®ä¾‹>æŸ¥è¯¢', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14151', 'RTS.qm.consumer.test', 'ÊµÊ±Á÷>Ó¦ÓÃ²âÊÔ>Ïû·ÑÕß²âÊÔ', null, null, null, null, 'default');
+values ('14151', 'RTS.qm.consumer.test', 'å®æ—¶æµ>åº”ç”¨æµ‹è¯•>æ¶ˆè´¹è€…æµ‹è¯•', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14061', 'IQ.qm.app.download', '½»»¥²éÑ¯>Ó¦ÓÃÊµÀı>ÏÂÔØ', null, null, null, null, 'default');
+values ('14061', 'IQ.qm.app.download', 'äº¤äº’æŸ¥è¯¢>åº”ç”¨å®ä¾‹>ä¸‹è½½', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14071', 'OLQ.qm.test.search', 'Áª»ú²éÑ¯>Ó¦ÓÃ²âÊÔ>²éÑ¯', null, null, null, null, 'default');
+values ('14071', 'OLQ.qm.test.search', 'è”æœºæŸ¥è¯¢>åº”ç”¨æµ‹è¯•>æŸ¥è¯¢', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14091', 'OLQ.qm.test.download', 'Áª»ú²éÑ¯>Ó¦ÓÃ²âÊÔ>ÏÂÔØ', null, null, null, null, 'default');
+values ('14091', 'OLQ.qm.test.download', 'è”æœºæŸ¥è¯¢>åº”ç”¨æµ‹è¯•>ä¸‹è½½', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14101', 'OLQ.qm.app.search', 'Áª»ú²éÑ¯>Ó¦ÓÃÊµÀı>²éÑ¯', null, null, null, null, 'default');
+values ('14101', 'OLQ.qm.app.search', 'è”æœºæŸ¥è¯¢>åº”ç”¨å®ä¾‹>æŸ¥è¯¢', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14121', 'OLQ.qm.app.download', 'Áª»ú²éÑ¯>Ó¦ÓÃÊµÀı>ÏÂÔØ', null, null, null, null, 'default');
+values ('14121', 'OLQ.qm.app.download', 'è”æœºæŸ¥è¯¢>åº”ç”¨å®ä¾‹>ä¸‹è½½', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('1011', 'RTS.cm.ds.list.add', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>Êı¾İÔ´ÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('1011', 'RTS.cm.ds.list.add', 'å®æ—¶æµ>é…ç½®ç®¡ç†>æ•°æ®æºé…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('1021', 'RTS.cm.ds.list.edit', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>Êı¾İÔ´ÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('1021', 'RTS.cm.ds.list.edit', 'å®æ—¶æµ>é…ç½®ç®¡ç†>æ•°æ®æºé…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('1031', 'RTS.cm.ds.list.remove', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>Êı¾İÔ´ÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('1031', 'RTS.cm.ds.list.remove', 'å®æ—¶æµ>é…ç½®ç®¡ç†>æ•°æ®æºé…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('5011', 'RTS.cm.producer.list.add', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>Éú²úÕßÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('5011', 'RTS.cm.producer.list.add', 'å®æ—¶æµ>é…ç½®ç®¡ç†>ç”Ÿäº§è€…é…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('5021', 'RTS.cm.producer.list.edit', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>Éú²úÕßÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('5021', 'RTS.cm.producer.list.edit', 'å®æ—¶æµ>é…ç½®ç®¡ç†>ç”Ÿäº§è€…é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('5031', 'RTS.cm.producer.list.remove', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>Éú²úÕßÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('5031', 'RTS.cm.producer.list.remove', 'å®æ—¶æµ>é…ç½®ç®¡ç†>ç”Ÿäº§è€…é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('5041', 'RTS.cm.consumer.list.add', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>Ïû·ÑÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('5041', 'RTS.cm.consumer.list.add', 'å®æ—¶æµ>é…ç½®ç®¡ç†>æ¶ˆè´¹é…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('5051', 'RTS.cm.consumer.list.edit', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>Ïû·ÑÕßÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('5051', 'RTS.cm.consumer.list.edit', 'å®æ—¶æµ>é…ç½®ç®¡ç†>æ¶ˆè´¹è€…é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('5061', 'RTS.cm.consumer.list.remove', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>Ïû·ÑÕßÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('5061', 'RTS.cm.consumer.list.remove', 'å®æ—¶æµ>é…ç½®ç®¡ç†>æ¶ˆè´¹è€…é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('51', 'IQ.cm.ds.list.remove', '½»»¥²éÑ¯>ÅäÖÃ¹ÜÀí>Êı¾İÔ´ÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('51', 'IQ.cm.ds.list.remove', 'äº¤äº’æŸ¥è¯¢>é…ç½®ç®¡ç†>æ•°æ®æºé…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('4021', 'RTS.cm.md.list.add', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>ÔªÊı¾İÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('4021', 'RTS.cm.md.list.add', 'å®æ—¶æµ>é…ç½®ç®¡ç†>å…ƒæ•°æ®é…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('31', 'IQ.cm.ds.list.add', '½»»¥²éÑ¯>ÅäÖÃ¹ÜÀí>Êı¾İÔ´ÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('31', 'IQ.cm.ds.list.add', 'äº¤äº’æŸ¥è¯¢>é…ç½®ç®¡ç†>æ•°æ®æºé…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('41', 'IQ.cm.ds.list.edit', '½»»¥²éÑ¯>ÅäÖÃ¹ÜÀí>Êı¾İÔ´ÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('41', 'IQ.cm.ds.list.edit', 'äº¤äº’æŸ¥è¯¢>é…ç½®ç®¡ç†>æ•°æ®æºé…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('4031', 'RTS.cm.md.list.edit', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>ÔªÊı¾İÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('4031', 'RTS.cm.md.list.edit', 'å®æ—¶æµ>é…ç½®ç®¡ç†>å…ƒæ•°æ®é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('4041', 'RTS.cm.md.list.remove', 'ÊµÊ±Á÷>ÅäÖÃ¹ÜÀí>ÔªÊı¾İÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('4041', 'RTS.cm.md.list.remove', 'å®æ—¶æµ>é…ç½®ç®¡ç†>å…ƒæ•°æ®é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('7011', 'OLQ.cm.ds.list.add', 'Áª»ú²éÑ¯>ÅäÖÃ¹ÜÀí>Êı¾İÔ´ÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('7011', 'OLQ.cm.ds.list.add', 'è”æœºæŸ¥è¯¢>é…ç½®ç®¡ç†>æ•°æ®æºé…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('7021', 'OLQ.cm.ds.list.edit', 'Áª»ú²éÑ¯>ÅäÖÃ¹ÜÀí>Êı¾İÔ´ÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('7021', 'OLQ.cm.ds.list.edit', 'è”æœºæŸ¥è¯¢>é…ç½®ç®¡ç†>æ•°æ®æºé…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('7031', 'OLQ.cm.ds.list.remove', 'Áª»ú²éÑ¯>ÅäÖÃ¹ÜÀí>Êı¾İÔ´ÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('7031', 'OLQ.cm.ds.list.remove', 'è”æœºæŸ¥è¯¢>é…ç½®ç®¡ç†>æ•°æ®æºé…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('14161', 'MM.qm.test.search', 'Ä£ĞÍ¹ÜÀí>Ä£ĞÍ²âÊÔ>Ö´ĞĞ', null, null, null, null, 'default');
+values ('14161', 'MM.qm.test.search', 'æ¨¡å‹ç®¡ç†>æ¨¡å‹æµ‹è¯•>æ‰§è¡Œ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('15011', 'OLQ.cm.app.list.add', 'Áª»ú²éÑ¯>Ó¦ÓÃÅäÖÃ>ĞÂÔö', null, null, null, null, 'default');
+values ('15011', 'OLQ.cm.app.list.add', 'è”æœºæŸ¥è¯¢>åº”ç”¨é…ç½®>æ–°å¢', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('15021', 'OLQ.cm.app.list.edit', 'Áª»ú²éÑ¯>Ó¦ÓÃÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('15021', 'OLQ.cm.app.list.edit', 'è”æœºæŸ¥è¯¢>åº”ç”¨é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('15031', 'OLQ.cm.app.list.remove', 'Áª»ú²éÑ¯>Ó¦ÓÃÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('15031', 'OLQ.cm.app.list.remove', 'è”æœºæŸ¥è¯¢>åº”ç”¨é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('21011', 'RC.service.list.start', '×¢²áÖĞĞÄ>·şÎñ×¢²á>Æô¶¯', null, null, null, null, 'default');
+values ('21011', 'RC.service.list.start', 'æ³¨å†Œä¸­å¿ƒ>æœåŠ¡æ³¨å†Œ>å¯åŠ¨', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('21021', 'RC.service.list.stop', '×¢²áÖĞĞÄ>·şÎñ×¢²á>Í£ÓÃ', null, null, null, null, 'default');
+values ('21021', 'RC.service.list.stop', 'æ³¨å†Œä¸­å¿ƒ>æœåŠ¡æ³¨å†Œ>åœç”¨', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('19011', 'IM.cm.model.list.add', '½»»¥½¨Ä£>Ä£ĞÍÅäÖÃ>Ìí¼Ó', null, null, null, null, 'default');
+values ('19011', 'IM.cm.model.list.add', 'äº¤äº’å»ºæ¨¡>æ¨¡å‹é…ç½®>æ·»åŠ ', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('19021', 'IM.cm.model.list.edit', '½»»¥½¨Ä£>Ä£ĞÍÅäÖÃ>±à¼­', null, null, null, null, 'default');
+values ('19021', 'IM.cm.model.list.edit', 'äº¤äº’å»ºæ¨¡>æ¨¡å‹é…ç½®>ç¼–è¾‘', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('19031', 'IM.cm.model.list.remove', '½»»¥½¨Ä£>Ä£ĞÍÅäÖÃ>É¾³ı', null, null, null, null, 'default');
+values ('19031', 'IM.cm.model.list.remove', 'äº¤äº’å»ºæ¨¡>æ¨¡å‹é…ç½®>åˆ é™¤', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('17041', 'IQ.cm.md.link', '½»»¥²éÑ¯>ÔªÊı¾İÅäÖÃ>¹ØÁªÄ¿±êÔªÊı¾İ', null, null, null, null, 'default');
+values ('17041', 'IQ.cm.md.link', 'äº¤äº’æŸ¥è¯¢>å…ƒæ•°æ®é…ç½®>å…³è”ç›®æ ‡å…ƒæ•°æ®', null, null, null, null, 'default');
 commit;
 prompt 68 records loaded
 prompt Loading T_GF_LOGINUSER...
@@ -1517,123 +1517,123 @@ commit;
 prompt 1 records loaded
 prompt Loading T_GF_MENU...
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('115001', '×÷Òµ¼à¿Ø', null, 'mc.job', '2', null, 30, 'default', null, '100221', null);
+values ('115001', 'ä½œä¸šç›‘æ§', null, 'mc.job', '2', null, 30, 'default', null, '100221', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('115011', 'ÅúÁ¿×÷Òµ', null, 'mc.job.batch', '1', null, 1, 'default', 'mc.job.batch.list', '115001', 'fa fa-tasks');
+values ('115011', 'æ‰¹é‡ä½œä¸š', null, 'mc.job.batch', '1', null, 1, 'default', 'mc.job.batch.list', '115001', 'fa fa-tasks');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('115021', 'ÊµÊ±×÷Òµ', null, 'mc.job.realtime', '1', null, 2, 'default', 'mc.job.realtime.list', '115001', 'fa fa-clock-o');
+values ('115021', 'å®æ—¶ä½œä¸š', null, 'mc.job.realtime', '1', null, 2, 'default', 'mc.job.realtime.list', '115001', 'fa fa-clock-o');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('113001', '½»»¥½¨Ä£', null, 'im.core', '2', null, 110, 'default', null, 'root', null);
+values ('113001', 'äº¤äº’å»ºæ¨¡', null, 'im.core', '2', null, 110, 'default', null, 'root', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('113011', 'IMÊı¾İÔ´ÅäÖÃ', null, 'im.cm.ds', '1', null, 1, 'default', 'com.ds.list?model=IM', '113001', 'fa fa-database');
+values ('113011', 'IMæ•°æ®æºé…ç½®', null, 'im.cm.ds', '1', null, 1, 'default', 'com.ds.list?model=IM', '113001', 'fa fa-database');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('113021', 'IMÔªÊı¾İÅäÖÃ', null, 'im.cm.md', '1', null, 2, 'default', 'im.cm.md.list', '113001', 'fa fa-cubes');
+values ('113021', 'IMå…ƒæ•°æ®é…ç½®', null, 'im.cm.md', '1', null, 2, 'default', 'im.cm.md.list', '113001', 'fa fa-cubes');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('109011', '½ÇÉ«ÊÚÈ¨', null, 'goframe.auth.roleauth', '1', null, 70, 'default', 'goframe.auth.role_auth', '1101', 'fa fa-key');
+values ('109011', 'è§’è‰²æˆæƒ', null, 'goframe.auth.roleauth', '1', null, 70, 'default', 'goframe.auth.role_auth', '1101', 'fa fa-key');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('107001', 'Ç°ÖÃÒøÁªÃ÷Ï¸²éÑ¯Ó¦ÓÃ', null, 'cupatrxjnl_app', '1', null, 2, 'default', 'iq.qm.app?name=soa_cupatrxjnl_solr_hbase_app', '100001', null);
+values ('107001', 'å‰ç½®é“¶è”æ˜ç»†æŸ¥è¯¢åº”ç”¨', null, 'cupatrxjnl_app', '1', null, 2, 'default', 'iq.qm.app?name=soa_cupatrxjnl_solr_hbase_app', '100001', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('110001', 'OLQÓ¦ÓÃÅäÖÃ', null, 'olq.application.config', '1', null, 20, 'default', 'olq.cm.app.list', '100081', 'fa fa-list');
+values ('110001', 'OLQåº”ç”¨é…ç½®', null, 'olq.application.config', '1', null, 20, 'default', 'olq.cm.app.list', '100081', 'fa fa-list');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('106001', 'MM³§ÉÌ¹ÜÀí', null, 'mm.contractor.list', '1', null, 1, 'default', 'mm.cm.contractor.list', '100101', 'fa fa-group');
+values ('106001', 'MMå‚å•†ç®¡ç†', null, 'mm.contractor.list', '1', null, 1, 'default', 'mm.cm.contractor.list', '100101', 'fa fa-group');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('111011', 'OLQÓ¦ÓÃ²âÊÔ', null, 'olq.qm.app', '1', null, 30, 'default', 'olq.qm.olqApps', '100011', 'fa fa-dashboard');
+values ('111011', 'OLQåº”ç”¨æµ‹è¯•', null, 'olq.qm.app', '1', null, 30, 'default', 'olq.qm.olqApps', '100011', 'fa fa-dashboard');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100301', '·şÎñÊÚÈ¨', null, 'rc.auth', '1', null, 20, 'default', 'rc.auth.list', '100211', 'fa fa-key');
+values ('100301', 'æœåŠ¡æˆæƒ', null, 'rc.auth', '1', null, 20, 'default', 'rc.auth.list', '100211', 'fa fa-key');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100311', 'RTSÔªÊı¾İÅäÖÃ', null, 'rts.cm.md', '1', null, 2, 'default', 'rts.cm.md.list', '100121', 'fa fa-cubes');
+values ('100311', 'RTSå…ƒæ•°æ®é…ç½®', null, 'rts.cm.md', '1', null, 2, 'default', 'rts.cm.md.list', '100121', 'fa fa-cubes');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('101011', 'Í¼±íÍ³¼Æ', null, 'mc.stats.charts', '1', null, 1, 'default', 'mc.stats.charts', '100251', 'fa fa-bar-chart-o');
+values ('101011', 'å›¾è¡¨ç»Ÿè®¡', null, 'mc.stats.charts', '1', null, 1, 'default', 'mc.stats.charts', '100251', 'fa fa-bar-chart-o');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('108001', 'Impala´óÊı¾İ¿ª·¢»·¾³Êı¾İ¿â²éÑ¯', null, 'tzb_dev_impala', '1', null, 1, 'default', 'olq.qm.app?name=tzb_dev_impala', '100011', null);
+values ('108001', 'Impalaå¤§æ•°æ®å¼€å‘ç¯å¢ƒæ•°æ®åº“æŸ¥è¯¢', null, 'tzb_dev_impala', '1', null, 1, 'default', 'olq.qm.app?name=tzb_dev_impala', '100011', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('1101', 'ºóÌ¨¹ÜÀí', 'ºóÌ¨¹ÜÀí', 'goframe.core', '2', null, 1001, 'default', null, 'root', null);
+values ('1101', 'åå°ç®¡ç†', 'åå°ç®¡ç†', 'goframe.core', '2', null, 1001, 'default', null, 'root', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('1102', 'ÓÃ»§¹ÜÀí', null, 'goframe.user.list', '1', null, 20, 'default', 'goframe.user.list', '1101', 'glyphicon glyphicon-user');
+values ('1102', 'ç”¨æˆ·ç®¡ç†', null, 'goframe.user.list', '1', null, 20, 'default', 'goframe.user.list', '1101', 'glyphicon glyphicon-user');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('1103', '½ÇÉ«¹ÜÀí', null, 'goframe.role.index', '1', null, 30, 'default', 'goframe.role.index', '1101', 'fa fa-users');
+values ('1103', 'è§’è‰²ç®¡ç†', null, 'goframe.role.index', '1', null, 30, 'default', 'goframe.role.index', '1101', 'fa fa-users');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('1104', '×éÖ¯»ú¹¹', null, 'goframe.org.index', '1', null, 10, 'default', 'goframe.org.tree', '1101', 'fa fa-tree');
+values ('1104', 'ç»„ç»‡æœºæ„', null, 'goframe.org.index', '1', null, 10, 'default', 'goframe.org.tree', '1101', 'fa fa-tree');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('1105', '²Ëµ¥¹ÜÀí', null, 'goframe.menu.manage', '1', null, 40, 'default', 'goframe.menu.manage', '1101', 'glyphicon glyphicon-menu-hamburger');
+values ('1105', 'èœå•ç®¡ç†', null, 'goframe.menu.manage', '1', null, 40, 'default', 'goframe.menu.manage', '1101', 'glyphicon glyphicon-menu-hamburger');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('1107', 'Êı¾İ×Öµä', null, 'goframe.dict.index', '1', null, 50, 'default', 'goframe.dict.index', '1101', 'fa fa-table');
+values ('1107', 'æ•°æ®å­—å…¸', null, 'goframe.dict.index', '1', null, 50, 'default', 'goframe.dict.index', '1101', 'fa fa-table');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('101001', 'ÈÎÎñµ÷¶È', null, 'goframe.schedule.list', '1', null, 80, 'default', 'goframe.schedule.list', '1101', 'fa fa-tasks');
+values ('101001', 'ä»»åŠ¡è°ƒåº¦', null, 'goframe.schedule.list', '1', null, 80, 'default', 'goframe.schedule.list', '1101', 'fa fa-tasks');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('101002', '¹¦ÄÜ¹ÜÀí', null, 'goframe.function.index', '1', null, 60, 'default', 'goframe.function.index', '1101', null);
+values ('101002', 'åŠŸèƒ½ç®¡ç†', null, 'goframe.function.index', '1', null, 60, 'default', 'goframe.function.index', '1101', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100001', '½»»¥²éÑ¯', null, 'iq.core', '2', null, 101, 'default', null, 'root', null);
+values ('100001', 'äº¤äº’æŸ¥è¯¢', null, 'iq.core', '2', null, 101, 'default', null, 'root', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100011', 'Áª»ú²éÑ¯', null, 'olq.core', '2', null, 201, 'default', null, 'root', null);
+values ('100011', 'è”æœºæŸ¥è¯¢', null, 'olq.core', '2', null, 201, 'default', null, 'root', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100021', 'Ä£ĞÍ¹ÜÀí', null, 'mm.core', '2', null, 301, 'default', null, 'root', null);
+values ('100021', 'æ¨¡å‹ç®¡ç†', null, 'mm.core', '2', null, 301, 'default', null, 'root', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100031', 'ÊµÊ±Á÷', null, 'rts.core', '2', null, 401, 'default', null, 'root', null);
+values ('100031', 'å®æ—¶æµ', null, 'rts.core', '2', null, 401, 'default', null, 'root', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100041', 'IQÅäÖÃ¹ÜÀí', null, 'iq.cm', '2', null, 10, 'default', null, '100001', null);
+values ('100041', 'IQé…ç½®ç®¡ç†', null, 'iq.cm', '2', null, 10, 'default', null, '100001', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100051', 'IQÓ¦ÓÃ²âÊÔ', null, 'iq.qm', '1', null, 20, 'default', 'iq.qm.test', '100001', 'fa fa-dashboard');
+values ('100051', 'IQåº”ç”¨æµ‹è¯•', null, 'iq.qm', '1', null, 20, 'default', 'iq.qm.test', '100001', 'fa fa-dashboard');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100061', 'IQÊı¾İÔ´ÅäÖÃ', null, 'iq.cm.ds', '1', null, 1, 'default', 'com.ds.list?model=IQ', '100041', 'fa fa-database');
+values ('100061', 'IQæ•°æ®æºé…ç½®', null, 'iq.cm.ds', '1', null, 1, 'default', 'com.ds.list?model=IQ', '100041', 'fa fa-database');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100071', 'IQÔªÊı¾İÅäÖÃ', null, 'iq.cm.md', '1', null, 2, 'default', 'iq.cm.md.list', '100041', 'fa fa-cubes');
+values ('100071', 'IQå…ƒæ•°æ®é…ç½®', null, 'iq.cm.md', '1', null, 2, 'default', 'iq.cm.md.list', '100041', 'fa fa-cubes');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100091', 'OLQÊı¾İÔ´²âÊÔ', null, 'olq.qm.ds', '1', null, 20, 'default', 'olq.qm.test', '100011', 'fa fa-dashboard');
+values ('100091', 'OLQæ•°æ®æºæµ‹è¯•', null, 'olq.qm.ds', '1', null, 20, 'default', 'olq.qm.test', '100011', 'fa fa-dashboard');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100111', 'MMÓ¦ÓÃ²âÊÔ', null, 'mm.qm', '1', null, 20, 'default', 'mm.qm.test', '100021', null);
+values ('100111', 'MMåº”ç”¨æµ‹è¯•', null, 'mm.qm', '1', null, 20, 'default', 'mm.qm.test', '100021', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100121', 'RTSÅäÖÃ¹ÜÀí', null, 'rts.cm', '2', null, 10, 'default', null, '100031', null);
+values ('100121', 'RTSé…ç½®ç®¡ç†', null, 'rts.cm', '2', null, 10, 'default', null, '100031', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100141', 'MMÄ£ĞÍÅäÖÃ', null, 'mm.cm.model', '1', null, 2, 'default', 'mm.cm.model.list', '100101', 'fa fa-cubes');
+values ('100141', 'MMæ¨¡å‹é…ç½®', null, 'mm.cm.model', '1', null, 2, 'default', 'mm.cm.model.list', '100101', 'fa fa-cubes');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100161', 'IQÓ¦ÓÃÅäÖÃ', null, 'iq.cm.app', '1', null, 3, 'default', 'iq.cm.app.list', '100041', 'fa fa-list');
+values ('100161', 'IQåº”ç”¨é…ç½®', null, 'iq.cm.app', '1', null, 3, 'default', 'iq.cm.app.list', '100041', 'fa fa-list');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100171', 'OLQÊı¾İÔ´ÅäÖÃ', null, 'olq.cm.ds', '1', null, 1, 'default', 'com.ds.list?model=OLQ', '100081', 'fa fa-database');
+values ('100171', 'OLQæ•°æ®æºé…ç½®', null, 'olq.cm.ds', '1', null, 1, 'default', 'com.ds.list?model=OLQ', '100081', 'fa fa-database');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100191', 'RTSÉú²úÕßÅäÖÃ', null, 'rts.cm.producer', '1', null, 3, 'default', 'rts.cm.producer.list', '100121', 'fa fa-sign-in');
+values ('100191', 'RTSç”Ÿäº§è€…é…ç½®', null, 'rts.cm.producer', '1', null, 3, 'default', 'rts.cm.producer.list', '100121', 'fa fa-sign-in');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100211', '×¢²áÖĞĞÄ', null, 'rc.core', '2', null, 501, 'default', null, 'root', null);
+values ('100211', 'æ³¨å†Œä¸­å¿ƒ', null, 'rc.core', '2', null, 501, 'default', null, 'root', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100231', 'ÈÕÖ¾¼à¿Ø', null, 'mc.log', '2', null, 10, 'default', null, '100221', null);
+values ('100231', 'æ—¥å¿—ç›‘æ§', null, 'mc.log', '2', null, 10, 'default', null, '100221', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100261', '²Ù×÷ÈÕÖ¾', null, 'mc.log.operation', '1', null, 1, 'default', 'mc.log.operation.list', '100231', 'fa fa-file-text-o');
+values ('100261', 'æ“ä½œæ—¥å¿—', null, 'mc.log.operation', '1', null, 1, 'default', 'mc.log.operation.list', '100231', 'fa fa-file-text-o');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100291', '·şÎñ×¢²á', null, 'rc.service', '1', null, 10, 'default', 'rc.service.list', '100211', 'fa fa-shield');
+values ('100291', 'æœåŠ¡æ³¨å†Œ', null, 'rc.service', '1', null, 10, 'default', 'rc.service.list', '100211', 'fa fa-shield');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100081', 'OLQÅäÖÃ¹ÜÀí', null, 'olq.cm', '2', null, 10, 'default', null, '100011', null);
+values ('100081', 'OLQé…ç½®ç®¡ç†', null, 'olq.cm', '2', null, 10, 'default', null, '100011', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100101', 'MMÅäÖÃ¹ÜÀí', null, 'mm.cm', '2', null, 10, 'default', null, '100021', null);
+values ('100101', 'MMé…ç½®ç®¡ç†', null, 'mm.cm', '2', null, 10, 'default', null, '100021', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100131', 'RTSÓ¦ÓÃ²âÊÔ', null, 'rts.qm', '1', null, 20, 'default', 'rts.qm.test', '100031', 'fa fa-dashboard');
+values ('100131', 'RTSåº”ç”¨æµ‹è¯•', null, 'rts.qm', '1', null, 20, 'default', 'rts.qm.test', '100031', 'fa fa-dashboard');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100151', 'MMÓ¦ÓÃÅäÖÃ', null, 'mm.cm.app', '1', null, 3, 'default', 'mm.cm.app.list', '100101', 'fa fa-list');
+values ('100151', 'MMåº”ç”¨é…ç½®', null, 'mm.cm.app', '1', null, 3, 'default', 'mm.cm.app.list', '100101', 'fa fa-list');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100181', 'RTSÊı¾İÔ´ÅäÖÃ', null, 'rts.cm.ds', '1', null, 1, 'default', 'com.ds.list?model=RTS', '100121', 'fa fa-database');
+values ('100181', 'RTSæ•°æ®æºé…ç½®', null, 'rts.cm.ds', '1', null, 1, 'default', 'com.ds.list?model=RTS', '100121', 'fa fa-database');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100201', 'RTSÏû·ÑÕßÅäÖÃ', null, 'rts.cm.consumer', '1', null, 4, 'default', 'rts.cm.consumer.list', '100121', 'fa fa-sign-out');
+values ('100201', 'RTSæ¶ˆè´¹è€…é…ç½®', null, 'rts.cm.consumer', '1', null, 4, 'default', 'rts.cm.consumer.list', '100121', 'fa fa-sign-out');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100221', '¼à¿ØÖĞĞÄ', null, 'mc.core', '2', null, 601, 'default', null, 'root', null);
+values ('100221', 'ç›‘æ§ä¸­å¿ƒ', null, 'mc.core', '2', null, 601, 'default', null, 'root', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100251', 'Í³¼Æ¼à¿Ø', null, 'mc.stats', '2', null, 40, 'default', null, '100221', null);
+values ('100251', 'ç»Ÿè®¡ç›‘æ§', null, 'mc.stats', '2', null, 40, 'default', null, '100221', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('100271', 'Ïû·ÑÈÕÖ¾', null, 'mc.log.consume', '1', null, 2, 'default', 'mc.log.consume.list', '100231', 'fa fa-file-text');
+values ('100271', 'æ¶ˆè´¹æ—¥å¿—', null, 'mc.log.consume', '1', null, 2, 'default', 'mc.log.consume.list', '100231', 'fa fa-file-text');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('112001', 'ImpalaÁª»ú²éÑ¯Ó¦ÓÃ', null, 'tzb_olq_app', '1', null, 2, 'default', 'olq.qm.olqApp?name=olq_app3', '100011', null);
+values ('112001', 'Impalaè”æœºæŸ¥è¯¢åº”ç”¨', null, 'tzb_olq_app', '1', null, 2, 'default', 'olq.qm.olqApp?name=olq_app3', '100011', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('105001', '´æ´û±È²éÑ¯Ó¦ÓÃ', null, 'cdb_app', '1', null, 1, 'default', 'iq.qm.app?name=soa_cdb_solr_hbase_app2', '100001', null);
+values ('105001', 'å­˜è´·æ¯”æŸ¥è¯¢åº”ç”¨', null, 'cdb_app', '1', null, 1, 'default', 'iq.qm.app?name=soa_cdb_solr_hbase_app2', '100001', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('113031', 'IMÄ£ĞÍÅäÖÃ', null, 'im.cm.model', '1', null, 3, 'default', 'im.cm.model.list', '113001', 'fa fa-list');
+values ('113031', 'IMæ¨¡å‹é…ç½®', null, 'im.cm.model', '1', null, 3, 'default', 'im.cm.model.list', '113001', 'fa fa-list');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('115031', '¶ÓÁĞ¼à¿Ø', null, 'mc.queue', '2', null, 20, 'default', null, '100221', null);
+values ('115031', 'é˜Ÿåˆ—ç›‘æ§', null, 'mc.queue', '2', null, 20, 'default', null, '100221', null);
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('115041', 'ÔËĞĞ¶ÓÁĞ', null, 'mc.queue.run', '1', null, 1, 'default', 'mc.current.list', '115031', 'fa fa-align-justify');
+values ('115041', 'è¿è¡Œé˜Ÿåˆ—', null, 'mc.queue.run', '1', null, 1, 'default', 'mc.current.list', '115031', 'fa fa-align-justify');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('115051', 'µÈ´ı¶ÓÁĞ', null, 'mc.queue.wait', '1', null, 2, 'default', 'mc.wait.list', '115031', 'fa fa-align-center');
+values ('115051', 'ç­‰å¾…é˜Ÿåˆ—', null, 'mc.queue.wait', '1', null, 2, 'default', 'mc.wait.list', '115031', 'fa fa-align-center');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('114001', 'ÓÃ»§Î¬¶ÈÍ³¼Æ', null, 'mc.stats.user.userChart', '1', null, 2, 'default', 'mc.stats.user.userChart', '100251', 'fa fa-bar-chart-o');
+values ('114001', 'ç”¨æˆ·ç»´åº¦ç»Ÿè®¡', null, 'mc.stats.user.userChart', '1', null, 2, 'default', 'mc.stats.user.userChart', '100251', 'fa fa-bar-chart-o');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('114011', '·şÎñÎ¬¶ÈÍ³¼Æ', null, 'mc.stats.service.serviceChart', '1', null, 3, 'default', 'mc.stats.service.serviceChart', '100251', 'fa fa-bar-chart-o');
+values ('114011', 'æœåŠ¡ç»´åº¦ç»Ÿè®¡', null, 'mc.stats.service.serviceChart', '1', null, 3, 'default', 'mc.stats.service.serviceChart', '100251', 'fa fa-bar-chart-o');
 commit;
 prompt 59 records loaded
 prompt Loading T_GF_NEXTID...
@@ -1657,7 +1657,7 @@ commit;
 prompt 8 records loaded
 prompt Loading T_GF_ORG...
 insert into T_GF_ORG (orgid, orgname, orgcode, org_level, org_seq, org_type, org_address, zipcode, linkman, linktel, create_date, update_date, display_order, org_comment, app_id, parent_orgid)
-values ('1', 'ÉÏº£ÖÂÓî', '0000', 1, '.1.', 'undefined', 'ÉÏº£', null, null, null, null, null, null, null, 'default', '0');
+values ('1', 'ä¸Šæµ·è‡´å®‡', '0000', 1, '.1.', 'undefined', 'ä¸Šæµ·', null, null, null, null, null, null, null, 'default', '0');
 commit;
 prompt 1 records loaded
 prompt Loading T_GF_QUARTZ...
@@ -1889,7 +1889,7 @@ commit;
 prompt 110 records loaded
 prompt Loading T_GF_ROLE...
 insert into T_GF_ROLE (roleid, app_id, rolename, role_desc)
-values ('ADMIN', 'default', 'ÏµÍ³¹ÜÀíÔ±', null);
+values ('ADMIN', 'default', 'ç³»ç»Ÿç®¡ç†å‘˜', null);
 commit;
 prompt 1 records loaded
 prompt Loading T_GF_SCHD_JOB...

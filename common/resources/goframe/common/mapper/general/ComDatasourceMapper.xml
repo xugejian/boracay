@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.hex.bigdata.udsp.common.model.ComDatasource" >
     <id column="PK_ID" property="pkId" jdbcType="VARCHAR" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
-    <result column="DESCRIBE" property="describe" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="describe" jdbcType="VARCHAR" />
     <result column="TYPE" property="type" jdbcType="VARCHAR" />
     <result column="NOTE" property="note" jdbcType="VARCHAR" />
     <result column="DEL_FLG" property="delFlg" jdbcType="CHAR" />
@@ -36,7 +36,7 @@
     update COM_DATASOURCE set DEL_FLG = '1' where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.common.model.ComDatasource" >
-    insert into COM_DATASOURCE (PK_ID, NAME, DESCRIBE, 
+    insert into COM_DATASOURCE (PK_ID, NAME, DESCRIPTION,
       TYPE, NOTE, DEL_FLG, CRT_USER, 
       CRT_TIME, UPT_USER, UPT_TIME, 
       IMPL_CLASS, MODEL)
@@ -48,7 +48,7 @@
   <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.common.model.ComDatasource" >
     update COM_DATASOURCE
     set NAME = #{name,jdbcType=VARCHAR},
-      DESCRIBE = #{describe,jdbcType=VARCHAR},
+      DESCRIPTION = #{describe,jdbcType=VARCHAR},
       TYPE = #{type,jdbcType=VARCHAR},
       NOTE = #{note,jdbcType=VARCHAR},
       DEL_FLG = #{delFlg,jdbcType=CHAR},
@@ -61,24 +61,24 @@
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
+    select PK_ID, NAME, DESCRIPTION, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
     UPT_TIME, IMPL_CLASS, MODEL
     from COM_DATASOURCE
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, 
+    select PK_ID, NAME, DESCRIPTION, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
     UPT_TIME, IMPL_CLASS, MODEL
     from COM_DATASOURCE
   </select>
   <select id="select" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.common.dto.ComDatasourceView" >
-    select A.PK_ID, A.NAME, A.DESCRIBE, A.TYPE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
+    select A.PK_ID, A.NAME, A.DESCRIPTION, A.TYPE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
     A.UPT_TIME, A.IMPL_CLASS, A.MODEL
     from COM_DATASOURCE A
     where A.DEL_FLG = '0'
     <if test="pkId!='' and pkId!=null ">and A.PK_ID = #{pkId}</if>
     <if test="name!='' and name!=null ">and A.NAME like '%' || #{name} || '%'</if>
-    <if test="describe!='' and describe!=null ">and A.DESCRIBE like '%' || #{describe} || '%'</if>
+    <if test="describe!='' and describe!=null ">and A.DESCRIPTION like '%' || #{describe} || '%'</if>
     <if test="note!='' and note!=null ">and A.NOTE like '%' || #{note} || '%'</if>
     <if test="type!='' and type!=null ">and A.TYPE = #{type}</if>
     <if test="crtTimeStart!=null and crtTimeStart!='' ">and A.CRT_TIME >= #{crtTimeStart}</if>
@@ -95,14 +95,14 @@
     order by UPT_TIME desc, CRT_TIME desc, NAME asc
   </select>
   <select id="selectByModel" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select A.PK_ID, A.NAME, A.DESCRIBE, A.TYPE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
+    select A.PK_ID, A.NAME, A.DESCRIPTION, A.TYPE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
     A.UPT_TIME, A.IMPL_CLASS, A.MODEL
     from COM_DATASOURCE A
     where A.DEL_FLG = '0'
     and A.MODEL = #{model}
   </select>
   <select id="selectByModelAndName" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.common.model.ComDatasource" >
-    select A.PK_ID, A.NAME, A.DESCRIBE, A.TYPE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
+    select A.PK_ID, A.NAME, A.DESCRIPTION, A.TYPE, A.NOTE, A.DEL_FLG, A.CRT_USER, A.CRT_TIME, A.UPT_USER,
     A.UPT_TIME, A.IMPL_CLASS, A.MODEL
     from COM_DATASOURCE A
     where A.DEL_FLG = '0'
@@ -126,7 +126,7 @@
   </select>
 
   <select id="selectImSourceDs" resultMap="BaseResultMap">
-    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    select PK_ID, NAME, DESCRIPTION, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
     UPT_TIME, IMPL_CLASS, MODEL
     from COM_DATASOURCE CD
     where CD.DEL_FLG = '0'
@@ -151,7 +151,7 @@
   </select>
 
   <select id="selectEngineDs" resultMap="BaseResultMap">
-    select PK_ID, NAME, DESCRIBE, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    select PK_ID, NAME, DESCRIPTION, TYPE, NOTE, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
     UPT_TIME, IMPL_CLASS, MODEL
     from COM_DATASOURCE CD
     where CD.DEL_FLG = '0'
