@@ -2,12 +2,13 @@ package com.hex.bigdata.udsp.iq.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.dao.ComDatasourceMapper;
-import com.hex.bigdata.udsp.common.model.*;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.model.ComDatasource;
+import com.hex.bigdata.udsp.common.model.ComExcelParam;
+import com.hex.bigdata.udsp.common.model.ComExcelProperties;
+import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
+import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.iq.dao.IqMetadataMapper;
 import com.hex.bigdata.udsp.iq.dto.IqMetadataPropsView;
 import com.hex.bigdata.udsp.iq.dto.IqMetadataView;
@@ -18,7 +19,6 @@ import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.DateUtil;
 import com.hex.goframe.util.FileUtil;
 import com.hex.goframe.util.Util;
-import com.hex.goframe.util.WebUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -47,6 +47,8 @@ public class IqMetadataService extends BaseService {
     private IqMetadataColService iqMetadataColService;
     @Autowired
     private ComDatasourceMapper comDatasourceMapper;
+    @Autowired
+    private ComPropertiesService comPropertiesService;
 
     @Transactional
     public String insert(IqMetadata iqMetadata) {
@@ -65,6 +67,7 @@ public class IqMetadataService extends BaseService {
         if (StringUtils.isNotBlank(pkId)) {
             iqMetadataColService.insertQueryColList(pkId, iqMetadataPropsView.getIqMetadataQueryColList());
             iqMetadataColService.insertReturnColList(pkId, iqMetadataPropsView.getIqMetadataReturnColList());
+            comPropertiesService.insertList(pkId, iqMetadataPropsView.getComPropertiesList());
             return pkId;
         }
         return "";
@@ -85,8 +88,12 @@ public class IqMetadataService extends BaseService {
         if (!iqMetadataColService.deleteByMdId(pkId)) {
             return false;
         }
+        if (!comPropertiesService.deleteList(pkId)) {
+            return false;
+        }
         iqMetadataColService.insertQueryColList(pkId, iqMetadataPropsView.getIqMetadataQueryColList());
         iqMetadataColService.insertReturnColList(pkId, iqMetadataPropsView.getIqMetadataReturnColList());
+        comPropertiesService.insertList(pkId, iqMetadataPropsView.getComPropertiesList());
         return true;
     }
 

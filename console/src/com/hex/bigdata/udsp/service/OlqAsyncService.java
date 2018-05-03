@@ -3,10 +3,10 @@ package com.hex.bigdata.udsp.service;
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
-import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.service.InitParamService;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.common.util.StatementUtil;
 import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.dto.WaitNumResult;
@@ -17,7 +17,6 @@ import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
 import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
-import com.hex.bigdata.udsp.olq.utils.OlqCommUtil;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.thread.WaitQueueCallable;
 import com.hex.bigdata.udsp.thread.async.OlqAsyncCallable;
@@ -153,7 +152,7 @@ public class OlqAsyncService implements Runnable {
                     mcConsumeLog.setRunEndTime(format.format(new Date()));
 
                     // 杀死正在执行的SQL
-                    Statement stmt = OlqCommUtil.removeStatement(consumeId);
+                    Statement stmt = StatementUtil.removeStatement(consumeId);
                     if (stmt != null) {
                         try {
                             stmt.cancel();

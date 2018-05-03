@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
-import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.*;
@@ -33,7 +33,6 @@ import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
 import com.hex.bigdata.udsp.olq.model.OlqApplication;
 import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
-import com.hex.bigdata.udsp.olq.utils.OlqCommUtil;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.service.AlarmService;
@@ -442,7 +441,7 @@ public class ConsumerService {
         if ((RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(appType) || RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(appType))
                 && ErrorCode.ERROR_000015.getValue().equals(errorCode)) {
             try {
-                OlqCommUtil.cancel(consumeId);
+                StatementUtil.cancel(consumeId);
             } catch (SQLException e) {
                 message = "取消正在执行的SQL出错，错误信息：" + e.getMessage();
             }

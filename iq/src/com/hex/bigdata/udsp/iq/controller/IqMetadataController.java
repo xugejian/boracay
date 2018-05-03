@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.iq.controller;
 
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.iq.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.iq.dto.IqMetadataPropsView;
 import com.hex.bigdata.udsp.iq.dto.IqMetadataView;
 import com.hex.bigdata.udsp.iq.model.IqMetadata;

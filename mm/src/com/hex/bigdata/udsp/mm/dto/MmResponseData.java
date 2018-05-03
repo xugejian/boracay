@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.mm.dto;
 
-import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
 
 import java.io.Serializable;
 import java.util.List;

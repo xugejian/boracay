@@ -2,11 +2,8 @@ package com.hex.bigdata.udsp.mm.dto;
 
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.provider.model.Page;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA

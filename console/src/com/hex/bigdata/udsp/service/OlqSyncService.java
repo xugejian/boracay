@@ -3,16 +3,12 @@ package com.hex.bigdata.udsp.service;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.provider.model.Page;
-import com.hex.bigdata.udsp.common.util.CreateFileUtil;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
-import com.hex.bigdata.udsp.common.util.FTPClientConfig;
-import com.hex.bigdata.udsp.common.util.FTPHelper;
+import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponseFetch;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
-import com.hex.bigdata.udsp.olq.utils.OlqCommUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,7 +172,7 @@ public class OlqSyncService {
                     e.printStackTrace();
                 }
             }
-            OlqCommUtil.removeStatement(consumeId);
+            StatementUtil.removeStatement(consumeId);
         }
 
         response = new OlqResponse();

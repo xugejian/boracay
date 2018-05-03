@@ -3,7 +3,8 @@ package com.hex.bigdata.udsp.service;
 import com.hex.bigdata.udsp.common.dto.ComDatasourcePropsView;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.util.DatasourceUtil;
 import com.hex.bigdata.udsp.im.service.ImProviderService;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
@@ -36,8 +37,8 @@ public class DatasourceTestService {
     public boolean testDatasource(ComDatasourcePropsView comDatasourcePropsView) {
         ComDatasource comDatasource = comDatasourcePropsView.getComDatasource();
         String model = comDatasourcePropsView.getComDatasource().getModel();
-        List<ComProperties> comProperties = comDatasourcePropsView.getComPropertiesList();
-        Datasource datasource = new Datasource(comDatasource, comProperties);
+        List<ComProperties> comPropertiesList = comDatasourcePropsView.getComPropertiesList();
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comPropertiesList);
         if (RcConstant.UDSP_SERVICE_TYPE_IQ.equalsIgnoreCase(model)) {
             return iqProviderService.testDatasource(datasource);
         } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(model)) {

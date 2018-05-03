@@ -1,22 +1,24 @@
 package com.hex.bigdata.udsp.rts.service;
 
+import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
+import com.hex.bigdata.udsp.common.util.DatasourceUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
+import com.hex.bigdata.udsp.common.util.PropertyUtil;
 import com.hex.bigdata.udsp.rts.dto.RtsConsumerRequestView;
 import com.hex.bigdata.udsp.rts.dto.RtsMatedataColsView;
 import com.hex.bigdata.udsp.rts.dto.RtsProducerRequestView;
+import com.hex.bigdata.udsp.rts.executor.Executor;
+import com.hex.bigdata.udsp.rts.executor.model.*;
 import com.hex.bigdata.udsp.rts.model.RtsConsumer;
 import com.hex.bigdata.udsp.rts.model.RtsMatedata;
 import com.hex.bigdata.udsp.rts.model.RtsMatedataCol;
 import com.hex.bigdata.udsp.rts.model.RtsProducer;
-import com.hex.bigdata.udsp.rts.provider.Provider;
-import com.hex.bigdata.udsp.rts.provider.model.*;
 import com.hex.bigdata.udsp.rts.util.CommonUtil;
 import com.hex.goframe.dao.GFDictMapper;
 import com.hex.goframe.model.GFDict;
@@ -73,28 +75,30 @@ public class RtsProviderService extends BaseService {
 
         //获取数据源
         ComDatasource comDatasource = this.comDatasourceService.select(rtsMatedata.getDsId());
-        //获取消费者配置
-        List<ComProperties> consumerProperties = this.comPropertiesService.selectList(rtsConsumer.getPkId());
         //获取数据源配置
-        List<ComProperties> dsProperties = this.comPropertiesService.selectList(comDatasource.getPkId());
-        //获取生产者的最终配置
-        List<ComProperties> resultProperties = CommonUtil.getProducerProperties(consumerProperties, dsProperties);
+        List<ComProperties> comPropertieList = this.comPropertiesService.selectList(comDatasource.getPkId());
+        //获取消费者配置
+        List<ComProperties> consumerComPropertieList = this.comPropertiesService.selectList(rtsConsumer.getPkId());
+        //合并消费者和数据源参数
+        comPropertieList = PropertyUtil.mergeProperties(comPropertieList, consumerComPropertieList);
 
         ComProperties comProperties = new ComProperties();
         comProperties.setName("group.id");
         comProperties.setValue(rtsConsumer.getGroupId());
-        resultProperties.add(comProperties);
-        //获取消费者数据源配置
-        ConsumerDatasource datasource = new ConsumerDatasource(comDatasource, resultProperties);
-        datasource.setGroupId(rtsConsumer.getGroupId());
-        //获取消费者元数据信息
-        ConsumerMatedata consumerMatedata = new ConsumerMatedata(rtsMatedataColsView, datasource);
+        consumerComPropertieList.add(comProperties);
 
-        ConsumerApplication consumerApplication = new ConsumerApplication(rtsConsumer, consumerMatedata);
+        //获取消费者数据源配置
+        ConsumerDatasource datasource = new ConsumerDatasource(DatasourceUtil.getDatasource(comDatasource, comPropertieList));
+        datasource.setGroupId(rtsConsumer.getGroupId());
+
+        //获取消费者元数据信息
+        ConsumerMatedata consumerMatedata = getConsumerMatedata(rtsMatedataColsView, datasource);
+
+        ConsumerApplication consumerApplication = getConsumerApplication(rtsConsumer, consumerMatedata);
 
         ConsumerRequest consumerRequest = new ConsumerRequest(consumerApplication, timeout);
 
-        Provider provider = getProviderImpl(datasource);
+        Executor provider = getProviderImpl(datasource);
 
         ConsumerResponse consumerResponse = provider.pull(consumerRequest);
         //设置返回列信息
@@ -108,13 +112,14 @@ public class RtsProviderService extends BaseService {
 
     /**
      * 元数据列信息插入到Map
+     *
      * @param rtsMatedataCols
      * @return
      */
-    private LinkedHashMap<String,String> putColumnIntoMap(List<RtsMatedataCol> rtsMatedataCols){
-        LinkedHashMap<String,String> columnMap = new LinkedHashMap<>();
-        for (RtsMatedataCol rtsMatedataCol:rtsMatedataCols){
-            columnMap.put(rtsMatedataCol.getName(),rtsMatedataCol.getType());
+    private LinkedHashMap<String, String> putColumnIntoMap(List<RtsMatedataCol> rtsMatedataCols) {
+        LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();
+        for (RtsMatedataCol rtsMatedataCol : rtsMatedataCols) {
+            columnMap.put(rtsMatedataCol.getName(), rtsMatedataCol.getType());
         }
         return columnMap;
     }
@@ -132,32 +137,31 @@ public class RtsProviderService extends BaseService {
         //获取元数据信息及数据列信息
         RtsMatedata rtsMatedata = this.rtsMatedataService.select(rtsProducer.getMdId());
 
-        RtsMatedataCol rtsMatedataCol = new RtsMatedataCol();
         List<RtsMatedataCol> rtsMatedataCols = this.rtsMatedataColService.selectByMdId(rtsMatedata.getPkId());
         RtsMatedataColsView rtsMatedataColsView = new RtsMatedataColsView(rtsMatedata, rtsMatedataCols);
 
         //获取数据源
         ComDatasource comDatasource = this.comDatasourceService.select(rtsMatedata.getDsId());
-        //获取生产者配置
-        List<ComProperties> producerProperties = this.comPropertiesService.selectList(rtsProducer.getPkId());
         //获取数据源配置
-        List<ComProperties> dsProperties = this.comPropertiesService.selectList(comDatasource.getPkId());
-        //获取生产者的最终配置
-        List<ComProperties> resultProperties = CommonUtil.getProducerProperties(producerProperties, dsProperties);
+        List<ComProperties> comPropertieList = this.comPropertiesService.selectList(comDatasource.getPkId());
+        //获取生产者配置
+        List<ComProperties> producerComPropertieList = this.comPropertiesService.selectList(rtsProducer.getPkId());
+        //合并生产者和数据源参数
+        comPropertieList = PropertyUtil.mergeProperties(comPropertieList, producerComPropertieList);
 
         //获取生产者数据源配置
-        ProducerDatasource datasource = new ProducerDatasource(comDatasource, resultProperties);
+        ProducerDatasource datasource = new ProducerDatasource(DatasourceUtil.getDatasource(comDatasource, comPropertieList));
         //获取生产者元数据信息
-        ProducerMatedata producerMatedata = new ProducerMatedata(rtsMatedataColsView, datasource);
+        ProducerMatedata producerMatedata = getProducerMatedata(rtsMatedataColsView, datasource);
 
-        ProducerApplication producerApplication = new ProducerApplication(rtsProducer, producerMatedata);
+        ProducerApplication producerApplication = getProducerApplication(rtsProducer, producerMatedata);
 
 
         List<Map<String, String>> messageDatas = requestView.getListMap();
 
         ProducerRequest producerRequest = new ProducerRequest(producerApplication, messageDatas);
 
-        Provider provider = getProviderImpl(datasource);
+        Executor provider = getProviderImpl(datasource);
 
         ProducerResponse response = provider.push(producerRequest);
 
@@ -171,7 +175,7 @@ public class RtsProviderService extends BaseService {
      * @return
      */
     public boolean testDatasource(Datasource datasource) {
-        Provider provider = getProviderImpl(datasource);
+        Executor provider = getProviderImpl(datasource);
         return provider.testDatasource(datasource);
     }
 
@@ -181,12 +185,54 @@ public class RtsProviderService extends BaseService {
      * @param datasource
      * @return
      */
-    private Provider getProviderImpl(Datasource datasource) {
+    private Executor getProviderImpl(Datasource datasource) {
         String implClass = datasource.getImplClass();
         if (StringUtils.isBlank(implClass)) {
             GFDict gfDict = gfDictMapper.selectByPrimaryKey(RTS_IMPL_CLASS, datasource.getType());
             implClass = gfDict.getDictName();
         }
-        return (Provider) ObjectUtil.newInstance(implClass);
+        return (Executor) ObjectUtil.newInstance(implClass);
+    }
+
+    private ConsumerMatedata getConsumerMatedata(RtsMatedataColsView matedataColsView, ConsumerDatasource datasource) {
+        ConsumerMatedata consumerMatedata = new ConsumerMatedata();
+        consumerMatedata.setDatasource(datasource);
+        RtsMatedata rtsMatedata = matedataColsView.getRtsMatedata();
+        consumerMatedata.setName(rtsMatedata.getName());
+        consumerMatedata.setDescribe(rtsMatedata.getDescribe());
+        consumerMatedata.setNote(rtsMatedata.getNote());
+        consumerMatedata.setTopic(rtsMatedata.getTopic());
+        consumerMatedata.setColumns(CommonUtil.getColumns(matedataColsView.getRtsMatedataColList()));
+        return consumerMatedata;
+    }
+
+    private ConsumerApplication getConsumerApplication(RtsConsumer rtsConsumer, ConsumerMatedata matedata) {
+        ConsumerApplication consumerApplication = new ConsumerApplication();
+        consumerApplication.setMatedata(matedata);
+        consumerApplication.setName(rtsConsumer.getName());
+        consumerApplication.setDescribe(rtsConsumer.getDescribe());
+        consumerApplication.setName(rtsConsumer.getNote());
+        return consumerApplication;
+    }
+
+    private ProducerMatedata getProducerMatedata(RtsMatedataColsView matedataColsView, ProducerDatasource datasource) {
+        ProducerMatedata producerMatedata = new ProducerMatedata();
+        producerMatedata.setDatasource(datasource);
+        RtsMatedata rtsMatedata = matedataColsView.getRtsMatedata();
+        producerMatedata.setName(rtsMatedata.getName());
+        producerMatedata.setDescribe(rtsMatedata.getDescribe());
+        producerMatedata.setNote(rtsMatedata.getNote());
+        producerMatedata.setTopic(rtsMatedata.getTopic());
+        producerMatedata.setColumns(CommonUtil.getColumns(matedataColsView.getRtsMatedataColList()));
+        return producerMatedata;
+    }
+
+    private ProducerApplication getProducerApplication(RtsProducer rtsProducer, ProducerMatedata matedata) {
+        ProducerApplication producerApplication = new ProducerApplication();
+        producerApplication.setName(rtsProducer.getName());
+        producerApplication.setDescribe(rtsProducer.getDescribe());
+        producerApplication.setNote(rtsProducer.getNote());
+        producerApplication.setMatedata(matedata);
+        return producerApplication;
     }
 }
