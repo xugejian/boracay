@@ -2,47 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="72e5f216-bde4-4813-a9eb-1a4d0f1a67f9" name="Default" comment="update">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sql/deploy/oracle/patch/20180426.sql" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/tzbesb.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sql/update/20171026/udsp_change_metadata.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sql/update/20171026/udsp_change_structure.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sql/update/20171122/udsp_change_metadata.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sql/update/20171122/udsp_change_structure.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sql/update/20180130/udsp_change_metadata.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sql/update/20180130/udsp_change_structure.sql" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/sql/deploy/UDSP_CREATE_TABLES.sql" afterPath="$PROJECT_DIR$/sql/deploy/oracle/UDSP_CREATE_TABLES.sql" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/sql/deploy/UDSP_META_DATAS.sql" afterPath="$PROJECT_DIR$/sql/deploy/oracle/UDSP_META_DATAS.sql" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/sql/deploy/UDSP_META_TABLES.sql" afterPath="$PROJECT_DIR$/sql/deploy/oracle/UDSP_META_TABLES.sql" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrDatasource.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrMetadata.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrModel.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im/im.iml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImMetadataController.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/BatchJobService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImModelService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImProviderService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/RealtimeJobService.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/RealtimeJob.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/im/test/com/hex/bigdata/udsp/im/BatchTest.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComDatasourceMapper.xml" afterPath="$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComDatasourceMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComPropertiesMapper.xml" afterPath="$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComPropertiesMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/config.mybatis.xml" afterPath="$PROJECT_DIR$/console/resources/goframe/udsp/config.mybatis.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/goframe.config.properties" afterPath="$PROJECT_DIR$/console/resources/goframe/udsp/goframe.config.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.oracle.properties" afterPath="$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.oracle.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataColMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelFilterColMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelFilterColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMappingMapper.xml" afterPath="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMappingMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppOrderColMapper.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppOrderColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppQueryColMapper.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppQueryColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppReturnColMapper.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppReturnColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqApplicationMapper.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqApplicationMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqMetadataColMapper.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqMetadataColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqMetadataMapper.xml" afterPath="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqMetadataMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mc/resources/goframe/mc/mapper/general/McServiceChartsMapper.xml" afterPath="$PROJECT_DIR$/mc/resources/goframe/mc/mapper/general/McServiceChartsMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmAppExecuteParamMapper.xml" afterPath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmAppExecuteParamMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmAppReturnParamMapper.xml" afterPath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmAppReturnParamMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmApplicationMapper.xml" afterPath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmApplicationMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmModelInfoMapper.xml" afterPath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmModelInfoMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmModelParamMapper.xml" afterPath="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmModelParamMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/olq/resources/goframe/olq/mapper/general/OlqApplicationMapper.xml" afterPath="$PROJECT_DIR$/olq/resources/goframe/olq/mapper/general/OlqApplicationMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcServiceMapper.xml" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcServiceMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcUserServiceMapper.xml" afterPath="$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcUserServiceMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsConsumerMapper.xml" afterPath="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsConsumerMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsMatedataColMapper.xml" afterPath="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsMatedataColMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsMatedataMapper.xml" afterPath="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsMatedataMapper.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsProducerMapper.xml" afterPath="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsProducerMapper.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -65,48 +39,49 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
-    <leaf />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="package-info" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>logger.debug</find>
-      <find>nameValidation</find>
-      <find>PATTERN3</find>
-      <find>#</find>
-      <find>#{</find>
-      <find>logger.info</find>
-      <find>SqlExpressionEvaluator</find>
-      <find>add</find>
-      <find>uploadCheck</find>
-      <find>result.code</find>
-      <find>ajax</find>
-      <find>OLQApplication</find>
-      <find>identify</find>
-      <find>checkPlaceholderParamAndDataGrid</find>
-      <find>identifyParams</find>
-      <find>showDatabaseInfo</find>
-      <find>dsRenderer</find>
-      <find>DS_ID</find>
-      <find>downLoadTemplate_dataSource.xls</find>
-      <find>getSort</find>
-      <find>select</find>
-      <find>COM_PROPERTIES</find>
-      <find>DESCR</find>
-      <find>PRIMARY</find>
-      <find>DESCRIBE</find>
-      <find>describe VARCHAR2</find>
-      <find>describe  VARCHAR2</find>
-      <find>describe   VARCHAR2</find>
-      <find>describe    VARCHAR2</find>
-      <find>describe     VARCHAR2</find>
+      <find>getDictData</find>
+      <find>getDicts</find>
+      <find>filter</find>
+      <find>selectDicts</find>
+      <find>GFDictMapper.se</find>
+      <find>GFDictMapper</find>
+      <find>Component</find>
+      <find>SolrUtil</find>
+      <find>sendGet</find>
+      <find>getColType</find>
+      <find>GFStringUtil</find>
+      <find>IqCommonUtil</find>
+      <find>getOperatorName</find>
+      <find>IqAppQueryColService</find>
+      <find>MetadataCol</find>
+      <find>ComDatasource</find>
+      <find>Datasource</find>
+      <find>new Datasource</find>
+      <find>DatasourceUtil</find>
+      <find>Util</find>
+      <find>ExceptionUtil</find>
+      <find>StatementUtil</find>
+      <find>OlqCommUtil</find>
+      <find>mergeProperties</find>
+      <find>ConsumerApplication</find>
+      <find>KafkaConsumer</find>
+      <find>KafkaProducer</find>
+      <find>WebApplicationContextUtil</find>
+      <find>ImProviderService</find>
+      <find>HttpServletRequest</find>
     </findStrings>
     <replaceStrings>
       <replace>logger.info</replace>
@@ -114,6 +89,7 @@
     </replaceStrings>
     <dirStrings>
       <dir>B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\olq\src\com\hex\bigdata\udsp\olq\dao</dir>
+      <dir>B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\common</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -132,57 +108,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/dto/OlqApplicationView.java" />
-        <option value="$PROJECT_DIR$/olq/resources/goframe/olq/views/olq/cm/app/add.httl" />
-        <option value="$PROJECT_DIR$/olq/resources/goframe/olq/views/olq/cm/app/edit.httl" />
-        <option value="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/service/OlqApplicationService.java" />
-        <option value="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/utils/SqlExpressionEvaluator.java" />
-        <option value="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcsql/helper/ImpalaForMysqlJdbcSqlHelper.java" />
-        <option value="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcsql/helper/ImpalaForOracleJdbcSqlHelper.java" />
-        <option value="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcsql/helper/ImpalaForPgsqlJdbcSqlHelper.java" />
-        <option value="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcsql/helper/HiveForPgsqlJdbcSqlHelper.java" />
-        <option value="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcsql/helper/HiveForOracleJdbcSqlHelper.java" />
-        <option value="$PROJECT_DIR$/md/src/com/hex/bigdata/metadata/db/jdbcsql/helper/HiveForMysqlJdbcSqlHelper.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/ImMetadataCol.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/model/ImMetadata.java" />
-        <option value="$PROJECT_DIR$/console/resources/goframe/udsp/udsp.config.properties" />
-        <option value="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/model/RedisDataSource.java" />
-        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/provider/model/Datasource.java" />
-        <option value="$PROJECT_DIR$/mc/src/com/hex/bigdata/udsp/mc/service/RunQueueService.java" />
-        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/lock/RedisDistributedLock.java" />
-        <option value="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/SolrProvider.java" />
-        <option value="$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.mysql.properties" />
-        <option value="$PROJECT_DIR$/sql/deploy/mysql/UDSP_CREATE_TABLES.sql" />
-        <option value="$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.oracle.properties" />
-        <option value="$PROJECT_DIR$/console/resources/goframe/udsp/goframe.config.properties" />
-        <option value="$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComPropertiesMapper.xml" />
-        <option value="$PROJECT_DIR$/console/resources/goframe/udsp/config.mybatis.xml" />
-        <option value="$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComDatasourceMapper.xml" />
-        <option value="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataMapper.xml" />
-        <option value="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMapper.xml" />
-        <option value="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelFilterColMapper.xml" />
-        <option value="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqApplicationMapper.xml" />
-        <option value="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppOrderColMapper.xml" />
-        <option value="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppQueryColMapper.xml" />
-        <option value="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppReturnColMapper.xml" />
-        <option value="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqMetadataColMapper.xml" />
-        <option value="$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqMetadataMapper.xml" />
-        <option value="$PROJECT_DIR$/mc/resources/goframe/mc/mapper/general/McServiceChartsMapper.xml" />
-        <option value="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmAppExecuteParamMapper.xml" />
-        <option value="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmApplicationMapper.xml" />
-        <option value="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmAppReturnParamMapper.xml" />
-        <option value="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmModelInfoMapper.xml" />
-        <option value="$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmModelParamMapper.xml" />
-        <option value="$PROJECT_DIR$/olq/resources/goframe/olq/mapper/general/OlqApplicationMapper.xml" />
-        <option value="$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcServiceMapper.xml" />
-        <option value="$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcUserServiceMapper.xml" />
-        <option value="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsConsumerMapper.xml" />
-        <option value="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsMatedataColMapper.xml" />
-        <option value="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsMatedataMapper.xml" />
-        <option value="$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsProducerMapper.xml" />
-        <option value="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataColMapper.xml" />
-        <option value="$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMappingMapper.xml" />
-        <option value="$PROJECT_DIR$/sql/deploy/oracle/patch/20180426.sql" />
+        <option value="$PROJECT_DIR$/common-api/src/com/hex/bigdata/udsp/common/provider/model/Result.java" />
+        <option value="$PROJECT_DIR$/common-api/src/com/hex/bigdata/udsp/common/api/model/Result.java" />
+        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/PropertyUtil.java" />
+        <option value="$PROJECT_DIR$/rts/src/com/hex/bigdata/udsp/rts/util/CommonUtil.java" />
+        <option value="$PROJECT_DIR$/rts-executor-api/src/com/hex/bigdata/udsp/rts/executor/model/ConsumerMatedata.java" />
+        <option value="$PROJECT_DIR$/rts-executor-api/src/com/hex/bigdata/udsp/rts/executor/model/ConsumerApplication.java" />
+        <option value="$PROJECT_DIR$/rts-executor-api/src/com/hex/bigdata/udsp/rts/executor/model/ProducerMatedata.java" />
+        <option value="$PROJECT_DIR$/rts-executor-api/src/com/hex/bigdata/udsp/rts/executor/model/ProducerApplication.java" />
+        <option value="$PROJECT_DIR$/rts/src/com/hex/bigdata/udsp/rts/service/RtsProviderService.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/BatchProvider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/BatchConverter.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/SolrHBaseConverter.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/SolrConverter.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/MysqlConverter.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/OracleConverter.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/KafkaConverter.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/HiveConverter.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/HBaseConverter.java" />
+        <option value="$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/model/KafkaConsumerDsConfig.java" />
+        <option value="$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/model/KafkaConsumerDatasource.java" />
+        <option value="$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/KafkaExecutor.java" />
+        <option value="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrDatasource.java" />
+        <option value="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrMetadata.java" />
+        <option value="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrModel.java" />
+        <option value="$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveDatasource.java" />
+        <option value="$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveMetadata.java" />
+        <option value="$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveModel.java" />
+        <option value="$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/wrapper/Wrapper.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrHBaseDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrModel.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/Provider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Metadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Model.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/HiveMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/JdbcMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/JdbcDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HBaseDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HiveDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/KafkaDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/MysqlDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/OracleDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/HBaseMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/MysqlMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/OracleMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/SolrHBaseMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/JdbcModel.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/KafkaModel.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/MqModel.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/KafkaUtil.java" />
       </list>
     </option>
   </component>
@@ -218,6 +194,7 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -226,7 +203,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="sql" />
+              <option name="myItemId" value="im-converter-api" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -236,11 +213,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="sql" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="update" />
+              <option name="myItemId" value="im" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -250,37 +223,15 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="sql" />
+              <option name="myItemId" value="im" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="deploy" />
+              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="oracle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="boracay" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sql" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="deploy" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="oracle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="patch" />
+              <option name="myItemId" value="im" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -290,28 +241,79 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="sql" />
+              <option name="myItemId" value="im" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="deploy" />
+              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="mysql" />
+              <option name="myItemId" value="im" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="provider" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boracay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="im" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="im" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="provider" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boracay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="im" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="im" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controller" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../CBoard" />
@@ -323,22 +325,25 @@
     <property name="js-jscs-nodeInterpreter" value="A:\Program Files\nodejs\node.exe" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\deploy\mysql" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\console\resources\goframe\udsp" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\mc\src\com\hex\bigdata\udsp\mc\service" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\common\src\com\hex\bigdata\udsp\common\lock" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sdk\test\com\hex\bigdata\udsp" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.hex.bigdata.udsp" />
-      <recent name="com.hex.bigdata.udsp.rc.dto" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\deploy\oracle" />
       <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\update\20171026" />
       <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im\test" />
       <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\console\resources\goframe\udsp\sql\deploy" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.hex.bigdata.udsp.im.converter.impl.model" />
+      <recent name="com.hex.bigdata.udsp.im.converter.impl.wrapper" />
+      <recent name="com.hex.bigdata.udsp.im.converter.impl.model.datasource" />
+      <recent name="com.hex.bigdata.udsp.im.converter.impl" />
+      <recent name="com.hex.bigdata.udsp.rts.executor" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter\impl\util" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter\impl\model" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-solr\src\com\hex\bigdata\udsp\im\converter\impl\factory" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\rts-executor-kafka\src\com\hex\bigdata\udsp\rts\executor\impl" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -898,6 +903,14 @@
       <workItem from="1524703303286" duration="1986000" />
       <workItem from="1524742782204" duration="2965000" />
       <workItem from="1524752807601" duration="5949000" />
+      <workItem from="1524815284379" duration="2616000" />
+      <workItem from="1524832156444" duration="3484000" />
+      <workItem from="1524838117182" duration="830000" />
+      <workItem from="1524892538989" duration="269000" />
+      <workItem from="1525224301529" duration="7632000" />
+      <workItem from="1525255658454" duration="2152000" />
+      <workItem from="1525309383963" duration="4573000" />
+      <workItem from="1525317009159" duration="5283000" />
     </task>
     <task id="LOCAL-00001" summary="异常捕获处理">
       <created>1505875263874</created>
@@ -1151,7 +1164,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523535745004</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="update">
+      <created>1525345802830</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1525345802830</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1187,7 +1207,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="191582000" />
+    <option name="totallyTimeSpent" value="218421000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1205,7 +1225,7 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47945204" sideWeight="0.5060514" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980332" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1213,9 +1233,9 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11649016" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3715221" sideWeight="0.49394855" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25204584" sideWeight="0.4969743" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21931261" sideWeight="0.49394855" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32733223" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25204584" sideWeight="0.4969743" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1224,9 +1244,8 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24583964" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2753404" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.44844517" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1234,6 +1253,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24386252" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1275,10 +1295,10 @@
     <MESSAGE value="修改了IQ中错误信息捕获" />
     <MESSAGE value="修改了重置无效的BUG" />
     <MESSAGE value="2.2.7" />
-    <MESSAGE value="update" />
     <MESSAGE value="fix Distributed locks bug" />
     <MESSAGE value="update Distributed locks bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="update Distributed locks bug" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1311,668 +1331,23 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/CharUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="15" column="10" lean-forward="true" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/SolrUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="172" column="52" lean-forward="true" selection-start-line="172" selection-start-column="52" selection-end-line="172" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/solr/solr-solrj-4.10.3-cdh5.4.9.jar!/org/apache/solr/client/solrj/SolrQuery.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="629" column="21" lean-forward="false" selection-start-line="629" selection-start-column="21" selection-end-line="629" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/provider/impl/SolrProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="224" column="53" lean-forward="true" selection-start-line="224" selection-start-column="53" selection-end-line="224" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/udsp.config.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="22" lean-forward="true" selection-start-line="7" selection-start-column="22" selection-end-line="7" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/goframe/goframe-3.2.5.jar!/goframe/jdbc.mysql.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="1" column="16" lean-forward="true" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sql/deploy/mysql/UDSP_CREATE_TABLES.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="13" column="33" lean-forward="true" selection-start-line="13" selection-start-column="33" selection-end-line="13" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.oracle.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="18" column="27" lean-forward="true" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sql/deploy/oracle/UDSP_META_DATAS.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="139">
-          <caret line="27" column="23" lean-forward="true" selection-start-line="27" selection-start-column="23" selection-end-line="27" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.mysql.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="9" column="12" lean-forward="true" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/spring/spring-core-4.0.6.RELEASE.jar!/org/springframework/cglib/proxy/MethodProxy.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117">
-          <caret line="105" column="0" lean-forward="false" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/dao/IqMetadataMapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="45" column="68" lean-forward="false" selection-start-line="45" selection-start-column="62" selection-end-line="45" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/service/IqMetadataService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="115" column="0" lean-forward="false" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/goframe.config.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" column="52" lean-forward="true" selection-start-line="4" selection-start-column="52" selection-end-line="4" selection-end-column="52" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComOperationLogMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="53" column="29" lean-forward="false" selection-start-line="53" selection-start-column="29" selection-end-line="53" selection-end-column="29" />
-          <folding>
-            <marker date="1506586232000" expanded="true" signature="851:923" ph="delete from " />
-            <marker date="1506586232000" expanded="true" signature="1030:1357" ph="insert into COM_OPERATION_LOG... " />
-            <marker date="1506586232000" expanded="true" signature="1476:1805" ph="update COM_O... " />
-            <marker date="1506586232000" expanded="true" signature="1917:2066" ph="select PK_ID... COM_OPERATION_LOG" />
-            <marker date="1506586232000" expanded="true" signature="2136:2242" ph="select PK_ID... COM_OPERATION_LOG" />
-            <marker date="1506586232000" expanded="true" signature="2377:3325" ph="select PK_ID... COM_OPERATION_LOG" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComPropertiesMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="16" column="24" lean-forward="false" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="24" />
-          <folding>
-            <marker date="1524755194204" expanded="true" signature="731:757" ph="delete from " />
-            <marker date="1524755194204" expanded="true" signature="731:800" ph="delete from " />
-            <marker date="1524755194204" expanded="true" signature="905:1133" ph="insert into COM_PROPERTIES... " />
-            <marker date="1524755194204" expanded="true" signature="1250:1485" ph="update COM_P... " />
-            <marker date="1524755194204" expanded="true" signature="1597:1709" ph="select PK_ID... COM_PROPERTIES" />
-            <marker date="1524755194204" expanded="true" signature="1779:1848" ph="select PK_ID... COM_PROPERTIES" />
-            <marker date="1524755194204" expanded="true" signature="1953:2065" ph="select PK_ID... COM_PROPERTIES" />
-            <marker date="1524755194204" expanded="true" signature="2145:2214" ph="delete from " />
-            <marker date="1524755194204" expanded="true" signature="2182:2214" ph="delete from " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="6" column="35" lean-forward="false" selection-start-line="6" selection-start-column="35" selection-end-line="6" selection-end-column="35" />
-          <folding>
-            <marker date="1524756537611" expanded="true" signature="1819:1882" ph="delete from " />
-            <marker date="1524756537611" expanded="true" signature="1978:2644" ph="insert into IM_MODEL... " />
-            <marker date="1524756537611" expanded="true" signature="2752:3388" ph="update IM_MO... " />
-            <marker date="1524756537611" expanded="true" signature="3501:3738" ph="select PK_ID... IM_MODEL" />
-            <marker date="1524756537611" expanded="true" signature="3809:4032" ph="select PK_ID... IM_MODEL" />
-            <marker date="1524756537611" expanded="true" signature="4159:5640" ph="select IM.PK... IM_MODEL" />
-            <marker date="1524756537611" expanded="true" signature="5750:5991" ph="select PK_ID... IM_MODEL" />
-            <marker date="1524756537611" expanded="true" signature="6083:6198" ph="select DICT_... t_gf_dict" />
-            <marker date="1524756537611" expanded="true" signature="6288:6402" ph="select DICT_... t_gf_dict" />
-            <marker date="1524756537611" expanded="true" signature="6454:6515" ph="UPDATE IM_MO... " />
-            <marker date="1524756537611" expanded="true" signature="6572:6641" ph="UPDATE IM_MO... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelFilterColMapper.xml">
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveDatasource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
-          <caret line="8" column="31" lean-forward="false" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
-          <folding>
-            <marker date="1524756537717" expanded="true" signature="1144:1221" ph="delete from " />
-            <marker date="1524756537717" expanded="true" signature="1325:1811" ph="insert into IM_MODEL_FILTER_COLUMN... " />
-            <marker date="1524756537717" expanded="true" signature="1927:2435" ph="update IM_MO... " />
-            <marker date="1524756537717" expanded="true" signature="2547:2725" ph="select PK_ID... IM_MODEL_FILTER_COLUMN" />
-            <marker date="1524756537717" expanded="true" signature="2795:2930" ph="select PK_ID... IM_MODEL_FILTER_COLUMN" />
-            <marker date="1524756537717" expanded="true" signature="3035:3219" ph="select PK_ID... IM_MODEL_FILTER_COLUMN" />
-            <marker date="1524756537717" expanded="true" signature="3300:3365" ph="delete from " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqApplicationMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="84" column="42" lean-forward="false" selection-start-line="84" selection-start-column="42" selection-end-line="84" selection-end-column="42" />
-          <folding>
-            <marker date="1524756537781" expanded="true" signature="1407:1476" ph="delete from " />
-            <marker date="1524756537781" expanded="true" signature="1566:1644" ph="update IQ_AP... " />
-            <marker date="1524756537781" expanded="true" signature="1745:2225" ph="insert into IQ_APPLICATION... " />
-            <marker date="1524756537781" expanded="true" signature="2338:2840" ph="update IQ_AP... " />
-            <marker date="1524756537781" expanded="true" signature="2952:3125" ph="select PK_ID... IQ_APPLICATION" />
-            <marker date="1524756537781" expanded="true" signature="3195:3349" ph="select PK_ID... IQ_APPLICATION" />
-            <marker date="1524756537781" expanded="true" signature="3482:4820" ph="select app.P... IQ_APPLICATION" />
-            <marker date="1524756537781" expanded="true" signature="4926:5120" ph="select PK_ID... IQ_APPLICATION" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppOrderColMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="53" column="78" lean-forward="false" selection-start-line="53" selection-start-column="78" selection-end-line="53" selection-end-column="78" />
-          <folding>
-            <marker date="1524756537543" expanded="true" signature="923:1005" ph="delete from " />
-            <marker date="1524756537543" expanded="true" signature="1106:1462" ph="insert into IQ_APPLICATION_ORDER_COLUMN... " />
-            <marker date="1524756537543" expanded="true" signature="1575:1947" ph="update IQ_AP... " />
-            <marker date="1524756537543" expanded="true" signature="2059:2206" ph="select PK_ID... IQ_APPLICATION_ORDER_COLUMN" />
-            <marker date="1524756537543" expanded="true" signature="2276:2380" ph="select PK_ID... IQ_APPLICATION_ORDER_COLUMN" />
-            <marker date="1524756537543" expanded="true" signature="2506:3226" ph="select PK_ID... IQ_APPLICATION_ORDER_COLUMN" />
-            <marker date="1524756537543" expanded="true" signature="3306:3390" ph="delete from " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppQueryColMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="71" column="78" lean-forward="false" selection-start-line="71" selection-start-column="78" selection-end-line="71" selection-end-column="78" />
-          <folding>
-            <marker date="1524756537659" expanded="true" signature="1272:1354" ph="delete from " />
-            <marker date="1524756537659" expanded="true" signature="1455:2036" ph="insert into IQ_APPLICATION_QUERY_COLUMN... " />
-            <marker date="1524756537659" expanded="true" signature="2149:2745" ph="update IQ_AP... " />
-            <marker date="1524756537659" expanded="true" signature="2857:3057" ph="select PK_ID... IQ_APPLICATION_QUERY_COLUMN" />
-            <marker date="1524756537659" expanded="true" signature="3127:3284" ph="select PK_ID... IQ_APPLICATION_QUERY_COLUMN" />
-            <marker date="1524756537659" expanded="true" signature="3410:4593" ph="select PK_ID... IQ_APPLICATION_QUERY_COLUMN" />
-            <marker date="1524756537659" expanded="true" signature="4673:4757" ph="delete from " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqAppReturnColMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="58" column="71" lean-forward="false" selection-start-line="58" selection-start-column="71" selection-end-line="58" selection-end-column="71" />
-          <folding>
-            <marker date="1524756537806" expanded="true" signature="1084:1167" ph="delete from " />
-            <marker date="1524756537806" expanded="true" signature="1270:1697" ph="insert into IQ_APPLICATION_RETURN_COLUMN... " />
-            <marker date="1524756537806" expanded="true" signature="1812:2262" ph="update IQ_AP... " />
-            <marker date="1524756537806" expanded="true" signature="2375:2533" ph="select PK_ID... IQ_APPLICATION_RETURN_COLUMN" />
-            <marker date="1524756537806" expanded="true" signature="2604:2719" ph="select PK_ID... IQ_APPLICATION_RETURN_COLUMN" />
-            <marker date="1524756537806" expanded="true" signature="2851:3703" ph="select PK_ID... IQ_APPLICATION_RETURN_COLUMN" />
-            <marker date="1524756537806" expanded="true" signature="3787:3872" ph="delete from " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqMetadataColMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="54" column="71" lean-forward="false" selection-start-line="54" selection-start-column="71" selection-end-line="54" selection-end-column="71" />
-          <folding>
-            <marker date="1524756537599" expanded="true" signature="1013:1086" ph="delete from " />
-            <marker date="1524756537599" expanded="true" signature="1188:1565" ph="insert into IQ_METADATA_COLUMN... " />
-            <marker date="1524756537599" expanded="true" signature="1679:2078" ph="update IQ_ME... " />
-            <marker date="1524756537599" expanded="true" signature="2191:2335" ph="select PK_ID... IQ_METADATA_COLUMN" />
-            <marker date="1524756537599" expanded="true" signature="2406:2507" ph="select PK_ID... IQ_METADATA_COLUMN" />
-            <marker date="1524756537599" expanded="true" signature="2639:3567" ph="select PK_ID... IQ_METADATA_COLUMN" />
-            <marker date="1524756537599" expanded="true" signature="3650:3723" ph="delete from " />
-            <marker date="1524756537599" expanded="true" signature="3849:3964" ph="select IQ.PK... IQ_APPLICATION" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/iq/resources/goframe/iq/mapper/general/IqMetadataMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="94" column="42" lean-forward="false" selection-start-line="94" selection-start-column="42" selection-end-line="94" selection-end-column="42" />
-          <folding>
-            <marker date="1524756537734" expanded="true" signature="1464:1530" ph="delete from " />
-            <marker date="1524756537734" expanded="true" signature="1620:1695" ph="update IQ_ME... " />
-            <marker date="1524756537734" expanded="true" signature="1793:2269" ph="insert into IQ_METADATA... " />
-            <marker date="1524756537734" expanded="true" signature="2379:2878" ph="update IQ_ME... " />
-            <marker date="1524756537734" expanded="true" signature="2990:3160" ph="select PK_ID... " />
-            <marker date="1524756537734" expanded="true" signature="3230:3381" ph="select PK_ID... " />
-            <marker date="1524756537734" expanded="true" signature="3508:4914" ph="select md.PK... IQ_METADATA" />
-            <marker date="1524756537734" expanded="true" signature="5020:5211" ph="select PK_ID... " />
-            <marker date="1524756537734" expanded="true" signature="5321:5513" ph="select PK_ID... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mc/resources/goframe/mc/mapper/general/McServiceChartsMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="73" column="88" lean-forward="false" selection-start-line="73" selection-start-column="88" selection-end-line="73" selection-end-column="88" />
-          <folding>
-            <marker date="1524756537501" expanded="true" signature="1925:4114" ph="select rcser... RC_SERVICE" />
-            <marker date="1524756537501" expanded="true" signature="2637:3699" ph="select case SERVICE_NAME" />
-            <marker date="1524756537501" expanded="true" signature="3013:3297" ph="select disti... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="3339:3616" ph="select disti... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="4280:4775" ph="select subst... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="4939:5434" ph="select subst... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="5596:6091" ph="select subst... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="6252:6747" ph="select subst... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="6906:7329" ph="select USER_... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="7489:8030" ph="select subst... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="8189:8730" ph="select subst... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="8887:9428" ph="select subst... MC_CONSUME_LOG" />
-            <marker date="1524756537501" expanded="true" signature="9572:10113" ph="select subst... MC_CONSUME_LOG" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmAppExecuteParamMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="46" column="60" lean-forward="false" selection-start-line="46" selection-start-column="60" selection-end-line="46" selection-end-column="60" />
-          <folding>
-            <marker date="1524756537702" expanded="true" signature="872:955" ph="delete from " />
-            <marker date="1524756537702" expanded="true" signature="1060:1392" ph="insert into MM_APPLICATION_EXECUTE_PARAM... " />
-            <marker date="1524756537702" expanded="true" signature="1509:1847" ph="update MM_AP... " />
-            <marker date="1524756537702" expanded="true" signature="1959:2105" ph="select PK_ID... MM_APPLICATION_EXECUTE_PARAM" />
-            <marker date="1524756537702" expanded="true" signature="2176:2279" ph="select PK_ID... MM_APPLICATION_EXECUTE_PARAM" />
-            <marker date="1524756537702" expanded="true" signature="2390:2575" ph="select maep.... MM_APPLICATION_EXECUTE_PARAM" />
-            <marker date="1524756537702" expanded="true" signature="2660:2745" ph="delete from " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmApplicationMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="115" column="45" lean-forward="false" selection-start-line="115" selection-start-column="45" selection-end-line="115" selection-end-column="45" />
-          <folding>
-            <marker date="1524756537587" expanded="true" signature="2034:2103" ph="delete from " />
-            <marker date="1524756537587" expanded="true" signature="2205:2691" ph="insert into MM_APPLICATION... " />
-            <marker date="1524756537587" expanded="true" signature="2805:3180" ph="update MM_AP... " />
-            <marker date="1524756537587" expanded="true" signature="3293:3469" ph="select PK_ID... MM_APPLICATION" />
-            <marker date="1524756537587" expanded="true" signature="3540:3697" ph="select PK_ID... MM_APPLICATION" />
-            <marker date="1524756537587" expanded="true" signature="3805:3891" ph="update MM_AP... " />
-            <marker date="1524756537587" expanded="true" signature="4028:5586" ph="select app.P... MM_APPLICATION" />
-            <marker date="1524756537587" expanded="true" signature="5683:5875" ph="select PK_ID... MM_APPLICATION" />
-            <marker date="1524756537587" expanded="true" signature="5988:6305" ph="select app.P... mm_application" />
-            <marker date="1524756537587" expanded="true" signature="6413:6617" ph="select PK_ID... MM_APPLICATION" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmAppReturnParamMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="39" column="40" lean-forward="false" selection-start-line="39" selection-start-column="40" selection-end-line="39" selection-end-column="40" />
-          <folding>
-            <marker date="1524756537768" expanded="true" signature="727:809" ph="delete from " />
-            <marker date="1524756537768" expanded="true" signature="913:1150" ph="insert into MM_APPLICATION_RETURN_PARAM... " />
-            <marker date="1524756537768" expanded="true" signature="1266:1510" ph="update MM_AP... " />
-            <marker date="1524756537768" expanded="true" signature="1622:1745" ph="select PK_ID... MM_APPLICATION_RETURN_PARAM" />
-            <marker date="1524756537768" expanded="true" signature="1815:1895" ph="select PK_ID... MM_APPLICATION_RETURN_PARAM" />
-            <marker date="1524756537768" expanded="true" signature="2006:2131" ph="select PK_ID... MM_APPLICATION_RETURN_PARAM" />
-            <marker date="1524756537768" expanded="true" signature="2216:2299" ph="delete from " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmModelInfoMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="104" column="35" lean-forward="false" selection-start-line="104" selection-start-column="35" selection-end-line="104" selection-end-column="35" />
-          <folding>
-            <marker date="1524756537687" expanded="true" signature="1482:1550" ph="delete from " />
-            <marker date="1524756537687" expanded="true" signature="1649:2254" ph="insert into MM_MODEL_INFO... " />
-            <marker date="1524756537687" expanded="true" signature="2365:3013" ph="update MM_MO... " />
-            <marker date="1524756537687" expanded="true" signature="3125:3330" ph="select PK_ID... MM_MODEL_INFO" />
-            <marker date="1524756537687" expanded="true" signature="3400:3575" ph="select PK_ID... MM_MODEL_INFO" />
-            <marker date="1524756537687" expanded="true" signature="3649:3864" ph="select PK_ID... MM_MODEL_INFO" />
-            <marker date="1524756537687" expanded="true" signature="3970:4055" ph="update MM_MO... " />
-            <marker date="1524756537687" expanded="true" signature="4185:5638" ph="select mmi.P... MM_MODEL_INFO" />
-            <marker date="1524756537687" expanded="true" signature="5720:5945" ph="select PK_ID... MM_MODEL_INFO" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mm/resources/goframe/mm/mapper/general/MmModelParamMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="56" column="65" lean-forward="false" selection-start-line="56" selection-start-column="65" selection-end-line="56" selection-end-column="65" />
-          <folding>
-            <marker date="1524756537759" expanded="true" signature="981:1050" ph="delete from " />
-            <marker date="1524756537759" expanded="true" signature="1150:1537" ph="insert into MM_MODEL_PARAM... " />
-            <marker date="1524756537759" expanded="true" signature="1649:2044" ph="update MM_MO... " />
-            <marker date="1524756537759" expanded="true" signature="2156:2296" ph="select PK_ID... MM_MODEL_PARAM" />
-            <marker date="1524756537759" expanded="true" signature="2366:2463" ph="select PK_ID... MM_MODEL_PARAM" />
-            <marker date="1524756537759" expanded="true" signature="2588:3442" ph="select PK_ID... MM_MODEL_PARAM" />
-            <marker date="1524756537759" expanded="true" signature="3521:3590" ph="delete from " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/olq/resources/goframe/olq/mapper/general/OlqApplicationMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="93" column="47" lean-forward="false" selection-start-line="93" selection-start-column="47" selection-end-line="93" selection-end-column="47" />
-          <folding>
-            <marker date="1524756537636" expanded="true" signature="1481:1551" ph="delete from " />
-            <marker date="1524756537636" expanded="true" signature="1641:1720" ph="update OLQ_A... " />
-            <marker date="1524756537636" expanded="true" signature="1823:2353" ph="insert into OLQ_APPLICATION... " />
-            <marker date="1524756537636" expanded="true" signature="2468:3025" ph="update OLQ_A... " />
-            <marker date="1524756537636" expanded="true" signature="3137:3406" ph="select olq.P... OLQ_APPLICATION" />
-            <marker date="1524756537636" expanded="true" signature="3477:3645" ph="select PK_ID... OLQ_APPLICATION" />
-            <marker date="1524756537636" expanded="true" signature="3779:5228" ph="select olq.P... OLQ_APPLICATION" />
-            <marker date="1524756537636" expanded="true" signature="5335:5539" ph="select PK_ID... OLQ_APPLICATION" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcServiceMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="122" column="35" lean-forward="false" selection-start-line="122" selection-start-column="35" selection-end-line="122" selection-end-column="35" />
-          <folding>
-            <marker date="1524756537831" expanded="true" signature="1130:1195" ph="delete from " />
-            <marker date="1524756537831" expanded="true" signature="1292:1765" ph="insert into RC_SERVICE... " />
-            <marker date="1524756537831" expanded="true" signature="1874:2370" ph="update RC_SE... " />
-            <marker date="1524756537831" expanded="true" signature="2482:2650" ph="select PK_ID... RC_SERVICE" />
-            <marker date="1524756537831" expanded="true" signature="2720:2869" ph="select PK_ID... RC_SERVICE" />
-            <marker date="1524756537831" expanded="true" signature="2976:3058" ph="update RC_SE... " />
-            <marker date="1524756537831" expanded="true" signature="3187:4304" ph="select PK_ID... RC_SERVICE" />
-            <marker date="1524756537831" expanded="true" signature="4411:4600" ph="select PK_ID... RC_SERVICE" />
-            <marker date="1524756537831" expanded="true" signature="4709:4899" ph="select PK_ID... RC_SERVICE" />
-            <marker date="1524756537831" expanded="true" signature="5006:5202" ph="select PK_ID... RC_SERVICE" />
-            <marker date="1524756537831" expanded="true" signature="5316:5518" ph="select PK_ID... RC_SERVICE" />
-            <marker date="1524756537831" expanded="true" signature="5659:5887" ph="select PK_ID... RC_SERVICE" />
-            <marker date="1524756537831" expanded="true" signature="6033:6279" ph="select PK_ID... RC_SERVICE" />
-            <marker date="1524756537831" expanded="true" signature="6383:6484" ph="update RC_SE... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rc/resources/goframe/rc/mapper/general/RcUserServiceMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="243" column="60" lean-forward="false" selection-start-line="243" selection-start-column="60" selection-end-line="243" selection-end-column="60" />
-          <folding>
-            <marker date="1524756537796" expanded="true" signature="3346:3416" ph="delete from " />
-            <marker date="1524756537796" expanded="true" signature="3518:4439" ph="insert into RC_USER_SERVICE... " />
-            <marker date="1524756537796" expanded="true" signature="4553:5568" ph="update RC_US... " />
-            <marker date="1524756537796" expanded="true" signature="5681:6026" ph="select PK_ID... RC_USER_SERVICE" />
-            <marker date="1524756537796" expanded="true" signature="6097:6425" ph="select PK_ID... RC_USER_SERVICE" />
-            <marker date="1524756537796" expanded="true" signature="6534:6621" ph="update RC_US... " />
-            <marker date="1524756537796" expanded="true" signature="6760:8717" ph="select rcus.... RC_USER_SERVICE" />
-            <marker date="1524756537796" expanded="true" signature="8860:9360" ph="select PK_ID... RC_USER_SERVICE" />
-            <marker date="1524756537796" expanded="true" signature="9482:10186" ph="select rcus.... RC_USER_SERVICE" />
-            <marker date="1524756537796" expanded="true" signature="10305:11183" ph="select gfuse... T_GF_LOGINUSER" />
-            <marker date="1524756537796" expanded="true" signature="11307:12161" ph="select disti... T_GF_LOGINUSER" />
-            <marker date="1524756537796" expanded="true" signature="12330:12753" ph="select PK_ID... RC_USER_SERVICE" />
-            <marker date="1524756537796" expanded="true" signature="12875:12989" ph="update RC_US... " />
-            <marker date="1524756537796" expanded="true" signature="13146:13756" ph="select rcus.... RC_USER_SERVICE" />
-            <marker date="1524756537796" expanded="true" signature="13920:14524" ph="select rcus.... RC_USER_SERVICE" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsConsumerMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="101" column="42" lean-forward="false" selection-start-line="101" selection-start-column="42" selection-end-line="101" selection-end-column="42" />
-          <folding>
-            <marker date="1524756537529" expanded="true" signature="1542:1616" ph="delete from " />
-            <marker date="1524756537529" expanded="true" signature="1716:2217" ph="insert into RTS_CUSTOMER_CONFIG... " />
-            <marker date="1524756537529" expanded="true" signature="2329:2844" ph="update RTS_C... " />
-            <marker date="1524756537529" expanded="true" signature="2956:3135" ph="select PK_ID... RTS_CUSTOMER_CONFIG" />
-            <marker date="1524756537529" expanded="true" signature="3205:3365" ph="select PK_ID... RTS_CUSTOMER_CONFIG" />
-            <marker date="1524756537529" expanded="true" signature="3472:3563" ph="update RTS_C... " />
-            <marker date="1524756537529" expanded="true" signature="3699:5482" ph="select cc.PK... RTS_CUSTOMER_CONFIG" />
-            <marker date="1524756537529" expanded="true" signature="5589:5789" ph="select PK_ID... RTS_CUSTOMER_CONFIG" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsMatedataColMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="56" column="47" lean-forward="false" selection-start-line="56" selection-start-column="47" selection-end-line="56" selection-end-column="47" />
-          <folding>
-            <marker date="1524756537571" expanded="true" signature="787:861" ph="delete from " />
-            <marker date="1524756537571" expanded="true" signature="964:1224" ph="insert into RTS_METADATA_COLUMN... " />
-            <marker date="1524756537571" expanded="true" signature="1339:1614" ph="update RTS_M... " />
-            <marker date="1524756537571" expanded="true" signature="1726:1846" ph="select PK_ID... RTS_METADATA_COLUMN" />
-            <marker date="1524756537571" expanded="true" signature="1916:1993" ph="select PK_ID... RTS_METADATA_COLUMN" />
-            <marker date="1524756537571" expanded="true" signature="2125:2506" ph="select PK_ID... RTS_METADATA_COLUMN" />
-            <marker date="1524756537571" expanded="true" signature="2587:2661" ph="delete from " />
-            <marker date="1524756537571" expanded="true" signature="2767:2907" ph="select PK_ID... RTS_METADATA_COLUMN" />
-            <marker date="1524756537571" expanded="true" signature="3021:3193" ph="select m.* f... RTS_PRODUCRER_CONFIG" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsMatedataMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="113" column="44" lean-forward="false" selection-start-line="113" selection-start-column="44" selection-end-line="113" selection-end-column="44" />
-          <folding>
-            <marker date="1524756537744" expanded="true" signature="1397:1464" ph="delete from " />
-            <marker date="1524756537744" expanded="true" signature="1564:2022" ph="insert into RTS_METADATA... " />
-            <marker date="1524756537744" expanded="true" signature="2134:2617" ph="update RTS_M... " />
-            <marker date="1524756537744" expanded="true" signature="2729:2897" ph="select PK_ID... RTS_METADATA" />
-            <marker date="1524756537744" expanded="true" signature="2967:3116" ph="select PK_ID... RTS_METADATA" />
-            <marker date="1524756537744" expanded="true" signature="3224:3308" ph="update RTS_M... " />
-            <marker date="1524756537744" expanded="true" signature="3440:4846" ph="select md.PK... RTS_METADATA" />
-            <marker date="1524756537744" expanded="true" signature="4952:5141" ph="select PK_ID... RTS_METADATA" />
-            <marker date="1524756537744" expanded="true" signature="5261:5373" ph="select PK_ID... RTS_CUSTOMER_CONFIG" />
-            <marker date="1524756537744" expanded="true" signature="5261:5512" ph="select PK_ID... " />
-            <marker date="1524756537744" expanded="true" signature="5398:5512" ph="select PK_ID... RTS_PRODUCRER_CONFIG" />
-            <marker date="1524756537744" expanded="true" signature="5628:5826" ph="select PK_ID... RTS_METADATA" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rts/resources/goframe/rts/mapper/general/RtsProducerMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="95" column="43" lean-forward="false" selection-start-line="95" selection-start-column="43" selection-end-line="95" selection-end-column="43" />
-          <folding>
-            <marker date="1524756537556" expanded="true" signature="1471:1546" ph="delete from " />
-            <marker date="1524756537556" expanded="true" signature="1646:2094" ph="insert into RTS_PRODUCRER_CONFIG... " />
-            <marker date="1524756537556" expanded="true" signature="2206:2670" ph="update RTS_P... " />
-            <marker date="1524756537556" expanded="true" signature="2782:2953" ph="select PK_ID... RTS_PRODUCRER_CONFIG" />
-            <marker date="1524756537556" expanded="true" signature="3023:3175" ph="select PK_ID... RTS_PRODUCRER_CONFIG" />
-            <marker date="1524756537556" expanded="true" signature="3282:3374" ph="update RTS_P... " />
-            <marker date="1524756537556" expanded="true" signature="3506:5182" ph="select pc.PK... RTS_PRODUCRER_CONFIG" />
-            <marker date="1524756537556" expanded="true" signature="5290:5481" ph="select PK_ID... RTS_PRODUCRER_CONFIG" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/schema/ehcache.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="617" column="88" lean-forward="false" selection-start-line="617" selection-start-column="88" selection-end-line="617" selection-end-column="88" />
+          <caret line="8" column="52" lean-forward="true" selection-start-line="8" selection-start-column="52" selection-end-line="8" selection-end-column="52" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataMapper.xml">
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveMetadata.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="15" column="64" lean-forward="false" selection-start-line="15" selection-start-column="64" selection-end-line="15" selection-end-column="64" />
-          <folding>
-            <marker date="1524756537818" expanded="true" signature="1591:1657" ph="delete from " />
-            <marker date="1524756537818" expanded="true" signature="1747:1822" ph="update IM_ME... " />
-            <marker date="1524756537818" expanded="true" signature="1920:2473" ph="insert into IM_METADATA... " />
-            <marker date="1524756537818" expanded="true" signature="2583:3160" ph="update IM_ME... " />
-            <marker date="1524756537818" expanded="true" signature="3272:3456" ph="select PK_ID... IM_METADATA" />
-            <marker date="1524756537818" expanded="true" signature="3526:3718" ph="select PK_ID... IM_METADATA" />
-            <marker date="1524756537818" expanded="true" signature="3786:5230" ph="select A.PK_... IM_METADATA" />
-            <marker date="1524756537818" expanded="true" signature="5336:5541" ph="select PK_ID... IM_METADATA" />
-            <marker date="1524756537818" expanded="true" signature="5646:6295" ph="select IM.PK... IM_METADATA" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/config.mybatis.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        <state relative-caret-position="209">
+          <caret line="11" column="13" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/resources/goframe/common/mapper/general/ComDatasourceMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117">
-          <caret line="7" column="63" lean-forward="true" selection-start-line="7" selection-start-column="63" selection-end-line="7" selection-end-column="63" />
-          <folding>
-            <marker date="1524755482057" expanded="true" signature="1925:1994" ph="delete from " />
-            <marker date="1524755482057" expanded="true" signature="2084:2162" ph="update COM_D... " />
-            <marker date="1524755482057" expanded="true" signature="2267:2786" ph="insert into COM_DATASOURCE... " />
-            <marker date="1524755482057" expanded="true" signature="2903:3451" ph="update COM_D... " />
-            <marker date="1524755482057" expanded="true" signature="3563:3745" ph="select PK_ID... COM_DATASOURCE" />
-            <marker date="1524755482057" expanded="true" signature="3815:3954" ph="select PK_ID... COM_DATASOURCE" />
-            <marker date="1524755482057" expanded="true" signature="4087:5657" ph="select A.PK_... COM_DATASOURCE" />
-            <marker date="1524755482057" expanded="true" signature="5764:5982" ph="select A.PK_... COM_DATASOURCE" />
-            <marker date="1524755482057" expanded="true" signature="6127:6404" ph="select A.PK_... COM_DATASOURCE" />
-            <marker date="1524755482057" expanded="true" signature="6516:6870" ph="SELECT GFD.*... T_GF_DICT" />
-            <marker date="1524755482057" expanded="true" signature="6685:6864" ph="select 1 fro... T_GF_DICT" />
-            <marker date="1524755482057" expanded="true" signature="6947:7348" ph="select PK_ID... COM_DATASOURCE" />
-            <marker date="1524755482057" expanded="true" signature="7163:7342" ph="select 1 fro... T_GF_DICT" />
-            <marker date="1524755482057" expanded="true" signature="7451:7635" ph="select * fro... T_GF_DICT" />
-            <marker date="1524755482057" expanded="true" signature="7710:8049" ph="select PK_ID... COM_DATASOURCE" />
-            <marker date="1524755482057" expanded="true" signature="7926:8043" ph="select 1 fro... T_GF_DICT" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/resources/goframe/im/solr/template/conf/solrconfig.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="819" column="42" lean-forward="false" selection-start-line="819" selection-start-column="42" selection-end-line="819" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImModelMappingMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="74">
-          <caret line="22" column="32" lean-forward="false" selection-start-line="22" selection-start-column="16" selection-end-line="22" selection-end-column="32" />
-          <folding>
-            <marker date="1524757738824" expanded="true" signature="1191:1262" ph="delete from " />
-            <marker date="1524757738824" expanded="true" signature="1364:1802" ph="insert into IM_MODEL_MAPPING... " />
-            <marker date="1524757738824" expanded="true" signature="1916:2186" ph="update IM_MO... " />
-            <marker date="1524757738824" expanded="true" signature="2298:2469" ph="select PK_ID... " />
-            <marker date="1524757738824" expanded="true" signature="2539:2667" ph="select PK_ID... " />
-            <marker date="1524757738824" expanded="true" signature="2773:3011" ph="select IMM.P... IM_MODEL_MAPPING" />
-            <marker date="1524757738824" expanded="true" signature="3090:3146" ph="delete FROM " />
-            <marker date="1524757738824" expanded="true" signature="3255:3561" ph="SELECT IMM.P... IM_MODEL_MAPPING" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/resources/goframe/im/mapper/general/ImMetadataColMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="82" column="24" lean-forward="true" selection-start-line="82" selection-start-column="24" selection-end-line="82" selection-end-column="24" />
-          <folding>
-            <marker date="1524757738834" expanded="true" signature="1116:1189" ph="delete from " />
-            <marker date="1524757738834" expanded="true" signature="1269:1342" ph="delete from " />
-            <marker date="1524757738834" expanded="true" signature="1443:1903" ph="insert into IM_METADATA_COLUMN... " />
-            <marker date="1524757738834" expanded="true" signature="2016:2498" ph="update IM_ME... " />
-            <marker date="1524757738834" expanded="true" signature="2610:2772" ph="select PK_ID... " />
-            <marker date="1524757738834" expanded="true" signature="2842:2961" ph="select PK_ID... " />
-            <marker date="1524757738834" expanded="true" signature="3027:4056" ph="select PK_ID... " />
-            <marker date="1524757738834" expanded="true" signature="4173:4472" ph="SELECT IMC.P... IM_METADATA_COLUMN" />
-            <marker date="1524757738834" expanded="true" signature="4552:4776" ph="SELECT IMC.P... IM_METADATA_COLUMN" />
-            <marker date="1524757738834" expanded="true" signature="4860:5149" ph="SELECT IMC.P... IM_METADATA_COLUMN" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sql/deploy/mysql/UDSP_META_TABLES.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="8" column="6" lean-forward="true" selection-start-line="8" selection-start-column="6" selection-end-line="8" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sql/deploy/mysql/UDSP_META_DATAS.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="7" lean-forward="true" selection-start-line="7" selection-start-column="7" selection-end-line="7" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sql/deploy/oracle/UDSP_CREATE_TABLES.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="481" column="37" lean-forward="true" selection-start-line="481" selection-start-column="37" selection-end-line="481" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sql/deploy/oracle/patch/20180426.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="21" column="61" lean-forward="true" selection-start-line="21" selection-start-column="61" selection-end-line="21" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sql/deploy/oracle/UDSP_META_TABLES.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5638">
-          <caret line="18" column="1" lean-forward="true" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sql/update/20171026/udsp_change_metadata.sql">
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/JdbcDatasource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1980,10 +1355,416 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sql/update/20180130/udsp_change_metadata.sql">
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/JdbcModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-380">
-          <caret line="4" column="27" lean-forward="true" selection-start-line="4" selection-start-column="27" selection-end-line="4" selection-end-column="27" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/JdbcMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/model/FileFormat.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/model/Page.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/model/RowFormat.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/model/SerDeProperty.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/util/HiveSqlUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/util/JdbcUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="144" column="0" lean-forward="false" selection-start-line="144" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/util/HiveJdbcUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="53" lean-forward="false" selection-start-line="5" selection-start-column="28" selection-end-line="5" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/wrapper/Wrapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-874">
+          <caret line="153" column="37" lean-forward="false" selection-start-line="153" selection-start-column="20" selection-end-line="153" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/model/Metadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="15" column="3" lean-forward="false" selection-start-line="15" selection-start-column="3" selection-end-line="15" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/RealtimeSourceProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/BatchConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchSourceProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchTargetProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/RealtimeProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/RealtimeTargetProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/SourceProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/TargetProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/Provider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="6" column="3" lean-forward="true" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImMetadataController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="123">
+          <caret line="309" column="58" lean-forward="false" selection-start-line="309" selection-start-column="40" selection-end-line="309" selection-end-column="58" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Metadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="113">
+          <caret line="6" column="51" lean-forward="false" selection-start-line="6" selection-start-column="51" selection-end-line="6" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Model.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="7" column="50" lean-forward="true" selection-start-line="7" selection-start-column="50" selection-end-line="7" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/HiveMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="11" column="39" lean-forward="true" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/JdbcMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="6" column="21" lean-forward="true" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/JdbcDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HBaseDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="6" column="34" lean-forward="true" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="6" column="54" lean-forward="true" selection-start-line="6" selection-start-column="54" selection-end-line="6" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HiveDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/KafkaDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="56">
+          <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/MysqlDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/HBaseMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/MysqlMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/OracleMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/SolrHBaseMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/HiveModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/JdbcModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/KafkaModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/MqModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="43" lean-forward="false" selection-start-line="5" selection-start-column="43" selection-end-line="5" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/SolrUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="44" lean-forward="false" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/OracleDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/SolrHBaseDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/OracleSqlUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="13" column="13" lean-forward="false" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/MysqlSqlUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding>
+            <marker date="1525345408966" expanded="true" signature="440:482" ph="/**...*/" />
+            <marker date="1525345408966" expanded="true" signature="516:659" ph="/**...*/" />
+            <marker date="1525345408966" expanded="true" signature="821:978" ph="{...}" />
+            <marker date="1525345408966" expanded="true" signature="984:1054" ph="/**...*/" />
+            <marker date="1525345408966" expanded="false" signature="1111:1122" ph=" { " />
+            <marker date="1525345408966" expanded="false" signature="1159:1165" ph=" }" />
+            <marker date="1525345408966" expanded="true" signature="1171:1242" ph="/**...*/" />
+            <marker date="1525345408966" expanded="false" signature="1295:1306" ph=" { " />
+            <marker date="1525345408966" expanded="false" signature="1340:1346" ph=" }" />
+            <marker date="1525345408966" expanded="true" signature="1352:1443" ph="/**...*/" />
+            <marker date="1525345408966" expanded="true" signature="1515:1593" ph="{...}" />
+            <marker date="1525345408966" expanded="true" signature="1599:1723" ph="/**...*/" />
+            <marker date="1525345408966" expanded="true" signature="1875:1993" ph="{...}" />
+            <marker date="1525345408966" expanded="true" signature="1999:2093" ph="/**...*/" />
+            <marker date="1525345408966" expanded="true" signature="2176:2330" ph="{...}" />
+            <marker date="1525345408966" expanded="true" signature="2400:2664" ph="{...}" />
+            <marker date="1525345408966" expanded="true" signature="2722:2840" ph="{...}" />
+            <marker date="1525345408966" expanded="true" signature="2904:3029" ph="{...}" />
+            <marker date="1525345408966" expanded="true" signature="3095:4304" ph="{...}" />
+            <marker date="1525345408966" expanded="true" signature="4375:4701" ph="{...}" />
+            <marker date="1525345408966" expanded="true" signature="4766:4954" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/KafkaUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="20" column="13" lean-forward="false" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/ImSyncService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="121">
+          <caret line="7" column="55" lean-forward="true" selection-start-line="7" selection-start-column="55" selection-end-line="7" selection-end-column="55" />
           <folding />
         </state>
       </provider>
@@ -2043,12 +1824,11 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>doc</last-edited>
+          <last-edited>im</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
