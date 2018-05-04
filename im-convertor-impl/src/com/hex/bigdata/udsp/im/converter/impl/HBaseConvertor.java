@@ -15,14 +15,13 @@ import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * Created by JunjieM on 2017-9-5.
  */
-@Component("com.hex.bigdata.udsp.im.convertor.impl.HBaseConvertor")
+//@Component("com.hex.bigdata.udsp.im.convertor.impl.HBaseConvertor")
 public class HBaseConvertor extends HBaseWrapper {
     private static Logger logger = LogManager.getLogger(HBaseConvertor.class);
 

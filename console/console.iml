@@ -43,8 +43,10 @@
     <orderEntry type="module" module-name="rts" />
     <orderEntry type="module" module-name="im" />
     <orderEntry type="module" module-name="iq" />
-    <orderEntry type="module" module-name="iq-provider-api" />
     <orderEntry type="module" module-name="common-api" />
+    <orderEntry type="module" module-name="iq-provider-api" />
     <orderEntry type="module" module-name="olq-provider-api" />
+    <orderEntry type="module" module-name="rts-executor-api" />
+    <orderEntry type="module" module-name="im-convertor-api" />
   </component>
 </module>

@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.mc.util;
 
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
@@ -27,7 +27,7 @@ public class McCommonUtil {
     public static Current getMcCurrent(Request request, int maxCurrentNum) {
         synchronized (RunQueueService.class) {
             Current mcCurrent = new Current();
-            String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+            String consumeId = HostUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
             mcCurrent.setStartTime(format.format(new Date()));
             mcCurrent.setServiceName(request.getServiceName());
             mcCurrent.setUserName(request.getUdspUser());

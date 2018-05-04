@@ -2,20 +2,20 @@ package com.hex.bigdata.udsp.iq.provider.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.api.model.Result;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.common.constant.Order;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.api.model.Datasource;
-import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.iq.provider.impl.util.SolrUtil;
-import com.hex.bigdata.udsp.iq.provider.model.*;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.SolrConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.SolrDatasource;
 import com.hex.bigdata.udsp.iq.provider.impl.model.SolrPage;
+import com.hex.bigdata.udsp.iq.provider.impl.util.SolrUtil;
+import com.hex.bigdata.udsp.iq.provider.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +25,6 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
-import org.springframework.stereotype.Component;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -34,7 +33,7 @@ import java.util.*;
 /**
  * Created by junjiem on 2017-3-3.
  */
-@Component("com.hex.bigdata.udsp.iq.provider.impl.SolrProvider")
+//@Component("com.hex.bigdata.udsp.iq.provider.impl.SolrProvider")
 public class SolrProvider implements Provider {
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
     private static Map<String, SolrConnectionPoolFactory> dataSourcePool;

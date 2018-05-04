@@ -1,10 +1,10 @@
 package com.hex.bigdata.udsp.iq.provider.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.api.model.Result;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.ElasticSearchConnectionPoolFactory;
@@ -19,13 +19,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
-@Component("com.hex.bigdata.udsp.iq.provider.impl.ElasticSearchProvider")
+//@Component("com.hex.bigdata.udsp.iq.provider.impl.ElasticSearchProvider")
 public class ElasticSearchProvider implements Provider {
 
     private static Logger logger = LogManager.getLogger(ElasticSearchProvider.class);

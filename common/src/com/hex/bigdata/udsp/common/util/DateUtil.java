@@ -11,10 +11,9 @@ import java.util.Date;
  * DATE:2017/5/8
  * TIME:11:00
  */
-public class UdspDateUtil {
+public class DateUtil {
 
     private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
-
 
     /**
      * 用给定的long值获取“yyyy-MM-dd HH:mm:ss”格式的时间字符串
@@ -31,6 +30,5 @@ public class UdspDateUtil {
         Date time = calendar.getTime();
         return format.format(time);
     }
-
 
 }

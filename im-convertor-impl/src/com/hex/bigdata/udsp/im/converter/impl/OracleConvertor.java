@@ -20,7 +20,6 @@ import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,7 +29,7 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-@Component("com.hex.bigdata.udsp.im.convertor.impl.OracleConvertor")
+//@Component("com.hex.bigdata.udsp.im.convertor.impl.OracleConvertor")
 public class OracleConvertor extends JdbcWrapper implements RealtimeTargetConvertor {
     private static Logger logger = LogManager.getLogger(OracleConvertor.class);
 

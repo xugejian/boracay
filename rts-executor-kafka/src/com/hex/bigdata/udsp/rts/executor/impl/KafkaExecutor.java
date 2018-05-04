@@ -1,10 +1,10 @@
 package com.hex.bigdata.udsp.rts.executor.impl;
 
-import com.hex.bigdata.udsp.common.constant.Status;
-import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.api.model.Result;
+import com.hex.bigdata.udsp.common.constant.Status;
+import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.rts.executor.Executor;
 import com.hex.bigdata.udsp.rts.executor.impl.model.KafkaConsumerDatasource;
@@ -21,14 +21,13 @@ import kafka.producer.ProducerConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
  * Created by junjiem on 2017-2-20.
  */
-@Component("com.hex.bigdata.udsp.rts.executor.impl.KafkaExecutor")
+//@Component("com.hex.bigdata.udsp.rts.executor.impl.KafkaExecutor")
 public class KafkaExecutor implements Executor {
 
     private static Logger logger = LogManager.getLogger(KafkaExecutor.class);

@@ -7,7 +7,7 @@ import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.StatementUtil;
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.dto.WaitNumResult;
 import com.hex.bigdata.udsp.mc.constant.McConstant;
@@ -99,7 +99,7 @@ public class OlqAsyncService implements Runnable {
     }
 
     private void exec() {
-        String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(consumeRequest));
+        String consumeId = HostUtil.getConsumeId(JSONUtil.parseObj2JSON(consumeRequest));
         Current mcCurrent = consumeRequest.getMcCurrent();
         McConsumeLog mcConsumeLog = new McConsumeLog();
         mcConsumeLog.setPkId(mcCurrent.getPkId());

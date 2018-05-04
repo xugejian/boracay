@@ -20,7 +20,6 @@ import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -30,7 +29,7 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-@Component("com.hex.bigdata.udsp.im.convertor.impl.SolrConvertor")
+//@Component("com.hex.bigdata.udsp.im.convertor.impl.SolrConvertor")
 public class SolrConvertor extends SolrWrapper {
     private static Logger logger = LogManager.getLogger(SolrConvertor.class);
 

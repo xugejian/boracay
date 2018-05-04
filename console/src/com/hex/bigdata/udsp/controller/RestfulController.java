@@ -1,9 +1,8 @@
 package com.hex.bigdata.udsp.controller;
 
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.model.ExternalRequest;
@@ -61,7 +60,7 @@ public class RestfulController extends BaseController {
             return response;
         }
         //获取并设置客户端请求的IP
-        externalRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
+        externalRequest.setRequestIp(HostUtil.getRealRequestIp(request));
         return consumerService.externalConsume(externalRequest);
     }
 

@@ -4,12 +4,11 @@ import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.olq.provider.model.OlqQuerySql;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by PC on 2017/6/26.
  */
-@Component("com.hex.bigdata.udsp.olq.provider.impl.OracleProvider")
+//@Component("com.hex.bigdata.udsp.olq.provider.impl.OracleProvider")
 public class OracleProvider extends JdbcProvider {
 
     private Logger logger = LogManager.getLogger(OracleProvider.class);

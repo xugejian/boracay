@@ -18,7 +18,6 @@ import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,7 +26,7 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-@Component("com.hex.bigdata.udsp.im.convertor.impl.HiveConvertor")
+//@Component("com.hex.bigdata.udsp.im.convertor.impl.HiveConvertor")
 public class HiveConvertor extends JdbcWrapper {
     private static Logger logger = LogManager.getLogger(HiveConvertor.class);
 

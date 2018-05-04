@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.iq.provider.impl;
 
-import com.hex.bigdata.udsp.common.api.model.Result;
-import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Result;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.RedisConnectionPoolFactory;
@@ -12,7 +12,6 @@ import com.hex.bigdata.udsp.iq.provider.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
 import java.util.*;
@@ -20,7 +19,7 @@ import java.util.*;
 /**
  * redis接口实现类
  */
-@Component("com.hex.bigdata.udsp.iq.provider.impl.RedisProvider")
+//@Component("com.hex.bigdata.udsp.iq.provider.impl.RedisProvider")
 public class RedisProvider implements Provider {
     private static Logger logger = LogManager.getLogger(RedisProvider.class);
     private static Map<String, RedisConnectionPoolFactory> dataSourcePool;

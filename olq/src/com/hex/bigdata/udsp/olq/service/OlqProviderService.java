@@ -92,18 +92,16 @@ public class OlqProviderService extends BaseService {
         return provider.testDatasource(datasource);
     }
 
-    /**
-     * 得到生产接口的实例
-     *
-     * @param datasource
-     * @return
-     */
     private Provider getProviderImpl(Datasource datasource) {
+        return (Provider) ObjectUtil.newInstance(getImplClass(datasource));
+    }
+
+    private String getImplClass(Datasource datasource) {
         String implClass = datasource.getImplClass();
         if (StringUtils.isBlank(implClass)) {
             GFDict gfDict = gfDictMapper.selectByPrimaryKey(OLQ_IMPL_CLASS, datasource.getType());
             implClass = gfDict.getDictName();
         }
-        return (Provider) ObjectUtil.newInstance(implClass);
+        return implClass;
     }
 }

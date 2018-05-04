@@ -14,7 +14,7 @@ import com.hex.bigdata.udsp.rts.executor.model.ConsumerResponse;
 import com.hex.bigdata.udsp.rts.executor.model.ProducerResponse;
 import com.hex.bigdata.udsp.rts.service.RtsMatedataColService;
 import com.hex.bigdata.udsp.rts.service.RtsProducerService;
-import com.hex.bigdata.udsp.rts.service.RtsProviderService;
+import com.hex.bigdata.udsp.rts.service.RtsExecutorService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class RtsSyncService {
     @Autowired
     private RtsProducerService rtsProducerService;
     @Autowired
-    private RtsProviderService rtsProviderService;
+    private RtsExecutorService rtsExecutorService;
 
     /**
      * 同步运行生产者
@@ -70,7 +70,7 @@ public class RtsSyncService {
             rtsProducerRequestView.setProducerId(appId);
             rtsProducerRequestView.setProducerData(producerData);
 
-            ProducerResponse producerResponse = rtsProviderService.producer(rtsProducerRequestView);
+            ProducerResponse producerResponse = rtsExecutorService.producer(rtsProducerRequestView);
 
             response.setConsumeTime(producerResponse.getConsumeTime());
             response.setMessage(producerResponse.getMessage());
@@ -130,7 +130,7 @@ public class RtsSyncService {
             rtsConsumerRequestView.setConsumerId(appId);
             rtsConsumerRequestView.setTimeout(timeout == 0 ? 500 : (int) timeout);
 
-            ConsumerResponse consumerResponse = rtsProviderService.consumer(rtsConsumerRequestView);
+            ConsumerResponse consumerResponse = rtsExecutorService.consumer(rtsConsumerRequestView);
 
             response.setConsumeTime(consumerResponse.getConsumeTime());
             response.setMessage(consumerResponse.getMessage());

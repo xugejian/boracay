@@ -92,7 +92,7 @@ public class HttpController extends BaseController {
             return response;
         }
         //获取并设置客户端请求的IP
-        externalRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
+        externalRequest.setRequestIp(HostUtil.getRealRequestIp(request));
         return consumerService.externalConsume(externalRequest);
     }
 
@@ -113,7 +113,7 @@ public class HttpController extends BaseController {
         p.setPageSize(page.getPageSize());
         innerRequest.setPage(p);
         //获取并设置客户端请求的IP
-        innerRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
+        innerRequest.setRequestIp(HostUtil.getRealRequestIp(request));
         PageListResult pageListResult = null;
         try {
             Response response = getInnerConsume(innerRequest);
@@ -152,7 +152,7 @@ public class HttpController extends BaseController {
     public Response innerConsume(@RequestBody String json, HttpServletRequest request) {
         InnerRequest innerRequest = jsonToInnerRequest(json);
         //获取并设置客户端请求的IP
-        innerRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
+        innerRequest.setRequestIp(HostUtil.getRealRequestIp(request));
         return getInnerConsume(innerRequest);
     }
 
@@ -168,7 +168,7 @@ public class HttpController extends BaseController {
         boolean status = true;
         String message = "下载成功";
         //获取并设置客户端请求的IP
-        innerRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
+        innerRequest.setRequestIp(HostUtil.getRealRequestIp(request));
         if (!ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(innerRequest.getType())
                 || !ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(innerRequest.getEntity())) {
             return new MessageResult(false, "不为异步的start请求");

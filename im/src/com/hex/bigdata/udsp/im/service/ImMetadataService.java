@@ -53,7 +53,7 @@ public class ImMetadataService extends BaseService {
     @Autowired
     private ComPropertiesService comPropertiesService;
     @Autowired
-    private ImProviderService imProviderService;
+    private ImConvertorService imConvertorService;
 
     private static List<ComExcelParam> comExcelParams;
 
@@ -159,7 +159,7 @@ public class ImMetadataService extends BaseService {
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
-        return imProviderService.getCloumnInfo(metadata);
+        return imConvertorService.getCloumnInfo(metadata);
     }
 
     public boolean checkSchema(String dsId, String tbName) throws Exception {
@@ -170,14 +170,14 @@ public class ImMetadataService extends BaseService {
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
-        return imProviderService.checkSchema(metadata);
+        return imConvertorService.checkSchema(metadata);
     }
 
     @Transactional
     public boolean createTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("2"); //状态为已建
-        imProviderService.createSchema(getMetadata(pkId));
+        imConvertorService.createSchema(getMetadata(pkId));
         return imMetadataMapper.update(pkId, imMetadata);
     }
 
@@ -185,7 +185,7 @@ public class ImMetadataService extends BaseService {
     public boolean dropTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("1"); //状态为未建
-        imProviderService.dropSchema(getMetadata(pkId));
+        imConvertorService.dropSchema(getMetadata(pkId));
         return imMetadataMapper.update(pkId, imMetadata);
     }
 

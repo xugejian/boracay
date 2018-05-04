@@ -65,7 +65,7 @@ public class ImModelService {
     private ImModelUpdateKeyMapper imModelUpdateKeyMapper;
 
     @Autowired
-    private ImProviderService imProviderService;
+    private ImConvertorService imConvertorService;
 
     @Autowired
     private ImMetadataMapper imMetadataMapper;
@@ -242,7 +242,7 @@ public class ImModelService {
         datasource.setImplClass("");
         model.setProperties(Arrays.asList(properties));
         model.setSourceDatasource(datasource);
-        return imProviderService.getCloumnInfo(model);
+        return imConvertorService.getCloumnInfo(model);
     }
 
     public List<ImModel> selectAll() {
@@ -561,9 +561,9 @@ public class ImModelService {
         //组织需要构建或则删除构建的模型
         Model model = getModelByImModel(imModel);
         if ("1".equals(status)) { // 删除模型
-            imProviderService.dropEngineSchema(model);
+            imConvertorService.dropEngineSchema(model);
         } else if ("2".equals(status)) { // 创建模型
-            imProviderService.createEngineSchema(model);
+            imConvertorService.createEngineSchema(model);
         }
         //修改数据库中建模的状态
         imModel.setStatus(status);

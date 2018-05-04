@@ -50,7 +50,6 @@ import com.hex.bigdata.udsp.thread.sync.IqSyncServiceCallable;
 import com.hex.bigdata.udsp.thread.sync.OlqSyncServiceCallable;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.service.UserService;
-import com.hex.goframe.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
@@ -471,7 +470,7 @@ public class ConsumerService {
                     + (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ? "【同步】" : "【异步】")
                     + "方式执行" + request.getServiceName() + "服务"
                     + (ErrorCode.ERROR_000014.getValue().equals(errorCode) ? "【等待】" : "【执行】")
-                    + "超时，开始时间：" + UdspDateUtil.getDateString(bef) + "，超时时间：" + timout + "秒，总耗时："
+                    + "超时，开始时间：" + DateUtil.getDateString(bef) + "，超时时间：" + timout + "秒，总耗时："
                     + new BigDecimal((float) consumeTime / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒！";
             try {
                 alarmService.send(rcUserService, msg);
@@ -482,7 +481,7 @@ public class ConsumerService {
         }
 
         if (StringUtils.isBlank(consumeId)) {
-            consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+            consumeId = HostUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
         }
 
         response.setStatus(Status.DEFEAT.getValue());
@@ -497,8 +496,8 @@ public class ConsumerService {
         mcConsumeLog.setResponseContent("");
         mcConsumeLog.setErrorCode(errorCode);
         mcConsumeLog.setMessage(message);
-        mcConsumeLog.setRequestStartTime(UdspDateUtil.getDateString(bef));
-        mcConsumeLog.setRequestEndTime(UdspDateUtil.getDateString(now));
+        mcConsumeLog.setRequestStartTime(DateUtil.getDateString(bef));
+        mcConsumeLog.setRequestEndTime(DateUtil.getDateString(now));
 
         //日志信息入库
         this.consumerLogToDb(request, mcConsumeLog, McConstant.MCLOG_STATUS_FAILED);
@@ -553,7 +552,7 @@ public class ConsumerService {
         Request request = consumeRequest.getRequest();
         Current mcCurrent = consumeRequest.getMcCurrent();
         RcUserService rcUserService = consumeRequest.getRcUserService();
-        String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+        String consumeId = HostUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
         long runStart = 0;
         long runEnd = 0;
@@ -702,7 +701,7 @@ public class ConsumerService {
                 && !RcConstant.UDSP_SERVICE_TYPE_MM.equalsIgnoreCase(appType)) {
             if ("admin".equals(udspUser)) udspUser = "udsp" + udspUser;
             String ftpFilePath = FTPClientConfig.getRootpath() + "/" + udspUser + "/" + FTPClientConfig.getUsername()
-                    + "/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + fileName + CreateFileUtil.DATA_FILE_SUFFIX;
+                    + "/" + com.hex.goframe.util.DateUtil.format(new Date(), "yyyyMMdd") + "/" + fileName + CreateFileUtil.DATA_FILE_SUFFIX;
             response.setResponseContent(ftpFilePath);
             response.setStatusCode(StatusCode.SUCCESS.getValue());
             response.setStatus(Status.SUCCESS.getValue());
@@ -720,13 +719,13 @@ public class ConsumerService {
     private void writeSyncLog(Current mcCurrent, long bef, long now, long runStart, long runEnd, Request request, Response response) {
         McConsumeLog mcConsumeLog = new McConsumeLog();
         mcConsumeLog.setPkId(mcCurrent.getPkId());
-        mcConsumeLog.setRequestStartTime(UdspDateUtil.getDateString(bef));
-        mcConsumeLog.setRequestEndTime(UdspDateUtil.getDateString(now));
+        mcConsumeLog.setRequestStartTime(DateUtil.getDateString(bef));
+        mcConsumeLog.setRequestEndTime(DateUtil.getDateString(now));
         if (runStart != 0) {
-            mcConsumeLog.setRunStartTime(UdspDateUtil.getDateString(runStart));
+            mcConsumeLog.setRunStartTime(DateUtil.getDateString(runStart));
         }
         if (runEnd != 0) {
-            mcConsumeLog.setRunEndTime(UdspDateUtil.getDateString(runEnd));
+            mcConsumeLog.setRunEndTime(DateUtil.getDateString(runEnd));
         }
         if (StringUtils.isNotBlank(response.getErrorCode())) {
             mcConsumeLog.setErrorCode(response.getErrorCode());

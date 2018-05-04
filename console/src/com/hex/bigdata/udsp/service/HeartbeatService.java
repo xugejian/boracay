@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ThreadPool;
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.dao.HeartbeatMapper;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
@@ -47,7 +47,7 @@ public class HeartbeatService {
     /**
      * 本机IP
      */
-    private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
+    private static final String HOST_KEY = HostUtil.getLocalIpFromInetAddress();
 
     /**
      * 心跳误差阀值(毫秒)

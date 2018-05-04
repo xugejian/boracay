@@ -19,7 +19,6 @@ import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,7 +27,7 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-@Component("com.hex.bigdata.udsp.im.convertor.impl.MysqlConvertor")
+//@Component("com.hex.bigdata.udsp.im.convertor.impl.MysqlConvertor")
 public class MysqlConvertor extends JdbcWrapper implements RealtimeTargetConvertor {
     private static Logger logger = LogManager.getLogger(MysqlConvertor.class);
 

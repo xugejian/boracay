@@ -2,7 +2,8 @@ package com.hex.bigdata.udsp.iq.provider.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.common.api.model.*;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.common.constant.Order;
 import com.hex.bigdata.udsp.common.constant.Status;
@@ -10,11 +11,7 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.HBaseConnectionPoolFactory;
-import com.hex.bigdata.udsp.iq.provider.impl.model.SolrDatasource;
-import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
-import com.hex.bigdata.udsp.iq.provider.impl.model.HBasePage;
-import com.hex.bigdata.udsp.iq.provider.impl.model.SolrHBaseDatasource;
-import com.hex.bigdata.udsp.iq.provider.impl.model.SolrHBasePage;
+import com.hex.bigdata.udsp.iq.provider.impl.model.*;
 import com.hex.bigdata.udsp.iq.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +20,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -33,7 +29,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +40,7 @@ import java.util.*;
 /**
  * Created by junjiem on 2017-2-15.
  */
-@Component("com.hex.bigdata.udsp.iq.provider.impl.SolrHBaseProvider")
+//@Component("com.hex.bigdata.udsp.iq.provider.impl.SolrHBaseProvider")
 public class SolrHBaseProvider implements Provider {
 
     static {

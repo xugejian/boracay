@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.common.util;
 
 import com.hex.goframe.util.Util;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,9 @@ import java.util.Random;
  * DATE:2017/5/11
  * TIME:9:38
  */
-public class UdspCommonUtil {
+public class HostUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(UdspCommonUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(HostUtil.class);
 
     private static Random random = new Random();
 
@@ -102,7 +103,7 @@ public class UdspCommonUtil {
     }
 
     public static String getConsumeId(String key) {
-        synchronized (UdspCommonUtil.class) {
+        synchronized (HostUtil.class) {
             if (key == null) key = "";
             return Util.MD5(key + "|" + Util.uuid());
         }

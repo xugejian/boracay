@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.im.converter.impl;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.SolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
@@ -8,8 +9,6 @@ import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import com.hex.bigdata.udsp.im.converter.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -17,14 +16,17 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-@Component("com.hex.bigdata.udsp.im.convertor.impl.SolrHBaseConvertor")
+//@Component("com.hex.bigdata.udsp.im.convertor.impl.SolrHBaseConvertor")
 public class SolrHBaseConvertor extends SolrHBaseWrapper {
     private static Logger logger = LoggerFactory.getLogger(SolrHBaseConvertor.class);
 
-    @Autowired
-    private SolrConvertor solrProvider;
-    @Autowired
-    private HBaseConvertor hbaseProvider;
+//    @Autowired
+//    private SolrConvertor solrProvider;
+//    @Autowired
+//    private HBaseConvertor hbaseProvider;
+
+    private SolrConvertor solrProvider = (SolrConvertor) ObjectUtil.newInstance("com.hex.bigdata.udsp.im.convertor.impl.SolrConvertor");
+    private HBaseConvertor hbaseProvider = (HBaseConvertor) ObjectUtil.newInstance("com.hex.bigdata.udsp.im.convertor.impl.HBaseConvertor");
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {

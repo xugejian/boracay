@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.iq.provider.impl;
 
-import com.hex.bigdata.udsp.common.api.model.*;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
@@ -17,14 +18,12 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +34,7 @@ import java.util.*;
 /**
  * Created by junjiem on 2017-3-3.
  */
-@Component("com.hex.bigdata.udsp.iq.provider.impl.HBaseProvider")
+//@Component("com.hex.bigdata.udsp.iq.provider.impl.HBaseProvider")
 public class HBaseProvider implements Provider {
 
     static {

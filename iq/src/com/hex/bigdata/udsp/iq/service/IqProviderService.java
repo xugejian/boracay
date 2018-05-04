@@ -244,7 +244,7 @@ public class IqProviderService extends BaseService {
         metadata.setNote(iqMetadata.getNote());
         metadata.setTbName(iqMetadata.getTbName());
         List<DataColumn> queryColumns = new ArrayList<>();
-        for(IqMetadataCol iqMetadataCol: iqMetadataQueryColList){
+        for (IqMetadataCol iqMetadataCol : iqMetadataQueryColList) {
             DataColumn dataColumn = new DataColumn();
             dataColumn.setSeq(iqMetadataCol.getSeq());
             dataColumn.setName(iqMetadataCol.getName());
@@ -256,7 +256,7 @@ public class IqProviderService extends BaseService {
         }
         metadata.setQueryColumns(queryColumns);
         List<DataColumn> returnColumns = new ArrayList<>();
-        for(IqMetadataCol iqMetadataCol: iqMetadataReturnColList){
+        for (IqMetadataCol iqMetadataCol : iqMetadataReturnColList) {
             DataColumn dataColumn = new DataColumn();
             dataColumn.setSeq(iqMetadataCol.getSeq());
             dataColumn.setName(iqMetadataCol.getName());
@@ -281,18 +281,16 @@ public class IqProviderService extends BaseService {
         return provider.testDatasource(datasource);
     }
 
-    /**
-     * 得到生产接口的实例
-     *
-     * @param datasource
-     * @return
-     */
     private Provider getProviderImpl(Datasource datasource) {
+        return (Provider) ObjectUtil.newInstance(getImplClass(datasource));
+    }
+
+    private String getImplClass(Datasource datasource) {
         String implClass = datasource.getImplClass();
         if (StringUtils.isBlank(implClass)) {
             GFDict gfDict = gfDictMapper.selectByPrimaryKey(IQ_IMPL_CLASS, datasource.getType());
             implClass = gfDict.getDictName();
         }
-        return (Provider) ObjectUtil.newInstance(implClass);
+        return implClass;
     }
 }

@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.im.task;
 
 import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
 import com.hex.bigdata.udsp.im.converter.impl.model.modeling.MqModel;
-import com.hex.bigdata.udsp.im.service.ImProviderService;
+import com.hex.bigdata.udsp.im.service.ImConvertorService;
 import com.hex.bigdata.udsp.im.service.RealtimeTotalService;
 import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.logging.log4j.LogManager;
@@ -25,9 +25,9 @@ public class RealtimeJob implements Job {
         String id = jobName; // 在这里jobName就是id
         RealtimeTotalInfo realtimeTotalInfo = realtimeTotalService.select(id);
         MqModel model = realtimeTotalInfo.getModel();
-        ImProviderService imProviderService = (ImProviderService) WebApplicationContextUtil.getBean("imProviderService");
+        ImConvertorService imConvertorService = (ImConvertorService) WebApplicationContextUtil.getBean("imConvertorService");
         try {
-            imProviderService.buildRealtime(id, model);
+            imConvertorService.buildRealtime(id, model);
         } catch (Exception e) {
             throw new JobExecutionException(e);
         }

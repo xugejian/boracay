@@ -1,7 +1,5 @@
 package com.hex.bigdata.udsp.common.util;
 
-import com.hex.goframe.util.WebApplicationContextUtil;
-
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -56,18 +54,27 @@ public class ObjectUtil {
      */
     public static Object newInstance(String implClass) {
         Object obj = null;
+//        try {
+//            obj = WebApplicationContextUtil.getBean(implClass);
+//        } catch (Exception e) {
+//            try {
+//                obj = Class.forName(implClass).newInstance();
+//            } catch (InstantiationException e1) {
+//                e1.printStackTrace();
+//            } catch (IllegalAccessException e1) {
+//                e1.printStackTrace();
+//            } catch (ClassNotFoundException e1) {
+//                e1.printStackTrace();
+//            }
+//        }
         try {
-            obj = WebApplicationContextUtil.getBean(implClass);
-        } catch (Exception e) {
-            try {
-                obj = Class.forName(implClass).newInstance();
-            } catch (InstantiationException e1) {
-                e1.printStackTrace();
-            } catch (IllegalAccessException e1) {
-                e1.printStackTrace();
-            } catch (ClassNotFoundException e1) {
-                e1.printStackTrace();
-            }
+            obj = Class.forName(implClass).newInstance();
+        } catch (InstantiationException e1) {
+            e1.printStackTrace();
+        } catch (IllegalAccessException e1) {
+            e1.printStackTrace();
+        } catch (ClassNotFoundException e1) {
+            e1.printStackTrace();
         }
         return obj;
     }

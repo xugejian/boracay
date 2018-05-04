@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-4.
  */
-@Component("com.hex.bigdata.udsp.im.convertor.impl.KafkaConvertor")
+//@Component("com.hex.bigdata.udsp.im.convertor.impl.KafkaConvertor")
 public class KafkaConvertor extends KafkaWrapper {
     private static Logger logger = LogManager.getLogger(KafkaConvertor.class);
     private static final int CONSUMER_TIMEOUT_MS = 1000;

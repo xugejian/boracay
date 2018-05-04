@@ -35,7 +35,7 @@ import java.util.Map;
  * Created by tomnic on 2017/3/7.
  */
 @Service
-public class RtsProviderService extends BaseService {
+public class RtsExecutorService extends BaseService {
     private static final String RTS_IMPL_CLASS = "RTS_IMPL_CLASS";
 
     @Autowired
@@ -98,9 +98,9 @@ public class RtsProviderService extends BaseService {
 
         ConsumerRequest consumerRequest = new ConsumerRequest(consumerApplication, timeout);
 
-        Executor provider = getProviderImpl(datasource);
+        Executor executor = getExecutorImpl(datasource);
 
-        ConsumerResponse consumerResponse = provider.pull(consumerRequest);
+        ConsumerResponse consumerResponse = executor.pull(consumerRequest);
         //设置返回列信息
         consumerResponse.setColumns(this.putColumnIntoMap(rtsMatedataCols));
         if (consumerResponse.getRecords() != null && consumerResponse.getRecords().size() > 0) {
@@ -161,9 +161,9 @@ public class RtsProviderService extends BaseService {
 
         ProducerRequest producerRequest = new ProducerRequest(producerApplication, messageDatas);
 
-        Executor provider = getProviderImpl(datasource);
+        Executor executor = getExecutorImpl(datasource);
 
-        ProducerResponse response = provider.push(producerRequest);
+        ProducerResponse response = executor.push(producerRequest);
 
         return response;
     }
@@ -175,8 +175,8 @@ public class RtsProviderService extends BaseService {
      * @return
      */
     public boolean testDatasource(Datasource datasource) {
-        Executor provider = getProviderImpl(datasource);
-        return provider.testDatasource(datasource);
+        Executor executor = getExecutorImpl(datasource);
+        return executor.testDatasource(datasource);
     }
 
     /**
@@ -185,13 +185,17 @@ public class RtsProviderService extends BaseService {
      * @param datasource
      * @return
      */
-    private Executor getProviderImpl(Datasource datasource) {
+    private Executor getExecutorImpl(Datasource datasource) {
+        return (Executor) ObjectUtil.newInstance(getImplClass(datasource));
+    }
+
+    private String getImplClass(Datasource datasource) {
         String implClass = datasource.getImplClass();
         if (StringUtils.isBlank(implClass)) {
             GFDict gfDict = gfDictMapper.selectByPrimaryKey(RTS_IMPL_CLASS, datasource.getType());
             implClass = gfDict.getDictName();
         }
-        return (Executor) ObjectUtil.newInstance(implClass);
+        return implClass;
     }
 
     private ConsumerMatedata getConsumerMatedata(RtsMatedataColsView matedataColsView, ConsumerDatasource datasource) {
