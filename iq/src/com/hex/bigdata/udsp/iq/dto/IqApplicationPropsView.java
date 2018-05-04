@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.iq.dto;
 
+import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.iq.model.IqAppOrderCol;
 import com.hex.bigdata.udsp.iq.model.IqAppQueryCol;
 import com.hex.bigdata.udsp.iq.model.IqAppReturnCol;
@@ -16,6 +17,7 @@ public class IqApplicationPropsView implements Serializable {
     private List<IqAppQueryCol> iqAppQueryColList;
     private List<IqAppReturnCol> iqAppReturnColList;
     private List<IqAppOrderCol> iqAppOrderColList;
+    private List<ComProperties> comPropertiesList;
 
     public IqApplication getIqApplication() {
         return iqApplication;
@@ -47,5 +49,13 @@ public class IqApplicationPropsView implements Serializable {
 
     public void setIqAppOrderColList(List<IqAppOrderCol> iqAppOrderColList) {
         this.iqAppOrderColList = iqAppOrderColList;
+    }
+
+    public List<ComProperties> getComPropertiesList() {
+        return comPropertiesList;
+    }
+
+    public void setComPropertiesList(List<ComProperties> comPropertiesList) {
+        this.comPropertiesList = comPropertiesList;
     }
 }

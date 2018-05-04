@@ -3,28 +3,28 @@ package com.hex.bigdata.udsp.iq.service;
 import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
+import com.hex.bigdata.udsp.common.util.DatasourceUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
 import com.hex.bigdata.udsp.iq.model.*;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import com.hex.goframe.dao.GFDictMapper;
 import com.hex.goframe.model.GFDict;
 import com.hex.goframe.service.BaseService;
-import com.hex.goframe.util.DateUtil;
-import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by junjiem on 2017-3-2.
@@ -63,7 +63,7 @@ public class IqProviderService extends BaseService {
     public List<MetadataCol> getColumnInfo(String dsId, String schemaName) {
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comPropertiesList = comPropertiesService.selectList(dsId);
-        Datasource datasource = new Datasource(comDatasource, comPropertiesList);
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comPropertiesList);
         Provider provider = getProviderImpl(datasource);
         return provider.columnInfo(datasource, schemaName);
     }
@@ -161,16 +161,36 @@ public class IqProviderService extends BaseService {
         List<IqAppOrderCol> iqAppOrderColList = iqAppOrderColService.selectByAppId(appId);
         String mdId = iqApplication.getMdId();
 
+        List<ComProperties> appProperties = comPropertiesService.selectList(appId);
+        List<Property> appPropertyList = new ArrayList<>(appProperties.size());
+        for (ComProperties properties : appProperties) {
+            Property property = new Property();
+            property.setName(properties.getName());
+            property.setValue(properties.getValue());
+            property.setDescribe(properties.getDescribe());
+            appPropertyList.add(property);
+        }
+
         IqMetadata iqMetadata = iqMetadataService.select(mdId);
         List<IqMetadataCol> iqMetadataQueryColList = iqMetadataColService.selectQueryColList(mdId);
         List<IqMetadataCol> iqMetadataReturnColList = iqMetadataColService.selectReturnColList(mdId);
         String dsId = iqMetadata.getDsId();
 
+        List<ComProperties> mdProperties = comPropertiesService.selectList(mdId);
+        List<Property> mdPropertyList = new ArrayList<>(mdProperties.size());
+        for (ComProperties properties : mdProperties) {
+            Property property = new Property();
+            property.setName(properties.getName());
+            property.setValue(properties.getValue());
+            property.setDescribe(properties.getDescribe());
+            mdPropertyList.add(property);
+        }
+
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comPropertiesList = comPropertiesService.selectList(dsId);
 
         // ----------------数据封装-----------------------
-        Application application = new Application();
+        Application application = new Application(appPropertyList);
         application.setName(iqApplication.getName());
         if (iqApplication.getMaxNum() != null)
             application.setMaxNum(Integer.valueOf(iqApplication.getMaxNum().toString()));
@@ -218,13 +238,13 @@ public class IqProviderService extends BaseService {
         }
         application.setOrderColumns(orderColumnList);
 
-        Metadata metadata = new Metadata();
+        Metadata metadata = new Metadata(mdPropertyList);
         metadata.setName(iqMetadata.getName());
         metadata.setDescribe(iqMetadata.getDescribe());
         metadata.setNote(iqMetadata.getNote());
         metadata.setTbName(iqMetadata.getTbName());
         List<DataColumn> queryColumns = new ArrayList<>();
-        for(IqMetadataCol iqMetadataCol: iqMetadataQueryColList){
+        for (IqMetadataCol iqMetadataCol : iqMetadataQueryColList) {
             DataColumn dataColumn = new DataColumn();
             dataColumn.setSeq(iqMetadataCol.getSeq());
             dataColumn.setName(iqMetadataCol.getName());
@@ -236,7 +256,7 @@ public class IqProviderService extends BaseService {
         }
         metadata.setQueryColumns(queryColumns);
         List<DataColumn> returnColumns = new ArrayList<>();
-        for(IqMetadataCol iqMetadataCol: iqMetadataReturnColList){
+        for (IqMetadataCol iqMetadataCol : iqMetadataReturnColList) {
             DataColumn dataColumn = new DataColumn();
             dataColumn.setSeq(iqMetadataCol.getSeq());
             dataColumn.setName(iqMetadataCol.getName());
@@ -248,7 +268,7 @@ public class IqProviderService extends BaseService {
         }
         metadata.setReturnColumns(returnColumns);
 
-        Datasource datasource = new Datasource(comDatasource, comPropertiesList);
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comPropertiesList);
 
         metadata.setDatasource(datasource);
         application.setMetadata(metadata);
@@ -261,18 +281,16 @@ public class IqProviderService extends BaseService {
         return provider.testDatasource(datasource);
     }
 
-    /**
-     * 得到生产接口的实例
-     *
-     * @param datasource
-     * @return
-     */
     private Provider getProviderImpl(Datasource datasource) {
+        return (Provider) ObjectUtil.newInstance(getImplClass(datasource));
+    }
+
+    private String getImplClass(Datasource datasource) {
         String implClass = datasource.getImplClass();
         if (StringUtils.isBlank(implClass)) {
             GFDict gfDict = gfDictMapper.selectByPrimaryKey(IQ_IMPL_CLASS, datasource.getType());
             implClass = gfDict.getDictName();
         }
-        return (Provider) ObjectUtil.newInstance(implClass);
+        return implClass;
     }
 }

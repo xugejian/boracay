@@ -4,10 +4,10 @@ import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.model.ComExcelParam;
 import com.hex.bigdata.udsp.common.model.ComExcelProperties;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
+import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.iq.dao.IqApplicationMapper;
 import com.hex.bigdata.udsp.iq.dao.IqMetadataMapper;
 import com.hex.bigdata.udsp.iq.dto.IqApplicationPropsView;
@@ -23,7 +23,6 @@ import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.DateUtil;
 import com.hex.goframe.util.FileUtil;
 import com.hex.goframe.util.Util;
-import com.hex.goframe.util.WebUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -58,6 +57,8 @@ public class IqApplicationService extends BaseService {
     private IqMetadataMapper iqMetadataMapper;
     @Autowired
     private RcServiceService rcServiceService;
+    @Autowired
+    private ComPropertiesService comPropertiesService;
 
     @Transactional
     public String insert(IqApplication iqApplication) {
@@ -77,6 +78,7 @@ public class IqApplicationService extends BaseService {
             iqAppQueryColService.insertList(pkId, iqApplicationPropsView.getIqAppQueryColList());
             iqAppReturnColService.insertList(pkId, iqApplicationPropsView.getIqAppReturnColList());
             iqAppOrderColService.insertList(pkId, iqApplicationPropsView.getIqAppOrderColList());
+            comPropertiesService.insertList(pkId, iqApplicationPropsView.getComPropertiesList());
             return pkId;
         }
         return "";
@@ -97,15 +99,19 @@ public class IqApplicationService extends BaseService {
         if (!iqAppQueryColService.deleteByAppId(pkId)) {
             return false;
         }
-        iqAppQueryColService.insertList(pkId, iqApplicationPropsView.getIqAppQueryColList());
         if (!iqAppReturnColService.deleteByAppId(pkId)) {
             return false;
         }
-        iqAppReturnColService.insertList(pkId, iqApplicationPropsView.getIqAppReturnColList());
         if (!iqAppOrderColService.deleteByAppId(pkId)) {
             return false;
         }
+        if (!comPropertiesService.deleteList(pkId)) {
+            return false;
+        }
+        iqAppQueryColService.insertList(pkId, iqApplicationPropsView.getIqAppQueryColList());
+        iqAppReturnColService.insertList(pkId, iqApplicationPropsView.getIqAppReturnColList());
         iqAppOrderColService.insertList(pkId, iqApplicationPropsView.getIqAppOrderColList());
+        comPropertiesService.insertList(pkId, iqApplicationPropsView.getComPropertiesList());
         return true;
     }
 

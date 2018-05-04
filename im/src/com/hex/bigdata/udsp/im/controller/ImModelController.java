@@ -1,11 +1,11 @@
 package com.hex.bigdata.udsp.im.controller;
 
-import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.ImModel;
 import com.hex.bigdata.udsp.im.dto.ImModelDto;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;

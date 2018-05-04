@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.thread.sync;
 
-import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.service.OlqSyncService;
 import com.hex.goframe.util.WebApplicationContextUtil;

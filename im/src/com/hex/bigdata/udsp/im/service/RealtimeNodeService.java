@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.im.service;
 
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
 import com.hex.bigdata.udsp.im.dao.RealtimeNodeMapper;
 import com.hex.bigdata.udsp.im.model.RealtimeNodeInfo;
@@ -20,7 +20,7 @@ public class RealtimeNodeService {
     private static Logger logger = LogManager.getLogger(RealtimeNodeService.class);
     private static final String REALTIME_NODE_INFO_KEY = "REALTIME_NODE";
     private static final String KEY_DELIMITER = ":";
-    private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
+    private static final String HOST_KEY = HostUtil.getLocalIpFromInetAddress();
 
     @Autowired
     private RealtimeNodeMapper realtimeNodeMapper;

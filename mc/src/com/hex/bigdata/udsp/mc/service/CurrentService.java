@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.mc.service;
 
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.mc.dao.CurrentMapper;
 import com.hex.bigdata.udsp.mc.dto.CurrentView;
 import com.hex.bigdata.udsp.mc.model.Current;
@@ -38,7 +38,7 @@ public class CurrentService extends BaseService {
     /**
      * 本机IP
      */
-    private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
+    private static final String HOST_KEY = HostUtil.getLocalIpFromInetAddress();
 
     @Autowired
     private CurrentMapper mcCurrentMapper;

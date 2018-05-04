@@ -14,6 +14,26 @@
           <element id="module-output" name="olq" />
           <element id="module-output" name="rc" />
           <element id="module-output" name="rts" />
+          <element id="module-output" name="common-api" />
+          <element id="module-output" name="iq-provider-api" />
+          <element id="module-output" name="iq-provider-es" />
+          <element id="module-output" name="iq-provider-hbase" />
+          <element id="module-output" name="iq-provider-redis" />
+          <element id="module-output" name="iq-provider-solr" />
+          <element id="module-output" name="iq-provider-solr_hbase" />
+          <element id="module-output" name="olq-provider-api" />
+          <element id="module-output" name="olq-provider-db2" />
+          <element id="module-output" name="olq-provider-hive" />
+          <element id="module-output" name="olq-provider-impala" />
+          <element id="module-output" name="olq-provider-inceptor" />
+          <element id="module-output" name="olq-provider-kylin" />
+          <element id="module-output" name="olq-provider-mysql" />
+          <element id="module-output" name="olq-provider-oracle" />
+          <element id="module-output" name="olq-provider-pgsql" />
+          <element id="module-output" name="rts-executor-api" />
+          <element id="module-output" name="rts-executor-kafka" />
+          <element id="module-output" name="im-convertor-api" />
+          <element id="module-output" name="im-convertor-impl" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="common" />

@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.thread.async;
 
-import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.service.IqSyncService;
