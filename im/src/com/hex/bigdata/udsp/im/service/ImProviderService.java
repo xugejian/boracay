@@ -1,15 +1,13 @@
 package com.hex.bigdata.udsp.im.service;
 
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.*;
-import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.im.provider.model.Model;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.im.converter.*;
+import com.hex.bigdata.udsp.im.converter.model.Metadata;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.model.Model;
 import com.hex.goframe.dao.GFDictMapper;
 import com.hex.goframe.model.GFDict;
 import com.hex.goframe.util.WebApplicationContextUtil;
-import kafka.consumer.ConsumerIterator;
-import kafka.consumer.KafkaStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

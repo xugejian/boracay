@@ -1,9 +1,8 @@
 package com.hex.bigdata.udsp.im.task;
 
 import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MqModel;
+import com.hex.bigdata.udsp.im.converter.impl.model.modeling.MqModel;
 import com.hex.bigdata.udsp.im.service.ImProviderService;
-import com.hex.bigdata.udsp.im.service.RealtimeNodeService;
 import com.hex.bigdata.udsp.im.service.RealtimeTotalService;
 import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.logging.log4j.LogManager;
@@ -11,8 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Created by JunjieM on 2017-9-15.

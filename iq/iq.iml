@@ -17,6 +17,7 @@
     <orderEntry type="library" name="jetty" level="project" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="rc" />
+    <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="iq-provider-api" />
     <orderEntry type="library" name="elasticsearch" level="project" />
     <orderEntry type="module" module-name="iq-provider-es" />
@@ -27,6 +28,5 @@
     <orderEntry type="library" name="solr" level="project" />
     <orderEntry type="module" module-name="iq-provider-solr" />
     <orderEntry type="module" module-name="iq-provider-solr_hbase" />
-    <orderEntry type="module" module-name="common-api" />
   </component>
 </module>

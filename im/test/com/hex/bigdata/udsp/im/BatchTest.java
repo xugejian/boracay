@@ -1,12 +1,12 @@
 package com.hex.bigdata.udsp.im;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.im.constant.*;
-import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.im.provider.model.Model;
+import com.hex.bigdata.udsp.im.converter.model.Metadata;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.model.Model;
 import com.hex.bigdata.udsp.im.service.BatchJobService;
 
 import java.util.ArrayList;

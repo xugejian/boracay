@@ -3,8 +3,8 @@ package com.hex.bigdata.udsp.im.service;
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.DatasourceModel;
 import com.hex.bigdata.udsp.common.model.*;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.*;
@@ -14,8 +14,8 @@ import com.hex.bigdata.udsp.im.dao.ImMetadataMapper;
 import com.hex.bigdata.udsp.im.model.*;
 import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
 import com.hex.bigdata.udsp.im.dto.ImMetadataView;
-import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.model.Metadata;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
@@ -154,7 +154,7 @@ public class ImMetadataService extends BaseService {
     public List<MetadataCol> getCloumnInfo(String dsId, String tbName) {
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectList(dsId);
-        Datasource datasource = new Datasource(comDatasource, comProperties);
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comProperties);
         Metadata metadata = new Metadata();
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
@@ -165,7 +165,7 @@ public class ImMetadataService extends BaseService {
     public boolean checkSchema(String dsId, String tbName) throws Exception {
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectList(dsId);
-        Datasource datasource = new Datasource(comDatasource, comProperties);
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comProperties);
         Metadata metadata = new Metadata();
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
@@ -194,7 +194,7 @@ public class ImMetadataService extends BaseService {
         String dsId = imMetadata.getDsId();
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectList(dsId);
-        Datasource datasource = new Datasource(comDatasource, comProperties);
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comProperties);
         List<Property> prop = PropertyUtil.convertToPropertyList(comPropertiesService.selectList(pkId));
         Metadata metadata = new Metadata(prop);
         metadata.setName(imMetadata.getName());

@@ -17,8 +17,8 @@
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="rc" />
     <orderEntry type="module" module-name="common-api" />
-    <orderEntry type="library" name="jdbc" level="project" />
     <orderEntry type="module" module-name="olq-provider-api" />
+    <orderEntry type="library" name="jdbc" level="project" />
     <orderEntry type="module" module-name="olq-provider-db2" />
     <orderEntry type="module" module-name="olq-provider-hive" />
     <orderEntry type="module" module-name="olq-provider-impala" />
