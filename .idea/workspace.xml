@@ -2,19 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="72e5f216-bde4-4813-a9eb-1a4d0f1a67f9" name="Default" comment="update">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrDatasource.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrMetadata.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrModel.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/im.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImMetadataController.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/BatchJobService.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImModelService.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImProviderService.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/RealtimeJobService.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/RealtimeJob.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/im/test/com/hex/bigdata/udsp/im/BatchTest.java" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sql/mysql/path/20180504.sql" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sql/oracle/patch/20180504.sql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/udsp.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/udsp.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -39,7 +29,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -52,9 +42,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getDictData</find>
-      <find>getDicts</find>
-      <find>filter</find>
       <find>selectDicts</find>
       <find>GFDictMapper.se</find>
       <find>GFDictMapper</find>
@@ -82,6 +69,9 @@
       <find>WebApplicationContextUtil</find>
       <find>ImProviderService</find>
       <find>HttpServletRequest</find>
+      <find>Property</find>
+      <find>Provider</find>
+      <find>com.hex.bigdata.udsp.rts</find>
     </findStrings>
     <replaceStrings>
       <replace>logger.info</replace>
@@ -108,45 +98,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/common-api/src/com/hex/bigdata/udsp/common/provider/model/Result.java" />
-        <option value="$PROJECT_DIR$/common-api/src/com/hex/bigdata/udsp/common/api/model/Result.java" />
-        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/PropertyUtil.java" />
-        <option value="$PROJECT_DIR$/rts/src/com/hex/bigdata/udsp/rts/util/CommonUtil.java" />
-        <option value="$PROJECT_DIR$/rts-executor-api/src/com/hex/bigdata/udsp/rts/executor/model/ConsumerMatedata.java" />
-        <option value="$PROJECT_DIR$/rts-executor-api/src/com/hex/bigdata/udsp/rts/executor/model/ConsumerApplication.java" />
-        <option value="$PROJECT_DIR$/rts-executor-api/src/com/hex/bigdata/udsp/rts/executor/model/ProducerMatedata.java" />
-        <option value="$PROJECT_DIR$/rts-executor-api/src/com/hex/bigdata/udsp/rts/executor/model/ProducerApplication.java" />
-        <option value="$PROJECT_DIR$/rts/src/com/hex/bigdata/udsp/rts/service/RtsProviderService.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/BatchProvider.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/BatchConverter.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/SolrHBaseConverter.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/SolrConverter.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/MysqlConverter.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/OracleConverter.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/KafkaConverter.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/HiveConverter.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/HBaseConverter.java" />
-        <option value="$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/model/KafkaConsumerDsConfig.java" />
-        <option value="$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/model/KafkaConsumerDatasource.java" />
-        <option value="$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/KafkaExecutor.java" />
-        <option value="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrDatasource.java" />
-        <option value="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrMetadata.java" />
-        <option value="$PROJECT_DIR$/im-converter-solr/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrModel.java" />
-        <option value="$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveDatasource.java" />
-        <option value="$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveMetadata.java" />
-        <option value="$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveModel.java" />
-        <option value="$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/wrapper/Wrapper.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrHBaseDatasource.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrMetadata.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/SolrModel.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/Provider.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Metadata.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Model.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/HiveMetadata.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/JdbcMetadata.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/JdbcDatasource.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HBaseDatasource.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java" />
         <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HiveDatasource.java" />
         <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/KafkaDatasource.java" />
         <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/MysqlDatasource.java" />
@@ -159,6 +110,45 @@
         <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/KafkaModel.java" />
         <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/MqModel.java" />
         <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/KafkaUtil.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImProviderService.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/model/Metadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImModelController.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/HBaseProvider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/OracleProvider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/SolrHBaseProvider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/SolrProvider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/model/Model.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/Provider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/wrapper/JdbcWrapper.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/wrapper/Wrapper.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/HBaseDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/HiveDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/KafkaDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/JdbcDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/MysqlDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/OracleDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/SolrDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/SolrHBaseDatasource.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/HBaseMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/JdbcMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/MysqlMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/modeling/JdbcModel.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/modeling/KafkaModel.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/modeling/MqModel.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/modeling/SolrModel.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/KafkaUtil.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImModelService.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/SolrMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/HiveProvider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/KafkaProvider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/MysqlProvider.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/HiveMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/SolrHBaseMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/OracleMetadata.java" />
+        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java" />
+        <option value="$PROJECT_DIR$/im/test/com/hex/bigdata/udsp/im/BatchTest.java" />
+        <option value="$PROJECT_DIR$/sql/oracle/patch/20180504.sql" />
+        <option value="$PROJECT_DIR$/sql/mysql/path/20180504.sql" />
       </list>
     </option>
   </component>
@@ -167,6 +157,13 @@
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
   </component>
   <component name="MavenProjectNavigator">
     <treeState />
@@ -194,6 +191,7 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -203,7 +201,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="im-converter-api" />
+              <option name="myItemId" value="sql" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -213,7 +211,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="im" />
+              <option name="myItemId" value="sql" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="oracle" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -223,7 +225,67 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="im" />
+              <option name="myItemId" value="sql" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="oracle" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="patch" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boracay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sql" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mysql" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boracay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sql" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mysql" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="path" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boracay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rts-executor-kafka" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boracay" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rts-executor-kafka" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -231,83 +293,12 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="im" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="boracay" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="im" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="im" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="provider" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="boracay" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="im" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="im" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="provider" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="model" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="boracay" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="im" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="im" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controller" />
+              <option name="myItemId" value="impl" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -316,7 +307,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../CBoard" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/iq-provider-solr_hbase" />
     <property name="js.eslint.eslintPackage" value="" />
     <property name="settings.editor.selected.configurable" value="preferences.general" />
     <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
@@ -325,11 +316,12 @@
     <property name="js-jscs-nodeInterpreter" value="A:\Program Files\nodejs\node.exe" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\deploy\oracle" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\update\20171026" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im\test" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\console\resources\goframe\udsp\sql\deploy" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\oracle\patch" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter\impl\util" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter\impl\model" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-solr\src\com\hex\bigdata\udsp\im\converter\impl\factory" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.hex.bigdata.udsp.im.converter.impl.model" />
@@ -338,12 +330,11 @@
       <recent name="com.hex.bigdata.udsp.im.converter.impl" />
       <recent name="com.hex.bigdata.udsp.rts.executor" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter\impl\util" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter\impl\model" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-solr\src\com\hex\bigdata\udsp\im\converter\impl\factory" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\rts-executor-kafka\src\com\hex\bigdata\udsp\rts\executor\impl" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\deploy\oracle" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\update\20171026" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im\test" />
+      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\console\resources\goframe\udsp\sql\deploy" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -358,7 +349,18 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.udsp">
+  <component name="RunManager" selected="Tomcat Server.tomcat">
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
+      <deployment />
+      <server-settings />
+      <predefined_log_file id="Tomcat" enabled="true" />
+      <predefined_log_file id="Tomcat Catalina" enabled="true" />
+      <predefined_log_file id="Tomcat Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Host Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <method />
+    </configuration>
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
@@ -799,8 +801,81 @@
       <envs />
       <method />
     </configuration>
-    <list size="1">
+    <configuration default="false" name="tomcat" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="tomcat6_8088" ALTERNATIVE_JRE_ENABLED="false">
+      <option name="UPDATING_POLICY" value="restart-server" />
+      <deployment>
+        <artifact name="udsp">
+          <settings>
+            <option name="CONTEXT_PATH" value="/udsp" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="Unnamed_boracay" />
+      </server-settings>
+      <predefined_log_file id="Tomcat" enabled="true" />
+      <predefined_log_file id="Tomcat Catalina" enabled="true" />
+      <predefined_log_file id="Tomcat Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Host Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="56903" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method>
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="udsp" />
+        </option>
+      </method>
+    </configuration>
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="Application.udsp" />
+      <item index="1" class="java.lang.String" itemvalue="Tomcat Server.tomcat" />
     </list>
   </component>
   <component name="SbtLocalSettings">
@@ -911,6 +986,7 @@
       <workItem from="1525255658454" duration="2152000" />
       <workItem from="1525309383963" duration="4573000" />
       <workItem from="1525317009159" duration="5283000" />
+      <workItem from="1525397997272" duration="2505000" />
     </task>
     <task id="LOCAL-00001" summary="异常捕获处理">
       <created>1505875263874</created>
@@ -1171,7 +1247,14 @@
       <option name="project" value="LOCAL" />
       <updated>1525345802830</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="update">
+      <created>1525400867426</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1525400867426</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1207,7 +1290,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="218421000" />
+    <option name="totallyTimeSpent" value="220926000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1225,6 +1308,7 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47945204" sideWeight="0.5060514" order="12" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980332" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -1233,18 +1317,18 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11649016" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21931261" sideWeight="0.49394855" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15548281" sideWeight="0.49394855" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32733223" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25204584" sideWeight="0.4969743" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25204584" sideWeight="0.4969743" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13356164" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13356164" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2753404" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27987897" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -1331,291 +1415,27 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveDatasource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="8" column="52" lean-forward="true" selection-start-line="8" selection-start-column="52" selection-end-line="8" selection-end-column="52" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveMetadata.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" column="13" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/JdbcDatasource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/JdbcModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/JdbcMetadata.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/model/HiveModel.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImProviderService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
-          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
+          <caret line="35" column="46" lean-forward="true" selection-start-line="35" selection-start-column="46" selection-end-line="35" selection-end-column="46" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/model/FileFormat.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/model/Page.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/model/RowFormat.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/model/SerDeProperty.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/util/HiveSqlUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/util/JdbcUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="144" column="0" lean-forward="false" selection-start-line="144" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/util/HiveJdbcUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="53" lean-forward="false" selection-start-line="5" selection-start-column="28" selection-end-line="5" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/impl/wrapper/Wrapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-874">
-          <caret line="153" column="37" lean-forward="false" selection-start-line="153" selection-start-column="20" selection-end-line="153" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/model/Metadata.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="15" column="3" lean-forward="false" selection-start-line="15" selection-start-column="3" selection-end-line="15" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/RealtimeSourceProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im-converter-api/src/com/hex/bigdata/udsp/im/converter/BatchConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchSourceProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/BatchTargetProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/RealtimeProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/RealtimeTargetProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/SourceProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/TargetProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/Provider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="3" lean-forward="true" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImMetadataController.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/controller/ImModelController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="123">
-          <caret line="309" column="58" lean-forward="false" selection-start-line="309" selection-start-column="40" selection-end-line="309" selection-end-column="58" />
+          <caret line="152" column="99" lean-forward="false" selection-start-line="152" selection-start-column="91" selection-end-line="152" selection-end-column="99" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Metadata.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="6" column="51" lean-forward="false" selection-start-line="6" selection-start-column="51" selection-end-line="6" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/model/Model.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="131">
-          <caret line="7" column="50" lean-forward="true" selection-start-line="7" selection-start-column="50" selection-end-line="7" selection-end-column="50" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/HiveMetadata.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" column="39" lean-forward="true" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/JdbcMetadata.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="21" lean-forward="true" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/JdbcDatasource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HBaseDatasource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="34" lean-forward="true" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="54" lean-forward="true" selection-start-line="6" selection-start-column="54" selection-end-line="6" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/HiveDatasource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/KafkaDatasource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/MysqlDatasource.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/HBaseProvider.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="32">
           <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
@@ -1623,7 +1443,70 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/HBaseMetadata.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/SolrHBaseProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="27">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/Provider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="6" column="3" lean-forward="true" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/OracleProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="34" column="13" lean-forward="false" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/SolrProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="627">
+          <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/wrapper/Wrapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="93">
+          <caret line="5" column="49" lean-forward="true" selection-start-line="5" selection-start-column="49" selection-end-line="5" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/wrapper/JdbcWrapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <marker date="1525400063568" expanded="true" signature="16976:16990" ph="select 1 fro... missingValue" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/HBaseDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/HiveDatasource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="38">
           <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
@@ -1631,7 +1514,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/MysqlMetadata.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/KafkaDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/JdbcDatasource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="38">
           <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
@@ -1639,7 +1530,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/OracleMetadata.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/MysqlDatasource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="38">
           <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
@@ -1647,7 +1538,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/metadata/SolrHBaseMetadata.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/OracleDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/SolrDatasource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="36">
           <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
@@ -1655,15 +1554,43 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/HiveModel.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/datasource/SolrHBaseDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="113">
+          <caret line="6" column="34" lean-forward="true" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/HBaseMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/JdbcMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/MysqlMetadata.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
-          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
+          <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/JdbcModel.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/modeling/JdbcModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="57">
           <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
@@ -1671,7 +1598,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/KafkaModel.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/modeling/KafkaModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="57">
           <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
@@ -1679,92 +1606,248 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/modeling/MqModel.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/modeling/MqModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="5" column="43" lean-forward="false" selection-start-line="5" selection-start-column="43" selection-end-line="5" selection-end-column="43" />
+        <state relative-caret-position="57">
+          <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/SolrUtil.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/modeling/SolrModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/util/KafkaUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/model/ComDatasource.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImModelService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="743" column="5" lean-forward="true" selection-start-line="743" selection-start-column="5" selection-end-line="743" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/SolrMetadata.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
-          <caret line="9" column="44" lean-forward="false" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+          <caret line="9" column="3" lean-forward="true" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/HiveProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" column="38" lean-forward="false" selection-start-line="7" selection-start-column="38" selection-end-line="7" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/OracleDatasource.java">
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/KafkaProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="4" column="54" lean-forward="false" selection-start-line="4" selection-start-column="54" selection-end-line="4" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/MysqlProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" column="38" lean-forward="false" selection-start-line="7" selection-start-column="38" selection-end-line="7" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/HiveMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/SolrHBaseMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/impl/model/metadata/OracleMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="38" lean-forward="false" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/model/Metadata.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="142">
-          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <caret line="16" column="13" lean-forward="false" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/model/MetadataCol.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/converter/model/Model.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="18" column="13" lean-forward="false" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="194" column="72" lean-forward="false" selection-start-line="194" selection-start-column="72" selection-end-line="194" selection-end-column="72" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/model/datasource/SolrHBaseDatasource.java">
+    <entry file="file://$PROJECT_DIR$/im/test/com/hex/bigdata/udsp/im/BatchTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/OracleSqlUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="13" column="13" lean-forward="false" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/MysqlSqlUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+        <state relative-caret-position="-494">
+          <caret line="4" column="38" lean-forward="false" selection-start-line="4" selection-start-column="38" selection-end-line="4" selection-end-column="38" />
           <folding>
-            <marker date="1525345408966" expanded="true" signature="440:482" ph="/**...*/" />
-            <marker date="1525345408966" expanded="true" signature="516:659" ph="/**...*/" />
-            <marker date="1525345408966" expanded="true" signature="821:978" ph="{...}" />
-            <marker date="1525345408966" expanded="true" signature="984:1054" ph="/**...*/" />
-            <marker date="1525345408966" expanded="false" signature="1111:1122" ph=" { " />
-            <marker date="1525345408966" expanded="false" signature="1159:1165" ph=" }" />
-            <marker date="1525345408966" expanded="true" signature="1171:1242" ph="/**...*/" />
-            <marker date="1525345408966" expanded="false" signature="1295:1306" ph=" { " />
-            <marker date="1525345408966" expanded="false" signature="1340:1346" ph=" }" />
-            <marker date="1525345408966" expanded="true" signature="1352:1443" ph="/**...*/" />
-            <marker date="1525345408966" expanded="true" signature="1515:1593" ph="{...}" />
-            <marker date="1525345408966" expanded="true" signature="1599:1723" ph="/**...*/" />
-            <marker date="1525345408966" expanded="true" signature="1875:1993" ph="{...}" />
-            <marker date="1525345408966" expanded="true" signature="1999:2093" ph="/**...*/" />
-            <marker date="1525345408966" expanded="true" signature="2176:2330" ph="{...}" />
-            <marker date="1525345408966" expanded="true" signature="2400:2664" ph="{...}" />
-            <marker date="1525345408966" expanded="true" signature="2722:2840" ph="{...}" />
-            <marker date="1525345408966" expanded="true" signature="2904:3029" ph="{...}" />
-            <marker date="1525345408966" expanded="true" signature="3095:4304" ph="{...}" />
-            <marker date="1525345408966" expanded="true" signature="4375:4701" ph="{...}" />
-            <marker date="1525345408966" expanded="true" signature="4766:4954" ph="{...}" />
+            <element signature="e#1322#1339#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/provider/impl/util/KafkaUtil.java">
+    <entry file="file://$PROJECT_DIR$/olq-provider-db2/src/com/hex/bigdata/udsp/olq/provider/impl/Db2Provider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="20" column="13" lean-forward="false" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+        <state relative-caret-position="152">
+          <caret line="13" column="75" lean-forward="true" selection-start-line="13" selection-start-column="75" selection-end-line="13" selection-end-column="75" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/goframe.config.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.mysql.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/jdbc.oracle.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common-api/src/com/hex/bigdata/udsp/common/util/JSONUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="13" column="23" lean-forward="true" selection-start-line="13" selection-start-column="23" selection-end-line="13" selection-end-column="23" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/ImSyncService.java">
+    <entry file="file://$PROJECT_DIR$/olq-provider-mysql/src/com/hex/bigdata/udsp/olq/provider/impl/MysqlProvider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="7" column="55" lean-forward="true" selection-start-line="7" selection-start-column="55" selection-end-line="7" selection-end-column="55" />
+        <state relative-caret-position="114">
+          <caret line="10" column="3" lean-forward="true" selection-start-line="10" selection-start-column="3" selection-end-line="10" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/KafkaExecutor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="30" column="12" lean-forward="false" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sql/oracle/patch/20180427.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sql/oracle/patch/20180426.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-234">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sql/oracle/UDSP_META_DATAS.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="1037" column="0" lean-forward="false" selection-start-line="1037" selection-start-column="0" selection-end-line="1037" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sql/oracle/patch/20180504.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="3" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sql/mysql/path/20180504.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="29" lean-forward="false" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
           <folding />
         </state>
       </provider>
@@ -1824,7 +1907,7 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>im</last-edited>
+          <last-edited>common-api</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
