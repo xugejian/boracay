@@ -67,8 +67,8 @@ public class ImProviderService {
      */
     public void createEngineSchema(Model model) throws Exception {
         logger.debug("创建引擎Schema【START】");
-        BatchSourceProvider batchSourceProvider = getBatchSourceProvider(model.getSourceDatasource());
-        BatchTargetProvider batchTargetProvider = getBatchTargetProvider(model.getTargetMetadata().getDatasource());
+        BatchSourceConvertor batchSourceProvider = getBatchSourceProvider(model.getSourceDatasource());
+        BatchTargetConvertor batchTargetProvider = getBatchTargetProvider(model.getTargetMetadata().getDatasource());
         batchSourceProvider.createSourceEngineSchema(model);
         try {
             batchTargetProvider.createTargetEngineSchema(model);
@@ -166,28 +166,28 @@ public class ImProviderService {
         return status;
     }
 
-    private BatchSourceProvider getBatchSourceProvider(Datasource datasource) {
-        return (BatchSourceProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
+    private BatchSourceConvertor getBatchSourceProvider(Datasource datasource) {
+        return (BatchSourceConvertor) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
-    private BatchTargetProvider getBatchTargetProvider(Datasource datasource) {
-        return (BatchTargetProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
+    private BatchTargetConvertor getBatchTargetProvider(Datasource datasource) {
+        return (BatchTargetConvertor) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
-    private RealtimeTargetProvider getRealtimeTargetProvider(Datasource datasource) {
-        return (RealtimeTargetProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
+    private RealtimeTargetConvertor getRealtimeTargetProvider(Datasource datasource) {
+        return (RealtimeTargetConvertor) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
-    private SourceProvider getSourceProvider(Datasource datasource) {
-        return (SourceProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
+    private SourceConvertor getSourceProvider(Datasource datasource) {
+        return (SourceConvertor) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
-    private TargetProvider getTargetProvider(Datasource datasource) {
-        return (TargetProvider) WebApplicationContextUtil.getBean(getImplClass(datasource));
+    private TargetConvertor getTargetProvider(Datasource datasource) {
+        return (TargetConvertor) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
-    private Provider getProvider(Datasource datasource) {
-        return (Provider) WebApplicationContextUtil.getBean(getImplClass(datasource));
+    private Convertor getProvider(Datasource datasource) {
+        return (Convertor) WebApplicationContextUtil.getBean(getImplClass(datasource));
     }
 
     private String getImplClass(Datasource datasource) {

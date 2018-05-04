@@ -32,6 +32,8 @@
           <element id="module-output" name="olq-provider-pgsql" />
           <element id="module-output" name="rts-executor-api" />
           <element id="module-output" name="rts-executor-kafka" />
+          <element id="module-output" name="im-convertor-api" />
+          <element id="module-output" name="im-convertor-impl" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="common" />
