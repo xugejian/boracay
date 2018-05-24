@@ -8,7 +8,7 @@ import com.hex.goframe.util.WebApplicationContextUtil;
 import java.util.concurrent.Callable;
 
 /**
- * 联机查询同步查询线程
+ * 联机查询同步服务的Callable异步类
  *
  * @param <T>
  */

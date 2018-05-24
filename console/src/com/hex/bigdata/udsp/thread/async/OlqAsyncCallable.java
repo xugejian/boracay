@@ -8,7 +8,12 @@ import com.hex.goframe.util.WebApplicationContextUtil;
 
 import java.util.concurrent.Callable;
 
-public class OlqAsyncCallable implements Callable<OlqResponse> {
+/**
+ * 联机查询异步处理的Callable异步类
+ *
+ * @param <T>
+ */
+public class OlqAsyncCallable<T> implements Callable<OlqResponse> {
 
     private String consumeId;
     private Current mcCurrent;
@@ -31,6 +36,6 @@ public class OlqAsyncCallable implements Callable<OlqResponse> {
 
     @Override
     public OlqResponse call() throws Exception {
-        return  this.olqSyncService.asyncStart(this.consumeId, this.dsId, this.sql, this.page, this.fileName, this.mcCurrent.getUserName());
+        return this.olqSyncService.asyncStart(this.consumeId, this.dsId, this.sql, this.page, this.fileName, this.mcCurrent.getUserName());
     }
 }

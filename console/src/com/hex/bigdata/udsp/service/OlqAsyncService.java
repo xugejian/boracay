@@ -30,12 +30,26 @@ import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 异步联机查询的服务
  */
 public class OlqAsyncService implements Runnable {
-    private static final ExecutorService executorService = new ThreadPoolExecutor(32, 128, 30, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(50));
+
+    private static final ExecutorService executorService = new ThreadPoolExecutor(
+            20, Integer.MAX_VALUE, 30, TimeUnit.MINUTES, new SynchronousQueue<Runnable>(),
+            new ThreadFactory() {
+                private AtomicInteger id = new AtomicInteger(0);
+
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(r);
+                    thread.setName("olq-async-service-" + id.addAndGet(1));
+                    return thread;
+                }
+            });
+
     private static Logger logger = LoggerFactory.getLogger(IqAsyncService.class);
     private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
 
@@ -120,11 +134,14 @@ public class OlqAsyncService implements Runnable {
         if (waitNumResult != null && !waitNumResult.isWaitQueueIsFull()) {
             //任务进入等待队列
             String waitQueueTaskId = waitNumResult.getWaitQueueTaskId();
-            Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, waitQueueTaskId, asyncCycleTimeInterval));
+            /*
+            开启一个新的线程，其内部循环判断是否可以执行，可以执行时或者等待超时时向下走
+             */
+            Future<Boolean> waitFutureTask = executorService.submit(new WaitQueueCallable(mcCurrent, waitQueueTaskId, asyncCycleTimeInterval));
             try {
                 long maxAsyncWaitTimeout = (rcUserService == null || rcUserService.getMaxAsyncWaitTimeout() == 0) ?
                         initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
-                passFlg = futureTask.get(maxAsyncWaitTimeout, TimeUnit.SECONDS);
+                passFlg = waitFutureTask.get(maxAsyncWaitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 status = McConstant.MCLOG_STATUS_FAILED;
                 errorCode = ErrorCode.ERROR_000014.getValue();
@@ -140,6 +157,9 @@ public class OlqAsyncService implements Runnable {
                 mcCurrentService.insert(mcCurrent);
                 runQueueService.addAsyncCurrent(mcCurrent);
                 //进入执行队列,增加信息并发队列信息   --Add 20170915 by tomnic -- end
+                /*
+                开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
+                 */
                 Future<OlqResponse> olqFutureTask = executorService.submit(new OlqAsyncCallable(consumeId, mcCurrent, this.dsId, this.sql, this.page, this.fileName));
                 try {
                     long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?

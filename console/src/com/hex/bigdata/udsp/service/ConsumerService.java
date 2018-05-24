@@ -62,6 +62,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 消费的服务
@@ -70,8 +71,40 @@ import java.util.concurrent.*;
 public class ConsumerService {
     private static Logger logger = LogManager.getLogger(ConsumerService.class);
     private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final ExecutorService executorService = new ThreadPoolExecutor(256,
-            2048, 30, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(1000));
+
+/*
+ThreadPoolExecutor的构造方法参数如下：
+    corePoolSize：线程池维护线程的最少数量，默认情况下核心线程会一直存活，即使处于闲置状态也不会受存keepAliveTime限制。除非将allowCoreThreadTimeOut设置为true。
+    maximumPoolSize：线程池所能容纳的最大线程数。超过这个数的线程将被阻塞。当任务队列为没有设置大小的LinkedBlockingDeque时，这个值无效。
+    keepAliveTime：非核心线程的闲置超时时间，超过这个时间就会被回收。
+    unit：指定keepAliveTime的单位，如TimeUnit.SECONDS。当将allowCoreThreadTimeOut设置为true时对corePoolSize生效。
+    workQueue：线程池中的任务队列，常用的有三种队列，SynchronousQueue：是一种无缓冲的等待队列；LinkedBlockingQueue：是一个无界缓存的等待队列；ArrayBlockingQueue：是一个有界缓存的等待队列。
+    threadFactory：新建线程工厂。
+    RejectedExecutionHandler：线程池对拒绝任务的处理策略，当提交任务数超过maxmumPoolSize + workQueue之和时，任务会交给RejectedExecutionHandler来处理。
+
+当一个任务通过execute(Runnable)方法欲添加到线程池时：
+    l、如果此时线程池中的数量小于corePoolSize，即使线程池中的线程都处于空闲状态，也要创建新的线程来处理被添加的任务。
+    2、如果此时线程池中的数量等于corePoolSize，但是缓冲队列workQueue未满，那么任务被放入缓冲队列。
+    3、如果此时线程池中的数量大于corePoolSize，缓冲队列workQueue满，并且线程池中的数量小于maximumPoolSize，建新的线程来处理被添加的任务。
+    4、如果此时线程池中的数量大于corePoolSize，缓冲队列workQueue满，并且线程池中的数量等于maximumPoolSize，那么通过 handler所指定的策略来处理此任务。也就是：处理任务的优先级为：核心线程corePoolSize、任务队列workQueue、最大线程maximumPoolSize，如果三者都满了，使用handler处理被拒绝的任务。
+    当线程池中的线程数量大于 corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止。这样，线程池可以动态的调整池中的线程数。
+*/
+    /**
+     * 这里主要是为了下面我们利用ExecutorService来实现线程设置超时时间并自动计算超时退出的功能，
+     * 所以这里我们设置maximumPoolSize尽量大，且设置SynchronousQueue无缓冲的等待队列。
+     */
+    private static final ExecutorService executorService = new ThreadPoolExecutor(
+            128, Integer.MAX_VALUE, 30, TimeUnit.MINUTES, new SynchronousQueue<Runnable>(),
+            new ThreadFactory() {
+                private AtomicInteger id = new AtomicInteger(0);
+
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(r);
+                    thread.setName("consumer-service-" + id.addAndGet(1));
+                    return thread;
+                }
+            });
 
     @Autowired
     private UserService userService;
@@ -358,6 +391,9 @@ public class ConsumerService {
                 }
                 String waitQueueTaskId = waitNumResult.getWaitQueueTaskId();
                 if (CommonConstant.REQUEST_SYNC.equalsIgnoreCase(type)) { // 同步
+                    /*
+                    开启一个新的线程，其内部循环判断是否可以执行，可以执行时或者等待超时时向下走
+                     */
                     Future<Boolean> futureTask = executorService.submit(new WaitQueueCallable(mcCurrent, waitQueueTaskId, syncCycleTimeInterval));
                     try {
                         long maxSyncWaitTimeout = (rcUserService == null || rcUserService.getMaxSyncWaitTimeout() == 0) ?
@@ -585,9 +621,12 @@ public class ConsumerService {
             } else if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
                     && ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
                 logger.debug("execute IQ SYNC START");
-                Future<Response> iqFuture = executorService.submit(new IqSyncServiceCallable(request.getData(), appId, page));
+                /*
+                开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
+                */
+                Future<Response> futureTask = executorService.submit(new IqSyncServiceCallable(request.getData(), appId, page));
                 try {
-                    response = iqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+                    response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), consumeId);
                     return response;
@@ -610,9 +649,12 @@ public class ConsumerService {
             } else if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
                     && ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
                 logger.debug("execute OLQ SYNC START");
-                Future<Response> olqFuture = executorService.submit(new OlqSyncServiceCallable(consumeId, appId, sql, page));
+                /*
+                开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
+                */
+                Future<Response> futureTask = executorService.submit(new OlqSyncServiceCallable(consumeId, appId, sql, page));
                 try {
-                    response = olqFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+                    response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), consumeId);
                     return response;
@@ -642,9 +684,12 @@ public class ConsumerService {
                 OlqApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                Future<Response> olqAppFuture = executorService.submit(new OlqSyncServiceCallable(consumeId, dsId, sql, page));
+                /*
+                开启一个新的线程，其内部执行联机应用查询任务，执行成功时或者执行超时时向下走
+                */
+                Future<Response> futureTask = executorService.submit(new OlqSyncServiceCallable(consumeId, dsId, sql, page));
                 try {
-                    response = olqAppFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+                    response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
                     this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), consumeId);
                     return response;
@@ -677,9 +722,12 @@ public class ConsumerService {
             response = rtsSyncService.startConsumer(appId, request.getTimeout());
         } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equalsIgnoreCase(appType)) {
             logger.debug("execute IM SYNC START");
-            Future<Response> imFuture = executorService.submit(new ImSyncServiceCallable(appId, request.getData()));
+            /*
+            开启一个新的线程，其内部执行交互建模任务，执行成功时或者执行超时时向下走
+            */
+            Future<Response> futureTask = executorService.submit(new ImSyncServiceCallable(appId, request.getData()));
             try {
-                response = imFuture.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+                response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 this.setErrorResponse(response, consumeRequest, bef, ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), consumeId);
                 return response;

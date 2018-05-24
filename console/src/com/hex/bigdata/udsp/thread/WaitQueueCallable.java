@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Callable;
 
+/**
+ * 等待队列循环判断是否可执行的Callable异步类
+ */
 public class WaitQueueCallable<T> implements Callable<Boolean> {
 
     private static Logger logger = LoggerFactory.getLogger(WaitQueueService.class);

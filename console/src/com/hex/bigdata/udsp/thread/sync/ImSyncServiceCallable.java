@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
- * Created by PC on 2017/10/10.
+ * 交互建模同步服务的Callable异步类
+ *
+ * @param <T>
  */
 public class ImSyncServiceCallable<T> implements Callable<Response> {
 

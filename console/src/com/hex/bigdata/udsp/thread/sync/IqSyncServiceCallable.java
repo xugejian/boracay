@@ -8,6 +8,11 @@ import com.hex.goframe.util.WebApplicationContextUtil;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+/**
+ * 联机查询同步服务的Callable异步类
+ *
+ * @param <T>
+ */
 public class IqSyncServiceCallable<T> implements Callable<Response> {
 
     private IqSyncService iqSyncService;

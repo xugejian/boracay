@@ -9,7 +9,12 @@ import com.hex.goframe.util.WebApplicationContextUtil;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class IqAsyncCallable implements Callable<IqResponse> {
+/**
+ * 交互查询异步处理的Callable异步类
+ *
+ * @param <T>
+ */
+public class IqAsyncCallable<T> implements Callable<IqResponse> {
 
     private IqSyncService iqSyncService;
     private Current mcCurrent;
