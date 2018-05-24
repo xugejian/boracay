@@ -22,11 +22,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -170,7 +171,7 @@ public class SolrProvider implements Provider {
         logger.debug("consumeTime=" + response.getConsumeTime());
         return response;
     }
-    
+
     //-------------------------------------------分割线---------------------------------------------
 
     private synchronized SolrConnectionPoolFactory getDataSource(String collectionName, SolrDatasource datasource) {
@@ -194,6 +195,15 @@ public class SolrProvider implements Provider {
         }
         dataSourcePool.put(dsId, factory);
         return factory;
+    }
+
+    public SolrServer getSolrServer(String solrServices, String collectionName) throws MalformedURLException {
+        String[] tempServers = solrServices.split(",");
+        String[] servers = new String[tempServers.length];
+        for (int i = 0; i < tempServers.length; i++) {
+            servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
+        }
+        return new LBHttpSolrServer(servers);
     }
 
     private SolrServer getConnection(String collectionName, SolrDatasource datasource) {
@@ -280,10 +290,10 @@ public class SolrProvider implements Provider {
                     String[] stringArray = value.split(",");
                     for (int i = 0; i < stringArray.length; i++) {
                         sb.append(stringArray[i]);
-                        if (i<stringArray.length-1){
+                        if (i < stringArray.length - 1) {
                             sb.append(" or ");
                         }
-                        if (i == stringArray.length-1){
+                        if (i == stringArray.length - 1) {
                             sb.append(")");
                         }
                     }
@@ -347,14 +357,15 @@ public class SolrProvider implements Provider {
         SolrServer solrServer = null;
         QueryResponse res = null;
         try {
-            solrServer = getConnection(collectionName, datasource);
+            //solrServer = getConnection(collectionName, datasource);
+            solrServer = getSolrServer(datasource.getSolrServers(), collectionName);
             res = solrServer.query(query);
-        } catch (SolrServerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (solrServer != null) {
-                release(collectionName, datasource, solrServer);
-            }
+//            if (solrServer != null) {
+//                release(collectionName, datasource, solrServer);
+//            }
         }
         return res;
     }
