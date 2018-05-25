@@ -3,7 +3,9 @@ package com.hex.bigdata.udsp.common.util;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA
@@ -13,17 +15,18 @@ import java.util.Map;
  */
 public class StatementUtil {
 
-    private static Map<String, Statement> statementPool = new HashMap<>();
+    // 线程安全的HashMap
+    private static Map<String, Statement> statementPool = new ConcurrentHashMap<>();
 
-    public static synchronized Statement getStatement(String key) {
+    public static Statement getStatement(String key) {
         return statementPool.get(key);
     }
 
-    public static synchronized Statement removeStatement(String key) {
+    public static Statement removeStatement(String key) {
         return statementPool.remove(key);
     }
 
-    public static synchronized void putStatement(String key, Statement statement) {
+    public static void putStatement(String key, Statement statement) {
         statementPool.put(key, statement);
     }
 

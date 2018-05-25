@@ -6,12 +6,14 @@ import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by junjiem on 2017-2-16.
@@ -27,45 +29,78 @@ public class LocalCache<T> implements Cache<T> {
 
     private static com.google.common.cache.Cache<Object, Object> cache;
 
-    private static Map<Long, com.google.common.cache.Cache<Object, Object>> cacheMap;
+    private static Map<Long, com.google.common.cache.Cache<Object, Object>> cacheMap = new ConcurrentHashMap<>();
+
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    //    private final Lock r = lock.readLock();
+    private final Lock w = lock.writeLock();
 
     private com.google.common.cache.Cache<Object, Object> getCache() {
-        if (this.cache == null) {
-            this.cache = CacheBuilder.newBuilder()//
+        if (cache == null) {
+            cache = CacheBuilder.newBuilder()//
                     .maximumSize(maximumSize)//
                     .expireAfterAccess(expireAfterAccessTimeMs, TimeUnit.MILLISECONDS)//
                     .ticker(Ticker.systemTicker())//
                     .build();
         }
-        return this.cache;
+        return cache;
     }
 
     private boolean insert(String key, Object obj) {
-        synchronized (key) {
+//        synchronized (key.intern()) {
+//            getCache().put(key, obj);
+//            return true;
+//        }
+        w.lock();
+        try {
             getCache().put(key, obj);
-            return true;
+        } finally {
+            w.unlock();
         }
+        return true;
     }
 
     private boolean update(String key, Object obj) {
-        synchronized (key) {
+//        synchronized (key.intern()) {
+//            getCache().invalidate(key);
+//            getCache().put(key, obj);
+//            return true;
+//        }
+        w.lock();
+        try {
             getCache().invalidate(key);
             getCache().put(key, obj);
-            return true;
+        } finally {
+            w.unlock();
         }
+        return true;
     }
 
     private boolean delete(String key) {
-        synchronized (key) {
+//        synchronized (key.intern()) {
+//            getCache().invalidate(key);
+//            return true;
+//        }
+        w.lock();
+        try {
             getCache().invalidate(key);
-            return true;
+        } finally {
+            w.unlock();
         }
+        return true;
     }
 
     private Object select(String key) {
-        synchronized (key) {
-            return getCache().getIfPresent(key);
-        }
+//        synchronized (key.intern()) {
+//            return getCache().getIfPresent(key);
+//        }
+
+//        r.lock();
+//        try {
+        return getCache().getIfPresent(key);
+//        } finally {
+//            r.unlock();
+//        }
     }
 
     @Override
@@ -85,16 +120,32 @@ public class LocalCache<T> implements Cache<T> {
 
     @Override
     public T selectCache(String key) {
+//        Object obj = select(key);
+//        if (obj == null && cacheMap != null) {
+//            synchronized (key.intern()) {
+//                for (Map.Entry<Long, com.google.common.cache.Cache<Object, Object>> entry : cacheMap.entrySet()) {
+//                    obj = entry.getValue().getIfPresent(key);
+//                    if (obj != null) {
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        return cloneObj((T) obj);
+
         Object obj = select(key);
         if (obj == null && cacheMap != null) {
-            synchronized (key) {
-                for (Map.Entry<Long, com.google.common.cache.Cache<Object, Object>> entry : cacheMap.entrySet()) {
-                    obj = entry.getValue().getIfPresent(key);
-                    if (obj != null) {
-                        break;
-                    }
+//            r.lock();
+//            try {
+            for (Map.Entry<Long, com.google.common.cache.Cache<Object, Object>> entry : cacheMap.entrySet()) {
+                obj = entry.getValue().getIfPresent(key);
+                if (obj != null) {
+                    break;
                 }
             }
+//            } finally {
+//                r.unlock();
+//            }
         }
         return cloneObj((T) obj);
     }
@@ -134,19 +185,35 @@ public class LocalCache<T> implements Cache<T> {
 
     @Override
     public boolean insertTimeoutCache(String key, T t, long timeout) {
-        synchronized (key) {
-            com.google.common.cache.Cache<Object, Object> cache = cacheMap.get(timeout);
-            if (cache == null) {
-                cache = CacheBuilder.newBuilder()//
-                        .maximumSize(maximumSize)//
-                        .expireAfterWrite(timeout, TimeUnit.MILLISECONDS)//
-                        .ticker(Ticker.systemTicker())//
-                        .build();
-                cacheMap.put(timeout, cache);
-            }
-            cache.put(key, cloneObj(t));
-            return true;
+//        synchronized (key.intern()) {
+//            com.google.common.cache.Cache<Object, Object> cache = cacheMap.get(timeout);
+//            if (cache == null) {
+//                cache = CacheBuilder.newBuilder()//
+//                        .maximumSize(maximumSize)//
+//                        .expireAfterWrite(timeout, TimeUnit.MILLISECONDS)//
+//                        .ticker(Ticker.systemTicker())//
+//                        .build();
+//                cacheMap.put(timeout, cache);
+//            }
+//            cache.put(key, cloneObj(t));
+//            return true;
+//        }
+        com.google.common.cache.Cache<Object, Object> cache = cacheMap.get(timeout);
+        if (cache == null) {
+            cache = CacheBuilder.newBuilder()//
+                    .maximumSize(maximumSize)//
+                    .expireAfterWrite(timeout, TimeUnit.MILLISECONDS)//
+                    .ticker(Ticker.systemTicker())//
+                    .build();
+            cacheMap.put(timeout, cache);
         }
+        w.lock();
+        try {
+            cache.put(key, cloneObj(t));
+        } finally {
+            w.unlock();
+        }
+        return true;
     }
 
     /**

@@ -26,46 +26,93 @@ public class EhCache<T> implements Cache<T> {
     private CacheManager cacheManager;
 
     private boolean insert(String key, Object obj) {
-        synchronized (key.intern()) {
-            if (StringUtils.isNotBlank(key) && obj != null) {
-                cacheManager.getCache(UDSP_EHCACHE_NAME).put(new Element(key, obj));
+//        synchronized (key.intern()) {
+//            if (StringUtils.isNotBlank(key) && obj != null) {
+//                cacheManager.getCache(UDSP_EHCACHE_NAME).put(new Element(key, obj));
+//            }
+//            return true;
+//        }
+
+        if (StringUtils.isNotBlank(key) && obj != null) {
+            net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+            cache.acquireWriteLockOnKey(key);
+            try {
+                cache.put(new Element(key, obj));
+            } finally {
+                cache.releaseWriteLockOnKey(key);
             }
-            return true;
         }
+        return true;
     }
 
     private boolean update(String key, Object obj) {
-        synchronized (key.intern()) {
-            if (StringUtils.isNotBlank(key) && obj != null) {
-                net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
-                cache.remove(key);
+//        synchronized (key.intern()) {
+//            if (StringUtils.isNotBlank(key) && obj != null) {
+//                net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+//                cache.remove(key);
+//                cache.put(new Element(key, obj));
+//            }
+//            return true;
+//        }
+
+        if (StringUtils.isNotBlank(key) && obj != null) {
+            net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+            cache.acquireWriteLockOnKey(key);
+            cache.remove(key);
+            try {
                 cache.put(new Element(key, obj));
+            } finally {
+                cache.releaseWriteLockOnKey(key);
             }
-            return true;
         }
+        return true;
     }
 
     private boolean delete(String key) {
-        synchronized (key.intern()) {
-            if (StringUtils.isNotBlank(key)) {
-                cacheManager.getCache(UDSP_EHCACHE_NAME).remove(key);
-            }
-            return true;
+//        synchronized (key.intern()) {
+//            if (StringUtils.isNotBlank(key)) {
+//                cacheManager.getCache(UDSP_EHCACHE_NAME).remove(key);
+//            }
+//            return true;
+//        }
+
+        net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+        cache.acquireWriteLockOnKey(key);
+        try {
+            cache.remove(key);
+        } finally {
+            cache.releaseWriteLockOnKey(key);
         }
+        return true;
     }
 
     private Object select(String key) {
-        synchronized (key.intern()) {
-            if (StringUtils.isNotBlank(key)) {
-                net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+//        synchronized (key.intern()) {
+//            if (StringUtils.isNotBlank(key)) {
+//                net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+//                Element element = cache.get(key);
+//                if (element == null) {
+//                    return null;
+//                }
+//                return element.getObjectValue();
+//            }
+//            return null;
+//        }
+
+        if (StringUtils.isNotBlank(key)) {
+            net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+//            cache.acquireReadLockOnKey(key);
+//            try {
                 Element element = cache.get(key);
                 if (element == null) {
                     return null;
                 }
                 return element.getObjectValue();
-            }
-            return null;
+//            } finally {
+//                cache.releaseReadLockOnKey(key);
+//            }
         }
+        return null;
     }
 
     public boolean insertCache(String key, T t) {
@@ -109,8 +156,25 @@ public class EhCache<T> implements Cache<T> {
 
     @Override
     public List<T> selectCacheLike(String likeKey) {
-        synchronized (likeKey.intern()) {
-            net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+//        synchronized (likeKey.intern()) {
+//            net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+//            Attribute<String> keyObject = cache.getSearchAttribute("key");
+//            Query query = cache.createQuery();
+//            query.addCriteria(keyObject.ilike(likeKey + "*"));
+//            query = query.includeValues();
+//            query = query.includeKeys();
+//            Results results = query.execute();
+//            List<Result> resultList = results.all();
+//            List<T> list = new ArrayList<>();
+//            for (Result result : resultList) {
+//                list.add((T) result.getValue());
+//            }
+//            return cloneList(list);
+//        }
+
+        net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+//        cache.acquireReadLockOnKey(likeKey);
+//        try {
             Attribute<String> keyObject = cache.getSearchAttribute("key");
             Query query = cache.createQuery();
             query.addCriteria(keyObject.ilike(likeKey + "*"));
@@ -123,13 +187,32 @@ public class EhCache<T> implements Cache<T> {
                 list.add((T) result.getValue());
             }
             return cloneList(list);
-        }
+//        } finally {
+//            cache.releaseReadLockOnKey(likeKey);
+//        }
     }
 
     @Override
     public boolean removeCacheLike(String likeKey) {
-        synchronized (likeKey.intern()) {
-            net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+//        synchronized (likeKey.intern()) {
+//            net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+//            Attribute<String> keyObject = cache.getSearchAttribute("key");
+//            Query query = cache.createQuery();
+//            query.addCriteria(keyObject.ilike(likeKey + "*"));
+//            query = query.includeKeys();
+//            Results results = query.execute();
+//            List<Result> resultList = results.all();
+//            List<String> keyList = new ArrayList<String>();
+//            for (Result result : resultList) {
+//                keyList.add((String) result.getKey());
+//            }
+//            cache.removeAll(keyList);
+//            return true;
+//        }
+
+        net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+        cache.acquireWriteLockOnKey(likeKey);
+        try {
             Attribute<String> keyObject = cache.getSearchAttribute("key");
             Query query = cache.createQuery();
             query.addCriteria(keyObject.ilike(likeKey + "*"));
@@ -142,19 +225,34 @@ public class EhCache<T> implements Cache<T> {
             }
             cache.removeAll(keyList);
             return true;
+        } finally {
+            cache.releaseWriteLockOnKey(likeKey);
         }
     }
 
     @Override
     public boolean insertTimeoutCache(String key, T t, long timeout) {
-        synchronized (key.intern()) {
-            Element element = new Element(key, cloneObj(t));
-            element.setTimeToIdle((int) timeout / 1000);
-            if (StringUtils.isNotBlank(key) && t != null) {
-                cacheManager.getCache(UDSP_EHCACHE_NAME).put(element);
+//        synchronized (key.intern()) {
+//            Element element = new Element(key, cloneObj(t));
+//            element.setTimeToIdle((int) timeout / 1000);
+//            if (StringUtils.isNotBlank(key) && t != null) {
+//                cacheManager.getCache(UDSP_EHCACHE_NAME).put(element);
+//            }
+//            return true;
+//        }
+
+        Element element = new Element(key, cloneObj(t));
+        element.setTimeToIdle((int) timeout / 1000);
+        if (StringUtils.isNotBlank(key) && t != null) {
+            net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
+            cache.acquireWriteLockOnKey(key);
+            try {
+                cache.put(element);
+            } finally {
+                cache.releaseWriteLockOnKey(key);
             }
-            return true;
         }
+        return true;
     }
 
     /**
