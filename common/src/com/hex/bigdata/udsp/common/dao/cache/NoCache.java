@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Created by junjiem on 2017-2-16.
  */
+@Deprecated
 @Repository("noCache")
 public class NoCache<T> implements Cache<T> {
 

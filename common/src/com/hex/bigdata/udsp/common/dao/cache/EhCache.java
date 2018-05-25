@@ -35,7 +35,7 @@ public class EhCache<T> implements Cache<T> {
 
         if (StringUtils.isNotBlank(key) && obj != null) {
             net.sf.ehcache.Cache cache = cacheManager.getCache(UDSP_EHCACHE_NAME);
-            cache.acquireWriteLockOnKey(key);
+            cache.acquireWriteLockOnKey(key); // 读锁与读锁不互斥，读锁与写锁互斥，写锁与写锁互斥。
             try {
                 cache.put(new Element(key, obj));
             } finally {

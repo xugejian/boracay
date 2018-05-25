@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Created by junjiem on 2017-2-16.
  */
+@Deprecated
 @Repository("localCache")
 public class LocalCache<T> implements Cache<T> {
 
@@ -31,8 +32,9 @@ public class LocalCache<T> implements Cache<T> {
 
     private static Map<Long, com.google.common.cache.Cache<Object, Object>> cacheMap = new ConcurrentHashMap<>();
 
+    // 读锁与读锁不互斥，读锁与写锁互斥，写锁与写锁互斥。
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    //    private final Lock r = lock.readLock();
+    private final Lock r = lock.readLock();
     private final Lock w = lock.writeLock();
 
     private com.google.common.cache.Cache<Object, Object> getCache() {
@@ -95,12 +97,12 @@ public class LocalCache<T> implements Cache<T> {
 //            return getCache().getIfPresent(key);
 //        }
 
-//        r.lock();
-//        try {
-        return getCache().getIfPresent(key);
-//        } finally {
-//            r.unlock();
-//        }
+        r.lock();
+        try {
+            return getCache().getIfPresent(key);
+        } finally {
+            r.unlock();
+        }
     }
 
     @Override
@@ -135,17 +137,17 @@ public class LocalCache<T> implements Cache<T> {
 
         Object obj = select(key);
         if (obj == null && cacheMap != null) {
-//            r.lock();
-//            try {
-            for (Map.Entry<Long, com.google.common.cache.Cache<Object, Object>> entry : cacheMap.entrySet()) {
-                obj = entry.getValue().getIfPresent(key);
-                if (obj != null) {
-                    break;
+            r.lock();
+            try {
+                for (Map.Entry<Long, com.google.common.cache.Cache<Object, Object>> entry : cacheMap.entrySet()) {
+                    obj = entry.getValue().getIfPresent(key);
+                    if (obj != null) {
+                        break;
+                    }
                 }
+            } finally {
+                r.unlock();
             }
-//            } finally {
-//                r.unlock();
-//            }
         }
         return cloneObj((T) obj);
     }
