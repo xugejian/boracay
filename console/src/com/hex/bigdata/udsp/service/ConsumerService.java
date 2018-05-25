@@ -86,25 +86,36 @@ ThreadPoolExecutor的构造方法参数如下：
     l、如果此时线程池中的数量小于corePoolSize，即使线程池中的线程都处于空闲状态，也要创建新的线程来处理被添加的任务。
     2、如果此时线程池中的数量等于corePoolSize，但是缓冲队列workQueue未满，那么任务被放入缓冲队列。
     3、如果此时线程池中的数量大于corePoolSize，缓冲队列workQueue满，并且线程池中的数量小于maximumPoolSize，建新的线程来处理被添加的任务。
-    4、如果此时线程池中的数量大于corePoolSize，缓冲队列workQueue满，并且线程池中的数量等于maximumPoolSize，那么通过 handler所指定的策略来处理此任务。也就是：处理任务的优先级为：核心线程corePoolSize、任务队列workQueue、最大线程maximumPoolSize，如果三者都满了，使用handler处理被拒绝的任务。
+    4、如果此时线程池中的数量大于corePoolSize，缓冲队列workQueue满，并且线程池中的数量等于maximumPoolSize，那么通过 handler所指定的策略来处理此任务。
+    也就是：处理任务的优先级为：核心线程corePoolSize、任务队列workQueue、最大线程maximumPoolSize，如果三者都满了，使用handler处理被拒绝的任务。
     当线程池中的线程数量大于 corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止。这样，线程池可以动态的调整池中的线程数。
 */
     /**
      * 这里主要是为了下面我们利用ExecutorService来实现线程设置超时时间并自动计算超时退出的功能，
      * 所以这里我们设置maximumPoolSize尽量大，且设置SynchronousQueue无缓冲的等待队列。
      */
-    private static final ExecutorService executorService = new ThreadPoolExecutor(
-            128, Integer.MAX_VALUE, 30, TimeUnit.MINUTES, new SynchronousQueue<Runnable>(),
-            new ThreadFactory() {
-                private AtomicInteger id = new AtomicInteger(0);
+//    private static final ExecutorService executorService = new ThreadPoolExecutor(
+//            128, Integer.MAX_VALUE, 60, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+//            new ThreadFactory() {
+//                private AtomicInteger id = new AtomicInteger(0);
+//
+//                @Override
+//                public Thread newThread(Runnable r) {
+//                    Thread thread = new Thread(r);
+//                    thread.setName("consumer-service-" + id.addAndGet(1));
+//                    return thread;
+//                }
+//            });
+    private static final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactory() {
+        private AtomicInteger id = new AtomicInteger(0);
 
-                @Override
-                public Thread newThread(Runnable r) {
-                    Thread thread = new Thread(r);
-                    thread.setName("consumer-service-" + id.addAndGet(1));
-                    return thread;
-                }
-            });
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setName("consumer-service-" + id.addAndGet(1));
+            return thread;
+        }
+    });
 
     @Autowired
     private UserService userService;

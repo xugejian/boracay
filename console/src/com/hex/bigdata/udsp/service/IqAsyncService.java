@@ -33,18 +33,28 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class IqAsyncService implements Runnable {
 
-    private static final ExecutorService executorService = new ThreadPoolExecutor(
-            20, Integer.MAX_VALUE, 30, TimeUnit.MINUTES, new SynchronousQueue<Runnable>(),
-            new ThreadFactory() {
-                private AtomicInteger id = new AtomicInteger(0);
+//    private static final ExecutorService executorService = new ThreadPoolExecutor(
+//            20, Integer.MAX_VALUE, 60, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+//            new ThreadFactory() {
+//                private AtomicInteger id = new AtomicInteger(0);
+//
+//                @Override
+//                public Thread newThread(Runnable r) {
+//                    Thread thread = new Thread(r);
+//                    thread.setName("iq-async-service-" + id.addAndGet(1));
+//                    return thread;
+//                }
+//            });
+    private static final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactory() {
+        private AtomicInteger id = new AtomicInteger(0);
 
-                @Override
-                public Thread newThread(Runnable r) {
-                    Thread thread = new Thread(r);
-                    thread.setName("iq-async-service-" + id.addAndGet(1));
-                    return thread;
-                }
-            });
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setName("iq-async-service-" + id.addAndGet(1));
+            return thread;
+        }
+    });
 
     private static Logger logger = LoggerFactory.getLogger(IqAsyncService.class);
     private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
