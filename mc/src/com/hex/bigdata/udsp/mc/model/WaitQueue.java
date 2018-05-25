@@ -45,7 +45,7 @@ public class WaitQueue implements Serializable {
      * @return
      */
     public boolean isFirstElement(String key) {
-        synchronized (key){
+        synchronized (key.intern()){
             String firstKey = waitQueue.peek();
             if (StringUtils.isNotBlank(key) && key.equals(firstKey)) {
                 //获取并移除此队列的头，如果此队列为空，则返回 false。

@@ -103,10 +103,10 @@ public class HostUtil {
     }
 
     public static String getConsumeId(String key) {
-        synchronized (HostUtil.class) {
+//        synchronized (HostUtil.class) {
             if (key == null) key = "";
             return Util.MD5(key + "|" + Util.uuid());
-        }
+//        }
     }
 
 }
