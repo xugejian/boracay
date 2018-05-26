@@ -2,6 +2,7 @@ package com.hex.bigdata.udsp.controller;
 
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.service.ConsumerService;
+import com.hex.bigdata.udsp.service.LoggingService;
 import com.hex.bigdata.udsp.thread.SocketRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Socket Controller
@@ -39,6 +42,8 @@ public class SocketController {
 
     @Autowired
     private ConsumerService consumerService;
+    @Autowired
+    private LoggingService loggingService;
 
     private static boolean stopFlag = false;
 
@@ -50,7 +55,16 @@ public class SocketController {
         log.info("正在启动socket服务,端口号为：" + socketPort);
         try {
             serverSocket = new ServerSocket(socketPort);
-            executorService = Executors.newFixedThreadPool(socketThreadNums);
+            executorService = Executors.newFixedThreadPool(socketThreadNums, new ThreadFactory() {
+                private AtomicInteger id = new AtomicInteger(0);
+
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(r);
+                    thread.setName("socket-" + id.addAndGet(1));
+                    return thread;
+                }
+            });
             Thread e = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -59,7 +73,7 @@ public class SocketController {
                         try {
                             server = serverSocket.accept();
                             server.setSoTimeout(socketTimeoutMs);
-                            executorService.execute(new Thread(new SocketRunnable(server, consumerService)));
+                            executorService.execute(new Thread(new SocketRunnable(server, consumerService, loggingService)));
                         } catch (Exception e) {
                             if (server != null) {
                                 try {

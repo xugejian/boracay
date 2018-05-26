@@ -12,6 +12,7 @@ import com.hex.bigdata.udsp.model.InnerRequest;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.service.ConsumerService;
 import com.hex.bigdata.udsp.service.DatasourceTestService;
+import com.hex.bigdata.udsp.service.LoggingService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.GFLoginUser;
 import com.hex.goframe.model.MessageResult;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.security.auth.login.LoginContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
@@ -57,6 +59,8 @@ public class HttpController extends BaseController {
 
     @Autowired
     private ConsumerService consumerService;
+    @Autowired
+    private LoggingService loggingService;
 
     @Autowired
     private DatasourceTestService dataSourseTestService;
@@ -87,8 +91,8 @@ public class HttpController extends BaseController {
         } catch (Exception e) {
             //处理异常，返回respone
             Response response = new Response();
-            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef,
-                    ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
+            loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
+                    ErrorCode.ERROR_000005.getValue(), ErrorCode.ERROR_000005.getName() + ":" + e.getMessage(), null);
             return response;
         }
         //获取并设置客户端请求的IP

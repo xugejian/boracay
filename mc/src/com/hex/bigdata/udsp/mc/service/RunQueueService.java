@@ -3,10 +3,10 @@ package com.hex.bigdata.udsp.mc.service;
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
 import com.hex.bigdata.udsp.common.service.InitParamService;
+import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.mc.dao.RunQueueMapper;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.model.RunQueue;
-import com.hex.bigdata.udsp.mc.util.McCommonUtil;
 import com.hex.bigdata.udsp.model.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,96 +41,76 @@ public class RunQueueService {
     private RedisDistributedLock redisLock;
 
     /**
-     * 增加异步并发
+     * 增加并发
      *
      * @param mcCurrent
      * @return
      */
-    public boolean addAsyncCurrent(Current mcCurrent) {
+    public boolean addCurrent(Current mcCurrent) {
         String key = this.getKey(mcCurrent);
-        synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
+        synchronized (key.intern()) {
             if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+                redisLock.lock(key);
             try {
-                logger.debug("增加" + key + "异步并发！");
+                logger.debug("增加" + key + "并发！");
                 RunQueue runQueue = this.select(key);
-                if (runQueue == null) {
-                    runQueue = this.initalByKey(key);
+                if (runQueue == null) runQueue = this.initByKey(key);
+                if ((ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())
+                        && runQueue.getCurrentSyncNum() < mcCurrent.getMaxCurrentNum())
+                        || (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(mcCurrent.getSyncType())
+                        && runQueue.getCurrentAsyncNum() < mcCurrent.getMaxCurrentNum())) {
+                    if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
+                        runQueue.setCurrentSyncNum(runQueue.getCurrentSyncNum() + 1);
+                        logger.debug("增加" + key + "同步并发后并发数==>" + runQueue.getCurrentAsyncNum());
+                    } else {
+                        runQueue.setCurrentAsyncNum(runQueue.getCurrentAsyncNum() + 1);
+                        logger.debug("增加" + key + "异步并发后并发数==>" + runQueue.getCurrentAsyncNum());
+                    }
+                    this.insert(key, runQueue);
+                    mcCurrentService.insert(mcCurrent);
+                    return true;
                 }
-                runQueue.setCurrentAsyncNum(runQueue.getCurrentAsyncNum() + 1);
-                logger.debug("增加" + key + "异步并发后并发数==>" + runQueue.getCurrentAsyncNum());
-                this.insert(key, runQueue);
-                return true;
             } finally {
                 if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                    redisLock.unlock(key);
             }
+            return false;
         }
     }
 
     /**
-     * 减少异步并发
+     * 减少并发
      *
      * @param mcCurrent
      * @return
      */
-
-    public boolean reduceAsyncCurrent(Current mcCurrent) {
+    public boolean reduceCurrent(Current mcCurrent) {
         String key = this.getKey(mcCurrent);
-        synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
+        synchronized (key.intern()) {
             if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+                redisLock.lock(key);
             try {
-                logger.debug("减少" + key + "异步并发！");
+                logger.debug("减少" + key + "并发！");
                 this.mcCurrentService.delete(mcCurrent.getPkId());
                 RunQueue runQueue = this.select(key);
                 if (runQueue != null) {
-                    int currentAsyncNum = runQueue.getCurrentAsyncNum();
-                    if (currentAsyncNum > 1) {
-                        currentAsyncNum = currentAsyncNum - 1;
+                    if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
+                        int currentSyncNum = runQueue.getCurrentSyncNum();
+                        currentSyncNum = (currentSyncNum > 1 ? currentSyncNum - 1 : 0);
+                        runQueue.setCurrentSyncNum(currentSyncNum);
+                        logger.debug("减少" + key + "同步并发后并发数==>" + runQueue.getCurrentSyncNum());
                     } else {
-                        currentAsyncNum = 0;
+                        int currentAsyncNum = runQueue.getCurrentAsyncNum();
+                        currentAsyncNum = (currentAsyncNum > 1 ? currentAsyncNum - 1 : 0);
+                        runQueue.setCurrentAsyncNum(currentAsyncNum);
+                        logger.debug("减少" + key + "异步并发后并发数==>" + runQueue.getCurrentAsyncNum());
                     }
-                    runQueue.setCurrentAsyncNum(currentAsyncNum);
-                    logger.debug("减少" + key + "异步并发后并发数==>" + runQueue.getCurrentAsyncNum());
                     this.insert(key, runQueue);
                 }
                 return true;
             } finally {
                 if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
-            }
-        }
-    }
-
-
-    /**
-     * 减少同步并发
-     */
-    public boolean reduceSyncCurrent(Current mcCurrent) {
-        String key = this.getKey(mcCurrent);
-        synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
-            if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
-            try {
-                logger.debug("减少" + key + "同步并发！");
-                this.mcCurrentService.delete(mcCurrent.getPkId());
-                RunQueue runQueue = this.select(key);
-                if (runQueue != null) {
-                    int currentSyncNum = runQueue.getCurrentSyncNum();
-                    if (currentSyncNum > 1) {
-                        currentSyncNum = currentSyncNum - 1;
-                    } else {
-                        currentSyncNum = 0;
-                    }
-                    runQueue.setCurrentSyncNum(currentSyncNum);
-                    logger.debug("减少" + key + "同步并发后并发数==>" + runQueue.getCurrentSyncNum());
-                    this.insert(key, runQueue);
-                }
-                return true;
-            } finally {
-                if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                    redisLock.unlock(key);
             }
         }
     }
@@ -154,7 +134,7 @@ public class RunQueueService {
      * @param key
      * @return
      */
-    private RunQueue initalByKey(String key) {
+    private RunQueue initByKey(String key) {
         logger.debug("初始化并发数控制实体！");
         String[] keys = key.split("\\:");
         RunQueue runQueue = new RunQueue();
@@ -168,103 +148,31 @@ public class RunQueueService {
     }
 
     /**
-     * 检查异步并发
-     *
-     * @param request
-     * @param maxCurrentNum
-     * @return
-     */
-    public Current checkAsyncCurrent(Request request, int maxCurrentNum) {
-        String key = this.getKey(request);
-        synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
-            if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
-            try {
-                RunQueue runQueue = this.select(key);
-                if (runQueue == null || runQueue.getCurrentAsyncNum() < maxCurrentNum) {
-                    Current mcCurrent = McCommonUtil.getMcCurrent(request, maxCurrentNum);
-                    this.addAsyncCurrent(mcCurrent);
-                    this.mcCurrentService.insert(mcCurrent);
-                    return mcCurrent;
-                }
-                return null;
-            } finally {
-                if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
-            }
-        }
-
-    }
-
-    /**
-     * 检查同步并发
-     *
-     * @param request
-     * @param maxCurrentNum
-     * @return
-     */
-    public Current checkSyncCurrent(Request request, int maxCurrentNum) {
-        String key = this.getKey(request);
-        synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
-            if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
-            try {
-                RunQueue runQueue = this.select(key);
-                if (runQueue == null) runQueue = this.initalByKey(key);
-                if (runQueue.getCurrentSyncNum() < maxCurrentNum) {
-                    Current mcCurrent = McCommonUtil.getMcCurrent(request, maxCurrentNum);
-                    runQueue.setCurrentSyncNum(runQueue.getCurrentSyncNum() + 1);
-                    logger.debug("增加" + key + "同步并发后并发数==>" + runQueue.getCurrentSyncNum());
-                    this.insert(key, runQueue);
-                    this.mcCurrentService.insert(mcCurrent);
-                    return mcCurrent;
-                }
-                return null;
-            } finally {
-                if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
-            }
-        }
-    }
-
-
-    /**
-     * 检查并发
+     * 检查执行队列是否满
      *
      * @param mcCurrent 不为空
-     * @param mcCurrent
-     * @return
+     * @return false:未满，true：满
      */
-    public boolean checkCurrent(Current mcCurrent) {
+    public boolean runQueueFull(Current mcCurrent) {
         String key = this.getKey(mcCurrent);
-        synchronized (key.intern()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
+        synchronized (key.intern()) {
             if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+                redisLock.lock(key);
             try {
                 RunQueue runQueue = this.select(key);
-                if (runQueue == null) {
-                    return true;
+                if (runQueue == null) return false;
+                if ((CommonConstant.REQUEST_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())
+                        && runQueue.getCurrentSyncNum() < mcCurrent.getMaxCurrentNum())
+                        || (CommonConstant.REQUEST_ASYNC.equalsIgnoreCase(mcCurrent.getSyncType())
+                        && runQueue.getCurrentAsyncNum() < mcCurrent.getMaxCurrentNum())) {
+                    return false;
                 }
-                if (CommonConstant.REQUEST_ASYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
-                    if (runQueue.getCurrentAsyncNum() < mcCurrent.getMaxCurrentNum()) {
-                        return true;
-                    }
-                } else {
-                    if (runQueue.getCurrentSyncNum() < mcCurrent.getMaxCurrentNum()) {
-                        return true;
-                    }
-                }
-                return false;
             } finally {
                 if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                    redisLock.unlock(key);
             }
+            return true;
         }
-    }
-
-    private String getKey(Request request) {
-        return MC_RUNQUEUE_KEY + ":" + request.getUdspUser() + ":" + request.getAppId()
-                + ":" + request.getAppType().toUpperCase() + ":" + request.getType().toUpperCase();
     }
 
     private String getKey(Current mcCurrent) {

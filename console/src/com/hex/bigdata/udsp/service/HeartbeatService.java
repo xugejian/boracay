@@ -3,19 +3,19 @@ package com.hex.bigdata.udsp.service;
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ThreadPool;
-import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.dao.HeartbeatMapper;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
-import com.hex.bigdata.udsp.dto.WaitNumResult;
+import com.hex.bigdata.udsp.dto.QueueIsFullResult;
 import com.hex.bigdata.udsp.mc.constant.McConstant;
-import com.hex.bigdata.udsp.mc.model.McConsumeLog;
 import com.hex.bigdata.udsp.mc.model.Current;
+import com.hex.bigdata.udsp.mc.model.McConsumeLog;
+import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
-import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.model.HeartbeatInfo;
 import com.hex.bigdata.udsp.model.Request;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
@@ -179,9 +179,7 @@ public class HeartbeatService {
             if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(request.getEntity())) {
                 continue;
             }
-            //并发检查
-            Current returnMcCurrent = runQueueService.checkAsyncCurrent(request, mcCurrent.getMaxCurrentNum());
-            if (returnMcCurrent == null) {// 异常信息日志入库
+            if (!runQueueService.addCurrent(mcCurrent)) { // 异常信息日志入库
                 McConsumeLog mcConsumeLog = new McConsumeLog();
                 mcConsumeLog.setRequestEndTime(DateUtil.format(new Date(), DateUtil.YYYY_MM_DDHHMISS));
                 mcConsumeLog.setRequestStartTime(mcCurrent.getStartTime());
@@ -194,7 +192,7 @@ public class HeartbeatService {
                 consumerLogToDb(request, mcConsumeLog);
             }
 
-            mcCurrent.setPkId(returnMcCurrent.getPkId());
+            mcCurrent.setPkId(mcCurrent.getPkId());
             String type = mcCurrent.getAppType();
             String appId = mcCurrent.getAppId();
 
@@ -205,20 +203,19 @@ public class HeartbeatService {
             //add 20170908
             ConsumeRequest consumeRequest = new ConsumeRequest();
             consumeRequest.setMcCurrent(mcCurrent);
-            WaitNumResult waitNumResult = new WaitNumResult();
-            consumeRequest.setWaitNumResult(waitNumResult);
+            QueueIsFullResult isFullResult = new QueueIsFullResult();
+            consumeRequest.setQueueIsFullResult(isFullResult);
             //新增消费请求类作为参数-end
+            long bef = System.currentTimeMillis();
             if (RcConstant.UDSP_SERVICE_TYPE_IQ.equals(type)) {
-                ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), request.getPage(), localFileName));
+                ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), request.getPage(), localFileName, bef));
             } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(type)) {
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, request.getSql(), request.getPage(),
-                        RcConstant.UDSP_SERVICE_TYPE_OLQ, localFileName));
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, request.getSql(), request.getPage(), localFileName, bef));
             } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
                 OlqApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
-                String dsId = olqApplicationDto.getOlqApplication().getOlqDsId();
+                appId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 String sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, dsId, sql, request.getPage(),
-                        RcConstant.UDSP_SERVICE_TYPE_OLQ_APP, localFileName));
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, sql, request.getPage(), localFileName, bef));
             }
         }
         logger.info("转移服务IP为：" + downHostKey + "上的未完成的异步任务到本机【结束】");

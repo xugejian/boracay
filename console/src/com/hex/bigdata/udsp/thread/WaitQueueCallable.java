@@ -1,5 +1,7 @@
 package com.hex.bigdata.udsp.thread;
 
+import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
+import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
 import com.hex.bigdata.udsp.mc.service.WaitQueueService;
@@ -22,25 +24,22 @@ public class WaitQueueCallable<T> implements Callable<Boolean> {
 
     private RunQueueService runQueueService;
 
-    private WaitQueueService mcWaitQueueService;
+    private WaitQueueService waitQueueService;
+
+    private InitParamService initParamService;
+
+    private RedisDistributedLock redisDistributedLock;
 
     private long sleepTime = 200;
 
-    public WaitQueueCallable() {
-    }
-
-    public WaitQueueCallable(Current mcCurrent) {
-        this.mcCurrent = mcCurrent;
-        this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
-        this.mcWaitQueueService = (WaitQueueService) WebApplicationContextUtil.getBean("waitQueueService");
-    }
-
     public WaitQueueCallable(Current mcCurrent, String waitQueueTaskId, long sleepTime) {
+        this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
+        this.waitQueueService = (WaitQueueService) WebApplicationContextUtil.getBean("waitQueueService");
+        this.redisDistributedLock = (RedisDistributedLock) WebApplicationContextUtil.getBean("redisDistributedLock");
+        this.initParamService = (InitParamService) WebApplicationContextUtil.getBean("initParamService");
         this.mcCurrent = mcCurrent;
         this.waitQueueTaskId = waitQueueTaskId;
         this.sleepTime = sleepTime;
-        this.runQueueService = (RunQueueService) WebApplicationContextUtil.getBean("runQueueService");
-        this.mcWaitQueueService = (WaitQueueService) WebApplicationContextUtil.getBean("waitQueueService");
     }
 
     public Current getMcCurrent() {
@@ -69,26 +68,29 @@ public class WaitQueueCallable<T> implements Callable<Boolean> {
 
     @Override
     public Boolean call() throws Exception {
-        //a、检查任务是否超时->b、检查执行队列是否有空闲->c、检查任务是否是等待队列的第一个
-        //任务超时则跳出循环，报任务超时错误；不超时则继续执行b
-        //执行队列不空闲则跳出循环，空闲则任务进入执行队列执行，继续执行c
-        //任务是等待队列的第一个则任务进入执行队列，否则继续循环
+        String key = this.getKey(mcCurrent);
         while (true) {
-            //检查执行队列是否有空闲
-            boolean checkFlg = false;
-            boolean isFirst = false;
-            //检查并发
-            checkFlg = runQueueService.checkCurrent(this.mcCurrent);
-            //执行队列不空闲
-            if (!checkFlg) {
-                continue;
+            synchronized (key.intern()) {
+                if (initParamService.isUseClusterRedisLock())
+                    redisDistributedLock.lock(key);
+                try {
+                    // 检查执行队列是否满
+                    if (runQueueService.runQueueFull(mcCurrent)) continue; // 已满则继续循环
+                    // 检查任务是否是等待队列中的第一个
+                    if (waitQueueService.checkWaitQueueIsFirst(mcCurrent, waitQueueTaskId)) {
+                        return true;
+                    }
+                } finally {
+                    if (initParamService.isUseClusterRedisLock())
+                        redisDistributedLock.unlock(key);
+                }
             }
-            //检查任务是否是第一个
-            isFirst = mcWaitQueueService.checkWaitQueueIsFirst(mcCurrent, waitQueueTaskId);
-            if (isFirst) {
-                return true;
-            }
-            //Thread.sleep(sleepTime);
+            Thread.sleep(sleepTime);
         }
+    }
+
+    private String getKey(Current mcCurrent) {
+        return mcCurrent.getUserName() + ":" + mcCurrent.getAppId()
+                + ":" + mcCurrent.getAppType().toUpperCase() + ":" + mcCurrent.getSyncType().toUpperCase();
     }
 }

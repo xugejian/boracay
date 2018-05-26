@@ -8,6 +8,7 @@ import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.model.ExternalRequest;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.service.ConsumerService;
+import com.hex.bigdata.udsp.service.LoggingService;
 import com.hex.goframe.controller.BaseController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +29,8 @@ public class RestfulController extends BaseController {
 
     @Autowired
     private ConsumerService consumerService;
+    @Autowired
+    private LoggingService loggingService;
 
     /**
      * 欢迎信息
@@ -55,7 +58,7 @@ public class RestfulController extends BaseController {
         } catch (Exception e) {
             //处理异常，返回respone
             Response response = new Response();
-            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef,
+            loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
                     ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
             return response;
         }

@@ -32,6 +32,9 @@ public class WaitQueueService {
     @Autowired
     private CurrentService mcCurrentService;
 
+    @Autowired
+    private RunQueueService runQueueService;
+
     /**
      * Redis 分布式锁
      */
@@ -42,70 +45,76 @@ public class WaitQueueService {
     private InitParamService initParamService;
 
     /**
-     * 检查等待队列是否满了
+     * 检查等待队列是否满了，未满则添加到等待队列。满了则不做操作，
+     * 无论是否满都记录是否满状态和任务ID
      *
-     * @param request
+     * @param mcCurrent
      * @param maxWaitNum
      * @return
      */
-    public QueueIsFullResult checkWaitQueueIsFull(Request request, int maxWaitNum) {
-        String key = this.getKey(request);
+    public QueueIsFullResult checkWaitQueueIsFull(Current mcCurrent, int maxWaitNum) {
+        String key = this.getKey(mcCurrent);
         boolean isFull = false;
         QueueIsFullResult isFullResult = new QueueIsFullResult();
         synchronized (key.intern()) {
             if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key);// 分布式上锁 （主要防止多节点并发资源不同步问题）
+                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
             try {
                 WaitQueue mcWaitQueue = this.select(key);
-                if (null == mcWaitQueue) {
-                    //为空则初始化
-                    mcWaitQueue = initalByKey(request);
-                }
-                //若是等待队列未满，则请求进入
-                if (maxWaitNum > mcWaitQueue.getCurrentLenth()) {
-                    logger.debug("等待队列最大长度：" + maxWaitNum + "，等待队列长度：" + mcWaitQueue.getCurrentLenth() + "，" + Thread.currentThread().getName() + "进入等待队列！");
-                    //本次请求加入队列
-                    Current mcCurrent = McCommonUtil.getMcCurrent(request, maxWaitNum);
+                if (mcWaitQueue == null) mcWaitQueue = initByKey(mcCurrent);
+                // 若是等待队列未满，则请求进入
+                if (mcWaitQueue.getCurrentLenth() < maxWaitNum) {
+                    logger.debug("等待队列最大长度：" + maxWaitNum + "，等待队列长度："
+                            + mcWaitQueue.getCurrentLenth() + "，" + Thread.currentThread().getName() + "进入等待队列！");
+                    // 本次请求加入队列
                     String pkId = mcCurrent.getPkId();
                     isFullResult.setWaitQueueTaskId(pkId);
-                    //加入队列
-                    mcWaitQueue.offerElement(pkId);
-                    //插入统计队列
+                    mcWaitQueue.offerElement(pkId); // 加入队列
+                    // 更新等待队列统计信息
+                    mcWaitQueueMapper.insert(key, mcWaitQueue);
+                    // 加入统计队列
                     mcCurrentService.insertWait(mcCurrent);
                 } else {
                     isFull = true;
                 }
                 isFullResult.setWaitQueueIsFull(isFull);
-                //更新等待队列统计信息
-                mcWaitQueueMapper.insert(key, mcWaitQueue);
                 return isFullResult;
             } finally {
                 if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                    redisLock.unlock(key);
             }
         }
     }
 
+    /**
+     * 检查waitQueueTaskId是否是等待队列中第一个（排在队列第一个的才允许先出去），
+     * 如果是则从等待队列中移除并返回true,如果不是的返回false
+     *
+     * @param mcCurrent
+     * @param waitQueueTaskId
+     * @return
+     */
     public boolean checkWaitQueueIsFirst(Current mcCurrent, String waitQueueTaskId) {
         String key = this.getKey(mcCurrent);
         synchronized (key.intern()) {
             if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key);// 分布式上锁 （主要防止多节点并发资源不同步问题）
+                redisLock.lock(key);
             try {
                 WaitQueue mcWaitQueue = this.select(key);
-                boolean flg = mcWaitQueue.isFirstElement(waitQueueTaskId);
-                if (flg) {
-                    //等待队列信息回写到缓存
+                // 判断key是不是队列第一个，如果是第一个则移除并返回true，如果不是第一个则返回false
+                if (mcWaitQueue.isFirstElement(waitQueueTaskId)) {
+                    // 等待队列信息回写到缓存
                     logger.debug("将任务从等待队列中移除：" + Thread.currentThread().getName());
-                    mcWaitQueueMapper.insert(key, mcWaitQueue);
-                    mcCurrentService.deleteWait(waitQueueTaskId);
+                    mcWaitQueueMapper.insert(key, mcWaitQueue); // 更新等待队列统计信息
+                    mcCurrentService.deleteWait(waitQueueTaskId); // 从统计队列中删除
+                    runQueueService.addCurrent(mcCurrent); // 增加并发
+                    return true;
                 }
-                return flg;
+                return false;
             } finally {
                 if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key); // 分布式解锁 （主要防止多节点并发资源不同步问题）
+                    redisLock.unlock(key);
             }
-
         }
     }
 
@@ -114,17 +123,11 @@ public class WaitQueueService {
      * key为userId:appId:appType
      * 即key为userId 用户id，appId应用id，appType:应用类型，Type：同步异步
      *
-     * @param request
+     * @param current
      * @return
      */
-    private WaitQueue initalByKey(Request request) {
-        WaitQueue mcWaitQueue = new WaitQueue(this.getKey(request).toString());
-        return mcWaitQueue;
-    }
-
-    private String getKey(Request request) {
-        return MC_WAITQUEUE_KEY + ":" + request.getUdspUser() + ":" + request.getAppId()
-                + ":" + request.getAppType().toUpperCase() + ":" + request.getType().toUpperCase();
+    private WaitQueue initByKey(Current current) {
+        return new WaitQueue(this.getKey(current).toString());
     }
 
     private String getKey(Current mcCurrent) {

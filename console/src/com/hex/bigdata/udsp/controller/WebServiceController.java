@@ -11,6 +11,7 @@ import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.model.WSRequest;
 import com.hex.bigdata.udsp.model.WSResponse;
 import com.hex.bigdata.udsp.service.ConsumerService;
+import com.hex.bigdata.udsp.service.LoggingService;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
@@ -39,6 +40,8 @@ public class WebServiceController implements WebServiceInterface {
 
     @Autowired
     private ConsumerService consumerService;
+    @Autowired
+    private LoggingService loggingService;
 
     /**
      * 欢迎信息
@@ -82,7 +85,7 @@ public class WebServiceController implements WebServiceInterface {
         } catch (Exception e) {
             //处理异常，返回respone
             response = new Response();
-            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef,
+            loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
                     ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
             return JSONUtil.parseObj2JSON(response);
         }
@@ -108,7 +111,7 @@ public class WebServiceController implements WebServiceInterface {
         return clientIp;
     }
 
-    private ExternalRequest jsonToRequest(String json){
+    private ExternalRequest jsonToRequest(String json) {
         Map<String, Class> classMap = new HashMap<String, Class>();
         classMap.put(ConsumerConstant.CONSUME_RTS_DATASTREAM, Map.class);
         return JSONUtil.parseJSON2Obj(json, ExternalRequest.class, classMap);

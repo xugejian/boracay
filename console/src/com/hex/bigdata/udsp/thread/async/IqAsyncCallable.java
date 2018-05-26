@@ -17,15 +17,15 @@ import java.util.concurrent.Callable;
 public class IqAsyncCallable<T> implements Callable<IqResponse> {
 
     private IqSyncService iqSyncService;
-    private Current mcCurrent;
+    private String userName;
     private String appId;
     private Map<String, String> paraMap;
     private Page page;
     private String fileName;
 
-    public IqAsyncCallable(Current mcCurrent, String appId, Map<String, String> paraMap, Page page, String fileName) {
-        iqSyncService = (IqSyncService) WebApplicationContextUtil.getBean("iqSyncService");
-        this.mcCurrent = mcCurrent;
+    public IqAsyncCallable(String userName, String appId, Map<String, String> paraMap, Page page, String fileName) {
+        this.iqSyncService = (IqSyncService) WebApplicationContextUtil.getBean("iqSyncService");
+        this.userName = userName;
         this.appId = appId;
         this.paraMap = paraMap;
         this.page = page;
@@ -34,6 +34,6 @@ public class IqAsyncCallable<T> implements Callable<IqResponse> {
 
     @Override
     public IqResponse call() throws Exception {
-        return this.iqSyncService.asyncStart(appId, paraMap, page, fileName, this.mcCurrent.getUserName());
+        return this.iqSyncService.asyncStart(appId, paraMap, page, fileName, userName);
     }
 }
