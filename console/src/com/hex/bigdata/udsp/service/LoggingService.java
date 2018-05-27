@@ -85,9 +85,9 @@ public class LoggingService {
                     + (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ? "【同步】" : "【异步】")
                     + "方式执行" + request.getServiceName() + "服务"
                     + (ErrorCode.ERROR_000014.getValue().equals(errorCode) ? "【等待】" : "【执行】")
-                    + "超时，开始时间：" + DateUtil.getDateString(bef) + "，超时时间：" + timout + "秒，执行耗时："
-                    + new BigDecimal((float) (now - runBef) / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒，总耗时："
-                    + new BigDecimal((float) (now - bef) / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒！";
+                    + "超时，开始时间：" + DateUtil.getDateString(bef) + "，超时时间：" + timout + "秒"
+                    + (runBef != 0 ? "，执行耗时：" + new BigDecimal((float) (now - runBef) / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒" : "")
+                    + "，总耗时：" + new BigDecimal((float) (now - bef) / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒！";
             try {
                 alarmService.send(rcUserService, msg);
             } catch (Exception e) {
@@ -114,10 +114,14 @@ public class LoggingService {
         mcConsumeLog.setResponseContent("");
         mcConsumeLog.setErrorCode(errorCode);
         mcConsumeLog.setMessage(message);
-        mcConsumeLog.setRequestStartTime(DateUtil.getDateString(bef));
-        mcConsumeLog.setRequestEndTime(DateUtil.getDateString(now));
-        mcConsumeLog.setRunStartTime(DateUtil.getDateString(runBef));
-        mcConsumeLog.setRunEndTime(DateUtil.getDateString(now));
+        if (bef != 0) {
+            mcConsumeLog.setRequestStartTime(DateUtil.getDateString(bef));
+            mcConsumeLog.setRequestEndTime(DateUtil.getDateString(now));
+        }
+        if (runBef != 0) {
+            mcConsumeLog.setRunStartTime(DateUtil.getDateString(runBef));
+            mcConsumeLog.setRunEndTime(DateUtil.getDateString(now));
+        }
 
         //日志信息入库
         writeLogToDb(request, mcConsumeLog, McConstant.MCLOG_STATUS_FAILED);

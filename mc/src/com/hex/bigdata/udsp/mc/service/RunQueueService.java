@@ -52,29 +52,22 @@ public class RunQueueService {
             if (initParamService.isUseClusterRedisLock())
                 redisLock.lock(key);
             try {
-                logger.debug("增加" + key + "并发！");
                 RunQueue runQueue = this.select(key);
-                if (runQueue == null) runQueue = this.initByKey(key);
-                if ((ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())
-                        && runQueue.getCurrentSyncNum() < mcCurrent.getMaxCurrentNum())
-                        || (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(mcCurrent.getSyncType())
-                        && runQueue.getCurrentAsyncNum() < mcCurrent.getMaxCurrentNum())) {
-                    if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
-                        runQueue.setCurrentSyncNum(runQueue.getCurrentSyncNum() + 1);
-                        logger.debug("增加" + key + "同步并发后并发数==>" + runQueue.getCurrentAsyncNum());
-                    } else {
-                        runQueue.setCurrentAsyncNum(runQueue.getCurrentAsyncNum() + 1);
-                        logger.debug("增加" + key + "异步并发后并发数==>" + runQueue.getCurrentAsyncNum());
-                    }
+                if (runQueue == null) runQueue = this.initRunQueue(mcCurrent);
+                if (runQueue.getCurrentNum() < runQueue.getMaxNum()) {
+                    runQueue.setCurrentNum(runQueue.getCurrentNum() + 1);
+                    logger.debug("增加" + key + "并发后并发数==>" + runQueue.getCurrentNum());
                     this.insert(key, runQueue);
+                    logger.debug("增加" + key + "并发！");
                     mcCurrentService.insert(mcCurrent);
                     return true;
                 }
+                logger.info(key + "并发已满！");
+                return false;
             } finally {
                 if (initParamService.isUseClusterRedisLock())
                     redisLock.unlock(key);
             }
-            return false;
         }
     }
 
@@ -94,20 +87,18 @@ public class RunQueueService {
                 this.mcCurrentService.delete(mcCurrent.getPkId());
                 RunQueue runQueue = this.select(key);
                 if (runQueue != null) {
-                    if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
-                        int currentSyncNum = runQueue.getCurrentSyncNum();
-                        currentSyncNum = (currentSyncNum > 1 ? currentSyncNum - 1 : 0);
-                        runQueue.setCurrentSyncNum(currentSyncNum);
-                        logger.debug("减少" + key + "同步并发后并发数==>" + runQueue.getCurrentSyncNum());
+                    int currentNum = runQueue.getCurrentNum();
+                    currentNum = (currentNum > 1 ? currentNum - 1 : 0);
+                    runQueue.setCurrentNum(currentNum);
+                    logger.debug("减少" + key + "并发后并发数==>" + runQueue.getCurrentNum());
+                    if (currentNum == 0) {
+                        this.delete(key);
                     } else {
-                        int currentAsyncNum = runQueue.getCurrentAsyncNum();
-                        currentAsyncNum = (currentAsyncNum > 1 ? currentAsyncNum - 1 : 0);
-                        runQueue.setCurrentAsyncNum(currentAsyncNum);
-                        logger.debug("减少" + key + "异步并发后并发数==>" + runQueue.getCurrentAsyncNum());
+                        this.insert(key, runQueue);
                     }
-                    this.insert(key, runQueue);
+                    return true;
                 }
-                return true;
+                return false;
             } finally {
                 if (initParamService.isUseClusterRedisLock())
                     redisLock.unlock(key);
@@ -127,23 +118,18 @@ public class RunQueueService {
         return runQueueMapper.select(key);
     }
 
-    /**
-     * key为userId:appId:appType
-     * 即key为userId 用户id，appId应用id，appType
-     *
-     * @param key
-     * @return
-     */
-    private RunQueue initByKey(String key) {
+    public boolean delete(String key) {
+        return runQueueMapper.delete(key);
+    }
+
+    private RunQueue initRunQueue(Current mcCurrent) {
         logger.debug("初始化并发数控制实体！");
-        String[] keys = key.split("\\:");
         RunQueue runQueue = new RunQueue();
-        if (keys.length >= 5) {
-            runQueue.setUserId(keys[1]);
-            runQueue.setAppId(keys[2]);
-            runQueue.setAppType(keys[3]);
-            runQueue.setSyncType(keys[4]);
-        }
+        runQueue.setUserId(mcCurrent.getUserName());
+        runQueue.setAppId(mcCurrent.getAppId());
+        runQueue.setAppType(mcCurrent.getAppType().toUpperCase());
+        runQueue.setSyncType(mcCurrent.getSyncType().toUpperCase());
+        runQueue.setMaxNum(mcCurrent.getMaxCurrentNum());
         return runQueue;
     }
 
@@ -161,10 +147,7 @@ public class RunQueueService {
             try {
                 RunQueue runQueue = this.select(key);
                 if (runQueue == null) return false;
-                if ((CommonConstant.REQUEST_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())
-                        && runQueue.getCurrentSyncNum() < mcCurrent.getMaxCurrentNum())
-                        || (CommonConstant.REQUEST_ASYNC.equalsIgnoreCase(mcCurrent.getSyncType())
-                        && runQueue.getCurrentAsyncNum() < mcCurrent.getMaxCurrentNum())) {
+                if (runQueue.getCurrentNum() < runQueue.getMaxNum()) {
                     return false;
                 }
             } finally {

@@ -2,17 +2,12 @@ package com.hex.bigdata.udsp.service;
 
 import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.util.CreateFileUtil;
-import com.hex.bigdata.udsp.common.util.HostUtil;
-import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.common.util.ThreadPool;
+import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.dao.HeartbeatMapper;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.dto.QueueIsFullResult;
-import com.hex.bigdata.udsp.mc.constant.McConstant;
 import com.hex.bigdata.udsp.mc.model.Current;
-import com.hex.bigdata.udsp.mc.model.McConsumeLog;
 import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
@@ -21,8 +16,6 @@ import com.hex.bigdata.udsp.model.Request;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
 import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
 import com.hex.bigdata.udsp.rc.util.RcConstant;
-import com.hex.goframe.util.DateUtil;
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +62,9 @@ public class HeartbeatService {
 
     @Autowired
     private OlqApplicationService olqApplicationService;
+
+    @Autowired
+    private LoggingService loggingService;
 
     /**
      * 发送本服务心跳。
@@ -179,17 +175,11 @@ public class HeartbeatService {
             if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(request.getEntity())) {
                 continue;
             }
-            if (!runQueueService.addCurrent(mcCurrent)) { // 异常信息日志入库
-                McConsumeLog mcConsumeLog = new McConsumeLog();
-                mcConsumeLog.setRequestEndTime(DateUtil.format(new Date(), DateUtil.YYYY_MM_DDHHMISS));
-                mcConsumeLog.setRequestStartTime(mcCurrent.getStartTime());
-                mcConsumeLog.setPkId(mcCurrent.getPkId());
-                mcConsumeLog.setResponseContent("");
-                mcConsumeLog.setErrorCode(ErrorCode.ERROR_000003.getValue());
-                mcConsumeLog.setMessage(ErrorCode.ERROR_000003.getName());
-                mcConsumeLog.setSyncType(CommonConstant.REQUEST_ASYNC);
-                mcConsumeLog.setStatus(McConstant.MCLOG_STATUS_FAILED);
-                consumerLogToDb(request, mcConsumeLog);
+            if (!runQueueService.addCurrent(mcCurrent)) { // 队列已满
+                ConsumeRequest consumeRequest = new ConsumeRequest();
+                consumeRequest.setRequest(request);
+                loggingService.writeResponseLog(null, consumeRequest, DateUtil.getDataTimestamp(mcCurrent.getStartTime()), 0,
+                        ErrorCode.ERROR_000003.getValue(), ErrorCode.ERROR_000003.getName(), null);
             }
 
             mcCurrent.setPkId(mcCurrent.getPkId());
@@ -219,46 +209,6 @@ public class HeartbeatService {
             }
         }
         logger.info("转移服务IP为：" + downHostKey + "上的未完成的异步任务到本机【结束】");
-    }
-
-    /**
-     * 向数据库写消费日志
-     *
-     * @param request      请求信息
-     * @param mcConsumeLog
-     */
-    private void consumerLogToDb(Request request, McConsumeLog mcConsumeLog) {
-
-        //服务名称
-        if (StringUtils.isNotBlank(request.getServiceName())) {
-            mcConsumeLog.setServiceName(request.getServiceName());
-        } else if (org.apache.commons.lang3.StringUtils.isNotBlank(request.getAppName())) {
-            mcConsumeLog.setServiceName(request.getAppName());
-        } else {
-            mcConsumeLog.setServiceName("serviceName is null");
-        }
-        //用户名称
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(request.getUdspUser())) {
-            mcConsumeLog.setUserName(request.getUdspUser());
-        }
-
-        //请求类型
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(request.getRequestType())) {
-            mcConsumeLog.setRequestType(request.getRequestType());
-        }
-
-        //设置应用类型
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(request.getAppType())) {
-            mcConsumeLog.setAppType(request.getAppType().toUpperCase());
-        }
-
-        //设置应用名称
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(request.getAppName())) {
-            mcConsumeLog.setAppName(request.getAppName());
-        }
-        mcConsumeLog.setRequestContent(JSONUtil.parseObj2JSON(request));
-
-        mcConsumeLogService.insert(mcConsumeLog);
     }
 
     public List<HeartbeatInfo> selectList() {

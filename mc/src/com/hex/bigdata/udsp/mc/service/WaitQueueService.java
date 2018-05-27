@@ -64,7 +64,7 @@ public class WaitQueueService {
                 if (mcWaitQueue == null) mcWaitQueue = initByKey(mcCurrent);
                 // 若是等待队列未满，则请求进入
                 if (mcWaitQueue.getCurrentLenth() < maxWaitNum) {
-                    logger.debug("等待队列最大长度：" + maxWaitNum + "，等待队列长度："
+                    logger.debug(key + "等待队列最大长度：" + maxWaitNum + "，等待队列长度："
                             + mcWaitQueue.getCurrentLenth() + "，" + Thread.currentThread().getName() + "进入等待队列！");
                     // 本次请求加入队列
                     String pkId = mcCurrent.getPkId();
@@ -104,7 +104,7 @@ public class WaitQueueService {
                 // 判断key是不是队列第一个，如果是第一个则移除并返回true，如果不是第一个则返回false
                 if (mcWaitQueue.isFirstElement(waitQueueTaskId)) {
                     // 等待队列信息回写到缓存
-                    logger.debug("将任务从等待队列中移除：" + Thread.currentThread().getName());
+                    logger.debug("将" + key + "任务从等待队列中移除：" + Thread.currentThread().getName());
                     mcWaitQueueMapper.insert(key, mcWaitQueue); // 更新等待队列统计信息
                     mcCurrentService.deleteWait(waitQueueTaskId); // 从统计队列中删除
                     runQueueService.addCurrent(mcCurrent); // 增加并发
