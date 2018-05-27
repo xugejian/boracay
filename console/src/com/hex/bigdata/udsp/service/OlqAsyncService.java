@@ -37,11 +37,8 @@ public class OlqAsyncService implements Runnable {
     public void run() {
         try {
             logger.debug("OLQ START 线程调用开始");
-//            // 判断是否进入等待队列，如果进入则等待其满足条件出来
-//            if (waitingService.isWaiting(consumeRequest, bef)) {
-                // 没有进入等待队列或从等待队列中出来，则进入执行队列中执行任务
-                olqSyncService.asyncStartForTimeout(consumeRequest, bef, appId, sql, page, fileName);
-//            }
+            // 没有进入等待队列或从等待队列中出来，则进入执行队列中执行任务
+            olqSyncService.asyncStartForTimeout(consumeRequest, bef, appId, sql, page, fileName);
             logger.debug(" OLQ START 线程调用结束");
         } catch (Exception e) {
             e.printStackTrace();
