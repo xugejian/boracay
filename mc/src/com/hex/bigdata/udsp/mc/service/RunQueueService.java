@@ -1,13 +1,10 @@
 package com.hex.bigdata.udsp.mc.service;
 
-import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
 import com.hex.bigdata.udsp.common.service.InitParamService;
-import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.mc.dao.RunQueueMapper;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.model.RunQueue;
-import com.hex.bigdata.udsp.model.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,15 +143,11 @@ public class RunQueueService {
                 redisLock.lock(key);
             try {
                 RunQueue runQueue = this.select(key);
-                if (runQueue == null) return false;
-                if (runQueue.getCurrentNum() < runQueue.getMaxNum()) {
-                    return false;
-                }
+                return runQueue != null && runQueue.getCurrentNum() >= runQueue.getMaxNum();
             } finally {
                 if (initParamService.isUseClusterRedisLock())
                     redisLock.unlock(key);
             }
-            return true;
         }
     }
 

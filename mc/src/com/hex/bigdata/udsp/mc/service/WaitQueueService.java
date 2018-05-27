@@ -4,10 +4,8 @@ import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
 import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.dto.QueueIsFullResult;
 import com.hex.bigdata.udsp.mc.dao.WaitQueueMapper;
-import com.hex.bigdata.udsp.mc.model.WaitQueue;
 import com.hex.bigdata.udsp.mc.model.Current;
-import com.hex.bigdata.udsp.mc.util.McCommonUtil;
-import com.hex.bigdata.udsp.model.Request;
+import com.hex.bigdata.udsp.mc.model.WaitQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,30 +52,28 @@ public class WaitQueueService {
      */
     public QueueIsFullResult checkWaitQueueIsFull(Current mcCurrent, int maxWaitNum) {
         String key = this.getKey(mcCurrent);
-        boolean isFull = false;
         QueueIsFullResult isFullResult = new QueueIsFullResult();
+        isFullResult.setWaitQueueIsFull(true);
         synchronized (key.intern()) {
             if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+                redisLock.lock(key);
             try {
                 WaitQueue mcWaitQueue = this.select(key);
-                if (mcWaitQueue == null) mcWaitQueue = initByKey(mcCurrent);
+                if (mcWaitQueue == null) mcWaitQueue = initWaitQueue(mcCurrent);
                 // 若是等待队列未满，则请求进入
-                if (mcWaitQueue.getCurrentLenth() < maxWaitNum) {
+                if (mcWaitQueue.getCurrentNum() < mcWaitQueue.getMaxNum()) {
                     logger.debug(key + "等待队列最大长度：" + maxWaitNum + "，等待队列长度："
-                            + mcWaitQueue.getCurrentLenth() + "，" + Thread.currentThread().getName() + "进入等待队列！");
+                            + mcWaitQueue.getCurrentNum() + "，" + Thread.currentThread().getName() + "进入等待队列！");
                     // 本次请求加入队列
                     String pkId = mcCurrent.getPkId();
                     isFullResult.setWaitQueueTaskId(pkId);
+                    isFullResult.setWaitQueueIsFull(false);
                     mcWaitQueue.offerElement(pkId); // 加入队列
                     // 更新等待队列统计信息
                     mcWaitQueueMapper.insert(key, mcWaitQueue);
                     // 加入统计队列
                     mcCurrentService.insertWait(mcCurrent);
-                } else {
-                    isFull = true;
                 }
-                isFullResult.setWaitQueueIsFull(isFull);
                 return isFullResult;
             } finally {
                 if (initParamService.isUseClusterRedisLock())
@@ -118,16 +114,11 @@ public class WaitQueueService {
         }
     }
 
-    /**
-     * 初始化等待队列对象
-     * key为userId:appId:appType
-     * 即key为userId 用户id，appId应用id，appType:应用类型，Type：同步异步
-     *
-     * @param current
-     * @return
-     */
-    private WaitQueue initByKey(Current current) {
-        return new WaitQueue(this.getKey(current).toString());
+    private WaitQueue initWaitQueue(Current current){
+        WaitQueue waitQueue = new WaitQueue();
+        waitQueue.setQueueName(getKey(current));
+        waitQueue.setMaxNum(current.getMaxCurrentNum());
+        return waitQueue;
     }
 
     private String getKey(Current mcCurrent) {

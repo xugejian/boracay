@@ -18,7 +18,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Created by junjiem on 2017-2-16.
  */
-@Deprecated
 @Repository("localCache")
 public class LocalCache<T> implements Cache<T> {
 
@@ -49,10 +48,6 @@ public class LocalCache<T> implements Cache<T> {
     }
 
     private boolean insert(String key, Object obj) {
-//        synchronized (key.intern()) {
-//            getCache().put(key, obj);
-//            return true;
-//        }
         w.lock();
         try {
             getCache().put(key, obj);
@@ -63,11 +58,6 @@ public class LocalCache<T> implements Cache<T> {
     }
 
     private boolean update(String key, Object obj) {
-//        synchronized (key.intern()) {
-//            getCache().invalidate(key);
-//            getCache().put(key, obj);
-//            return true;
-//        }
         w.lock();
         try {
             getCache().invalidate(key);
@@ -79,10 +69,6 @@ public class LocalCache<T> implements Cache<T> {
     }
 
     private boolean delete(String key) {
-//        synchronized (key.intern()) {
-//            getCache().invalidate(key);
-//            return true;
-//        }
         w.lock();
         try {
             getCache().invalidate(key);
@@ -93,10 +79,6 @@ public class LocalCache<T> implements Cache<T> {
     }
 
     private Object select(String key) {
-//        synchronized (key.intern()) {
-//            return getCache().getIfPresent(key);
-//        }
-
         r.lock();
         try {
             return getCache().getIfPresent(key);
@@ -122,19 +104,6 @@ public class LocalCache<T> implements Cache<T> {
 
     @Override
     public T selectCache(String key) {
-//        Object obj = select(key);
-//        if (obj == null && cacheMap != null) {
-//            synchronized (key.intern()) {
-//                for (Map.Entry<Long, com.google.common.cache.Cache<Object, Object>> entry : cacheMap.entrySet()) {
-//                    obj = entry.getValue().getIfPresent(key);
-//                    if (obj != null) {
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//        return cloneObj((T) obj);
-
         Object obj = select(key);
         if (obj == null && cacheMap != null) {
             r.lock();
@@ -187,19 +156,6 @@ public class LocalCache<T> implements Cache<T> {
 
     @Override
     public boolean insertTimeoutCache(String key, T t, long timeout) {
-//        synchronized (key.intern()) {
-//            com.google.common.cache.Cache<Object, Object> cache = cacheMap.get(timeout);
-//            if (cache == null) {
-//                cache = CacheBuilder.newBuilder()//
-//                        .maximumSize(maximumSize)//
-//                        .expireAfterWrite(timeout, TimeUnit.MILLISECONDS)//
-//                        .ticker(Ticker.systemTicker())//
-//                        .build();
-//                cacheMap.put(timeout, cache);
-//            }
-//            cache.put(key, cloneObj(t));
-//            return true;
-//        }
         com.google.common.cache.Cache<Object, Object> cache = cacheMap.get(timeout);
         if (cache == null) {
             cache = CacheBuilder.newBuilder()//
