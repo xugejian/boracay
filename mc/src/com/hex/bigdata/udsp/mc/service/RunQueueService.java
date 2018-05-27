@@ -80,19 +80,17 @@ public class RunQueueService {
             if (initParamService.isUseClusterRedisLock())
                 redisLock.lock(key);
             try {
-                logger.debug("减少" + key + "并发！");
-                this.mcCurrentService.delete(mcCurrent.getPkId());
                 RunQueue runQueue = this.select(key);
-                if (runQueue != null) {
-                    int currentNum = runQueue.getCurrentNum();
-                    currentNum = (currentNum > 1 ? currentNum - 1 : 0);
-                    runQueue.setCurrentNum(currentNum);
+                if (runQueue != null && runQueue.getCurrentNum() >= 1) {
+                    runQueue.setCurrentNum(runQueue.getCurrentNum() - 1);
                     logger.debug("减少" + key + "并发后并发数==>" + runQueue.getCurrentNum());
-                    if (currentNum == 0) {
+                    if (runQueue.getCurrentNum() == 0) {
                         this.delete(key);
                     } else {
                         this.insert(key, runQueue);
                     }
+                    logger.debug("减少" + key + "并发！");
+                    this.mcCurrentService.delete(mcCurrent.getPkId());
                     return true;
                 }
                 return false;

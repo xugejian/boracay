@@ -333,14 +333,18 @@ public class ConsumerService {
         Request request = consumeRequest.getRequest();
         Current mcCurrent = consumeRequest.getMcCurrent();
         ErrorCode errorCode = consumeRequest.getError();
+        // 错误处理
+        /*
+         这个里必须在try finally之前，因为这里处理的错误是运行队列已满的处理，是不需要finally中减去并发的
+         */
+        if (errorCode != null) {
+            Response response = new Response();
+            loggingService.writeResponseLog(response, consumeRequest, bef, 0,
+                    errorCode.getValue(), errorCode.getName(), null);
+            return response;
+        }
+        // 消费处理
         try {
-            if (errorCode != null) { // 错误处理
-                Response response = new Response();
-                loggingService.writeResponseLog(response, consumeRequest, bef, 0,
-                        errorCode.getValue(), errorCode.getName(), null);
-                return response;
-            }
-            // 消费处理
             Response response = new Response();
             String appType = request.getAppType();
             String appId = request.getAppId();
