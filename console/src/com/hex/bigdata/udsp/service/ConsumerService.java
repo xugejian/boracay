@@ -141,9 +141,71 @@ public class ConsumerService {
         return response;
     }
 
+    public Response externalConsume2(ExternalRequest externalRequest) {
+        long bef = System.currentTimeMillis();
+        Request request = new Request();
+        ObjectUtil.copyObject(externalRequest, request);
+        Response response = new Response();
+        String consumeId = HostUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+        response.setConsumeId(consumeId);
+        String appType = request.getAppType();
+        String appId = request.getAppId();
+        String type = request.getType() == null ? "" : request.getType().toUpperCase();
+        String entity = request.getEntity() == null ? "" : request.getEntity().toUpperCase();
+        Page page = request.getPage();
+        String sql = request.getSql();
+        Map<String, String> data = request.getData();
+        if (RcConstant.UDSP_SERVICE_TYPE_IQ.equalsIgnoreCase(appType)) {
+            if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
+                logger.debug("execute IQ STATUS");
+                response = status(request.getConsumeId());
+            } else if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
+                    && ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
+                logger.debug("execute IQ SYNC START");
+                response = iqSyncService.syncStart(appId, data, page);
+            }
+        } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(appType)) {
+            if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
+                logger.debug("execute OLQ STATUS");
+                response = status(request.getConsumeId());
+            } else if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
+                    && ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
+                logger.debug("execute OLQ SYNC START");
+                response = olqSyncService.syncStart(consumeId, appId, sql, page);
+            }
+        } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(appType)) {
+            if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
+                logger.debug("execute OLQ_APP STATUS");
+                response = status(request.getConsumeId());
+            } else if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
+                    && ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
+                logger.debug("execute OLQ_APP SYNC START");
+                OlqApplicationDto olqApplicationDto = olqApplicationService.selectFullAppInfo(appId);
+                appId = olqApplicationDto.getOlqApplication().getOlqDsId();
+                sql = olqApplicationService.getExecuteSQL(olqApplicationDto, data);
+                response = olqSyncService.syncStart(consumeId, appId, sql, page);
+            }
+        } else if (RcConstant.UDSP_SERVICE_TYPE_MM.equalsIgnoreCase(appType)) {
+            if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
+                logger.debug("execute MM STATUS");
+                request.setConsumeId(consumeId); // 设置消费id到request对象，传输给远程的服务
+                response = mmRequestService.status(request, appId);
+            } else if (ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
+                logger.debug("execute MM SYNC or ASYNC START");
+                response = mmRequestService.start(consumeId, appId, request);
+            }
+        } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equalsIgnoreCase(appType)) {
+            logger.debug("execute IM SYNC START");
+            response = imSyncService.start(appId, data);
+        }
+        loggingService.writeResponseLog(consumeId, bef, 0, request, response);
+        return response;
+    }
+
     /**
      * 外部消费前检查
      */
+
     private ConsumeRequest checkBeforExternalConsume(Request request, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
         consumeRequest.setRequest(request);
@@ -346,7 +408,8 @@ public class ConsumerService {
         // 消费处理
         Request request = consumeRequest.getRequest();
         Current mcCurrent = consumeRequest.getMcCurrent();
-        response.setConsumeId(mcCurrent.getAppId());
+        String consumeId = mcCurrent.getPkId();
+        response.setConsumeId(consumeId);
         String appType = request.getAppType();
         String appId = request.getAppId();
         String type = request.getType() == null ? "" : request.getType().toUpperCase();
@@ -416,7 +479,7 @@ public class ConsumerService {
                     response = mmRequestService.status(request, appId);
                 } else if (ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
                     logger.debug("execute MM SYNC or ASYNC START");
-                    response = mmRequestService.start(mcCurrent, appId, request);
+                    response = mmRequestService.start(consumeId, appId, request);
                 }
             } else if (RcConstant.UDSP_SERVICE_TYPE_RTS_PRODUCER.equalsIgnoreCase(appType)) {
                 logger.debug("execute RTS_PRODUCER SYNC START");
@@ -439,7 +502,7 @@ public class ConsumerService {
                 response.setStatusCode(StatusCode.SUCCESS.getValue());
                 response.setStatus(Status.SUCCESS.getValue());
             } else {
-                loggingService.writeResponseLog(mcCurrent, bef, runBef, request, response);
+                loggingService.writeResponseLog(consumeId, bef, runBef, request, response);
             }
 
             return response;
