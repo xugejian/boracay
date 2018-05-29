@@ -96,6 +96,7 @@ public class IqSyncService {
     public void asyncStartForTimeout(ConsumeRequest consumeRequest, long bef,
                                      String appId, Map<String, String> paraMap, Page page, String fileName) {
         Current mcCurrent = consumeRequest.getMcCurrent();
+        String consumeId = mcCurrent.getPkId();
         String userName = consumeRequest.getMcCurrent().getUserName();
         Request request = consumeRequest.getRequest();
         RcUserService rcUserService = consumeRequest.getRcUserService();
@@ -108,14 +109,14 @@ public class IqSyncService {
             Future<IqResponse> iqFutureTask = executorService.submit(new IqAsyncCallable(userName, appId, paraMap, page, fileName));
             IqResponse iqResponse = iqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
             response.setResponseContent(iqResponse.getFilePath());
-            loggingService.writeResponseLog(mcCurrent, bef, runBef, request, response);
+            loggingService.writeResponseLog(consumeId, bef, runBef, request, response);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), null);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
         } finally {
             runQueueService.reduceCurrent(mcCurrent);
         }

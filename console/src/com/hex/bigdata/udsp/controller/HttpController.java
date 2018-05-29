@@ -89,7 +89,8 @@ public class HttpController extends BaseController {
         try {
             ExternalRequest externalRequest = jsonToExternalRequest(json);
             externalRequest.setRequestIp(HostUtil.getRealRequestIp(request)); // 获取并设置客户端请求的IP
-            response = consumerService.externalConsume(externalRequest);
+            //response = consumerService.externalConsume(externalRequest);
+            response = consumerService.externalConsume2(externalRequest);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,

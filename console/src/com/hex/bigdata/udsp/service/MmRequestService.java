@@ -37,18 +37,17 @@ public class MmRequestService {
     private MmApplicationService mmApplicationService;
 
     /**
-     * @param mcCurrent 并发信息
+     * @param consumeId 消费Id
      * @param appId     应用Id
      * @param request   请求实体
      * @return
      */
-    public Response start(Current mcCurrent, String appId, Request request) {
+    public Response start(String consumeId, String appId, Request request) {
         Response response = checkParam(appId, request.getData());
         if (response != null) return response;
 
         response = new Response();
         MmResponse mmResponse = null;
-        String consumeId = mcCurrent.getPkId();
         try {
 
             //内部请求，则设置serviceName
@@ -76,7 +75,6 @@ public class MmRequestService {
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
-            return response;
         }
         return response;
     }

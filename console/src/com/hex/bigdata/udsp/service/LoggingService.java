@@ -168,16 +168,16 @@ public class LoggingService {
     /**
      * 写日志
      *
-     * @param mcCurrent
+     * @param consumeId
      * @param bef
      * @param runBef
      * @param request
      * @param response
      */
-    public void writeResponseLog(Current mcCurrent, long bef, long runBef, Request request, Response response) {
+    public void writeResponseLog(String consumeId, long bef, long runBef, Request request, Response response) {
         long now = System.currentTimeMillis();
         McConsumeLog mcConsumeLog = new McConsumeLog();
-        mcConsumeLog.setPkId(mcCurrent.getPkId());
+        mcConsumeLog.setPkId(consumeId);
         if (bef != 0) {
             mcConsumeLog.setRequestStartTime(DateUtil.getDateString(bef));
             mcConsumeLog.setRequestEndTime(DateUtil.getDateString(now));
@@ -196,10 +196,10 @@ public class LoggingService {
         if (StringUtils.isNotBlank(response.getMessage())) {
             mcConsumeLog.setMessage(response.getMessage());
         }
-        if (CommonConstant.REQUEST_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
-            mcConsumeLog.setSyncType(mcCurrent.getSyncType().toUpperCase());
+        if (CommonConstant.REQUEST_SYNC.equalsIgnoreCase(request.getType())) {
+            mcConsumeLog.setSyncType(request.getType().toUpperCase());
         } else {
-            mcConsumeLog.setSyncType(mcCurrent.getSyncType().toUpperCase());
+            mcConsumeLog.setSyncType(request.getType().toUpperCase());
         }
         if (StringUtils.isNotBlank(response.getResponseContent())) {
             mcConsumeLog.setResponseContent(response.getResponseContent());

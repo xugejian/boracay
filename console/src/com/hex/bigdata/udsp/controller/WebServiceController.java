@@ -77,21 +77,17 @@ public class WebServiceController implements WebServiceInterface {
      * 这里用json字符串作为请求参数是为了自己转换成Request，出错时把信息返回给请求方。
      */
     public String consume2(@RequestBody String json) {
-        ExternalRequest externalRequest = null;
-        Response response = null;
+        Response response = new Response();
         long bef = System.currentTimeMillis();
         try {
-            externalRequest = jsonToRequest(json);
+            ExternalRequest externalRequest = jsonToRequest(json);
+            externalRequest.setRequestIp(getClientIp()); //获取并设置客户端请求的IP
+            response = consumerService.externalConsume(externalRequest);
         } catch (Exception e) {
-            //处理异常，返回respone
-            response = new Response();
+            e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
                     ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
-            return JSONUtil.parseObj2JSON(response);
         }
-        //获取并设置客户端请求的IP
-        externalRequest.setRequestIp(getClientIp());
-        response = consumerService.externalConsume(externalRequest);
         return JSONUtil.parseObj2JSON(response);
     }
 
