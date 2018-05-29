@@ -133,7 +133,10 @@ public class ConsumerService {
 
         Response response = consume(consumeRequest, bef);
 
-        response.setConsumeTime(System.currentTimeMillis() - bef);
+        long now = System.currentTimeMillis();
+        long consumeTime = now - bef;
+        response.setConsumeTime(consumeTime);
+        logger.debug("请求耗时：" + consumeTime + "ms");
 
         return response;
     }
@@ -203,7 +206,10 @@ public class ConsumerService {
             response.getPage().setPageIndex(response.getPage().getPageIndex() - 1);
         }
 
-        response.setConsumeTime(System.currentTimeMillis() - bef);
+        long now = System.currentTimeMillis();
+        long consumeTime = now - bef;
+        response.setConsumeTime(consumeTime);
+        logger.debug("请求耗时：" + consumeTime + "ms");
 
         return response;
     }
@@ -330,34 +336,33 @@ public class ConsumerService {
      * @return
      */
     private Response consume(ConsumeRequest consumeRequest, long bef) {
-        Request request = consumeRequest.getRequest();
-        Current mcCurrent = consumeRequest.getMcCurrent();
+        Response response = new Response();
         ErrorCode errorCode = consumeRequest.getError();
         // 错误处理
-        /*
-         这个里必须在try finally之前，因为这里处理的错误是运行队列已满的处理，是不需要finally中减去并发的
-         */
+        // 这个里必须在try finally之前，因为这里处理的错误是运行队列已满的处理，是不需要finally中减去并发的
         if (errorCode != null) {
-            Response response = new Response();
             loggingService.writeResponseLog(response, consumeRequest, bef, 0,
                     errorCode.getValue(), errorCode.getName(), null);
             return response;
         }
         // 消费处理
-        try {
-            Response response = new Response();
-            String appType = request.getAppType();
-            String appId = request.getAppId();
-            String type = request.getType() == null ? "" : request.getType().toUpperCase();
-            String entity = request.getEntity() == null ? "" : request.getEntity().toUpperCase();
-            Page page = request.getPage();
-            String sql = request.getSql();
-            Map<String, String> paraMap = request.getData();
-            String udspUser = request.getUdspUser();
+        Request request = consumeRequest.getRequest();
+        Current mcCurrent = consumeRequest.getMcCurrent();
+        response.setConsumeId(mcCurrent.getAppId());
+        String appType = request.getAppType();
+        String appId = request.getAppId();
+        String type = request.getType() == null ? "" : request.getType().toUpperCase();
+        String entity = request.getEntity() == null ? "" : request.getEntity().toUpperCase();
+        Page page = request.getPage();
+        String sql = request.getSql();
+        Map<String, String> paraMap = request.getData();
+        String udspUser = request.getUdspUser();
 
+        String fileName = CreateFileUtil.getFileName(); // 生成随机的文件名
+        long runBef = System.currentTimeMillis();
+
+        try {
             // 根据类型进入不同的处理逻辑
-            String fileName = CreateFileUtil.getFileName(); // 生成随机的文件名
-            long runBef = System.currentTimeMillis();
             if (RcConstant.UDSP_SERVICE_TYPE_IQ.equalsIgnoreCase(appType)) {
                 // 开始iq消费
                 if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
@@ -410,7 +415,7 @@ public class ConsumerService {
                 // 开始MM消费
                 if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
                     logger.debug("execute MM STATUS");
-                    request.setConsumeId(mcCurrent.getPkId()); //设置消费id到request对象
+                    request.setConsumeId(mcCurrent.getPkId()); // 设置消费id到request对象，传输给远程的服务
                     response = mmRequestService.status(request, appId);
                 } else if (ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)) {
                     logger.debug("execute MM SYNC or ASYNC START");
@@ -426,7 +431,6 @@ public class ConsumerService {
                 logger.debug("execute IM SYNC START");
                 response = imSyncService.startForTimeout(consumeRequest, bef);
             }
-            response.setConsumeId(mcCurrent.getPkId());
 
             if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(type)
                     && ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)
@@ -445,9 +449,9 @@ public class ConsumerService {
         } finally {
             // 减少并发统计
             if (mcCurrent != null) {
-                if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType())
-                        || !ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(request.getEntity())
-                        || RcConstant.UDSP_SERVICE_TYPE_MM.equalsIgnoreCase(request.getAppType())) {
+                if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
+                        || !ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)
+                        || RcConstant.UDSP_SERVICE_TYPE_MM.equalsIgnoreCase(appType)) {
                     this.runQueueService.reduceCurrent(mcCurrent);
                 }
             }

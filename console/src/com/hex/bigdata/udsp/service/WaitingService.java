@@ -61,6 +61,7 @@ public class WaitingService {
      */
     public boolean isWaiting(ConsumeRequest consumeRequest, long bef) {
         Current mcCurrent = consumeRequest.getMcCurrent();
+        String consumeId = mcCurrent.getPkId();
         long cycleTimeInterval = syncCycleTimeInterval;
         if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
             cycleTimeInterval = asyncCycleTimeInterval;
@@ -78,11 +79,11 @@ public class WaitingService {
                 passFlg = waitFutureTask.get(maxAsyncWaitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 loggingService.writeResponseLog(null, consumeRequest, bef, 0,
-                        ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName() + ":" + e.toString(), null);
+                        ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName() + ":" + e.toString(), consumeId);
             } catch (Exception e) {
                 e.printStackTrace();
                 loggingService.writeResponseLog(null, consumeRequest, bef, 0,
-                        ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
+                        ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
             }
         }
         return passFlg;

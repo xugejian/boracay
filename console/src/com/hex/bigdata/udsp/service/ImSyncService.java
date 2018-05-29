@@ -4,8 +4,6 @@ import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.service.InitParamService;
-import com.hex.bigdata.udsp.common.util.HostUtil;
-import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.im.constant.ModelType;
 import com.hex.bigdata.udsp.im.converter.model.Model;
@@ -62,26 +60,23 @@ public class ImSyncService {
      * @return
      */
     public Response startForTimeout(ConsumeRequest consumeRequest, long bef) {
-        long runBef = System.currentTimeMillis();
         Request request = consumeRequest.getRequest();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
                 initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
-        String appId = request.getAppId();
-        Map data = request.getData();
-        String consumeId = HostUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
         Response response = new Response();
+        long runBef = System.currentTimeMillis();
         try {
             // 开启一个新的线程，其内部执行交互建模任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(new ImSyncServiceCallable(appId, data));
+            Future<Response> futureTask = executorService.submit(new ImSyncServiceCallable(request.getAppId(), request.getData()));
             response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), consumeId);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName(), null);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
         }
         return response;
     }

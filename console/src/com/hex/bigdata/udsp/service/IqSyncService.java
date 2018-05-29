@@ -72,54 +72,50 @@ public class IqSyncService {
      * @return
      */
     public Response syncStartForTimeout(ConsumeRequest consumeRequest, long bef) {
-        long runBef = System.currentTimeMillis();
         Request request = consumeRequest.getRequest();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
                 initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
-        String appId = request.getAppId();
-        Page page = request.getPage();
-        Map data = request.getData();
-        String consumeId = HostUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
         Response response = new Response();
+        long runBef = System.currentTimeMillis();
         try {
             // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(new IqSyncServiceCallable(data, appId, page));
+            Future<Response> futureTask = executorService.submit(new IqSyncServiceCallable(request.getData(), request.getAppId(), request.getPage()));
             response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), null);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
         }
         return response;
     }
 
     public void asyncStartForTimeout(ConsumeRequest consumeRequest, long bef,
                                      String appId, Map<String, String> paraMap, Page page, String fileName) {
-        long runBef = System.currentTimeMillis();
         Current mcCurrent = consumeRequest.getMcCurrent();
         String userName = consumeRequest.getMcCurrent().getUserName();
         Request request = consumeRequest.getRequest();
         RcUserService rcUserService = consumeRequest.getRcUserService();
         long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
                 initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
-        String consumeId = HostUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+        Response response = new Response();
+        long runBef = System.currentTimeMillis();
         try {
             // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
             Future<IqResponse> iqFutureTask = executorService.submit(new IqAsyncCallable(userName, appId, paraMap, page, fileName));
             IqResponse iqResponse = iqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
-            Response response = new Response();
             response.setResponseContent(iqResponse.getFilePath());
             loggingService.writeResponseLog(mcCurrent, bef, runBef, request, response);
         } catch (TimeoutException e) {
-            loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), null);
         } catch (Exception e) {
-            loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+            e.printStackTrace();
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
         } finally {
             runQueueService.reduceCurrent(mcCurrent);
         }

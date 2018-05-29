@@ -51,20 +51,18 @@ public class RestfulController extends BaseController {
     @RequestMapping(value = {"/consume"}, method = {RequestMethod.POST})
     @ResponseBody
     public Response consume(@RequestBody String json, HttpServletRequest request) {
-        ExternalRequest externalRequest = null;
+        Response response = new Response();
         long bef = System.currentTimeMillis();
         try {
-            externalRequest = jsonToRequest(json);
+            ExternalRequest externalRequest = jsonToRequest(json);
+            externalRequest.setRequestIp(HostUtil.getRealRequestIp(request)); // 获取并设置客户端请求的IP
+            return consumerService.externalConsume(externalRequest);
         } catch (Exception e) {
-            //处理异常，返回respone
-            Response response = new Response();
+            e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
                     ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
-            return response;
         }
-        //获取并设置客户端请求的IP
-        externalRequest.setRequestIp(HostUtil.getRealRequestIp(request));
-        return consumerService.externalConsume(externalRequest);
+        return response;
     }
 
     private ExternalRequest jsonToRequest(String json){

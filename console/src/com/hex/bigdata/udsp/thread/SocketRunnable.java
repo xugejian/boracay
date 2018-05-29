@@ -77,21 +77,19 @@ public class SocketRunnable implements Runnable {
     }
 
     public String consume(String massage, String requestIp) {
-        ExternalRequest externalRequest = null;
+        Response response = new Response();
         long bef = System.currentTimeMillis();
         try {
             Map<String, Class> classMap = new HashMap<String, Class>();
             classMap.put(ConsumerConstant.CONSUME_RTS_DATASTREAM, Map.class);
-            externalRequest = JSONUtil.parseJSON2Obj(massage, ExternalRequest.class, classMap);
+            ExternalRequest externalRequest = JSONUtil.parseJSON2Obj(massage, ExternalRequest.class, classMap);
+            externalRequest.setRequestIp(requestIp);
+            response = consumerService.externalConsume(externalRequest);
         } catch (Exception e) {
-            //处理异常，返回respone
-            Response response = new Response();
+            e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
                     ErrorCode.ERROR_000005.getValue(), ErrorCode.ERROR_000005.getName() + ":" + e.getMessage(), null);
-            return JSONUtil.parseObj2JSON(response);
         }
-        externalRequest.setRequestIp(requestIp);
-        Response response = consumerService.externalConsume(externalRequest);
         return JSONUtil.parseObj2JSON(response);
     }
 

@@ -84,20 +84,18 @@ public class HttpController extends BaseController {
     @RequestMapping(value = {"/consume"}, method = {RequestMethod.POST})
     @ResponseBody
     public Response consume(@RequestBody String json, HttpServletRequest request) {
-        ExternalRequest externalRequest = null;
+        Response response = new Response();
         long bef = System.currentTimeMillis();
         try {
-            externalRequest = jsonToExternalRequest(json);
+            ExternalRequest externalRequest = jsonToExternalRequest(json);
+            externalRequest.setRequestIp(HostUtil.getRealRequestIp(request)); // 获取并设置客户端请求的IP
+            response = consumerService.externalConsume(externalRequest);
         } catch (Exception e) {
-            //处理异常，返回respone
-            Response response = new Response();
+            e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
                     ErrorCode.ERROR_000005.getValue(), ErrorCode.ERROR_000005.getName() + ":" + e.getMessage(), null);
-            return response;
         }
-        //获取并设置客户端请求的IP
-        externalRequest.setRequestIp(HostUtil.getRealRequestIp(request));
-        return consumerService.externalConsume(externalRequest);
+        return response;
     }
 
     // --------------------------------------------内部请求----------------------------------------------------
