@@ -123,13 +123,13 @@ public class ConsumerService {
      */
     public Response externalConsume(ExternalRequest externalRequest) {
         logger.debug("ExternalRequest=" + JSONUtil.parseObj2JSON(externalRequest));
-
         long bef = System.currentTimeMillis();
 
         Request request = new Request();
         ObjectUtil.copyObject(externalRequest, request);
 
         ConsumeRequest consumeRequest = checkBeforExternalConsume(request, bef);
+        logger.debug("检查耗时：" + (System.currentTimeMillis() - bef) + "ms");
 
         Response response = consume(consumeRequest, bef);
 
@@ -192,13 +192,13 @@ public class ConsumerService {
      */
     public Response innerConsume(InnerRequest innerRequest, boolean isAdmin) {
         logger.debug("InnerRequest=" + JSONUtil.parseObj2JSON(innerRequest));
-
         long bef = System.currentTimeMillis();
 
         Request request = new Request();
         ObjectUtil.copyObject(innerRequest, request);
 
         ConsumeRequest consumeRequest = checkBeforInnerConsume(request, isAdmin, bef);
+        logger.debug("检查耗时：" + (System.currentTimeMillis() - bef) + "ms");
 
         Response response = consume(consumeRequest, bef);
 
@@ -310,9 +310,7 @@ public class ConsumerService {
                 return consumeRequest;
             }
         }
-        int maxSyncNum = rcUserService.getMaxSyncNum();
-        int maxAsyncNum = rcUserService.getMaxAsyncNum();
-        Current mcCurrent = getCurrent(request, maxSyncNum, maxAsyncNum);
+        Current mcCurrent = getCurrent(request, rcUserService.getMaxSyncNum(), rcUserService.getMaxAsyncNum());
         consumeRequest.setMcCurrent(mcCurrent);
         if (!runQueueService.addCurrent(mcCurrent)) { // 运行队列已满
             QueueIsFullResult isFullResult = checkWaitQueueIsFull(mcCurrent, rcUserService);
@@ -360,7 +358,6 @@ public class ConsumerService {
 
         String fileName = CreateFileUtil.getFileName(); // 生成随机的文件名
         long runBef = System.currentTimeMillis();
-
         try {
             // 根据类型进入不同的处理逻辑
             if (RcConstant.UDSP_SERVICE_TYPE_IQ.equalsIgnoreCase(appType)) {
