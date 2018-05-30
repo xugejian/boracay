@@ -68,14 +68,14 @@ public class RedisCache<T> implements Cache<T> {
 
     @Override
     public T selectCache(String key) {
-//        redisLock.lock("r"+key);
+//        redisLock.lock(key);
 //        try {
         if (StringUtils.isNotBlank(key)) {
             return (T) redisTemplate.opsForValue().get(key);
         }
         return null;
 //        } finally {
-//            redisLock.unlock("r"+key);
+//            redisLock.unlock(key);
 //        }
     }
 
@@ -107,7 +107,7 @@ public class RedisCache<T> implements Cache<T> {
 
     @Override
     public <T> List<T> selectListCache(String key) {
-//        redisLock.lock("r"+key);
+//        redisLock.lock(key);
 //        try {
         if (StringUtils.isNotBlank(key)) {
             ListOperations<String, T> listOperations = (ListOperations<String, T>) redisTemplate.opsForList();
@@ -118,13 +118,13 @@ public class RedisCache<T> implements Cache<T> {
         }
         return null;
 //        } finally {
-//            redisLock.unlock("r"+key);
+//            redisLock.unlock(key);
 //        }
     }
 
     @Override
     public <T> List<T> selectCacheLike(String likeKey) {
-//        redisLock.lock("r" + likeKey);
+//        redisLock.lock(likeKey);
 //        try {
         Set<String> keys = redisTemplate.keys(likeKey + "*");
         List<T> list = new ArrayList<>();
@@ -144,7 +144,7 @@ public class RedisCache<T> implements Cache<T> {
         }
         return list;
 //        } finally {
-//            redisLock.unlock("r" + likeKey);
+//            redisLock.unlock(likeKey);
 //        }
     }
 
