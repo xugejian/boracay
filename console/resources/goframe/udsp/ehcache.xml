@@ -20,7 +20,6 @@
 
     <diskStore path="java.io.tmpdir"/>
 
-    <!--
     <cache name="udspCache"
            maxElementsOnDisk="30000"
            maxElementsInMemory="1000000"
@@ -33,7 +32,6 @@
            memoryStoreEvictionPolicy="LFU">
         <searchable keys="true"></searchable>
     </cache>
-    -->
 
     <!-- RMI手工配置方式，需要配置其他几个的IP地址 -->
     <!--
@@ -49,6 +47,7 @@
 
     <!-- RMI自动发现方式，需要配置多播的IP地址 -->
     <!-- 同时组播地址可以指定 D 类 IP 地址空间，范围从 224.0.1.0 到 238.255.255.255 中的任何一个地址 -->
+    <!--
     <cacheManagerPeerProviderFactory
             class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
             properties="peerDiscovery=automatic,
@@ -76,5 +75,6 @@
         />
         <searchable keys="true"></searchable>
     </cache>
+    -->
 
 </ehcache>
