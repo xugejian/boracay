@@ -12,7 +12,8 @@ public enum Operator {
     NE("不等于", "!="),
     LK("模糊匹配", "like"),
     IN("in查询","in"),
-    RLIKE("右模糊匹配","right like");
+    RLIKE("右模糊匹配","right like"),
+    SOLR_JOIN("SOLR_JOIN","SOLR_JOIN");
 
     private String value;
     private String name;
