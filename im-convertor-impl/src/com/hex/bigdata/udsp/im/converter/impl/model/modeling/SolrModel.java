@@ -27,10 +27,10 @@ public class SolrModel extends Model {
         return value;
     }
 
-    public boolean getViolenceQuery() {
-        String value = getProperty("violence.query").getValue();
-        if (StringUtils.isBlank(value))
-            value = "true";
-        return Boolean.valueOf(value);
-    }
+//    public boolean getViolenceQuery() {
+//        String value = getProperty("violence.query").getValue();
+//        if (StringUtils.isBlank(value))
+//            value = "true";
+//        return Boolean.valueOf(value);
+//    }
 }

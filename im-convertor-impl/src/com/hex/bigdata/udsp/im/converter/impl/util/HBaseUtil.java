@@ -65,7 +65,7 @@ public class HBaseUtil {
         if (hbaseAdminPool == null) {
             hbaseAdminPool = new HashMap<>();
         }
-        HBaseAdminPoolFactory factory = hbaseAdminPool.get(dsId);
+        HBaseAdminPoolFactory factory = hbaseAdminPool.remove(dsId);
         if (factory == null) {
             GenericObjectPool.Config config = new GenericObjectPool.Config();
             config.lifo = true;
