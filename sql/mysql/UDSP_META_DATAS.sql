@@ -623,6 +623,37 @@ INSERT DELAYED INTO `t_gf_dict` VALUES ('UDSP_SYNC_TYPE', 'ASYNC', '异步', nul
 INSERT DELAYED INTO `t_gf_dict` VALUES ('UDSP_SYNC_TYPE', 'SYNC', '同步', null, '1', null, null, 'default', null);
 COMMIT;
 
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_IMPL_CLASS', 'KUDU', 'com.hex.bigdata.udsp.im.provider.impl.KuduProvider', null, 8, null, null, 'default', '交互建模的Kudu接口实现类');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_KUDU', 'kudu.master.hosts', 'master服务地址，如：10.1.97.1:7051,10.1.97.2:7051', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_KUDU', 'default.admin.operation.timeout.ms', '用于管理操作的超时时间（毫秒）', null, 3, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_KUDU', 'default.operation.timeout.ms', '用于用户操作的超时时间（毫秒）', null, 4, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_KUDU', 'worker.count', '工作线程的最大数量', null, 7, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_TARGET_REALTIME_TYPE', 'KUDU', 'KUDU', null, 6, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_TYPE', 'KUDU', 'KUDU', null, 8, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_TARGET_TYPE', 'KUDU', 'KUDU', null, 7, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_TARGET_BATCH_TYPE', 'KUDU', 'KUDU', null, 7, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_SOURCE_BATCH_TYPE', 'KUDU', 'KUDU', null, 5, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MD_PROPS_KUDU', 'pre.partitioning', '是否预分桶', null, 1, null, null, 'default', 'false');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MD_PROPS_KUDU', 'hash.partitions.buckets', '哈希分桶数（预分区开启时生效，且值必须大于等于2）', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_KUDU', 'boss.count', 'boss数量', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_KUDU', 'default.socket.read.timeout.ms', 'Socket读取的超时时间（毫秒）', null, 5, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_KUDU', 'disable.statistics', '禁用客户端的统计数据集', null, 6, null, null, 'default', 'false');
+
 -- ----------------------------
 -- Records of t_gf_dict_type
 -- ----------------------------
@@ -709,6 +740,11 @@ INSERT DELAYED INTO `t_gf_dict_type` VALUES ('UDSP_REQUEST_TYPE', '请求类型'
 INSERT DELAYED INTO `t_gf_dict_type` VALUES ('UDSP_SERVICE_TYPE', '应用类型', 'default');
 INSERT DELAYED INTO `t_gf_dict_type` VALUES ('UDSP_SYNC_TYPE', '同步/异步', 'default');
 COMMIT;
+
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('IM_DS_PROPS_KUDU', '交互建模-数据源配置-KUDU', 'default');
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('IM_MD_PROPS_KUDU', '交互建模-元数据参数-KUDU', 'default');
 
 -- ----------------------------
 -- Records of t_gf_employee
@@ -1030,3 +1066,7 @@ insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder
 values ('18041', 'MC.current.list.empty', '监控中心>队列监控>运行队列>清空队列', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
 values ('18051', 'MC.wait.list.empty', '监控中心>队列监控>等待队列>清空队列', null, null, null, null, 'default');
+
+-- 修改实现类路径
+update T_GF_DICT set dict_name='com.hex.bigdata.udsp.im.convertor.impl.KuduConvertor'
+where dict_type_id='IM_IMPL_CLASS' and dict_id='KUDU';

@@ -122,6 +122,12 @@ public abstract class JdbcWrapper extends Wrapper implements BatchTargetConverto
         return metadataCols;
     }
 
+    /**
+     * 创建源引擎Schema
+     *
+     * @param model
+     * @throws Exception
+     */
     @Override
     public void createSourceEngineSchema(Model model) throws Exception {
         Datasource sDs = model.getSourceDatasource();
@@ -157,6 +163,13 @@ public abstract class JdbcWrapper extends Wrapper implements BatchTargetConverto
         }
     }
 
+    /**
+     * 创建源引擎Schema（只针对非暴力查询模式时使用）
+     *
+     * @param model
+     * @param engineSchemaName
+     * @throws Exception
+     */
     @Override
     public void createSourceEngineSchema(Model model, String engineSchemaName) throws Exception {
         // 查询表名
