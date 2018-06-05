@@ -1,10 +1,10 @@
 package com.hex.bigdata.udsp.im.service;
 
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
 import com.hex.bigdata.udsp.im.dao.RealtimeTotalMapper;
 import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MqModel;
+import com.hex.bigdata.udsp.im.converter.impl.model.modeling.MqModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class RealtimeTotalService {
     private static Logger logger = LogManager.getLogger(RealtimeTotalService.class);
     private static final String REALTIME_TOTAL_KEY = "REALTIME_TOTAL";
     private static final String KEY_DELIMITER = ":";
-    private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
+    private static final String HOST_KEY = HostUtil.getLocalIpFromInetAddress();
 
     @Autowired
     private RealtimeTotalMapper realtimeTotalMapper;

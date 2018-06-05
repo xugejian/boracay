@@ -24,12 +24,12 @@ public class WaitQueue implements Serializable {
     /**
      * 队列限制长度
      */
-    private int limitLength;
+    private int maxNum;
 
     /**
      * 队列长度
      */
-    private int currentLenth;
+    private int currentNum;
 
     /**
      * 队列实体
@@ -45,7 +45,7 @@ public class WaitQueue implements Serializable {
      * @return
      */
     public boolean isFirstElement(String key) {
-        synchronized (key){
+        synchronized (key.intern()){
             String firstKey = waitQueue.peek();
             if (StringUtils.isNotBlank(key) && key.equals(firstKey)) {
                 //获取并移除此队列的头，如果此队列为空，则返回 false。
@@ -85,20 +85,20 @@ public class WaitQueue implements Serializable {
         this.queueName = queueName;
     }
 
-    public int getLimitLength() {
-        return limitLength;
+    public int getMaxNum() {
+        return maxNum;
     }
 
-    public void setLimitLength(int limitLength) {
-        this.limitLength = limitLength;
+    public void setMaxNum(int maxNum) {
+        this.maxNum = maxNum;
     }
 
-    public int getCurrentLenth() {
-        return this.waitQueue.size();
+    public int getCurrentNum() {
+        return currentNum;
     }
 
-    public void setCurrentLenth(int currentLenth) {
-        this.currentLenth = currentLenth;
+    public void setCurrentNum(int currentNum) {
+        this.currentNum = currentNum;
     }
 
     public BlockingQueue<String> getWaitQueue() {

@@ -1,8 +1,8 @@
 package com.hex.bigdata.udsp.rc.alarm.model;
 
 import com.hex.bigdata.udsp.common.model.ComProperties;
-import com.hex.bigdata.udsp.common.provider.model.Base;
-import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.common.api.model.Base;
+import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.util.PropertyUtil;
 
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.model;
 
-import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -13,7 +13,7 @@ import java.util.Map;
 public class Response implements Serializable {
     private List<Map<String, String>> records; // 记录集合
 
-    private Page page;
+    private Page page; // 分页信息
 
     private long consumeTime; // 持续时间
 
@@ -25,11 +25,11 @@ public class Response implements Serializable {
 
     private String consumeId; // 消费ID
 
-    private String errorCode; //错误编码
+    private String errorCode; // 错误编码
 
-    public String responseContent;//返回信息
+    public String responseContent; // 返回信息
 
-    private LinkedHashMap<String,String> returnColumns;//返回字段信息
+    private LinkedHashMap<String, String> returnColumns; // 返回字段信息
 
     public String getConsumeId() {
         return consumeId;

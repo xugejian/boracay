@@ -8,6 +8,7 @@ import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.model.ExternalRequest;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.service.ConsumerService;
+import com.hex.bigdata.udsp.service.LoggingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +27,12 @@ public class SocketRunnable implements Runnable {
     private Socket server;
 
     private ConsumerService consumerService;
+    private LoggingService loggingService;
 
-    public SocketRunnable(Socket server, ConsumerService consumerService) {
+    public SocketRunnable(Socket server, ConsumerService consumerService, LoggingService loggingService) {
         this.server = server;
         this.consumerService = consumerService;
+        this.loggingService = loggingService;
     }
 
     public SocketRunnable() {
@@ -74,21 +77,19 @@ public class SocketRunnable implements Runnable {
     }
 
     public String consume(String massage, String requestIp) {
-        ExternalRequest externalRequest = null;
+        Response response = new Response();
         long bef = System.currentTimeMillis();
         try {
             Map<String, Class> classMap = new HashMap<String, Class>();
             classMap.put(ConsumerConstant.CONSUME_RTS_DATASTREAM, Map.class);
-            externalRequest = JSONUtil.parseJSON2Obj(massage, ExternalRequest.class, classMap);
+            ExternalRequest externalRequest = JSONUtil.parseJSON2Obj(massage, ExternalRequest.class, classMap);
+            externalRequest.setRequestIp(requestIp);
+            response = consumerService.externalConsume(externalRequest);
         } catch (Exception e) {
-            //处理异常，返回respone
-            Response response = new Response();
-            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef,
-                    ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
-            return JSONUtil.parseObj2JSON(response);
+            e.printStackTrace();
+            loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
+                    ErrorCode.ERROR_000005.getValue(), ErrorCode.ERROR_000005.getName() + ":" + e.getMessage(), null);
         }
-        externalRequest.setRequestIp(requestIp);
-        Response response = consumerService.externalConsume(externalRequest);
         return JSONUtil.parseObj2JSON(response);
     }
 

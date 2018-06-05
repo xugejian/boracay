@@ -3,16 +3,36 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common-api/common-api.iml" filepath="$PROJECT_DIR$/common-api/common-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/console/console.iml" filepath="$PROJECT_DIR$/console/console.iml" />
       <module fileurl="file://$PROJECT_DIR$/doc/doc.iml" filepath="$PROJECT_DIR$/doc/doc.iml" />
       <module fileurl="file://$PROJECT_DIR$/im/im.iml" filepath="$PROJECT_DIR$/im/im.iml" />
+      <module fileurl="file://$PROJECT_DIR$/im-convertor-api/im-convertor-api.iml" filepath="$PROJECT_DIR$/im-convertor-api/im-convertor-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/im-convertor-impl/im-convertor-impl.iml" filepath="$PROJECT_DIR$/im-convertor-impl/im-convertor-impl.iml" />
       <module fileurl="file://$PROJECT_DIR$/iq/iq.iml" filepath="$PROJECT_DIR$/iq/iq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iq-provider-api/iq-provider-api.iml" filepath="$PROJECT_DIR$/iq-provider-api/iq-provider-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iq-provider-es/iq-provider-es.iml" filepath="$PROJECT_DIR$/iq-provider-es/iq-provider-es.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iq-provider-hbase/iq-provider-hbase.iml" filepath="$PROJECT_DIR$/iq-provider-hbase/iq-provider-hbase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iq-provider-redis/iq-provider-redis.iml" filepath="$PROJECT_DIR$/iq-provider-redis/iq-provider-redis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iq-provider-solr/iq-provider-solr.iml" filepath="$PROJECT_DIR$/iq-provider-solr/iq-provider-solr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iq-provider-solr_hbase/iq-provider-solr_hbase.iml" filepath="$PROJECT_DIR$/iq-provider-solr_hbase/iq-provider-solr_hbase.iml" />
       <module fileurl="file://$PROJECT_DIR$/mc/mc.iml" filepath="$PROJECT_DIR$/mc/mc.iml" />
       <module fileurl="file://$PROJECT_DIR$/md/md.iml" filepath="$PROJECT_DIR$/md/md.iml" />
       <module fileurl="file://$PROJECT_DIR$/mm/mm.iml" filepath="$PROJECT_DIR$/mm/mm.iml" />
       <module fileurl="file://$PROJECT_DIR$/olq/olq.iml" filepath="$PROJECT_DIR$/olq/olq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-api/olq-provider-api.iml" filepath="$PROJECT_DIR$/olq-provider-api/olq-provider-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-db2/olq-provider-db2.iml" filepath="$PROJECT_DIR$/olq-provider-db2/olq-provider-db2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-hive/olq-provider-hive.iml" filepath="$PROJECT_DIR$/olq-provider-hive/olq-provider-hive.iml" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-impala/olq-provider-impala.iml" filepath="$PROJECT_DIR$/olq-provider-impala/olq-provider-impala.iml" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-inceptor/olq-provider-inceptor.iml" filepath="$PROJECT_DIR$/olq-provider-inceptor/olq-provider-inceptor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-kylin/olq-provider-kylin.iml" filepath="$PROJECT_DIR$/olq-provider-kylin/olq-provider-kylin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-mysql/olq-provider-mysql.iml" filepath="$PROJECT_DIR$/olq-provider-mysql/olq-provider-mysql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-oracle/olq-provider-oracle.iml" filepath="$PROJECT_DIR$/olq-provider-oracle/olq-provider-oracle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-pgsql/olq-provider-pgsql.iml" filepath="$PROJECT_DIR$/olq-provider-pgsql/olq-provider-pgsql.iml" />
       <module fileurl="file://$PROJECT_DIR$/rc/rc.iml" filepath="$PROJECT_DIR$/rc/rc.iml" />
       <module fileurl="file://$PROJECT_DIR$/rts/rts.iml" filepath="$PROJECT_DIR$/rts/rts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rts-executor-api/rts-executor-api.iml" filepath="$PROJECT_DIR$/rts-executor-api/rts-executor-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rts-executor-kafka/rts-executor-kafka.iml" filepath="$PROJECT_DIR$/rts-executor-kafka/rts-executor-kafka.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk/sdk.iml" filepath="$PROJECT_DIR$/sdk/sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/sql/sql.iml" filepath="$PROJECT_DIR$/sql/sql.iml" />
     </modules>

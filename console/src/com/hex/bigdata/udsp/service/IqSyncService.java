@@ -4,27 +4,31 @@ import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.provider.model.Page;
-import com.hex.bigdata.udsp.common.provider.model.Result;
-import com.hex.bigdata.udsp.common.util.CreateFileUtil;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
-import com.hex.bigdata.udsp.common.util.FTPClientConfig;
-import com.hex.bigdata.udsp.common.util.FTPHelper;
+import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Result;
+import com.hex.bigdata.udsp.common.service.InitParamService;
+import com.hex.bigdata.udsp.common.util.*;
+import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.iq.model.IqAppQueryCol;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
 import com.hex.bigdata.udsp.iq.service.IqAppQueryColService;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
+import com.hex.bigdata.udsp.mc.model.Current;
+import com.hex.bigdata.udsp.mc.service.RunQueueService;
+import com.hex.bigdata.udsp.model.Request;
 import com.hex.bigdata.udsp.model.Response;
+import com.hex.bigdata.udsp.rc.model.RcUserService;
+import com.hex.bigdata.udsp.thread.async.IqAsyncCallable;
+import com.hex.bigdata.udsp.thread.sync.IqSyncServiceCallable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 同步交互查询的服务
@@ -34,6 +38,17 @@ public class IqSyncService {
 
     private static Logger logger = LoggerFactory.getLogger(IqSyncService.class);
 
+    private static final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactory() {
+        private AtomicInteger id = new AtomicInteger(0);
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setName("iq-service-" + id.addAndGet(1));
+            return thread;
+        }
+    });
+
     static {
         FTPClientConfig.loadConf("goframe/udsp/udsp.config.properties");
     }
@@ -42,6 +57,70 @@ public class IqSyncService {
     private IqProviderService iqProviderService;
     @Autowired
     private IqAppQueryColService iqAppQueryColService;
+    @Autowired
+    private LoggingService loggingService;
+    @Autowired
+    private InitParamService initParamService;
+    @Autowired
+    private RunQueueService runQueueService;
+
+    /**
+     * 同步运行（添加了超时机制）
+     *
+     * @param consumeRequest
+     * @param bef
+     * @return
+     */
+    public Response syncStartForTimeout(ConsumeRequest consumeRequest, long bef) {
+        Request request = consumeRequest.getRequest();
+        RcUserService rcUserService = consumeRequest.getRcUserService();
+        long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
+                initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
+        Response response = new Response();
+        long runBef = System.currentTimeMillis();
+        try {
+            // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
+            Future<Response> futureTask = executorService.submit(new IqSyncServiceCallable(request.getData(), request.getAppId(), request.getPage()));
+            response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
+        }
+        return response;
+    }
+
+    public void asyncStartForTimeout(ConsumeRequest consumeRequest, long bef,
+                                     String appId, Map<String, String> paraMap, Page page, String fileName) {
+        Current mcCurrent = consumeRequest.getMcCurrent();
+        String consumeId = mcCurrent.getPkId();
+        String userName = consumeRequest.getMcCurrent().getUserName();
+        Request request = consumeRequest.getRequest();
+        RcUserService rcUserService = consumeRequest.getRcUserService();
+        long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
+                initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
+        Response response = new Response();
+        long runBef = System.currentTimeMillis();
+        try {
+            // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
+            Future<IqResponse> iqFutureTask = executorService.submit(new IqAsyncCallable(userName, appId, paraMap, page, fileName));
+            IqResponse iqResponse = iqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
+            response.setResponseContent(iqResponse.getFilePath());
+            loggingService.writeResponseLog(consumeId, bef, runBef, request, response);
+        } catch (TimeoutException e) {
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+        } finally {
+            runQueueService.reduceCurrent(mcCurrent);
+        }
+    }
 
     /**
      * 同步运行

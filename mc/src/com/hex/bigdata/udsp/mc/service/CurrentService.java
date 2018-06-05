@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.mc.service;
 
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.mc.dao.CurrentMapper;
 import com.hex.bigdata.udsp.mc.dto.CurrentView;
 import com.hex.bigdata.udsp.mc.model.Current;
@@ -38,7 +38,7 @@ public class CurrentService extends BaseService {
     /**
      * 本机IP
      */
-    private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
+    private static final String HOST_KEY = HostUtil.getLocalIpFromInetAddress();
 
     @Autowired
     private CurrentMapper mcCurrentMapper;
@@ -222,8 +222,30 @@ public class CurrentService extends BaseService {
         return mcCurrentList;
     }
 
+    /**
+     * 清空运行队列
+     *
+     * @return
+     */
+    public boolean emptyCache() {
+        return this.removeCacheLike(MC_RUN_KEY + ":");
+    }
+
+    /**
+     * 清空等待队列
+     *
+     * @return
+     */
+    public boolean emptyCacheWait() {
+        return this.removeCacheLike(MC_WAIT_KEY + ":");
+    }
+
     public List<Current> selectCacheLike(String key) {
         return mcCurrentMapper.selectLike(key);
+    }
+
+    public boolean removeCacheLike(String key) {
+        return mcCurrentMapper.removeCacheLike(key);
     }
 
     /**

@@ -1,18 +1,22 @@
 package com.hex.bigdata.udsp.service;
 
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.provider.model.Page;
-import com.hex.bigdata.udsp.common.util.CreateFileUtil;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
-import com.hex.bigdata.udsp.common.util.FTPClientConfig;
-import com.hex.bigdata.udsp.common.util.FTPHelper;
+import com.hex.bigdata.udsp.common.service.InitParamService;
+import com.hex.bigdata.udsp.common.util.*;
+import com.hex.bigdata.udsp.dto.ConsumeRequest;
+import com.hex.bigdata.udsp.mc.model.Current;
+import com.hex.bigdata.udsp.mc.service.RunQueueService;
+import com.hex.bigdata.udsp.model.Request;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponseFetch;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
-import com.hex.bigdata.udsp.olq.utils.OlqCommUtil;
+import com.hex.bigdata.udsp.rc.model.RcUserService;
+import com.hex.bigdata.udsp.thread.async.OlqAsyncCallable;
+import com.hex.bigdata.udsp.thread.sync.OlqSyncServiceCallable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +27,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 同步联机查询的服务
@@ -31,12 +37,92 @@ import java.sql.Statement;
 public class OlqSyncService {
     private static Logger logger = LoggerFactory.getLogger(OlqSyncService.class);
 
+    private static final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactory() {
+        private AtomicInteger id = new AtomicInteger(0);
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setName("olq-service-" + id.addAndGet(1));
+            return thread;
+        }
+    });
+
     static {
         FTPClientConfig.loadConf("goframe/udsp/udsp.config.properties");
     }
 
     @Autowired
     private OlqProviderService olqProviderService;
+    @Autowired
+    private LoggingService loggingService;
+    @Autowired
+    private InitParamService initParamService;
+    @Autowired
+    private RunQueueService runQueueService;
+
+    /**
+     * 同步运行（添加了超时机制）
+     *
+     * @param consumeRequest
+     * @param appId
+     * @param sql
+     * @param bef
+     * @return
+     */
+    public Response syncStartForTimeout(ConsumeRequest consumeRequest, String appId, String sql, long bef) {
+        Request request = consumeRequest.getRequest();
+        Current mcCurrent = consumeRequest.getMcCurrent();
+        String consumeId = mcCurrent.getPkId();
+        RcUserService rcUserService = consumeRequest.getRcUserService();
+        long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
+                initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
+        Response response = new Response();
+        long runBef = System.currentTimeMillis();
+        try {
+            // 开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
+            Future<Response> futureTask = executorService.submit(new OlqSyncServiceCallable(consumeId, appId, sql, request.getPage()));
+            response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+        }
+        return response;
+    }
+
+    public void asyncStartForTimeout(ConsumeRequest consumeRequest, long bef,
+                                     String appId, String sql, Page page, String fileName) {
+
+        Current mcCurrent = consumeRequest.getMcCurrent();
+        String consumeId = mcCurrent.getPkId();
+        String userName = consumeRequest.getMcCurrent().getUserName();
+        Request request = consumeRequest.getRequest();
+        RcUserService rcUserService = consumeRequest.getRcUserService();
+        long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
+                initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
+        Response response = new Response();
+        long runBef = System.currentTimeMillis();
+        try {
+            // 开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
+            Future<OlqResponse> olqFutureTask = executorService.submit(new OlqAsyncCallable(consumeId, userName, appId, sql, page, fileName));
+            OlqResponse olqResponse = olqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
+            response.setResponseContent(olqResponse.getFilePath());
+            loggingService.writeResponseLog(consumeId, bef, runBef, request, response);
+        } catch (TimeoutException e) {
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+        } finally {
+            runQueueService.reduceCurrent(mcCurrent);
+        }
+    }
 
     /**
      * 同步运行
@@ -176,7 +262,7 @@ public class OlqSyncService {
                     e.printStackTrace();
                 }
             }
-            OlqCommUtil.removeStatement(consumeId);
+            StatementUtil.removeStatement(consumeId);
         }
 
         response = new OlqResponse();

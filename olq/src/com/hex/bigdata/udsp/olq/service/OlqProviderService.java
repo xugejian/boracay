@@ -2,10 +2,11 @@ package com.hex.bigdata.udsp.olq.service;
 
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
+import com.hex.bigdata.udsp.common.util.DatasourceUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.olq.provider.Provider;
 import com.hex.bigdata.udsp.olq.provider.model.OlqRequest;
@@ -77,7 +78,7 @@ public class OlqProviderService extends BaseService {
     private Datasource getDatasource(String dsId) {
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comPropertiesList = comPropertiesService.selectList(dsId);
-        return new Datasource(comDatasource, comPropertiesList);
+        return DatasourceUtil.getDatasource(comDatasource, comPropertiesList);
     }
 
     /**
@@ -91,18 +92,16 @@ public class OlqProviderService extends BaseService {
         return provider.testDatasource(datasource);
     }
 
-    /**
-     * 得到生产接口的实例
-     *
-     * @param datasource
-     * @return
-     */
     private Provider getProviderImpl(Datasource datasource) {
+        return (Provider) ObjectUtil.newInstance(getImplClass(datasource));
+    }
+
+    private String getImplClass(Datasource datasource) {
         String implClass = datasource.getImplClass();
         if (StringUtils.isBlank(implClass)) {
             GFDict gfDict = gfDictMapper.selectByPrimaryKey(OLQ_IMPL_CLASS, datasource.getType());
             implClass = gfDict.getDictName();
         }
-        return (Provider) ObjectUtil.newInstance(implClass);
+        return implClass;
     }
 }

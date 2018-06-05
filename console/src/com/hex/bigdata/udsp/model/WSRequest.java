@@ -1,12 +1,10 @@
 package com.hex.bigdata.udsp.model;
 
-import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * WebService Request

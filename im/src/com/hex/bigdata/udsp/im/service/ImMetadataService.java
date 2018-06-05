@@ -3,8 +3,8 @@ package com.hex.bigdata.udsp.im.service;
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.DatasourceModel;
 import com.hex.bigdata.udsp.common.model.*;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.*;
@@ -14,8 +14,8 @@ import com.hex.bigdata.udsp.im.dao.ImMetadataMapper;
 import com.hex.bigdata.udsp.im.model.*;
 import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
 import com.hex.bigdata.udsp.im.dto.ImMetadataView;
-import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.model.Metadata;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import com.hex.bigdata.udsp.im.util.ImUtil;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
@@ -53,7 +53,7 @@ public class ImMetadataService extends BaseService {
     @Autowired
     private ComPropertiesService comPropertiesService;
     @Autowired
-    private ImProviderService imProviderService;
+    private ImConvertorService imConvertorService;
 
     private static List<ComExcelParam> comExcelParams;
 
@@ -154,30 +154,30 @@ public class ImMetadataService extends BaseService {
     public List<MetadataCol> getCloumnInfo(String dsId, String tbName) {
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectList(dsId);
-        Datasource datasource = new Datasource(comDatasource, comProperties);
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comProperties);
         Metadata metadata = new Metadata();
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
-        return imProviderService.getCloumnInfo(metadata);
+        return imConvertorService.getCloumnInfo(metadata);
     }
 
     public boolean checkSchema(String dsId, String tbName) throws Exception {
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectList(dsId);
-        Datasource datasource = new Datasource(comDatasource, comProperties);
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comProperties);
         Metadata metadata = new Metadata();
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(tbName);
         metadata.setDatasource(datasource);
-        return imProviderService.checkSchema(metadata);
+        return imConvertorService.checkSchema(metadata);
     }
 
     @Transactional
     public boolean createTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("2"); //状态为已建
-        imProviderService.createSchema(getMetadata(pkId));
+        imConvertorService.createSchema(getMetadata(pkId));
         return imMetadataMapper.update(pkId, imMetadata);
     }
 
@@ -185,7 +185,7 @@ public class ImMetadataService extends BaseService {
     public boolean dropTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
         imMetadata.setStatus("1"); //状态为未建
-        imProviderService.dropSchema(getMetadata(pkId));
+        imConvertorService.dropSchema(getMetadata(pkId));
         return imMetadataMapper.update(pkId, imMetadata);
     }
 
@@ -194,7 +194,7 @@ public class ImMetadataService extends BaseService {
         String dsId = imMetadata.getDsId();
         ComDatasource comDatasource = comDatasourceService.select(dsId);
         List<ComProperties> comProperties = comPropertiesService.selectList(dsId);
-        Datasource datasource = new Datasource(comDatasource, comProperties);
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comProperties);
         List<Property> prop = PropertyUtil.convertToPropertyList(comPropertiesService.selectList(pkId));
         Metadata metadata = new Metadata(prop);
         metadata.setName(imMetadata.getName());

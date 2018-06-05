@@ -12,15 +12,14 @@ import com.hex.bigdata.udsp.model.InnerRequest;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.service.ConsumerService;
 import com.hex.bigdata.udsp.service.DatasourceTestService;
+import com.hex.bigdata.udsp.service.LoggingService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.GFLoginUser;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.model.PageListResult;
 import com.hex.goframe.util.FileUtil;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +30,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.security.auth.login.LoginContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +59,8 @@ public class HttpController extends BaseController {
 
     @Autowired
     private ConsumerService consumerService;
+    @Autowired
+    private LoggingService loggingService;
 
     @Autowired
     private DatasourceTestService dataSourseTestService;
@@ -86,20 +84,18 @@ public class HttpController extends BaseController {
     @RequestMapping(value = {"/consume"}, method = {RequestMethod.POST})
     @ResponseBody
     public Response consume(@RequestBody String json, HttpServletRequest request) {
-        ExternalRequest externalRequest = null;
+        Response response = new Response();
         long bef = System.currentTimeMillis();
         try {
-            externalRequest = jsonToExternalRequest(json);
+            ExternalRequest externalRequest = jsonToExternalRequest(json);
+            externalRequest.setRequestIp(HostUtil.getRealRequestIp(request)); // 获取并设置客户端请求的IP
+            response = consumerService.externalConsume(externalRequest);
         } catch (Exception e) {
-            //处理异常，返回respone
-            Response response = new Response();
-            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef,
-                    ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
-            return response;
+            e.printStackTrace();
+            loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
+                    ErrorCode.ERROR_000005.getValue(), ErrorCode.ERROR_000005.getName() + ":" + e.getMessage(), null);
         }
-        //获取并设置客户端请求的IP
-        externalRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
-        return consumerService.externalConsume(externalRequest);
+        return response;
     }
 
     // --------------------------------------------内部请求----------------------------------------------------
@@ -114,12 +110,12 @@ public class HttpController extends BaseController {
     public PageListResult datagridConsume(InnerRequest innerRequest, Page page, HttpServletRequest request) {
         boolean status = true;
         String message = "执行成功";
-        com.hex.bigdata.udsp.common.provider.model.Page p = new com.hex.bigdata.udsp.common.provider.model.Page();
+        com.hex.bigdata.udsp.common.api.model.Page p = new com.hex.bigdata.udsp.common.api.model.Page();
         p.setPageIndex(page.getPageIndex());
         p.setPageSize(page.getPageSize());
         innerRequest.setPage(p);
         //获取并设置客户端请求的IP
-        innerRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
+        innerRequest.setRequestIp(HostUtil.getRealRequestIp(request));
         PageListResult pageListResult = null;
         try {
             Response response = getInnerConsume(innerRequest);
@@ -158,7 +154,7 @@ public class HttpController extends BaseController {
     public Response innerConsume(@RequestBody String json, HttpServletRequest request) {
         InnerRequest innerRequest = jsonToInnerRequest(json);
         //获取并设置客户端请求的IP
-        innerRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
+        innerRequest.setRequestIp(HostUtil.getRealRequestIp(request));
         return getInnerConsume(innerRequest);
     }
 
@@ -174,7 +170,7 @@ public class HttpController extends BaseController {
         boolean status = true;
         String message = "下载成功";
         //获取并设置客户端请求的IP
-        innerRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
+        innerRequest.setRequestIp(HostUtil.getRealRequestIp(request));
         if (!ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(innerRequest.getType())
                 || !ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(innerRequest.getEntity())) {
             return new MessageResult(false, "不为异步的start请求");

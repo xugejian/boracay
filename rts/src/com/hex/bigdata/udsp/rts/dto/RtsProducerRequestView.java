@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.rts.dto;
 
-import com.hex.bigdata.udsp.rts.provider.model.Column;
+import com.hex.bigdata.udsp.rts.executor.model.Column;
 
 import java.io.Serializable;
 import java.text.DateFormat;

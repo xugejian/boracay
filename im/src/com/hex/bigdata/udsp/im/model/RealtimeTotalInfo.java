@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.im.model;
 
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MqModel;
+import com.hex.bigdata.udsp.im.converter.impl.model.modeling.MqModel;
 
 import java.io.Serializable;
 import java.util.Date;

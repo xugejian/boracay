@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.mc.util;
 
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
@@ -25,34 +25,21 @@ public class McCommonUtil {
      * @return
      */
     public static Current getMcCurrent(Request request, int maxCurrentNum) {
-        synchronized (RunQueueService.class) {
-            Current mcCurrent = new Current();
-            String consumeId = UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
-            mcCurrent.setStartTime(format.format(new Date()));
-            mcCurrent.setServiceName(request.getServiceName());
-            mcCurrent.setUserName(request.getUdspUser());
-            mcCurrent.setAppType(request.getAppType());
-            mcCurrent.setAppName(request.getAppName());
-            mcCurrent.setRequestType(request.getRequestType());
-            mcCurrent.setPid(consumeId);
-            mcCurrent.setAppId(request.getAppId());
-            mcCurrent.setSyncType(request.getType().toUpperCase());
-            mcCurrent.setPkId(consumeId);
-            mcCurrent.setMaxCurrentNum(maxCurrentNum);
-            String requestContent = "";
-            if (ConsumerConstant.CONSUMER_REQUEST_TYPE_INNER.equalsIgnoreCase(request.getRequestType())) { // 内部请求
-                InnerRequest innerRequest = new InnerRequest();
-                ObjectUtil.copyObject(request, innerRequest);
-                requestContent = JSONUtil.parseObj2JSON(innerRequest);
-            } else if (ConsumerConstant.CONSUMER_REQUEST_TYPE_OUTER.equalsIgnoreCase(request.getRequestType())) { // 外部请求
-                ExternalRequest externalRequest = new ExternalRequest();
-                ObjectUtil.copyObject(request, externalRequest);
-                requestContent = JSONUtil.parseObj2JSON(externalRequest);
-            } else {
-                requestContent = JSONUtil.parseObj2JSON(request);
-            }
-            mcCurrent.setRequestContent(requestContent);
-            return mcCurrent;
-        }
+        Current mcCurrent = new Current();
+        String requestContent = JSONUtil.parseObj2JSON(request);
+        String consumeId = HostUtil.getConsumeId(requestContent);
+        mcCurrent.setStartTime(format.format(new Date()));
+        mcCurrent.setServiceName(request.getServiceName());
+        mcCurrent.setUserName(request.getUdspUser());
+        mcCurrent.setAppType(request.getAppType());
+        mcCurrent.setAppName(request.getAppName());
+        mcCurrent.setRequestType(request.getRequestType());
+        mcCurrent.setPid(consumeId);
+        mcCurrent.setAppId(request.getAppId());
+        mcCurrent.setSyncType(request.getType().toUpperCase());
+        mcCurrent.setPkId(consumeId);
+        mcCurrent.setMaxCurrentNum(maxCurrentNum);
+        mcCurrent.setRequestContent(requestContent);
+        return mcCurrent;
     }
 }
