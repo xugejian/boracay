@@ -1,7 +1,8 @@
-package com.hex.bigdata.udsp.im.provider.impl.model.metadata;
+package com.hex.bigdata.udsp.im.converter.impl.model.metadata;
 
-import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.provider.model.Metadata;
+
+import com.hex.bigdata.udsp.common.api.model.Property;
+import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

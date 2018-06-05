@@ -10,6 +10,7 @@ import com.hex.bigdata.udsp.im.converter.impl.model.modeling.SolrModel;
 import com.hex.bigdata.udsp.im.converter.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.SolrUtil;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.TblProperty;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.SolrWrapper;

@@ -1,6 +1,6 @@
-package com.hex.bigdata.udsp.im.provider.impl.model.datasource;
+package com.hex.bigdata.udsp.im.converter.impl.model.datasource;
 
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;

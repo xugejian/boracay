@@ -1,30 +1,29 @@
-package com.hex.bigdata.udsp.im.provider.impl;
+package com.hex.bigdata.udsp.im.converter.impl;
 
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.HiveDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KuduDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.metadata.KuduMetadata;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.KuduModel;
-import com.hex.bigdata.udsp.im.provider.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.JdbcUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.KuduUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
-import com.hex.bigdata.udsp.im.provider.impl.wrapper.KuduWrapper;
-import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.converter.impl.model.datasource.KuduDatasource;
+import com.hex.bigdata.udsp.im.converter.impl.model.metadata.KuduMetadata;
+import com.hex.bigdata.udsp.im.converter.impl.model.modeling.KuduModel;
+import com.hex.bigdata.udsp.im.converter.impl.util.HiveSqlUtil;
+import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.converter.impl.util.KuduUtil;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.TblProperty;
+import com.hex.bigdata.udsp.im.converter.impl.wrapper.KuduWrapper;
+import com.hex.bigdata.udsp.im.converter.model.Metadata;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.model.Model;
+import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import org.apache.kudu.client.KuduClient;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * Created by PC on 2018/2/26.
  */
-@Component("com.hex.bigdata.udsp.im.provider.impl.KuduProvider")
-public class KuduProvider extends KuduWrapper {
+//@Component("com.hex.bigdata.udsp.im.convertor.impl.KuduConvertor")
+public class KuduConvertor extends KuduWrapper {
 
     @Override
     public boolean testDatasource(Datasource datasource) {

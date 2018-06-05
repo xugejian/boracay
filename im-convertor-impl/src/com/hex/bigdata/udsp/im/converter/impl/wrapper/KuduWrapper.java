@@ -1,19 +1,19 @@
-package com.hex.bigdata.udsp.im.provider.impl.wrapper;
+package com.hex.bigdata.udsp.im.converter.impl.wrapper;
 
-import com.hex.bigdata.udsp.im.provider.BatchSourceProvider;
-import com.hex.bigdata.udsp.im.provider.BatchTargetProvider;
-import com.hex.bigdata.udsp.im.provider.RealtimeTargetProvider;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KuduDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.metadata.KuduMetadata;
-import com.hex.bigdata.udsp.im.provider.impl.util.KuduUtil;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.TableColumn;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.TblProperty;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.WhereProperty;
-import com.hex.bigdata.udsp.im.provider.model.Metadata;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
-import org.apache.commons.lang.StringUtils;
+
+import com.hex.bigdata.udsp.im.converter.BatchSourceConvertor;
+import com.hex.bigdata.udsp.im.converter.BatchTargetConvertor;
+import com.hex.bigdata.udsp.im.converter.RealtimeTargetConvertor;
+import com.hex.bigdata.udsp.im.converter.impl.model.datasource.KuduDatasource;
+import com.hex.bigdata.udsp.im.converter.impl.model.metadata.KuduMetadata;
+import com.hex.bigdata.udsp.im.converter.impl.util.KuduUtil;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.TblProperty;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
+import com.hex.bigdata.udsp.im.converter.model.Metadata;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import org.apache.kudu.ColumnSchema;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by PC on 2018/2/26.
  */
-public abstract class KuduWrapper extends Wrapper implements BatchSourceProvider, BatchTargetProvider, RealtimeTargetProvider {
+public abstract class KuduWrapper extends Wrapper implements BatchSourceConvertor, BatchTargetConvertor, RealtimeTargetConvertor {
     private static Logger logger = LogManager.getLogger(KuduWrapper.class);
 
     protected static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.kudu.KuduStorageHandler";

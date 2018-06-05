@@ -1,11 +1,11 @@
-package com.hex.bigdata.udsp.im.provider.impl.util;
+package com.hex.bigdata.udsp.im.converter.impl.util;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
-import com.hex.bigdata.udsp.im.provider.impl.factory.KuduClientPoolFactory;
-import com.hex.bigdata.udsp.im.provider.impl.model.datasource.KuduDatasource;
-import com.hex.bigdata.udsp.im.provider.impl.model.metadata.KuduMetadata;
-import com.hex.bigdata.udsp.im.provider.impl.util.model.ValueColumn;
-import com.hex.bigdata.udsp.im.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.impl.factory.KuduClientPoolFactory;
+import com.hex.bigdata.udsp.im.converter.impl.model.datasource.KuduDatasource;
+import com.hex.bigdata.udsp.im.converter.impl.model.metadata.KuduMetadata;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.kudu.ColumnSchema;
 import org.apache.kudu.Schema;

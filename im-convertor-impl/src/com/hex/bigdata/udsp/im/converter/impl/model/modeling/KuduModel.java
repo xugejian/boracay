@@ -1,8 +1,9 @@
-package com.hex.bigdata.udsp.im.provider.impl.model.modeling;
+package com.hex.bigdata.udsp.im.converter.impl.model.modeling;
 
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Property;
-import com.hex.bigdata.udsp.im.provider.model.Model;
+
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Property;
+import com.hex.bigdata.udsp.im.converter.model.Model;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
