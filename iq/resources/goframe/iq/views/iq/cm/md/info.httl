@@ -155,6 +155,57 @@ ${extends("/goframe/function_layout.httl")}
             </div>
         </fieldset>
 
+        <fieldset style="border:dotted 1px #227EA0;">
+            <legend><span style="font-weight: bold">配置栏</span></legend>
+            <div style="padding: 5px 5px 0px 5px;">
+                <div class="nui-toolbar" style="border-bottom: 0;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="text-align: left;">
+                                <b>配置参数</b><font color="red">（注：不需要的配置参数可以删除）</font>
+                            </td>
+                            <td style="text-align: right;">
+                                <a class="nui-button" iconCls="icon-add" onclick="add3" enabled="false">添加</a>
+                                <a class="nui-button" iconCls="icon-add" onclick="adds3" enabled="false">批量添加</a>
+                                <a class="nui-button" iconCls="icon-remove" onclick="remove3" enabled="false"
+                                   id="remove3">删除</a>
+                                <span class="separator"></span>
+                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp3" enabled="false"
+                                   id="moveUp3">上移</a>
+                                <a class="nui-button" iconCls="icon-download" onclick="moveDown3" enabled="false"
+                                   id="moveDown3">下移</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="nui-fit" style="height:150px; padding: 0px 5px 0px 5px;">
+                <div id="datagrid3" class="nui-datagrid" style="width:100%; height: 100%;"
+                     url="${basePath}/com/props/select/${pkId}"
+                     idField="pkId" multiSelect="true" allowCellEdit="false" allowCellSelect="false" sortMode="client"
+                     showPager="false" editNextOnEnterKey="false" editNextRowCell="false">
+                    <div property="columns">
+                        <div type="checkcolumn" headerAlign="center" width="5"></div>
+                        <div type="indexcolumn" headerAlign="center" width="8">位置</div>
+                        <div name="name" field="name" headerAlign="center" allowSort="true"
+                             width="30">名称<font color="#FF0000">（必填）</font>
+                            <input name="propsName" property="editor" class="nui-combobox"
+                                   textField="dictId" valueField="dictId" allowInput="true"
+                                   onbeforeshowpopup="propsNameBeforeShowPopup" vtype="maxLength:256" required="true"
+                                   onvaluechanged="propsNameChanged" onvalidation="propsNameValidation"/>
+                        </div>
+                        <div name="value" field="value" headerAlign="center" allowSort="true" width="30">数值<font
+                                color="#FF0000">（必填）</font>
+                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                        </div>
+                        <div name="describe" field="describe" headerAlign="center" allowSort="true" width="40">说明
+                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
         <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
             <a class="nui-button" style="" iconCls="icon-cancel" onclick="cancel">返回</a>
         </div>
@@ -165,6 +216,7 @@ ${extends("/goframe/function_layout.httl")}
     var form1;
     var grid1;
     var grid2;
+    var grid3;
     var dsIdObj;
 
     /**
@@ -175,10 +227,12 @@ ${extends("/goframe/function_layout.httl")}
         form1 = new nui.Form("#form1");
         grid1 = nui.get("datagrid1");
         grid2 = nui.get("datagrid2");
+        grid3 = nui.get("datagrid3");
         dsIdObj = nui.get("dsId");
         setData();
         grid1.load();
         grid2.load();
+        grid3.load();
     });
 
     /**

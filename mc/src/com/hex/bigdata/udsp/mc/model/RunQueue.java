@@ -27,24 +27,14 @@ public class RunQueue implements Serializable {
     private String userId;
 
     /**
-     * 同步最大并发数
-     */
-    private int maxSyncNum;
-
-    /**
      * 异步最大并发数
      */
-    private int maxAsyncNum;
+    private int maxNum;
 
     /**
-     * 当前同步并发数
+     * 当前并发数
      */
-    private int currentSyncNum;
-
-    /**
-     * 当前异步并发数
-     */
-    private int currentAsyncNum;
+    private int currentNum;
 
     /**
      * SYNC,同步
@@ -76,43 +66,27 @@ public class RunQueue implements Serializable {
         this.userId = userId;
     }
 
-    public int getMaxSyncNum() {
-        return maxSyncNum;
-    }
-
-    public void setMaxSyncNum(int maxSyncNum) {
-        this.maxSyncNum = maxSyncNum;
-    }
-
-    public int getMaxAsyncNum() {
-        return maxAsyncNum;
-    }
-
-    public void setMaxAsyncNum(int maxAsyncNum) {
-        this.maxAsyncNum = maxAsyncNum;
-    }
-
-    public int getCurrentSyncNum() {
-        return currentSyncNum;
-    }
-
-    public void setCurrentSyncNum(int currentSyncNum) {
-        this.currentSyncNum = currentSyncNum;
-    }
-
-    public int getCurrentAsyncNum() {
-        return currentAsyncNum;
-    }
-
-    public void setCurrentAsyncNum(int currentAsyncNum) {
-        this.currentAsyncNum = currentAsyncNum;
-    }
-
     public String getSyncType() {
         return syncType;
     }
 
     public void setSyncType(String syncType) {
         this.syncType = syncType;
+    }
+
+    public int getMaxNum() {
+        return maxNum;
+    }
+
+    public void setMaxNum(int maxNum) {
+        this.maxNum = maxNum;
+    }
+
+    public int getCurrentNum() {
+        return currentNum;
+    }
+
+    public void setCurrentNum(int currentNum) {
+        this.currentNum = currentNum;
     }
 }

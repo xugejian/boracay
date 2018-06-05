@@ -1,18 +1,16 @@
 package com.hex.bigdata.udsp.im.service;
 
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.im.constant.BatchStatus;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.dao.BatchMapper;
 import com.hex.bigdata.udsp.im.dto.BatchInfoDto;
 import com.hex.bigdata.udsp.im.dto.BatchInfoView;
 import com.hex.bigdata.udsp.im.model.BatchInfo;
-import com.hex.bigdata.udsp.im.provider.impl.util.HiveJdbcUtil;
-import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.provider.model.ModelFilterCol;
-import com.hex.bigdata.udsp.im.provider.model.ModelMapping;
+import com.hex.bigdata.udsp.im.converter.impl.util.HiveJdbcUtil;
+import com.hex.bigdata.udsp.im.converter.model.Model;
+import com.hex.bigdata.udsp.im.converter.model.ModelFilterCol;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.model.PageListResult;
 import httl.util.StringUtils;
@@ -33,19 +31,19 @@ public class BatchJobService {
     private static Logger logger = LogManager.getLogger(BatchJobService.class);
     private static final String BATCH_INFO_KEY = "BATCH";
     private static final String KEY_DELIMITER = ":";
-    private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
+    private static final String HOST_KEY = HostUtil.getLocalIpFromInetAddress();
     private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
 
     @Autowired
     private BatchMapper batchMapper;
     @Autowired
-    private ImProviderService imProviderService;
+    private ImConvertorService imConvertorService;
 
     /**
      * 启动
      */
     public void start(Model model) throws Exception {
-        String id = UdspCommonUtil.getConsumeId(model.getId());
+        String id = HostUtil.getConsumeId(model.getId());
         String tDsType = model.getTargetMetadata().getDatasource().getType();
         if (DatasourceType.SOLR_HBASE.getValue().equals(tDsType)) {
             String hbaseId = "HBASE_" + id;
@@ -53,7 +51,7 @@ public class BatchJobService {
             readyBuild(hbaseId, model);
             readyBuild(solrId, model);
             try {
-                imProviderService.buildBatch(id, model);
+                imConvertorService.buildBatch(id, model);
                 buildSuccess(hbaseId);
                 buildSuccess(solrId);
             } catch (Exception e) {
@@ -64,7 +62,7 @@ public class BatchJobService {
         } else {
             readyBuild(id, model);
             try {
-                imProviderService.buildBatch(id, model);
+                imConvertorService.buildBatch(id, model);
                 buildSuccess(id);
             } catch (Exception e) {
                 buildFail(id, e.getMessage());

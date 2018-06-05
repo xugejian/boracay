@@ -14,8 +14,11 @@
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="library" name="jdbc" level="project" />
     <orderEntry type="library" name="poi" level="project" />
-    <orderEntry type="library" name="kafka" level="project" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="rc" />
+    <orderEntry type="module" module-name="common-api" />
+    <orderEntry type="module" module-name="rts-executor-api" />
+    <orderEntry type="library" name="kafka" level="project" />
+    <orderEntry type="module" module-name="rts-executor-kafka" />
   </component>
 </module>

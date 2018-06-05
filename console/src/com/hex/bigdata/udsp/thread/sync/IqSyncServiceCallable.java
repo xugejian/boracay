@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.thread.sync;
 
-import com.hex.bigdata.udsp.common.provider.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.service.IqSyncService;
 import com.hex.goframe.util.WebApplicationContextUtil;
@@ -8,6 +8,11 @@ import com.hex.goframe.util.WebApplicationContextUtil;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+/**
+ * 联机查询同步服务的Callable异步类
+ *
+ * @param <T>
+ */
 public class IqSyncServiceCallable<T> implements Callable<Response> {
 
     private IqSyncService iqSyncService;

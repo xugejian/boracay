@@ -19,8 +19,10 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                     <th class="nui-form-label"><label for="mdId">元数据：</label></th>
                     <td>
-                        <div id="mdId" class="nui-combobox" style="width:97%;"  popupWidth="400" textField="name" valueField="pkId"
-                             url="${basePath}/iq/md/select" dataField="data" name="mdId" multiSelect="false" allowInput="true"
+                        <div id="mdId" class="nui-combobox" style="width:97%;" popupWidth="400" textField="name"
+                             valueField="pkId"
+                             url="${basePath}/iq/md/select" dataField="data" name="mdId" multiSelect="false"
+                             allowInput="true"
                              required="true" onvaluechanged="mdIdChanged">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
@@ -31,12 +33,12 @@ ${extends("/goframe/function_layout.httl")}
                 </tr>
                 <tr>
                     <th class="nui-form-label"><label for="describe">说明：</label></th>
-                    <td >
+                    <td>
                         <input id="describe" name="describe" class="nui-textbox" style="width:99%" required="true"
                                vtype="maxLength:256"/>
                     </td>
                     <th class="nui-form-label"><label for="maxNum">最大返回数：</label></th>
-                    <td >
+                    <td>
                         <input id="maxNum" name="maxNum" class="nui-textbox" style="width:99%"
                                vtype="maxLength:10;int"/>
                     </td>
@@ -80,7 +82,7 @@ ${extends("/goframe/function_layout.httl")}
                 <div id="datagrid1" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
                      idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
                      showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected1"
-                     url="${basePath}/iq/app/query/col/selectByAppId/${pkId}" >
+                     url="${basePath}/iq/app/query/col/selectByAppId/${pkId}">
                     <div property="columns">
                         <div type="checkcolumn" headerAlign="center" width="5"></div>
                         <div type="indexcolumn" headerAlign="center" width="8">位置</div>
@@ -89,7 +91,7 @@ ${extends("/goframe/function_layout.httl")}
                             <input name="colName" property="editor" class="nui-combobox"
                                    textField="name" valueField="name" allowInput="true" dataField="data"
                                    onbeforeshowpopup="colNameBeforeShowPopup1" vtype="maxLength:64" required="true"
-                                   onvaluechanged="colNameChanged1" />
+                                   onvaluechanged="colNameChanged1"/>
                         </div>
                         <div field="describe" headerAlign="center" allowSort="true" width="20">说明<font color="#FF0000">（必填）</font>
                             <input property="editor" class="nui-textbox" vtype="maxLength:256"/>
@@ -112,13 +114,15 @@ ${extends("/goframe/function_layout.httl")}
                             <input property="editor" class="nui-textbox" vtype="maxLength:64"/>
                         </div>
                         <div field="label" headerAlign="center" allowSort="true" width="15">别名
-                            <input property="editor" class="nui-textbox" vtype="maxLength:64" onvalidation="colLabelValidation1"/>
+                            <input property="editor" class="nui-textbox" vtype="maxLength:64"
+                                   onvalidation="colLabelValidation1"/>
                         </div>
-                        <div type="checkboxcolumn"  field="isNeed" trueValue="0" falseValue="1"
+                        <div type="checkboxcolumn" field="isNeed" trueValue="0" falseValue="1"
                              headerAlign="center" allowSort="true" width="8">必填
                         </div>
-                        <div type="checkboxcolumn"  field="isOfferOut" trueValue="0" falseValue="1"
-                             headerAlign="center" allowSort="true" width="8">开放</div>
+                        <div type="checkboxcolumn" field="isOfferOut" trueValue="0" falseValue="1"
+                             headerAlign="center" allowSort="true" width="8">开放
+                        </div>
                     </div>
                 </div>
             </div>
@@ -149,7 +153,7 @@ ${extends("/goframe/function_layout.httl")}
                 <div id="datagrid2" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
                      idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
                      showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected2"
-                     url="${basePath}/iq/app/return/col/selectByAppId/${pkId}" >
+                     url="${basePath}/iq/app/return/col/selectByAppId/${pkId}">
                     <div property="columns">
                         <div type="checkcolumn" headerAlign="center" width="5"></div>
                         <div type="indexcolumn" headerAlign="center" width="8">位置</div>
@@ -178,7 +182,8 @@ ${extends("/goframe/function_layout.httl")}
                                    dictTypeId="IQ_APP_RETURN_COL_STATS"/>
                         </div>
                         <div field="label" headerAlign="center" allowSort="true" width="30">别名
-                            <input property="editor" class="nui-textbox" vtype="maxLength:64" onvalidation="colLabelValidation2"/>
+                            <input property="editor" class="nui-textbox" vtype="maxLength:64"
+                                   onvalidation="colLabelValidation2"/>
                         </div>
                     </div>
                 </div>
@@ -210,7 +215,7 @@ ${extends("/goframe/function_layout.httl")}
                 <div id="datagrid3" class="nui-datagrid" style="width:100%; height: 100%;" dataField="data"
                      idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
                      showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected3"
-                     url="${basePath}/iq/app/order/col/selectByAppId/${pkId}" >
+                     url="${basePath}/iq/app/order/col/selectByAppId/${pkId}">
                     <div property="columns">
                         <div type="checkcolumn" headerAlign="center" width="5"></div>
                         <div type="indexcolumn" headerAlign="center" width="8">位置</div>
@@ -240,8 +245,57 @@ ${extends("/goframe/function_layout.httl")}
 
         </fieldset>
 
+        <fieldset style="border:dotted 1px #227EA0;">
+            <legend><span style="font-weight: bold">配置栏</span></legend>
+            <div style="padding: 5px 5px 0px 5px;">
+                <div class="nui-toolbar" style="border-bottom: 0;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="text-align: left;">
+                                <b>配置参数</b><font color="red">（注：不需要的配置参数可以删除）</font>
+                            </td>
+                            <td style="text-align: right;">
+                                <a class="nui-button" iconCls="icon-add" onclick="add4">添加</a>
+                                <a class="nui-button" iconCls="icon-add" onclick="adds4">批量添加</a>
+                                <a class="nui-button" iconCls="icon-remove" onclick="remove4" id="remove4">删除</a>
+                                <span class="separator"></span>
+                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp4" id="moveUp4">上移</a>
+                                <a class="nui-button" iconCls="icon-download" onclick="moveDown4" id="moveDown4">下移</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="nui-fit" style="height:150px; padding: 0px 5px 0px 5px;">
+                <div id="datagrid4" class="nui-datagrid" style="width:100%; height: 100%;"
+                     url="${basePath}/com/props/select/${pkId}"
+                     idField="pkId" multiSelect="true" allowCellEdit="true" allowCellSelect="true" sortMode="client"
+                     showPager="false" editNextOnEnterKey="true" editNextRowCell="true" onselectionchanged="selected4">
+                    <div property="columns">
+                        <div type="checkcolumn" headerAlign="center" width="5"></div>
+                        <div type="indexcolumn" headerAlign="center" width="8">位置</div>
+                        <div name="name" field="name" headerAlign="center" allowSort="true"
+                             width="30">名称<font color="#FF0000">（必填）</font>
+                            <input name="propsName" property="editor" class="nui-combobox"
+                                   textField="dictId" valueField="dictId" allowInput="true"
+                                   onbeforeshowpopup="propsNameBeforeShowPopup" vtype="maxLength:256" required="true"
+                                   onvaluechanged="propsNameChanged" onvalidation="propsNameValidation"/>
+                        </div>
+                        <div name="value" field="value" headerAlign="center" allowSort="true" width="30">数值<font
+                                color="#FF0000">（必填）</font>
+                            <input property="editor" class="nui-textarea" vtype="maxLength:4000" required="true"/>
+                            <!--<input property="editor" class="nui-textbox" vtype="maxLength:4000" required="true"/>-->
+                        </div>
+                        <div name="describe" field="describe" headerAlign="center" allowSort="true" width="40">说明
+                            <input property="editor" class="nui-textbox" vtype="maxLength:4000"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
         <div class="nui-toolbar" style="text-align:center;padding-top:10px;padding-bottom:5px;" borderStyle="border:0;">
-            <a class="nui-button" style="" iconCls="icon-save" onclick="save" id="saveButton" >保存</a>
+            <a class="nui-button" style="" iconCls="icon-save" onclick="save" id="saveButton">保存</a>
             <span style="display:inline-block;width:25px;"></span>
             <a class="nui-button" style="" iconCls="icon-cancel" onclick="cancel">返回</a>
         </div>
@@ -253,6 +307,7 @@ ${extends("/goframe/function_layout.httl")}
     var grid1;
     var grid2;
     var grid3;
+    var grid4;
     var mdIdObj;
     var originName;
 
@@ -265,26 +320,28 @@ ${extends("/goframe/function_layout.httl")}
         grid1 = nui.get("datagrid1");
         grid2 = nui.get("datagrid2");
         grid3 = nui.get("datagrid3");
+        grid4 = nui.get("datagrid4");
         mdIdObj = nui.get("mdId");
         setData();
         grid1.load();
         grid2.load();
         grid3.load();
+        grid4.load();
     });
 
     /**
      * 读取详情
      */
-    function setData(){
+    function setData() {
         $.ajax({
-            url:"${basePath}/iq/app/select/${pkId}",
-            type:'POST',
-            data:null,
-            cache:false,
-            contentType:'application/json',
-            success:function(result){
+            url: "${basePath}/iq/app/select/${pkId}",
+            type: 'POST',
+            data: null,
+            cache: false,
+            contentType: 'application/json',
+            success: function (result) {
                 //console.warn(result);
-                if(result.status == true) {
+                if (result.status == true) {
                     //var data = nui.decode(result.data);
                     form1.setData(result.data);
                     form1.setChanged(false);
@@ -345,31 +402,62 @@ ${extends("/goframe/function_layout.httl")}
             nui.get("moveDown3").enable();
         }
     }
+    function selected4(e) {
+        var rows = e.selecteds;
+        if (rows.length == 1) {
+            nui.get("remove4").enable();
+            nui.get("moveUp4").enable();
+            nui.get("moveDown4").enable();
+        } else if (rows.length == 0) {
+            nui.get("remove4").disable();
+            nui.get("moveUp4").disable();
+            nui.get("moveDown4").disable();
+        } else {
+            nui.get("remove4").enable();
+            nui.get("moveUp4").enable();
+            nui.get("moveDown4").enable();
+        }
+    }
 
     /**
      * 下拉框弹出前发生
      */
     var count1 = 0;
-    function colNameBeforeShowPopup1(e){
+    function colNameBeforeShowPopup1(e) {
         // --下拉选项变化--
-        if(count1 == 0) {
-            e.source.load("${basePath}/iq/md/col/selectQueryColList/" + mdIdObj.value);
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            nui.alert("请选择元数据！");
+            return;
+        }
+        if (count1 == 0) {
+            e.source.load("${basePath}/iq/md/col/selectQueryColList/" + mdId);
             count1++;
         }
     }
     var count2 = 0;
-    function colNameBeforeShowPopup2(e){
+    function colNameBeforeShowPopup2(e) {
         // --下拉选项变化--
-        if(count2 == 0) {
-            e.source.load("${basePath}/iq/md/col/selectReturnColList/" + mdIdObj.value);
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            nui.alert("请选择元数据！");
+            return;
+        }
+        if (count2 == 0) {
+            e.source.load("${basePath}/iq/md/col/selectReturnColList/" + mdId);
             count2++;
         }
     }
     var count3 = 0;
-    function colNameBeforeShowPopup3(e){
+    function colNameBeforeShowPopup3(e) {
         // --下拉选项变化--
-        if(count3 == 0) {
-            e.source.load("${basePath}/iq/md/col/selectReturnColList/" + mdIdObj.value);
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            nui.alert("请选择元数据！");
+            return;
+        }
+        if (count3 == 0) {
+            e.source.load("${basePath}/iq/md/col/selectReturnColList/" + mdId);
             count3++;
         }
     }
@@ -382,7 +470,12 @@ ${extends("/goframe/function_layout.httl")}
         count1 = 0;
         // --字段信息变化--
         grid1.clearRows();
-        $.post("${basePath}/iq/md/col/selectQueryColList/" + mdIdObj.value, {}, function (result) {
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            nui.alert("请选择元数据！");
+            return;
+        }
+        $.post("${basePath}/iq/md/col/selectQueryColList/" + mdId, {}, function (result) {
             var data = result.data;
             var cols = [];
             if (data.length > 0) {
@@ -391,7 +484,7 @@ ${extends("/goframe/function_layout.httl")}
                         "name": data[i].name,
                         "describe": data[i].describe,
                         "length": data[i].length,
-                        "note":data[i].note,
+                        "note": data[i].note,
                         "label": data[i].name,
                         "type": data[i].colType,
                         "operator": "==",
@@ -407,7 +500,12 @@ ${extends("/goframe/function_layout.httl")}
         count2 = 0;
         // --字段信息变化--
         grid2.clearRows();
-        $.post("${basePath}/iq/md/col/selectReturnColList/" + mdIdObj.value, {}, function (result) {
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            nui.alert("请选择元数据！");
+            return;
+        }
+        $.post("${basePath}/iq/md/col/selectReturnColList/" + mdId, {}, function (result) {
             var data = result.data;
             var cols = [];
             if (data.length > 0) {
@@ -416,7 +514,7 @@ ${extends("/goframe/function_layout.httl")}
                         "name": data[i].name,
                         "describe": data[i].describe,
                         "length": data[i].length,
-                        "note":data[i].note,
+                        "note": data[i].note,
                         "label": data[i].name,
                         "type": data[i].colType,
                         "stats": "none"
@@ -428,6 +526,29 @@ ${extends("/goframe/function_layout.httl")}
 
         //--------------------------------排序字段-----------------------------------
         count3 = 0;
+
+        //--------------------------------配置参数-----------------------------------
+        count4 = 0;
+        // --配置信息变化--
+        grid4.clearRows();
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            nui.alert("请选择元数据！");
+            return;
+        }
+        $.post("${basePath}/goframe/dict/getDictData?dictTypeId=IQ_APP_PROPS_" + getDsByMdId(mdId).type, {}, function (data) {
+            var props = [];
+            if (data.length > 0) {
+                for (var i = 0, len = data.length; i < len; i++) {
+                    props.push({
+                        "name": data[i].dictId,
+                        "value": data[i].filter,
+                        "describe": data[i].dictName
+                    });
+                }
+            }
+            grid4.addRows(props);
+        });
     }
 
     /**
@@ -478,7 +599,7 @@ ${extends("/goframe/function_layout.httl")}
                 if (e.value == rows[i].name) {
                     count++;
                 }
-                if(count == 1){
+                if (count == 1) {
                     e.errorText = "名称已存在";
                     e.isValid = false;
                     return false;
@@ -494,7 +615,7 @@ ${extends("/goframe/function_layout.httl")}
                 if (e.value == rows[i].name) {
                     count++;
                 }
-                if(count == 1){
+                if (count == 1) {
                     e.errorText = "名称已存在";
                     e.isValid = false;
                     return false;
@@ -514,7 +635,7 @@ ${extends("/goframe/function_layout.httl")}
                 if (e.value == rows[i].label) {
                     count++;
                 }
-                if(count == 1){
+                if (count == 1) {
                     e.errorText = "别名已存在";
                     e.isValid = false;
                     return false;
@@ -530,7 +651,7 @@ ${extends("/goframe/function_layout.httl")}
                 if (e.value == rows[i].label) {
                     count++;
                 }
-                if(count == 1){
+                if (count == 1) {
                     e.errorText = "别名已存在";
                     e.isValid = false;
                     return false;
@@ -560,13 +681,24 @@ ${extends("/goframe/function_layout.httl")}
         var newRow = {};
         grid3.addRow(newRow, length);
     }
+    function add4() {
+        var rows = grid4.getData(true, true);
+        var length = rows.length;
+        var newRow = {};
+        grid4.addRow(newRow, length);
+    }
 
     /**
      * 批量添加
      */
     function adds1() {
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            nui.alert("请选择元数据！");
+            return;
+        }
         nui.open({
-            url: "${basePath}/goframe/p/iq.cm.app.multi?mdId=" + mdIdObj.value + "&type=1",
+            url: "${basePath}/goframe/p/iq.cm.app.multi?mdId=" + mdId + "&type=1",
             title: "批量添加",
             width: 650,
             height: 380,
@@ -592,8 +724,13 @@ ${extends("/goframe/function_layout.httl")}
         });
     }
     function adds2() {
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            nui.alert("请选择元数据！");
+            return;
+        }
         nui.open({
-            url: "${basePath}/goframe/p/iq.cm.app.multi?mdId=" + mdIdObj.value + "&type=2",
+            url: "${basePath}/goframe/p/iq.cm.app.multi?mdId=" + mdId + "&type=2",
             title: "批量添加",
             width: 650,
             height: 380,
@@ -622,8 +759,13 @@ ${extends("/goframe/function_layout.httl")}
         });
     }
     function adds3() {
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            nui.alert("请选择元数据！");
+            return;
+        }
         nui.open({
-            url: "${basePath}/goframe/p/iq.cm.app.multi?mdId=" + mdIdObj.value + "&type=2",
+            url: "${basePath}/goframe/p/iq.cm.app.multi?mdId=" + mdId + "&type=2",
             title: "批量添加",
             width: 650,
             height: 380,
@@ -647,6 +789,38 @@ ${extends("/goframe/function_layout.httl")}
                     var result = iframe.contentWindow.GetData();
                     result = nui.clone(result);
                     grid3.addRows(result);
+                }
+            }
+        });
+    }
+    function adds4() {
+        var mdId = mdIdObj.value;
+        if (!mdId) {
+            alert("请先选择元数据");
+            return;
+        }
+        nui.open({
+            url: "${basePath}/goframe/p/com.ds.multi?dictTypeId=IQ_APP_PROPS_" + getDsByMdId(mdId).type,
+            title: "批量添加",
+            width: 650,
+            height: 380,
+            onload: function () {
+                var data = grid4.getData(true, true);
+                var iframe = this.getIFrameEl();
+                var props = [];
+                if (data.length > 0) {
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        props.push({"name": data[i].name});
+                    }
+                }
+                iframe.contentWindow.SetData(props);
+            },
+            ondestroy: function (action) {
+                if (action == "success") {
+                    var iframe = this.getIFrameEl();
+                    var result = iframe.contentWindow.GetData();
+                    result = nui.clone(result);
+                    grid4.addRows(result);
                 }
             }
         });
@@ -675,6 +849,14 @@ ${extends("/goframe/function_layout.httl")}
         var rows = grid3.getSelecteds();
         if (rows.length > 0) {
             grid3.removeRows(rows, true);
+        } else {
+            nui.alert("请至少选中一条记录!");
+        }
+    }
+    function remove4() {
+        var rows = grid4.getSelecteds();
+        if (rows.length > 0) {
+            grid4.removeRows(rows, true);
         } else {
             nui.alert("请至少选中一条记录!");
         }
@@ -737,11 +919,16 @@ ${extends("/goframe/function_layout.httl")}
         if (!iqAppOrderColList) {
             return;
         }
+        var propsData = getPropsData();
+        if (!propsData) {
+            return;
+        }
         var saveData = {
             "iqApplication": baseData,
             "iqAppQueryColList": queryColsData,
             "iqAppReturnColList": returnColsData,
-            "iqAppOrderColList":iqAppOrderColList
+            "iqAppOrderColList": iqAppOrderColList,
+            "comPropertiesList": propsData
         };
         return saveData;
     }
@@ -795,13 +982,13 @@ ${extends("/goframe/function_layout.httl")}
                 status = false;
                 return false;
             }
-            if(record.type == "CHAR" || record.type == "VARCHAR" ||  record.type == "DECIMAL"){
-                if(record.length == null || record.length == "") {
+            if (record.type == "CHAR" || record.type == "VARCHAR" || record.type == "DECIMAL") {
+                if (record.length == null || record.length == "") {
                     nui.alert("【查询字段】的位置" + record.seq + "：【长度】不能为空!");
                     status = false;
                     return false;
                 }
-                if(record.type == "DECIMAL") {
+                if (record.type == "DECIMAL") {
                     var re = new RegExp("^[1-9][0-9]{0,1},?[0-9]{0,2}$");
                     if (!re.test(record.length)) {
                         nui.alert("【查询字段】的位置" + record.seq + "：【长度】错误!");
@@ -809,7 +996,7 @@ ${extends("/goframe/function_layout.httl")}
                         return false;
                     }
                 }
-                if(record.type == "CHAR" || record.type == "VARCHAR"){
+                if (record.type == "CHAR" || record.type == "VARCHAR") {
                     var re = new RegExp("^[1-9][0-9]{0,3}$");
                     if (!re.test(record.length)) {
                         nui.alert("【查询字段】的位置" + record.seq + "：【长度】错误!");
@@ -871,13 +1058,13 @@ ${extends("/goframe/function_layout.httl")}
                 status = false;
                 return false;
             }
-            if(record.type == "CHAR" || record.type == "VARCHAR" ||  record.type == "DECIMAL"){
-                if(record.length == null || record.length == "") {
+            if (record.type == "CHAR" || record.type == "VARCHAR" || record.type == "DECIMAL") {
+                if (record.length == null || record.length == "") {
                     nui.alert("【返回字段】的位置" + record.seq + "：【长度】不能为空!");
                     status = false;
                     return false;
                 }
-                if(record.type == "DECIMAL") {
+                if (record.type == "DECIMAL") {
                     var re = new RegExp("^[1-9][0-9]{0,1},?[0-9]{0,2}$");
                     if (!re.test(record.length)) {
                         nui.alert("【返回字段】的位置" + record.seq + "：【长度】错误!");
@@ -885,7 +1072,7 @@ ${extends("/goframe/function_layout.httl")}
                         return false;
                     }
                 }
-                if(record.type == "CHAR" || record.type == "VARCHAR"){
+                if (record.type == "CHAR" || record.type == "VARCHAR") {
                     var re = new RegExp("^[1-9][0-9]{0,3}$");
                     if (!re.test(record.length)) {
                         nui.alert("【返回字段】的位置" + record.seq + "：【长度】错误!");
@@ -920,7 +1107,7 @@ ${extends("/goframe/function_layout.httl")}
     function getOrderColsData() {
         var status = true;
         var orderColsData = grid3.getData(true, true);
-        if(orderColsData == null || orderColsData.length == 0){
+        if (orderColsData == null || orderColsData.length == 0) {
             return orderColsData;
         }
         $.each(orderColsData, function (_index, record) {
@@ -1072,6 +1259,10 @@ ${extends("/goframe/function_layout.httl")}
         var rows = grid3.getSelecteds();
         grid3.moveUp(rows);
     }
+    function moveUp4() {
+        var rows = grid4.getSelecteds();
+        grid4.moveUp(rows);
+    }
 
     /**
      * 选中项下移
@@ -1087,6 +1278,161 @@ ${extends("/goframe/function_layout.httl")}
     function moveDown3() {
         var rows = grid3.getSelecteds();
         grid3.moveDown(rows);
+    }
+    function moveDown4() {
+        var rows = grid4.getSelecteds();
+        grid4.moveDown(rows);
+    }
+
+    /**
+     * 下拉框弹出前发生
+     */
+    var count4 = 0;
+    function propsNameBeforeShowPopup(e) {
+        // --下拉选项变化--
+        if (count4 == 0) {
+            var mdId = mdIdObj.value;
+            if (!mdId) {
+                nui.alert("请选择元数据！");
+                return;
+            }
+            e.source.load("${basePath}/goframe/dict/getDictData?dictTypeId=IQ_APP_PROPS_" + getDsByMdId(mdId).type);
+            count4++;
+        }
+    }
+
+    /**
+     * 参数名称变化时触发
+     */
+    function propsNameChanged(e) {
+        // --同一行的值和说明变化--
+        var selected = e.selected;
+        var row = grid4.getSelected();
+        row.describe = selected.dictName;
+        row.value = selected.filter;
+    }
+
+    /**
+     * 参数名称变化时触发检查
+     */
+    function propsNameValidation(e) {
+        if (e.isValid) {
+            var count = 0;
+            var rows = grid4.getData(true, true);
+            for (var i = 0, len = rows.length; i < len; i++) {
+                if (e.value == rows[i].name) {
+                    count++;
+                }
+                if (count == 1) {
+                    e.errorText = "名称已存在";
+                    e.isValid = false;
+                    return false;
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取配置参数数据
+     */
+    function getPropsData() {
+        var status = true;
+        var propsData = grid4.getData(true, true);
+        $.each(propsData, function (_index, record) {
+            record.seq = grid4.indexOf(record) + 1;
+            if (record.name == null || record.name == "") {
+                nui.alert("【配置参数】的位置" + record.seq + "：【名称】不能为空!");
+                status = false;
+                return false;
+            }
+            if (checkPropsName(record.name) == false) {
+                nui.alert("【配置参数】的位置" + record.seq + "：【名称】只能包含字母、数字、下划线、点、中划线，且以字母开头!");
+                status = false;
+                return false;
+            }
+            if (record.value == null || record.value == "") {
+                nui.alert("【配置参数】的位置" + record.seq + "：【数值】不能为空!");
+                status = false;
+                return false;
+            }
+        });
+        if (!status) {
+            return;
+        }
+        // 检查参数重复
+        if (checkRepetition(propsData)) {
+            nui.alert("【配置参数】中存在重复【名称】，请检查后再提交！");
+            return;
+        }
+        return propsData;
+    }
+
+    /**
+     * 检查参数列表是否重复
+     */
+    function checkRepetition(propsData) {
+        //算法1、遍历
+        var repetFlg = false;
+        $.each(propsData, function (_index, record) {
+            var repetCount = 0;
+            $.each(propsData, function (i, item) {
+                if (record.name == item.name) {
+                    repetCount++;
+                }
+            });
+            if (repetCount > 1) {
+                repetFlg = true;
+            }
+        });
+        //算法2、构造Map类型集合，以record.name为key，插入到map集合中，
+        //集合中长度小于原来的长度,则存在重复
+        return repetFlg;
+    }
+
+    /**
+     * 检查是否满足字母、数字、下划线、点、中划线，且以字母开头
+     */
+    function checkPropsName(v) {
+        var re = new RegExp("^[A-Za-z][A-Za-z0-9_\.\-]{0,256}$");
+        if (re.test(v)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *  根据mdId获取数据源类型
+     */
+    function getDsByMdId(mdId) {
+        var result = "";
+        var dsId = "";
+        // 获取元数据对象
+        $.ajax({
+            url: "${basePath}/iq/md/select/" + mdId,
+            type: 'POST',
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.status == true) {
+                    dsId = result.data.dsId;
+                }
+            }
+        });
+        // 获取数据源对象
+        $.ajax({
+            url: "${basePath}/com/ds/select/" + dsId,
+            type: 'POST',
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (text) {
+                if (text.data) {
+                    result = text.data;
+                }
+            }
+        });
+        return result;
     }
 </script>
 <!--#end-->

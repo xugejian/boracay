@@ -4,10 +4,9 @@ import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.common.dao.ComDatasourceMapper;
-import com.hex.bigdata.udsp.common.dao.ComPropertiesMapper;
 import com.hex.bigdata.udsp.common.model.*;
-import com.hex.bigdata.udsp.common.provider.model.Datasource;
-import com.hex.bigdata.udsp.common.provider.model.Property;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.im.constant.*;
@@ -16,7 +15,7 @@ import com.hex.bigdata.udsp.im.dto.ImIndexDto;
 import com.hex.bigdata.udsp.im.dto.ImModelDto;
 import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.*;
-import com.hex.bigdata.udsp.im.provider.model.*;
+import com.hex.bigdata.udsp.im.converter.model.*;
 import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
 import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
 import com.hex.bigdata.udsp.rc.model.RcService;
@@ -66,7 +65,7 @@ public class ImModelService {
     private ImModelUpdateKeyMapper imModelUpdateKeyMapper;
 
     @Autowired
-    private ImProviderService imProviderService;
+    private ImConvertorService imConvertorService;
 
     @Autowired
     private ImMetadataMapper imMetadataMapper;
@@ -238,12 +237,12 @@ public class ImModelService {
         Model model = new Model(Arrays.asList(properties));
         ComDatasource comDatasource = comDatasourceMapper.select(srcDataSourceId);
         List<ComProperties> comProperties = comPropertiesService.selectList(srcDataSourceId);
-        Datasource datasource = new Datasource(comDatasource, comProperties);
+        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comProperties);
         // 由于该实现类和模型中的实现类不一样故制为空
         datasource.setImplClass("");
         model.setProperties(Arrays.asList(properties));
         model.setSourceDatasource(datasource);
-        return imProviderService.getCloumnInfo(model);
+        return imConvertorService.getCloumnInfo(model);
     }
 
     public List<ImModel> selectAll() {
@@ -562,9 +561,9 @@ public class ImModelService {
         //组织需要构建或则删除构建的模型
         Model model = getModelByImModel(imModel);
         if ("1".equals(status)) { // 删除模型
-            imProviderService.dropEngineSchema(model);
+            imConvertorService.dropEngineSchema(model);
         } else if ("2".equals(status)) { // 创建模型
-            imProviderService.createEngineSchema(model);
+            imConvertorService.createEngineSchema(model);
         }
         //修改数据库中建模的状态
         imModel.setStatus(status);
@@ -741,7 +740,7 @@ public class ImModelService {
         }
         ComDatasource comDatasource = comDatasourceMapper.select(id);
         List<ComProperties> comProperties = comPropertiesService.selectList(id);
-        return new Datasource(comDatasource, comProperties);
+        return DatasourceUtil.getDatasource(comDatasource, comProperties);
     }
 
     //元数据字段信息转换

@@ -24,5 +24,8 @@
     <orderEntry type="module" module-name="console" />
     <orderEntry type="module" module-name="md" />
     <orderEntry type="module" module-name="rc" />
+    <orderEntry type="module" module-name="common-api" />
+    <orderEntry type="module" module-name="im-convertor-api" />
+    <orderEntry type="module" module-name="im-convertor-impl" />
   </component>
 </module>

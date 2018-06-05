@@ -1,14 +1,14 @@
 package com.hex.bigdata.udsp.controller;
 
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.dto.ConsumeRequest;
 import com.hex.bigdata.udsp.model.ExternalRequest;
 import com.hex.bigdata.udsp.model.Response;
 import com.hex.bigdata.udsp.service.ConsumerService;
+import com.hex.bigdata.udsp.service.LoggingService;
 import com.hex.goframe.controller.BaseController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,6 +29,8 @@ public class RestfulController extends BaseController {
 
     @Autowired
     private ConsumerService consumerService;
+    @Autowired
+    private LoggingService loggingService;
 
     /**
      * 欢迎信息
@@ -49,20 +51,18 @@ public class RestfulController extends BaseController {
     @RequestMapping(value = {"/consume"}, method = {RequestMethod.POST})
     @ResponseBody
     public Response consume(@RequestBody String json, HttpServletRequest request) {
-        ExternalRequest externalRequest = null;
+        Response response = new Response();
         long bef = System.currentTimeMillis();
         try {
-            externalRequest = jsonToRequest(json);
+            ExternalRequest externalRequest = jsonToRequest(json);
+            externalRequest.setRequestIp(HostUtil.getRealRequestIp(request)); // 获取并设置客户端请求的IP
+            return consumerService.externalConsume(externalRequest);
         } catch (Exception e) {
-            //处理异常，返回respone
-            Response response = new Response();
-            this.consumerService.setErrorResponse(response, new ConsumeRequest(), bef,
+            e.printStackTrace();
+            loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
                     ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
-            return response;
         }
-        //获取并设置客户端请求的IP
-        externalRequest.setRequestIp(UdspCommonUtil.getRealRequestIp(request));
-        return consumerService.externalConsume(externalRequest);
+        return response;
     }
 
     private ExternalRequest jsonToRequest(String json){

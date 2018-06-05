@@ -2,9 +2,7 @@ package com.hex.bigdata.udsp.dto;
 
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.mc.model.Current;
-import com.hex.bigdata.udsp.mc.service.WaitQueueService;
 import com.hex.bigdata.udsp.model.Request;
-import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 
 public class ConsumeRequest {
@@ -15,13 +13,9 @@ public class ConsumeRequest {
 
     private ErrorCode error;
 
-    private RcService rcService;
-
     private RcUserService rcUserService;
 
-    private WaitNumResult waitNumResult;
-
-    //private WaitQueueService mcWaitQueueService;
+    private QueueIsFullResult queueIsFullResult;
 
     public Request getRequest() {
         return request;
@@ -47,14 +41,6 @@ public class ConsumeRequest {
         this.error = error;
     }
 
-//    public RcService getRcService() {
-//        return rcService;
-//    }
-//
-//    public void setRcService(RcService rcService) {
-//        this.rcService = rcService;
-//    }
-
     public RcUserService getRcUserService() {
         return rcUserService;
     }
@@ -63,19 +49,11 @@ public class ConsumeRequest {
         this.rcUserService = rcUserService;
     }
 
-    public WaitNumResult getWaitNumResult() {
-        return waitNumResult;
+    public QueueIsFullResult getQueueIsFullResult() {
+        return queueIsFullResult;
     }
 
-    public void setWaitNumResult(WaitNumResult waitNumResult) {
-        this.waitNumResult = waitNumResult;
+    public void setQueueIsFullResult(QueueIsFullResult queueIsFullResult) {
+        this.queueIsFullResult = queueIsFullResult;
     }
-
-//    public WaitQueueService getMcWaitQueueService() {
-//        return mcWaitQueueService;
-//    }
-//
-//    public void setMcWaitQueueService(WaitQueueService mcWaitQueueService) {
-//        this.mcWaitQueueService = mcWaitQueueService;
-//    }
 }

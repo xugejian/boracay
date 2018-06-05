@@ -3,10 +3,9 @@ package com.hex.bigdata.udsp.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.model.RequestModel;
 import com.hex.bigdata.udsp.model.ResponseModel;
-import com.hex.goframe.util.Util;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpEntity;
@@ -59,7 +58,7 @@ public class BatchHttpControllerTest {
         requestModel.setBizDate("20170531");
         requestModel.setType("batch");
         requestModel.setLimit(1000);
-        String uuid=UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(requestModel));
+        String uuid= HostUtil.getConsumeId(JSONUtil.parseObj2JSON(requestModel));
         logger.info("uuid:"+uuid);
         requestModel.setUuid(uuid);
         this.requestUdsp(requestModel,url);
@@ -88,7 +87,7 @@ public class BatchHttpControllerTest {
         requestModel.setModelName("model1");
         requestModel.setType("batch");
         requestModel.setEntity("stop");
-        requestModel.setUuid(UdspCommonUtil.getConsumeId(JSONUtil.parseObj2JSON(requestModel)));
+        requestModel.setUuid(HostUtil.getConsumeId(JSONUtil.parseObj2JSON(requestModel)));
         this.requestUdsp(requestModel,url);
     }
 

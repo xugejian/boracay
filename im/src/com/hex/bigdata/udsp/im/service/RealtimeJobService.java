@@ -2,18 +2,17 @@ package com.hex.bigdata.udsp.im.service;
 
 import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
 import com.hex.bigdata.udsp.common.service.InitParamService;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.common.util.UdspCommonUtil;
+import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
 import com.hex.bigdata.udsp.im.dto.RealtimeNodeInfoDto;
 import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoDto;
 import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoView;
 import com.hex.bigdata.udsp.im.model.RealtimeNodeInfo;
 import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
-import com.hex.bigdata.udsp.im.provider.impl.model.modeling.MqModel;
-import com.hex.bigdata.udsp.im.provider.model.Model;
-import com.hex.bigdata.udsp.im.provider.model.ModelFilterCol;
+import com.hex.bigdata.udsp.im.converter.impl.model.modeling.MqModel;
+import com.hex.bigdata.udsp.im.converter.model.Model;
+import com.hex.bigdata.udsp.im.converter.model.ModelFilterCol;
 import com.hex.bigdata.udsp.im.task.QuartzManager;
 import com.hex.bigdata.udsp.im.task.RealtimeJob;
 import com.hex.bigdata.udsp.model.HeartbeatInfo;
@@ -36,7 +35,7 @@ import java.util.*;
 @Service
 public class RealtimeJobService {
     private static Logger logger = LogManager.getLogger(RealtimeJobService.class);
-    private static final String HOST_KEY = UdspCommonUtil.getLocalIpFromInetAddress();
+    private static final String HOST_KEY = HostUtil.getLocalIpFromInetAddress();
     private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
 
     @Autowired
@@ -67,7 +66,7 @@ public class RealtimeJobService {
      * @param model
      */
     public void start(Model model) throws Exception {
-        String id = UdspCommonUtil.getConsumeId(model.getId());
+        String id = HostUtil.getConsumeId(model.getId());
         MqModel mqModel = new MqModel(model);
         realtimeTotalService.readyStart(id, mqModel);
     }
