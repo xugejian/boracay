@@ -30,9 +30,9 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-//@Component("com.hex.bigdata.udsp.im.convertor.impl.SolrConvertor")
-public class SolrConvertor extends SolrWrapper {
-    private static Logger logger = LogManager.getLogger(SolrConvertor.class);
+//@Component("com.hex.bigdata.udsp.im.converter.impl.SolrConverter")
+public class SolrConverter extends SolrWrapper {
+    private static Logger logger = LogManager.getLogger(SolrConverter.class);
 
     public List<MetadataCol> getColumns(String collectionName, String solrServers) {
         if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {

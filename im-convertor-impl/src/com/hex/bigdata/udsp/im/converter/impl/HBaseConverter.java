@@ -21,9 +21,9 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-//@Component("com.hex.bigdata.udsp.im.convertor.impl.HBaseConvertor")
-public class HBaseConvertor extends HBaseWrapper {
-    private static Logger logger = LogManager.getLogger(HBaseConvertor.class);
+//@Component("com.hex.bigdata.udsp.im.converter.impl.HBaseConverter")
+public class HBaseConverter extends HBaseWrapper {
+    private static Logger logger = LogManager.getLogger(HBaseConverter.class);
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {

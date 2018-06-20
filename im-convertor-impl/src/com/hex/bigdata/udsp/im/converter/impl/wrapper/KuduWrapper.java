@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.im.converter.impl.wrapper;
 
 
-import com.hex.bigdata.udsp.im.converter.BatchSourceConvertor;
-import com.hex.bigdata.udsp.im.converter.BatchTargetConvertor;
-import com.hex.bigdata.udsp.im.converter.RealtimeTargetConvertor;
+import com.hex.bigdata.udsp.im.converter.BatchSourceConverter;
+import com.hex.bigdata.udsp.im.converter.BatchTargetConverter;
+import com.hex.bigdata.udsp.im.converter.RealtimeTargetConverter;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.KuduDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.metadata.KuduMetadata;
 import com.hex.bigdata.udsp.im.converter.impl.util.KuduUtil;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by PC on 2018/2/26.
  */
-public abstract class KuduWrapper extends Wrapper implements BatchSourceConvertor, BatchTargetConvertor, RealtimeTargetConvertor {
+public abstract class KuduWrapper extends Wrapper implements BatchSourceConverter, BatchTargetConverter, RealtimeTargetConverter {
     private static Logger logger = LogManager.getLogger(KuduWrapper.class);
 
     protected static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.kudu.KuduStorageHandler";

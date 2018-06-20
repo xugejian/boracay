@@ -27,9 +27,9 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-4.
  */
-//@Component("com.hex.bigdata.udsp.im.convertor.impl.KafkaConvertor")
-public class KafkaConvertor extends KafkaWrapper {
-    private static Logger logger = LogManager.getLogger(KafkaConvertor.class);
+//@Component("com.hex.bigdata.udsp.im.converter.impl.KafkaConverter")
+public class KafkaConverter extends KafkaWrapper {
+    private static Logger logger = LogManager.getLogger(KafkaConverter.class);
     private static final int CONSUMER_TIMEOUT_MS = 1000;
     private static final String GROUP_ID = "udsp-group";
 

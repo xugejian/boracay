@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.common.api.model.Datasource;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public interface Convertor {
+public interface Converter {
     /**
      * 测试
      *

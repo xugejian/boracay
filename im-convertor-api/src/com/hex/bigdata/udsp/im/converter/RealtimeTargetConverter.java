@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.im.converter.model.Model;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public interface RealtimeTargetConvertor extends TargetConvertor, RealtimeConvertor {
+public interface RealtimeTargetConverter extends TargetConverter, RealtimeConverter {
 
     /**
      * 实时构建

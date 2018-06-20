@@ -5,7 +5,7 @@ import com.hex.bigdata.metadata.db.model.Column;
 import com.hex.bigdata.metadata.db.util.AcquireType;
 import com.hex.bigdata.metadata.db.util.DBType;
 import com.hex.bigdata.udsp.common.constant.DataType;
-import com.hex.bigdata.udsp.im.converter.RealtimeTargetConvertor;
+import com.hex.bigdata.udsp.im.converter.RealtimeTargetConverter;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.JdbcDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.OracleDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
@@ -29,9 +29,9 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-//@Component("com.hex.bigdata.udsp.im.convertor.impl.OracleConvertor")
-public class OracleConvertor extends JdbcWrapper implements RealtimeTargetConvertor {
-    private static Logger logger = LogManager.getLogger(OracleConvertor.class);
+//@Component("com.hex.bigdata.udsp.im.converter.impl.OracleConverter")
+public class OracleConverter extends JdbcWrapper implements RealtimeTargetConverter {
+    private static Logger logger = LogManager.getLogger(OracleConverter.class);
 
     @Override
     public void createSchema(Metadata metadata) throws Exception {

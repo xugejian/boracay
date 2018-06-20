@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.util.DatasourceUtil;
-import com.hex.bigdata.udsp.im.service.ImConvertorService;
+import com.hex.bigdata.udsp.im.service.ImConverterService;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
 import com.hex.bigdata.udsp.rc.util.RcConstant;
@@ -27,7 +27,7 @@ public class DatasourceTestService {
     @Autowired
     private RtsExecutorService rtsExecutorService;
     @Autowired
-    private ImConvertorService imConvertorService;
+    private ImConverterService imConverterService;
     /**
      * 测试数据源
      *
@@ -46,7 +46,7 @@ public class DatasourceTestService {
         } else if (RcConstant.UDSP_SERVICE_TYPE_RTS.equalsIgnoreCase(model)) {
             return rtsExecutorService.testDatasource(datasource);
         } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equalsIgnoreCase(model)) {
-            return imConvertorService.testDatasource(datasource);
+            return imConverterService.testDatasource(datasource);
         }
         return false;
     }

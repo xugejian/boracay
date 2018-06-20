@@ -22,8 +22,8 @@ import java.util.List;
 /**
  * Created by PC on 2018/2/26.
  */
-//@Component("com.hex.bigdata.udsp.im.convertor.impl.KuduConvertor")
-public class KuduConvertor extends KuduWrapper {
+//@Component("com.hex.bigdata.udsp.im.converter.impl.KuduConverter")
+public class KuduConverter extends KuduWrapper {
 
     @Override
     public boolean testDatasource(Datasource datasource) {

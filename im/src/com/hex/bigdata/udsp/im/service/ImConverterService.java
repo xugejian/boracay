@@ -20,8 +20,8 @@ import java.util.List;
  * Created by JunjieM on 2017-9-6.
  */
 @Service
-public class ImConvertorService {
-    private static Logger logger = LogManager.getLogger(ImConvertorService.class);
+public class ImConverterService {
+    private static Logger logger = LogManager.getLogger(ImConverterService.class);
     private static final String IM_IMPL_CLASS = "IM_IMPL_CLASS";
 
     @Autowired
@@ -34,7 +34,7 @@ public class ImConvertorService {
      * @return
      */
     public List<MetadataCol> getCloumnInfo(Metadata metadata) {
-        return getTargetConvertorImpl(metadata.getDatasource()).columnInfo(metadata);
+        return getTargetConverterImpl(metadata.getDatasource()).columnInfo(metadata);
     }
 
     /**
@@ -45,7 +45,7 @@ public class ImConvertorService {
      * @throws Exception
      */
     public boolean checkSchema(Metadata metadata) throws Exception {
-        return getTargetConvertorImpl(metadata.getDatasource()).checkSchema(metadata);
+        return getTargetConverterImpl(metadata.getDatasource()).checkSchema(metadata);
     }
 
     /**
@@ -55,7 +55,7 @@ public class ImConvertorService {
      * @return
      */
     public List<MetadataCol> getCloumnInfo(Model model) {
-        return getSourceConvertorImpl(model.getSourceDatasource()).columnInfo(model);
+        return getSourceConverterImpl(model.getSourceDatasource()).columnInfo(model);
     }
 
     /**
@@ -67,8 +67,8 @@ public class ImConvertorService {
      */
     public void createEngineSchema(Model model) throws Exception {
         logger.debug("创建引擎Schema【START】");
-        BatchSourceConvertor batchSourceProvider = getBatchSourceConvertorImpl(model.getSourceDatasource());
-        BatchTargetConvertor batchTargetProvider = getBatchTargetConvertorImpl(model.getTargetMetadata().getDatasource());
+        BatchSourceConverter batchSourceProvider = getBatchSourceConverterImpl(model.getSourceDatasource());
+        BatchTargetConverter batchTargetProvider = getBatchTargetConverterImpl(model.getTargetMetadata().getDatasource());
         batchSourceProvider.createSourceEngineSchema(model);
         try {
             batchTargetProvider.createTargetEngineSchema(model);
@@ -87,7 +87,7 @@ public class ImConvertorService {
      */
     public void createSourceEngineSchema(Model model, String engineSchemaName) throws Exception {
         logger.debug("创建Source引擎Schema【START】");
-        getBatchSourceConvertorImpl(model.getSourceDatasource()).createSourceEngineSchema(model, engineSchemaName);
+        getBatchSourceConverterImpl(model.getSourceDatasource()).createSourceEngineSchema(model, engineSchemaName);
         logger.debug("创建Source引擎Schema【END】");
     }
 
@@ -100,8 +100,8 @@ public class ImConvertorService {
      */
     public void dropEngineSchema(Model model) throws Exception {
         logger.debug("删除引擎Schema【START】");
-        getBatchSourceConvertorImpl(model.getSourceDatasource()).dropSourceEngineSchema(model);
-        getBatchTargetConvertorImpl(model.getTargetMetadata().getDatasource()).dropTargetEngineSchema(model);
+        getBatchSourceConverterImpl(model.getSourceDatasource()).dropSourceEngineSchema(model);
+        getBatchTargetConverterImpl(model.getTargetMetadata().getDatasource()).dropTargetEngineSchema(model);
         logger.debug("删除引擎Schema【END】");
     }
 
@@ -114,7 +114,7 @@ public class ImConvertorService {
      */
     public void createSchema(Metadata metadata) throws Exception {
         logger.debug("创建Schema【SATRT】");
-        getTargetConvertorImpl(metadata.getDatasource()).createSchema(metadata);
+        getTargetConverterImpl(metadata.getDatasource()).createSchema(metadata);
         logger.debug("创建Schema【END】");
     }
 
@@ -127,7 +127,7 @@ public class ImConvertorService {
      */
     public void dropSchema(Metadata metadata) throws Exception {
         logger.debug("删除Schema【START】");
-        getTargetConvertorImpl(metadata.getDatasource()).dropSchema(metadata);
+        getTargetConverterImpl(metadata.getDatasource()).dropSchema(metadata);
         logger.debug("删除Schema【END】");
     }
 
@@ -138,7 +138,7 @@ public class ImConvertorService {
      */
     public void buildRealtime(String key, Model model) throws Exception {
         logger.debug("构建实时任务【开始】");
-        getRealtimeTargetConvertorImpl(model.getTargetMetadata().getDatasource()).buildRealtime(key, model);
+        getRealtimeTargetConverterImpl(model.getTargetMetadata().getDatasource()).buildRealtime(key, model);
         logger.debug("构建实时任务【结束】");
     }
 
@@ -149,7 +149,7 @@ public class ImConvertorService {
      */
     public void buildBatch(String key, Model model) throws Exception {
         logger.debug("构建批量任务【开始】");
-        getBatchTargetConvertorImpl(model.getTargetMetadata().getDatasource()).buildBatch(key, model);
+        getBatchTargetConverterImpl(model.getTargetMetadata().getDatasource()).buildBatch(key, model);
         logger.debug("构建批量任务【结束】");
     }
 
@@ -161,33 +161,33 @@ public class ImConvertorService {
      */
     public boolean testDatasource(Datasource datasource) {
         logger.debug("测试数据源【START】");
-        boolean status = getConvertorImpl(datasource).testDatasource(datasource);
+        boolean status = getConverterImpl(datasource).testDatasource(datasource);
         logger.debug("测试数据源【END】");
         return status;
     }
 
-    private BatchSourceConvertor getBatchSourceConvertorImpl(Datasource datasource) {
-        return (BatchSourceConvertor) ObjectUtil.newInstance(getImplClass(datasource));
+    private BatchSourceConverter getBatchSourceConverterImpl(Datasource datasource) {
+        return (BatchSourceConverter) ObjectUtil.newInstance(getImplClass(datasource));
     }
 
-    private BatchTargetConvertor getBatchTargetConvertorImpl(Datasource datasource) {
-        return (BatchTargetConvertor) ObjectUtil.newInstance(getImplClass(datasource));
+    private BatchTargetConverter getBatchTargetConverterImpl(Datasource datasource) {
+        return (BatchTargetConverter) ObjectUtil.newInstance(getImplClass(datasource));
     }
 
-    private RealtimeTargetConvertor getRealtimeTargetConvertorImpl(Datasource datasource) {
-        return (RealtimeTargetConvertor) ObjectUtil.newInstance(getImplClass(datasource));
+    private RealtimeTargetConverter getRealtimeTargetConverterImpl(Datasource datasource) {
+        return (RealtimeTargetConverter) ObjectUtil.newInstance(getImplClass(datasource));
     }
 
-    private SourceConvertor getSourceConvertorImpl(Datasource datasource) {
-        return (SourceConvertor) ObjectUtil.newInstance(getImplClass(datasource));
+    private SourceConverter getSourceConverterImpl(Datasource datasource) {
+        return (SourceConverter) ObjectUtil.newInstance(getImplClass(datasource));
     }
 
-    private TargetConvertor getTargetConvertorImpl(Datasource datasource) {
-        return (TargetConvertor) ObjectUtil.newInstance(getImplClass(datasource));
+    private TargetConverter getTargetConverterImpl(Datasource datasource) {
+        return (TargetConverter) ObjectUtil.newInstance(getImplClass(datasource));
     }
 
-    private Convertor getConvertorImpl(Datasource datasource) {
-        return (Convertor) ObjectUtil.newInstance(getImplClass(datasource));
+    private Converter getConverterImpl(Datasource datasource) {
+        return (Converter) ObjectUtil.newInstance(getImplClass(datasource));
     }
 
     private String getImplClass(Datasource datasource) {

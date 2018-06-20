@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public interface TargetConvertor extends Convertor {
+public interface TargetConverter extends Converter {
 
     /**
      * 获取字段信息

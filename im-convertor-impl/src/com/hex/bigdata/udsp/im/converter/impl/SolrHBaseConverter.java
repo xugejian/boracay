@@ -16,29 +16,29 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-//@Component("com.hex.bigdata.udsp.im.convertor.impl.SolrHBaseConvertor")
-public class SolrHBaseConvertor extends SolrHBaseWrapper {
-    private static Logger logger = LoggerFactory.getLogger(SolrHBaseConvertor.class);
+//@Component("com.hex.bigdata.udsp.im.converter.impl.SolrHBaseConverter")
+public class SolrHBaseConverter extends SolrHBaseWrapper {
+    private static Logger logger = LoggerFactory.getLogger(SolrHBaseConverter.class);
 
 //    @Autowired
-//    private SolrConvertor solrProvider;
+//    private SolrConverter solrConverter;
 //    @Autowired
-//    private HBaseConvertor hbaseProvider;
+//    private HBaseConverter hbaseConverter;
 
-    private SolrConvertor solrProvider = (SolrConvertor) ObjectUtil.newInstance("com.hex.bigdata.udsp.im.convertor.impl.SolrConvertor");
-    private HBaseConvertor hbaseProvider = (HBaseConvertor) ObjectUtil.newInstance("com.hex.bigdata.udsp.im.convertor.impl.HBaseConvertor");
+    private SolrConverter solrConverter = (SolrConverter) ObjectUtil.newInstance("com.hex.bigdata.udsp.im.converter.impl.SolrConverter");
+    private HBaseConverter hbaseConverter = (HBaseConverter) ObjectUtil.newInstance("com.hex.bigdata.udsp.im.converter.impl.HBaseConverter");
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
         String collectionName = metadata.getTbName();
         Datasource datasource = metadata.getDatasource();
         String solrServers = datasource.getPropertyMap().get("solr.servers").getValue();
-        return solrProvider.getColumns(collectionName, solrServers);
+        return solrConverter.getColumns(collectionName, solrServers);
     }
 
     @Override
     public void createSchema(Metadata metadata) throws Exception {
-        hbaseProvider.createSchema(metadata);
+        hbaseConverter.createSchema(metadata);
         try {
             // Solr+HBase时Solr除了主键其他字段都不存储
             List<MetadataCol> metadataCols = metadata.getMetadataCols();
@@ -46,23 +46,23 @@ public class SolrHBaseConvertor extends SolrHBaseWrapper {
                 if (metadataCol.isPrimary()) continue;
                 metadataCol.setStored(false);
             }
-            solrProvider.createSchema(metadata);
+            solrConverter.createSchema(metadata);
         } catch (Exception e) {
             // 回滚删除hbase对应的表 删除失败怎么办？暂时不考虑
-            hbaseProvider.dropSchema(metadata);
+            hbaseConverter.dropSchema(metadata);
             throw new Exception(e);
         }
     }
 
     @Override
     public void dropSchema(Metadata metadata) throws Exception {
-        solrProvider.dropSchema(metadata);
-        hbaseProvider.dropSchema(metadata);
+        solrConverter.dropSchema(metadata);
+        hbaseConverter.dropSchema(metadata);
     }
 
     @Override
     public boolean checkSchema(Metadata metadata) throws Exception {
-        return solrProvider.checkSchema(metadata) && hbaseProvider.checkSchema(metadata);
+        return solrConverter.checkSchema(metadata) && hbaseConverter.checkSchema(metadata);
     }
 
     @Override
@@ -72,12 +72,12 @@ public class SolrHBaseConvertor extends SolrHBaseWrapper {
         hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
         Model solrModel = new Model(model);
         solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
-        hbaseProvider.createTargetEngineSchema(hBaseModel);
+        hbaseConverter.createTargetEngineSchema(hBaseModel);
         try {
-            solrProvider.createTargetEngineSchema(solrModel);
+            solrConverter.createTargetEngineSchema(solrModel);
         } catch (Exception e) {
             //删除回滚
-            hbaseProvider.dropTargetEngineSchema(hBaseModel);
+            hbaseConverter.dropTargetEngineSchema(hBaseModel);
             throw new Exception(e);
         }
     }
@@ -89,8 +89,8 @@ public class SolrHBaseConvertor extends SolrHBaseWrapper {
         solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
         Model hBaseModel = new Model(model);
         hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
-        hbaseProvider.dropTargetEngineSchema(solrModel);
-        solrProvider.dropTargetEngineSchema(hBaseModel);
+        hbaseConverter.dropTargetEngineSchema(solrModel);
+        solrConverter.dropTargetEngineSchema(hBaseModel);
     }
 
     @Override
@@ -103,11 +103,11 @@ public class SolrHBaseConvertor extends SolrHBaseWrapper {
 
             Model hbaseModel = new Model(model);
             hbaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
-            hbaseProvider.buildRealtime(key, hbaseModel);
+            hbaseConverter.buildRealtime(key, hbaseModel);
 
             Model solrModel = new Model(model);
             solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
-            solrProvider.buildRealtime(key, solrModel);
+            solrConverter.buildRealtime(key, solrModel);
         }
     }
 
@@ -119,15 +119,15 @@ public class SolrHBaseConvertor extends SolrHBaseWrapper {
         Model hBaseModel = new Model(model);
         hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
         // build的key在监控中会用到，所以需要区分
-        hbaseProvider.buildBatch("HBASE" + HIVE_ENGINE_TABLE_SEP + key, hBaseModel);
+        hbaseConverter.buildBatch("HBASE" + HIVE_ENGINE_TABLE_SEP + key, hBaseModel);
 
         Model solrModel = new Model(model);
         solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
-        solrProvider.buildBatch("SOLR" + HIVE_ENGINE_TABLE_SEP + key, solrModel);
+        solrConverter.buildBatch("SOLR" + HIVE_ENGINE_TABLE_SEP + key, solrModel);
     }
 
     @Override
     public boolean testDatasource(Datasource datasource) {
-        return hbaseProvider.testDatasource(datasource) && solrProvider.testDatasource(datasource);
+        return hbaseConverter.testDatasource(datasource) && solrConverter.testDatasource(datasource);
     }
 }

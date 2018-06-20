@@ -5,7 +5,7 @@ import com.hex.bigdata.udsp.im.converter.model.Model;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public interface BatchSourceConvertor extends SourceConvertor, BatchConvertor {
+public interface BatchSourceConverter extends SourceConverter, BatchConverter {
 
     /**
      * 创建源引擎Schema

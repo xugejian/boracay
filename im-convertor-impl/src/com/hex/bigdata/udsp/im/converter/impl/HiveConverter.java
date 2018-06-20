@@ -26,9 +26,9 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-//@Component("com.hex.bigdata.udsp.im.convertor.impl.HiveConvertor")
-public class HiveConvertor extends JdbcWrapper {
-    private static Logger logger = LogManager.getLogger(HiveConvertor.class);
+//@Component("com.hex.bigdata.udsp.im.converter.impl.HiveConverter")
+public class HiveConverter extends JdbcWrapper {
+    private static Logger logger = LogManager.getLogger(HiveConverter.class);
 
     @Override
     public void createSchema(Metadata metadata) throws Exception {
