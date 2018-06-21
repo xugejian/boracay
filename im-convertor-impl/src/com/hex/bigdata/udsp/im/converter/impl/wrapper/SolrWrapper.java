@@ -1,13 +1,9 @@
 package com.hex.bigdata.udsp.im.converter.impl.wrapper;
 
-import com.hex.bigdata.udsp.im.converter.BatchSourceConvertor;
-import com.hex.bigdata.udsp.im.converter.BatchTargetConvertor;
-import com.hex.bigdata.udsp.im.converter.RealtimeTargetConvertor;
-import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.converter.BatchSourceConverter;
+import com.hex.bigdata.udsp.im.converter.BatchTargetConverter;
+import com.hex.bigdata.udsp.im.converter.RealtimeTargetConverter;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.SolrDatasource;
-import com.hex.bigdata.udsp.im.converter.impl.model.modeling.SolrModel;
-import com.hex.bigdata.udsp.im.converter.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.TblProperty;
@@ -15,7 +11,6 @@ import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
-import com.hex.bigdata.udsp.im.converter.model.Model;
 import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +24,7 @@ import java.util.Map;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class SolrWrapper extends Wrapper implements BatchSourceConvertor, BatchTargetConvertor, RealtimeTargetConvertor {
+public abstract class SolrWrapper extends Wrapper implements BatchSourceConverter, BatchTargetConverter, RealtimeTargetConverter {
     private static Logger logger = LogManager.getLogger(SolrWrapper.class);
     protected static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.solr.SolrStorageHandler";
 

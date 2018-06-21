@@ -4,8 +4,8 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.util.CharUtil;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.im.converter.BatchTargetConvertor;
-import com.hex.bigdata.udsp.im.converter.RealtimeTargetConvertor;
+import com.hex.bigdata.udsp.im.converter.BatchTargetConverter;
+import com.hex.bigdata.udsp.im.converter.RealtimeTargetConverter;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HBaseDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.metadata.HBaseMetadata;
 import com.hex.bigdata.udsp.im.converter.impl.util.HBaseUtil;
@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvertor, RealtimeTargetConvertor {
+public abstract class HBaseWrapper extends Wrapper implements BatchTargetConverter, RealtimeTargetConverter {
 
     private static Logger logger = LogManager.getLogger(HBaseWrapper.class);
 

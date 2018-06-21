@@ -18,7 +18,7 @@ import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.model.*;
 import com.hex.bigdata.udsp.im.model.RealtimeNodeInfo;
-import com.hex.bigdata.udsp.im.service.ImConvertorService;
+import com.hex.bigdata.udsp.im.service.ImConverterService;
 import com.hex.bigdata.udsp.im.service.RealtimeNodeService;
 import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -151,8 +151,8 @@ public abstract class Wrapper {
                 } else { // 非暴力查询
                     selectTableName = getDynamicSourceTableName();
                     // 创建动态的源引擎Schema
-                    ImConvertorService imConvertorService = (ImConvertorService) WebApplicationContextUtil.getBean("imConvertorService");
-                    imConvertorService.createSourceEngineSchema(model, selectTableName);
+                    ImConverterService imConverterService = (ImConverterService) WebApplicationContextUtil.getBean("imConverterService");
+                    imConverterService.createSourceEngineSchema(model, selectTableName);
                     // 过滤条件清空
                     whereProperties = null;
                 }

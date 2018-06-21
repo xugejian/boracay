@@ -5,8 +5,8 @@ import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
-import com.hex.bigdata.udsp.im.converter.BatchSourceConvertor;
-import com.hex.bigdata.udsp.im.converter.BatchTargetConvertor;
+import com.hex.bigdata.udsp.im.converter.BatchSourceConverter;
+import com.hex.bigdata.udsp.im.converter.BatchTargetConverter;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.JdbcDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.metadata.HiveMetadata;
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class JdbcWrapper extends Wrapper implements BatchTargetConvertor, BatchSourceConvertor {
+public abstract class JdbcWrapper extends Wrapper implements BatchTargetConverter, BatchSourceConverter {
     private static Logger logger = LogManager.getLogger(JdbcWrapper.class);
 
     protected static final String HIVE_ENGINE_STORAGE_HANDLER_CLASS = "com.hex.hive.jdbc.JdbcStorageHandler";

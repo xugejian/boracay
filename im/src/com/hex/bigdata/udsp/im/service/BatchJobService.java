@@ -37,7 +37,7 @@ public class BatchJobService {
     @Autowired
     private BatchMapper batchMapper;
     @Autowired
-    private ImConvertorService imConvertorService;
+    private ImConverterService imConverterService;
 
     /**
      * 启动
@@ -51,7 +51,7 @@ public class BatchJobService {
             readyBuild(hbaseId, model);
             readyBuild(solrId, model);
             try {
-                imConvertorService.buildBatch(id, model);
+                imConverterService.buildBatch(id, model);
                 buildSuccess(hbaseId);
                 buildSuccess(solrId);
             } catch (Exception e) {
@@ -62,7 +62,7 @@ public class BatchJobService {
         } else {
             readyBuild(id, model);
             try {
-                imConvertorService.buildBatch(id, model);
+                imConverterService.buildBatch(id, model);
                 buildSuccess(id);
             } catch (Exception e) {
                 buildFail(id, e.getMessage());

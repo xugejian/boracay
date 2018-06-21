@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.im.converter.impl.wrapper;
 
-import com.hex.bigdata.udsp.im.converter.RealtimeSourceConvertor;
+import com.hex.bigdata.udsp.im.converter.RealtimeSourceConverter;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class KafkaWrapper extends Wrapper implements RealtimeSourceConvertor {
+public abstract class KafkaWrapper extends Wrapper implements RealtimeSourceConverter {
     private static Logger logger = LogManager.getLogger(KafkaWrapper.class);
 
     @Override

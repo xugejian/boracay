@@ -451,27 +451,26 @@ public class OlqApplicationService extends BaseService {
      * @param paramVals
      */
     public void checkParam(List<OlqApplicationParam> appParams, Map<String, String> paramVals) {
-        if (paramVals == null || paramVals.size() == 0) {
-            throw new RuntimeException("传入参数值集合不能为空!");
-        }
-        boolean flg = false;
-        String message = "";
-        for (OlqApplicationParam appParam : appParams) {
-            String name = appParam.getParamName();
-            String isNeed = appParam.getIsNeed(); // 是否必输，0：是 1：否
-            String defaultValue = appParam.getDefaultValue(); // 默认值
-            String value = paramVals.get(name);
-            if (StringUtils.isBlank(value)) { // 没有传入值
-                if (StringUtils.isNotBlank(defaultValue)) { // 有默认值
-                    paramVals.put(name, defaultValue);
-                } else if ("0".equals(isNeed) && StringUtils.isBlank(defaultValue)) { // 必输且没有默认值
-                    flg = true;
-                    message += name + "是必输参数且没有默认值，需要客户端传入非空值!";
+        if (paramVals != null && paramVals.size() >= 1) {
+            boolean flg = false;
+            String message = "";
+            for (OlqApplicationParam appParam : appParams) {
+                String name = appParam.getParamName();
+                String isNeed = appParam.getIsNeed(); // 是否必输，0：是 1：否
+                String defaultValue = appParam.getDefaultValue(); // 默认值
+                String value = paramVals.get(name);
+                if (StringUtils.isBlank(value)) { // 没有传入值
+                    if (StringUtils.isNotBlank(defaultValue)) { // 有默认值
+                        paramVals.put(name, defaultValue);
+                    } else if ("0".equals(isNeed) && StringUtils.isBlank(defaultValue)) { // 必输且没有默认值
+                        flg = true;
+                        message += name + "是必输参数且没有默认值，需要客户端传入非空值!";
+                    }
                 }
             }
-        }
-        if (flg) {
-            throw new RuntimeException(message);
+            if (flg) {
+                throw new RuntimeException(message);
+            }
         }
     }
 

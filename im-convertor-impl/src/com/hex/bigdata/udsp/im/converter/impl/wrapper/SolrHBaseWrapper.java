@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.im.converter.impl.wrapper;
 
-import com.hex.bigdata.udsp.im.converter.BatchTargetConvertor;
-import com.hex.bigdata.udsp.im.converter.RealtimeTargetConvertor;
+import com.hex.bigdata.udsp.im.converter.BatchTargetConverter;
+import com.hex.bigdata.udsp.im.converter.RealtimeTargetConverter;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-7.
  */
-public abstract class SolrHBaseWrapper extends Wrapper implements BatchTargetConvertor, RealtimeTargetConvertor {
+public abstract class SolrHBaseWrapper extends Wrapper implements BatchTargetConverter, RealtimeTargetConverter {
 
     private static Logger logger = LoggerFactory.getLogger(SolrHBaseWrapper.class);
 
