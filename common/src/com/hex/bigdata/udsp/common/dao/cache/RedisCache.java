@@ -110,11 +110,7 @@ public class RedisCache<T> implements Cache<T> {
             ListOperations<String, T> listOperations = (ListOperations<String, T>) redisTemplate.opsForList();
             Long size = listOperations.size(key);
             if (size != null) {
-                if (size == 0) {
-                    list = new ArrayList<>();
-                } else {
-                    list = listOperations.range(key, 0, size - 1);
-                }
+                list = (size == 0 ? new ArrayList<T>() : listOperations.range(key, 0, size - 1));
             }
         }
         return list;
