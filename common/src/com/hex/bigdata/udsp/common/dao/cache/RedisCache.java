@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.common.dao.cache;
 
 import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
-import com.hex.bigdata.udsp.common.service.InitParamService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
@@ -29,9 +28,6 @@ public class RedisCache<T> implements Cache<T> {
      */
     @Autowired
     private RedisDistributedLock redisLock;
-
-    @Autowired
-    private InitParamService initParamService;
 
     @Override
     public boolean insertCache(String key, T t) {
