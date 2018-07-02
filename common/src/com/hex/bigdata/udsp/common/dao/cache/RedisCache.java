@@ -83,7 +83,7 @@ public class RedisCache<T> implements Cache<T> {
                 this.deleteCache(key);
                 ListOperations<String, T> listOperations = redisTemplate.opsForList();
                 //listOperations.leftPushAll(key, list); // 这样查询出来的和插入的正好颠倒
-                listOperations.rightPushAll(key, list);
+                listOperations.rightPushAll(key, list); // Values must not be 'null' or empty
             }
             return true;
         } finally {
@@ -109,8 +109,8 @@ public class RedisCache<T> implements Cache<T> {
         if (StringUtils.isNotBlank(key)) {
             ListOperations<String, T> listOperations = (ListOperations<String, T>) redisTemplate.opsForList();
             Long size = listOperations.size(key);
-            if (size != null) {
-                list = (size == 0 ? new ArrayList<T>() : listOperations.range(key, 0, size - 1));
+            if (size != null && size != 0) {
+                list = listOperations.range(key, 0, size - 1);
             }
         }
         return list;
