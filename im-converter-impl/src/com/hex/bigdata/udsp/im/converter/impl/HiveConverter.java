@@ -8,6 +8,7 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HiveDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.util.HiveSqlUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.converter.impl.util.SqlUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.FileFormat;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
@@ -15,7 +16,6 @@ import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
-import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +35,7 @@ public class HiveConverter extends JdbcWrapper {
         HiveDatasource hiveDatasource = new HiveDatasource(metadata.getDatasource());
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
+        List<TableColumn> columns = SqlUtil.convertToTableColumnList(metadata.getMetadataCols());
         String sql = HiveSqlUtil.createTable(false, false, fullTbName,
                 columns, tableComment, null, null, FileFormat.HIVE_FILE_FORMAT_PARQUET);
         JdbcUtil.executeUpdate(hiveDatasource, sql);

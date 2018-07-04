@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.im.converter.impl.util;
 
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.JdbcDatasource;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -9,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

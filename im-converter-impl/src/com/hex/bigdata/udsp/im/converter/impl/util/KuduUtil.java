@@ -111,7 +111,7 @@ public class KuduUtil {
                 if (metadataCol.isPrimary()) { // 主键
                     columns.add(schemaBuilder.key(true).build());
                     count++;
-                } else { // 非主键
+                } else if (metadataCol.isStored()) { // 存储
                     columns.add(schemaBuilder.build());
                 }
             }

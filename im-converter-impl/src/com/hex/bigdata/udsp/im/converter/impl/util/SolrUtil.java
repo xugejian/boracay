@@ -179,7 +179,7 @@ public class SolrUtil {
                 }
             }
             // SOLR建表不成功，删除 SOLR配置
-            if(!status){
+            if (!status) {
                 deleteZnode(solrUrl, collectionName); // 删除Config
                 throw new RuntimeException(message);
             }
@@ -316,10 +316,10 @@ public class SolrUtil {
                 Element field = DocumentHelper.createElement("field");
                 field.addAttribute("name", metadataCol.getName());
                 field.addAttribute("type", getSolrType(metadataCol.getType()));
-                field.addAttribute("indexed", "true");
-                field.addAttribute("stored", "true");
-                field.addAttribute("required", "true");
-                field.addAttribute("multiValued", "false");
+                field.addAttribute("indexed", "true"); // 主键必须indexed=true
+                field.addAttribute("stored", "true"); // 主键必须stored=true
+                field.addAttribute("required", "true"); // 主键必须required=true
+                field.addAttribute("multiValued", "false"); // 主键必须multiValued=false
                 fields.add(field);
                 Element uniqueKey = DocumentHelper.createElement("uniqueKey");
                 uniqueKey.setText(metadataCol.getName());

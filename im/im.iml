@@ -27,5 +27,6 @@
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="im-converter-api" />
     <orderEntry type="module" module-name="im-converter-impl" />
+    <orderEntry type="library" name="jetty" level="project" />
   </component>
 </module>

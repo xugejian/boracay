@@ -118,7 +118,8 @@ public class ImMetadataController {
             message = "请求参数为空";
         } else {
             try {
-                if (StringUtils.isBlank(imMetadataService.insert(imMetadataDto)) || !imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
+                if (StringUtils.isBlank(imMetadataService.insert(imMetadataDto))
+                        || !imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
                     status = false;
                     message = "保存并创建失败";
                 } else {
@@ -148,7 +149,8 @@ public class ImMetadataController {
             message = "请求参数为空";
         } else {
             try {
-                if (!imMetadataService.update(imMetadataDto) || !imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
+                if (!imMetadataService.update(imMetadataDto)
+                        || !imMetadataService.createTable(imMetadataDto.getImMetadata().getPkId())) {
                     status = false;
                     message = "保存并创建失败";
                 }

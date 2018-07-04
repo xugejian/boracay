@@ -194,8 +194,12 @@ public abstract class Wrapper {
                         selectColumns, selectTableName, whereProperties);
             }
 
+            // 使用set语法在Hive中设置参数
+            String hiveSetSql = model.getProperty("hive.set.sql").getValue();
+            if (StringUtils.isBlank(hiveSetSql)) hiveSetSql = "";
+
             // 执行SQL
-            HiveJdbcUtil.executeUpdate(key, eHiveDs, insertSql);
+            HiveJdbcUtil.executeUpdate(key, eHiveDs, hiveSetSql + insertSql);
 
         } finally {
             // 源、引擎的数据源不同且非暴力查询

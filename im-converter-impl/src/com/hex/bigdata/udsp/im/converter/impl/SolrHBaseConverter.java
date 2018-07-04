@@ -7,10 +7,12 @@ import com.hex.bigdata.udsp.im.converter.impl.wrapper.SolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import com.hex.bigdata.udsp.im.converter.model.Model;
+import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,11 +21,6 @@ import java.util.List;
 //@Component("com.hex.bigdata.udsp.im.converter.impl.SolrHBaseConverter")
 public class SolrHBaseConverter extends SolrHBaseWrapper {
     private static Logger logger = LoggerFactory.getLogger(SolrHBaseConverter.class);
-
-//    @Autowired
-//    private SolrConverter solrConverter;
-//    @Autowired
-//    private HBaseConverter hbaseConverter;
 
     private SolrConverter solrConverter = (SolrConverter) ObjectUtil.newInstance("com.hex.bigdata.udsp.im.converter.impl.SolrConverter");
     private HBaseConverter hbaseConverter = (HBaseConverter) ObjectUtil.newInstance("com.hex.bigdata.udsp.im.converter.impl.HBaseConverter");
@@ -39,13 +36,18 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
     @Override
     public void createSchema(Metadata metadata) throws Exception {
         hbaseConverter.createSchema(metadata);
+
         try {
-            // Solr+HBase时Solr除了主键其他字段都不存储
-            List<MetadataCol> metadataCols = metadata.getMetadataCols();
-            for (MetadataCol metadataCol : metadataCols) {
-                if (metadataCol.isPrimary()) continue;
-                metadataCol.setStored(false);
+            List<MetadataCol> newMetadataCols = new ArrayList<>();
+            for (MetadataCol metadataCol : metadata.getMetadataCols()) {
+                if (metadataCol.isPrimary() || metadataCol.isIndexed()) { // 是主键或索引字段
+                    if (metadataCol.isIndexed()) { // 索引字段，必须不存储
+                        metadataCol.setStored(false);
+                    }
+                    newMetadataCols.add(metadataCol);
+                }
             }
+            metadata.setMetadataCols(newMetadataCols);
             solrConverter.createSchema(metadata);
         } catch (Exception e) {
             // 回滚删除hbase对应的表 删除失败怎么办？暂时不考虑
@@ -68,15 +70,25 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
     @Override
     public void createTargetEngineSchema(Model model) throws Exception {
         String id = model.getId();
+
         Model hBaseModel = new Model(model);
         hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
-        Model solrModel = new Model(model);
-        solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
         hbaseConverter.createTargetEngineSchema(hBaseModel);
+
         try {
+            Model solrModel = new Model(model);
+            solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
+            List<ModelMapping> newModelMappings = new ArrayList<>();
+            for (ModelMapping modelMapping : solrModel.getModelMappings()) {
+                MetadataCol metadataCol = modelMapping.getMetadataCol();
+                if (metadataCol.isPrimary() || metadataCol.isIndexed()) { // 是主键或索引字段
+                    newModelMappings.add(modelMapping);
+                }
+            }
+            solrModel.setModelMappings(newModelMappings);
             solrConverter.createTargetEngineSchema(solrModel);
         } catch (Exception e) {
-            //删除回滚
+            // 删除回滚hbase对应的目标引擎表 删除失败怎么办？暂时不考虑
             hbaseConverter.dropTargetEngineSchema(hBaseModel);
             throw new Exception(e);
         }
@@ -85,11 +97,13 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
     @Override
     public void dropTargetEngineSchema(Model model) throws SQLException {
         String id = model.getId();
+
         Model solrModel = new Model(model);
         solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
+        hbaseConverter.dropTargetEngineSchema(solrModel);
+
         Model hBaseModel = new Model(model);
         hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
-        hbaseConverter.dropTargetEngineSchema(solrModel);
         solrConverter.dropTargetEngineSchema(hBaseModel);
     }
 
@@ -97,16 +111,32 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
     public void buildRealtime(String key, Model model) throws Exception {
         String sDsType = model.getSourceDatasource().getType();
         if (DatasourceType.KAFKA.getValue().equals(sDsType)) {
-            // 将配置的group.id参数删除，强制内部使用modeId作为group.id
             String id = model.getId();
+            // 将配置的group.id参数删除，强制内部使用modeId作为group.id
             model.getPropertyMap().remove("group.id");
 
             Model hbaseModel = new Model(model);
             hbaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
+            List<ModelMapping> newModelMappings = new ArrayList<>();
+            for (ModelMapping modelMapping : hbaseModel.getModelMappings()) {
+                MetadataCol metadataCol = modelMapping.getMetadataCol();
+                if (metadataCol.isPrimary() || metadataCol.isStored()) { // 是主键或存储字段
+                    newModelMappings.add(modelMapping);
+                }
+            }
+            hbaseModel.setModelMappings(newModelMappings);
             hbaseConverter.buildRealtime(key, hbaseModel);
 
             Model solrModel = new Model(model);
             solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
+            newModelMappings = new ArrayList<>();
+            for (ModelMapping modelMapping : solrModel.getModelMappings()) {
+                MetadataCol metadataCol = modelMapping.getMetadataCol();
+                if (metadataCol.isPrimary() || metadataCol.isIndexed()) { // 是主键或索引字段
+                    newModelMappings.add(modelMapping);
+                }
+            }
+            solrModel.setModelMappings(newModelMappings);
             solrConverter.buildRealtime(key, solrModel);
         }
     }
@@ -115,19 +145,38 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
     public void buildBatch(String key, Model model) throws Exception {
         String id = model.getId();
 
+        Model hbaseModel = new Model(model);
         // model的Id在建引擎表时会用到，所以需要区分
-        Model hBaseModel = new Model(model);
-        hBaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
+        hbaseModel.setId("HBASE" + HIVE_ENGINE_TABLE_SEP + id);
+        List<ModelMapping> newModelMappings = new ArrayList<>();
+        for (ModelMapping modelMapping : hbaseModel.getModelMappings()) {
+            MetadataCol metadataCol = modelMapping.getMetadataCol();
+            if (metadataCol.isPrimary() || metadataCol.isStored()) { // 是主键或存储字段
+                newModelMappings.add(modelMapping);
+            }
+        }
+        hbaseModel.setModelMappings(newModelMappings);
         // build的key在监控中会用到，所以需要区分
-        hbaseConverter.buildBatch("HBASE" + HIVE_ENGINE_TABLE_SEP + key, hBaseModel);
+        hbaseConverter.buildBatch("HBASE" + HIVE_ENGINE_TABLE_SEP + key, hbaseModel);
 
         Model solrModel = new Model(model);
+        // model的Id在建引擎表时会用到，所以需要区分
         solrModel.setId("SOLR" + HIVE_ENGINE_TABLE_SEP + id);
+        newModelMappings = new ArrayList<>();
+        for (ModelMapping modelMapping : solrModel.getModelMappings()) {
+            MetadataCol metadataCol = modelMapping.getMetadataCol();
+            if (metadataCol.isPrimary() || metadataCol.isIndexed()) { // 是主键或索引字段
+                newModelMappings.add(modelMapping);
+            }
+        }
+        solrModel.setModelMappings(newModelMappings);
+        // build的key在监控中会用到，所以需要区分
         solrConverter.buildBatch("SOLR" + HIVE_ENGINE_TABLE_SEP + key, solrModel);
     }
 
     @Override
     public boolean testDatasource(Datasource datasource) {
-        return hbaseConverter.testDatasource(datasource) && solrConverter.testDatasource(datasource);
+        return hbaseConverter.testDatasource(datasource)
+                && solrConverter.testDatasource(datasource);
     }
 }

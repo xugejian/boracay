@@ -367,34 +367,18 @@ ${extends("/goframe/function_layout.httl")}
         });
     });
 
-    //获取参数列表可输入内容
-    function getComproperties() {
-        cols = [];
-        $.post("${basePath}/com/ds/selectParameters/" + srcDsModel.value, {}, function (data) {
-            if (data && data.length && data.length > 0) {
-                for (var i = 0, len = data.length; i < len; i++) {
-                    cols.push({
-                        "name": data[i].dictId,
-                        "describe": data[i].dictName,
-                        "value": data[i].filter
-                    });
-                }
-            }
-
-        });
-    }
-
     //源数据源改变时改变参数列表
     function srcSourceChange() {
+        flg = 0;
         //将参数配置栏和字段映射栏重置
         grid1.clearRows();
         grid2.clearRows();
         grid3.clearRows();
         filterCols = [];
-        cols = [];
         //将参数配置栏自动输入
         $.post("${basePath}/com/ds/selectParameters/" + srcDsModel.value, {}, function (data) {
             if (data && data.length > 0) {
+                var cols = [];
                 for (var i = 0, len = data.length; i < len; i++) {
                     cols.push({
                         "name": data[i].dictId,
@@ -1027,12 +1011,25 @@ ${extends("/goframe/function_layout.httl")}
         return false;
     }
 
+    var flg = 0;
     function comPropertiesName(e) {
-        //当可选字段不存在时自动获取
-        if (!cols) {
-            getComproperties();
+        // --下拉选项变化--
+        if (flg == 0) {
+            $.post("${basePath}/com/ds/selectParameters/" + srcDsModel.value, {}, function (data) {
+                if (data && data.length && data.length > 0) {
+                    var cols = [];
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        cols.push({
+                            "name": data[i].dictId,
+                            "describe": data[i].dictName,
+                            "value": data[i].filter
+                        });
+                    }
+                    e.source.load(cols);
+                    flg++;
+                }
+            });
         }
-        e.source.load(cols);
     }
 
     /**

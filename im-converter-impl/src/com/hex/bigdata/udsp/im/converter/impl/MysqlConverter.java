@@ -10,13 +10,13 @@ import com.hex.bigdata.udsp.im.converter.impl.model.datasource.JdbcDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.MysqlDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.MysqlSqlUtil;
+import com.hex.bigdata.udsp.im.converter.impl.util.SqlUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
-import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +36,7 @@ public class MysqlConverter extends JdbcWrapper implements RealtimeTargetConvert
         MysqlDatasource mysqlDatasource = new MysqlDatasource(metadata.getDatasource());
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
+        List<TableColumn> columns = SqlUtil.convertToTableColumnList(metadata.getMetadataCols());
         String sql = MysqlSqlUtil.createTable(false, fullTbName, columns, tableComment);
         JdbcUtil.executeUpdate(mysqlDatasource, sql);
     }
