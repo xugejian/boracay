@@ -62,26 +62,11 @@ public class SolrProvider implements Provider {
         if (maxNum != 0) {
             maxSize = maxNum;
         }
-        SolrQuery query = getSolrQuery(maxSize, queryColumns, orderColumns, metaReturnColumns);
 
         try {
-            List<Map<String, Object>> list = search(tbName, query, solrDatasource);
-
-            List<Result> records = new ArrayList<Result>();
-            for (Map<String, Object> map : list) {
-                Result result = new Result();
-                //字段过滤
-                Map<String, Object> returnDataMap = new HashMap<String, Object>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    returnDataMap.put(colName, map.get(colName));
-                }
-                result.set(returnDataMap);
-                //result.set(map);
-                records.add(result);
-            }
-
-            response.setRecords(records);
+            SolrQuery query = getSolrQuery(maxSize, queryColumns, orderColumns, returnColumns);
+            List<Map<String, Object>> resultList = search(tbName, query, solrDatasource);
+            response.setRecords(getRecords(resultList, returnColumns));
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -114,9 +99,6 @@ public class SolrProvider implements Provider {
         String tbName = metadata.getTbName();
         Datasource datasource = metadata.getDatasource();
 
-        //获取元数据返回字段
-        List<DataColumn> metaReturnColumns = metadata.getReturnColumns();
-
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
 
         int maxSize = solrDatasource.getMaxNum();
@@ -126,34 +108,16 @@ public class SolrProvider implements Provider {
         if (pageSize > maxSize) {
             pageSize = maxSize;
         }
-        SolrQuery query = getSolrQuery(pageIndex, pageSize, queryColumns, orderColumns, metaReturnColumns);
-
-        Page page = new Page();
-        page.setPageIndex(pageIndex);
-        page.setPageSize(pageSize);
 
         try {
+            SolrQuery query = getSolrQuery(pageIndex, pageSize, queryColumns, orderColumns, returnColumns);
             SolrPage solrPage = searchPage(tbName, query, pageIndex, pageSize, solrDatasource);
-            List<Map<String, Object>> list = solrPage.getRecords();
-
-            List<Result> records = new ArrayList<Result>();
-            for (Map<String, Object> map : list) {
-                Result result = new Result();
-                //字段过滤
-                Map<String, Object> returnDataMap = new HashMap<String, Object>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    returnDataMap.put(colName, map.get(colName));
-                }
-                result.set(returnDataMap);
-                //result.set(map);
-                records.add(result);
-            }
-
-            response.setRecords(records);
-
+            response.setRecords(getRecords(solrPage.getRecords(), returnColumns));
+            Page page = new Page();
+            page.setPageIndex(pageIndex);
+            page.setPageSize(pageSize);
             page.setTotalCount(solrPage.getTotalCount());
-
+            response.setPage(page);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -163,7 +127,6 @@ public class SolrProvider implements Provider {
             response.setMessage(e.toString());
         }
 
-        response.setPage(page);
         long now = System.currentTimeMillis();
         long consumeTime = now - bef;
         response.setConsumeTime(consumeTime);
@@ -218,7 +181,7 @@ public class SolrProvider implements Provider {
         getDataSource(collectionName, datasource).releaseConnection(solrServer);
     }
 
-    private SolrQuery getSolrQuery(int rows, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns, List<DataColumn> returnColumns) {
+    private SolrQuery getSolrQuery(int rows, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns, List<ReturnColumn> returnColumns) {
         return new SolrQuery().setQuery(getQuery(queryColumns)) //
                 .setStart(0) //
                 .setRows(rows) //
@@ -226,7 +189,7 @@ public class SolrProvider implements Provider {
                 .setFields(getFields(returnColumns));
     }
 
-    private SolrQuery getSolrQuery(int pageIndex, int pageSize, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns, List<DataColumn> returnColumns) {
+    private SolrQuery getSolrQuery(int pageIndex, int pageSize, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns, List<ReturnColumn> returnColumns) {
         return new SolrQuery().setQuery(getQuery(queryColumns)) //
                 .setStart((pageIndex - 1) * pageSize) //
                 .setRows(pageSize) //
@@ -234,15 +197,35 @@ public class SolrProvider implements Provider {
                 .setFields(getFields(returnColumns));
     }
 
-    private String getFields(List<DataColumn> returnColumns) {
-        Collections.sort(returnColumns, new Comparator<DataColumn>() {
-            public int compare(DataColumn obj1, DataColumn obj2) {
+    // 字段名改别名
+    private List<Result> getRecords(List<Map<String, Object>> resultList, List<ReturnColumn> returnColumns) {
+        List<Result> records = null;
+        if (resultList != null) {
+            records = new ArrayList<Result>();
+            for (Map<String, Object> map : resultList) {
+                Result result = new Result();
+                Map<String, Object> returnDataMap = new HashMap<String, Object>();
+                for (ReturnColumn item : returnColumns) {
+                    String colName = item.getName();
+                    String label = item.getLabel();
+                    returnDataMap.put(label, map.get(colName));
+                }
+                result.set(returnDataMap);
+                records.add(result);
+            }
+        }
+        return records;
+    }
+
+    private String getFields(List<ReturnColumn> returnColumns) {
+        Collections.sort(returnColumns, new Comparator<ReturnColumn>() {
+            public int compare(ReturnColumn obj1, ReturnColumn obj2) {
                 return obj1.getSeq().compareTo(obj2.getSeq());
             }
         });
         StringBuffer sb = new StringBuffer();
         int count = 0;
-        for (DataColumn returnColumn : returnColumns) {
+        for (ReturnColumn returnColumn : returnColumns) {
             if (returnColumn != null && StringUtils.isNotBlank(returnColumn.getName())) {
                 if (count == 0) {
                     sb.append(returnColumn.getName());
@@ -307,6 +290,13 @@ public class SolrProvider implements Provider {
     }
 
     private List<SolrQuery.SortClause> getSort(List<OrderColumn> orderColumns) {
+        // 排序字段按照序号排序
+        Collections.sort(orderColumns, new Comparator<OrderColumn>() {
+            public int compare(OrderColumn obj1, OrderColumn obj2) {
+                return obj1.getSeq().compareTo(obj2.getSeq());
+            }
+        });
+        // 排序字段集合
         List<SolrQuery.SortClause> list = new ArrayList<SolrQuery.SortClause>();
         for (OrderColumn orderColumn : orderColumns) {
             String colName = orderColumn.getName();

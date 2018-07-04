@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.constant.Operator;
-import com.hex.bigdata.udsp.common.constant.Order;
-import com.hex.bigdata.udsp.common.constant.Status;
-import com.hex.bigdata.udsp.common.constant.StatusCode;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.HBaseConnectionPoolFactory;
@@ -86,22 +83,8 @@ public class SolrHBaseProvider implements Provider {
 
         try {
             List<Map<String, String>> list = search(tbName, query, colMap, solrHBaseDatasource);
-
-            List<com.hex.bigdata.udsp.common.api.model.Result> records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
-            for (Map<String, String> map : list) {
-                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
-                //字段过滤
-                Map<String, String> returnDataMap = new HashMap<String, String>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    returnDataMap.put(colName, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                //result.putAll(map);
-                records.add(result);
-            }
-
-            response.setRecords(records);
+            list = orderBy(list, queryColumns, orderColumns); // 排序处理
+            response.setRecords(getRecords(list, returnColumns));
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -147,33 +130,15 @@ public class SolrHBaseProvider implements Provider {
         SolrQuery query = getSolrQuery(pageIndex, pageSize, queryColumns, orderColumns);
         Map<Integer, String> colMap = getColMap(metaReturnColumns);
 
-        Page page = new Page();
-        page.setPageIndex(pageIndex);
-        page.setPageSize(pageSize);
-
         try {
             HBasePage hbasePage = searchPage(tbName, query, pageIndex, pageSize, colMap, solrHBaseDatasource);
-
-            List<Map<String, String>> list = hbasePage.getRecords();
-
-            List<com.hex.bigdata.udsp.common.api.model.Result> records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
-            for (Map<String, String> map : list) {
-                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
-                //字段过滤
-                Map<String, String> returnDataMap = new HashMap<String, String>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    returnDataMap.put(colName, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                //result.putAll(map);
-                records.add(result);
-            }
-
-            response.setRecords(records);
-
+            List<Map<String, String>> list = orderBy(hbasePage.getRecords(), queryColumns, orderColumns); // 排序处理
+            response.setRecords(getRecords(list, returnColumns));
+            Page page = new Page();
+            page.setPageIndex(pageIndex);
+            page.setPageSize(pageSize);
             page.setTotalCount(hbasePage.getTotalCount());
-
+            response.setPage(page);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -182,7 +147,7 @@ public class SolrHBaseProvider implements Provider {
             response.setStatusCode(StatusCode.DEFEAT);
             response.setMessage(e.toString());
         }
-        response.setPage(page);
+
         long now = System.currentTimeMillis();
         long consumeTime = now - bef;
         response.setConsumeTime(consumeTime);
@@ -238,17 +203,21 @@ public class SolrHBaseProvider implements Provider {
     }
 
     private SolrQuery getSolrQuery(int rows, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns) {
-        return new SolrQuery().setQuery(getQuery(queryColumns)) //
+        return new SolrQuery() //
+                .setQuery(getQuery(queryColumns)) //
                 .setStart(0) //
                 .setRows(rows) //
-                .setSorts(getSort(orderColumns));
+                .setSorts(getSort(queryColumns, orderColumns)) //
+                .setFields("id");
     }
 
     private SolrQuery getSolrQuery(int pageIndex, int pageSize, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns) {
-        return new SolrQuery().setQuery(getQuery(queryColumns)) //
+        return new SolrQuery() //
+                .setQuery(getQuery(queryColumns)) //
                 .setStart((pageIndex - 1) * pageSize) //
                 .setRows(pageSize) //
-                .setSorts(getSort(orderColumns));
+                .setSorts(getSort(queryColumns, orderColumns)) //
+                .setFields("id");
     }
 
     private String getQuery(List<QueryColumn> queryColumns) {
@@ -302,15 +271,125 @@ public class SolrHBaseProvider implements Provider {
         return sb.toString();
     }
 
-    private List<SolrQuery.SortClause> getSort(List<OrderColumn> orderColumns) {
+    // 字段过滤并字段名改别名
+    private List<com.hex.bigdata.udsp.common.api.model.Result> getRecords(List<Map<String, String>> resultList, List<ReturnColumn> returnColumns) {
+        List<com.hex.bigdata.udsp.common.api.model.Result> records = null;
+        if (resultList != null) {
+            records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
+            for (Map<String, String> map : resultList) {
+                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
+                Map<String, String> returnDataMap = new HashMap<String, String>();
+                for (ReturnColumn item : returnColumns) {
+                    String colName = item.getName();
+                    String label = item.getLabel();
+                    returnDataMap.put(label, map.get(colName));
+                }
+                result.putAll(returnDataMap);
+                records.add(result);
+            }
+        }
+        return records;
+    }
+
+    private List<Map<String, String>> orderBy(List<Map<String, String>> records, List<QueryColumn> queryColumns, final List<OrderColumn> orderColumns) {
+        Map<String, QueryColumn> map = new HashMap<>();
+        for (QueryColumn queryColumn : queryColumns) {
+            map.put(queryColumn.getName(), queryColumn);
+        }
+        //  排序字段不在查询字段中，只能自己实现排序
+        final List<OrderColumn> newOrderColumns = new ArrayList<>();
+        for (OrderColumn orderColumn : orderColumns) {
+            if (map.get(orderColumn.getName()) == null) {
+                newOrderColumns.add(orderColumn);
+            }
+        }
+        // 排序字段按照序号排序
+        Collections.sort(newOrderColumns, new Comparator<OrderColumn>() {
+            public int compare(OrderColumn obj1, OrderColumn obj2) {
+                return obj1.getSeq().compareTo(obj2.getSeq());
+            }
+        });
+        // 多字段混合排序
+        Collections.sort(records, new Comparator<Map<String, String>>() {
+            public int compare(Map<String, String> obj1, Map<String, String> obj2) {
+                int flg = 0;
+                for (OrderColumn orderColumn : newOrderColumns) {
+                    String colName = orderColumn.getName();
+                    Order order = orderColumn.getOrder();
+                    DataType dataType = orderColumn.getType();
+                    String val1 = obj1.get(colName);
+                    String val2 = obj2.get(colName);
+                    if (StringUtils.isNotBlank(val1) && StringUtils.isNotBlank(val2)) {
+                        flg = compareTo(val1, val2, order, dataType);
+                        if (flg != 0) break;
+                    }
+                }
+                return flg;
+            }
+        });
+        return records;
+    }
+
+    private int compareTo(String str1, String str2, Order order, DataType dataType) {
+        if (dataType == null || DataType.STRING.equals(dataType) || DataType.VARCHAR.equals(dataType)
+                || DataType.CHAR.equals(dataType) || DataType.TIMESTAMP.equals(dataType)) {
+            if (order != null && Order.DESC.equals(order)) {
+                if (str1.compareTo(str2) > 0) {
+                    return -1;
+                } else if (str1.compareTo(str2) == 0) {
+                    return 0;
+                }
+                return 1;
+            } else {
+                if (str1.compareTo(str2) > 0) {
+                    return 1;
+                } else if (str1.compareTo(str2) == 0) {
+                    return 0;
+                }
+                return -1;
+            }
+        } else {
+            if (order != null && Order.DESC.equals(order)) {
+                if (Double.valueOf(str1).compareTo(Double.valueOf(str2)) > 0) {
+                    return -1;
+                } else if (str1.compareTo(str2) == 0) {
+                    return 0;
+                }
+                return 1;
+            } else {
+                if (Integer.valueOf(str1).compareTo(Integer.valueOf(str2)) > 0) {
+                    return 1;
+                } else if (str1.compareTo(str2) == 0) {
+                    return 0;
+                }
+                return -1;
+            }
+        }
+    }
+
+    private List<SolrQuery.SortClause> getSort(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns) {
+        Map<String, QueryColumn> map = new HashMap<>();
+        for (QueryColumn queryColumn : queryColumns) {
+            map.put(queryColumn.getName(), queryColumn);
+        }
+        // 排序字段按照序号排序
+        Collections.sort(orderColumns, new Comparator<OrderColumn>() {
+            public int compare(OrderColumn obj1, OrderColumn obj2) {
+                return obj1.getSeq().compareTo(obj2.getSeq());
+            }
+        });
+        // 排序字段集合
         List<SolrQuery.SortClause> list = new ArrayList<SolrQuery.SortClause>();
         for (OrderColumn orderColumn : orderColumns) {
             String colName = orderColumn.getName();
-            Order order = orderColumn.getOrder();
-            if (order != null && Order.DESC.equals(order)) {
-                list.add(new SolrQuery.SortClause(colName, SolrQuery.ORDER.desc));
-            } else {
-                list.add(new SolrQuery.SortClause(colName, SolrQuery.ORDER.asc));
+            // 排序字段在查询字段中，可以使用solr自带的排序方式
+            if (map.get(colName) != null) {
+                Order order = orderColumn.getOrder();
+                if (order != null && Order.DESC.equals(order)) {
+                    list.add(new SolrQuery.SortClause(colName, SolrQuery.ORDER.desc));
+                } else {
+                    list.add(new SolrQuery.SortClause(colName, SolrQuery.ORDER.asc));
+                }
             }
         }
         return list;

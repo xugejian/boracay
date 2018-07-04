@@ -63,14 +63,7 @@ public class ElasticSearchProvider implements Provider {
 
         try {
             ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
-            List<Map<String, Object>> list = elSearchPage.getRecords();
-            List<Result> records = new ArrayList<Result>();
-            for (Map<String, Object> map : list) {
-                Result result = new Result();
-                result.set(map);
-                records.add(result);
-            }
-            response.setRecords(records);
+            response.setRecords(getRecords(elSearchPage.getRecords(), returnColumns));
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -114,39 +107,49 @@ public class ElasticSearchProvider implements Provider {
             pageSize = maxSize;
         }
 
-        Page page = new Page();
-        page.setPageIndex(pageIndex);
-        page.setPageSize(pageSize);
-
-        String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
-
         try {
+            Page page = new Page();
+            page.setPageIndex(pageIndex);
+            page.setPageSize(pageSize);
+            String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
             ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
-            List<Map<String, Object>> list = elSearchPage.getRecords();
-            List<Result> records = new ArrayList<Result>();
-            if (null != list && list.size() > 0) {
-                for (Map<String, Object> map : list) {
-                    Result result = new Result();
-                    result.set(map);
-                    records.add(result);
-                }
-            }
-            response.setRecords(records);
+            response.setRecords(getRecords(elSearchPage.getRecords(), returnColumns));
             response.setStatus(Status.SUCCESS);
             page.setTotalCount(elSearchPage.getTotalCount());
+            response.setPage(page);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
             response.setStatus(Status.DEFEAT);
             response.setStatusCode(StatusCode.DEFEAT);
             response.setMessage(e.toString());
         }
-        response.setPage(page);
+
         long now = System.currentTimeMillis();
         long consumeTime = now - bef;
         response.setConsumeTime(consumeTime);
 
         logger.debug("consumeTime=" + response.getConsumeTime());
         return response;
+    }
+
+    // 字段名改别名
+    private List<Result> getRecords(List<Map<String, Object>> resultList, List<ReturnColumn> returnColumns) {
+        List<Result> records = null;
+        if (resultList != null) {
+            records = new ArrayList<Result>();
+            for (Map<String, Object> map : resultList) {
+                Result result = new Result();
+                Map<String, Object> returnDataMap = new HashMap<String, Object>();
+                for (ReturnColumn item : returnColumns) {
+                    String colName = item.getName();
+                    String label = item.getLabel();
+                    returnDataMap.put(label, map.get(colName));
+                }
+                result.set(returnDataMap);
+                records.add(result);
+            }
+        }
+        return records;
     }
 
     private ELSearchPage search(String schemaName, ELSearchDatasource datasource, String queryString, List<ReturnColumn> returnColumns) {

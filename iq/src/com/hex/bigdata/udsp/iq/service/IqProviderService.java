@@ -81,9 +81,7 @@ public class IqProviderService extends BaseService {
         Datasource datasource = application.getMetadata().getDatasource();
         Provider provider = getProviderImpl(datasource);
         IqResponse response = provider.query(request);
-        //设置返回字段信息
-        List<ReturnColumn> returnColumns = application.getReturnColumns();
-        response.setColumns(putColumnIntoMap(returnColumns));
+        response.setColumns(getColumns(application.getReturnColumns())); // 设置返回字段信息
         return response;
     }
 
@@ -102,9 +100,7 @@ public class IqProviderService extends BaseService {
         Datasource datasource = application.getMetadata().getDatasource();
         Provider provider = getProviderImpl(datasource);
         IqResponse response = provider.query(request, pageIndex, pageSize);
-        //设置返回字段信息
-        List<ReturnColumn> returnColumns = application.getReturnColumns();
-        response.setColumns(putColumnIntoMap(returnColumns));
+        response.setColumns(getColumns(application.getReturnColumns())); // 设置返回字段信息
         return response;
     }
 
@@ -114,10 +110,10 @@ public class IqProviderService extends BaseService {
      * @param returnColumns
      * @return
      */
-    private LinkedHashMap<String, String> putColumnIntoMap(List<ReturnColumn> returnColumns) {
+    private LinkedHashMap<String, String> getColumns(List<ReturnColumn> returnColumns) {
         LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();
         for (ReturnColumn returnColumn : returnColumns) {
-            columnMap.put(returnColumn.getName(), returnColumn.getType().getValue());
+            columnMap.put(returnColumn.getLabel(), returnColumn.getType().getValue());
         }
         return columnMap;
     }

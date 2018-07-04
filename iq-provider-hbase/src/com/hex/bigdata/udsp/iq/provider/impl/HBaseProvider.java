@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.iq.provider.impl;
 
-import com.hex.bigdata.udsp.common.api.model.Datasource;
-import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.common.api.model.*;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
@@ -18,6 +17,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.PageFilter;
@@ -91,30 +91,14 @@ public class HBaseProvider implements Provider {
         byte[] qualifier = hBaseDatasource.getQulifierName();
         String fqSep = hBaseDatasource.getDsvSeprator();
         String dataType = hBaseDatasource.getFqDataType();
-        List<Map<String, String>> list = null;
         HConnection conn = null;
         HTableInterface hTable = null;
         try {
             conn = getConnection(hBaseDatasource);
             hTable = conn.getTable(tbName);
-            list = scan(hTable, startRow, stopRow, colMap, maxSize, family, qualifier, fqSep, dataType);
-            // 排序处理
-            list = orderBy(list, orderColumns);
-
-            List<com.hex.bigdata.udsp.common.api.model.Result> records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
-            for (Map<String, String> map : list) {
-                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
-                //字段过滤
-                Map<String, String> returnDataMap = new HashMap<String, String>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    returnDataMap.put(colName, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                //result.putAll(map);
-                records.add(result);
-            }
-            response.setRecords(records);
+            List<Map<String, String>> list = scan(hTable, startRow, stopRow, colMap, maxSize, family, qualifier, fqSep, dataType);
+            list = orderBy(list, orderColumns); // 排序处理
+            response.setRecords(getRecords(list, returnColumns)); // 字段过滤并字段名改别名
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -142,6 +126,26 @@ public class HBaseProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime());
         return response;
+    }
+
+    // 字段过滤并字段名改别名
+    private List<com.hex.bigdata.udsp.common.api.model.Result> getRecords(List<Map<String, String>> resultList, List<ReturnColumn> returnColumns) {
+        List<com.hex.bigdata.udsp.common.api.model.Result> records = null;
+        if (resultList != null) {
+            records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
+            for (Map<String, String> map : resultList) {
+                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
+                Map<String, String> returnDataMap = new HashMap<String, String>();
+                for (ReturnColumn item : returnColumns) {
+                    String colName = item.getName();
+                    String label = item.getLabel();
+                    returnDataMap.put(label, map.get(colName));
+                }
+                result.putAll(returnDataMap);
+                records.add(result);
+            }
+        }
+        return records;
     }
 
     public IqResponse query(IqRequest request, int pageIndex, int pageSize) {
@@ -190,10 +194,6 @@ public class HBaseProvider implements Provider {
         hbasePage.setStartRow(startRow);
         hbasePage.setStopRow(stopRow);
 
-        Page page = new Page();
-        page.setPageIndex(pageIndex);
-        page.setPageSize(pageSize);
-
         HConnection conn = null;
         HTableInterface hTable = null;
         try {
@@ -201,24 +201,13 @@ public class HBaseProvider implements Provider {
             hTable = conn.getTable(tbName);
             hbasePage = scanPage(hTable, hbasePage, colMap, family, qualifier, fqSep, dataType);
             List<Map<String, String>> list = hbasePage.getRecords();
-            // 排序处理
-            list = orderBy(list, orderColumns);
-
-            List<com.hex.bigdata.udsp.common.api.model.Result> records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
-            for (Map<String, String> map : list) {
-                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
-                //字段过滤
-                Map<String, String> returnDataMap = new HashMap<String, String>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    returnDataMap.put(colName, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                //result.putAll(map);
-                records.add(result);
-            }
-            response.setRecords(records);
+            list = orderBy(list, orderColumns); // 排序处理
+            response.setRecords(getRecords(list, returnColumns)); // 字段过滤并字段名改别名
+            Page page = new Page();
+            page.setPageIndex(pageIndex);
+            page.setPageSize(pageSize);
             page.setTotalCount(hbasePage.getTotalCount());
+            response.setPage(page);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -240,7 +229,6 @@ public class HBaseProvider implements Provider {
             }
         }
 
-        response.setPage(page);
         long now = System.currentTimeMillis();
         long consumeTime = now - bef;
         response.setConsumeTime(consumeTime);
@@ -309,7 +297,7 @@ public class HBaseProvider implements Provider {
                     DataType dataType = orderColumn.getType();
                     String val1 = obj1.get(colName);
                     String val2 = obj2.get(colName);
-                    if(StringUtils.isNotBlank(val1) && StringUtils.isNotBlank(val2)) {
+                    if (StringUtils.isNotBlank(val1) && StringUtils.isNotBlank(val2)) {
                         flg = compareTo(val1, val2, order, dataType);
                         if (flg != 0) break;
                     }
