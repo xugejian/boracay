@@ -132,6 +132,25 @@ public class ImMetadataService extends BaseService {
         return true;
     }
 
+    @Transactional
+    public boolean addColumns(ImMetadataDto imMetadataDto) {
+        ImMetadata imMetadata = imMetadataDto.getImMetadata();
+        String pkId = imMetadata.getPkId();
+        List<ImMetadataCol> imMetadataCols = imMetadataDto.getImMetadataColList();
+        int count = imMetadataColService.select(pkId).size();
+        for (ImMetadataCol imMetadataCol : imMetadataCols) {
+            imMetadataCol.setSeq((short)(imMetadataCol.getSeq() + count));
+            // 是主键或是索引或是存储
+            if ("0".equals(imMetadataCol.getPrimary())
+                    || "0".equals(imMetadataCol.getIndexed())
+                    || "0".equals(imMetadataCol.getStored())) {
+                imMetadataCol.setMdId(pkId);
+                imMetadataColService.insert(imMetadataCol);
+            }
+        }
+        return true;
+    }
+
     public List<ImMetadataView> select(ImMetadataView imMetadataView, Page page) {
         return imMetadataMapper.select(imMetadataView, page);
     }
@@ -190,6 +209,18 @@ public class ImMetadataService extends BaseService {
         imMetadata.setStatus("2"); //状态为已建
         imConverterService.createSchema(getMetadata(pkId));
         return imMetadataMapper.update(pkId, imMetadata);
+    }
+
+    public boolean addColumns(String pkId, List<ImMetadataCol> addImMetadataCols) throws Exception {
+        Iterator<ImMetadataCol> it = addImMetadataCols.iterator();
+        while (it.hasNext()) {
+            ImMetadataCol imMetadataCol = it.next();
+            if("1".equals(imMetadataCol.getStored()) && "1".equals(imMetadataCol.getIndexed())){
+                it.remove();
+            }
+        }
+        imConverterService.addColumns(getMetadata(pkId), convertToMetadataColList(addImMetadataCols));
+        return true;
     }
 
     @Transactional

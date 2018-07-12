@@ -77,7 +77,6 @@ public class RcServiceService {
     private RcServiceForServiceNameMapper rcServiceForServiceNameMapper;
     @Autowired
     private RcServiceForAppTypeAndAppIdMapper rcServiceForAppTypeAndAppIdMapper;
-
     @Autowired
     private MmApplicationService mmApplicationService;
     @Autowired
@@ -90,7 +89,6 @@ public class RcServiceService {
     private OlqApplicationService olqApplicationService;
     @Autowired
     private ImModelService imModelService;
-
 
     /**
      * 服务授权

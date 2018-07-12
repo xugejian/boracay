@@ -68,6 +68,14 @@ public class KuduConverter extends KuduWrapper {
     }
 
     @Override
+    public void addColumns(Metadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
+        if (addMetadataCols != null && addMetadataCols.size() != 0) {
+            KuduMetadata kuduMetadata = new KuduMetadata(metadata);
+            KuduUtil.addColumns(kuduMetadata, addMetadataCols);
+        }
+    }
+
+    @Override
     public void createTargetEngineSchema(Model model) throws Exception {
         Metadata metadata = model.getTargetMetadata();
         HiveDatasource eHiveDs = new HiveDatasource(model.getEngineDatasource());

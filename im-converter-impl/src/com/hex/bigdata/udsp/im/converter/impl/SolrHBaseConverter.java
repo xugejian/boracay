@@ -68,6 +68,34 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
     }
 
     @Override
+    public void addColumns(Metadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
+        hbaseConverter.addColumns(metadata, addMetadataCols);
+
+        List<MetadataCol> newMetadataCols = new ArrayList<>();
+        for (MetadataCol metadataCol : metadata.getMetadataCols()) {
+            if (metadataCol.isPrimary() || metadataCol.isIndexed()) { // 是主键或索引字段
+                if (metadataCol.isIndexed()) { // 索引字段，必须不存储
+                    metadataCol.setStored(false);
+                }
+                newMetadataCols.add(metadataCol);
+            }
+        }
+        metadata.setMetadataCols(newMetadataCols);
+
+        List<MetadataCol> newAddMetadataCols = new ArrayList<>();
+        for (MetadataCol metadataCol : addMetadataCols) {
+            if (metadataCol.isPrimary() || metadataCol.isIndexed()) { // 是主键或索引字段
+                if (metadataCol.isIndexed()) { // 索引字段，必须不存储
+                    metadataCol.setStored(false);
+                }
+                newAddMetadataCols.add(metadataCol);
+            }
+        }
+
+        solrConverter.addColumns(metadata, newAddMetadataCols);
+    }
+
+    @Override
     public void createTargetEngineSchema(Model model) throws Exception {
         String id = model.getId();
 

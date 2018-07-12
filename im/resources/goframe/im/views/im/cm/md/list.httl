@@ -30,6 +30,10 @@ ${extends("/goframe/function_layout.httl")}
                     <a class="nui-button" iconCls="icon-edit" plain="true" onclick="edit" enabled="false"
                        id="edit">编辑</a>
                     #end
+                    #if(hasPermission("IM.cm.md.list.addCols"))
+                    <a class="nui-button" iconCls="icon-edit" plain="true" onclick="addCols" enabled="false"
+                       id="addCols">添加字段</a>
+                    #end
                     #if(hasPermission("IM.cm.md.list.remove"))
                     <a class="nui-button" iconCls="icon-remove" plain="true" onclick="remove" enabled="false"
                        id="remove">删除</a>
@@ -207,12 +211,15 @@ ${extends("/goframe/function_layout.httl")}
         if (rows.length == 1) {
             rows[0].type == 0 && rows[0].status == 2 ? nui.get("remove").disable() : nui.get("remove").enable();
             rows[0].type == 0 && rows[0].status == 2 ? nui.get("edit").disable() : nui.get("edit").enable();
+            rows[0].type == 0 && rows[0].status == 2 ? nui.get("addCols").enable() : nui.get("addCols").disable();
         } else if (rows.length == 0) {
             nui.get("edit").disable();
             nui.get("remove").disable();
+            nui.get("addCols").disable();
         } else {
             nui.get("edit").disable();
             nui.get("remove").disable();
+            nui.get("addCols").disable();
             var canRemove = true;
             $.each(rows, function (i, val) {
                 if (val.type == 0 && val.status == 2) {
@@ -258,6 +265,30 @@ ${extends("/goframe/function_layout.httl")}
         nui.open({
             url: "${basePath}/goframe/p/im.cm.md.edit?pkId=" + row.pkId,
             title: "编辑",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+                if (action == "success") {
+                    grid1.load();
+                }
+            }
+        })
+    }
+
+    /**
+     * 添加字段
+     */
+    function addCols() {
+        var row = grid1.getSelected();
+        if (!row) {
+            nui.alert("请选择一条记录!");
+            return;
+        }
+        nui.open({
+            url: "${basePath}/goframe/p/im.cm.md.addCols?pkId=" + row.pkId,
+            title: "添加字段",
             width: 800,
             height: 600,
             onload: function () {

@@ -3,8 +3,6 @@ package com.hex.bigdata.udsp.rc.service;
 import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
-import com.hex.bigdata.udsp.iq.provider.Provider;
-import com.hex.bigdata.udsp.iq.service.IqProviderService;
 import com.hex.bigdata.udsp.rc.alarm.Alarm;
 import com.hex.bigdata.udsp.rc.alarm.model.Config;
 import com.hex.bigdata.udsp.rc.model.RcUserService;

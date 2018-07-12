@@ -252,7 +252,8 @@ public class ConsumerService {
                 response = rtsSyncService.startConsumer(appId, request.getTimeout());
             } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equalsIgnoreCase(appType)) {
                 logger.debug("execute IM SYNC START");
-                response = imSyncService.startForTimeout(consumeRequest, bef);
+//                response = imSyncService.startForTimeout(consumeRequest, bef);
+                response = imSyncService.start(appId, paraMap);
             }
 
             if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(type)

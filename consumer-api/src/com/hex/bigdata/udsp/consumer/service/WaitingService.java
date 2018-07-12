@@ -62,21 +62,29 @@ public class WaitingService {
     public boolean isWaiting(ConsumeRequest consumeRequest, long bef) {
         Current mcCurrent = consumeRequest.getMcCurrent();
         String consumeId = mcCurrent.getPkId();
-        long cycleTimeInterval = syncCycleTimeInterval;
-        if (ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
+        long cycleTimeInterval = 0;
+        if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
+            cycleTimeInterval = syncCycleTimeInterval;
+        } else {
             cycleTimeInterval = asyncCycleTimeInterval;
         }
         QueueIsFullResult isFullResult = consumeRequest.getQueueIsFullResult();
+        long maxWaitTimeout = 0;
         RcUserService rcUserService = consumeRequest.getRcUserService();
-        long maxAsyncWaitTimeout = (rcUserService == null || rcUserService.getMaxAsyncWaitTimeout() == 0) ?
-                initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
+        if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
+            maxWaitTimeout = (rcUserService == null || rcUserService.getMaxSyncWaitTimeout() == 0) ?
+                    initParamService.getMaxSyncWaitTimeout() : rcUserService.getMaxSyncWaitTimeout();
+        } else {
+            maxWaitTimeout = (rcUserService == null || rcUserService.getMaxAsyncWaitTimeout() == 0) ?
+                    initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
+        }
         boolean passFlg = true;
         if (isFullResult != null && !isFullResult.isWaitQueueIsFull()) { // 任务进入等待队列
             passFlg = false;
             try {
                 // 开启一个新的线程，其内部循环判断是否可以执行，可以执行时或者等待超时时向下走
                 Future<Boolean> waitFutureTask = executorService.submit(new WaitQueueCallable(mcCurrent, isFullResult.getWaitQueueTaskId(), cycleTimeInterval));
-                passFlg = waitFutureTask.get(maxAsyncWaitTimeout, TimeUnit.SECONDS);
+                passFlg = waitFutureTask.get(maxWaitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 loggingService.writeResponseLog(null, consumeRequest, bef, 0,
                         ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName() + ":" + e.toString(), consumeId);

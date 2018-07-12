@@ -96,6 +96,14 @@ public class SolrConverter extends SolrWrapper {
     }
 
     @Override
+    public void addColumns(Metadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
+        if (addMetadataCols != null && addMetadataCols.size() != 0) {
+            SolrMetadata solrMetadata = new SolrMetadata(metadata);
+            SolrUtil.updateCollection(solrMetadata, addMetadataCols);
+        }
+    }
+
+    @Override
     public List<MetadataCol> columnInfo(Model model) {
         SolrDatasource solrDatasource = new SolrDatasource(model.getSourceDatasource());
         String solrServers = solrDatasource.getSolrServers();

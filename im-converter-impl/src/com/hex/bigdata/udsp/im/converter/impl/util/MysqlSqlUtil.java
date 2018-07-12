@@ -6,6 +6,7 @@ import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,6 +83,17 @@ public class MysqlSqlUtil {
     public static String insert(String tableName, List<ValueColumn> valueColumns) {
         return "INSERT INTO " + tableName + SqlUtil.getIntoNames(valueColumns)
                 + " VALUES " + SqlUtil.getIntoValues(valueColumns);
+    }
+
+    /**
+     * 添加多个字段
+     *
+     * @param tableName
+     * @param columns
+     * @return
+     */
+    public static String addColumns(String tableName, List<TableColumn> columns) {
+        return "ALTER TABLE " + tableName + " ADD COLUMNS " + getColumns(columns);
     }
 
     private static String getValue(DataType dataType, String value) {

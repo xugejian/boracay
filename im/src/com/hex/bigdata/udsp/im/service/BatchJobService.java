@@ -19,6 +19,7 @@ import org.apache.hive.jdbc.HiveStatement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -38,6 +39,12 @@ public class BatchJobService {
     private BatchMapper batchMapper;
     @Autowired
     private ImConverterService imConverterService;
+
+    /**
+     * 保留最近N天的批量作业的信息
+     */
+    @Value("${keep.batch.task.period:30}")
+    private int keepBatchTaskPeriod;
 
     /**
      * 启动
@@ -181,6 +188,9 @@ public class BatchJobService {
      * 清空过时的批量作业信息
      */
     public void cleanOutmodedBatch() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1 * keepBatchTaskPeriod);
+        Date date = calendar.getTime();
         List<BatchInfo> batchInfos = selectList();
         for (BatchInfo batchInfo : batchInfos) {
             String id = batchInfo.getId();
@@ -188,8 +198,12 @@ public class BatchJobService {
             String host = batchInfo.getHost();
             if ((BatchStatus.BUILD_SUCCESS == status || BatchStatus.BUILD_FAIL == status)
                     && HOST_KEY.equals(host)) {
-                logger.debug("删除失败或成功且过时的批量作业信息,ID:" + id);
-                delete(id);
+                Date endDate = batchInfo.getEndTime();
+                // 结束时间小于等于当前N天前的时间
+                if (endDate != null && endDate.compareTo(date) <= 0) {
+                    logger.debug("删除失败或成功且过时的批量作业信息,ID:" + id);
+                    delete(id);
+                }
             }
         }
     }

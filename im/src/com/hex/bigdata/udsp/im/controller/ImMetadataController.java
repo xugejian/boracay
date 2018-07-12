@@ -168,6 +168,35 @@ public class ImMetadataController {
         return new MessageResult(status, message);
     }
 
+    @RequestMapping({"/updateAndSave"})
+    @ResponseBody
+    public MessageResult updateAndSave(@RequestBody ImMetadataDto imMetadataDto) {
+        boolean status = true;
+        String message = "更新并更新成功";
+        if (imMetadataDto == null) {
+            status = false;
+            message = "请求参数为空";
+        } else {
+            try {
+                if (!imMetadataService.addColumns(imMetadataDto.getImMetadata().getPkId(), imMetadataDto.getImMetadataColList())
+                        || !imMetadataService.addColumns(imMetadataDto)) {
+                    status = false;
+                    message = "保存并创建失败";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                status = false;
+                message = "系统异常：" + e;
+            }
+        }
+        if (status) {
+            logger.debug(message);
+        } else {
+            logger.info(message);
+        }
+        return new MessageResult(status, message);
+    }
+
     @RequestMapping({"/createTable/{pkId}"})
     @ResponseBody
     public MessageResult createTable(@PathVariable("pkId") String pkId) {

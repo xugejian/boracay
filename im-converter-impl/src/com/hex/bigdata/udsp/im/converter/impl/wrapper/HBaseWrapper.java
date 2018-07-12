@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.xml.crypto.Data;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -167,20 +168,9 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
             for (int i = 0; i < dts.size(); i++) {
                 MetadataCol mdCol = dts.get(i);
                 String name = mdCol.getName();
-                String length = mdCol.getLength();
-                int len = getLen(length);
+                int len = getLen(mdCol.getLength());
                 sql += (keys.size() == 0 ? "\n" : "\n,");
-                if (len == 19) {
-                    sql += "SUBSTR(REGEXP_REPLACE(CAST(" + name + " AS STRING),'/','-'),1,19)";
-                } else if (len == 17) {
-                    sql += "SUBSTR(REGEXP_REPLACE(REGEXP_REPLACE(CAST(" + name + " AS STRING),'/','-'),'-',''),1,17)";
-                } else if (len == 10) {
-                    sql += "SUBSTR(REGEXP_REPLACE(CAST(" + name + " AS STRING),'/','-'),1,10)";
-                } else if (len == 8) {
-                    sql += "SUBSTR(REGEXP_REPLACE(REGEXP_REPLACE(CAST(" + name + " AS STRING),'/','-'),'-',''),1,8)";
-                } else {
-                    sql += "REGEXP_REPLACE(CAST(" + name + " AS STRING),'/','-')";
-                }
+                sql += getDtSql(len, name);
             }
         }
         // 哈希尾
@@ -188,6 +178,22 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
             sql += getHashStrSql(vals);
         }
         sql += "\n) AS KEY";
+        return sql;
+    }
+
+    private String getDtSql(int length, String colName) {
+        String sql = "";
+        if (length == 8) {
+            sql = "SUBSTR(REGEXP_REPLACE(REGEXP_REPLACE(CAST(" + colName + " AS STRING),'/','-'),'-',''),1,8)";
+        } else if (length == 10) {
+            sql = "SUBSTR(REGEXP_REPLACE(CAST(" + colName + " AS STRING),'/','-'),1,10)";
+        } else if (length == 17) {
+            sql = "SUBSTR(REGEXP_REPLACE(REGEXP_REPLACE(CAST(" + colName + " AS STRING),'/','-'),'-',''),1,17)";
+        } else if (length == 19) {
+            sql = "SUBSTR(REGEXP_REPLACE(CAST(" + colName + " AS STRING),'/','-'),1,19)";
+        } else {
+            sql = "CAST(" + colName + " AS STRING)";
+        }
         return sql;
     }
 
@@ -208,7 +214,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
 
     protected int getLen(String length) {
         int len = 0;
-        if (StringUtils.isNotBlank(length)) {
+        if (StringUtils.isNotBlank(length) && StringUtils.isNumeric(length)) {
             try {
                 len = Integer.valueOf(length);
             } catch (Exception e) {
@@ -240,9 +246,15 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         }
         String sql = "\nCONCAT_WS('" + seprator + "'";
         for (int i = 0; i < vals.size(); i++) {
-            MetadataCol metadataCol = vals.get(i);
-            String sName = metadataCol.getName();
-            sql += "\n,NVL(CAST(" + sName + " AS STRING),'')";
+            MetadataCol mdCol = vals.get(i);
+            String name = mdCol.getName();
+            sql += "\n,";
+            if (DataType.TIMESTAMP == mdCol.getType()) {
+                int len = getLen(mdCol.getLength());
+                sql += getDtSql(len, name);
+            } else {
+                sql += "NVL(CAST(" + name + " AS STRING),'')";
+            }
         }
         sql += "\n) AS VAL";
         return sql;

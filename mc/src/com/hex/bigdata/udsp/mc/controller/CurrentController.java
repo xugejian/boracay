@@ -180,7 +180,7 @@ public class CurrentController extends BaseController {
     public MessageResult emptyRunCache() {
         boolean status = false;
         String message = "清空运行队列失败";
-        if (currentService.emptyCache() && runQueueService.emptyCache()) {
+        if (runQueueService.emptyCache()) {
             status = true;
             message = "清空运行队列成功";
         }
@@ -197,7 +197,7 @@ public class CurrentController extends BaseController {
     public MessageResult emptyWaitCache() {
         boolean status = false;
         String message = "清空等待队列失败";
-        if (currentService.emptyCacheWait() && waitQueueService.emptyCache()) {
+        if (waitQueueService.emptyCache()) {
             status = true;
             message = "清空等待队列成功";
         }

@@ -44,4 +44,13 @@ public interface TargetConverter extends Converter {
      * @throws Exception
      */
     boolean checkSchema(Metadata metadata) throws Exception;
+
+    /**
+     * 添加字段
+     *
+     * @param metadata
+     * @param addMetadataCols
+     * @throws Exception
+     */
+    void addColumns(Metadata metadata, List<MetadataCol> addMetadataCols) throws Exception;
 }

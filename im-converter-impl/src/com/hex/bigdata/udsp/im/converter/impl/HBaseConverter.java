@@ -67,6 +67,11 @@ public class HBaseConverter extends HBaseWrapper {
     }
 
     @Override
+    public void addColumns(Metadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
+        // HBase无需更新表结构
+    }
+
+    @Override
     public boolean testDatasource(Datasource datasource) {
         boolean canConnection = false;
         HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource);
