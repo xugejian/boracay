@@ -111,7 +111,7 @@ public class KuduUtil {
                 if (metadataCol.isPrimary()) { // 主键
                     columns.add(schemaBuilder.key(true).build());
                     count++;
-                } else { // 非主键
+                } else if (metadataCol.isStored()) { // 存储
                     columns.add(schemaBuilder.build());
                 }
             }
@@ -147,6 +147,24 @@ public class KuduUtil {
             } finally {
                 release(datasource, client);
             }
+        }
+    }
+
+    public static void addColumns(KuduMetadata metadata, List<MetadataCol> addMetadataCol) throws Exception {
+        KuduDatasource datasource = new KuduDatasource(metadata.getDatasource());
+        String tableName = metadata.getTbName();
+        if (tableExists(datasource, tableName)) {
+            logger.debug("Kudu表" + tableName + "存在，进行添加字段！");
+            AlterTableOptions alterTableOptions = new AlterTableOptions();
+            ColumnSchema.ColumnSchemaBuilder schemaBuilder = null;
+            for (MetadataCol metadataCol : addMetadataCol) {
+                schemaBuilder = new ColumnSchema.ColumnSchemaBuilder(metadataCol.getName(),
+                        getKuduType(metadataCol.getType()));
+                alterTableOptions.addColumn(schemaBuilder.build());
+            }
+            getClient(datasource).alterTable(tableName, alterTableOptions);
+        } else {
+            throw new Exception("Kudu表" + tableName + "不存在，无法添加字段！");
         }
     }
 

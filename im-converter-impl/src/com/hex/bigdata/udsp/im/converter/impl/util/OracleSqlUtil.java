@@ -24,22 +24,47 @@ public class OracleSqlUtil {
         return "CREATE TABLE " + tableName + getColumns(columns);
     }
 
-    public static List<String> createColComment(String tableName, List<TableColumn> columns) {
-        TableColumn column = null;
-        String colName = "";
-        String colComment = "";
-        List<String> commentSqls = new ArrayList<>();
+    /**
+     * 添加多个字段注释
+     *
+     * @param tableName
+     * @param columns
+     * @return
+     */
+    public static List<String> commentColumns(String tableName, List<TableColumn> columns) {
+        List<String> list = new ArrayList<>();
         if (columns != null && columns.size() != 0) {
-            for (int i = 0; i < columns.size(); i++) {
-                column = columns.get(i);
-                colName = column.getColName();
-                colComment = column.getColComment();
+            for (TableColumn column : columns) {
+                String colName = column.getColName();
+                String colComment = column.getColComment();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(colComment)) {
-                    commentSqls.add(commentColumn(tableName, colName, colComment));
+                    list.add(commentColumn(tableName, colName, colComment));
                 }
             }
         }
-        return commentSqls;
+        return list;
+    }
+
+    /**
+     * 添加多个字段
+     *
+     * @param tableName
+     * @param columns
+     * @return
+     */
+    public static List<String> addColumns(String tableName, List<TableColumn> columns) {
+        List<String> list = new ArrayList<>();
+        if (columns != null && columns.size() != 0) {
+            for (TableColumn column : columns) {
+                String colName = column.getColName();
+                String length = column.getLength();
+                String dataType = column.getDataType();
+                if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
+                    list.add(addColumn(tableName, colName, getColType(dataType, length)));
+                }
+            }
+        }
+        return list;
     }
 
     /**
@@ -119,19 +144,27 @@ public class OracleSqlUtil {
         return "UPDATE " + tableName + SqlUtil.getSetValues(valueColumns) + SqlUtil.getWhere(whereProperties);
     }
 
+    /**
+     * 添加字段
+     *
+     * @param tableName
+     * @param colName
+     * @param dataType
+     * @return
+     */
+    public static String addColumn(String tableName, String colName, String dataType) {
+        return "ALTER TABLE " + tableName + " ADD (" + colName + " " + dataType + ")";
+    }
+
     private static String getColumns(List<TableColumn> columns) {
         String sql = "";
-        TableColumn column = null;
-        String colName = "";
-        String dataType = "";
-        String length = "";
         if (columns != null && columns.size() != 0) {
             sql = "\n (";
             for (int i = 0; i < columns.size(); i++) {
-                column = columns.get(i);
-                colName = column.getColName();
-                dataType = column.getDataType();
-                length = column.getLength();
+                TableColumn column = columns.get(i);
+                String colName = column.getColName();
+                String dataType = column.getDataType();
+                String length = column.getLength();
                 if (StringUtils.isNoneBlank(colName) && StringUtils.isNoneBlank(dataType)) {
                     dataType = getColType(dataType, length);
                     if (i == 0) {
@@ -159,11 +192,17 @@ public class OracleSqlUtil {
         return dataType;
     }
 
+    /**
+     * 添加主键
+     *
+     * @param tableName
+     * @param columns
+     * @return
+     */
     public static String createPrimaryKey(String tableName, List<TableColumn> columns) {
         if (StringUtils.isEmpty(tableName)) {
             return "";
         }
-        StringBuffer sb = new StringBuffer();
         List<String> list = new ArrayList<>();
         for (TableColumn col : columns) {
             if (col.isPrimaryKey() && !"STRING".equals(col.getDataType())) {
@@ -173,7 +212,8 @@ public class OracleSqlUtil {
         if (list.size() <= 0) {
             return "";
         } else {
-            return "alter table " + tableName + " add constraint primaryKey primary key (" + list.toString().replaceAll("(\\[|\\])", "") + ")";
+            return "ALTER TABLE " + tableName + " ADD CONSTRAINT PRIMARYKEY PRIMARY KEY ("
+                    + list.toString().replaceAll("(\\[|\\])", "") + ")";
         }
     }
 }

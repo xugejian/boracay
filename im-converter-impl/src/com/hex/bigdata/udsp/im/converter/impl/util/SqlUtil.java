@@ -2,10 +2,13 @@ package com.hex.bigdata.udsp.im.converter.impl.util;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
+import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -234,5 +237,18 @@ public class SqlUtil {
             sql += ")";
         }
         return sql;
+    }
+
+
+    public static List<TableColumn> convertToTableColumnList(List<MetadataCol> metadataCol) {
+        List<TableColumn> tableColumns = new ArrayList<>();
+        for (MetadataCol col : metadataCol) {
+            if (col.isStored()) { // 存储
+                TableColumn tableColumn = new TableColumn(col.getName(), col.getType().getValue(), col.getDescribe(),
+                        org.apache.commons.lang.StringUtils.isEmpty(col.getLength()) ? "0" : col.getLength(), col.isPrimary());
+                tableColumns.add(tableColumn);
+            }
+        }
+        return tableColumns;
     }
 }

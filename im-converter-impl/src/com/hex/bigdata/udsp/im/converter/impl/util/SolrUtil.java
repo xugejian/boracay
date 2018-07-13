@@ -7,6 +7,7 @@ import com.hex.bigdata.udsp.im.converter.impl.model.metadata.SolrMetadata;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.Page;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +20,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.zookeeper.*;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -29,10 +31,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -104,19 +103,12 @@ public class SolrUtil {
         // 判断是否已经存在该表
         if (checkCollection(solrServers, collectionName)) {
             logger.warn("Solr表" + collectionName + "存在，进行删除！");
+            // 删除Collection
+            if (!deleteCollection(metadata)) {
+                throw new RuntimeException("删除SOLR表失败，请检查SOLR配置！");
+            }
             // 删除Config
             deleteZnode(solrUrl, collectionName);
-            // 删除Collection
-            for (String solrServer : getSolrServerStrings(solrServers)) {
-                String url = getSolrAdminCollectionsUrl(solrServer);
-                String param = "action=DELETE" + "&name=" + collectionName;
-                try {
-                    sendGet(url, param);
-                } catch (Exception e) {
-                    continue;
-                }
-                break;
-            }
         } else {
             logger.debug("Solr表" + collectionName + "不存在，无需删除！");
             if (!ifExists) {
@@ -128,7 +120,47 @@ public class SolrUtil {
     }
 
     /**
-     * 创建Collection
+     * 删除Collection
+     *
+     * @param metadata
+     * @return
+     */
+    public static boolean deleteCollection(SolrMetadata metadata) {
+        String collectionName = metadata.getTbName();
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
+        String solrServers = solrDatasource.getSolrServers();
+        for (String solrServer : getSolrServerStrings(solrServers)) {
+            String url = getSolrAdminCollectionsUrl(solrServer);
+            String param = "action=DELETE&name=" + collectionName;
+            try {
+                String response = sendGet(url, param);
+                Document document = DocumentHelper.parseText(response);
+                Element root = document.getRootElement();
+                List<Element> lstElts = root.elements("lst");
+                Attribute att = null;
+                for (Element lstElt : lstElts) {
+                    att = lstElt.attribute("name");
+                    if ("responseHeader".equals(att.getValue())) {
+                        List<Element> intElts = lstElt.elements("int");
+                        for (Element intElt : intElts) {
+                            att = intElt.attribute("name");
+                            if ("status".equals(att.getValue())) {
+                                if ("0".equals(intElt.getText())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 上传配置并创建Collection
      *
      * @param metadata
      * @return
@@ -137,11 +169,7 @@ public class SolrUtil {
     public static boolean createCollection(SolrMetadata metadata, boolean ifNotExists) throws Exception {
         // 检查参数
         checkSolrProperty(metadata);
-
         String collectionName = metadata.getTbName();
-        int replicas = metadata.getReplicas();
-        int shards = metadata.getShards();
-        int maxShardsPerNode = metadata.getMaxShardsPerNode();
         List<MetadataCol> metadataCols = metadata.getMetadataCols();
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
         String solrServers = solrDatasource.getSolrServers();
@@ -157,34 +185,133 @@ public class SolrUtil {
             // 添加Config
             uploadSolrConfig(solrUrl, collectionName, metadataCols);
             // 创建Collection
-            String response = "";
-            String message = "创建SOLR表失败，请检查SOLR配置！";
-            boolean status = false;
-            for (String solrServer : getSolrServerStrings(solrServers)) {
-                String url = getSolrAdminCollectionsUrl(solrServer);
-                String param = "action=CREATE" + "&name=" + collectionName + "&replicationFactor=" + replicas +
-                        "&numShards=" + shards + "&maxShardsPerNode=" + maxShardsPerNode +
-                        "&collection.configName=" + collectionName;
-                try {
-                    response = sendGet(url, param);
-                } catch (Exception e) {
-                    continue;
-                }
-                if (StringUtils.isEmpty(response)) {
-                    continue;
-                } else {
-                    message = "创建SOLR表成功！";
-                    status = true;
-                    break;
-                }
-            }
-            // SOLR建表不成功，删除 SOLR配置
-            if(!status){
+            if (!createCollection(metadata)) {
                 deleteZnode(solrUrl, collectionName); // 删除Config
-                throw new RuntimeException(message);
+                throw new RuntimeException("创建SOLR表失败，请检查SOLR配置！");
             }
         }
         return true;
+    }
+
+    /**
+     * 创建Collection
+     *
+     * @param metadata
+     * @return
+     * @throws Exception
+     */
+    public static boolean createCollection(SolrMetadata metadata) throws Exception {
+        String collectionName = metadata.getTbName();
+        int replicas = metadata.getReplicas();
+        int shards = metadata.getShards();
+        int maxShardsPerNode = metadata.getMaxShardsPerNode();
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
+        String solrServers = solrDatasource.getSolrServers();
+        String response = "";
+        for (String solrServer : getSolrServerStrings(solrServers)) {
+            String url = getSolrAdminCollectionsUrl(solrServer);
+            String param = "action=CREATE" + "&name=" + collectionName + "&replicationFactor=" + replicas +
+                    "&numShards=" + shards + "&maxShardsPerNode=" + maxShardsPerNode +
+                    "&collection.configName=" + collectionName;
+            try {
+                response = sendGet(url, param);
+                Document document = DocumentHelper.parseText(response);
+                Element root = document.getRootElement();
+                List<Element> lstElts = root.elements("lst");
+                Attribute att = null;
+                for (Element lstElt : lstElts) {
+                    att = lstElt.attribute("name");
+                    if ("responseHeader".equals(att.getValue())) {
+                        List<Element> intElts = lstElt.elements("int");
+                        for (Element intElt : intElts) {
+                            att = intElt.attribute("name");
+                            if ("status".equals(att.getValue())) {
+                                if ("0".equals(intElt.getText())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 更新配置并重载Collection
+     *
+     * @param metadata
+     * @param addMetadataCols
+     * @return
+     */
+    public static void updateCollection(SolrMetadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
+        String collectionName = metadata.getTbName();
+        List<MetadataCol> metadataCols = metadata.getMetadataCols();
+        metadataCols.addAll(addMetadataCols); // 添加新的字段
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
+        String solrServers = solrDatasource.getSolrServers();
+        String solrUrl = solrDatasource.getSolrUrl();
+        if (checkCollection(solrServers, collectionName)) {
+            logger.debug("Solr表" + collectionName + "存在，进行更新！");
+            // 更新Config
+            updateSolrConfig(solrUrl, collectionName, metadataCols);
+            // 重载Collection
+            if (!reloadCollection(metadata)) {
+                /*
+                还原回原来的配置并且重载
+                 */
+                updateSolrConfig(solrUrl, collectionName, metadata.getMetadataCols()); // 更新配置
+                reloadCollection(metadata); // 重载Collection
+                throw new RuntimeException("重载SOLR表失败，请检查SOLR配置！");
+            }
+        } else {
+            throw new Exception("Solr表" + collectionName + "不存在，无法更新！");
+        }
+    }
+
+    /**
+     * 重载Collection
+     *
+     * @param metadata
+     * @return
+     */
+    public static boolean reloadCollection(SolrMetadata metadata) {
+        String collectionName = metadata.getTbName();
+        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
+        String solrServers = solrDatasource.getSolrServers();
+        String response = "";
+        for (String solrServer : getSolrServerStrings(solrServers)) {
+            String url = getSolrAdminCollectionsUrl(solrServer);
+            String param = "action=RELOAD&name=" + collectionName;
+            try {
+                response = sendGet(url, param);
+                Document document = DocumentHelper.parseText(response);
+                Element root = document.getRootElement();
+                List<Element> lstElts = root.elements("lst");
+                Attribute att = null;
+                for (Element lstElt : lstElts) {
+                    att = lstElt.attribute("name");
+                    if ("responseHeader".equals(att.getValue())) {
+                        List<Element> intElts = lstElt.elements("int");
+                        for (Element intElt : intElts) {
+                            att = intElt.attribute("name");
+                            if ("status".equals(att.getValue())) {
+                                if ("0".equals(intElt.getText())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        return false;
     }
 
     public static String getSolrAdminCollectionsUrl(String solrServer) {
@@ -204,8 +331,19 @@ public class SolrUtil {
      * @throws Exception
      */
     public static void uploadSolrConfig(String solrUrl, String collectionName, List<MetadataCol> metadataCols) throws Exception {
-        ZooKeeper zkClient = getZkClient(solrUrl);
-        upload(zkClient, solrConfigPath, SOLR_CONFIG_ZOOKEEPER_DIR, collectionName, metadataCols);
+        upload(getZkClient(solrUrl), solrConfigPath, SOLR_CONFIG_ZOOKEEPER_DIR, collectionName, metadataCols);
+    }
+
+    /**
+     * 更新配置文件
+     *
+     * @param solrUrl
+     * @param collectionName
+     * @param metadataCols
+     */
+    public static void updateSolrConfig(String solrUrl, String collectionName, List<MetadataCol> metadataCols) throws Exception {
+        deleteZnode(solrUrl, collectionName);
+        uploadSolrConfig(solrUrl, collectionName, metadataCols);
     }
 
     /**
@@ -316,10 +454,10 @@ public class SolrUtil {
                 Element field = DocumentHelper.createElement("field");
                 field.addAttribute("name", metadataCol.getName());
                 field.addAttribute("type", getSolrType(metadataCol.getType()));
-                field.addAttribute("indexed", "true");
-                field.addAttribute("stored", "true");
-                field.addAttribute("required", "true");
-                field.addAttribute("multiValued", "false");
+                field.addAttribute("indexed", "true"); // 主键必须indexed=true
+                field.addAttribute("stored", "true"); // 主键必须stored=true
+                field.addAttribute("required", "true"); // 主键必须required=true
+                field.addAttribute("multiValued", "false"); // 主键必须multiValued=false
                 fields.add(field);
                 Element uniqueKey = DocumentHelper.createElement("uniqueKey");
                 uniqueKey.setText(metadataCol.getName());

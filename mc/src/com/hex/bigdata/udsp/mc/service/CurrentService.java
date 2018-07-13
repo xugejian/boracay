@@ -43,7 +43,6 @@ public class CurrentService extends BaseService {
     @Autowired
     private CurrentMapper mcCurrentMapper;
 
-    @Transactional
     public String insert(Current mcCurrent) {
         mcCurrent.setHost(HOST_KEY);
         if (mcCurrentMapper.insert(MC_RUN_KEY + ":" + HOST_KEY + ":" + mcCurrent.getPkId(), mcCurrent)) {
@@ -52,7 +51,6 @@ public class CurrentService extends BaseService {
         return "";
     }
 
-    @Transactional
     public String insertWait(Current mcCurrent) {
         mcCurrent.setHost(HOST_KEY);
         if (mcCurrentMapper.insert(MC_WAIT_KEY + ":" + HOST_KEY + ":" + mcCurrent.getPkId(), mcCurrent)) {
@@ -67,12 +65,10 @@ public class CurrentService extends BaseService {
      * @param pkId
      * @return
      */
-    @Transactional
     public boolean delete(String pkId) {
         return mcCurrentMapper.delete(MC_RUN_KEY + ":" + HOST_KEY + ":" + pkId);
     }
 
-    @Transactional
     public boolean deleteWait(String pkId) {
         return mcCurrentMapper.delete(MC_WAIT_KEY + ":" + HOST_KEY + ":" + pkId);
     }
@@ -84,12 +80,10 @@ public class CurrentService extends BaseService {
      * @param pkId
      * @return
      */
-    @Transactional
     public boolean delete(String hostKey, String pkId) {
         return mcCurrentMapper.delete(MC_RUN_KEY + ":" + hostKey + ":" + pkId);
     }
 
-    @Transactional
     public boolean deleteWait(String hostKey, String pkId) {
         return mcCurrentMapper.delete(MC_WAIT_KEY + ":" + hostKey + ":" + pkId);
     }
@@ -178,7 +172,7 @@ public class CurrentService extends BaseService {
         //解决ConcurrentModificationException
         List<Current> mcCurrentList = new CopyOnWriteArrayList<Current>();
 
-        List<Current> tempList = this.selectCacheLike(selectType + ":");
+        List<Current> tempList = this.selectLike(selectType + ":");
         if (tempList == null || tempList.size() == 0) {
             return null;
         }
@@ -240,7 +234,7 @@ public class CurrentService extends BaseService {
         return this.deleteLike(MC_WAIT_KEY + ":");
     }
 
-    public List<Current> selectCacheLike(String key) {
+    public List<Current> selectLike(String key) {
         return mcCurrentMapper.selectLike(key);
     }
 
@@ -255,6 +249,18 @@ public class CurrentService extends BaseService {
      * @return
      */
     public List<Current> getRunByHost(String hostKey) {
-        return mcCurrentMapper.selectLike(MC_RUN_KEY + ":" + hostKey + ":");
+        return this.selectLike(MC_RUN_KEY + ":" + hostKey + ":");
+    }
+
+    public List<Current> getLocalRun() {
+        return this.getRunByHost(HOST_KEY);
+    }
+
+    public List<Current> getWaitByHost(String hostKey) {
+        return this.selectLike(MC_WAIT_KEY + ":" + hostKey + ":");
+    }
+
+    public List<Current> getLocalWait() {
+        return this.getWaitByHost(HOST_KEY);
     }
 }

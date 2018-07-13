@@ -60,7 +60,7 @@ ${extends("/goframe/function_layout.httl")}
                         <input id="buildMode" name="buildMode" class="nui-dictcombobox" textField="dictName" valueField="dictId" style="width:100%;"
                                dictTypeId="IM_MODEL_BUILD_TYPE" multiSelect="false"   readonly="true"/>
                     </td>
-                    <th class="nui-form-label"><label for="buildMode">引擎数据源：</label></th>
+                    <th class="nui-form-label"><label for="buildMode">构建引擎：</label></th>
                     <td >
                         <div id="engineDsId" class="nui-combobox" style="width:100%;"  popupWidth="400" textField="name" valueField="pkId"
                              url="${basePath}/com/ds/selectEngineDs" dataField="data" name="engineDsId" multiSelect="true"   readonly="true">

@@ -5,6 +5,7 @@ import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.mc.dao.WaitQueueMapper;
 import com.hex.bigdata.udsp.mc.model.Current;
+import com.hex.bigdata.udsp.mc.model.RunQueue;
 import com.hex.bigdata.udsp.mc.model.WaitQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class WaitQueueService {
     private WaitQueueMapper waitQueueMapper;
 
     @Autowired
-    private CurrentService mcCurrentService;
+    private CurrentService currentService;
 
     @Autowired
     private RunQueueService runQueueService;
@@ -50,6 +51,10 @@ public class WaitQueueService {
         return waitQueueMapper.insert(key, waitQueue);
     }
 
+    public boolean delete(String key) {
+        return waitQueueMapper.delete(key);
+    }
+
     public boolean deleteLike(String key) {
         return waitQueueMapper.deleteLike(key);
     }
@@ -60,7 +65,30 @@ public class WaitQueueService {
      * @return
      */
     public boolean emptyCache() {
-        return this.deleteLike(MC_WAITQUEUE_KEY + ":");
+        return this.deleteLike(MC_WAITQUEUE_KEY + ":")
+                && currentService.emptyCacheWait();
+    }
+
+    /**
+     * 清空本机等待队列
+     *
+     * @return
+     */
+    public boolean emptyLocalCache() {
+        for (Current current : currentService.getLocalWait()) {
+            String key = this.getKey(current);
+            WaitQueue waitQueue = this.select(key);
+            if (waitQueue != null && waitQueue.getCurrentNum() >= 1) {
+                waitQueue.setCurrentNum(waitQueue.getCurrentNum() - 1);
+                if (waitQueue.getCurrentNum() == 0) {
+                    this.delete(key);
+                } else {
+                    this.insert(key, waitQueue);
+                }
+                currentService.deleteWait(current.getPkId());
+            }
+        }
+        return true;
     }
 
     /**
@@ -89,11 +117,12 @@ public class WaitQueueService {
                     String pkId = mcCurrent.getPkId();
                     isFullResult.setWaitQueueTaskId(pkId);
                     isFullResult.setWaitQueueIsFull(false);
-                    waitQueue.offerElement(pkId); // 加入队列
-                    // 更新等待队列统计信息
+                    waitQueue.offerElement(pkId); // 加入队尾
+                    // 增加等待队列的大小
+                    waitQueue.setCurrentNum(waitQueue.getCurrentNum() + 1);
                     this.insert(key, waitQueue);
-                    // 加入统计队列
-                    mcCurrentService.insertWait(mcCurrent);
+                    // 添加一条等待的并发信息
+                    currentService.insertWait(mcCurrent);
                 }
                 return isFullResult;
             } finally {
@@ -120,11 +149,18 @@ public class WaitQueueService {
                 WaitQueue waitQueue = this.select(key);
                 // 判断key是不是队列第一个，如果是第一个则移除并返回true，如果不是第一个则返回false
                 if (waitQueue.isFirstElement(waitQueueTaskId)) {
-                    // 等待队列信息回写到缓存
                     logger.debug("将" + key + "任务从等待队列中移除：" + Thread.currentThread().getName());
-                    this.insert(key, waitQueue); // 更新等待队列统计信息
-                    mcCurrentService.deleteWait(waitQueueTaskId); // 从统计队列中删除
-                    runQueueService.addCurrent(mcCurrent); // 增加并发
+                    // 减少等待队列的大小
+                    waitQueue.setCurrentNum(waitQueue.getCurrentNum() - 1);
+                    if (waitQueue.getCurrentNum() == 0) {
+                        this.delete(key);
+                    } else {
+                        this.insert(key, waitQueue);
+                    }
+                    // 删除一条等待的并发信息
+                    currentService.deleteWait(waitQueueTaskId);
+                    // 增加运行的并发信息和队列大小
+                    runQueueService.addCurrent(mcCurrent);
                     return true;
                 }
                 return false;

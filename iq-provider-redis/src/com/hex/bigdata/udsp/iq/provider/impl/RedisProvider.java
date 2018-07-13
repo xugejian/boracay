@@ -84,8 +84,7 @@ public class RedisProvider implements Provider {
         List<ReturnColumn> returnColumns = application.getReturnColumns();
         List<OrderColumn> orderColumns = application.getOrderColumns();
         Datasource datasource = metadata.getDatasource();
-        //获取元数据返回字段
-        List<DataColumn> metaReturnColumns = metadata.getReturnColumns();
+        List<DataColumn> metaReturnColumns = metadata.getReturnColumns(); // 获取元数据返回字段
         RedisDatasource redisDatasource = new RedisDatasource(datasource.getPropertyMap());
         String tableName = metadata.getTbName();
         String query = getRedisQuery(metadata.getQueryColumns(), queryColumns, tableName);
@@ -94,6 +93,7 @@ public class RedisProvider implements Provider {
         if (maxNum != 0) {
             maxSize = maxNum;
         }
+
         try {
             List<Map<String, String>> list = null;
             int startRow = -1;
@@ -110,23 +110,9 @@ public class RedisProvider implements Provider {
             } else {
                 list = search(fqSep, query, redisDatasource, metaReturnColumns, maxSize);
             }
-            //排序
-            list = orderBy(list, orderColumns);
-            List<Result> records = new ArrayList<Result>();
-            for (Map<String, String> map : list) {
-                Result result = new Result();
-                //字段过滤
-                Map<String, String> returnDataMap = new HashMap<String, String>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    returnDataMap.put(colName, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                //result.putAll(map);
-                records.add(result);
-            }
+            list = orderBy(list, orderColumns); // 排序
+            response.setRecords(getRecords(list, returnColumns));
             response.setPage(page);
-            response.setRecords(records);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -167,6 +153,25 @@ public class RedisProvider implements Provider {
         }
     }
 
+    // 字段过滤并字段名改别名
+    private List<Result> getRecords(List<Map<String, String>> resultList, List<ReturnColumn> returnColumns) {
+        List<Result> records = null;
+        if (resultList != null) {
+            records = new ArrayList<Result>();
+            for (Map<String, String> map : resultList) {
+                Result result = new Result();
+                Map<String, String> returnDataMap = new HashMap<String, String>();
+                for (ReturnColumn item : returnColumns) {
+                    String colName = item.getName();
+                    String label = item.getLabel();
+                    returnDataMap.put(label, map.get(colName));
+                }
+                result.putAll(returnDataMap);
+                records.add(result);
+            }
+        }
+        return records;
+    }
 
     private List<Map<String, String>> search(String fqSep, String queryString, RedisDatasource datasource, List<DataColumn> returnColumns, int startRow, int endRow, int maxNum) {
         RedisConnectionPoolFactory redisConnectionPoolFactory = getDataSource(datasource);

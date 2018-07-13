@@ -55,6 +55,8 @@ public class ImSyncService {
     /**
      * 同步运行（添加了超时机制）
      *
+     * 作废，因为构建数据耗时比较长，这里的超时时间是针对普通数据服务的，所以这里不合适
+     *
      * @param consumeRequest
      * @param bef
      * @return
@@ -82,7 +84,7 @@ public class ImSyncService {
     }
 
     /**
-     * 启动
+     * 同步运行
      *
      * @param appId
      * @param data

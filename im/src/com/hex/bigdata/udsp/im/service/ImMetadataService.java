@@ -1,22 +1,23 @@
 package com.hex.bigdata.udsp.im.service;
 
-import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
-import com.hex.bigdata.udsp.common.constant.DatasourceModel;
-import com.hex.bigdata.udsp.common.model.*;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
+import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
+import com.hex.bigdata.udsp.common.constant.DatasourceModel;
+import com.hex.bigdata.udsp.common.constant.EnumTrans;
+import com.hex.bigdata.udsp.common.model.*;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.im.constant.MetadataStatus;
 import com.hex.bigdata.udsp.im.constant.MetadataType;
-import com.hex.bigdata.udsp.im.dao.ImMetadataMapper;
-import com.hex.bigdata.udsp.im.model.*;
-import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
-import com.hex.bigdata.udsp.im.dto.ImMetadataView;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
-import com.hex.bigdata.udsp.im.util.ImUtil;
+import com.hex.bigdata.udsp.im.dao.ImMetadataMapper;
+import com.hex.bigdata.udsp.im.dto.ImMetadataDto;
+import com.hex.bigdata.udsp.im.dto.ImMetadataView;
+import com.hex.bigdata.udsp.im.model.ImMetadata;
+import com.hex.bigdata.udsp.im.model.ImMetadataCol;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.DateUtil;
@@ -93,8 +94,13 @@ public class ImMetadataService extends BaseService {
         comPropertiesService.insertList(pkId, imMetadataDto.getComPropertiesList());
         List<ImMetadataCol> imMetadataCols = imMetadataDto.getImMetadataColList();
         for (ImMetadataCol imMetadataCol : imMetadataCols) {
-            imMetadataCol.setMdId(pkId);
-            imMetadataColService.insert(imMetadataCol);
+            // 是主键或是索引或是存储
+            if ("0".equals(imMetadataCol.getPrimary())
+                    || "0".equals(imMetadataCol.getIndexed())
+                    || "0".equals(imMetadataCol.getStored())) {
+                imMetadataCol.setMdId(pkId);
+                imMetadataColService.insert(imMetadataCol);
+            }
         }
         return pkId;
     }
@@ -115,8 +121,32 @@ public class ImMetadataService extends BaseService {
         }
         List<ImMetadataCol> imMetadataCols = imMetadataDto.getImMetadataColList();
         for (ImMetadataCol imMetadataCol : imMetadataCols) {
-            imMetadataCol.setMdId(pkId);
-            imMetadataColService.insert(imMetadataCol);
+            // 是主键或是索引或是存储
+            if ("0".equals(imMetadataCol.getPrimary())
+                    || "0".equals(imMetadataCol.getIndexed())
+                    || "0".equals(imMetadataCol.getStored())) {
+                imMetadataCol.setMdId(pkId);
+                imMetadataColService.insert(imMetadataCol);
+            }
+        }
+        return true;
+    }
+
+    @Transactional
+    public boolean addColumns(ImMetadataDto imMetadataDto) {
+        ImMetadata imMetadata = imMetadataDto.getImMetadata();
+        String pkId = imMetadata.getPkId();
+        List<ImMetadataCol> imMetadataCols = imMetadataDto.getImMetadataColList();
+        int count = imMetadataColService.select(pkId).size();
+        for (ImMetadataCol imMetadataCol : imMetadataCols) {
+            imMetadataCol.setSeq((short)(imMetadataCol.getSeq() + count));
+            // 是主键或是索引或是存储
+            if ("0".equals(imMetadataCol.getPrimary())
+                    || "0".equals(imMetadataCol.getIndexed())
+                    || "0".equals(imMetadataCol.getStored())) {
+                imMetadataCol.setMdId(pkId);
+                imMetadataColService.insert(imMetadataCol);
+            }
         }
         return true;
     }
@@ -181,6 +211,18 @@ public class ImMetadataService extends BaseService {
         return imMetadataMapper.update(pkId, imMetadata);
     }
 
+    public boolean addColumns(String pkId, List<ImMetadataCol> addImMetadataCols) throws Exception {
+        Iterator<ImMetadataCol> it = addImMetadataCols.iterator();
+        while (it.hasNext()) {
+            ImMetadataCol imMetadataCol = it.next();
+            if("1".equals(imMetadataCol.getStored()) && "1".equals(imMetadataCol.getIndexed())){
+                it.remove();
+            }
+        }
+        imConverterService.addColumns(getMetadata(pkId), convertToMetadataColList(addImMetadataCols));
+        return true;
+    }
+
     @Transactional
     public boolean dropTable(String pkId) throws Exception {
         ImMetadata imMetadata = this.select(pkId);
@@ -200,11 +242,28 @@ public class ImMetadataService extends BaseService {
         metadata.setName(imMetadata.getName());
         metadata.setType(MetadataType.EXTERNAL);
         metadata.setTbName(imMetadata.getTbName());
-        metadata.setMetadataCols(ImUtil.convertToMetadataColList(imMetadataColService.select(pkId)));
+        metadata.setMetadataCols(convertToMetadataColList(imMetadataColService.select(pkId)));
         metadata.setDescribe(imMetadata.getDescribe());
         metadata.setDatasource(datasource);
         metadata.setStatus(MetadataStatus.NO_CREATED);
         return metadata;
+    }
+
+    private List<MetadataCol> convertToMetadataColList(List<ImMetadataCol> imMetadataCols) {
+        List<MetadataCol> metadataCols = new ArrayList<>();
+        for (ImMetadataCol item : imMetadataCols) {
+            MetadataCol metadataCol = new MetadataCol();
+            metadataCol.setName(item.getName());
+            metadataCol.setDescribe(item.getDescribe());
+            metadataCol.setType(EnumTrans.transDataType(item.getType()));
+            metadataCol.setLength(item.getLength());
+            metadataCol.setNote(item.getNote());
+            metadataCol.setPrimary("0".equals(item.getPrimary()));
+            metadataCol.setIndexed("0".equals(item.getIndexed()));
+            metadataCol.setStored("0".equals(item.getStored()));
+            metadataCols.add(metadataCol);
+        }
+        return metadataCols;
     }
 
     public List<ImMetadata> selectAll() {
@@ -425,6 +484,7 @@ public class ImMetadataService extends BaseService {
 
     /**
      * 根据条件查询元数据信息
+     *
      * @param imMetadataView
      * @return
      */

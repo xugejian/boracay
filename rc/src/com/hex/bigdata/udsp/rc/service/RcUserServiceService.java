@@ -59,13 +59,10 @@ public class RcUserServiceService extends BaseService {
      */
     @Autowired
     private RcUserServiceMapper rcUserServiceMapper;
-
     @Autowired
     private RcServiceService rcServiceService;
-
     @Autowired
     private RcUserServiceForUserIdAndServiceIdMapper rcUserServiceForUserIdAndServiceIdMapper;
-
     @Autowired
     private RtsProducerService rtsProducerService;
     @Autowired

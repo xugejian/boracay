@@ -166,6 +166,19 @@ public class ImConverterService {
         return status;
     }
 
+    /**
+     * 添加字段
+     *
+     * @param metadata
+     * @param addMetadataCols
+     * @throws Exception
+     */
+    public void addColumns(Metadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
+        logger.debug("添加字段【START】");
+        getTargetConverterImpl(metadata.getDatasource()).addColumns(metadata, addMetadataCols);
+        logger.debug("添加字段【END】");
+    }
+
     private BatchSourceConverter getBatchSourceConverterImpl(Datasource datasource) {
         return (BatchSourceConverter) ObjectUtil.newInstance(getImplClass(datasource));
     }

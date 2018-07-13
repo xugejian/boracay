@@ -10,13 +10,14 @@ import com.hex.bigdata.udsp.im.converter.impl.model.datasource.JdbcDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.OracleDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.OracleSqlUtil;
+import com.hex.bigdata.udsp.im.converter.impl.util.SqlUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
+import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
-import com.hex.bigdata.udsp.im.util.ImUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,14 +39,14 @@ public class OracleConverter extends JdbcWrapper implements RealtimeTargetConver
         OracleDatasource oracleDatasource = new OracleDatasource(metadata.getDatasource());
         String fullTbName = metadata.getTbName();
         String tableComment = metadata.getDescribe();
-        List<TableColumn> columns = ImUtil.convertToTableColumnList(metadata.getMetadataCols());
+        List<TableColumn> columns = SqlUtil.convertToTableColumnList(metadata.getMetadataCols());
         List<String> sqls = new ArrayList<>();
         String createTableSql = OracleSqlUtil.createTable(fullTbName, columns);
         if (StringUtils.isNotBlank(createTableSql)) sqls.add(createTableSql);
         String commentTableSql = OracleSqlUtil.commentTable(fullTbName, tableComment);
         if (StringUtils.isNotBlank(commentTableSql)) sqls.add(commentTableSql);
-        List<String> createColCommentSqls = OracleSqlUtil.createColComment(fullTbName, columns);
-        if (createColCommentSqls != null && createColCommentSqls.size() != 0) sqls.addAll(createColCommentSqls);
+        List<String> commentColumnsSqls = OracleSqlUtil.commentColumns(fullTbName, columns);
+        if (commentColumnsSqls != null && commentColumnsSqls.size() != 0) sqls.addAll(commentColumnsSqls);
         String createPrimaryKeySql = OracleSqlUtil.createPrimaryKey(fullTbName, columns);
         if (StringUtils.isNotBlank(createPrimaryKeySql)) sqls.add(createPrimaryKeySql);
         JdbcUtil.executeUpdate(oracleDatasource, sqls);
@@ -57,6 +58,21 @@ public class OracleConverter extends JdbcWrapper implements RealtimeTargetConver
         String fullTbName = metadata.getTbName();
         String sql = OracleSqlUtil.dropTable(fullTbName);
         JdbcUtil.executeUpdate(oracleDatasource, sql);
+    }
+
+    @Override
+    public void addColumns(Metadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
+        if (addMetadataCols != null && addMetadataCols.size() != 0) {
+            OracleDatasource oracleDatasource = new OracleDatasource(metadata.getDatasource());
+            String fullTbName = metadata.getTbName();
+            List<TableColumn> addColumns = SqlUtil.convertToTableColumnList(addMetadataCols);
+            List<String> sqls = new ArrayList<>();
+            List<String> addColumnSqls = OracleSqlUtil.addColumns(fullTbName, addColumns);
+            if (addColumnSqls != null && addColumnSqls.size() != 0) sqls.addAll(addColumnSqls);
+            List<String> commentColumnsSqls = OracleSqlUtil.commentColumns(fullTbName, addColumns);
+            if (commentColumnsSqls != null && commentColumnsSqls.size() != 0) sqls.addAll(commentColumnsSqls);
+            JdbcUtil.executeUpdate(oracleDatasource, sqls);
+        }
     }
 
     @Override

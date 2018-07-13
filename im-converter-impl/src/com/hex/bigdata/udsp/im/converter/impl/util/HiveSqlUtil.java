@@ -3,8 +3,9 @@ package com.hex.bigdata.udsp.im.converter.impl.util;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.im.converter.impl.util.model.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -149,6 +150,17 @@ public class HiveSqlUtil {
                                        String selectSql, List<WhereProperty> whereProperties) {
         return "SELECT " + getSelectColumns(selectColumns) + "\n FROM (\n"
                 + selectSql + "\n) " + UDSP_HBASE_VIEW + " " + getWhere(UDSP_HBASE_VIEW, whereProperties);
+    }
+
+    /**
+     * 添加多个字段
+     *
+     * @param tableName
+     * @param columns
+     * @return
+     */
+    public static String addColumns(String tableName, List<TableColumn> columns) {
+        return "ALTER TABLE " + tableName + " ADD COLUMNS " + getColumns(columns);
     }
 
     /**

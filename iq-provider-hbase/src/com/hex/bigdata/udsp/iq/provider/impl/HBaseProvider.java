@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.iq.provider.impl;
 
-import com.hex.bigdata.udsp.common.api.model.Datasource;
-import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.common.api.model.*;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
@@ -18,6 +17,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.PageFilter;
@@ -69,6 +69,11 @@ public class HBaseProvider implements Provider {
         int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
+        Collections.sort(queryColumns, new Comparator<QueryColumn>() {
+            public int compare(QueryColumn obj1, QueryColumn obj2) {
+                return obj1.getSeq().compareTo(obj2.getSeq());
+            }
+        });
         List<ReturnColumn> returnColumns = application.getReturnColumns();
         List<OrderColumn> orderColumns = application.getOrderColumns();
         //获取元数据返回字段
@@ -91,30 +96,14 @@ public class HBaseProvider implements Provider {
         byte[] qualifier = hBaseDatasource.getQulifierName();
         String fqSep = hBaseDatasource.getDsvSeprator();
         String dataType = hBaseDatasource.getFqDataType();
-        List<Map<String, String>> list = null;
         HConnection conn = null;
         HTableInterface hTable = null;
         try {
             conn = getConnection(hBaseDatasource);
             hTable = conn.getTable(tbName);
-            list = scan(hTable, startRow, stopRow, colMap, maxSize, family, qualifier, fqSep, dataType);
-            // 排序处理
-            list = orderBy(list, orderColumns);
-
-            List<com.hex.bigdata.udsp.common.api.model.Result> records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
-            for (Map<String, String> map : list) {
-                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
-                //字段过滤
-                Map<String, String> returnDataMap = new HashMap<String, String>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    returnDataMap.put(colName, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                //result.putAll(map);
-                records.add(result);
-            }
-            response.setRecords(records);
+            List<Map<String, String>> list = scan(hTable, startRow, stopRow, colMap, maxSize, family, qualifier, fqSep, dataType);
+            list = orderBy(list, orderColumns); // 排序处理
+            response.setRecords(getRecords(list, returnColumns)); // 字段过滤并字段名改别名
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -144,6 +133,26 @@ public class HBaseProvider implements Provider {
         return response;
     }
 
+    // 字段过滤并字段名改别名
+    private List<com.hex.bigdata.udsp.common.api.model.Result> getRecords(List<Map<String, String>> resultList, List<ReturnColumn> returnColumns) {
+        List<com.hex.bigdata.udsp.common.api.model.Result> records = null;
+        if (resultList != null) {
+            records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
+            for (Map<String, String> map : resultList) {
+                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
+                Map<String, String> returnDataMap = new HashMap<String, String>();
+                for (ReturnColumn item : returnColumns) {
+                    String colName = item.getName();
+                    String label = item.getLabel();
+                    returnDataMap.put(label, map.get(colName));
+                }
+                result.putAll(returnDataMap);
+                records.add(result);
+            }
+        }
+        return records;
+    }
+
     public IqResponse query(IqRequest request, int pageIndex, int pageSize) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request) + " pageIndex=" + pageIndex + " pageSize=" + pageSize);
 
@@ -155,6 +164,11 @@ public class HBaseProvider implements Provider {
         int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
+        Collections.sort(queryColumns, new Comparator<QueryColumn>() {
+            public int compare(QueryColumn obj1, QueryColumn obj2) {
+                return obj1.getSeq().compareTo(obj2.getSeq());
+            }
+        });
         List<ReturnColumn> returnColumns = application.getReturnColumns();
         List<OrderColumn> orderColumns = application.getOrderColumns();
 
@@ -190,10 +204,6 @@ public class HBaseProvider implements Provider {
         hbasePage.setStartRow(startRow);
         hbasePage.setStopRow(stopRow);
 
-        Page page = new Page();
-        page.setPageIndex(pageIndex);
-        page.setPageSize(pageSize);
-
         HConnection conn = null;
         HTableInterface hTable = null;
         try {
@@ -201,24 +211,13 @@ public class HBaseProvider implements Provider {
             hTable = conn.getTable(tbName);
             hbasePage = scanPage(hTable, hbasePage, colMap, family, qualifier, fqSep, dataType);
             List<Map<String, String>> list = hbasePage.getRecords();
-            // 排序处理
-            list = orderBy(list, orderColumns);
-
-            List<com.hex.bigdata.udsp.common.api.model.Result> records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
-            for (Map<String, String> map : list) {
-                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
-                //字段过滤
-                Map<String, String> returnDataMap = new HashMap<String, String>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    returnDataMap.put(colName, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                //result.putAll(map);
-                records.add(result);
-            }
-            response.setRecords(records);
+            list = orderBy(list, orderColumns); // 排序处理
+            response.setRecords(getRecords(list, returnColumns)); // 字段过滤并字段名改别名
+            Page page = new Page();
+            page.setPageIndex(pageIndex);
+            page.setPageSize(pageSize);
             page.setTotalCount(hbasePage.getTotalCount());
+            response.setPage(page);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -240,7 +239,6 @@ public class HBaseProvider implements Provider {
             }
         }
 
-        response.setPage(page);
         long now = System.currentTimeMillis();
         long consumeTime = now - bef;
         response.setConsumeTime(consumeTime);
@@ -309,7 +307,7 @@ public class HBaseProvider implements Provider {
                     DataType dataType = orderColumn.getType();
                     String val1 = obj1.get(colName);
                     String val2 = obj2.get(colName);
-                    if(StringUtils.isNotBlank(val1) && StringUtils.isNotBlank(val2)) {
+                    if (StringUtils.isNotBlank(val1) && StringUtils.isNotBlank(val2)) {
                         flg = compareTo(val1, val2, order, dataType);
                         if (flg != 0) break;
                     }
@@ -360,19 +358,29 @@ public class HBaseProvider implements Provider {
     private String getStartRow(List<QueryColumn> queryColumns) {
         String startRow = getMd5Str(queryColumns);
         for (QueryColumn queryColumn : queryColumns) {
-            String length = queryColumn.getLength();
             Operator operator = queryColumn.getOperator();
+            boolean isNeed = queryColumn.isNeed();
+            DataType dataType = queryColumn.getType();
             String value = queryColumn.getValue();
-            boolean must = queryColumn.isNeed();
-            if (must && StringUtils.isBlank(value)) {
+            int length = getLen(queryColumn.getLength());
+            if (queryColumn.isNeed() && StringUtils.isBlank(value)) {
                 throw new IllegalArgumentException("必输项值为空");
             }
-            if (Operator.GE.equals(operator)) {
-                startRow = rowStr(startRow, length, value);
-                break;
-            } else if (Operator.EQ.equals(operator)) {
-                startRow = rowStr(startRow, length, value);
+            if (!Operator.EQ.equals(operator) && !Operator.GE.equals(operator) && !Operator.LE.equals(operator)) {
+                throw new IllegalArgumentException("只支持等于、大于等于和小于等于操作");
             }
+            if (Operator.EQ.equals(operator) || Operator.GE.equals(operator)) {
+                if (isNeed && Operator.EQ.equals(operator)) { // 必填且是等于操作
+                    value = realValue(value, length);
+                } else if (Operator.GE.equals(operator)
+                        || (!isNeed && DataType.TIMESTAMP.equals(dataType))) { // 大于等于操作 或者 选填或字段类型为TIMESTAMP
+                    value = rowDate(length, value);
+                }
+                if (StringUtils.isNotBlank(value)) {
+                    startRow += this.rkSep + value;
+                }
+            }
+            if (Operator.GE.equals(operator)) break; // 退出
         }
         return startRow;
     }
@@ -380,59 +388,68 @@ public class HBaseProvider implements Provider {
     private String getStopRow(List<QueryColumn> queryColumns) {
         String stopRow = getMd5Str(queryColumns);
         for (QueryColumn queryColumn : queryColumns) {
-            String length = queryColumn.getLength();
             Operator operator = queryColumn.getOperator();
+            boolean isNeed = queryColumn.isNeed();
+            DataType dataType = queryColumn.getType();
             String value = queryColumn.getValue();
-            boolean must = queryColumn.isNeed();
-            if (must && StringUtils.isBlank(value)) {
+            int length = getLen(queryColumn.getLength());
+            if (queryColumn.isNeed() && StringUtils.isBlank(value)) {
                 throw new IllegalArgumentException("必输项值为空");
             }
-            if (Operator.LE.equals(operator)) {
-                stopRow = rowStr(stopRow, length, value);
-                break;
-            } else if (Operator.EQ.equals(operator)) {
-                stopRow = rowStr(stopRow, length, value);
+            if (!Operator.EQ.equals(operator) && !Operator.GE.equals(operator) && !Operator.LE.equals(operator)) {
+                throw new IllegalArgumentException("只支持等于、大于等于和小于等于操作");
             }
+            if (Operator.EQ.equals(operator) || Operator.LE.equals(operator)) {
+                if (isNeed && Operator.EQ.equals(operator)) { // 必填且是等于操作
+                    value = realValue(value, length);
+                } else if (Operator.LE.equals(operator)
+                        || (!isNeed && DataType.TIMESTAMP.equals(dataType))) { // 小于等于操作 或者 选填或字段类型为TIMESTAMP
+                    value = rowDate(length, value);
+                }
+                if (StringUtils.isNotBlank(value)) {
+                    stopRow += this.rkSep + value;
+                }
+            }
+            if (Operator.LE.equals(operator)) break; // 退出
         }
         return stopRow;
     }
 
-    private String rowStr(String str, String length, String value) {
-        if (StringUtils.isNotBlank(value)) {
-            if (isValidDate(value)) {
-                str += this.rkSep + replaceDateStr(value);
-            } else {
-                if (StringUtils.isNotBlank(length) && StringUtils.isNumeric(length)) {
-                    int len = Integer.valueOf(length);
-                    str += this.rkSep + realValue(value, len);
-                } else {
-                    str += this.rkSep + value;
-                }
+    private String rowDate(int length, String value) {
+        if (length == 8) {
+            value = value.replaceAll("/", "-").replaceAll("-", "").substring(0, 8);
+        } else if (length == 10) {
+            value = value.replaceAll("/", "-").substring(0, 10);
+        } else if (length == 17) {
+            value = value.replaceAll("/", "-").replaceAll("-", "").substring(0, 17);
+        } else if (length == 19) {
+            value = value.replaceAll("/", "-").substring(0, 19);
+        }
+        return value;
+    }
+
+    protected int getLen(String length) {
+        int len = 0;
+        if (StringUtils.isNotBlank(length) && StringUtils.isNumeric(length)) {
+            try {
+                len = Integer.valueOf(length);
+            } catch (Exception e) {
+                logger.debug(ExceptionUtil.getMessage(e));
             }
         }
-        return str;
+        return len;
     }
 
     private String getMd5Str(List<QueryColumn> queryColumns) {
-        Collections.sort(queryColumns, new Comparator<QueryColumn>() {
-            public int compare(QueryColumn obj1, QueryColumn obj2) {
-                return obj1.getSeq().compareTo(obj2.getSeq());
-            }
-        });
         String sameStr = "";
         int count = 0;
         for (QueryColumn queryColumn : queryColumns) {
-            Operator operator = queryColumn.getOperator();
-            boolean must = queryColumn.isNeed();
-            if (must && Operator.EQ.equals(operator)) {
+            if (queryColumn.isNeed() && Operator.EQ.equals(queryColumn.getOperator())) {
                 String value = queryColumn.getValue();
-                if (value == null || value.equals("")) {
+                if (StringUtils.isBlank(value)) {
                     throw new IllegalArgumentException("必输项值为空");
                 }
-                if (count == 0)
-                    sameStr += value;
-                else
-                    sameStr += this.rkSep + value;
+                sameStr += (count == 0 ? value : this.rkSep + value);
                 count++;
             } else {
                 break;
@@ -598,7 +615,7 @@ public class HBaseProvider implements Provider {
         return DigestUtils.md5Hex(str).substring(8, 24);
     }
 
-    //得到需要的字符串
+    //判断字符串长度，不足补空格
     private String realValue(String value, int length) {
         int len = 0;
         try {
@@ -619,36 +636,37 @@ public class HBaseProvider implements Provider {
         return str.getBytes(code).length;
     }
 
-    // 转为8位日期
-    private String replaceDateStr(String dataStr) {
-        dataStr = dataStr.replaceAll("-", "");
-        dataStr = dataStr.replaceAll("/", "");
-        return dataStr;
-    }
+//    // 转为8位日期
+//    private String replaceDateStr(String dataStr) {
+//        dataStr = dataStr.replaceAll("-", "");
+//        dataStr = dataStr.replaceAll("/", "");
+//        return dataStr;
+//    }
 
-    private boolean isValidDate(String dataStr) {
-        boolean status = true;
-        if (dataStr.length() == 8) {
-            try {
-                format3.parse(dataStr);
-            } catch (ParseException e) {
-                status = false;
-            }
-        } else if (dataStr.length() == 10) {
-            try {
-                format2.parse(dataStr);
-            } catch (ParseException e) {
-                try {
-                    format1.parse(dataStr);
-                } catch (ParseException e1) {
-                    status = false;
-                }
-            }
-        } else {
-            status = false;
-        }
-        return status;
-    }
+//    // 判断是否是日期字符串
+//    private boolean isValidDate(String dataStr) {
+//        boolean status = true;
+//        if (dataStr.length() == 8) {
+//            try {
+//                format3.parse(dataStr);
+//            } catch (ParseException e) {
+//                status = false;
+//            }
+//        } else if (dataStr.length() == 10) {
+//            try {
+//                format2.parse(dataStr);
+//            } catch (ParseException e) {
+//                try {
+//                    format1.parse(dataStr);
+//                } catch (ParseException e1) {
+//                    status = false;
+//                }
+//            }
+//        } else {
+//            status = false;
+//        }
+//        return status;
+//    }
 
     public boolean testDatasource(Datasource datasource) {
         boolean canConnection = true;

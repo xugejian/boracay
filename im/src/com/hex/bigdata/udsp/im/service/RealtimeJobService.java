@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -59,6 +60,12 @@ public class RealtimeJobService {
      */
     @Autowired
     private RedisDistributedLock redisLock;
+
+    /**
+     * 保留最近N天的实时作业的信息
+     */
+    @Value("${keep.realtime.task.period:30}")
+    private int keepRealtimeTaskPeriod;
 
     /**
      * 启动
@@ -281,6 +288,9 @@ public class RealtimeJobService {
      * 清空过时的实时作业信息
      */
     public void cleanOutmodedRealtime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1 * keepRealtimeTaskPeriod);
+        Date date = calendar.getTime();
         List<RealtimeTotalInfo> realtimeTotalInfos = realtimeTotalService.selectList();
         for (RealtimeTotalInfo totalInfo : realtimeTotalInfos) {
             String id = totalInfo.getId();
@@ -290,9 +300,13 @@ public class RealtimeJobService {
             if (((RealtimeStatus.START_FAIL == status || RealtimeStatus.RUN_FAIL == status) && HOST_KEY.equals(startHost))
                     || ((RealtimeStatus.STOP_FAIL == status || RealtimeStatus.STOP_SUCCESS == status) && HOST_KEY.equals(stopHost))
                     ) { // 异常或停止
-                logger.debug("删除异常或停止且过时的实时作业信息,ID:" + id);
-                realtimeNodeService.deleteList(id);
-                realtimeTotalService.delete(id);
+                Date endDate = totalInfo.getEndTime();
+                // 结束时间小于等于当前N天前的时间
+                if (endDate != null && endDate.compareTo(date) <= 0) {
+                    logger.debug("删除异常或停止且过时的实时作业信息,ID:" + id);
+                    realtimeNodeService.deleteList(id);
+                    realtimeTotalService.delete(id);
+                }
             }
         }
     }

@@ -1,15 +1,12 @@
-package com.hex.bigdata.udsp.common.service;
+package com.hex.bigdata.udsp.service;
 
 import com.hex.bigdata.udsp.common.util.ShellUtil;
-import com.hex.goframe.spi.httl.HttlClasspathLoader;
-import com.hex.goframe.util.FileUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 
 /**

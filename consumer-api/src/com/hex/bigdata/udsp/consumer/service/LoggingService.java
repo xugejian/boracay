@@ -4,6 +4,7 @@ import com.hex.bigdata.udsp.common.constant.CommonConstant;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
+import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.DateUtil;
 import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
@@ -38,6 +39,8 @@ public class LoggingService {
     private McConsumeLogService mcConsumeLogService;
     @Autowired
     private AlarmService alarmService;
+    @Autowired
+    private InitParamService initParamService;
 
 
     /**
@@ -70,28 +73,38 @@ public class LoggingService {
         /**
          * 当等待/执行超时，发送报警信息
          */
-        if (ErrorCode.ERROR_000014.getValue().equals(errorCode) || ErrorCode.ERROR_000015.getValue().equals(errorCode)) {
-            RcUserService rcUserService = consumeRequest.getRcUserService();
-            long timout = 0;
-            if (ErrorCode.ERROR_000014.getValue().equals(errorCode)) {
-                timout = ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ?
-                        rcUserService.getMaxSyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
-            } else {
-                timout = ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ?
-                        rcUserService.getMaxSyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
-            }
-            String msg = request.getUdspUser() + "用户"
-                    + (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ? "【同步】" : "【异步】")
-                    + "方式执行" + request.getServiceName() + "服务"
-                    + (ErrorCode.ERROR_000014.getValue().equals(errorCode) ? "【等待】" : "【执行】")
-                    + "超时，开始时间：" + DateUtil.getDateString(bef) + "，超时时间：" + timout + "秒"
-                    + (runBef != 0 ? "，执行耗时：" + new BigDecimal((float) (now - runBef) / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒" : "")
-                    + "，总耗时：" + new BigDecimal((float) (now - bef) / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒！";
-            try {
-                alarmService.send(rcUserService, msg);
-            } catch (Exception e) {
-                e.printStackTrace();
-                message = "发送警报出错，错误信息：" + e.getMessage();
+        RcUserService rcUserService = consumeRequest.getRcUserService();
+        if (rcUserService != null) {
+            if (ErrorCode.ERROR_000014.getValue().equals(errorCode) || ErrorCode.ERROR_000015.getValue().equals(errorCode)) {
+                long timout = 0;
+                if (ErrorCode.ERROR_000014.getValue().equals(errorCode)) {
+                    long maxSyncExecuteTimeout = rcUserService.getMaxSyncExecuteTimeout() == 0 ?
+                            initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
+                    long maxAsyncExecuteTimeout = rcUserService.getMaxAsyncExecuteTimeout() == 0 ?
+                            initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
+                    timout = ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ?
+                            maxSyncExecuteTimeout : maxAsyncExecuteTimeout;
+                } else {
+                    long maxSyncWaitTimeout = rcUserService.getMaxSyncWaitTimeout() == 0 ?
+                            initParamService.getMaxSyncWaitTimeout() : rcUserService.getMaxSyncWaitTimeout();
+                    long maxAsyncWaitTimeout = rcUserService.getMaxAsyncWaitTimeout() == 0 ?
+                            initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
+                    timout = ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ?
+                            maxSyncWaitTimeout : maxAsyncWaitTimeout;
+                }
+                String msg = request.getUdspUser() + "用户"
+                        + (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ? "【同步】" : "【异步】")
+                        + "方式执行" + request.getServiceName() + "服务"
+                        + (ErrorCode.ERROR_000014.getValue().equals(errorCode) ? "【等待】" : "【执行】")
+                        + "超时，开始时间：" + DateUtil.getDateString(bef) + "，超时时间：" + timout + "秒"
+                        + (runBef != 0 ? "，执行耗时：" + new BigDecimal((float) (now - runBef) / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒" : "")
+                        + "，总耗时：" + new BigDecimal((float) (now - bef) / 1000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue() + "秒！";
+                try {
+                    alarmService.send(rcUserService, msg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    message = "发送警报出错，错误信息：" + e.getMessage();
+                }
             }
         }
 

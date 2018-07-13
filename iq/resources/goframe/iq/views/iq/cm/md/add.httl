@@ -760,26 +760,18 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function setColsData(colsSelected) {
-        console.log("1");
         var queryColArray = [];//查询字段
         var returnColArray = [];//返回字段
         $.each(colsSelected, function (index, value) {
-            console.log(value.indexed);
             //如果value.indexed为0则是查询字段
-            //如果value.stored为0则是返回字段
             if (value.indexed == "0") {
                 queryColArray.push(initQueryCols(value));
             }
+            //如果value.stored为0则是返回字段
             if (value.stored == "0") {
                 returnColArray.push(initReturnCols(value));
             }
         });
-        debugger;
-        //查找出当前grid中的值,追加
-//        var grid1Data = grid1.getData(true, true);
-//        var grid2Data = grid2.getData(true, true);
-//        grid1Data.push(queryColArray);
-//        grid2Data.push(returnColArray);
         grid1.setData(queryColArray);
         grid2.setData(returnColArray);
     }
@@ -790,7 +782,7 @@ ${extends("/goframe/function_layout.httl")}
         row.describe = value.describe;
         row.name = value.name;
         row.length = value.length;
-        row.note = "";
+        row.note = value.note;
         row.colType = value.type;
         return row;
     }
@@ -800,7 +792,7 @@ ${extends("/goframe/function_layout.httl")}
         row.describe = value.describe;
         row.name = value.name;
         row.length = value.length;
-        row.note = "";
+        row.note = value.note;
         row.colType = value.type;
         return row;
     }

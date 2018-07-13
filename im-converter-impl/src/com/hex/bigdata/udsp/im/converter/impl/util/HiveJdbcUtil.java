@@ -59,7 +59,11 @@ public class HiveJdbcUtil {
             HiveGetLogThread thread = new HiveGetLogThread(key, 500L, 10);
             thread.start();
 
-            rs = hiveStmt.executeUpdate(updateSql);
+            String[] sqls = updateSql.split(";");
+            for (String sql : sqls) {
+                logger.debug("SUB SQL: " + sql);
+                rs = hiveStmt.executeUpdate(sql);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

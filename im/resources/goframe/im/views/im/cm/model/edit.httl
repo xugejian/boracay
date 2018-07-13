@@ -69,7 +69,7 @@ ${extends("/goframe/function_layout.httl")}
                         <input id="buildMode" name="buildMode" class="nui-dictcombobox" textField="dictName" valueField="dictId" style="width:100%;"
                                dictTypeId="IM_MODEL_BUILD_TYPE" multiSelect="false"  required="true"/>
                     </td>
-                    <th class="nui-form-label"><label for="buildMode">引擎数据源：</label></th>
+                    <th class="nui-form-label"><label for="buildMode">构建引擎：</label></th>
                     <td>
                         <div id="engineDsId" class="nui-combobox" style="width:100%;"  popupWidth="400" textField="name" valueField="pkId"
                              url="${basePath}/com/ds/selectEngineDs" dataField="data" name="engineDsId" allowInput="true"  required="true">
@@ -439,38 +439,28 @@ ${extends("/goframe/function_layout.httl")}
         });
     }
 
-    //获取参数列表可输入内容
-    function getComproperties() {
-        cols = [];
-        $.ajax({
-            url:"${basePath}/com/ds/selectParameters/"+srcDsModel.value,
-            data:{},
-            cache: false,
-            async:false,
-            success: function (data) {
-                if (data && data.length && data.length > 0) {
-                    for (var i = 0, len = data.length; i < len; i++) {
-                        cols.push({
-                            "name": data[i].dictId,
-                            "describe": data[i].dictName,
-                            "value": data[i].filter
-                        });
-                    }
-                }
-            }
-        });
-    }
-
     //源数据源改变时改变参数列表
     function srcSourceChange(){
+        flg = 0;
         //将参数配置栏和字段映射栏重置
         grid1.clearRows();
         grid2.clearRows();
         grid3.clearRows();
         filterCols = [];
         //将参数配置栏自动输入
-        getComproperties();
-        grid1.addRows($.extend(true,[],cols));
+        $.post("${basePath}/com/ds/selectParameters/" + srcDsModel.value, {}, function (data) {
+            if (data && data.length > 0) {
+                var cols = [];
+                for (var i = 0, len = data.length; i < len; i++) {
+                    cols.push({
+                        "name": data[i].dictId,
+                        "describe": data[i].dictName,
+                        "value": data[i].filter
+                    });
+                }
+            }
+            grid1.addRows($.extend(true,[],cols));
+        });
         //不能异步执行
         $.ajax({
             url:"${basePath}/com/ds/checkSourceType/"+srcDsModel.value,
@@ -1069,13 +1059,26 @@ ${extends("/goframe/function_layout.httl")}
         }
         return false;
     }
-    
+
+    var flg = 0;
     function comPropertiesName(e) {
-        //当可选字段不存在时自动获取
-        if(!cols){
-            getComproperties();
+        // --下拉选项变化--
+        if (flg == 0) {
+            $.post("${basePath}/com/ds/selectParameters/" + srcDsModel.value, {}, function (data) {
+                if (data && data.length && data.length > 0) {
+                    var cols = [];
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        cols.push({
+                            "name": data[i].dictId,
+                            "describe": data[i].dictName,
+                            "value": data[i].filter
+                        });
+                    }
+                    e.source.load(cols);
+                    flg++;
+                }
+            });
         }
-        e.source.load(cols);
     }
 
     /**

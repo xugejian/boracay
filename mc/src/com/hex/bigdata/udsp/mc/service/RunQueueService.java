@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 运行队列信息的服务
  */
@@ -26,7 +28,7 @@ public class RunQueueService {
     private RunQueueMapper runQueueMapper;
 
     @Autowired
-    private CurrentService mcCurrentService;
+    private CurrentService currentService;
 
     @Autowired
     private InitParamService initParamService;
@@ -57,17 +59,44 @@ public class RunQueueService {
         return runQueueMapper.deleteLike(key);
     }
 
+    public List<RunQueue> selectLike(String key) {
+        return runQueueMapper.selectLike(key);
+    }
+
     /**
      * 清空运行队列
      *
      * @return
      */
     public boolean emptyCache() {
-        return this.deleteLike(MC_RUNQUEUE_KEY + ":");
+        return this.deleteLike(MC_RUNQUEUE_KEY + ":")
+                && currentService.emptyCache();
     }
 
     /**
-     * 增加并发
+     * 清空本机运行队列
+     *
+     * @return
+     */
+    public boolean emptyLocalCache() {
+        for (Current current : currentService.getLocalRun()) {
+            String key = this.getKey(current);
+            RunQueue runQueue = this.select(key);
+            if (runQueue != null && runQueue.getCurrentNum() >= 1) {
+                runQueue.setCurrentNum(runQueue.getCurrentNum() - 1);
+                if (runQueue.getCurrentNum() == 0) {
+                    this.delete(key);
+                } else {
+                    this.insert(key, runQueue);
+                }
+                currentService.delete(current.getPkId());
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 增加运行的并发信息和队列大小
      *
      * @param mcCurrent
      * @return
@@ -85,7 +114,7 @@ public class RunQueueService {
                     logger.debug("增加" + key + "并发后并发数==>" + runQueue.getCurrentNum());
                     this.insert(key, runQueue);
                     logger.debug("增加" + key + "并发！");
-                    mcCurrentService.insert(mcCurrent);
+                    currentService.insert(mcCurrent);
                     return true;
                 }
                 logger.info(key + "并发已满！");
@@ -98,7 +127,7 @@ public class RunQueueService {
     }
 
     /**
-     * 减少并发
+     * 减少运行的并发信息和队列大小
      *
      * @param mcCurrent
      * @return
@@ -119,7 +148,7 @@ public class RunQueueService {
                         this.insert(key, runQueue);
                     }
                     logger.debug("减少" + key + "并发！");
-                    this.mcCurrentService.delete(mcCurrent.getPkId());
+                    currentService.delete(mcCurrent.getPkId());
                     return true;
                 }
                 return false;
