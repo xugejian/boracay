@@ -124,7 +124,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
                 }
             }
         } else { // 多个主键
-            key = "SUBSTR(SYS_MD5(CONCAT_WS('|',";
+            key = "SUBSTR(MD5(CONCAT_WS('|',";
             for (int i = 0, k = 0; i < newModelMappings.size(); i++) {
                 String sName = newModelMappings.get(i).getName();
                 MetadataCol mdCol = newModelMappings.get(i).getMetadataCol();
@@ -200,7 +200,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
     private String getHashStrSql(List<MetadataCol> list) {
         String sql = "";
         if (list != null && list.size() > 0) {
-            sql = "\n,SUBSTR(SYS_MD5(CONCAT_WS('|',";
+            sql = "\n,SUBSTR(MD5(CONCAT_WS('|',";
             for (int i = 0; i < list.size(); i++) {
                 MetadataCol mdCol = list.get(i);
                 String name = mdCol.getName();
@@ -228,7 +228,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         if (vals == null || vals.size() == 0) {
             throw new IllegalArgumentException("HBase至少要有一个或多个存储字段！");
         }
-        String sql = "\nJSON_WS(";
+        String sql = "\nCONCAT_MAP(";
         for (int i = 0; i < vals.size(); i++) {
             MetadataCol metadataCol = vals.get(i);
             String sName = metadataCol.getName();
