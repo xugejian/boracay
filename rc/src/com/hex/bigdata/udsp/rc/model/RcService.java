@@ -23,10 +23,11 @@ public class RcService implements Serializable {
 
     private String uptTime;
 
-    /**
-     * 启停标志（0：启动，1：停用）
-     */
-    private String status;
+    private String status; // 启停标志（0：启动，1：停用）
+
+    private String isCache; // 是否缓存（0：是，1：否）
+
+    private long timeout; // 缓存时效（秒）
 
     public String getPkId() {
         return pkId;
@@ -114,5 +115,21 @@ public class RcService implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getIsCache() {
+        return isCache;
+    }
+
+    public void setIsCache(String isCache) {
+        this.isCache = isCache;
+    }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 }

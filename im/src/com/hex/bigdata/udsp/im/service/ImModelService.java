@@ -26,6 +26,7 @@ import com.hex.goframe.util.DateUtil;
 import com.hex.goframe.util.FileUtil;
 import com.hex.goframe.util.Util;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -40,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -48,6 +50,11 @@ import java.util.*;
  */
 @Service
 public class ImModelService {
+
+    private static final FastDateFormat format8 = FastDateFormat.getInstance("yyyyMMdd");
+    private static final FastDateFormat format10 = FastDateFormat.getInstance("yyyy-MM-dd");
+    private static final FastDateFormat format17 = FastDateFormat.getInstance("yyyyMMdd HH:mm:ss");
+    private static final FastDateFormat format19 = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     private ImModelMapper imModelMapper;
@@ -593,14 +600,62 @@ public class ImModelService {
         //设置其过滤字段
         if (datas != null) {
             for (Map.Entry<String, String> entry : datas.entrySet()) {
-                for (ModelFilterCol modelFilterCol1 : model.getModelFilterCols()) {
-                    if (modelFilterCol1.getLabel().equals(entry.getKey())) {
-                        modelFilterCol1.setValue(entry.getValue());
+                String value = entry.getValue();
+                for (ModelFilterCol modelFilterCol : model.getModelFilterCols()) {
+                    if (modelFilterCol.getLabel().equals(entry.getKey())) {
+                        if (DataType.TIMESTAMP.equals(modelFilterCol.getType())) { // 字段类型是TIMESTAMP
+                            value = tarnDateStr(getLen(modelFilterCol.getLength()), value);
+                        }
+                        modelFilterCol.setValue(value);
                     }
                 }
             }
         }
         return model;
+    }
+
+    private int getLen(String length) {
+        int len = 0;
+        if (StringUtils.isNotBlank(length) && StringUtils.isNumeric(length)) {
+            len = Integer.valueOf(length);
+        }
+        return len;
+    }
+
+    private String tarnDateStr(int length, String value) {
+        if (length == 8 || length == 10 || length == 17 || length == 19) {
+            Date date = strToDate(value);
+            if (date != null) {
+                if (length == 8) {
+                    value = format8.format(date);
+                } else if (length == 10) {
+                    value = format10.format(date);
+                } else if (length == 17) {
+                    value = format17.format(date);
+                } else if (length == 19) {
+                    value = format19.format(date);
+                }
+            }
+        }
+        return value;
+    }
+
+    private Date strToDate(String dataStr) {
+        Date date = null;
+        try {
+            if (dataStr.length() == 8) {
+                date = format8.parse(dataStr);
+            } else if (dataStr.length() == 10) {
+                date = format10.parse(dataStr.replaceAll("/", "-"));
+            } else if (dataStr.length() == 17) {
+                date = format17.parse(dataStr);
+            } else if (dataStr.length() == 19) {
+                date = format19.parse(dataStr.replaceAll("/", "-"));
+            }
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("日期字段传入的不是日期格式字符串参数");
+        }
+        return date;
     }
 
     //通过模型id获取模型

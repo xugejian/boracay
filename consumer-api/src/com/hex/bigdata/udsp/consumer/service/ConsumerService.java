@@ -6,10 +6,9 @@ import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
-import com.hex.bigdata.udsp.common.util.CreateFileUtil;
-import com.hex.bigdata.udsp.common.util.FTPClientConfig;
-import com.hex.bigdata.udsp.common.util.ThreadPool;
+import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
+import com.hex.bigdata.udsp.consumer.dao.ResponseMapper;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.consumer.model.Request;
@@ -30,6 +29,7 @@ import com.hex.bigdata.udsp.olq.model.OlqApplication;
 import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
+import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.bigdata.udsp.rc.service.RcUserServiceService;
 import com.hex.bigdata.udsp.rc.util.RcConstant;
 import com.hex.bigdata.udsp.rts.model.RtsConsumer;
@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -88,6 +89,10 @@ public class ConsumerService {
     private LoggingService loggingService;
     @Autowired
     private WaitingService waitingService;
+    @Autowired
+    private ResponseMapper responseMapper;
+    @Autowired
+    private RcServiceService rcServiceService;
 
     /**
      * 消费前检查
@@ -159,6 +164,7 @@ public class ConsumerService {
      * @return
      */
     public Response consume(ConsumeRequest consumeRequest, long bef) {
+        long runBef = System.currentTimeMillis();
         Response response = new Response();
         ErrorCode errorCode = consumeRequest.getError();
         // 错误处理
@@ -172,7 +178,6 @@ public class ConsumerService {
         Request request = consumeRequest.getRequest();
         Current mcCurrent = consumeRequest.getMcCurrent();
         String consumeId = mcCurrent.getPkId();
-        response.setConsumeId(consumeId);
         String appType = request.getAppType();
         String appId = request.getAppId();
         String type = request.getType() == null ? "" : request.getType().toUpperCase();
@@ -182,8 +187,36 @@ public class ConsumerService {
         Map<String, String> paraMap = request.getData();
         String udspUser = request.getUdspUser();
 
+        // ------------------------数据缓存处理【START】-----------------------------
+        String isCache = "1";
+        String cacheId = null;
+        long cacheTime = 60;
+        RcService rcService = rcServiceService.selectByAppTypeAndAppId(appType, appId);
+        if (rcService != null) {
+            isCache = rcService.getIsCache();
+            cacheTime = rcService.getTimeout();
+            if ("0".equals(isCache) && ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
+                    && !ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("appType", appType);
+                map.put("appId", appId);
+                map.put("type", type);
+                map.put("entity", entity);
+                map.put("page", page);
+                map.put("sql", sql);
+                map.put("data", paraMap);
+                cacheId = MD5Util.MD5_16(JSONUtil.parseMap2JSON(map));
+                response = responseMapper.select(cacheId);
+                if (response != null) {
+                    response.setConsumeId(consumeId);
+                    loggingService.writeResponseLog(consumeId, bef, runBef, request, response); // 写消费信息到数据库
+                    return response;
+                }
+            }
+        }
+        // ------------------------数据缓存处理【END】-----------------------------
+
         String fileName = CreateFileUtil.getFileName(); // 生成随机的文件名
-        long runBef = System.currentTimeMillis();
         try {
             // 根据类型进入不同的处理逻辑
             if (RcConstant.UDSP_SERVICE_TYPE_IQ.equalsIgnoreCase(appType)) {
@@ -252,7 +285,7 @@ public class ConsumerService {
                 response = rtsSyncService.startConsumer(appId, request.getTimeout());
             } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equalsIgnoreCase(appType)) {
                 logger.debug("execute IM SYNC START");
-//                response = imSyncService.startForTimeout(consumeRequest, bef);
+                //response = imSyncService.startForTimeout(consumeRequest, bef);
                 response = imSyncService.start(appId, paraMap);
             }
 
@@ -266,7 +299,13 @@ public class ConsumerService {
                 response.setStatusCode(StatusCode.SUCCESS.getValue());
                 response.setStatus(Status.SUCCESS.getValue());
             } else {
-                loggingService.writeResponseLog(consumeId, bef, runBef, request, response);
+                // -------------------把获取的数据插入缓存【START】---------------------
+                if ("0".equals(isCache) && ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
+                        && !ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)) {
+                    responseMapper.insertTimeout(cacheId, response, cacheTime * 1000);
+                }
+                // -------------------把获取的数据插入缓存【END】---------------------
+                loggingService.writeResponseLog(consumeId, bef, runBef, request, response); // 写消费信息到数据库
             }
 
             return response;

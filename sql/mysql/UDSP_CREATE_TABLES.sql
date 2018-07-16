@@ -728,3 +728,7 @@ DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='实时流-生产者配置'
 
 ;
+
+-- 往服务注册信息表中添加是否缓存和缓存时效两个字段
+ALTER TABLE RC_SERVICE ADD IS_CACHE CHAR(1) default 1 COMMENT '是否缓存（0：是，1：否）';
+ALTER TABLE RC_SERVICE ADD TIME_OUT DECIMAL(10) default 60 COMMENT '缓存时效（秒）';

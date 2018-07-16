@@ -51,9 +51,10 @@ public class HBaseProvider implements Provider {
     }
 
     private static Logger logger = LogManager.getLogger(HBaseProvider.class);
-    private static final FastDateFormat format1 = FastDateFormat.getInstance("yyyy/MM/dd");
-    private static final FastDateFormat format2 = FastDateFormat.getInstance("yyyy-MM-dd");
-    private static final FastDateFormat format3 = FastDateFormat.getInstance("yyyyMMdd");
+    private static final FastDateFormat format8 = FastDateFormat.getInstance("yyyyMMdd");
+    private static final FastDateFormat format10 = FastDateFormat.getInstance("yyyy-MM-dd");
+    private static final FastDateFormat format17 = FastDateFormat.getInstance("yyyyMMdd HH:mm:ss");
+    private static final FastDateFormat format19 = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
     private static final String rkSep = "|";
     private static final String startStr = "";
     private static final String stopStr = "|";
@@ -86,6 +87,7 @@ public class HBaseProvider implements Provider {
 
         String startRow = getStartRow(queryColumns);
         String stopRow = getStopRow(queryColumns);
+        logger.debug("startRow:" + startRow + ", startRow:" + startRow);
         Map<Integer, String> colMap = getColMap(metaReturnColumns);
 
         int maxSize = hBaseDatasource.getMaxNum();
@@ -182,6 +184,7 @@ public class HBaseProvider implements Provider {
 
         String startRow = getStartRow(queryColumns);
         String stopRow = getStopRow(queryColumns);
+        logger.debug("startRow:" + startRow + ", startRow:" + startRow);
         Map<Integer, String> colMap = getColMap(metaReturnColumns);
 
         int maxSize = hBaseDatasource.getMaxNum();
@@ -369,15 +372,16 @@ public class HBaseProvider implements Provider {
             if (!Operator.EQ.equals(operator) && !Operator.GE.equals(operator) && !Operator.LE.equals(operator)) {
                 throw new IllegalArgumentException("只支持等于、大于等于和小于等于操作");
             }
+            // 只能是等于或大于等于
             if (Operator.EQ.equals(operator) || Operator.GE.equals(operator)) {
                 if (isNeed && Operator.EQ.equals(operator)) { // 必填且是等于操作
                     value = realValue(value, length);
                 } else if (Operator.GE.equals(operator)
-                        || (!isNeed && DataType.TIMESTAMP.equals(dataType))) { // 大于等于操作 或者 选填或字段类型为TIMESTAMP
-                    value = rowDate(length, value);
+                        || (!isNeed && DataType.TIMESTAMP.equals(dataType))) { // 大于等于操作 或者 选填或类型是TIMESTAMP
+                    value = tarnDateStr(length, value);
                 }
                 if (StringUtils.isNotBlank(value)) {
-                    startRow += this.rkSep + value;
+                    startRow += (StringUtils.isBlank(startRow) ? value : this.rkSep + value);
                 }
             }
             if (Operator.GE.equals(operator)) break; // 退出
@@ -399,15 +403,16 @@ public class HBaseProvider implements Provider {
             if (!Operator.EQ.equals(operator) && !Operator.GE.equals(operator) && !Operator.LE.equals(operator)) {
                 throw new IllegalArgumentException("只支持等于、大于等于和小于等于操作");
             }
+            // 只能是等于或小于等于
             if (Operator.EQ.equals(operator) || Operator.LE.equals(operator)) {
-                if (isNeed && Operator.EQ.equals(operator)) { // 必填且是等于操作
+                if (Operator.EQ.equals(operator)) { // 必填且是等于操作
                     value = realValue(value, length);
                 } else if (Operator.LE.equals(operator)
-                        || (!isNeed && DataType.TIMESTAMP.equals(dataType))) { // 小于等于操作 或者 选填或字段类型为TIMESTAMP
-                    value = rowDate(length, value);
+                        || (!isNeed && DataType.TIMESTAMP.equals(dataType))) { // 小于等于操作 或者 选填或类型是TIMESTAMP
+                    value = tarnDateStr(length, value);
                 }
                 if (StringUtils.isNotBlank(value)) {
-                    stopRow += this.rkSep + value;
+                    stopRow += (StringUtils.isBlank(stopRow) ? value : this.rkSep + value);
                 }
             }
             if (Operator.LE.equals(operator)) break; // 退出
@@ -415,20 +420,43 @@ public class HBaseProvider implements Provider {
         return stopRow;
     }
 
-    private String rowDate(int length, String value) {
-        if (length == 8) {
-            value = value.replaceAll("/", "-").replaceAll("-", "").substring(0, 8);
-        } else if (length == 10) {
-            value = value.replaceAll("/", "-").substring(0, 10);
-        } else if (length == 17) {
-            value = value.replaceAll("/", "-").replaceAll("-", "").substring(0, 17);
-        } else if (length == 19) {
-            value = value.replaceAll("/", "-").substring(0, 19);
+    private String tarnDateStr(int length, String value) {
+        if (length == 8 || length == 10 || length == 17 || length == 19) {
+            Date date = strToDate(value);
+            if (date != null) {
+                if (length == 8) {
+                    value = format8.format(date);
+                } else if (length == 10) {
+                    value = format10.format(date);
+                } else if (length == 17) {
+                    value = format17.format(date);
+                } else if (length == 19) {
+                    value = format19.format(date);
+                }
+            }
         }
         return value;
     }
 
-    protected int getLen(String length) {
+    private Date strToDate(String dataStr) {
+        Date date = null;
+        try {
+            if (dataStr.length() == 8) {
+                date = format8.parse(dataStr);
+            } else if (dataStr.length() == 10) {
+                date = format10.parse(dataStr.replaceAll("/", "-"));
+            } else if (dataStr.length() == 17) {
+                date = format17.parse(dataStr);
+            } else if (dataStr.length() == 19) {
+                date = format19.parse(dataStr.replaceAll("/", "-"));
+            }
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("日期字段传入的不是日期格式字符串参数");
+        }
+        return date;
+    }
+
+    private int getLen(String length) {
         int len = 0;
         if (StringUtils.isNotBlank(length) && StringUtils.isNumeric(length)) {
             try {
@@ -441,7 +469,7 @@ public class HBaseProvider implements Provider {
     }
 
     private String getMd5Str(List<QueryColumn> queryColumns) {
-        String sameStr = "";
+        String str = "";
         int count = 0;
         for (QueryColumn queryColumn : queryColumns) {
             if (queryColumn.isNeed() && Operator.EQ.equals(queryColumn.getOperator())) {
@@ -449,13 +477,16 @@ public class HBaseProvider implements Provider {
                 if (StringUtils.isBlank(value)) {
                     throw new IllegalArgumentException("必输项值为空");
                 }
-                sameStr += (count == 0 ? value : this.rkSep + value);
+                str += (count == 0 ? value : this.rkSep + value);
                 count++;
             } else {
                 break;
             }
         }
-        return md5_16(sameStr);
+        if (StringUtils.isNotBlank(str)) {
+            str = md5_16(str);
+        }
+        return str;
     }
 
     private Map<Integer, String> getColMap(List<DataColumn> returnColumns) {
@@ -636,38 +667,6 @@ public class HBaseProvider implements Provider {
         return str.getBytes(code).length;
     }
 
-//    // 转为8位日期
-//    private String replaceDateStr(String dataStr) {
-//        dataStr = dataStr.replaceAll("-", "");
-//        dataStr = dataStr.replaceAll("/", "");
-//        return dataStr;
-//    }
-
-//    // 判断是否是日期字符串
-//    private boolean isValidDate(String dataStr) {
-//        boolean status = true;
-//        if (dataStr.length() == 8) {
-//            try {
-//                format3.parse(dataStr);
-//            } catch (ParseException e) {
-//                status = false;
-//            }
-//        } else if (dataStr.length() == 10) {
-//            try {
-//                format2.parse(dataStr);
-//            } catch (ParseException e) {
-//                try {
-//                    format1.parse(dataStr);
-//                } catch (ParseException e1) {
-//                    status = false;
-//                }
-//            }
-//        } else {
-//            status = false;
-//        }
-//        return status;
-//    }
-
     public boolean testDatasource(Datasource datasource) {
         boolean canConnection = true;
         HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getProperties());
@@ -705,4 +704,9 @@ public class HBaseProvider implements Provider {
     public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
         return null;
     }
+
+    public static void main(String[] args){
+        System.out.println(DigestUtils.md5Hex("9010901228600001").substring(8, 24));
+    }
+
 }

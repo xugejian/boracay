@@ -32,6 +32,21 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                 </tr>
 
+				<tr>
+
+					<th class="nui-form-label"><label for="isCache">是否缓存：</label></th>
+					<td>
+                        <input id="isCache" name="isCache" class="nui-dictcombobox nui-form-input"
+                               valueField="dictId" textField="dictName" dictTypeId="YES_OR_NO"
+                               required="true" value="1" style="width: 90%;"/>
+					</td>
+					<th class="nui-form-label"><label for="timeout">缓存时效（秒）：</label></th>
+					<td>
+						<input id="timeout" name="timeout" class="nui-textbox" style="width: 99%"
+                               required="true" vtype="range:1,9999999999" value="60"/>
+					</td>
+				</tr>
+
                 <tr>
                     <th class="nui-form-label"><label for="describe">说明：</label></th>
                     <td colspan="3">
@@ -135,6 +150,44 @@ ${extends("/goframe/function_layout.httl")}
             }
         }
     }
+
+    function timeoutChange(e) {
+        var timeout = nui.get("timeout");
+        if (e.value == '1') {
+            timeout.setValue("");
+            timeout.readOnly = true;
+            timeout.required = false;
+        } else {
+            timeout.readOnly = false;
+            timeout.required = true;
+        }
+    }
+
+    /**
+     * 缓存时效变化时出发检查
+     */
+    function timeoutValidation(e) {
+        var isCache = nui.get("isCache");
+        if (isCache.value == "0") {
+            if (e.isValid) {
+                if (checkPattern2(e.value) == false) {
+                    e.errorText = "只能是数字";
+                    e.isValid = false;
+                }
+            }
+        } else {
+            e.isValid = true;
+        }
+    }
+
+    function checkPattern2(v) {
+        var re = new RegExp("^[1-9][0-9]{0,9}$");
+        if (re.test(v)) {
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * 检查是否满足字母、数字、下划线，且以字母开头

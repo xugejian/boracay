@@ -13,6 +13,8 @@
     <result column="UPT_USER" property="uptUser" jdbcType="VARCHAR" />
     <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR" />
     <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="IS_CACHE" property="isCache" jdbcType="CHAR"/>
+    <result column="TIME_OUT" property="timeout" jdbcType="DECIMAL"/>
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from RC_SERVICE
@@ -21,11 +23,12 @@
   <insert id="insert" parameterType="com.hex.bigdata.udsp.rc.model.RcService" >
     insert into RC_SERVICE (PK_ID, NAME, DESCRIPTION,
       TYPE, APP_ID, DEL_FLG, CRT_USER, 
-      CRT_TIME, UPT_USER, UPT_TIME,STATUS
+      CRT_TIME, UPT_USER, UPT_TIME, STATUS, IS_CACHE, TIME_OUT
       )
     values (#{pkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, 
       #{type,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{delFlg,jdbcType=CHAR}, #{crtUser,jdbcType=VARCHAR}, 
-      #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}
+      #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, #{status,jdbcType=CHAR},
+      #{isCache,jdbcType=CHAR}, #{timeout,jdbcType=DECIMAL}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.rc.model.RcService" >
@@ -39,18 +42,20 @@
       CRT_TIME = #{crtTime,jdbcType=VARCHAR},
       UPT_USER = #{uptUser,jdbcType=VARCHAR},
       UPT_TIME = #{uptTime,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=CHAR}
+      STATUS = #{status,jdbcType=CHAR},
+      IS_CACHE = #{isCache,jdbcType=CHAR},
+      TIME_OUT = #{timeout,jdbcType=DECIMAL}
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME,STATUS
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
     from RC_SERVICE
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME,STATUS
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
     from RC_SERVICE
     where DEL_FLG = '0'
   </select>
@@ -64,7 +69,7 @@
 
   <select id="selectPage" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rc.dto.RcServiceView">
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME,STATUS
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
     from RC_SERVICE
     where DEL_FLG = '0'
     <if test="name!='' and name!=null ">and NAME like '%'||#{name}||'%'</if>
@@ -78,12 +83,13 @@
     <if test="crtUser!='' and crtUser!=null ">and CRT_USER like '%'||#{crtUser}||'%'</if>
     <if test="uptUser!='' and uptUser!=null ">and UPT_USER like '%'||#{uptUser}||'%'</if>
     <if test="status!='' and status!=null ">and STATUS =#{status}</if>
+    <if test="isCache!='' and isCache!=null ">and IS_CACHE =#{isCache}</if>
     order by UPT_TIME desc, CRT_TIME desc, NAME asc
   </select>
 
   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME,STATUS
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
     from RC_SERVICE
     where DEL_FLG = '0'
     and NAME = #{name,jdbcType=VARCHAR}
@@ -91,28 +97,30 @@
 
   <select id="selectAuthInfo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, name SERVICE_NAME,TYPE SERVICE_TYPE, DESCRIPTION, TYPE,DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME,STATUS
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
     from RC_SERVICE
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByType" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME,STATUS
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
     from RC_SERVICE
     where DEL_FLG = '0'
     and TYPE = #{serviceType,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByServiceName" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME,STATUS
+    select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+   UPT_TIME, STATUS, IS_CACHE, TIME_OUT
     from RC_SERVICE
     where DEL_FLG = '0' AND STATUS = '0'
     and NAME = #{name,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByAppTypeAndAppId" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rc.model.RcService" >
-    select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME,STATUS
+    select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
     from RC_SERVICE
     where DEL_FLG = '0'
     and TYPE = #{type,jdbcType=VARCHAR}
@@ -120,7 +128,8 @@
   </select>
 
   <select id="selectStartByAppTypeAndAppId" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rc.model.RcService" >
-    select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME, STATUS
+    select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
     from RC_SERVICE
     where DEL_FLG = '0' and STATUS = '0'
     and TYPE = #{type,jdbcType=VARCHAR}

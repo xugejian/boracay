@@ -1070,3 +1070,14 @@ values ('18051', 'MC.wait.list.empty', '监控中心>队列监控>等待队列>�
 -- 修改实现类路径
 update T_GF_DICT set dict_name='com.hex.bigdata.udsp.im.converter.impl.KuduConverter'
 where dict_type_id='IM_IMPL_CLASS' and dict_id='KUDU';
+
+-- 初始化是否缓存和缓存时效的值
+update RC_SERVICE set IS_CACHE = '1', TIME_OUT = 60;
+
+-- 添加YES_OR_NO
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('YES_OR_NO', '是或否', 'default');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('YES_OR_NO', '0', '是', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('YES_OR_NO', '1', '否', null, 2, null, null, 'default', null);

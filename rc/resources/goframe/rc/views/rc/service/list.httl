@@ -153,6 +153,7 @@ ${extends("/goframe/function_layout.httl")}
             <div field="status" headerAlign="center" allowSort="true" renderer="renderServiceStatus">服务状态</div>
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
             <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat">更新时间</div>
+            <div field="isCache" headerAlign="center" allowSort="true" renderer="renderIsCache">是否缓存</div>
             <div name="operation" headerAlign="center" align="center" allowSort="true" renderer="operation">授权操作</div>
         </div>
     </div>
@@ -609,6 +610,10 @@ ${extends("/goframe/function_layout.httl")}
                 grid1.unmask();
             }
         });
+    }
+
+    function renderIsCache(e) {
+        return nui.getDictText("YES_OR_NO", e.row.isCache);
     }
 </script>
 

@@ -25,6 +25,20 @@ ${extends("/goframe/function_layout.httl")}
             </tr>
 
             <tr>
+                <th class="nui-form-label"><label for="isCache">是否缓存：</label></th>
+                <td>
+                    <input id="isCache" name="isCache" class="nui-dictcombobox nui-form-input"
+                           valueField="dictId" textField="dictName" dictTypeId="YES_OR_NO"
+                           required="true" value="1" style="width: 90%;" readonly="true"/>
+                </td>
+                <th class="nui-form-label"><label for="timeout">缓存时效（秒）：</label></th>
+                <td>
+                    <input id="timeout" name="timeout" class="nui-textbox" style="width: 99%"
+                            required="true" vtype="range:1,9999999999" value="60" readonly="true"/>
+                </td>
+            </tr>
+
+            <tr>
                 <th class="nui-form-label"><label for="describe">说明：</label></th>
                 <td colspan="3">
                     <input name="describe" id="describe" class="nui-textarea" style="height:60px; width:99%;"
