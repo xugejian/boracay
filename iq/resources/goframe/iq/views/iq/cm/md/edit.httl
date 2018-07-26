@@ -873,7 +873,8 @@ ${extends("/goframe/function_layout.httl")}
                     "name": val.name,
                     "describe": val.describe ? val.describe : val.name,
                     "colType": val.type ? val.type : 'STRING',
-                    "length": val.length
+                    "length": val.length,
+                    "note": val.note
                 });
             }
         });
@@ -887,7 +888,8 @@ ${extends("/goframe/function_layout.httl")}
                     "name": val.name,
                     "describe": val.describe ? val.describe : val.name,
                     "colType": val.type ? val.type : 'STRING',
-                    "length": val.length
+                    "length": val.length,
+                    "note": val.note
                 });
             }
         });
