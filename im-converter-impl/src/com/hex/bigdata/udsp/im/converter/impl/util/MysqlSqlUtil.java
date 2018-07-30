@@ -93,7 +93,7 @@ public class MysqlSqlUtil {
      * @return
      */
     public static String addColumns(String tableName, List<TableColumn> columns) {
-        return "ALTER TABLE " + tableName + " ADD COLUMNS " + getColumns(columns);
+        return "ALTER TABLE " + tableName + " ADD " + getColumns(columns);
     }
 
     private static String getValue(DataType dataType, String value) {

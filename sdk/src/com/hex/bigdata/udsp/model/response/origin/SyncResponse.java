@@ -23,7 +23,7 @@ public class SyncResponse extends UdspResponse {
     private Page page;
 
     /**
-     * 返回字段名称和类型 key:名称；value:value
+     * 返回字段名称和类型 key:名称；value:类型
      */
     private LinkedHashMap<String, String> returnColumns;
 
