@@ -1,38 +1,13 @@
 package com.hex.bigdata.udsp.model.request;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/15
- * TIME:9:54
- */
 public class UdspRequest {
-    /**
-     * 服务名称
-     */
+
     private String serviceName;
-    /**
-     * udsp用户登录名
-     */
-    private String udspUser;
-    /**
-     * 访问令牌
-     */
-    private String token;
-    /**
-     * 源系统用户名称
-     */
-    private String appUser;
-
-    /**
-     * 请求类型，同步：sync；异步：async
-     */
     private String type;
-
-    /**
-     * 业务类型：开始调用：start；查看状态：status
-     */
     private String entity;
+    private String udspUser;
+    private String token;
+    private String appUser;
 
     public String getServiceName() {
         return serviceName;

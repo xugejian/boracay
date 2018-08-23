@@ -6,12 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/25
- * TIME:17:36
- */
 public class FtpClinetConfig {
     private static String hostname;
     private static int port = 21;

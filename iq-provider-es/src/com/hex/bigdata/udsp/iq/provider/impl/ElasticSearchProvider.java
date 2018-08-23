@@ -38,7 +38,6 @@ public class ElasticSearchProvider implements Provider {
         response.setRequest(request);
 
         Application application = request.getApplication();
-        int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
         List<ReturnColumn> returnColumns = application.getReturnColumns();
@@ -52,9 +51,6 @@ public class ElasticSearchProvider implements Provider {
 
         //最大查询数量
         int maxSize = elSearchDatasource.getMaxNum();
-        if (maxNum != 0) {
-            maxSize = maxNum;
-        }
         Page page = new Page();
         page.setPageIndex(0);
         page.setPageSize(maxSize);
@@ -87,7 +83,6 @@ public class ElasticSearchProvider implements Provider {
         response.setRequest(request);
 
         Application application = request.getApplication();
-        int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
         List<ReturnColumn> returnColumns = application.getReturnColumns();
@@ -100,9 +95,6 @@ public class ElasticSearchProvider implements Provider {
         ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource.getPropertyMap());
 
         int maxSize = elSearchDatasource.getMaxNum();
-        if (maxNum != 0) {
-            maxSize = maxNum;
-        }
         if (pageSize > maxSize) {
             pageSize = maxSize;
         }

@@ -16,7 +16,7 @@ public class Response {
 
     private ResultSetMetaData metadata; // 元数据
     private List<Map<String, String>> records; // 记录集合
-    private int totalCount; // 总记录数
+    private long totalCount; // 总记录数
 
     private long consumeTime; // 持续时间
 
@@ -46,11 +46,11 @@ public class Response {
         this.records = records;
     }
 
-    public int getTotalCount() {
+    public long getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(int totalCount) {
+    public void setTotalCount(long totalCount) {
         this.totalCount = totalCount;
     }
 

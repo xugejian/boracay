@@ -11,24 +11,22 @@ import java.util.List;
 /**
  * Created by JunjieM on 2017-9-5.
  */
-public class KafkaModel extends MqModel implements Serializable{
-    public KafkaModel(){
+public class KafkaModel extends MqModel implements Serializable {
+    public KafkaModel() {
     }
 
     public KafkaModel(Model model) {
         super(model);
     }
 
-    public KafkaModel(List<Property> properties, Datasource srcDatasource){
-        super(properties,srcDatasource);
+    public KafkaModel(List<Property> properties, Datasource srcDatasource) {
+        super(properties, srcDatasource);
     }
 
     public String getGroupId() {
         String value = getProperty("group.id").getValue();
-//        if (StringUtils.isBlank(value))
-//            throw new IllegalArgumentException("group.id不能为空");
         if (StringUtils.isBlank(value))
-            value = getId();
+            throw new IllegalArgumentException("group.id不能为空");
         return value;
     }
 }

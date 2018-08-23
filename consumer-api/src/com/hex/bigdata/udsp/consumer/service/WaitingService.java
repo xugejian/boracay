@@ -1,13 +1,13 @@
 package com.hex.bigdata.udsp.consumer.service;
 
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
 import com.hex.bigdata.udsp.common.service.InitParamService;
-import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
+import com.hex.bigdata.udsp.consumer.thread.WaitQueueCallable;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
-import com.hex.bigdata.udsp.consumer.thread.WaitQueueCallable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ public class WaitingService {
         Current mcCurrent = consumeRequest.getMcCurrent();
         String consumeId = mcCurrent.getPkId();
         long cycleTimeInterval = 0;
-        if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
+        if (ConsumerType.SYNC.getValue().equalsIgnoreCase(mcCurrent.getSyncType())) {
             cycleTimeInterval = syncCycleTimeInterval;
         } else {
             cycleTimeInterval = asyncCycleTimeInterval;
@@ -71,7 +71,7 @@ public class WaitingService {
         QueueIsFullResult isFullResult = consumeRequest.getQueueIsFullResult();
         long maxWaitTimeout = 0;
         RcUserService rcUserService = consumeRequest.getRcUserService();
-        if (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(mcCurrent.getSyncType())) {
+        if (ConsumerType.SYNC.getValue().equalsIgnoreCase(mcCurrent.getSyncType())) {
             maxWaitTimeout = (rcUserService == null || rcUserService.getMaxSyncWaitTimeout() == 0) ?
                     initParamService.getMaxSyncWaitTimeout() : rcUserService.getMaxSyncWaitTimeout();
         } else {

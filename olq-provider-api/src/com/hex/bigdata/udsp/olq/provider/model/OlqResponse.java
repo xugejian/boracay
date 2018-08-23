@@ -29,7 +29,7 @@ public class OlqResponse {
     /**
      * 总记录数
      */
-    private int totalCount;
+    private long totalCount;
     /**
      * 持续时间
      */
@@ -81,11 +81,11 @@ public class OlqResponse {
         this.records = records;
     }
 
-    public int getTotalCount() {
+    public long getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(int totalCount) {
+    public void setTotalCount(long totalCount) {
         this.totalCount = totalCount;
     }
 

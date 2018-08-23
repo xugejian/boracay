@@ -1,12 +1,11 @@
 package com.hex.bigdata.udsp.demo;
 
 import com.hex.bigdata.udsp.client.factory.ConsumerClientFactory;
-import com.hex.bigdata.udsp.client.impl.NoSqlClient;
 import com.hex.bigdata.udsp.client.impl.OlqAppClient;
-import com.hex.bigdata.udsp.constant.SdkConstant;
+import com.hex.bigdata.udsp.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.constant.ConsumerType;
 import com.hex.bigdata.udsp.constant.StatusCode;
 import com.hex.bigdata.udsp.model.Page;
-import com.hex.bigdata.udsp.model.request.NoSqlRequest;
 import com.hex.bigdata.udsp.model.request.OlqAppRequest;
 import com.hex.bigdata.udsp.model.request.StatusRequest;
 import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
@@ -50,9 +49,9 @@ public class OlqAppClientDemo {
         //基础参数设置-上层应用系统使用者工号
         request.setAppUser("10940");
         //基础参数设置-设置调用start接口
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
+        request.setEntity(ConsumerEntity.START.getValue());
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
-        request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
+        request.setType(ConsumerType.SYNC.getValue());
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("test");
         request.setToken("000000");
@@ -130,9 +129,9 @@ public class OlqAppClientDemo {
         //基础参数设置-上层应用系统使用者工号
         request.setAppUser("100940");
         //基础参数设置-设置调用start接口
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
+        request.setEntity(ConsumerEntity.START.getValue());
         //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
-        request.setType(SdkConstant.CONSUMER_TYPE_ASYNC);
+        request.setType(ConsumerType.ASYNC.getValue());
 
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("test");
@@ -193,9 +192,9 @@ public class OlqAppClientDemo {
         //基础参数设置-上层应用系统使用者工号
         request.setAppUser("10940");
         //基础参数设置-设置调用status接口，查看任务状态
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_STATUS);
+        request.setEntity(ConsumerEntity.STATUS.getValue());
         //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
-        request.setType(SdkConstant.CONSUMER_TYPE_ASYNC);
+        request.setType(ConsumerType.ASYNC.getValue());
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("test");
         request.setToken("000000");
@@ -214,7 +213,7 @@ public class OlqAppClientDemo {
                 logger.info("异步消费完成");
                 // 可以继续执行FTP下载文件的操作
             }
-            if (StatusCode.RUNING == response.getStatusCode()) {
+            if (StatusCode.RUNNING == response.getStatusCode()) {
                 logger.info("异步消费正在执行");
                 // 可以继续执行查看状态的操作
             } else {

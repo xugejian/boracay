@@ -1,8 +1,8 @@
 package com.hex.bigdata.udsp.client.impl;
 
 import com.hex.bigdata.udsp.client.ConsumerClient;
-import com.hex.bigdata.udsp.constant.SdkConstant;
-import com.hex.bigdata.udsp.model.request.OlqRequest;
+import com.hex.bigdata.udsp.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.constant.ConsumerType;
 import com.hex.bigdata.udsp.model.request.SqlRequest;
 import com.hex.bigdata.udsp.model.request.StatusRequest;
 import com.hex.bigdata.udsp.model.request.UdspRequest;
@@ -16,10 +16,7 @@ import com.hex.bigdata.udsp.util.SdkHttpUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/7/20
- * TIME:19:56
+ * SQL客户端（联机查询客户端）
  */
 public class SqlClient extends ConsumerClient {
 
@@ -38,7 +35,7 @@ public class SqlClient extends ConsumerClient {
      */
     public SyncPackResponse syncStart(SqlRequest request) {
         //检查基础参数，参数错误则抛出异常
-        this.checkBasicParams(request, SdkConstant.CONSUMER_TYPE_SYNC, SdkConstant.CONSUMER_ENTITY_START);
+        this.checkBasicParams(request, ConsumerType.SYNC, ConsumerEntity.START);
         //业务参数检查
         this.checkStartBusinessParams(request);
         SyncResponse response = SdkHttpUtil.requestUdsp(request, this.getRequestUrl(), SyncResponse.class);
@@ -53,7 +50,7 @@ public class SqlClient extends ConsumerClient {
      */
     public AsyncPackResponse asyncStart(SqlRequest request) {
         //检查基础参数，参数错误则抛出异常
-        this.checkBasicParams(request, SdkConstant.CONSUMER_TYPE_ASYNC, SdkConstant.CONSUMER_ENTITY_START);
+        this.checkBasicParams(request, ConsumerType.ASYNC, ConsumerEntity.START);
         //业务参数检查
         this.checkStartBusinessParams(request);
         AsyncResponse response = SdkHttpUtil.requestUdsp(request, this.getRequestUrl(), AsyncResponse.class);
@@ -68,7 +65,7 @@ public class SqlClient extends ConsumerClient {
      */
     public StatusPackResponse asyncStatus(StatusRequest request) {
         //检查基础参数，参数错误则抛出异常
-        this.checkBasicParams(request, SdkConstant.CONSUMER_TYPE_ASYNC, SdkConstant.CONSUMER_ENTITY_STATUS);
+        this.checkBasicParams(request, ConsumerType.ASYNC, ConsumerEntity.STATUS);
         this.checkStatusBusinessParams(request.getConsumeId());
         StatusResponse response = SdkHttpUtil.requestUdsp(request, this.getRequestUrl(), StatusResponse.class);
         return this.transStatusResponse(response);

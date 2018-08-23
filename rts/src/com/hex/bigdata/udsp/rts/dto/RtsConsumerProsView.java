@@ -11,9 +11,8 @@ import java.util.List;
  */
 public class RtsConsumerProsView implements Serializable {
 
-    private List<ComProperties> comPropertiesList;
-
     private RtsConsumer rtsConsumer;
+    private List<ComProperties> comPropertiesList;
 
     public List<ComProperties> getComPropertiesList() {
         return comPropertiesList;

@@ -13,9 +13,10 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                     <th class="nui-form-label"><label for="dsId">数据源：</label></th>
                     <td>
-                        <div id="dsId" class="nui-combobox" style="width:97%;"  popupWidth="400" textField="name" valueField="pkId"
+                        <div id="dsId" class="nui-combobox" style="width:97%;" popupWidth="400" textField="name"
+                             valueField="pkId"
                              url="${basePath}/com/ds/select?model=RTS" dataField="data" name="dsId" multiSelect="false"
-                             allowInput="true" required="true" >
+                             allowInput="true" required="true">
                             <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
@@ -25,7 +26,7 @@ ${extends("/goframe/function_layout.httl")}
                 </tr>
                 <tr>
                     <th class="nui-form-label"><label for="topic">主题：</label></th>
-                    <td >
+                    <td>
                         <input id="topic" name="topic" class="nui-textbox" style="width:99%" required="true"
                                vtype="maxLength:256"/>
                     </td>
@@ -56,11 +57,13 @@ ${extends("/goframe/function_layout.httl")}
                             </td>
                             <td style="text-align: right;">
                                 <a class="nui-button" iconCls="icon-add" onclick="add">添加</a>
-                                <!--<a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>-->
-                                <a class="nui-button" iconCls="icon-remove" onclick="remove" enabled="false" id="remove">删除</a>
+                                <a class="nui-button" iconCls="icon-remove" onclick="remove" enabled="false"
+                                   id="remove">删除</a>
                                 <span class="separator"></span>
-                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp" enabled="false" id="moveUp">上移</a>
-                                <a class="nui-button" iconCls="icon-download" onclick="moveDown" enabled="false" id="moveDown">下移</a>
+                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp" enabled="false"
+                                   id="moveUp">上移</a>
+                                <a class="nui-button" iconCls="icon-download" onclick="moveDown" enabled="false"
+                                   id="moveDown">下移</a>
                             </td>
                         </tr>
                     </table>

@@ -1,5 +1,7 @@
 package com.hex.bigdata.udsp.controller;
 
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.dto.ComDatasourcePropsView;
@@ -131,8 +133,8 @@ public class HttpController extends BaseController {
         String message = "下载成功";
         //获取并设置客户端请求的IP
         innerRequest.setRequestIp(HostUtil.getRealRequestIp(request));
-        if (!ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(innerRequest.getType())
-                || !ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(innerRequest.getEntity())) {
+        if (!ConsumerType.ASYNC.getValue().equalsIgnoreCase(innerRequest.getType())
+                || !ConsumerEntity.START.getValue().equalsIgnoreCase(innerRequest.getEntity())) {
             return new MessageResult(false, "不为异步的start请求");
         }
         Response response = getInnerConsume(innerRequest);
@@ -155,7 +157,7 @@ public class HttpController extends BaseController {
             }
             if (StatusCode.SUCCESS.getValue().equals(response.getStatusCode())) {
                 return new MessageResult(true, responseContent);
-            } else if (StatusCode.RUNING.getValue().equals(response.getStatusCode())) {
+            } else if (StatusCode.RUNNING.getValue().equals(response.getStatusCode())) {
                 try {
                     Thread.sleep(downloadSleepTimeMs);
                 } catch (InterruptedException e) {
@@ -238,7 +240,7 @@ public class HttpController extends BaseController {
     }
 
     private InnerRequest jsonToRequest(String json) {
-        Map<String, Class> classMap = new HashMap<String, Class>();
+        Map<String, Class> classMap = new HashMap<>();
         classMap.put(ConsumerConstant.CONSUME_RTS_DATASTREAM, Map.class);
         return JSONUtil.parseJSON2Obj(json, InnerRequest.class, classMap);
     }

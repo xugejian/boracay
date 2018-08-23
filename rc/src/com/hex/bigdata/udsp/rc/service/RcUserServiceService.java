@@ -1,13 +1,13 @@
 package com.hex.bigdata.udsp.rc.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
+import com.hex.bigdata.udsp.common.constant.ServiceType;
 import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
@@ -21,7 +21,6 @@ import com.hex.bigdata.udsp.rc.dto.RcUserServiceDto;
 import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
-import com.hex.bigdata.udsp.rc.util.RcConstant;
 import com.hex.bigdata.udsp.rts.service.RtsConsumerService;
 import com.hex.bigdata.udsp.rts.service.RtsProducerService;
 import com.hex.goframe.model.GFUser;
@@ -816,30 +815,22 @@ public class RcUserServiceService extends BaseService {
         workbook = new HSSFWorkbook();
 
         for (RcUserService item : rcServices) {
-            RcUserServiceView rcUserServiceView = new RcUserServiceView();
-            rcUserServiceView = this.selectFullResultMap(item.getPkId());
+            RcUserServiceView rcUserServiceView = this.selectFullResultMap(item.getPkId());
             String type = rcUserServiceView.getServiceType();
 
-            if (RcConstant.UDSP_SERVICE_TYPE_IQ.equals(type)) {
-                //交互查询
+            if (ServiceType.IQ.getValue().equals(type)) {
                 iqApplicationService.setWorkbooksheet(workbook, rcUserServiceView);
-            } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equals(type)) {
-                //联机查询
+            } else if (ServiceType.OLQ.getValue().equals(type)) {
                 olqService.setWorkbooksheet(workbook, rcUserServiceView);
-            } else if (RcConstant.UDSP_SERVICE_TYPE_MM.equals(type)) {
-                //模型调用
+            } else if (ServiceType.MM.getValue().equals(type)) {
                 mmApplicationService.setWorkbooksheet(workbook, rcUserServiceView);
-            } else if (RcConstant.UDSP_SERVICE_TYPE_RTS_PRODUCER.equals(type)) {
-                //实时流-生产者
+            } else if (ServiceType.RTS_PRODUCER.getValue().equals(type)) {
                 rtsProducerService.setWorkbooksheet(workbook, rcUserServiceView);
-            } else if (RcConstant.UDSP_SERVICE_TYPE_RTS_CONSUMER.equals(type)) {
-                //实时流-消费者
+            } else if (ServiceType.RTS_CONSUMER.getValue().equals(type)) {
                 rtsConsumerService.setWorkbooksheet(workbook, rcUserServiceView);
-            } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
-                //联机查询应用
+            } else if (ServiceType.OLQ_APP.getValue().equals(type)) {
                 olqApplicationService.setWorkbooksheet(workbook, rcUserServiceView);
-            } else if (RcConstant.UDSP_SERVICE_TYPE_IM.equals(type)) {
-                //交互建模
+            } else if (ServiceType.IM.getValue().equals(type)) {
                 imModelService.setWorkbooksheet(workbook, rcUserServiceView);
             }
         }

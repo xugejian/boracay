@@ -72,7 +72,7 @@
     IM.UPT_TIME, IM.TB_NAME, IM.STATUS, IM.TYPE, CD.NAME AS DS_NAME, CD.TYPE as DS_TYPE, CD.DESCRIPTION as DS_DESC
     from IM_METADATA IM
     left join COM_DATASOURCE CD
-    on IM.DS_ID = CD.PK_ID
+    on IM.DS_ID = CD.PK_ID and CD.DEL_FLG = '0'
     where IM.DEL_FLG = '0'
     <if test="pkId!='' and pkId!=null ">and IM.PK_ID = #{pkId}</if>
     <if test="dsId!='' and dsId!=null ">and IM.DS_ID = #{dsId}</if>

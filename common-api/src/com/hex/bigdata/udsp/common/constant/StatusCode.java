@@ -1,14 +1,14 @@
 package com.hex.bigdata.udsp.common.constant;
 
 /**
- * 状态码
+ * 结果状态码
  */
 public enum StatusCode {
     SUCCESS("成功", "000000"),
     DEFEAT("失败", "000001"),
     TIMEOUT("超时", "000002"),
     KILLED("杀死", "000003"),
-    RUNING("运行", "000004"),
+    RUNNING("运行", "000004"),
     OTHER("其他", "000005");
 
     private String value;

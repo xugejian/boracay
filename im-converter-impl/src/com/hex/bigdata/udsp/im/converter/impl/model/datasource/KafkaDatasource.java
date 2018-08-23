@@ -75,7 +75,10 @@ public class KafkaDatasource extends Datasource {
     }
 
     public String getGroupId() {
-        return getProperty("group.id").getValue();
+        String value = getProperty("group.id").getValue();
+        if (StringUtils.isBlank(value))
+            throw new IllegalArgumentException("group.id不能为空");
+        return value;
     }
 
     public String getSerializerClass() {

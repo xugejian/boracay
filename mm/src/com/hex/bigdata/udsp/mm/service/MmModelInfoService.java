@@ -253,8 +253,12 @@ public class MmModelInfoService extends BaseService {
             dataSourceContent.setComExcelParams(comExcelParams);
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
             //添加对应的配置栏内容
-            comExcelPropertiesList.add(new ComExcelProperties("查询字段","com.hex.bigdata.udsp.mm.model.ModelParam",11,0,1, ComExcelEnums.ModelParam.getAllNums()));
-            comExcelPropertiesList.add(new ComExcelProperties("返回字段","com.hex.bigdata.udsp.mm.model.ModelParam",10,0,2, ComExcelEnums.ModelParam.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("查询字段",
+                    "com.hex.bigdata.udsp.mm.model.ModelParam",
+                    11,0,1, ComExcelEnums.ModelParam.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("返回字段",
+                    "com.hex.bigdata.udsp.mm.model.ModelParam",
+                    10,0,2, ComExcelEnums.ModelParam.getAllNums()));
 
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");

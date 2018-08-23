@@ -5,12 +5,6 @@ import com.hex.bigdata.udsp.config.SdkClientConfig;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/7/19
- * TIME:17:06
- */
 public class ConsumerClientFactory {
 
     /**

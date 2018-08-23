@@ -3,10 +3,7 @@ package com.hex.bigdata.udsp.constant;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/7/20
- * TIME:9:07
+ * 枚举转换
  */
 public class EnumTrans {
     /**

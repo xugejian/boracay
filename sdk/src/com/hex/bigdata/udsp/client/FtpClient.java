@@ -2,12 +2,6 @@ package com.hex.bigdata.udsp.client;
 
 import com.hex.bigdata.udsp.config.FtpClinetConfig;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/25
- * TIME:17:32
- */
 public class FtpClient {
     private String hostname = FtpClinetConfig.getHostname();
     private int port = FtpClinetConfig.getPort();

@@ -78,7 +78,6 @@ public class RedisProvider implements Provider {
         IqResponse response = new IqResponse();
         response.setRequest(request);
         Application application = request.getApplication();
-        int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
         List<ReturnColumn> returnColumns = application.getReturnColumns();
@@ -90,9 +89,6 @@ public class RedisProvider implements Provider {
         String query = getRedisQuery(metadata.getQueryColumns(), queryColumns, tableName);
         String fqSep = redisDatasource.getSeprator();
         int maxSize = redisDatasource.getMaxNum();
-        if (maxNum != 0) {
-            maxSize = maxNum;
-        }
 
         try {
             List<Map<String, String>> list = null;

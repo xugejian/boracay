@@ -16,8 +16,6 @@ public class Application extends Base {
 
     private String note;
 
-    private int maxNum;  // 最大返回值
-
     private List<QueryColumn> queryColumns; // 查询字段集合
 
     private List<ReturnColumn> returnColumns; // 返回字段集合
@@ -59,14 +57,6 @@ public class Application extends Base {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public int getMaxNum() {
-        return maxNum;
-    }
-
-    public void setMaxNum(int maxNum) {
-        this.maxNum = maxNum;
     }
 
     public List<QueryColumn> getQueryColumns() {

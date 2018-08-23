@@ -29,22 +29,4 @@ public class PropertyUtil {
         }
         return propertyList;
     }
-
-    /**
-     * 合并配置参数
-     *
-     * @param comPropertieList1
-     * @param comPropertieList2
-     * @return
-     */
-    public static List<ComProperties> mergeProperties(List<ComProperties> comPropertieList1, List<ComProperties> comPropertieList2) {
-        Map<String, ComProperties> resultMap = new HashedMap();
-        for (ComProperties item : comPropertieList1) {
-            resultMap.put(item.getName(), item);
-        }
-        for (ComProperties item : comPropertieList2) {
-            resultMap.put(item.getName(), item);
-        }
-        return new ArrayList(resultMap.values());
-    }
 }

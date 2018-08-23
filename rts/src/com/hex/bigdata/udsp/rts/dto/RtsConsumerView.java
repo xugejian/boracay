@@ -8,41 +8,13 @@ import java.io.Serializable;
  * Created by tomnic on 2017/3/1.
  */
 public class RtsConsumerView extends RtsConsumer implements Serializable {
-    /**
-     * 创建时间查询时间范围-开始时间
-     */
+
     private String crtTimeStart;
-    /**
-     * 创建时间查询时间范围-结束时间
-     */
     private String crtTimeEnd;
-    /**
-     * 更新时间查询时间范围-开始时间
-     */
     private String uptTimeStart;
-    /**
-     * 更新时间查询时间范围-结束时间
-     */
     private String uptTimeEnd;
-
-    /**
-     * 数据源名称
-     */
-    private String dsName;
-
-    /**
-     * 元数据名称
-     */
     private String mdName;
-
-    /**
-     * 数据源类型
-     */
-    private String dsType;
-
-    /**
-     * 主题
-     */
+    private String mdDesc;
     private String mdTopic;
 
     public String getCrtTimeStart() {
@@ -77,14 +49,6 @@ public class RtsConsumerView extends RtsConsumer implements Serializable {
         this.uptTimeEnd = uptTimeEnd;
     }
 
-    public String getDsName() {
-        return dsName;
-    }
-
-    public void setDsName(String dsName) {
-        this.dsName = dsName;
-    }
-
     public String getMdName() {
         return mdName;
     }
@@ -93,19 +57,19 @@ public class RtsConsumerView extends RtsConsumer implements Serializable {
         this.mdName = mdName;
     }
 
-    public String getDsType() {
-        return dsType;
-    }
-
-    public void setDsType(String dsType) {
-        this.dsType = dsType;
-    }
-
     public String getMdTopic() {
         return mdTopic;
     }
 
     public void setMdTopic(String mdTopic) {
         this.mdTopic = mdTopic;
+    }
+
+    public String getMdDesc() {
+        return mdDesc;
+    }
+
+    public void setMdDesc(String mdDesc) {
+        this.mdDesc = mdDesc;
     }
 }

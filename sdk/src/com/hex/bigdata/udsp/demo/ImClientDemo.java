@@ -2,15 +2,10 @@ package com.hex.bigdata.udsp.demo;
 
 import com.hex.bigdata.udsp.client.factory.ConsumerClientFactory;
 import com.hex.bigdata.udsp.client.impl.ImClient;
-import com.hex.bigdata.udsp.client.impl.IqClient;
-import com.hex.bigdata.udsp.constant.SdkConstant;
+import com.hex.bigdata.udsp.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.constant.ConsumerType;
 import com.hex.bigdata.udsp.constant.StatusCode;
-import com.hex.bigdata.udsp.model.Page;
 import com.hex.bigdata.udsp.model.request.ImRequest;
-import com.hex.bigdata.udsp.model.request.IqRequest;
-import com.hex.bigdata.udsp.model.request.StatusRequest;
-import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
-import com.hex.bigdata.udsp.model.response.pack.StatusPackResponse;
 import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,9 +39,9 @@ public class ImClientDemo {
         //基础参数设置-上层应用系统使用者工号
         request.setAppUser("10940");
         //基础参数设置-设置调用start接口
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
+        request.setEntity(ConsumerEntity.START.getValue());
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
-        request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
+        request.setType(ConsumerType.SYNC.getValue());
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("CRM");
         request.setToken("000000");
@@ -56,7 +51,7 @@ public class ImClientDemo {
         data.put("bizDate", "20161231");
         request.setData(data);
 
-        //发起动用
+        //发起调用
         SyncPackResponse response = client.syncStart(request);
 
         // 拆包响应对象

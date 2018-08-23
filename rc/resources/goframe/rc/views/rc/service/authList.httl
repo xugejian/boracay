@@ -47,7 +47,7 @@ ${extends("/goframe/function_layout.httl")}
                     <tr>
                         <td class="tit roleLabel" style="width: 100px;text-align: right">用户名：</td>
                         <td class="roleText" style="width: 25%">
-                            <input name="userName" class="nui-textbox" style="width:98%;"/>
+                            <input name="userId" class="nui-textbox" style="width:98%;"/>
                         </td>
                         <td class="tit roleLabel" style="width: 100px;text-align: right">告警方式：</td>
                         <td class="roleText" style="width: 25%">
@@ -94,17 +94,14 @@ ${extends("/goframe/function_layout.httl")}
          allowCellSelect="false" onselectionchanged="selected" onrowdblclick="deteil">
         <div property="columns">
             <div type="checkcolumn" width="20"></div>
-           <!-- <div field="serviceName" headerAlign="center" allowSort="true">服务名称</div>
-            <div field="serviceType" headerAlign="center" allowSort="true" renderer="renderServiceType">服务类型</div>-->
-            <div field="userName" headerAlign="center"  width="70px" allowSort="true">用户名</div>
+            <div headerAlign="center" allowSort="true" renderer="renderUserId">用户名</div>
+            <div headerAlign="center" allowSort="true" renderer="renderUserName">用户信息</div>
             <div field="ipSection" headerAlign="center" width="80px" allowSort="true">IP段</div>
             <div field="maxSyncNum" headerAlign="center" allowSort="true">运行队列大小（同步）</div>
             <div field="maxAsyncNum" headerAlign="center" allowSort="true">运行队列大小（异步）</div>
             <div field="maxSyncWaitNum" headerAlign="center" allowSort="true">等待队列大小（同步）</div>
             <div field="maxAsyncWaitNum" headerAlign="center" allowSort="true">等待队列大小（异步）</div>
             <div field="alarmType" headerAlign="center" allowSort="true" renderer="renderAlarmType">告警方式</div>
-            <!--<div field="crtTime" headerAlign="center" width="85px"  allowSort="true" renderer="timeFormat">创建时间</div>-->
-            <!--<div field="crtUser" headerAlign="center" width="70px"  allowSort="true">创建者</div>-->
             <!--<div name="operation" headerAlign="center" align="center" allowSort="true" renderer="operation">操作</div>-->
         </div>
     </div>
@@ -362,6 +359,32 @@ ${extends("/goframe/function_layout.httl")}
      */
     function renderAlarmType(e) {
         return nui.getDictText("RC_ALARM_TYPE", e.row.alarmType);
+    }
+
+    /**
+     * 用户名渲染
+     * @param e
+     * @returns {string}
+     */
+    function renderUserId(e) {
+        if (e.row.userName) {
+            return e.row.userId;
+        } else {
+            return "<font color='red'>警告：用户不存在，或已被删除！</font>";
+        }
+    }
+
+    /**
+     * 用户信息渲染
+     * @param e
+     * @returns {string}
+     */
+    function renderUserName(e) {
+        if (e.row.userName) {
+            return e.row.userName;
+        } else {
+            return "<font color='red'>警告：用户不存在，或已被删除！</font>";
+        }
     }
 </script>
 

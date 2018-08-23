@@ -4,23 +4,10 @@ import com.hex.bigdata.udsp.model.Page;
 
 import java.util.Map;
 
-/**
- * 联机查询应用
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/17
- * TIME:11:12
- */
 @Deprecated
 public class OlqAppRequest extends UdspRequest {
-    /**
-     * 分页参数
-     */
-    private Page page;
 
-    /**
-     * 查询参数Map
-     */
+    private Page page;
     private Map<String, String> data;
 
     public Page getPage() {

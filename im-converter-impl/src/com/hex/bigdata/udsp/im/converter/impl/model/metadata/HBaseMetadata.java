@@ -81,11 +81,11 @@ public class HBaseMetadata extends Metadata {
         return value;
     }
 
-    public String getFqDsvSeprator() {
-        String value = getProperty("hbase.fq.dsv.seprator").getValue();
+    public String getFqDsvSeparator() {
+        String value = getProperty("hbase.fq.dsv.separator").getValue();
         if (StringUtils.isBlank(value))
-            //throw new IllegalArgumentException("hbase.fq.dsv.seprator不能为空");
-            value = "\007";
+            //throw new IllegalArgumentException("hbase.fq.dsv.separator不能为空");
+            value = "\\007";
         return value;
     }
 

@@ -5,15 +5,12 @@ import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.rts.dto.RtsConsumerRequestView;
-import com.hex.bigdata.udsp.rts.dto.RtsProducerRequestView;
-import com.hex.bigdata.udsp.rts.executor.model.Column;
 import com.hex.bigdata.udsp.rts.executor.model.ConsumerResponse;
 import com.hex.bigdata.udsp.rts.executor.model.ProducerResponse;
-import com.hex.bigdata.udsp.rts.model.RtsMatedataCol;
+import com.hex.bigdata.udsp.rts.model.RtsMetadataCol;
 import com.hex.bigdata.udsp.rts.model.RtsProducer;
 import com.hex.bigdata.udsp.rts.service.RtsExecutorService;
-import com.hex.bigdata.udsp.rts.service.RtsMatedataColService;
+import com.hex.bigdata.udsp.rts.service.RtsMetadataColService;
 import com.hex.bigdata.udsp.rts.service.RtsProducerService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +27,7 @@ import java.util.Map;
 @Service
 public class RtsSyncService {
     @Autowired
-    private RtsMatedataColService rtsMatedataColService;
+    private RtsMetadataColService rtsMetadataColService;
     @Autowired
     private RtsProducerService rtsProducerService;
     @Autowired
@@ -46,47 +43,34 @@ public class RtsSyncService {
     public Response startProducer(String appId, List<Map<String, String>> datas) {
         Response response = checkParam(appId, datas);
         if (response != null) return response;
-
         response = new Response();
         try {
             RtsProducer rtsProducer = rtsProducerService.select(appId);
             String mdId = rtsProducer.getMdId();
-            List<RtsMatedataCol> rtsMatedataCols = rtsMatedataColService.selectByMdId(mdId);
-            List<List<Column>> producerData = new ArrayList<>();
+            List<RtsMetadataCol> rtsMetadataCols = rtsMetadataColService.selectByMdId(mdId);
+            List<Map<String, String>> messageDatas = new ArrayList<>();
             for (Map<String, String> data : datas) {
-                List<Column> columnList = new ArrayList<>();
-                for (int i = 0; i < rtsMatedataCols.size(); i++) {
-                    String name = rtsMatedataCols.get(i).getName();
-                    Column column = new Column();
-                    column.setSeq((short) (i + 1));
-                    column.setName(name);
-                    column.setValue(data.get(name));
-                    columnList.add(column);
+                Map<String, String> message = new HashMap<>();
+                for (RtsMetadataCol col : rtsMetadataCols) {
+                    String name = col.getName();
+                    message.put(name, data.get(name));
                 }
-                producerData.add(columnList);
+                messageDatas.add(message);
             }
-
-            RtsProducerRequestView rtsProducerRequestView = new RtsProducerRequestView();
-            rtsProducerRequestView.setProducerId(appId);
-            rtsProducerRequestView.setProducerData(producerData);
-
-            ProducerResponse producerResponse = rtsExecutorService.producer(rtsProducerRequestView);
-
+            ProducerResponse producerResponse = rtsExecutorService.producer(appId, messageDatas);
             response.setConsumeTime(producerResponse.getConsumeTime());
             response.setMessage(producerResponse.getMessage());
             response.setStatus(producerResponse.getStatus().getValue());
             response.setStatusCode(producerResponse.getStatusCode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
             response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            e.printStackTrace();
         }
-
         return response;
     }
-
 
     /**
      * 检查输入的参数
@@ -99,7 +83,7 @@ public class RtsSyncService {
         Response response = null;
         boolean isError = false;
         StringBuffer colsName = new StringBuffer();
-        for (RtsMatedataCol rtsMatedataCol : rtsMatedataColService.selectByProducerPkid(appId)) {
+        for (RtsMetadataCol rtsMatedataCol : rtsMetadataColService.selectByProducerPkid(appId)) {
             colsName.append(rtsMatedataCol.getName() + ",");
             if (StringUtils.isBlank(datas.get(0).get(rtsMatedataCol.getName()))) {
                 isError = true;
@@ -123,20 +107,13 @@ public class RtsSyncService {
      * @return
      */
     public Response startConsumer(String appId, long timeout) {
-
         Response response = new Response();
         try {
-            RtsConsumerRequestView rtsConsumerRequestView = new RtsConsumerRequestView();
-            rtsConsumerRequestView.setConsumerId(appId);
-            rtsConsumerRequestView.setTimeout(timeout == 0 ? 500 : (int) timeout);
-
-            ConsumerResponse consumerResponse = rtsExecutorService.consumer(rtsConsumerRequestView);
-
+            ConsumerResponse consumerResponse = rtsExecutorService.consumer(appId, timeout);
             response.setConsumeTime(consumerResponse.getConsumeTime());
             response.setMessage(consumerResponse.getMessage());
             response.setStatus(consumerResponse.getStatus().getValue());
             response.setStatusCode(consumerResponse.getStatusCode().getValue());
-            //返回字段名称及类型
             response.setReturnColumns(consumerResponse.getColumns());
             List<Map<String, String>> records = new ArrayList<>();
             Map<String, String> map = null;
@@ -149,12 +126,11 @@ public class RtsSyncService {
             }
             response.setRecords(records);
         } catch (Exception e) {
-            e.printStackTrace();
             response.setMessage(e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            e.printStackTrace();
         }
         return response;
     }
-
 }

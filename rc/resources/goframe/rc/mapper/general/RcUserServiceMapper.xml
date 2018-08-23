@@ -26,6 +26,7 @@
         <result column="SERVICE_TYPE" property="serviceType" jdbcType="VARCHAR"/>
         <result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
         <result column="SERVICE_DESCRIBE" property="serviceDescribe" jdbcType="VARCHAR"/>
+        <result column="SERVICE_APP_ID" property="serviceAppId" jdbcType="VARCHAR"/>
     </resultMap>
 
     <resultMap id="UserResultMap" type="com.hex.goframe.model.GFUser">
@@ -106,10 +107,12 @@
         rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM, rcus.MAX_SYNC_WAIT_TIMEOUT, rcus.MAX_ASYNC_WAIT_TIMEOUT,
         rcus.MAX_SYNC_EXECUTE_TIMEOUT, rcus.MAX_ASYNC_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER, rcus.CRT_TIME,
         rcus.UPT_USER, rcus.UPT_TIME, rcus.ALARM_TYPE, rcs.NAME AS SERVICE_NAME, rcs.TYPE AS SERVICE_TYPE,
-        gfuser.user_name AS USER_NAME, rcs.DESCRIPTION as SERVICE_DESCRIBE
+        gfuser.user_name AS USER_NAME, rcs.DESCRIPTION as SERVICE_DESCRIBE, rcs.APP_ID AS SERVICE_APP_ID
         from RC_USER_SERVICE rcus
-        LEFT JOIN T_GF_LOGINUSER gfuser ON rcus.USER_ID=gfuser.USER_ID
-        LEFT JOIN RC_SERVICE rcs ON rcus.SERVICE_ID=rcs.PK_ID
+        left join T_GF_LOGINUSER gfuser
+        on rcus.USER_ID=gfuser.USER_ID
+        left join RC_SERVICE rcs
+        on rcus.SERVICE_ID=rcs.PK_ID and rcs.DEL_FLG = '0'
         where rcus.DEL_FLG = '0'
         <if test="serviceId!='' and serviceId!=null ">and rcus.SERVICE_ID = #{serviceId}</if>
         <if test="serviceName!='' and serviceName!=null ">and rcs.NAME like '%'||#{serviceName}||'%'</if>

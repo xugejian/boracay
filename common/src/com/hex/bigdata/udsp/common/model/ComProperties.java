@@ -13,6 +13,15 @@ public class ComProperties implements Serializable {
 
     private String describe;
 
+    public ComProperties() {
+    }
+
+    public ComProperties(String name, String value, String describe) {
+        this.name = name;
+        this.value = value;
+        this.describe = describe;
+    }
+
     public String getPkId() {
         return pkId;
     }

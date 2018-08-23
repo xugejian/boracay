@@ -31,11 +31,4 @@ public class JdbcModel extends Model {
     public String getSelectSql() {
         return getProperty("select.sql").getValue();
     }
-
-//    public boolean getViolenceQuery() {
-//        String value = getProperty("violence.query").getValue();
-//        if (StringUtils.isBlank(value))
-//            value = "true";
-//        return Boolean.valueOf(value);
-//    }
 }

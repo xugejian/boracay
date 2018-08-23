@@ -385,7 +385,11 @@ ${extends("/goframe/function_layout.httl")}
      * @returns {string}
      */
     function dsRenderer(e) {
-        return "<a href='#' class='underline' onclick='showDatabaseInfo(\"" + e.row.dsId + "\",\"" + e.row.dsName + "\")'>" + e.row.dsName + "</a>";
+        if (e.row.dsName) {
+            return "<a href='#' class='underline' onclick='showDatabaseInfo(\"" + e.row.dsId + "\",\"" + e.row.dsName + "\")'>" + e.row.dsName + "</a>";
+        } else {
+            return "<font color='red'>警告：数据源不存在，或已被删除！</font>";
+        }
     }
 
     /**

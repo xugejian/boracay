@@ -8,10 +8,6 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by PC on 2017/4/17.
- */
-
 public class SdkFtpUtil {
 
     private FTPClient ftp = new FTPClient();

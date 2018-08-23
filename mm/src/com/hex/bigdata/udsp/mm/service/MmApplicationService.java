@@ -82,10 +82,8 @@ public class MmApplicationService extends BaseService {
         comExcelParams.add(new ComExcelParam(1, 1, "name"));
         comExcelParams.add(new ComExcelParam(1, 3, "modelId"));
         comExcelParams.add(new ComExcelParam(2, 1, "describe"));
-        comExcelParams.add(new ComExcelParam(2, 3, "maxNum"));
         comExcelParams.add(new ComExcelParam(3, 3, "note"));
     }
-
 
     @Transactional
     public String insert(MmApplicationParamView mmApplicationParamView) {
@@ -260,8 +258,12 @@ public class MmApplicationService extends BaseService {
             dataSourceContent.setComExcelParams(comExcelParams);
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
             //添加对应的配置栏内容
-            comExcelPropertiesList.add(new ComExcelProperties("查询字段", "com.hex.bigdata.udsp.mm.model.MmAppExecuteParam", 10, 0, 1, ComExcelEnums.MmAppliactionExecuteParam.getAllNums()));
-            comExcelPropertiesList.add(new ComExcelProperties("返回字段", "com.hex.bigdata.udsp.mm.model.MmAppReturnParam", 10, 0, 2, ComExcelEnums.MmAppliactionReturnParam.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("查询字段",
+                    "com.hex.bigdata.udsp.mm.model.MmAppExecuteParam",
+                    10, 0, 1, ComExcelEnums.MmAppliactionExecuteParam.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("返回字段",
+                    "com.hex.bigdata.udsp.mm.model.MmAppReturnParam",
+                    10, 0, 2, ComExcelEnums.MmAppliactionReturnParam.getAllNums()));
 
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");
@@ -397,23 +399,16 @@ public class MmApplicationService extends BaseService {
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
         comExcelParams.add(new ComExcelParam(2, 3, "serviceDescribe"));
-        comExcelParams.add(new ComExcelParam(2, 5, "maxNum"));
         comExcelParams.add(new ComExcelParam(3, 1, "maxSyncNum"));
         comExcelParams.add(new ComExcelParam(3, 3, "maxAsyncNum"));
         comExcelParams.add(new ComExcelParam(3, 5, "maxSyncWaitNum"));
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
-        comExcelParams.add(new ComExcelParam(4, 5, "userName"));
-        comExcelParams.add(new ComExcelParam(5, 1, "udspRequestUrl"));
-        long maxSize = 65535;
+        comExcelParams.add(new ComExcelParam(4, 3, "userName"));
 
-        if (null != mmApplication) {
-            maxSize = mmApplication.getMaxNum() == null ? 65535 : mmApplication.getMaxNum();
-        }
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService, maxSize, "");
+        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
-        HSSFSheet sheet;
-        sheet = workbook.createSheet();
+        HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 11; i++) {
@@ -428,7 +423,8 @@ public class MmApplicationService extends BaseService {
             try {
                 Field field = serviceBaseInfo.getClass().getDeclaredField(comExcelParam.getName());
                 field.setAccessible(true);
-                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
+                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(),
+                        field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }

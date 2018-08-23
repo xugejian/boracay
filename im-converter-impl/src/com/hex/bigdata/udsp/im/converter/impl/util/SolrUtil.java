@@ -1029,19 +1029,19 @@ public class SolrUtil {
      * @return
      */
     public static Page searchPage(SolrDatasource datasource, String collectionName, List<WhereProperty> whereProperties, int pageIndex, int pageSize) {
+        Page page = null;
         SolrQuery query = new SolrQuery();
         query.setQuery(getQuery(whereProperties));
         query.setStart((pageIndex - 1) * pageSize);
         query.setRows(pageSize);
         QueryResponse rsp = getQueryResponse(datasource, collectionName, query);
-        if (rsp == null) {
-            return new Page(pageIndex, pageSize, 0, null);
-        } else {
+        if (rsp != null) {
             SolrDocumentList sdl = rsp.getResults();
-            int totalCount = (int) sdl.getNumFound();
+            long totalCount = sdl.getNumFound();
             List<Map<String, String>> list = getSolrReturnList(rsp);
-            return new Page(pageIndex, pageSize, totalCount, list);
+            return new Page(list, pageIndex, pageSize, totalCount);
         }
+        return page;
     }
 
     /**

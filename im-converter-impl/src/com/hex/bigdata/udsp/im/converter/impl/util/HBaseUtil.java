@@ -217,41 +217,43 @@ public class HBaseUtil {
         } else {
             logger.debug("HBase表" + tableName + "不存在，进行创建！");
             TableName hbaseTableName = TableName.valueOf(tableName);
-            HTableDescriptor hbaseTable = new HTableDescriptor(hbaseTableName);
+            HTableDescriptor htd = new HTableDescriptor(hbaseTableName);
             // 族设置参数
-            HColumnDescriptor hbaseColumn = new HColumnDescriptor(metadata.getFamily());
-            hbaseColumn.setBlocksize(65536); // 块大小
+            HColumnDescriptor hcd = new HColumnDescriptor(metadata.getFamily());
+            hcd.setBlocksize(65536); // 块大小
             // 压缩
             String compression = metadata.getCompression();
             if (Compression.Algorithm.SNAPPY.getName().equals(compression)) {
-                hbaseColumn.setCompressionType(Compression.Algorithm.SNAPPY);
+                hcd.setCompressionType(Compression.Algorithm.SNAPPY);
             } else if (Compression.Algorithm.GZ.getName().equals(compression)) {
-                hbaseColumn.setCompressionType(Compression.Algorithm.GZ);
+                hcd.setCompressionType(Compression.Algorithm.GZ);
             } else if (Compression.Algorithm.LZ4.getName().equals(compression)) {
-                hbaseColumn.setCompressionType(Compression.Algorithm.LZ4);
+                hcd.setCompressionType(Compression.Algorithm.LZ4);
             } else if (Compression.Algorithm.LZO.getName().equals(compression)) {
-                hbaseColumn.setCompressionType(Compression.Algorithm.LZO);
+                hcd.setCompressionType(Compression.Algorithm.LZO);
             } else if (Compression.Algorithm.NONE.getName().equals(compression)) {
-                hbaseColumn.setCompressionType(Compression.Algorithm.NONE);
+                hcd.setCompressionType(Compression.Algorithm.NONE);
             }
-            hbaseColumn.setMaxVersions(1); // 数据保存的最大版本数
-            // hbaseColumn.setMinVersions(0); // 数据保存的最小版本数（配合TimeToLive使用）
-            // hbaseColumn.setTimeToLive(36000); // 表中数据存储生命期，过期数据将自动被删除
-            hbaseColumn.setBloomFilterType(BloomType.ROW); //
-            hbaseColumn.setDataBlockEncoding(DataBlockEncoding.PREFIX);
-            hbaseColumn.setBlockCacheEnabled(true); //
-            hbaseColumn.setInMemory(false); // 是否保存在内存中以提高相应速度
-            hbaseTable.addFamily(hbaseColumn);
+            hcd.setMaxVersions(1); // 数据保存的最大版本数
+            // hcd.setMinVersions(0); // 数据保存的最小版本数（配合TimeToLive使用）
+            // hcd.setTimeToLive(36000); // 表中数据存储生命期，过期数据将自动被删除
+            hcd.setBloomFilterType(BloomType.ROW); //
+            hcd.setDataBlockEncoding(DataBlockEncoding.PREFIX);
+            hcd.setBlockCacheEnabled(true); // 块缓存
+            hcd.setInMemory(false); // 是否保存在内存中以提高相应速度
+            htd.addFamily(hcd);
             // 表设置参数
             String splitPolicy = metadata.getSplitPolicy();
             if (StringUtils.isNotBlank(splitPolicy)) {
-                hbaseTable.setConfiguration(HTableDescriptor.SPLIT_POLICY, splitPolicy);
+                htd.setConfiguration(HTableDescriptor.SPLIT_POLICY, splitPolicy);
             }
+            // 聚合的协处理器
+            htd.addCoprocessor("org.apache.hadoop.hbase.coprocessor.AggregateImplementation");
             // 创建表
             byte[][] regionSplits = getHexSplits(HBASE_REGION_START_KEY, HBASE_REGION_STOP_KEY, metadata.getRegionNum());
             HBaseAdmin admin = HBaseUtil.getHBaseAdmin(datasource);
             try {
-                admin.createTable(hbaseTable, regionSplits);
+                admin.createTable(htd, regionSplits);
                 logger.debug("HBase表" + tableName + "创建成功！");
             } catch (IOException e) {
                 logger.warn("HBase表" + tableName + "创建失败！");

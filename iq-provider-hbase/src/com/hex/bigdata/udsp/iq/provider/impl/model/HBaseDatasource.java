@@ -67,40 +67,8 @@ public class HBaseDatasource extends Datasource {
         return getProperty("hbase.client.scanner.timeout.period").getValue();
     }
 
-    public String getFqDataType() {
-        String value = getProperty("hbase.fq.data.type").getValue();
-        if (StringUtils.isBlank(value)) {
-            value = "dsv";
-        }
-        return value;
-    }
-
-    public String getDsvSeprator() {
-        String value = getProperty("hbase.fq.dsv.seprator").getValue();
-        if (StringUtils.isBlank(value)) {
-            value = "\\007";
-        }
-        return value;
-    }
-
-    public byte[] getFamilyName() {
-        String value = getProperty("hbase.family.name").getValue();
-        if (StringUtils.isBlank(value)) {
-            value = "f";
-        }
-        return Bytes.toBytes(value);
-    }
-
-    public byte[] getQulifierName() {
-        String value = getProperty("hbase.qulifier.name").getValue();
-        if (StringUtils.isBlank(value)) {
-            value = "q";
-        }
-        return Bytes.toBytes(value);
-    }
-
     public int getMaxNum() {
-        String value = getProperty("hbase.max.data.size").getValue();
+        String value = getProperty("max.data.size").getValue();
         if (StringUtils.isBlank(value)) {
             value = "65535";
         }

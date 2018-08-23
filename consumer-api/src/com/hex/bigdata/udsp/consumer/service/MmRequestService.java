@@ -1,18 +1,14 @@
 package com.hex.bigdata.udsp.consumer.service;
 
-import com.hex.bigdata.udsp.common.constant.EnumTrans;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.constant.Status;
-import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
+import com.hex.bigdata.udsp.common.constant.*;
+import com.hex.bigdata.udsp.consumer.model.Request;
+import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.mm.dto.MmFullAppInfoView;
 import com.hex.bigdata.udsp.mm.dto.MmResponse;
 import com.hex.bigdata.udsp.mm.dto.MmResponseData;
 import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
 import com.hex.bigdata.udsp.mm.service.MmProviderService;
-import com.hex.bigdata.udsp.consumer.model.Request;
-import com.hex.bigdata.udsp.consumer.model.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +43,7 @@ public class MmRequestService {
         try {
 
             //内部请求，则设置serviceName
-            if (ConsumerConstant.CONSUMER_REQUEST_TYPE_INNER.equals(request.getRequestType())) {
+            if (RequestType.INNER.getValue().equals(request.getRequestType())) {
                 request.setServiceName(request.getAppName());
             }
 

@@ -175,13 +175,18 @@ public class IqApplicationService extends BaseService {
             comExcelParams.add(new ComExcelParam(2, 3, "mdId"));
             comExcelParams.add(new ComExcelParam(2, 5, "note"));
             comExcelParams.add(new ComExcelParam(3, 1, "describe"));
-            comExcelParams.add(new ComExcelParam(3, 3, "maxNum"));
 
             dataSourceContent.setComExcelParams(comExcelParams);
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
-            comExcelPropertiesList.add(new ComExcelProperties("查询字段", "com.hex.bigdata.udsp.iq.model.IqAppQueryCol", 11, 0, 1, ComExcelEnums.IqApplicationQueryCoumn.getAllNums()));
-            comExcelPropertiesList.add(new ComExcelProperties("返回字段", "com.hex.bigdata.udsp.iq.model.IqAppReturnCol", 10, 0, 2, ComExcelEnums.IqApplicationReturnCol.getAllNums()));
-            comExcelPropertiesList.add(new ComExcelProperties("排序字段", "com.hex.bigdata.udsp.iq.model.IqAppOrderCol", 10, 0, 3, ComExcelEnums.IqApplicationOrderCol.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("查询字段",
+                    "com.hex.bigdata.udsp.iq.model.IqAppQueryCol",
+                    11, 0, 1, ComExcelEnums.IqApplicationQueryCoumn.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("返回字段",
+                    "com.hex.bigdata.udsp.iq.model.IqAppReturnCol",
+                    10, 0, 2, ComExcelEnums.IqApplicationReturnCol.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("排序字段",
+                    "com.hex.bigdata.udsp.iq.model.IqAppOrderCol",
+                    10, 0, 3, ComExcelEnums.IqApplicationOrderCol.getAllNums()));
 
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");
@@ -271,7 +276,6 @@ public class IqApplicationService extends BaseService {
         comExcelParams.add(new ComExcelParam(2, 3, "mdId"));
         comExcelParams.add(new ComExcelParam(2, 5, "note"));
         comExcelParams.add(new ComExcelParam(3, 1, "describe"));
-        comExcelParams.add(new ComExcelParam(3, 3, "maxNum"));
         for (IqApplication iqApplication : iqApplications) {
             this.setWorkbookSheet(workbook, sourceSheet, comExcelParams, iqApplication);
         }
@@ -321,26 +325,16 @@ public class IqApplicationService extends BaseService {
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
         comExcelParams.add(new ComExcelParam(2, 3, "serviceDescribe"));
-        comExcelParams.add(new ComExcelParam(2, 5, "maxNum"));
         comExcelParams.add(new ComExcelParam(3, 1, "maxSyncNum"));
         comExcelParams.add(new ComExcelParam(3, 3, "maxAsyncNum"));
         comExcelParams.add(new ComExcelParam(3, 5, "maxSyncWaitNum"));
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
-        comExcelParams.add(new ComExcelParam(4, 5, "userName"));
-        comExcelParams.add(new ComExcelParam(5, 1, "udspRequestUrl"));
-        long maxSize = 65535;
-        if (iqApplication != null) {
-            long maxNum = iqApplication.getMaxNum() == null ? 0 : iqApplication.getMaxNum();
-            if (maxNum != 0) {
-                maxSize = maxNum;
-            }
-        }
+        comExcelParams.add(new ComExcelParam(4, 3, "userName"));
 
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService, maxSize, "");
+        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
-        HSSFSheet sheet;
-        sheet = workbook.createSheet();
+        HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 11; i++) {

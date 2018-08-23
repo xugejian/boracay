@@ -67,7 +67,7 @@
     md.UPT_TIME, md.TB_NAME, ds.NAME as DS_NAME, ds.TYPE as DS_TYPE, ds.DESCRIPTION as DS_DESC
     from IQ_METADATA md
     left join COM_DATASOURCE ds
-    on md.DS_ID = ds.PK_ID
+    on md.DS_ID = ds.PK_ID and ds.DEL_FLG = '0'
     where md.DEL_FLG = '0'
     <if test="pkId!='' and pkId!=null ">and md.PK_ID = #{pkId}</if>
     <if test="name!='' and name!=null ">and md.NAME like '%'||#{name}||'%'</if>

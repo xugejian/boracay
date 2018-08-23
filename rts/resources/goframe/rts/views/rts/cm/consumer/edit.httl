@@ -31,15 +31,9 @@ ${extends("/goframe/function_layout.httl")}
                                required="true" emptyText="请选择元数据"/>-->
                     </td>
                 </tr>
-
                 <tr>
-                    <th class="nui-form-label"><label for="groupId">组ID：</label></th>
-                    <td >
-                        <input id="groupId" name="groupId" class="nui-textbox" style="width:99%" required="true"
-                               vtype="maxLength:256"/>
-                    </td>
                     <th class="nui-form-label"><label for="describe">说明：</label></th>
-                    <td >
+                    <td colspan="3">
                         <input id="describe" name="describe" class="nui-textbox" style="width:99%" required="true"
                                vtype="maxLength:256"/>
                     </td>
@@ -61,11 +55,11 @@ ${extends("/goframe/function_layout.httl")}
                     <table style="width: 100%;">
                         <tr>
                             <td style="text-align: left;">
-                                <b>数据源配置</b>
+                                <b>配置参数</b><font color="red">（注：不需要的配置参数可以删除）</font>
                             </td>
                             <td style="text-align: right;">
                                 <a class="nui-button" iconCls="icon-add" onclick="add">添加</a>
-                                <!--<a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>-->
+                                <a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>
                                 <a class="nui-button" iconCls="icon-remove" onclick="remove" enabled="false"
                                    id="remove">删除</a>
                                 <span class="separator"></span>
@@ -251,7 +245,7 @@ ${extends("/goframe/function_layout.httl")}
      */
     function adds() {
         nui.open({
-            url: "${basePath}/goframe/p/rts.cm.consumer.multi?dictTypeId=RTS_CONSUMER_PROPS_" + dsType,
+            url: "${basePath}/goframe/p/com.ds.multi?dictTypeId=RTS_CONSUMER_PROPS_" + dsType,
             title: "批量选择配置参数",
             width: 650,
             height: 380,

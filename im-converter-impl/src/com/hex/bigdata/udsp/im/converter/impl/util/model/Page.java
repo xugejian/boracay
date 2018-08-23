@@ -8,19 +8,16 @@ import java.util.Map;
  */
 public class Page {
     private List<Map<String, String>> records; // 每页记录集合
-    private int pageSize; // 默认的每页显示条数
-    private int pageIndex; // 当前页
-    private int totalCount; // 总记录数
-    private int totalPage; // 总页数
+    private int pageSize = 10; // 默认的每页显示条数
+    private int pageIndex = 1; // 当前页
+    private long totalCount; // 总记录数
+    private long totalPage; // 总页数
 
-    public Page() {
-    }
-
-    public Page(int pageIndex, int pageSize, int totalCount, List<Map<String, String>> records) {
+    public Page(List<Map<String, String>> records, int pageIndex, int pageSize, long totalCount) {
+        this.records = records;
         this.pageSize = pageSize;
         this.pageIndex = pageIndex;
         this.totalCount = totalCount;
-        this.records = records;
         this.totalPage = (totalCount % pageSize == 0 ? totalCount / pageSize
                 : (totalCount / pageSize + 1));
     }
@@ -49,19 +46,21 @@ public class Page {
         this.pageIndex = pageIndex;
     }
 
-    public int getTotalCount() {
+    public long getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(int totalCount) {
+    public void setTotalCount(long totalCount) {
         this.totalCount = totalCount;
+        this.totalPage = (totalCount % pageSize == 0 ? totalCount / pageSize
+                : (totalCount / pageSize + 1));
     }
 
-    public int getTotalPage() {
+    public long getTotalPage() {
         return totalPage;
     }
 
-    public void setTotalPage(int totalPage) {
+    public void setTotalPage(long totalPage) {
         this.totalPage = totalPage;
     }
 }

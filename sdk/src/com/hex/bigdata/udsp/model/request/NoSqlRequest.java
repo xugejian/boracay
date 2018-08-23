@@ -4,23 +4,9 @@ import com.hex.bigdata.udsp.model.Page;
 
 import java.util.Map;
 
-/**
- * 交互查询/联机查询应用 syncStart方法和asyncStart方法参数模型
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/15
- * TIME:11:04
- */
 public class NoSqlRequest extends UdspRequest {
 
-    /**
-     * 分页参数
-     */
     private Page page;
-
-    /**
-     * 查询参数Map
-     */
     private Map<String, String> data;
 
     public Page getPage() {

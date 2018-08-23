@@ -1,12 +1,15 @@
 package com.hex.bigdata.udsp.iq.provider.impl;
 
-import com.hex.bigdata.udsp.common.api.model.*;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
+import com.hex.bigdata.udsp.iq.provider.impl.factory.HBaseAggregationClientPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
+import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseMetadata;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBasePage;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -17,7 +20,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
+import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.PageFilter;
@@ -36,6 +40,9 @@ import java.util.*;
  */
 //@Component("com.hex.bigdata.udsp.iq.provider.impl.HBaseProvider")
 public class HBaseProvider implements Provider {
+
+    private static final int HBASE_SCAN_CACHING_SIZE = 1024; // 每次RPC请求记录数
+    private static final int HBASE_SCAN_BATCH_SIZE = 1024; // 每一批获取记录数
 
     static {
         // 解决winutils.exe不存在的问题
@@ -58,7 +65,9 @@ public class HBaseProvider implements Provider {
     private static final String rkSep = "|";
     private static final String startStr = "";
     private static final String stopStr = "|";
+
     private static Map<String, HBaseConnectionPoolFactory> dataSourcePool;
+    private static Map<String, HBaseAggregationClientPoolFactory> aggregationClientDataSourcePool;
 
     public IqResponse query(IqRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
@@ -67,7 +76,6 @@ public class HBaseProvider implements Provider {
         response.setRequest(request);
 
         Application application = request.getApplication();
-        int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
         Collections.sort(queryColumns, new Comparator<QueryColumn>() {
@@ -81,29 +89,18 @@ public class HBaseProvider implements Provider {
         List<DataColumn> metaReturnColumns = metadata.getReturnColumns();
 
         String tbName = metadata.getTbName();
+        HBaseMetadata hbaseMetadata = new HBaseMetadata(metadata.getPropertyMap());
         Datasource datasource = metadata.getDatasource();
 
-        HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getPropertyMap());
+        HBaseDatasource hbaseDatasource = new HBaseDatasource(datasource.getPropertyMap());
 
         String startRow = getStartRow(queryColumns);
         String stopRow = getStopRow(queryColumns);
         logger.debug("startRow:" + startRow + ", startRow:" + startRow);
         Map<Integer, String> colMap = getColMap(metaReturnColumns);
 
-        int maxSize = hBaseDatasource.getMaxNum();
-        if (maxNum != 0) {
-            maxSize = maxNum;
-        }
-        byte[] family = hBaseDatasource.getFamilyName();
-        byte[] qualifier = hBaseDatasource.getQulifierName();
-        String fqSep = hBaseDatasource.getDsvSeprator();
-        String dataType = hBaseDatasource.getFqDataType();
-        HConnection conn = null;
-        HTableInterface hTable = null;
         try {
-            conn = getConnection(hBaseDatasource);
-            hTable = conn.getTable(tbName);
-            List<Map<String, String>> list = scan(hTable, startRow, stopRow, colMap, maxSize, family, qualifier, fqSep, dataType);
+            List<Map<String, String>> list = scan(hbaseDatasource, tbName, startRow, stopRow, colMap, hbaseMetadata);
             list = orderBy(list, orderColumns); // 排序处理
             response.setRecords(getRecords(list, returnColumns)); // 字段过滤并字段名改别名
             response.setStatus(Status.SUCCESS);
@@ -114,17 +111,6 @@ public class HBaseProvider implements Provider {
             response.setStatusCode(StatusCode.DEFEAT);
             response.setMessage(e.getMessage());
             logger.warn(e.toString());
-        } finally {
-            if (hTable != null) {
-                try {
-                    hTable.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (conn != null) {
-                release(hBaseDatasource, conn);
-            }
         }
 
         long now = System.currentTimeMillis();
@@ -136,21 +122,21 @@ public class HBaseProvider implements Provider {
     }
 
     // 字段过滤并字段名改别名
-    private List<com.hex.bigdata.udsp.common.api.model.Result> getRecords(List<Map<String, String>> resultList, List<ReturnColumn> returnColumns) {
-        List<com.hex.bigdata.udsp.common.api.model.Result> records = null;
-        if (resultList != null) {
-            records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
-            for (Map<String, String> map : resultList) {
-                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
-                Map<String, String> returnDataMap = new HashMap<String, String>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    String label = item.getLabel();
-                    returnDataMap.put(label, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                records.add(result);
+    private List<com.hex.bigdata.udsp.common.api.model.Result> getRecords(List<Map<String, String>> list, List<ReturnColumn> returnColumns) {
+        List<com.hex.bigdata.udsp.common.api.model.Result> records = new ArrayList<>();
+        if (list == null || list.size() == 0) {
+            return records;
+        }
+        for (Map<String, String> map : list) {
+            com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
+            Map<String, String> returnDataMap = new HashMap<String, String>();
+            for (ReturnColumn item : returnColumns) {
+                String colName = item.getName();
+                String label = item.getLabel();
+                returnDataMap.put(label, map.get(colName));
             }
+            result.putAll(returnDataMap);
+            records.add(result);
         }
         return records;
     }
@@ -163,7 +149,6 @@ public class HBaseProvider implements Provider {
         response.setRequest(request);
 
         Application application = request.getApplication();
-        int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
         Collections.sort(queryColumns, new Comparator<QueryColumn>() {
@@ -178,25 +163,17 @@ public class HBaseProvider implements Provider {
         List<DataColumn> metaReturnColumns = metadata.getReturnColumns();
 
         String tbName = metadata.getTbName();
+        HBaseMetadata hbaseMetadata = new HBaseMetadata(metadata.getPropertyMap());
         Datasource datasource = metadata.getDatasource();
 
-        HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getPropertyMap());
+        HBaseDatasource hbaseDatasource = new HBaseDatasource(datasource.getPropertyMap());
 
         String startRow = getStartRow(queryColumns);
         String stopRow = getStopRow(queryColumns);
         logger.debug("startRow:" + startRow + ", startRow:" + startRow);
         Map<Integer, String> colMap = getColMap(metaReturnColumns);
 
-        int maxSize = hBaseDatasource.getMaxNum();
-        if (maxNum != 0) {
-            maxSize = maxNum;
-        }
-
-        byte[] family = hBaseDatasource.getFamilyName();
-        byte[] qualifier = hBaseDatasource.getQulifierName();
-        String fqSep = hBaseDatasource.getDsvSeprator();
-        String dataType = hBaseDatasource.getFqDataType();
-
+        int maxSize = hbaseDatasource.getMaxNum();
         if (pageSize > maxSize) {
             pageSize = maxSize;
         }
@@ -207,12 +184,8 @@ public class HBaseProvider implements Provider {
         hbasePage.setStartRow(startRow);
         hbasePage.setStopRow(stopRow);
 
-        HConnection conn = null;
-        HTableInterface hTable = null;
         try {
-            conn = getConnection(hBaseDatasource);
-            hTable = conn.getTable(tbName);
-            hbasePage = scanPage(hTable, hbasePage, colMap, family, qualifier, fqSep, dataType);
+            hbasePage = scanPage(hbaseDatasource, tbName, hbasePage, colMap, hbaseMetadata);
             List<Map<String, String>> list = hbasePage.getRecords();
             list = orderBy(list, orderColumns); // 排序处理
             response.setRecords(getRecords(list, returnColumns)); // 字段过滤并字段名改别名
@@ -229,17 +202,6 @@ public class HBaseProvider implements Provider {
             response.setStatusCode(StatusCode.DEFEAT);
             response.setMessage(e.getMessage());
             logger.warn(e.toString());
-        } finally {
-            if (hTable != null) {
-                try {
-                    hTable.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (conn != null) {
-                release(hBaseDatasource, conn);
-            }
         }
 
         long now = System.currentTimeMillis();
@@ -287,21 +249,53 @@ public class HBaseProvider implements Provider {
         getDataSource(datasource).releaseConnection(conn);
     }
 
-    private Configuration getConfig(HBaseDatasource datasource) {
-        Configuration conf = HBaseConfiguration.create();
-        conf.set("hbase.zookeeper.quorum", datasource.getZkQuorum());
-        conf.set("hbase.zookeeper.property.clientPort", datasource.getZkPort());
-        return conf;
+    private synchronized HBaseAggregationClientPoolFactory getAggregationClientDataSource(HBaseDatasource datasource) {
+        String dsId = datasource.getId();
+        if (aggregationClientDataSourcePool == null) {
+            aggregationClientDataSourcePool = new HashMap<>();
+        }
+        HBaseAggregationClientPoolFactory factory = aggregationClientDataSourcePool.remove(dsId);
+        if (factory == null) {
+            GenericObjectPool.Config config = new GenericObjectPool.Config();
+            config.lifo = true;
+            config.minIdle = 1;
+            config.maxIdle = 10;
+            config.maxWait = 3000;
+            config.maxActive = 5;
+            config.timeBetweenEvictionRunsMillis = 30000;
+            config.testWhileIdle = true;
+            config.testOnBorrow = false;
+            config.testOnReturn = false;
+            factory = new HBaseAggregationClientPoolFactory(config, datasource);
+        }
+        aggregationClientDataSourcePool.put(dsId, factory);
+        return factory;
     }
 
-    private List<Map<String, String>> orderBy(List<Map<String, String>> records, final List<OrderColumn> orderColumns) {
+    private AggregationClient getAggregationClient(HBaseDatasource datasource) {
+        try {
+            return getAggregationClientDataSource(datasource).getAggregationClient();
+        } catch (Exception e) {
+            logger.warn(ExceptionUtil.getMessage(e));
+            return null;
+        }
+    }
+
+    private void release(HBaseDatasource datasource, AggregationClient client) {
+        getAggregationClientDataSource(datasource).releaseAggregationClient(client);
+    }
+
+    private List<Map<String, String>> orderBy(List<Map<String, String>> list, final List<OrderColumn> orderColumns) {
+        if (list == null || list.size() == 0) {
+            return list;
+        }
         Collections.sort(orderColumns, new Comparator<OrderColumn>() {
             public int compare(OrderColumn obj1, OrderColumn obj2) {
                 return obj1.getSeq().compareTo(obj2.getSeq());
             }
         });
         // 多字段混合排序
-        Collections.sort(records, new Comparator<Map<String, String>>() {
+        Collections.sort(list, new Comparator<Map<String, String>>() {
             public int compare(Map<String, String> obj1, Map<String, String> obj2) {
                 int flg = 0;
                 for (OrderColumn orderColumn : orderColumns) {
@@ -318,7 +312,7 @@ public class HBaseProvider implements Provider {
                 return flg;
             }
         });
-        return records;
+        return list;
     }
 
     private int compareTo(String str1, String str2, Order order, DataType dataType) {
@@ -504,19 +498,27 @@ public class HBaseProvider implements Provider {
         return colMap;
     }
 
-    private int count(HTableInterface table, String startRow,
-                      String stopRow) throws Exception {
+    private long count(HTableInterface table, AggregationClient client, String startRow, String stopRow) throws Exception {
         Scan scan = new Scan();
         setRowScan(scan, startRow, stopRow);
-        return count(table, scan);
+        /*
+        使用聚合协处理器获取总行数，如果该表没有注册聚合协处理器则使用scan的方式获取总行数
+         */
+        try {
+            return client.rowCount(table, new LongColumnInterpreter(), scan);
+        } catch (Throwable throwable) {
+//            throwable.printStackTrace();
+            logger.warn(throwable.getMessage());
+            return count(table, scan);
+        }
     }
 
-    private int count(HTableInterface table, Scan scan) throws Exception {
+    private long count(HTableInterface table, Scan scan) throws Exception {
         scan.setCaching(500);
         scan.setCacheBlocks(false);
         scan.setFilter(new FirstKeyOnlyFilter());
         ResultScanner rs = table.getScanner(scan);
-        int count = 0;
+        long count = 0;
         while (rs.next() != null) {
             count++;
         }
@@ -525,39 +527,94 @@ public class HBaseProvider implements Provider {
     }
 
     private List<Map<String, String>> scan(HTableInterface table, Scan scan, Map<Integer, String> colMap,
-                                           byte[] family, byte[] qualifier, String fqSep, String dataType) throws Exception {
+                                           byte[] family, byte[] qualifier, String separator, String dataType) throws Exception {
         ResultScanner rs = table.getScanner(scan);
-        return getMaps(rs, colMap, family, qualifier, fqSep, dataType);
+        return getMaps(rs, colMap, family, qualifier, separator, dataType);
+    }
+
+    private List<Map<String, String>> scan(HBaseDatasource datasource, String tbName, String startRow, String stopRow,
+                                           Map<Integer, String> colMap, HBaseMetadata metadata) throws Exception {
+        List<Map<String, String>> list = null;
+        HConnection conn = null;
+        HTableInterface hTable = null;
+        try {
+            conn = getConnection(datasource);
+            hTable = conn.getTable(tbName);
+            list = scan(hTable, startRow, stopRow, colMap, datasource.getMaxNum(), metadata.getFamilyName(),
+                    metadata.getQualifierName(), metadata.getDsvSeparator(), metadata.getFqDataType());
+        } finally {
+            if (hTable != null) {
+                try {
+                    hTable.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                release(datasource, conn);
+            }
+        }
+        return list;
     }
 
     private List<Map<String, String>> scan(HTableInterface table, String startRow, String stopRow, Map<Integer, String> colMap,
-                                           long maxSize, byte[] family, byte[] qualifier, String fqSep, String dataType) throws Exception {
+                                           long maxSize, byte[] family, byte[] qualifier, String separator, String dataType) throws Exception {
         Scan scan = new Scan();
         addColumn(scan, family, qualifier);
         setRowScan(scan, startRow, stopRow);
         scan.setFilter(new PageFilter(maxSize));
-        return scan(table, scan, colMap, family, qualifier, fqSep, dataType);
+        return scan(table, scan, colMap, family, qualifier, separator, dataType);
     }
 
-    private HBasePage scanPage(HTableInterface table, Scan scan, HBasePage HBasePage,
-                               Map<Integer, String> colMap, byte[] family, byte[] qualifier,
-                               String fqSep, String dataType) throws Exception {
-        int totalCount = count(table, HBasePage.getStartRow(), HBasePage.getStopRow());
-
-        setRowScan(scan, HBasePage);
-        ResultScanner rs = table.getScanner(scan);
-        List<Map<String, String>> records = getMapsPage(rs, HBasePage, colMap, family, qualifier, fqSep, dataType);
-
-        HBasePage.setRecords(records);
-        HBasePage.setTotalCount(totalCount);
-        return HBasePage;
-    }
-
-    private HBasePage scanPage(HTableInterface table, HBasePage HBasePage, Map<Integer, String> colMap,
-                               byte[] family, byte[] qualifier, String fqSep, String dataType) throws Exception {
+    private List<Map<String, String>> scanPage(HTableInterface table, HBasePage page,
+                                               Map<Integer, String> colMap, byte[] family, byte[] qualifier,
+                                               String separator, String dataType) throws Exception {
         Scan scan = new Scan();
         addColumn(scan, family, qualifier);
-        return scanPage(table, scan, HBasePage, colMap, family, qualifier, fqSep, dataType);
+        setRowScan(scan, page);
+        return scanPage(table, scan, page, colMap, family, qualifier, separator, dataType);
+    }
+
+    private List<Map<String, String>> scanPage(HTableInterface table, Scan scan, HBasePage page,
+                                               Map<Integer, String> colMap, byte[] family, byte[] qualifier,
+                                               String separator, String dataType) throws Exception {
+        ResultScanner rs = table.getScanner(scan);
+        return getMapsPage(rs, page, colMap, family, qualifier, separator, dataType);
+    }
+
+    private HBasePage scanPage(HBaseDatasource datasource, String tbName, HBasePage page, Map<Integer, String> colMap, HBaseMetadata metadata) throws Exception {
+        HConnection conn = null;
+        HTableInterface hTable = null;
+        AggregationClient client = null;
+        try {
+            conn = getConnection(datasource);
+            hTable = conn.getTable(tbName);
+            client = getAggregationClient(datasource);
+            page = scanPage(hTable, client, page, colMap, metadata.getFamilyName(),
+                    metadata.getQualifierName(), metadata.getDsvSeparator(), metadata.getFqDataType());
+        } finally {
+            if (hTable != null) {
+                try {
+                    hTable.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (client != null) {
+                release(datasource, client);
+            }
+            if (conn != null) {
+                release(datasource, conn);
+            }
+        }
+        return page;
+    }
+
+    private HBasePage scanPage(HTableInterface table, AggregationClient client, HBasePage page, Map<Integer, String> colMap,
+                               byte[] family, byte[] qualifier, String separator, String dataType) throws Exception {
+        page.setRecords(scanPage(table, page, colMap, family, qualifier, separator, dataType));
+        page.setTotalCount(count(table, client, page.getStartRow(), page.getStopRow()));
+        return page;
     }
 
     private void addColumn(Scan scan, byte[] family, byte[] qualifier) {
@@ -565,6 +622,9 @@ public class HBaseProvider implements Provider {
     }
 
     private void setRowScan(Scan scan, String startRow, String stopRow) {
+        scan.setCaching(HBASE_SCAN_CACHING_SIZE); // 每次RPC请求记录数
+        // Cannot set batch on a scan using a filter that returns true for filter.hasFilterRow
+        //scan.setBatch(HBASE_SCAN_BATCH_SIZE); // 每一批获取记录数
         if (startRow != null) {
             startRow = startRow + this.rkSep + this.startStr;
             scan.setStartRow(Bytes.toBytes(startRow));
@@ -575,41 +635,41 @@ public class HBaseProvider implements Provider {
         }
     }
 
-    private void setRowScan(Scan scan, HBasePage HBasePage) {
+    private void setRowScan(Scan scan, HBasePage page) {
         // 添加行键范围
-        String startRow = HBasePage.getStartRow();
-        String stopRow = HBasePage.getStopRow();
+        String startRow = page.getStartRow();
+        String stopRow = page.getStopRow();
         setRowScan(scan, startRow, stopRow);
         // 添加分页过滤器
-        int pageIndex = HBasePage.getPageIndex();
-        int pageSize = HBasePage.getPageSize();
+        int pageIndex = page.getPageIndex();
+        int pageSize = page.getPageSize();
         int scanNum = pageSize * pageIndex; // 扫描的数据条数
         Filter pageFilter = new PageFilter(scanNum);
         scan.setFilter(pageFilter);
     }
 
     private List<Map<String, String>> getMaps(ResultScanner rs, Map<Integer, String> colMap,
-                                              byte[] family, byte[] qualifier, String fqSep, String dataType) {
-        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+                                              byte[] family, byte[] qualifier, String separator, String dataType) {
+        List<Map<String, String>> list = new ArrayList<>();
         for (Result r : rs) {
-            list.add(getMap(r, colMap, family, qualifier, fqSep, dataType));
+            list.add(getMap(r, colMap, family, qualifier, separator, dataType));
         }
         rs.close();
         return list;
     }
 
-    private List<Map<String, String>> getMapsPage(ResultScanner rs, HBasePage HBasePage,
+    private List<Map<String, String>> getMapsPage(ResultScanner rs, HBasePage page,
                                                   Map<Integer, String> colMap, byte[] family,
-                                                  byte[] qualifier, String fqSep, String dataType) {
-        int pageIndex = HBasePage.getPageIndex();
-        int pageSize = HBasePage.getPageSize();
-        int befNum = pageSize * (pageIndex - 1); // 不需要显示的数据条数
-        int count = 0;
+                                                  byte[] qualifier, String separator, String dataType) {
+        int pageIndex = page.getPageIndex();
+        int pageSize = page.getPageSize();
+        long befNum = pageSize * (pageIndex - 1); // 不需要显示的数据条数
+        long count = 0;
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         for (Result r : rs) {
             count++;
             if (count > befNum) {
-                list.add(getMap(r, colMap, family, qualifier, fqSep, dataType));
+                list.add(getMap(r, colMap, family, qualifier, separator, dataType));
             }
         }
         rs.close();
@@ -617,12 +677,12 @@ public class HBaseProvider implements Provider {
     }
 
     private Map<String, String> getMap(Result r, Map<Integer, String> colMap,
-                                       byte[] family, byte[] qualifier, String fqSep, String dataType) {
+                                       byte[] family, byte[] qualifier, String separator, String dataType) {
         Map<String, String> map = new HashMap<String, String>();
         String fqVal = Bytes.toString(r.getValue(family, qualifier));
         if (fqVal == null) fqVal = "";
         if (dataType.equalsIgnoreCase("dsv")) { // 分隔符格式数据
-            String[] fqVals = fqVal.split(fqSep, -1);
+            String[] fqVals = fqVal.split(separator, -1);
             // 注：如果上线后又修改需求，需要添加字段，则该检查需要注释掉
 //        if (colMap.size() != fqVals.length) {
 //            throw new RuntimeException("查询结果数与字段数不一致！");
@@ -705,10 +765,6 @@ public class HBaseProvider implements Provider {
     @Override
     public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
         return null;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(DigestUtils.md5Hex("9010901228600001").substring(8, 24));
     }
 
 }

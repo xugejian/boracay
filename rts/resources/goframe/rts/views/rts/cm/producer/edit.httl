@@ -19,10 +19,11 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                     <th class="nui-form-label"><label for="mdId">元数据：</label></th>
                     <td>
-                        <div id="mdId" class="nui-combobox" style="width:97%;"  popupWidth="400" textField="name" valueField="pkId"
+                        <div id="mdId" class="nui-combobox" style="width:97%;" popupWidth="400" textField="name"
+                             valueField="pkId"
                              url="${basePath}/rts/md/select" dataField="data" name="mdId" multiSelect="false"
                              allowInput="true" required="true" onvaluechanged="typeChanged">
-                            <div property="columns" >
+                            <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
                             </div>
@@ -56,11 +57,11 @@ ${extends("/goframe/function_layout.httl")}
                     <table style="width: 100%;">
                         <tr>
                             <td style="text-align: left;">
-                                <b>数据源配置</b>
+                                <b>配置参数</b><font color="red">（注：不需要的配置参数可以删除）</font>
                             </td>
                             <td style="text-align: right;">
                                 <a class="nui-button" iconCls="icon-add" onclick="add">添加</a>
-                                <!--<a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>-->
+                                <a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>
                                 <a class="nui-button" iconCls="icon-remove" onclick="remove" enabled="false"
                                    id="remove">删除</a>
                                 <span class="separator"></span>
@@ -247,7 +248,7 @@ ${extends("/goframe/function_layout.httl")}
      */
     function adds() {
         nui.open({
-            url: "${basePath}/goframe/p/rts.cm.producer.multi?dictTypeId=RTS_PRODUCER_PROPS_" + dsType,
+            url: "${basePath}/goframe/p/com.ds.multi?dictTypeId=RTS_PRODUCER_PROPS_" + dsType,
             title: "批量选择配置参数",
             width: 650,
             height: 380,

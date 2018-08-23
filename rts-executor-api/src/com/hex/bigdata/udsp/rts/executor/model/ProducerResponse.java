@@ -9,13 +9,9 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 public class ProducerResponse {
 
     private ProducerRequest producerRequest; // 请求信息
-
     private long consumeTime; // 持续时间
-
     private Status status; // 状态
-
     private StatusCode statusCode; // 状态码
-
     private String message; // 信息
 
     public ProducerRequest getProducerRequest() {

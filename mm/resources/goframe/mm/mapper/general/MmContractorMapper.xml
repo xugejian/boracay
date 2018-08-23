@@ -60,10 +60,10 @@
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
-    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2,FTP_PASSWORD
+    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2, FTP_PASSWORD
     from MM_CONTRACTOR
+    where DEL_FLG = '0'
   </select>
-
   <!-- 根据姓名查询-->
   <select id="selectByName" resultMap="BaseResultMap" >
     select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
@@ -97,5 +97,4 @@
     <if test="uptUser!='' and uptUser!=null ">and UPT_USER like '%'||#{uptUser}||'%'</if>
     order by NAME asc
   </select>
-
 </mapper>

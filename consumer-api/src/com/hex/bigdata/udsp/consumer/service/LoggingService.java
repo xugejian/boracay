@@ -1,24 +1,19 @@
 package com.hex.bigdata.udsp.consumer.service;
 
-import com.hex.bigdata.udsp.common.constant.CommonConstant;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.constant.Status;
-import com.hex.bigdata.udsp.common.constant.StatusCode;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.DateUtil;
 import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.StatementUtil;
-import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
+import com.hex.bigdata.udsp.consumer.model.Request;
+import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.mc.constant.McConstant;
 import com.hex.bigdata.udsp.mc.model.McConsumeLog;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
-import com.hex.bigdata.udsp.consumer.model.Request;
-import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.service.AlarmService;
-import com.hex.bigdata.udsp.rc.util.RcConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,7 +56,7 @@ public class LoggingService {
         /**
          * OLQ或OLQ_APP执行超时时，取消正在执行的SQL
          */
-        if ((RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(appType) || RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(appType))
+        if ((ServiceType.OLQ.getValue().equalsIgnoreCase(appType) || ServiceType.OLQ_APP.getValue().equals(appType))
                 && ErrorCode.ERROR_000015.getValue().equals(errorCode)) {
             try {
                 StatementUtil.cancel(consumeId);
@@ -82,18 +77,18 @@ public class LoggingService {
                             initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
                     long maxAsyncExecuteTimeout = rcUserService.getMaxAsyncExecuteTimeout() == 0 ?
                             initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
-                    timout = ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ?
+                    timout = ConsumerType.SYNC.getValue().equalsIgnoreCase(request.getType()) ?
                             maxSyncExecuteTimeout : maxAsyncExecuteTimeout;
                 } else {
                     long maxSyncWaitTimeout = rcUserService.getMaxSyncWaitTimeout() == 0 ?
                             initParamService.getMaxSyncWaitTimeout() : rcUserService.getMaxSyncWaitTimeout();
                     long maxAsyncWaitTimeout = rcUserService.getMaxAsyncWaitTimeout() == 0 ?
                             initParamService.getMaxAsyncWaitTimeout() : rcUserService.getMaxAsyncWaitTimeout();
-                    timout = ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ?
+                    timout = ConsumerType.SYNC.getValue().equalsIgnoreCase(request.getType()) ?
                             maxSyncWaitTimeout : maxAsyncWaitTimeout;
                 }
                 String msg = request.getUdspUser() + "用户"
-                        + (ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(request.getType()) ? "【同步】" : "【异步】")
+                        + (ConsumerType.SYNC.getValue().equalsIgnoreCase(request.getType()) ? "【同步】" : "【异步】")
                         + "方式执行" + request.getServiceName() + "服务"
                         + (ErrorCode.ERROR_000014.getValue().equals(errorCode) ? "【等待】" : "【执行】")
                         + "超时，开始时间：" + DateUtil.getDateString(bef) + "，超时时间：" + timout + "秒"
@@ -238,7 +233,7 @@ public class LoggingService {
         if (StringUtils.isNotBlank(response.getMessage())) {
             mcConsumeLog.setMessage(response.getMessage());
         }
-        if (CommonConstant.REQUEST_SYNC.equalsIgnoreCase(request.getType())) {
+        if (ConsumerType.SYNC.getValue().equalsIgnoreCase(request.getType())) {
             mcConsumeLog.setSyncType(request.getType().toUpperCase());
         } else {
             mcConsumeLog.setSyncType(request.getType().toUpperCase());
@@ -247,7 +242,7 @@ public class LoggingService {
             mcConsumeLog.setResponseContent(response.getResponseContent());
         }
         if (Status.SUCCESS.getValue().equals(response.getStatus())
-                || Status.RUNING.getValue().equals(response.getStatus())) {
+                || Status.RUNNING.getValue().equals(response.getStatus())) {
             writeLogToDb(request, mcConsumeLog, McConstant.MCLOG_STATUS_SUCCESS, isCache);
         } else {
             writeLogToDb(request, mcConsumeLog, McConstant.MCLOG_STATUS_FAILED, isCache);

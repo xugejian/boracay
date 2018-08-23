@@ -5,28 +5,23 @@ package com.hex.bigdata.udsp.rts.executor.model;
  */
 public class ConsumerRequest {
 
-    private ConsumerApplication consumerApplication;
+    private Application application;
+    private long timeout;
 
-    private int timeout;
-
-    public ConsumerRequest(){
-
-    }
-
-    public ConsumerRequest(ConsumerApplication consumerApplication, int timeout) {
-        this.consumerApplication = consumerApplication;
+    public ConsumerRequest(Application application, long timeout) {
+        this.application = application;
         this.timeout = timeout;
     }
 
-    public ConsumerApplication getConsumerApplication() {
-        return consumerApplication;
+    public Application getApplication() {
+        return application;
     }
 
-    public void setConsumerApplication(ConsumerApplication consumerApplication) {
-        this.consumerApplication = consumerApplication;
+    public void setApplication(Application application) {
+        this.application = application;
     }
 
-    public int getTimeout() {
+    public long getTimeout() {
         return timeout;
     }
 

@@ -1,9 +1,11 @@
 package com.hex.bigdata.udsp.consumer.service;
 
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.RequestType;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
-import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.ExternalRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
@@ -64,7 +66,7 @@ public class ExternalConsumerService {
     private ConsumeRequest checkBeforExternalConsume(Request request, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
         consumeRequest.setRequest(request);
-        request.setRequestType(ConsumerConstant.CONSUMER_REQUEST_TYPE_OUTER);
+        request.setRequestType(RequestType.OUTER.getValue());
         String serviceName = request.getServiceName();
         String udspUser = request.getUdspUser();
         String udspPass = request.getToken();
@@ -79,12 +81,12 @@ public class ExternalConsumerService {
         //消费前公共输入参数检查
         //异同步类型检查和entity类型检查
         if (!(
-                ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
-                        || ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(type)
+                ConsumerType.SYNC.getValue().equalsIgnoreCase(type)
+                        || ConsumerType.ASYNC.getValue().equalsIgnoreCase(type)
         ) || !(
-                ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)
-                        || ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)
-                        || ConsumerConstant.CONSUMER_ENTITY_STOP.equalsIgnoreCase(entity)
+                ConsumerEntity.STATUS.getValue().equalsIgnoreCase(entity)
+                        || ConsumerEntity.START.getValue().equalsIgnoreCase(entity)
+                        || ConsumerEntity.STOP.getValue().equalsIgnoreCase(entity)
         )) {
             consumeRequest.setError(ErrorCode.ERROR_000010);
             return consumeRequest;

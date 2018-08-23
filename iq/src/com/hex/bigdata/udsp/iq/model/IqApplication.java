@@ -13,8 +13,6 @@ public class IqApplication implements Serializable {
 
     private String note;
 
-    private Long maxNum;
-
     private String delFlg;
 
     private String crtUser;
@@ -63,14 +61,6 @@ public class IqApplication implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public Long getMaxNum() {
-        return maxNum;
-    }
-
-    public void setMaxNum(Long maxNum) {
-        this.maxNum = maxNum;
     }
 
     public String getDelFlg() {

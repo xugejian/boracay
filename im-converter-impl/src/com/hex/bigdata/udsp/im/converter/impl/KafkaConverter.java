@@ -31,7 +31,7 @@ import java.util.Map;
 public class KafkaConverter extends KafkaWrapper {
     private static Logger logger = LogManager.getLogger(KafkaConverter.class);
     private static final int CONSUMER_TIMEOUT_MS = 1000;
-    private static final String GROUP_ID = "udsp-group";
+    private static final String DEFAULT_GROUP_ID = "udsp-group";
 
     @Override
     public List<MetadataCol> columnInfo(Model model) {
@@ -40,8 +40,9 @@ public class KafkaConverter extends KafkaWrapper {
         KafkaModel kafkaModel = new KafkaModel(model.getProperties(), model.getSourceDatasource());
         String topic = kafkaModel.getTopic();
         Map<String, Property> propertyMap = datasource.getPropertyMap();
-        propertyMap.put("consumer.timeout.ms", new Property("consumer.timeout.ms", Integer.toString(CONSUMER_TIMEOUT_MS)));
-        propertyMap.put("group.id", new Property("group.id", GROUP_ID));
+        propertyMap.put("consumer.timeout.ms", new Property("consumer.timeout.ms",
+                Integer.toString(CONSUMER_TIMEOUT_MS)));
+        propertyMap.put("group.id", new Property("group.id", DEFAULT_GROUP_ID));
         KafkaDatasource kafkaDatasource = new KafkaDatasource(propertyMap);
         ConsumerConnector consumer = null;
         try {
@@ -96,7 +97,8 @@ public class KafkaConverter extends KafkaWrapper {
             if (producer == null) {
                 canConnection = false;
             } else {
-                producer.send(new KeyedMessage<String, String>("udsp-im-ds-test", "udsp rts datasource test info"));
+                producer.send(new KeyedMessage<String, String>("udsp-im-ds-test",
+                        "udsp im datasource test info"));
             }
         } catch (Exception e) {
             e.printStackTrace();

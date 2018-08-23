@@ -8,19 +8,6 @@ package com.hex.bigdata.udsp.rc.dto;
  */
 public class ServiceBaseInfo {
 
-    public ServiceBaseInfo(RcUserServiceView rcUserService,long maxNum,String udspRequestUrl) {
-        this.serviceName = rcUserService.getServiceName();
-        this.serviceDescribe = rcUserService.getServiceDescribe();
-        this.maxNum = maxNum;
-        this.userName = rcUserService.getUserName();
-        this.userId = rcUserService.getUserId();
-        this.maxAsyncNum = rcUserService.getMaxAsyncNum();
-        this.maxSyncNum = rcUserService.getMaxSyncNum();
-        this.maxSyncWaitNum = rcUserService.getMaxSyncWaitNum();
-        this.maxAsyncWaitNum = rcUserService.getMaxAsyncWaitNum();
-        this.udspRequestUrl = udspRequestUrl;
-    }
-
     public ServiceBaseInfo(RcUserServiceView rcUserService) {
         this.serviceName = rcUserService.getServiceName();
         this.serviceDescribe = rcUserService.getServiceDescribe();
@@ -32,9 +19,6 @@ public class ServiceBaseInfo {
         this.maxAsyncWaitNum = rcUserService.getMaxAsyncWaitNum();
     }
 
-    public ServiceBaseInfo() {
-    }
-
     /**
      * 服务名称
      */
@@ -44,11 +28,6 @@ public class ServiceBaseInfo {
      * 服务说明
      */
     private String serviceDescribe;
-
-    /**
-     * 最大返回数
-     */
-    private Long maxNum;
 
     /**
      * 用户名
@@ -80,12 +59,6 @@ public class ServiceBaseInfo {
      */
     private int maxAsyncWaitNum;
 
-    /**
-     * UDSP请求链接
-     */
-    private String udspRequestUrl;
-
-
     public String getServiceName() {
         return serviceName;
     }
@@ -100,14 +73,6 @@ public class ServiceBaseInfo {
 
     public void setServiceDescribe(String serviceDescribe) {
         this.serviceDescribe = serviceDescribe;
-    }
-
-    public Long getMaxNum() {
-        return maxNum;
-    }
-
-    public void setMaxNum(Long maxNum) {
-        this.maxNum = maxNum;
     }
 
     public String getUserName() {
@@ -156,13 +121,5 @@ public class ServiceBaseInfo {
 
     public void setMaxAsyncWaitNum(int maxAsyncWaitNum) {
         this.maxAsyncWaitNum = maxAsyncWaitNum;
-    }
-
-    public String getUdspRequestUrl() {
-        return udspRequestUrl;
-    }
-
-    public void setUdspRequestUrl(String udspRequestUrl) {
-        this.udspRequestUrl = udspRequestUrl;
     }
 }

@@ -177,9 +177,9 @@ public abstract class JdbcProvider implements Provider {
         String totalSql = olqQuerySql.getTotalSql();
         if (StringUtils.isNotBlank(totalSql)) {
             ResultSet rs = stmt.executeQuery(totalSql);
-            int totalCount = 0;
+            long totalCount = 0;
             if (rs.next()) {
-                totalCount = rs.getInt(1);
+                totalCount = rs.getLong(1);
             }
             olqQuerySql.getPage().setTotalCount(totalCount);
             return olqQuerySql.getPage();

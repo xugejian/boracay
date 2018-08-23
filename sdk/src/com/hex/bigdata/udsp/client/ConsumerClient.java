@@ -1,5 +1,7 @@
 package com.hex.bigdata.udsp.client;
 
+import com.hex.bigdata.udsp.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.constant.ConsumerType;
 import com.hex.bigdata.udsp.constant.EnumTrans;
 import com.hex.bigdata.udsp.model.request.UdspRequest;
 import com.hex.bigdata.udsp.model.response.origin.AsyncResponse;
@@ -10,12 +12,6 @@ import com.hex.bigdata.udsp.model.response.origin.StatusResponse;
 import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/18
- * TIME:15:43
- */
 public abstract class ConsumerClient {
 
     /**
@@ -50,7 +46,7 @@ public abstract class ConsumerClient {
      *
      * @param udspRequest
      */
-    protected void checkBasicParams(UdspRequest udspRequest, String consumerType, String consumerEntity) {
+    protected void checkBasicParams(UdspRequest udspRequest, ConsumerType consumerType, ConsumerEntity consumerEntity) {
 
         String serviceName = udspRequest.getServiceName();
         String udspUser = udspRequest.getUdspUser();
@@ -75,14 +71,14 @@ public abstract class ConsumerClient {
         if (StringUtils.isBlank(type)) {
             errorMessage.append("type参数为空；");
         } else {
-            if (!consumerType.equalsIgnoreCase(type)) {
+            if (!consumerType.getValue().equalsIgnoreCase(type)) {
                 errorMessage.append("type参数不合法；");
             }
         }
         if (StringUtils.isBlank(entity)) {
             errorMessage.append("entity参数为空；");
         } else {
-            if (!consumerEntity.equalsIgnoreCase(entity)) {
+            if (!consumerEntity.getValue().equalsIgnoreCase(entity)) {
                 errorMessage.append("entity参数不合法；");
             }
         }
@@ -98,15 +94,8 @@ public abstract class ConsumerClient {
      * @param consumeId
      */
     protected void checkStatusBusinessParams(String consumeId) {
-        StringBuffer errorMessage = new StringBuffer();
         if (StringUtils.isBlank(consumeId)) {
-            errorMessage.append("consumeId参数为空；");
-        }
-//        if (StringUtils.isNotBlank(consumeId) && consumeId.length() != 65) {
-//            errorMessage.append("consumeId参数不合法；");
-//        }
-        if (StringUtils.isNotBlank(errorMessage)) {
-            throw new IllegalArgumentException(errorMessage.toString());
+            throw new IllegalArgumentException("参数consumeId为空；");
         }
     }
 

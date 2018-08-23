@@ -3,41 +3,13 @@ package com.hex.bigdata.udsp.model.response.pack;
 import com.hex.bigdata.udsp.constant.ErrorCode;
 import com.hex.bigdata.udsp.constant.StatusCode;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/7/20
- * TIME:18:31
- */
 public class UdspPackResponse {
-    /**
-     * 状态
-     */
+
     private String status;
-
-    /**
-     * 消费ID
-     */
     private String consumeId;
-
-    /**
-     * 持续时间
-     */
     private long consumeTime;
-
-    /**
-     * 错误编码
-     */
     private ErrorCode errorCode;
-
-    /**
-     * 错误信息
-     */
     private String message;
-
-    /**
-     * 状态码
-     */
     private StatusCode statusCode;
 
     public String getConsumeId() {
