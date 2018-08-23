@@ -91,30 +91,6 @@ public class SolrHBaseDatasource extends Datasource {
         return value;
     }
 
-    public String getSeprator() {
-        String value = getProperty("hbase.fqSep").getValue();
-        if (StringUtils.isBlank(value)) {
-            value = "\\007";
-        }
-        return value;
-    }
-
-    public byte[] getFamilyName() {
-        String value = getProperty("hbase.family.name").getValue();
-        if (StringUtils.isBlank(value)) {
-            value = "f";
-        }
-        return Bytes.toBytes(value);
-    }
-
-    public byte[] getQulifierName() {
-        String value = getProperty("hbase.qulifier.name").getValue();
-        if (StringUtils.isBlank(value)) {
-            value = "q";
-        }
-        return Bytes.toBytes(value);
-    }
-
     public int getMaxNum() {
         String value = getProperty("max.data.size").getValue();
         if (StringUtils.isBlank(value)) {

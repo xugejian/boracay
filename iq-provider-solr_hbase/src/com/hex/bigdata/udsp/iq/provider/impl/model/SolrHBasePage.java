@@ -7,16 +7,18 @@ import java.util.List;
  */
 public class SolrHBasePage {
     private List<String> records; // 每页记录集合，只存储id值
-    private int pageIndex; // 当前页
-    private int pageSize; // 默认的每页显示条数
-    private int totalCount; // 总记录数
-    private int totalPage; // 总页数
+
+    private int pageIndex = 1; // 当前页
+    private int pageSize = 10; // 默认的每页显示条数
+
+    private long totalCount; // 总记录数
+    private long totalPage; // 总页数
 
     public SolrHBasePage() {
         super();
     }
 
-    public SolrHBasePage(List<String> records, int pageIndex, int pageSize, int totalCount) {
+    public SolrHBasePage(List<String> records, int pageIndex, int pageSize, long totalCount) {
         this.pageSize = pageSize;
         this.pageIndex = pageIndex;
         this.totalCount = totalCount;
@@ -49,21 +51,21 @@ public class SolrHBasePage {
         this.pageIndex = pageIndex;
     }
 
-    public int getTotalCount() {
+    public long getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(int totalCount) {
+    public void setTotalCount(long totalCount) {
         this.totalCount = totalCount;
         this.totalPage = totalCount % pageSize == 0 ? totalCount / pageSize
                 : (totalCount / pageSize + 1);
     }
 
-    public int getTotalPage() {
+    public long getTotalPage() {
         return totalPage;
     }
 
-    public void setTotalPage(int totalPage) {
+    public void setTotalPage(long totalPage) {
         this.totalPage = totalPage;
     }
 }

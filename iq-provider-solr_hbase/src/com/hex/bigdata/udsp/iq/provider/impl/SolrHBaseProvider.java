@@ -23,6 +23,7 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,8 @@ import java.util.*;
  */
 //@Component("com.hex.bigdata.udsp.iq.provider.impl.SolrHBaseProvider")
 public class SolrHBaseProvider implements Provider {
+
+    private static final int HBASE_GET_BATCH_SIZE = 1024;
 
     static {
         // 解决winutils.exe不存在的问题
@@ -64,25 +67,22 @@ public class SolrHBaseProvider implements Provider {
         response.setRequest(request);
 
         Application application = request.getApplication();
-        int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
         List<ReturnColumn> returnColumns = application.getReturnColumns();
         List<OrderColumn> orderColumns = application.getOrderColumns();
         String tbName = metadata.getTbName();
+        SolrHBaseMetadata solrHBaseMetadata = new SolrHBaseMetadata(metadata.getPropertyMap());
         Datasource datasource = metadata.getDatasource();
         //获取元数据返回字段
         List<DataColumn> metaReturnColumns = metadata.getReturnColumns();
         SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource(datasource.getPropertyMap());
         int maxSize = solrHBaseDatasource.getMaxNum();
-        if (maxNum != 0) {
-            maxSize = maxNum;
-        }
         SolrQuery query = getSolrQuery(maxSize, queryColumns, orderColumns);
         Map<Integer, String> colMap = getColMap(metaReturnColumns);
 
         try {
-            List<Map<String, String>> list = search(tbName, query, colMap, solrHBaseDatasource);
+            List<Map<String, String>> list = search(solrHBaseDatasource, tbName, query, colMap, solrHBaseMetadata);
             list = orderBy(list, queryColumns, orderColumns); // 排序处理
             response.setRecords(getRecords(list, returnColumns));
             response.setStatus(Status.SUCCESS);
@@ -109,21 +109,18 @@ public class SolrHBaseProvider implements Provider {
         response.setRequest(request);
 
         Application application = request.getApplication();
-        int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
         List<ReturnColumn> returnColumns = application.getReturnColumns();
         List<OrderColumn> orderColumns = application.getOrderColumns();
         String tbName = metadata.getTbName();
+        SolrHBaseMetadata solrHBaseMetadata = new SolrHBaseMetadata(metadata.getPropertyMap());
         Datasource datasource = metadata.getDatasource();
         //获取元数据返回字段
         List<DataColumn> metaReturnColumns = metadata.getReturnColumns();
         SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource(datasource.getPropertyMap());
 
         int maxSize = solrHBaseDatasource.getMaxNum();
-        if (maxNum != 0) {
-            maxSize = maxNum;
-        }
         if (pageSize > maxSize) {
             pageSize = maxSize;
         }
@@ -131,7 +128,7 @@ public class SolrHBaseProvider implements Provider {
         Map<Integer, String> colMap = getColMap(metaReturnColumns);
 
         try {
-            HBasePage hbasePage = searchPage(tbName, query, pageIndex, pageSize, colMap, solrHBaseDatasource);
+            HBasePage hbasePage = searchPage(solrHBaseDatasource, tbName, query, pageIndex, pageSize, colMap, solrHBaseMetadata);
             List<Map<String, String>> list = orderBy(hbasePage.getRecords(), queryColumns, orderColumns); // 排序处理
             response.setRecords(getRecords(list, returnColumns));
             Page page = new Page();
@@ -211,7 +208,8 @@ public class SolrHBaseProvider implements Provider {
                 .setFields("id");
     }
 
-    private SolrQuery getSolrQuery(int pageIndex, int pageSize, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns) {
+    private SolrQuery getSolrQuery(int pageIndex, int pageSize, List<QueryColumn> queryColumns,
+                                   List<OrderColumn> orderColumns) {
         return new SolrQuery() //
                 .setQuery(getQuery(queryColumns)) //
                 .setStart((pageIndex - 1) * pageSize) //
@@ -272,7 +270,8 @@ public class SolrHBaseProvider implements Provider {
     }
 
     // 字段过滤并字段名改别名
-    private List<com.hex.bigdata.udsp.common.api.model.Result> getRecords(List<Map<String, String>> resultList, List<ReturnColumn> returnColumns) {
+    private List<com.hex.bigdata.udsp.common.api.model.Result> getRecords(List<Map<String, String>> resultList,
+                                                                          List<ReturnColumn> returnColumns) {
         List<com.hex.bigdata.udsp.common.api.model.Result> records = null;
         if (resultList != null) {
             records = new ArrayList<com.hex.bigdata.udsp.common.api.model.Result>();
@@ -408,38 +407,86 @@ public class SolrHBaseProvider implements Provider {
         return colMap;
     }
 
-    private HBasePage searchPage(String tableName, SolrQuery query, int pageIndex, int pageSize, Map<Integer, String> colMap, SolrHBaseDatasource datasource) throws Exception {
-        List<Map<String, String>> records = new ArrayList<Map<String, String>>();
-        SolrHBasePage solrHBasePage = searchPage(tableName, query, pageIndex, pageSize, datasource);
-        for (String id : solrHBasePage.getRecords()) {
-            records.add(get(tableName, id, colMap, datasource));
+    private HBasePage searchPage(SolrHBaseDatasource datasource, String tableName, SolrQuery query, int pageIndex, int pageSize,
+                                 Map<Integer, String> colMap, SolrHBaseMetadata metadata) throws Exception {
+        List<Map<String, String>> records = new ArrayList<>();
+        SolrHBasePage solrHBasePage = searchPage(datasource, tableName, query, pageIndex, pageSize, metadata.getSolrPrimaryKey());
+
+        // HBase单条查询
+//        for (String id : solrHBasePage.getRecords()) {
+//            records.add(get(datasource, tableName, id, colMap));
+//        }
+
+        // HBase批量查询
+        List<String> ids = solrHBasePage.getRecords();
+        if (ids != null && ids.size() > 0) {
+            if (ids.size() <= HBASE_GET_BATCH_SIZE) {
+                records.addAll(gets(datasource, tableName, ids, colMap, metadata));
+            } else {
+                List<String> rowkeys = new ArrayList<>();
+                for (int i = 0; i < ids.size(); i++) {
+                    rowkeys.add(ids.get(i));
+                    if (i + 1 == HBASE_GET_BATCH_SIZE) {
+                        records.addAll(gets(datasource, tableName, rowkeys, colMap, metadata));
+                        rowkeys = new ArrayList<>();
+                    }
+                }
+                if (rowkeys.size() > 0) {
+                    records.addAll(gets(datasource, tableName, rowkeys, colMap, metadata));
+                }
+            }
         }
+
         return new HBasePage(records, solrHBasePage.getPageIndex(), solrHBasePage.getPageSize(), solrHBasePage.getTotalCount());
     }
 
-    private List<Map<String, String>> search(String tableName, SolrQuery query, Map<Integer, String> colMap, SolrHBaseDatasource datasource) throws Exception {
-        List<String> list = search(tableName, query, datasource);
-        List<Map<String, String>> records = new ArrayList<Map<String, String>>();
-        for (String id : list) {
-            records.add(get(tableName, id, colMap, datasource));
+    private List<Map<String, String>> search(SolrHBaseDatasource datasource, String tableName, SolrQuery query,
+                                             Map<Integer, String> colMap, SolrHBaseMetadata metadata) throws Exception {
+        List<String> ids = search(datasource, tableName, query, metadata.getSolrPrimaryKey());
+        List<Map<String, String>> records = new ArrayList<>();
+
+        // HBase单条查询
+//        for (String id : ids) {
+//            records.add(get(datasource, tableName, id, colMap));
+//        }
+
+        // HBase批量查询
+        if (ids != null && ids.size() > 0) {
+            if (ids.size() <= HBASE_GET_BATCH_SIZE) {
+                records.addAll(gets(datasource, tableName, ids, colMap, metadata));
+            } else {
+                List<String> rowkeys = new ArrayList<>();
+                for (int i = 0; i < ids.size(); i++) {
+                    rowkeys.add(ids.get(i));
+                    if (i + 1 == HBASE_GET_BATCH_SIZE) {
+                        records.addAll(gets(datasource, tableName, rowkeys, colMap, metadata));
+                        rowkeys = new ArrayList<>();
+                    }
+                }
+                if (rowkeys.size() > 0) {
+                    records.addAll(gets(datasource, tableName, rowkeys, colMap, metadata));
+                }
+            }
         }
+
         return records;
     }
 
     // ---------------------------Solr------------------------------
-    public SolrHBasePage searchPage(String collectionName, SolrQuery query, int pageIndex, int pageSize, SolrHBaseDatasource datasource) {
+    private SolrHBasePage searchPage(SolrHBaseDatasource datasource, String collectionName, SolrQuery query,
+                                     int pageIndex, int pageSize, String solrPrimaryKey) {
         // 获取QueryResponse
-        QueryResponse rsp = getQueryResponse(collectionName, query, datasource);
+        QueryResponse rsp = getQueryResponse(datasource, collectionName, query);
         if (rsp == null) {
             return null;
         }
         // 总行数
         SolrDocumentList results = rsp.getResults();
-        int totalCount = (int) results.getNumFound();
+        long totalCount = results.getNumFound();
         // 唯一键集合
-        List<String> records = new ArrayList<String>();
-        for (int i = 0; i < results.size(); i++) {
-            String id = (String) results.get(i).get("id");
+        List<String> records = new ArrayList<>();
+        for (SolrDocument result : results) {
+            String id = (String) result.get(solrPrimaryKey);
             if (StringUtils.isNotBlank(id)) {
                 records.add(id);
             }
@@ -447,17 +494,17 @@ public class SolrHBaseProvider implements Provider {
         return new SolrHBasePage(records, pageIndex, pageSize, totalCount);
     }
 
-    public List<String> search(String collectionName, SolrQuery query, SolrHBaseDatasource datasource) {
+    public List<String> search(SolrHBaseDatasource datasource, String collectionName, SolrQuery query, String solrPrimaryKey) {
         // 获取QueryResponse
-        QueryResponse rsp = getQueryResponse(collectionName, query, datasource);
+        QueryResponse rsp = getQueryResponse(datasource, collectionName, query);
         if (rsp == null) {
             return null;
         }
         // ID集合
         SolrDocumentList results = rsp.getResults();
-        List<String> records = new ArrayList<String>();
-        for (int i = 0; i < results.size(); i++) {
-            String id = (String) results.get(i).get("id");
+        List<String> records = new ArrayList<>();
+        for (SolrDocument result : results) {
+            String id = (String) result.get(solrPrimaryKey);
             if (StringUtils.isNotBlank(id)) {
                 records.add(id);
             }
@@ -465,8 +512,8 @@ public class SolrHBaseProvider implements Provider {
         return records;
     }
 
-    private QueryResponse getQueryResponse(String collectionName, SolrQuery query, SolrHBaseDatasource datasource) {
-        SolrServer solrServer = getSolrServer(collectionName, datasource);
+    private QueryResponse getQueryResponse(SolrHBaseDatasource datasource, String collectionName, SolrQuery query) {
+        SolrServer solrServer = getSolrServer(datasource, collectionName);
         if (solrServer == null) {
             return null;
         }
@@ -479,7 +526,7 @@ public class SolrHBaseProvider implements Provider {
         return res;
     }
 
-    private SolrServer getSolrServer(String collectionName, SolrHBaseDatasource datasource) {
+    private SolrServer getSolrServer(SolrHBaseDatasource datasource, String collectionName) {
         if (StringUtils.isBlank(collectionName)) {
             throw new IllegalArgumentException("collection name不能为空");
         }
@@ -498,17 +545,16 @@ public class SolrHBaseProvider implements Provider {
     }
 
     // ------------------------------HBase----------------------------------
-    private Map<String, String> get(String tableName, String rowkey, Map<Integer, String> colMap, SolrHBaseDatasource datasource) throws Exception {
+    private Map<String, String> get(SolrHBaseDatasource datasource, String tableName, String rowkey,
+                                    Map<Integer, String> colMap, SolrHBaseMetadata metadata) throws Exception {
         HConnection conn = null;
         HTableInterface table = null;
-        Map<String, String> map;
+        Map<String, String> map = null;
         try {
             conn = getConnection(datasource);
             table = conn.getTable(tableName);
-            byte[] family = datasource.getFamilyName();
-            byte[] qualifier = datasource.getQulifierName();
-            String fqSep = datasource.getSeprator();
-            map = get(table, rowkey, colMap, family, qualifier, fqSep);
+            map = get(table, rowkey, colMap, metadata.getFamilyName(),
+                    metadata.getQualifierName(), metadata.getDsvSeparator(), metadata.getFqDataType());
         } finally {
             if (table != null) {
                 table.close();
@@ -520,34 +566,95 @@ public class SolrHBaseProvider implements Provider {
         return map;
     }
 
-    private Map<String, String> get(HTableInterface table, String rowkey, Map<Integer, String> colMap, byte[] family, byte[] qualifier, String fqSep) throws Exception {
-        Get get = new Get(Bytes.toBytes(rowkey));
-        addColumn(get, family, qualifier);
-        return get(table, get, colMap, family, qualifier, fqSep);
+    private List<Map<String, String>> gets(SolrHBaseDatasource datasource, String tableName, List<String> rowkeys,
+                                           Map<Integer, String> colMap, SolrHBaseMetadata metadata) throws Exception {
+        HConnection conn = null;
+        HTableInterface table = null;
+        List<Map<String, String>> list = null;
+        try {
+            conn = getConnection(datasource);
+            table = conn.getTable(tableName);
+            list = gets(table, rowkeys, colMap, metadata.getFamilyName(),
+                    metadata.getQualifierName(), metadata.getDsvSeparator(), metadata.getFqDataType());
+        } finally {
+            if (table != null) {
+                table.close();
+            }
+            if (conn != null) {
+                release(datasource, conn);
+            }
+        }
+        return list;
     }
 
-    private Map<String, String> get(HTableInterface table, Get get, Map<Integer, String> colMap, byte[] family, byte[] qualifier, String fqSep) throws Exception {
+    private List<Map<String, String>> gets(HTableInterface table, List<String> rowkeys, Map<Integer, String> colMap,
+                                           byte[] family, byte[] qualifier, String separator, String dataType) throws Exception {
+        List<Get> gets = new ArrayList<>();
+        for (String rowkey : rowkeys) {
+            Get get = new Get(Bytes.toBytes(rowkey));
+            addColumn(get, family, qualifier);
+            gets.add(get);
+        }
+        return getMaps(table, gets, colMap, family, qualifier, separator, dataType);
+    }
+
+    private List<Map<String, String>> getMaps(HTableInterface table, List<Get> gets, Map<Integer, String> colMap,
+                                              byte[] family, byte[] qualifier, String separator, String dataType) throws Exception {
+        Result[] rs = table.get(gets);
+        return getMaps(rs, colMap, family, qualifier, separator, dataType);
+    }
+
+    private List<Map<String, String>> getMaps(Result[] rs, Map<Integer, String> colMap,
+                                              byte[] family, byte[] qualifier, String separator, String dataType) {
+        List<Map<String, String>> list = null;
+        if (rs != null && rs.length != 0) {
+            list = new ArrayList<>();
+            for (Result r : rs) {
+                list.add(getMap(r, colMap, family, qualifier, separator, dataType));
+            }
+        }
+        return list;
+    }
+
+    private Map<String, String> get(HTableInterface table, String rowkey, Map<Integer, String> colMap,
+                                    byte[] family, byte[] qualifier, String separator, String dataType) throws Exception {
+        Get get = new Get(Bytes.toBytes(rowkey));
+        addColumn(get, family, qualifier);
+        return get(table, get, colMap, family, qualifier, separator, dataType);
+    }
+
+    private Map<String, String> get(HTableInterface table, Get get, Map<Integer, String> colMap,
+                                    byte[] family, byte[] qualifier, String separator, String dataType) throws Exception {
         Result r = table.get(get);
-        return getMap(r, colMap, family, qualifier, fqSep);
+        return getMap(r, colMap, family, qualifier, separator, dataType);
     }
 
     private void addColumn(Get get, byte[] family, byte[] qualifier) {
         get.addColumn(family, qualifier);
     }
 
-    private Map<String, String> getMap(Result r, Map<Integer, String> colMap, byte[] family, byte[] qualifier, String fqSep) {
+    private Map<String, String> getMap(Result r, Map<Integer, String> colMap,
+                                       byte[] family, byte[] qualifier, String separator, String dataType) {
         Map<String, String> map = new HashMap<String, String>();
         String fqVal = Bytes.toString(r.getValue(family, qualifier));
         if (fqVal == null) fqVal = "";
-        String[] fqVals = fqVal.split(fqSep, -1);
-        // 注：如果上线后又修改需求，需要添加字段，则该检查需要注释掉
+        if (dataType.equalsIgnoreCase("dsv")) { // 分隔符格式数据
+            String[] fqVals = fqVal.split(separator, -1);
+            // 注：如果上线后又修改需求，需要添加字段，则该检查需要注释掉
 //        if (colMap.size() != fqVals.length) {
 //            throw new RuntimeException("查询结果数与字段数不一致！");
 //        }
-        for (int i = 0; i < fqVals.length; i++) {
-            String colName = colMap.get(i + 1);
-            if (colName != null) {
-                map.put(colName, JSONUtil.encode(fqVals[i]));
+            for (int i = 0; i < fqVals.length; i++) {
+                String colName = colMap.get(i + 1);
+                if (colName != null) {
+                    map.put(colName, JSONUtil.encode(fqVals[i]));
+                }
+            }
+        } else if (dataType.equalsIgnoreCase("json")) { // JSON MAP格式数据
+            Map<String, Object> result = JSONUtil.parseJSON2Map(fqVal);
+            Set<Integer> keys = colMap.keySet();
+            for (Integer key : keys) {
+                map.put(colMap.get(key), result.get(key).toString());
             }
         }
         return map;
@@ -623,7 +730,7 @@ public class SolrHBaseProvider implements Provider {
         return getColumns(schemaName, solrServers);
     }
 
-    public List<MetadataCol> getColumns(String collectionName, String solrServers) {
+    private List<MetadataCol> getColumns(String collectionName, String solrServers) {
         if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {
             return null;
         }
