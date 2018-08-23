@@ -81,10 +81,10 @@
   <select id="selectPage" resultMap="FullResultMap" parameterType="com.hex.bigdata.udsp.mm.dto.MmModelInfoView">
     select mmi.PK_ID, mmi.NAME, mmi.DESCRIPTION, mmi.VER_NOTE, mmi.VER_NUM, mmi.STATUS,
     mmi.NOTE, mmi.DEL_FLG, mmi.CRT_USER,
-    mmi.CRT_TIME, mmi.UPT_USER, mmi.UPT_TIME,mc.cn_name AS CONTRACTOR,mmi.MODEL_TYPE
+    mmi.CRT_TIME, mmi.UPT_USER, mmi.UPT_TIME, mc.cn_name AS CONTRACTOR, mmi.MODEL_TYPE
     from MM_MODEL_INFO mmi
     left join MM_CONTRACTOR mc
-    on mmi.CONTRACTOR = mc.PK_ID
+    on mmi.CONTRACTOR = mc.PK_ID and mc.DEL_FLG = '0'
     where mmi.DEL_FLG = '0'
     <if test="name!='' and name!=null ">and mmi.NAME like '%'||#{name}||'%'</if>
     <if test="describe!='' and describe!=null ">and mmi.DESCRIPTION like '%'||#{describe}||'%'</if>

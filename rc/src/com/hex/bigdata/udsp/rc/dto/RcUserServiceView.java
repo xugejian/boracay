@@ -36,10 +36,16 @@ public class RcUserServiceView extends RcUserService {
      * 服务说明
      */
     private String serviceDescribe;
+
     /**
-     *服务类型
+     * 服务类型
      */
     private String serviceType;
+
+    /**
+     * 服务应用ID
+     */
+    private String serviceAppId;
 
     /**
      * 用户名
@@ -93,7 +99,7 @@ public class RcUserServiceView extends RcUserService {
     public void setUptTimeEnd(String uptTimeEnd) {
         this.uptTimeEnd = uptTimeEnd;
     }
-    
+
     public String getServiceName() {
         return serviceName;
     }
@@ -135,10 +141,10 @@ public class RcUserServiceView extends RcUserService {
     }
 
     public String[] getServiceArray() {
-        if (StringUtils.isBlank(serviceIds)){
+        if (StringUtils.isBlank(serviceIds)) {
             return null;
         }
-        serviceArray=this.getServiceIds().split(",");
+        serviceArray = this.getServiceIds().split(",");
         return serviceArray;
     }
 
@@ -152,5 +158,13 @@ public class RcUserServiceView extends RcUserService {
 
     public void setServiceDescribe(String serviceDescribe) {
         this.serviceDescribe = serviceDescribe;
+    }
+
+    public String getServiceAppId() {
+        return serviceAppId;
+    }
+
+    public void setServiceAppId(String serviceAppId) {
+        this.serviceAppId = serviceAppId;
     }
 }

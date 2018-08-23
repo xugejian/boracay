@@ -1,10 +1,9 @@
 package com.hex.bigdata.udsp.rts.controller;
 
-import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.rts.dto.RtsProducerProsView;
 import com.hex.bigdata.udsp.rts.dto.RtsProducerView;
-import com.hex.bigdata.udsp.rts.model.RtsMatedataCol;
+import com.hex.bigdata.udsp.rts.model.RtsMetadataCol;
 import com.hex.bigdata.udsp.rts.model.RtsProducer;
 import com.hex.bigdata.udsp.rts.service.RtsProducerService;
 import com.hex.goframe.controller.BaseController;
@@ -237,7 +236,7 @@ public class RtsProducerController extends BaseController {
     public MessageResult selectProducerColumns(@PathVariable("producerId")String producerId) {
         boolean status = true;
         String message = "查询成功";
-        List<RtsMatedataCol> rtsProducers = null;
+        List<RtsMetadataCol> rtsProducers = null;
         if (StringUtils.isBlank(producerId)) {
             status = false;
             message = "请求参数为空";

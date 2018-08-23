@@ -3,7 +3,7 @@ package com.hex.bigdata.udsp.im.service;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
-import com.hex.bigdata.udsp.common.constant.DatasourceModel;
+import com.hex.bigdata.udsp.common.constant.DatasourceMode;
 import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.model.*;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
@@ -282,8 +282,12 @@ public class ImMetadataService extends BaseService {
 
             dataSourceContent.setComExcelParams(comExcelParams);
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
-            comExcelPropertiesList.add(new ComExcelProperties("字段信息", "com.hex.bigdata.udsp.im.model.ImMetadataCol", 10, 0, 1, ComExcelEnums.ImMetadataCol.getAllNums()));
-            comExcelPropertiesList.add(new ComExcelProperties("配置栏", "com.hex.bigdata.udsp.common.model.ComProperties", 10, 0, 2, ComExcelEnums.Comproperties.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("字段信息",
+                    "com.hex.bigdata.udsp.im.model.ImMetadataCol",
+                    10, 0, 1, ComExcelEnums.ImMetadataCol.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("配置栏",
+                    "com.hex.bigdata.udsp.common.model.ComProperties",
+                    10, 0, 2, ComExcelEnums.Comproperties.getAllNums()));
 
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");
@@ -310,7 +314,7 @@ public class ImMetadataService extends BaseService {
                     break;
                 }
                 //更改数据源
-                ComDatasource ds = comDatasourceService.selectByModelAndName(DatasourceModel.IM.getValue(), imMetadata.getDsId());
+                ComDatasource ds = comDatasourceService.selectByModelAndName(DatasourceMode.IM.getValue(), imMetadata.getDsId());
                 if (ds == null) {
                     resultMap.put("status", "false");
                     resultMap.put("message", "第" + (i + 1) + "个数据源不存在！");

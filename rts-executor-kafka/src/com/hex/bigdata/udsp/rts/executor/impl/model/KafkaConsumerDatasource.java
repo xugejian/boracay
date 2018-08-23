@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.rts.executor.impl.model;
 
+import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
-import com.hex.bigdata.udsp.rts.executor.model.ConsumerDatasource;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by junjiem on 2017-2-20.
  */
-public class KafkaConsumerDatasource extends ConsumerDatasource {
+public class KafkaConsumerDatasource extends Datasource {
 
     public KafkaConsumerDatasource(List<Property> propertyList) {
         super(propertyList);
@@ -72,6 +72,9 @@ public class KafkaConsumerDatasource extends ConsumerDatasource {
     }
 
     public String getGroupId() {
-        return getProperty("group.id").getValue();
+        String value = getProperty("group.id").getValue();
+        if (StringUtils.isBlank(value))
+            throw new IllegalArgumentException("group.id不能为空");
+        return value;
     }
 }

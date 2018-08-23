@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.aop;
 
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.dao.ConsumeStatusMapper;
@@ -43,7 +43,7 @@ public class ConsumeStatusInterceptor {
                 if (object instanceof Request) {
                     String consumeId = ((Request) object).getConsumeId();
                     String entity = ((Request) object).getEntity();
-                    if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)
+                    if (ConsumerEntity.STATUS.getValue().equalsIgnoreCase(entity)
                             && StringUtils.isNotBlank(consumeId)) {
                         response = getResponse(joinPoint, consumeId);
                         break;

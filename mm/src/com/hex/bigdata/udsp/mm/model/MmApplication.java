@@ -11,8 +11,6 @@ public class MmApplication implements Serializable{
 
     private String describe;
 
-    private Long maxNum;
-
     private String delFlg;
 
     private String crtUser;
@@ -55,14 +53,6 @@ public class MmApplication implements Serializable{
 
     public void setDescribe(String describe) {
         this.describe = describe;
-    }
-
-    public Long getMaxNum() {
-        return maxNum;
-    }
-
-    public void setMaxNum(Long maxNum) {
-        this.maxNum = maxNum;
     }
 
     public String getDelFlg() {

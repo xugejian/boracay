@@ -1,9 +1,10 @@
 package com.hex.bigdata.udsp.demo;
 
 import com.hex.bigdata.udsp.client.factory.ConsumerClientFactory;
-import com.hex.bigdata.udsp.client.impl.RtsConsumerClient;
 import com.hex.bigdata.udsp.client.impl.RtsProducerClient;
-import com.hex.bigdata.udsp.constant.SdkConstant;
+import com.hex.bigdata.udsp.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.constant.ConsumerType;
+import com.hex.bigdata.udsp.constant.StatusCode;
 import com.hex.bigdata.udsp.model.request.RtsProducerRequest;
 import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
 import org.apache.logging.log4j.LogManager;
@@ -38,9 +39,9 @@ public class RtsProducerClientDemo {
         //基础参数设置-上层应用系统使用者工号
         request.setAppUser("10071");
         //设置调用start接口
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
+        request.setEntity(ConsumerEntity.START.getValue());
         //设置同步调用
-        request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
+        request.setType(ConsumerType.SYNC.getValue());
 
         //设置UDSP校验用户信息，用户名及token
         request.setUdspUser("admin");
@@ -59,6 +60,22 @@ public class RtsProducerClientDemo {
         //发起调用并获取返回信息
         SyncPackResponse response = client.syncStart(request);
 
+        // 拆包响应对象
+        if (response == null) {
+            logger.error("客户端异常");
+        } else {
+            if (StatusCode.SUCCESS == response.getStatusCode()) {
+                // 耗时
+                logger.debug("耗时：" + response.getConsumeTime());
+                // 消费ID
+                logger.debug("消费ID：" + response.getConsumeId());
+            } else {
+                logger.error("状态：" + response.getStatus());
+                logger.error("状态码：" + response.getStatusCode());
+                logger.error("错误码：" + response.getErrorCode());
+                logger.error("错误信息：" + response.getMessage());
+            }
+        }
     }
 
     public static void main(String[] args) {

@@ -9,10 +9,7 @@ import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.rts.executor.Executor;
 import com.hex.bigdata.udsp.rts.executor.impl.model.KafkaConsumerDatasource;
 import com.hex.bigdata.udsp.rts.executor.impl.model.KafkaProducerDatasource;
-import com.hex.bigdata.udsp.rts.executor.model.ConsumerRequest;
-import com.hex.bigdata.udsp.rts.executor.model.ConsumerResponse;
-import com.hex.bigdata.udsp.rts.executor.model.ProducerRequest;
-import com.hex.bigdata.udsp.rts.executor.model.ProducerResponse;
+import com.hex.bigdata.udsp.rts.executor.model.*;
 import kafka.consumer.*;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.javaapi.producer.Producer;
@@ -32,29 +29,6 @@ public class KafkaExecutor implements Executor {
 
     private static Logger logger = LogManager.getLogger(KafkaExecutor.class);
 
-    private static Map<String, LinkedList<Producer<String, String>>> producerDataSourcePool;
-
-    private static Map<String, LinkedList<ConsumerConnector>> consumerDataSourcePool;
-
-//    private synchronized LinkedList<Producer<String, String>> getProducerDataSource(KafkaProducerDsConfig kakfaProducerDsConfig) {
-//        String dsId = kakfaProducerDsConfig.getId();
-//        if (producerDataSourcePool == null) {
-//            producerDataSourcePool = new HashMap<String, LinkedList<Producer<String, String>>>();
-//        }
-//        LinkedList<Producer<String, String>> dataSource = producerDataSourcePool.get(dsId);
-//        if (dataSource == null || dataSource.size() == 0) {
-//            ProducerConfig config = getProducerConfig(kakfaProducerDsConfig);
-//            dataSource = new LinkedList<Producer<String, String>>();
-//            Producer<String, String> producer = null;
-//            for (int i = 0; i < 5; i++) {
-//                producer = new Producer<String, String>(config);
-//                dataSource.add(producer);
-//            }
-//        }
-//        producerDataSourcePool.put(dsId, dataSource);
-//        return dataSource;
-//    }
-
     private ProducerConfig getProducerConfig(KafkaProducerDatasource datasource) {
         Properties props = new Properties();
         if (StringUtils.isNotBlank(datasource.getMetadataBrokerList()))
@@ -68,41 +42,20 @@ public class KafkaExecutor implements Executor {
         return new ProducerConfig(props);
     }
 
-//    private Producer<String, String> getProducer(KafkaProducerDsConfig kakfaProducerDsConfig) {
-//        LinkedList<Producer<String, String>> dataSource = getProducerDataSource(kakfaProducerDsConfig);
-//        while (dataSource.size() > 10) {
-//            Producer<String, String> producer = dataSource.remove();
-//            if (producer != null) {
-//                producer.close();
-//            }
-//        }
-//        Producer<String, String> producer = null;
-//        if (dataSource.size() > 0) {
-//            producer = dataSource.remove();
-//        } else {
-//            producer = new Producer<String, String>(getProducerConfig(kakfaProducerDsConfig));
-//        }
-//        return producer;
-//    }
-
-//    private void releaseProducer(KafkaProducerDsConfig kakfaProducerDsConfig, Producer<String, String> producer) {
-//        getProducerDataSource(kakfaProducerDsConfig).add(producer);
-//    }
-
     //-------------------------------------------ProducerApplication---------------------------------------------
     public ProducerResponse push(ProducerRequest producerRequest) {
         long bef = System.currentTimeMillis();
 
-        List<Property> propertyList = producerRequest.getProducerApplication().getMatedata().getDatasource().getProperties();
         ProducerResponse producerResponse = new ProducerResponse();
         producerResponse.setProducerRequest(producerRequest);
 
-        KafkaProducerDatasource datasource = new KafkaProducerDatasource(propertyList);
-        //Producer<String, String> producer = getProducer(kakfaProducerDsConfig);
-        Producer<String, String> producer = new Producer<String, String>(getProducerConfig(datasource));
-        String topic = producerRequest.getProducerApplication().getMatedata().getTopic();
+        Metadata producerMetadata = producerRequest.getApplication().getMetadata();
+        Datasource producerDatasource = producerMetadata.getDatasource();
+        KafkaProducerDatasource datasource = new KafkaProducerDatasource(producerDatasource.getProperties());
+        Producer<String, String> producer = new Producer<>(getProducerConfig(datasource));
+        String topic = producerMetadata.getTopic();
         List<Map<String, String>> dataMap = producerRequest.getMessageDatas();
-        List<String> messageList = new ArrayList<String>();
+        List<String> messageList = new ArrayList<>();
         for (Map<String, String> data : dataMap) {
             messageList.add(JSONUtil.parseObj2JSON(data));
         }
@@ -117,7 +70,6 @@ public class KafkaExecutor implements Executor {
             e.printStackTrace();
         } finally {
             if (producer != null) {
-                //releaseProducer(kafkaRtsProducerDsConfig, producer);
                 producer.close();
             }
         }
@@ -137,8 +89,7 @@ public class KafkaExecutor implements Executor {
             throw new RuntimeException("send message is null!");
         }
         // 如果具有多个partitions,请使用new KeyedMessage(String topicName, K key, V value).
-        KeyedMessage<String, String> km = new KeyedMessage<String, String>(
-                topic, message);
+        KeyedMessage<String, String> km = new KeyedMessage<>(topic, message);
         producer.send(km);
     }
 
@@ -149,10 +100,9 @@ public class KafkaExecutor implements Executor {
         if (messages == null || messages.isEmpty()) {
             throw new RuntimeException("send message can not be empty!");
         }
-        List<KeyedMessage<String, String>> kms = new ArrayList<KeyedMessage<String, String>>();
+        List<KeyedMessage<String, String>> kms = new ArrayList<>();
         for (String message : messages) {
-            KeyedMessage<String, String> km = new KeyedMessage<String, String>(
-                    topic, message);
+            KeyedMessage<String, String> km = new KeyedMessage<>(topic, message);
             kms.add(km);
         }
         producer.send(kms);
@@ -168,8 +118,7 @@ public class KafkaExecutor implements Executor {
         if (key == null) {
             throw new RuntimeException("send key is null!");
         }
-        KeyedMessage<String, String> km = new KeyedMessage<String, String>(
-                topic, key, message);
+        KeyedMessage<String, String> km = new KeyedMessage<>(topic, key, message);
         producer.send(km);
     }
 
@@ -180,20 +129,19 @@ public class KafkaExecutor implements Executor {
         if (messages == null || messages.isEmpty()) {
             throw new RuntimeException("send messages can not be empty!");
         }
-        List<KeyedMessage<String, String>> kms = new ArrayList<KeyedMessage<String, String>>();
+        List<KeyedMessage<String, String>> kms = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : messages.entrySet()) {
             String key = entry.getKey();
             List<String> value = entry.getValue();
             for (String message : value) {
-                KeyedMessage<String, String> km = new KeyedMessage<String, String>(
-                        topic, key, message);
+                KeyedMessage<String, String> km = new KeyedMessage<>(topic, key, message);
                 kms.add(km);
             }
         }
         producer.send(kms);
     }
 
-    public boolean testDatasource(Datasource datasource) {
+    public boolean testDatasource(com.hex.bigdata.udsp.common.api.model.Datasource datasource) {
         boolean canConnection = true;
         Producer<String, String> producer = null;
         try {
@@ -224,7 +172,7 @@ public class KafkaExecutor implements Executor {
             propertyList.add(prop);
 
             KafkaProducerDatasource kafkaProducerDsConfig = new KafkaProducerDatasource(propertyList);
-            producer = new Producer<String, String>(getProducerConfig(kafkaProducerDsConfig));
+            producer = new Producer<>(getProducerConfig(kafkaProducerDsConfig));
 
             if (producer == null) {
                 canConnection = false;
@@ -244,25 +192,6 @@ public class KafkaExecutor implements Executor {
     }
 
     //-------------------------------------------Consumer---------------------------------------------
-
-//    private synchronized LinkedList<ConsumerConnector> getConsumerDataSource(KafkaConsumerDsConfig kakfaConsumerDsConfig) {
-//        String dsId = kakfaConsumerDsConfig.getId();
-//        if (consumerDataSourcePool == null) {
-//            consumerDataSourcePool = new HashMap<String, LinkedList<ConsumerConnector>>();
-//        }
-//        LinkedList<ConsumerConnector> dataSource = consumerDataSourcePool.get(dsId);
-//        if (dataSource == null || dataSource.size() == 0) {
-//            ConsumerConfig config = getCnsumerConfig(kakfaConsumerDsConfig);
-//            dataSource = new LinkedList<ConsumerConnector>();
-//            ConsumerConnector consumer = null;
-//            for (int i = 0; i < 5; i++) {
-//                consumer = Consumer.createJavaConsumerConnector(config);
-//                dataSource.add(consumer);
-//            }
-//        }
-//        consumerDataSourcePool.put(dsId, dataSource);
-//        return dataSource;
-//    }
 
     private ConsumerConfig getCnsumerConfig(KafkaConsumerDatasource datasource) {
         Properties props = new Properties();
@@ -295,23 +224,21 @@ public class KafkaExecutor implements Executor {
         return new ConsumerConfig(props);
     }
 
-//    private void releaseConsumer(KafkaConsumerDsConfig kakfaConsumerDsConfig, ConsumerConnector consumer) {
-//        getConsumerDataSource(kakfaConsumerDsConfig).add(consumer);
-//    }
-
     public ConsumerResponse pull(ConsumerRequest consumerRequest) {
-        int timeout = consumerRequest.getTimeout();
-        List<Result> records = new ArrayList<Result>();
         long bef = System.currentTimeMillis();
-        Map<String, Property> propertyMap = consumerRequest.getConsumerApplication().getMatedata().getDatasource().getPropertyMap();
-        propertyMap.put("consumer.timeout.ms", new Property("consumer.timeout.ms", Integer.toString(timeout)));
+        List<Result> records = new ArrayList<>();
         ConsumerResponse consumerResponse = new ConsumerResponse();
         consumerResponse.setConsumerRequest(consumerRequest);
-        KafkaConsumerDatasource datasource = new KafkaConsumerDatasource(propertyMap);
-        ConsumerConnector consumer = Consumer.createJavaConsumerConnector(getCnsumerConfig(datasource));
-        int threadNum = datasource.getThreadNum();
+        Metadata metadata = consumerRequest.getApplication().getMetadata();
+        String topic = metadata.getTopic();
+        Datasource datasource = metadata.getDatasource();
+        Map<String, Property> propertyMap = datasource.getPropertyMap();
+        propertyMap.put("consumer.timeout.ms", new Property("consumer.timeout.ms", Long.toString(consumerRequest.getTimeout())));
+        KafkaConsumerDatasource consumerDatasource = new KafkaConsumerDatasource(propertyMap);
+        ConsumerConnector consumer = Consumer.createJavaConsumerConnector(getCnsumerConfig(consumerDatasource));
+        int threadNum = consumerDatasource.getThreadNum();
         try {
-            List<KafkaStream<byte[], byte[]>> streams = receive(consumer, consumerRequest.getConsumerApplication().getMatedata().getTopic(), threadNum);
+            List<KafkaStream<byte[], byte[]>> streams = receive(consumer, topic, threadNum);
             Map<String, Object> md = null;
             for (KafkaStream<byte[], byte[]> stream : streams) {
                 ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
@@ -345,7 +272,6 @@ public class KafkaExecutor implements Executor {
             consumerResponse.setMessage(e.getMessage());
         } finally {
             if (consumer != null) {
-                //releaseConsumer(kafkaRtsConsumerDsConfig, consumer);
                 consumer.shutdown();
             }
         }
@@ -359,12 +285,11 @@ public class KafkaExecutor implements Executor {
         if (StringUtils.isBlank(topic)) {
             throw new RuntimeException("kafka topic can not be empty!");
         }
-        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
+        Map<String, Integer> topicCountMap = new HashMap<>();
         // 一次从topic中获取1个KafkaStream（一个KafkaStream可产生一个迭代器）
         String topicName = topic;
         topicCountMap.put(topicName, 1);
-        Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer
-                .createMessageStreams(topicCountMap);
+        Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams(topicCountMap);
         KafkaStream<byte[], byte[]> stream = consumerMap.get(topicName).get(0);
         return stream;
     }
@@ -373,8 +298,8 @@ public class KafkaExecutor implements Executor {
         if (StringUtils.isBlank(topic)) {
             throw new RuntimeException("kafka topic can not be empty!");
         }
-        Map<String, KafkaStream<byte[], byte[]>> streamMap = new HashMap<String, KafkaStream<byte[], byte[]>>();
-        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
+        Map<String, KafkaStream<byte[], byte[]>> streamMap = new HashMap<>();
+        Map<String, Integer> topicCountMap = new HashMap<>();
         String[] topicNames = topic.split(",");
         for (String topicName : topicNames) {
             topicCountMap.put(topicName, 1);
@@ -383,8 +308,7 @@ public class KafkaExecutor implements Executor {
                 .createMessageStreams(topicCountMap);
         for (Map.Entry<String, Integer> entry : topicCountMap.entrySet()) {
             String topicName = entry.getKey();
-            KafkaStream<byte[], byte[]> stream = consumerMap.get(topicName)
-                    .get(0);
+            KafkaStream<byte[], byte[]> stream = consumerMap.get(topicName).get(0);
             streamMap.put(topicName, stream);
         }
         return streamMap;
@@ -394,15 +318,13 @@ public class KafkaExecutor implements Executor {
         if (StringUtils.isBlank(topic)) {
             throw new RuntimeException("kafka topic can not be empty!");
         }
-        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
+        Map<String, Integer> topicCountMap = new HashMap<>();
         // threadNum是线程数
         // 一次从topic中获取threadNum个KafkaStream（一个KafkaStream可产生一个迭代器）
         String topicName = topic;
         topicCountMap.put(topicName, threadNum);
-        Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer
-                .createMessageStreams(topicCountMap);
-        List<KafkaStream<byte[], byte[]>> streamList = consumerMap
-                .get(topicName);
+        Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams(topicCountMap);
+        List<KafkaStream<byte[], byte[]>> streamList = consumerMap.get(topicName);
         return streamList;
     }
 
@@ -410,18 +332,16 @@ public class KafkaExecutor implements Executor {
         if (StringUtils.isBlank(topic)) {
             throw new RuntimeException("kafka topic can not be empty!");
         }
-        Map<String, List<KafkaStream<byte[], byte[]>>> streamMap = new HashMap<String, List<KafkaStream<byte[], byte[]>>>();
-        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
+        Map<String, List<KafkaStream<byte[], byte[]>>> streamMap = new HashMap<>();
+        Map<String, Integer> topicCountMap = new HashMap<>();
         String[] topicNames = topic.split(",");
         for (String topicName : topicNames) {
             topicCountMap.put(topicName, threadNum);
         }
-        Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer
-                .createMessageStreams(topicCountMap);
+        Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams(topicCountMap);
         for (Map.Entry<String, Integer> entry : topicCountMap.entrySet()) {
             String topicName = entry.getKey();
-            List<KafkaStream<byte[], byte[]>> streamList = consumerMap
-                    .get(topicName);
+            List<KafkaStream<byte[], byte[]>> streamList = consumerMap.get(topicName);
             streamMap.put(topicName, streamList);
         }
         return streamMap;

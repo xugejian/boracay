@@ -5,14 +5,15 @@ import com.hex.bigdata.udsp.common.dao.ComDatasourceMapper;
 import com.hex.bigdata.udsp.common.dto.ComDatasourcePropsView;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.*;
-import com.hex.bigdata.udsp.common.util.*;
+import com.hex.bigdata.udsp.common.util.CreateFileUtil;
+import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
+import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
 import com.hex.goframe.model.GFDict;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.DateUtil;
 import com.hex.goframe.util.FileUtil;
 import com.hex.goframe.util.Util;
-import com.hex.goframe.util.excel.ExcelHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -142,7 +143,7 @@ public class ComDatasourceService extends BaseService {
      */
     @Transactional
     public Map<String, String> uploadExcel(String uploadFilePath) {
-        Map resultMap = new HashMap<String, String>(2);
+        Map<String, String> resultMap = new HashMap<>(2);
         File uploadFile = new File(uploadFilePath);
         FileInputStream in = null;
         try {
@@ -151,7 +152,9 @@ public class ComDatasourceService extends BaseService {
 
             dataSourceContent.setComExcelParams(comExcelParams);
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
-            comExcelPropertiesList.add(new ComExcelProperties("配置信息", "com.hex.bigdata.udsp.common.model.ComProperties", 10, 0, 1, ComExcelEnums.DataSourceProperties.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("配置信息",
+                    "com.hex.bigdata.udsp.common.model.ComProperties",
+                    10, 0, 1, ComExcelEnums.DataSourceProperties.getAllNums()));
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");
 
@@ -170,8 +173,7 @@ public class ComDatasourceService extends BaseService {
                 }
                 String pkId = insert(comDatasource);
                 List<ComProperties> propertiesList = (List<ComProperties>) uploadExcelModel.get("com.hex.bigdata.udsp.common.model.ComProperties");
-                boolean result = propertiesList.size() == 0 || comPropertiesService.insertList(pkId, propertiesList);
-                if (result == true) {
+                if (propertiesList.size() == 0 || comPropertiesService.insertList(pkId, propertiesList)) {
                     resultMap.put("status", "true");
                 } else {
                     resultMap.put("status", "false");
@@ -203,10 +205,10 @@ public class ComDatasourceService extends BaseService {
         HSSFCell cell;
         String seprator = FileUtil.getFileSeparator();
         // 模板文件位置
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_dataSource.xls";
+        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_datasource.xls";
         // 下载地址
         String dirPath = CreateFileUtil.getLocalDirPath();
-        dirPath += seprator + "download_dataSource_excel_" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xls";
+        dirPath += seprator + "download_datasource_excel_" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
 

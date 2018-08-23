@@ -10,9 +10,9 @@ import java.util.List;
  * Created by tomnic on 2017/3/1.
  */
 public class RtsProducerProsView implements Serializable {
-    private List<ComProperties> comPropertiesList;
 
     private RtsProducer rtsProducer;
+    private List<ComProperties> comPropertiesList;
 
     public List<ComProperties> getComPropertiesList() {
         return comPropertiesList;

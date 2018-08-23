@@ -1,15 +1,18 @@
 package com.hex.bigdata.udsp.client.impl;
 
 import com.hex.bigdata.udsp.client.ConsumerClient;
-import com.hex.bigdata.udsp.constant.SdkConstant;
+import com.hex.bigdata.udsp.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.constant.ConsumerType;
 import com.hex.bigdata.udsp.model.request.ImRequest;
 import com.hex.bigdata.udsp.model.request.UdspRequest;
 import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
 import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
 import com.hex.bigdata.udsp.util.SdkHttpUtil;
 
+import java.util.Map;
+
 /**
- * 交互查询客户端
+ * 交互建模客户端
  */
 public class ImClient extends ConsumerClient {
 
@@ -27,9 +30,7 @@ public class ImClient extends ConsumerClient {
      * @return
      */
     public SyncPackResponse syncStart(ImRequest request) {
-        //检查基础参数，参数错误则抛出异常
-        this.checkBasicParams(request, SdkConstant.CONSUMER_TYPE_SYNC, SdkConstant.CONSUMER_ENTITY_START);
-        //检查业务参数
+        this.checkBasicParams(request, ConsumerType.SYNC, ConsumerEntity.START);
         this.checkStartBusinessParams(request);
         SyncResponse response = SdkHttpUtil.requestUdsp(request, this.getRequestUrl(), SyncResponse.class);
         return this.transSyncPackResponse(response);
@@ -39,6 +40,11 @@ public class ImClient extends ConsumerClient {
      * 检查start业务参数
      */
     protected void checkStartBusinessParams(UdspRequest udspRequest) {
+        ImRequest request = (ImRequest) udspRequest;
+        Map<String, String> data = request.getData();
+        if (data == null || data.size() == 0) {
+            throw new IllegalArgumentException("参数data不能为空!");
+        }
     }
 
 }

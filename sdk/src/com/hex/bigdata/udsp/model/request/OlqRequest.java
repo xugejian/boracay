@@ -2,24 +2,11 @@ package com.hex.bigdata.udsp.model.request;
 
 import com.hex.bigdata.udsp.model.Page;
 
-/**
- * 联机查询
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/17
- * TIME:11:12
- */
 @Deprecated
 public class OlqRequest extends UdspRequest {
-    /**
-     * 执行sql语句
-     */
-    private String sql;
 
-    /**
-     * 分页参数
-     */
     private Page page;
+    private String sql;
 
     public String getSql() {
         return sql;

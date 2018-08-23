@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.rts.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
-import com.hex.bigdata.udsp.common.dao.ComPropertiesMapper;
 import com.hex.bigdata.udsp.common.model.ComExcelParam;
 import com.hex.bigdata.udsp.common.model.ComExcelProperties;
 import com.hex.bigdata.udsp.common.model.ComProperties;
@@ -10,18 +9,17 @@ import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
 import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.bigdata.udsp.rts.dao.RtsConsumerMapper;
-import com.hex.bigdata.udsp.rts.dao.RtsMatedataMapper;
-import com.hex.bigdata.udsp.rts.dto.RTSIndexDto;
+import com.hex.bigdata.udsp.rts.dao.RtsMetadataMapper;
 import com.hex.bigdata.udsp.rts.dto.RtsConsumerProsView;
 import com.hex.bigdata.udsp.rts.dto.RtsConsumerView;
+import com.hex.bigdata.udsp.rts.dto.RtsIndexDto;
 import com.hex.bigdata.udsp.rts.model.RtsConsumer;
-import com.hex.bigdata.udsp.rts.model.RtsMatedataCol;
+import com.hex.bigdata.udsp.rts.model.RtsMetadataCol;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.DateUtil;
@@ -51,39 +49,19 @@ import java.util.*;
  */
 @Service
 public class RtsConsumerService extends BaseService {
-    /**
-     * 日志记录
-     */
+
     private static Logger logger = LogManager.getLogger(RtsConsumerService.class);
 
-
-    /**
-     * 公共配置参数服务
-     */
     @Autowired
     private ComPropertiesService comPropertiesService;
-
-    /**
-     * 实时流数据源DAO层服务
-     */
     @Autowired
     private RtsConsumerMapper rtsConsumerMapper;
-
-    /**
-     * 实时流-元数据列服务
-     */
     @Autowired
-    private RtsMatedataColService rtsMatedataColService;
-
-
+    private RtsMetadataColService rtsMetadataColService;
     @Autowired
-    private RtsMatedataMapper rtsMatedataMapper;
-
+    private RtsMetadataMapper rtsMetadataMapper;
     @Autowired
     private RcServiceService rcServiceService;
-
-    @Autowired
-    private ComPropertiesMapper comPropertiesMapper;
 
     private static List<ComExcelParam> comExcelParams;
 
@@ -91,8 +69,7 @@ public class RtsConsumerService extends BaseService {
         comExcelParams = new ArrayList<>();
         comExcelParams.add(new ComExcelParam(1, 1, "name"));
         comExcelParams.add(new ComExcelParam(1, 3, "mdId"));
-        comExcelParams.add(new ComExcelParam(2, 1, "groupId"));
-        comExcelParams.add(new ComExcelParam(2, 3, "describe"));
+        comExcelParams.add(new ComExcelParam(2, 1, "describe"));
         comExcelParams.add(new ComExcelParam(3, 1, "note"));
     }
 
@@ -239,11 +216,11 @@ public class RtsConsumerService extends BaseService {
         return flag;
     }
 
-    public List<RtsMatedataCol> selectConsumerColumns(String consumerId) {
+    public List<RtsMetadataCol> selectConsumerColumns(String consumerId) {
         RtsConsumer rtsProducer = this.select(consumerId);
-        List<RtsMatedataCol> colList = null;
+        List<RtsMetadataCol> colList = null;
         if (rtsProducer != null) {
-            colList = this.rtsMatedataColService.selectByMdId(rtsProducer.getMdId());
+            colList = rtsMetadataColService.selectByMdId(rtsProducer.getMdId());
         }
         return colList;
     }
@@ -266,7 +243,9 @@ public class RtsConsumerService extends BaseService {
             dataSourceContent.setComExcelParams(comExcelParams);
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
             //添加对应的配置栏内容
-            comExcelPropertiesList.add(new ComExcelProperties("数据源配置", "com.hex.bigdata.udsp.common.model.ComProperties", 10, 0, 1, ComExcelEnums.Comproperties.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("数据源配置",
+                    "com.hex.bigdata.udsp.common.model.ComProperties",
+                    10, 0, 1, ComExcelEnums.Comproperties.getAllNums()));
 
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");
@@ -284,13 +263,13 @@ public class RtsConsumerService extends BaseService {
                     resultMap.put("message", "第" + (i + 1) + "个名称重复！");
                     break;
                 }
-                if (rtsMatedataMapper.selectByName(rtsConsume.getMdId()) == null) {
+                if (rtsMetadataMapper.selectByName(rtsConsume.getMdId()) == null) {
                     resultMap.put("status", "false");
                     resultMap.put("message", "第" + (i + 1) + "个对应元数据不存在！");
                     break;
                 }
                 //更新元数据
-                rtsConsume.setMdId(rtsMatedataMapper.selectByName(rtsConsume.getMdId()).getPkId());
+                rtsConsume.setMdId(rtsMetadataMapper.selectByName(rtsConsume.getMdId()).getPkId());
                 String pkId = insert(rtsConsume);
                 List<ComProperties> comPropertiesList = (List<ComProperties>) uploadExcelModel.get("com.hex.bigdata.udsp.common.model.ComProperties");
                 boolean insert = comPropertiesService.insertList(pkId, comPropertiesList);
@@ -326,10 +305,10 @@ public class RtsConsumerService extends BaseService {
         HSSFCell cell;
         String seprator = FileUtil.getFileSeparator();
         //模板文件位置
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_rtsComsumer.xls";
+        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_rtsConsumer.xls";
         // 下载地址
         String dirPath = CreateFileUtil.getLocalDirPath();
-        dirPath += seprator + "download_rtsComsumer_excel_" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xls";
+        dirPath += seprator + "download_rtsConsumer_excel_" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
 
@@ -391,20 +370,16 @@ public class RtsConsumerService extends BaseService {
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
         comExcelParams.add(new ComExcelParam(2, 3, "serviceDescribe"));
-        comExcelParams.add(new ComExcelParam(2, 5, "maxNum"));
         comExcelParams.add(new ComExcelParam(3, 1, "maxSyncNum"));
         comExcelParams.add(new ComExcelParam(3, 3, "maxAsyncNum"));
         comExcelParams.add(new ComExcelParam(3, 5, "maxSyncWaitNum"));
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
-        comExcelParams.add(new ComExcelParam(4, 5, "userName"));
-        comExcelParams.add(new ComExcelParam(5, 1, "udspRequestUrl"));
-        long maxSize = 65535;
+        comExcelParams.add(new ComExcelParam(4, 3, "userName"));
 
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService, maxSize, "");
+        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
-        HSSFSheet sheet;
-        sheet = workbook.createSheet();
+        HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 10; i++) {
@@ -424,7 +399,7 @@ public class RtsConsumerService extends BaseService {
                 e.printStackTrace();
             }
         }
-        RTSIndexDto rtsIndexDto = new RTSIndexDto(i);
+        RtsIndexDto rtsIndexDto = new RtsIndexDto(i);
         this.setWorkbookSheetPart(sheet, rtsConsumer, sourceSheet, workbook, rtsIndexDto);
     }
 
@@ -455,7 +430,7 @@ public class RtsConsumerService extends BaseService {
         //设置内容
         RtsConsumer rtsConsumer1 = rtsConsumerMapper.select(rtsConsumer.getPkId());
         //设置元数据名字
-        rtsConsumer1.setMdId(rtsMatedataMapper.select(rtsConsumer1.getMdId()).getName());
+        rtsConsumer1.setMdId(rtsMetadataMapper.select(rtsConsumer1.getMdId()).getName());
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
                 Field field = rtsConsumer1.getClass().getDeclaredField(comExcelParam.getName());
@@ -465,26 +440,26 @@ public class RtsConsumerService extends BaseService {
                 e.printStackTrace();
             }
         }
-        this.setWorkbookSheetPart(sheet, rtsConsumer, sourceSheet, workbook, new RTSIndexDto(i));
+        this.setWorkbookSheetPart(sheet, rtsConsumer, sourceSheet, workbook, new RtsIndexDto(i));
     }
 
-    public void setWorkbookSheetPart(HSSFSheet sheet, RtsConsumer rtsConsumer, HSSFSheet sourceSheet, HSSFWorkbook workbook, RTSIndexDto rtsIndexDto) {
+    public void setWorkbookSheetPart(HSSFSheet sheet, RtsConsumer rtsConsumer, HSSFSheet sourceSheet, HSSFWorkbook workbook, RtsIndexDto rtsIndexDto) {
         HSSFRow row;
         HSSFCell cell;
         int rowIndex = rtsIndexDto.getRowIndex();
-        List<ComProperties> comPropertieses = comPropertiesMapper.selectList(rtsConsumer.getPkId());
-        if (comPropertieses.size() > 0) {
+        List<RtsMetadataCol> colList = rtsMetadataColService.selectByMdId(rtsConsumer.getMdId());
+        if (colList != null && colList.size() != 0) {
             int k = 1;
-            for (ComProperties comPropertiese : comPropertieses) {
+            for (RtsMetadataCol col : colList) {
                 row = sheet.createRow(rowIndex);
                 cell = row.createCell(0);
                 cell.setCellValue(k);
                 cell = row.createCell(1);
-                cell.setCellValue(comPropertiese.getName());
+                cell.setCellValue(col.getName());
                 cell = row.createCell(2);
-                cell.setCellValue(comPropertiese.getValue());
+                cell.setCellValue(col.getType());
                 cell = row.createCell(3);
-                cell.setCellValue(comPropertiese.getDescribe());
+                cell.setCellValue(col.getDescribe());
                 rowIndex++;
                 k++;
             }

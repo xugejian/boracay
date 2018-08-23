@@ -11,8 +11,6 @@ public class RtsConsumer implements Serializable {
 
     private String describe;
 
-    private String groupId;
-
     private String note;
 
     private String delFlg;
@@ -55,14 +53,6 @@ public class RtsConsumer implements Serializable {
 
     public void setDescribe(String describe) {
         this.describe = describe;
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
     }
 
     public String getNote() {

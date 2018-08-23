@@ -1,11 +1,10 @@
 package com.hex.bigdata.udsp.rts.controller;
 
-import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.rts.dto.RtsConsumerProsView;
 import com.hex.bigdata.udsp.rts.dto.RtsConsumerView;
 import com.hex.bigdata.udsp.rts.model.RtsConsumer;
-import com.hex.bigdata.udsp.rts.model.RtsMatedataCol;
+import com.hex.bigdata.udsp.rts.model.RtsMetadataCol;
 import com.hex.bigdata.udsp.rts.service.RtsConsumerService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.MessageResult;
@@ -154,7 +153,7 @@ public class RtsConsumerController extends BaseController {
             message = "请求参数为空";
         } else {
             try {
-                rtsDatasource = this.rtsConsumerService.select(pkId);
+                rtsDatasource = rtsConsumerService.select(pkId);
             } catch (Exception e) {
                 status = false;
                 message = "系统异常：" + e.getMessage();
@@ -238,7 +237,7 @@ public class RtsConsumerController extends BaseController {
     public MessageResult selectConsumerColumns(@PathVariable("consumerId")String consumerId) {
         boolean status = true;
         String message = "查询成功";
-        List<RtsMatedataCol> rtsConsumerCols = null;
+        List<RtsMetadataCol> rtsConsumerCols = null;
         if (StringUtils.isBlank(consumerId)) {
             status = false;
             message = "请求参数为空";

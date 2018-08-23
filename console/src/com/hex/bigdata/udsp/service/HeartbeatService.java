@@ -1,24 +1,25 @@
 package com.hex.bigdata.udsp.service;
 
-import com.hex.bigdata.udsp.common.constant.CommonConstant;
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ServiceType;
 import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
+import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
+import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
+import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.service.IqAsyncService;
 import com.hex.bigdata.udsp.consumer.service.LoggingService;
 import com.hex.bigdata.udsp.consumer.service.OlqAsyncService;
 import com.hex.bigdata.udsp.dao.HeartbeatMapper;
-import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
-import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
 import com.hex.bigdata.udsp.model.HeartbeatInfo;
-import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
 import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
-import com.hex.bigdata.udsp.rc.util.RcConstant;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,7 +162,7 @@ public class HeartbeatService {
         //遍历并发信息，异步的并发重做
         for (Current mcCurrent : mcCurrentList) {
             //如果是异步则进行处理
-            if (CommonConstant.REQUEST_ASYNC.equals(mcCurrent.getSyncType())) {
+            if (ConsumerType.ASYNC.getValue().equals(mcCurrent.getSyncType())) {
                 newCurrents.add(mcCurrent);
             }
             // 删除宕机机器的并发记录
@@ -175,7 +176,7 @@ public class HeartbeatService {
             request.setRequestType(mcCurrent.getRequestType());
             request.setAppType(mcCurrent.getAppType());
             request.setAppName(mcCurrent.getAppName());
-            if (ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(request.getEntity())) {
+            if (ConsumerEntity.STATUS.getValue().equalsIgnoreCase(request.getEntity())) {
                 continue;
             }
             if (!runQueueService.addCurrent(mcCurrent)) { // 队列已满
@@ -200,11 +201,11 @@ public class HeartbeatService {
             consumeRequest.setQueueIsFullResult(isFullResult);
             //新增消费请求类作为参数-end
             long bef = System.currentTimeMillis();
-            if (RcConstant.UDSP_SERVICE_TYPE_IQ.equals(type)) {
+            if (ServiceType.IQ.getValue().equals(type)) {
                 ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), request.getPage(), localFileName, bef));
-            } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ.equalsIgnoreCase(type)) {
+            } else if (ServiceType.OLQ.getValue().equalsIgnoreCase(type)) {
                 ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, request.getSql(), request.getPage(), localFileName, bef));
-            } else if (RcConstant.UDSP_SERVICE_TYPE_OLQ_APP.equals(type)) {
+            } else if (ServiceType.OLQ_APP.getValue().equals(type)) {
                 OlqApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 appId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 String sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());

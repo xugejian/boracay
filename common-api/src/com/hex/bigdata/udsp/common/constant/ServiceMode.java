@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.common.constant;
 
 /**
- * Created by PC on 2017/6/5.
+ * 服务模式
  */
 public enum ServiceMode {
     SINGLE("单机", "SINGLE"),

@@ -1,15 +1,17 @@
 package com.hex.bigdata.udsp.olq.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
-import com.hex.bigdata.udsp.common.constant.DatasourceModel;
+import com.hex.bigdata.udsp.common.constant.DatasourceMode;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
-import com.hex.bigdata.udsp.common.model.*;
+import com.hex.bigdata.udsp.common.model.ComDatasource;
+import com.hex.bigdata.udsp.common.model.ComExcelParam;
+import com.hex.bigdata.udsp.common.model.ComExcelProperties;
+import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.olq.constant.OlqConstant;
 import com.hex.bigdata.udsp.olq.dao.OlqApplicationMapper;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
@@ -31,7 +33,6 @@ import com.hex.goframe.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -46,7 +47,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -286,8 +290,7 @@ public class OlqApplicationService extends BaseService {
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
             comExcelPropertiesList.add(new ComExcelProperties("参数字段",
                     "com.hex.bigdata.udsp.olq.model.OlqApplicationParam",
-                    10, 0, 1,
-                    ComExcelEnums.OlqApplicationParamCoumn.getAllNums()));
+                    10, 0, 1, ComExcelEnums.OlqApplicationParamCoumn.getAllNums()));
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");
             in = new FileInputStream(uploadFile);
@@ -344,7 +347,7 @@ public class OlqApplicationService extends BaseService {
             return new MessageResult(false, "数据源名称不能为空，请检查！");
         }
         //数据源名称
-        ComDatasource comDatasource = this.comDatasourceService.selectByModelAndName(DatasourceModel.OLQ.getValue(), olqDsName);
+        ComDatasource comDatasource = this.comDatasourceService.selectByModelAndName(DatasourceMode.OLQ.getValue(), olqDsName);
         if (comDatasource == null) {
             return new MessageResult(false, "数据源名称对应的数据源不存在，请检查！");
         }
@@ -568,30 +571,16 @@ public class OlqApplicationService extends BaseService {
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
         comExcelParams.add(new ComExcelParam(2, 3, "serviceDescribe"));
-        comExcelParams.add(new ComExcelParam(2, 5, "maxNum"));
         comExcelParams.add(new ComExcelParam(3, 1, "maxSyncNum"));
         comExcelParams.add(new ComExcelParam(3, 3, "maxAsyncNum"));
         comExcelParams.add(new ComExcelParam(3, 5, "maxSyncWaitNum"));
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
-        comExcelParams.add(new ComExcelParam(4, 5, "userName"));
-        comExcelParams.add(new ComExcelParam(5, 1, "udspRequestUrl"));
-        long maxSize = 65535;
+        comExcelParams.add(new ComExcelParam(4, 3, "userName"));
 
-        if (null != olqApplicationDto) {
-            List<ComProperties> comPropertiesList = comPropertiesService.selectList(rcService.getAppId());
-            for (ComProperties item : comPropertiesList) {
-                if ("max.data.size".equals(item.getName())) {
-                    if (org.apache.commons.lang.StringUtils.isNotBlank(item.getValue())) {
-                        maxSize = Long.valueOf(item.getValue());
-                    }
-                }
-            }
-        }
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService, maxSize, "");
+        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
-        HSSFSheet sheet;
-        sheet = workbook.createSheet();
+        HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 10; i++) {
@@ -676,7 +665,7 @@ public class OlqApplicationService extends BaseService {
 
     public List<ComDatasource> selectOlqDataSource() {
         ComDatasourceView datasourceView = new ComDatasourceView();
-        datasourceView.setModel(DatasourceModel.OLQ.getValue());
+        datasourceView.setModel(DatasourceMode.OLQ.getValue());
         List<ComDatasource> searchList = comDatasourceService.select(datasourceView);
         return searchList;
     }

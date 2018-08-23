@@ -62,11 +62,6 @@ ${extends("/goframe/function_layout.httl")}
                                    valueField="dictId" emptyText="全部" showNullItem="true" nullItemText="全部"
                                    textField="dictName" dictTypeId="UDSP_SERVICE_TYPE" style="width: 97%;"/>
                         </td>
-                        <!--<td class="tit roleLabel" style="width: 100px;text-align: right">应用类型：</td>-->
-                        <!--<td class="roleText" style="width: 25%">-->
-                        <!--<input id="appId" name="appId" class="nui-dictcombobox" valueField="pkId" textField="name" style="width:97%"-->
-                        <!--required="true" emptyText="请应用类型"/>-->
-                        <!--</td>-->
                         <td class="tit roleLabel" style="width: 100px;text-align: right">说明：</td>
                         <td class="roleText" style="width: 25%">
                             <input name="describe" class="nui-textbox" style="width:98%;"/>
@@ -154,14 +149,13 @@ ${extends("/goframe/function_layout.httl")}
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
             <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat">更新时间</div>
             <div field="isCache" headerAlign="center" allowSort="true" renderer="renderIsCache">是否缓存</div>
-            <div name="operation" headerAlign="center" align="center" allowSort="true" renderer="operation">授权操作</div>
+            <div name="operation" headerAlign="center" align="center" allowSort="true" renderer="operation">操作</div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
     var grid1;
-    var appId_nuiObject;
 
     var updateForm;
     var uploadFileStatus;
@@ -173,9 +167,7 @@ ${extends("/goframe/function_layout.httl")}
         nui.parse();
         grid1 = nui.get("datagrid1");
         grid1.load();
-        appId_nuiObject = nui.get("appId");
         $("#pull").hide();
-
         updateForm = new nui.Form("updateForm");
         uploadFileStatus = false;
     });
@@ -229,26 +221,7 @@ ${extends("/goframe/function_layout.httl")}
      * @returns {string}
      */
     function operation(e) {
-        var name = e.record.name;
-        var type = e.record.type;
-        var pkId = e.record.pkId;
-        var cellHtml = "<a  href=\"#\" onclick=\"authInfoList('" + pkId + "','" + name + "','" + type + "')\"><img src='${basePath}/s/img/collapse.gif' title='服务名称对应服务授权列表信息' alt=''> </a>";
-        return cellHtml;
-    }
-
-
-    function selectApps(e) {
-        $.ajax({
-            url: "${basePath}/rc/service/selectApps/" + e.value,
-            type: 'POST',
-            cache: false,
-            contentType: 'application/json',
-            success: function (result) {
-                if (result.status) {
-                    appId_nuiObject.setData(result.data);
-                }
-            }
-        });
+        return "<a  href=\"#\" onclick=\"authInfoList('" + e.record.pkId + "','" + e.record.name + "','" + e.record.type + "')\">授权</a>";
     }
 
     /**

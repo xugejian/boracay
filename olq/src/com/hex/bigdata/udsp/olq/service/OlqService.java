@@ -75,30 +75,15 @@ public class OlqService extends BaseService {
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
         comExcelParams.add(new ComExcelParam(2, 3, "serviceDescribe"));
-        comExcelParams.add(new ComExcelParam(2, 5, "maxNum"));
         comExcelParams.add(new ComExcelParam(3, 1, "maxSyncNum"));
         comExcelParams.add(new ComExcelParam(3, 3, "maxAsyncNum"));
         comExcelParams.add(new ComExcelParam(3, 5, "maxSyncWaitNum"));
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
-        comExcelParams.add(new ComExcelParam(4, 5, "userName"));
-        comExcelParams.add(new ComExcelParam(5, 1, "udspRequestUrl"));
+        comExcelParams.add(new ComExcelParam(4, 3, "userName"));
 
-        long maxSize = 65535;
-        if (null != rcService) {
-            List<ComProperties> comPropertiesList = comPropertiesService.selectList(rcService.getAppId());
-            for (ComProperties item : comPropertiesList) {
-                if ("max.data.size".equals(item.getName())) {
-                    if (StringUtils.isNotBlank(item.getValue())) {
-                        maxSize = Long.valueOf(item.getValue());
-                    }
-                }
-            }
-        }
-
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService, maxSize, "");
-        HSSFSheet sheet;
-        sheet = workbook.createSheet();
+        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
+        HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 11; i++) {

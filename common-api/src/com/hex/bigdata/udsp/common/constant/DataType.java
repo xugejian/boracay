@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.common.constant;
 
 /**
- * Created by junjiem on 2017-2-18.
+ * 数据字段类型
  */
 public enum DataType {
     STRING("STRING", "STRING"),

@@ -76,11 +76,9 @@
         S_DS_NAME,IMM.NAME T_MD_NAME
         from IM_MODEL IM
         left join COM_DATASOURCE CD
-        on CD.PK_ID = IM.S_DS_ID
-        and CD.DEL_FLG = '0'
+        on CD.PK_ID = IM.S_DS_ID and CD.DEL_FLG = '0'
         left join IM_METADATA IMM
-        on IMM.PK_ID = IM.T_MD_ID
-        and IMM.DEL_FLG = '0'
+        on IMM.PK_ID = IM.T_MD_ID and IMM.DEL_FLG = '0'
         where IM.DEL_FLG = '0'
         <if test="name != null and name != ''">and IM.NAME like '%' || #{name} || '%'</if>
         <if test="describe != null and describe != ''">and IM.DESCRIPTION like '%' || #{describe} || '%'</if>

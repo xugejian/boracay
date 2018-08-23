@@ -9,24 +9,22 @@ import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.DatasourceUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
-import com.hex.bigdata.udsp.common.util.PropertyUtil;
-import com.hex.bigdata.udsp.rts.dto.RtsConsumerRequestView;
-import com.hex.bigdata.udsp.rts.dto.RtsMatedataColsView;
-import com.hex.bigdata.udsp.rts.dto.RtsProducerRequestView;
 import com.hex.bigdata.udsp.rts.executor.Executor;
 import com.hex.bigdata.udsp.rts.executor.model.*;
 import com.hex.bigdata.udsp.rts.model.RtsConsumer;
-import com.hex.bigdata.udsp.rts.model.RtsMatedata;
-import com.hex.bigdata.udsp.rts.model.RtsMatedataCol;
+import com.hex.bigdata.udsp.rts.model.RtsMetadata;
+import com.hex.bigdata.udsp.rts.model.RtsMetadataCol;
 import com.hex.bigdata.udsp.rts.model.RtsProducer;
-import com.hex.bigdata.udsp.rts.util.CommonUtil;
 import com.hex.goframe.dao.GFDictMapper;
 import com.hex.goframe.model.GFDict;
 import com.hex.goframe.service.BaseService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,16 +34,19 @@ import java.util.Map;
  */
 @Service
 public class RtsExecutorService extends BaseService {
+
+    private static Logger logger = LogManager.getLogger(RtsExecutorService.class);
+
     private static final String RTS_IMPL_CLASS = "RTS_IMPL_CLASS";
 
     @Autowired
     private ComPropertiesService comPropertiesService;
     @Autowired
-    private RtsMatedataService rtsMatedataService;
+    private RtsMetadataService rtsMetadataService;
     @Autowired
     private ComDatasourceService comDatasourceService;
     @Autowired
-    private RtsMatedataColService rtsMatedataColService;
+    private RtsMetadataColService rtsMetadataColService;
     @Autowired
     private RtsConsumerService rtsConsumerService;
     @Autowired
@@ -56,53 +57,25 @@ public class RtsExecutorService extends BaseService {
     /**
      * 获取消费者应用信息
      *
-     * @param requestView
+     * @param consumerId
+     * @param timeout
      * @return
      */
-    public ConsumerResponse consumer(RtsConsumerRequestView requestView) {
-
-        String consumerId = requestView.getConsumerId();
-        int timeout = requestView.getTimeout();
-
-        timeout = timeout == 0 ? 1000 : timeout;
-        //获取消费者
-        RtsConsumer rtsConsumer = this.rtsConsumerService.select(consumerId);
-        //获取元数据信息及数据列信息
-        RtsMatedata rtsMatedata = this.rtsMatedataService.select(rtsConsumer.getMdId());
-
-        List<RtsMatedataCol> rtsMatedataCols = this.rtsMatedataColService.selectByMdId(rtsMatedata.getPkId());
-        RtsMatedataColsView rtsMatedataColsView = new RtsMatedataColsView(rtsMatedata, rtsMatedataCols);
-
-        //获取数据源
-        ComDatasource comDatasource = this.comDatasourceService.select(rtsMatedata.getDsId());
-        //获取数据源配置
-        List<ComProperties> comPropertieList = this.comPropertiesService.selectList(comDatasource.getPkId());
-        //获取消费者配置
-        List<ComProperties> consumerComPropertieList = this.comPropertiesService.selectList(rtsConsumer.getPkId());
-        //合并消费者和数据源参数
-        comPropertieList = PropertyUtil.mergeProperties(comPropertieList, consumerComPropertieList);
-
-        ComProperties comProperties = new ComProperties();
-        comProperties.setName("group.id");
-        comProperties.setValue(rtsConsumer.getGroupId());
-        consumerComPropertieList.add(comProperties);
-
-        //获取消费者数据源配置
-        ConsumerDatasource datasource = new ConsumerDatasource(DatasourceUtil.getDatasource(comDatasource, comPropertieList));
-        datasource.setGroupId(rtsConsumer.getGroupId());
-
-        //获取消费者元数据信息
-        ConsumerMatedata consumerMatedata = getConsumerMatedata(rtsMatedataColsView, datasource);
-
-        ConsumerApplication consumerApplication = getConsumerApplication(rtsConsumer, consumerMatedata);
-
-        ConsumerRequest consumerRequest = new ConsumerRequest(consumerApplication, timeout);
-
-        Executor executor = getExecutorImpl(datasource);
-
-        ConsumerResponse consumerResponse = executor.pull(consumerRequest);
-        //设置返回列信息
-        consumerResponse.setColumns(this.putColumnIntoMap(rtsMatedataCols));
+    public ConsumerResponse consumer(String consumerId, long timeout) {
+        timeout = (timeout == 0 ? 1000 : timeout);
+        RtsConsumer rtsConsumer = rtsConsumerService.select(consumerId);
+        RtsMetadata rtsMetadata = rtsMetadataService.select(rtsConsumer.getMdId());
+        List<RtsMetadataCol> rtsMetadataCols = rtsMetadataColService.selectByMdId(rtsMetadata.getPkId());
+        ComDatasource comDatasource = comDatasourceService.select(rtsMetadata.getDsId());
+        List<ComProperties> datasourceProperties = comPropertiesService.selectList(comDatasource.getPkId());
+        List<ComProperties> applicationProperties = comPropertiesService.selectList(rtsConsumer.getPkId());
+        datasourceProperties.addAll(applicationProperties);
+        Datasource datasource = new Datasource(DatasourceUtil.getDatasource(comDatasource, datasourceProperties));
+        Metadata metadata = getMetadata(datasource, rtsMetadata, rtsMetadataCols);
+        Application application = getApplication(rtsConsumer, metadata);
+        ConsumerRequest consumerRequest = new ConsumerRequest(application, timeout);
+        ConsumerResponse consumerResponse = getExecutorImpl(datasource).pull(consumerRequest);
+        consumerResponse.setColumns(putColumnIntoMap(rtsMetadataCols));
         if (consumerResponse.getRecords() != null && consumerResponse.getRecords().size() > 0) {
             consumerResponse.setStatus(Status.SUCCESS);
             consumerResponse.setStatusCode(StatusCode.SUCCESS);
@@ -110,16 +83,10 @@ public class RtsExecutorService extends BaseService {
         return consumerResponse;
     }
 
-    /**
-     * 元数据列信息插入到Map
-     *
-     * @param rtsMatedataCols
-     * @return
-     */
-    private LinkedHashMap<String, String> putColumnIntoMap(List<RtsMatedataCol> rtsMatedataCols) {
+    private LinkedHashMap<String, String> putColumnIntoMap(List<RtsMetadataCol> rtsMetadataCols) {
         LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();
-        for (RtsMatedataCol rtsMatedataCol : rtsMatedataCols) {
-            columnMap.put(rtsMatedataCol.getName(), rtsMatedataCol.getType());
+        for (RtsMetadataCol rtsMetadataCol : rtsMetadataCols) {
+            columnMap.put(rtsMetadataCol.getName(), rtsMetadataCol.getType());
         }
         return columnMap;
     }
@@ -127,45 +94,23 @@ public class RtsExecutorService extends BaseService {
     /**
      * 获取生产者应用信息
      *
-     * @param requestView
+     * @param producerId
+     * @param messageDatas
      * @return
      */
-    public ProducerResponse producer(RtsProducerRequestView requestView) {
-        String producerId = requestView.getProducerId();
-        //获取生产者
-        RtsProducer rtsProducer = this.rtsProducerService.select(producerId);
-        //获取元数据信息及数据列信息
-        RtsMatedata rtsMatedata = this.rtsMatedataService.select(rtsProducer.getMdId());
-
-        List<RtsMatedataCol> rtsMatedataCols = this.rtsMatedataColService.selectByMdId(rtsMatedata.getPkId());
-        RtsMatedataColsView rtsMatedataColsView = new RtsMatedataColsView(rtsMatedata, rtsMatedataCols);
-
-        //获取数据源
-        ComDatasource comDatasource = this.comDatasourceService.select(rtsMatedata.getDsId());
-        //获取数据源配置
-        List<ComProperties> comPropertieList = this.comPropertiesService.selectList(comDatasource.getPkId());
-        //获取生产者配置
-        List<ComProperties> producerComPropertieList = this.comPropertiesService.selectList(rtsProducer.getPkId());
-        //合并生产者和数据源参数
-        comPropertieList = PropertyUtil.mergeProperties(comPropertieList, producerComPropertieList);
-
-        //获取生产者数据源配置
-        ProducerDatasource datasource = new ProducerDatasource(DatasourceUtil.getDatasource(comDatasource, comPropertieList));
-        //获取生产者元数据信息
-        ProducerMatedata producerMatedata = getProducerMatedata(rtsMatedataColsView, datasource);
-
-        ProducerApplication producerApplication = getProducerApplication(rtsProducer, producerMatedata);
-
-
-        List<Map<String, String>> messageDatas = requestView.getListMap();
-
+    public ProducerResponse producer(String producerId, List<Map<String, String>> messageDatas) {
+        RtsProducer rtsProducer = rtsProducerService.select(producerId);
+        RtsMetadata rtsMetadata = rtsMetadataService.select(rtsProducer.getMdId());
+        List<RtsMetadataCol> rtsMetadataCols = rtsMetadataColService.selectByMdId(rtsMetadata.getPkId());
+        ComDatasource comDatasource = comDatasourceService.select(rtsMetadata.getDsId());
+        List<ComProperties> datasourceProperties = comPropertiesService.selectList(comDatasource.getPkId());
+        List<ComProperties> applicationProperties = comPropertiesService.selectList(rtsProducer.getPkId());
+        datasourceProperties.addAll(applicationProperties);
+        Datasource datasource = new Datasource(DatasourceUtil.getDatasource(comDatasource, datasourceProperties));
+        Metadata metadata = getMetadata(datasource, rtsMetadata, rtsMetadataCols);
+        Application producerApplication = getApplication(rtsProducer, metadata);
         ProducerRequest producerRequest = new ProducerRequest(producerApplication, messageDatas);
-
-        Executor executor = getExecutorImpl(datasource);
-
-        ProducerResponse response = executor.push(producerRequest);
-
-        return response;
+        return getExecutorImpl(datasource).push(producerRequest);
     }
 
     /**
@@ -174,9 +119,8 @@ public class RtsExecutorService extends BaseService {
      * @param datasource
      * @return
      */
-    public boolean testDatasource(Datasource datasource) {
-        Executor executor = getExecutorImpl(datasource);
-        return executor.testDatasource(datasource);
+    public boolean testDatasource(com.hex.bigdata.udsp.common.api.model.Datasource datasource) {
+        return getExecutorImpl(datasource).testDatasource(datasource);
     }
 
     /**
@@ -185,11 +129,11 @@ public class RtsExecutorService extends BaseService {
      * @param datasource
      * @return
      */
-    private Executor getExecutorImpl(Datasource datasource) {
+    private Executor getExecutorImpl(com.hex.bigdata.udsp.common.api.model.Datasource datasource) {
         return (Executor) ObjectUtil.newInstance(getImplClass(datasource));
     }
 
-    private String getImplClass(Datasource datasource) {
+    private String getImplClass(com.hex.bigdata.udsp.common.api.model.Datasource datasource) {
         String implClass = datasource.getImplClass();
         if (StringUtils.isBlank(implClass)) {
             GFDict gfDict = gfDictMapper.selectByPrimaryKey(RTS_IMPL_CLASS, datasource.getType());
@@ -198,45 +142,43 @@ public class RtsExecutorService extends BaseService {
         return implClass;
     }
 
-    private ConsumerMatedata getConsumerMatedata(RtsMatedataColsView matedataColsView, ConsumerDatasource datasource) {
-        ConsumerMatedata consumerMatedata = new ConsumerMatedata();
-        consumerMatedata.setDatasource(datasource);
-        RtsMatedata rtsMatedata = matedataColsView.getRtsMatedata();
-        consumerMatedata.setName(rtsMatedata.getName());
-        consumerMatedata.setDescribe(rtsMatedata.getDescribe());
-        consumerMatedata.setNote(rtsMatedata.getNote());
-        consumerMatedata.setTopic(rtsMatedata.getTopic());
-        consumerMatedata.setColumns(CommonUtil.getColumns(matedataColsView.getRtsMatedataColList()));
-        return consumerMatedata;
+    private Application getApplication(RtsConsumer rtsConsumer, Metadata metadata) {
+        Application application = new Application();
+        application.setMetadata(metadata);
+        application.setName(rtsConsumer.getName());
+        application.setDescribe(rtsConsumer.getDescribe());
+        application.setName(rtsConsumer.getNote());
+        return application;
     }
 
-    private ConsumerApplication getConsumerApplication(RtsConsumer rtsConsumer, ConsumerMatedata matedata) {
-        ConsumerApplication consumerApplication = new ConsumerApplication();
-        consumerApplication.setMatedata(matedata);
-        consumerApplication.setName(rtsConsumer.getName());
-        consumerApplication.setDescribe(rtsConsumer.getDescribe());
-        consumerApplication.setName(rtsConsumer.getNote());
-        return consumerApplication;
+    private Metadata getMetadata(Datasource datasource, RtsMetadata rtsMetadata, List<RtsMetadataCol> rtsMetadataCols) {
+        Metadata metadata = new Metadata();
+        metadata.setDatasource(datasource);
+        metadata.setName(rtsMetadata.getName());
+        metadata.setDescribe(rtsMetadata.getDescribe());
+        metadata.setNote(rtsMetadata.getNote());
+        metadata.setTopic(rtsMetadata.getTopic());
+        metadata.setColumns(getColumns(rtsMetadataCols));
+        return metadata;
     }
 
-    private ProducerMatedata getProducerMatedata(RtsMatedataColsView matedataColsView, ProducerDatasource datasource) {
-        ProducerMatedata producerMatedata = new ProducerMatedata();
-        producerMatedata.setDatasource(datasource);
-        RtsMatedata rtsMatedata = matedataColsView.getRtsMatedata();
-        producerMatedata.setName(rtsMatedata.getName());
-        producerMatedata.setDescribe(rtsMatedata.getDescribe());
-        producerMatedata.setNote(rtsMatedata.getNote());
-        producerMatedata.setTopic(rtsMatedata.getTopic());
-        producerMatedata.setColumns(CommonUtil.getColumns(matedataColsView.getRtsMatedataColList()));
-        return producerMatedata;
-    }
-
-    private ProducerApplication getProducerApplication(RtsProducer rtsProducer, ProducerMatedata matedata) {
-        ProducerApplication producerApplication = new ProducerApplication();
+    private Application getApplication(RtsProducer rtsProducer, Metadata metadata) {
+        Application producerApplication = new Application();
         producerApplication.setName(rtsProducer.getName());
         producerApplication.setDescribe(rtsProducer.getDescribe());
         producerApplication.setNote(rtsProducer.getNote());
-        producerApplication.setMatedata(matedata);
+        producerApplication.setMetadata(metadata);
         return producerApplication;
+    }
+
+    private List<MetadataCol> getColumns(List<RtsMetadataCol> rtsMetadataCols) {
+        List<MetadataCol> columns = new ArrayList<>();
+        for (RtsMetadataCol col : rtsMetadataCols) {
+            MetadataCol column = new MetadataCol();
+            column.setName(col.getName());
+            column.setDescribe(col.getDescribe());
+            column.setSeq(col.getSeq());
+        }
+        return columns;
     }
 }

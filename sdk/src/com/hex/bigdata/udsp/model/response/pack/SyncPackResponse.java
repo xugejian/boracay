@@ -6,25 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/7/19
- * TIME:20:58
- */
 public class SyncPackResponse extends UdspPackResponse {
-    /**
-     * 记录集合
-     */
-    private List<Map<String, String>> records;
-    /**
-     * 分页
-     */
     private Page page;
-
-    /**
-     * 返回字段名称和类型 key:名称；value:类型
-     */
+    private List<Map<String, String>> records;
     private LinkedHashMap<String, String> returnColumns;
 
     public List<Map<String, String>> getRecords() {

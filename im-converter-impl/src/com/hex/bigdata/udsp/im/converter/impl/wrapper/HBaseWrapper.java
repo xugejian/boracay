@@ -61,7 +61,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         List<String> selectColumns = new ArrayList<>();
         HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata);
         String fqDataType = hBaseMetadata.getFqDataType();
-        String fqDsvSeprator = hBaseMetadata.getFqDsvSeprator();
+        String fqDsvSeparator = hBaseMetadata.getFqDsvSeparator();
         // 按照目标元数据字段升序
         List<ModelMapping> newModelMappings = new ArrayList<>();
         newModelMappings.addAll(modelMappings);
@@ -87,7 +87,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         if ("json".equalsIgnoreCase(fqDataType)) {
             val = getJsonValueSql(vals);
         } else {
-            val = getDsvValueSql(vals, fqDsvSeprator);
+            val = getDsvValueSql(vals, fqDsvSeparator);
         }
         logger.debug("VALUE=>" + val);
         /*
@@ -278,7 +278,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         HBaseDatasource hBaseDatasource = new HBaseDatasource(metadata.getDatasource());
         HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata);
         String fqDataType = hBaseMetadata.getFqDataType();
-        String fqDsvSeprator = hBaseMetadata.getFqDsvSeprator();
+        String fqDsvSeparator = hBaseMetadata.getFqDsvSeparator();
         String family = hBaseMetadata.getFamily();
         String qualifier = hBaseMetadata.getQualifier();
         // 按照目标元数据字段升序
@@ -305,7 +305,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         if ("json".equalsIgnoreCase(fqDataType)) {
             value = getJsonValue(vals, valueMap);
         } else {
-            value = getDsvValue(vals, fqDsvSeprator, valueMap);
+            value = getDsvValue(vals, fqDsvSeparator, valueMap);
         }
         logger.debug("VALUE=>" + value);
         /*

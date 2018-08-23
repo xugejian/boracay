@@ -735,3 +735,7 @@ ALTER TABLE RC_SERVICE ADD TIME_OUT DECIMAL(10) default 60 COMMENT '缓存时效
 
 -- 消费日志表中添加是否从缓存获取字段
 ALTER TABLE MC_CONSUME_LOG ADD IS_CACHE CHAR(1) COMMENT '是否从缓存获取（0：是，1：否）';
+
+-- 删除字段
+alter table IQ_APPLICATION drop column MAX_NUM;
+alter table MM_APPLICATION drop column MAX_NUM;

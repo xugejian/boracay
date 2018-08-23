@@ -268,9 +268,15 @@ public class ImModelService {
 
             dataSourceContent.setComExcelParams(comExcelParams);
             List<ComExcelProperties> comExcelPropertiesList = new ArrayList<>();
-            comExcelPropertiesList.add(new ComExcelProperties("配置栏", "com.hex.bigdata.udsp.common.model.ComProperties", 12, 0, 1, ComExcelEnums.Comproperties.getAllNums()));
-            comExcelPropertiesList.add(new ComExcelProperties("字段映射", "com.hex.bigdata.udsp.im.model.ImModelMapping", 10, 0, 2, ComExcelEnums.ImMapping.getAllNums()));
-            comExcelPropertiesList.add(new ComExcelProperties("字段过滤", "com.hex.bigdata.udsp.im.model.ImModelFilterCol", 10, 0, 3, ComExcelEnums.ImModelFiterCol.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("配置栏",
+                    "com.hex.bigdata.udsp.common.model.ComProperties",
+                    12, 0, 1, ComExcelEnums.Comproperties.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("字段映射",
+                    "com.hex.bigdata.udsp.im.model.ImModelMapping",
+                    10, 0, 2, ComExcelEnums.ImMapping.getAllNums()));
+            comExcelPropertiesList.add(new ComExcelProperties("字段过滤",
+                    "com.hex.bigdata.udsp.im.model.ImModelFilterCol",
+                    10, 0, 3, ComExcelEnums.ImModelFiterCol.getAllNums()));
 
             dataSourceContent.setComExcelPropertiesList(comExcelPropertiesList);
             dataSourceContent.setType("fixed");
@@ -882,19 +888,16 @@ public class ImModelService {
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
         comExcelParams.add(new ComExcelParam(2, 3, "serviceDescribe"));
-        comExcelParams.add(new ComExcelParam(2, 5, "maxNum"));
         comExcelParams.add(new ComExcelParam(3, 1, "maxSyncNum"));
         comExcelParams.add(new ComExcelParam(3, 3, "maxAsyncNum"));
         comExcelParams.add(new ComExcelParam(3, 5, "maxSyncWaitNum"));
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
-        comExcelParams.add(new ComExcelParam(4, 5, "userName"));
-        comExcelParams.add(new ComExcelParam(5, 1, "udspRequestUrl"));
+        comExcelParams.add(new ComExcelParam(4, 3, "userName"));
 
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService, 65535, "");
+        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
-        HSSFSheet sheet;
-        sheet = workbook.createSheet();
+        HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 11; i++) {
@@ -909,7 +912,8 @@ public class ImModelService {
             try {
                 Field field = serviceBaseInfo.getClass().getDeclaredField(comExcelParam.getName());
                 field.setAccessible(true);
-                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
+                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(),
+                        field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -919,7 +923,8 @@ public class ImModelService {
         this.setWorkbookSheetPart(sheet, imModel, sourceSheet, workbook, imIndexDto);
     }
 
-    public void setWorkbookSheetPart(HSSFSheet sheet, ImModel imModel, HSSFSheet sourceSheet, HSSFWorkbook workbook, ImIndexDto imIndexDto) {
+    public void setWorkbookSheetPart(HSSFSheet sheet, ImModel imModel, HSSFSheet sourceSheet,
+                                     HSSFWorkbook workbook, ImIndexDto imIndexDto) {
         HSSFRow row;
         HSSFCell cell;
         int rowIndex = imIndexDto.getRowIndex();

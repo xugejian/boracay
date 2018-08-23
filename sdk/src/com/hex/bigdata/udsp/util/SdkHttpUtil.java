@@ -8,12 +8,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.nio.charset.Charset;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/17
- * TIME:14:35
- */
 public class SdkHttpUtil {
 
     /**

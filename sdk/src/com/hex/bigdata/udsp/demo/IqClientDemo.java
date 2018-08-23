@@ -2,7 +2,9 @@ package com.hex.bigdata.udsp.demo;
 
 import com.hex.bigdata.udsp.client.factory.ConsumerClientFactory;
 import com.hex.bigdata.udsp.client.impl.IqClient;
-import com.hex.bigdata.udsp.constant.SdkConstant;
+import com.hex.bigdata.udsp.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.constant.ConsumerType;
+import com.hex.bigdata.udsp.constant.StatusCode;
 import com.hex.bigdata.udsp.model.Page;
 import com.hex.bigdata.udsp.model.request.IqRequest;
 import com.hex.bigdata.udsp.model.request.StatusRequest;
@@ -13,6 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,9 +47,9 @@ public class IqClientDemo {
         //基础参数设置-上层应用系统使用者工号
         request.setAppUser("10940");
         //基础参数设置-设置调用start接口
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
+        request.setEntity(ConsumerEntity.START.getValue());
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
-        request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
+        request.setType(ConsumerType.SYNC.getValue());
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("CRM");
         request.setToken("000000");
@@ -63,8 +67,45 @@ public class IqClientDemo {
         page.setPageSize(20);
         request.setPage(page);
 
-        //发起动用
+        //发起调用
         SyncPackResponse response = client.syncStart(request);
+
+        // 拆包响应对象
+        if (response == null) {
+            logger.error("客户端异常");
+        } else {
+            if (StatusCode.SUCCESS == response.getStatusCode()) {
+                // 分页信息
+                page = response.getPage();
+                if (page != null) {
+                    logger.debug("当前页号：" + page.getPageIndex());
+                    logger.debug("当前页条数：" + page.getPageSize());
+                    logger.debug("总条数：" + page.getTotalCount());
+                    logger.debug("总页数：" + page.getTotalPage());
+                }
+                // 耗时
+                logger.debug("耗时：" + response.getConsumeTime());
+                // 消费ID
+                logger.debug("消费ID：" + response.getConsumeId());
+                // 字段信息
+                LinkedHashMap<String, String> returnColumns = response.getReturnColumns();
+                for (Map.Entry<String, String> entry : returnColumns.entrySet()) {
+                    logger.debug("名称：" + entry.getKey() + "，类型：" + entry.getValue());
+                }
+                // 数据信息
+                List<Map<String, String>> records = response.getRecords();
+                for (Map<String, String> record : records) {
+                    for (Map.Entry<String, String> entry : record.entrySet()) {
+                        logger.debug("名称：" + entry.getKey() + "，值：" + entry.getValue());
+                    }
+                }
+            } else {
+                logger.error("状态：" + response.getStatus());
+                logger.error("状态码：" + response.getStatusCode());
+                logger.error("错误码：" + response.getErrorCode());
+                logger.error("错误信息：" + response.getMessage());
+            }
+        }
     }
 
     /**
@@ -84,9 +125,9 @@ public class IqClientDemo {
         //基础参数设置-上层应用系统使用者工号
         request.setAppUser("10940");
         //基础参数设置-设置调用start接口
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
+        request.setEntity(ConsumerEntity.START.getValue());
         //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
-        request.setType(SdkConstant.CONSUMER_TYPE_ASYNC);
+        request.setType(ConsumerType.ASYNC.getValue());
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("CRM");
         request.setToken("000000");
@@ -106,6 +147,29 @@ public class IqClientDemo {
 
         //发起调用
         AsyncPackResponse response = client.asyncStart(request);
+
+        // 拆包响应对象
+        if (response == null) {
+            logger.error("客户端异常");
+        } else {
+            if (StatusCode.SUCCESS == response.getStatusCode()) {
+                // 耗时
+                logger.debug("耗时：" + response.getConsumeTime());
+                // 消费ID
+                logger.debug("消费ID：" + response.getConsumeId());
+                // 生成文件的FTP路径
+                logger.debug("生成文件的FTP路径：" + response.getResponseContent());
+                /**
+                 * 成功说明异步任务已经调起
+                 */
+                // 可以继续循环执行查看状态的操作
+            } else {
+                logger.error("状态：" + response.getStatus());
+                logger.error("状态码：" + response.getStatusCode());
+                logger.error("错误码：" + response.getErrorCode());
+                logger.error("错误信息：" + response.getMessage());
+            }
+        }
     }
 
     /**
@@ -127,9 +191,9 @@ public class IqClientDemo {
         //基础参数设置-上层应用系统使用者工号
         request.setAppUser("10940");
         //基础参数设置-设置调用status接口，查看任务状态
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_STATUS);
+        request.setEntity(ConsumerEntity.STATUS.getValue());
         //基础参数设置-设置异步调用，同步调用为sync，异步调用为async
-        request.setType(SdkConstant.CONSUMER_TYPE_ASYNC);
+        request.setType(ConsumerType.ASYNC.getValue());
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("CRM");
         request.setToken("000000");
@@ -139,6 +203,25 @@ public class IqClientDemo {
 
         //发起调用
         StatusPackResponse response = client.asyncStatus(request);
+
+        // 拆包响应对象
+        if (response == null) {
+            logger.error("客户端异常");
+        } else {
+            if (StatusCode.SUCCESS == response.getStatusCode()) {
+                logger.info("异步消费完成");
+                // 可以继续执行FTP下载文件的操作
+            }
+            if (StatusCode.RUNNING == response.getStatusCode()) {
+                logger.info("异步消费正在执行");
+                // 可以继续执行查看状态的操作
+            } else {
+                logger.error("状态：" + response.getStatus());
+                logger.error("状态码：" + response.getStatusCode());
+                logger.error("错误码：" + response.getErrorCode());
+                logger.error("错误信息：" + response.getMessage());
+            }
+        }
     }
 
     public static void main(String[] args) {

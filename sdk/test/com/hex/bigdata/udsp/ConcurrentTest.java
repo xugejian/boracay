@@ -2,7 +2,8 @@ package com.hex.bigdata.udsp;
 
 import com.hex.bigdata.udsp.client.factory.ConsumerClientFactory;
 import com.hex.bigdata.udsp.client.impl.SqlClient;
-import com.hex.bigdata.udsp.constant.SdkConstant;
+import com.hex.bigdata.udsp.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.constant.ConsumerType;
 import com.hex.bigdata.udsp.constant.StatusCode;
 import com.hex.bigdata.udsp.model.request.SqlRequest;
 import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
@@ -40,9 +41,9 @@ class SqlClientThread extends Thread {
         //基础参数设置-设置调用服务的名称
         request.setServiceName("olq_ar_query");
         //基础参数设置-设置调用start接口
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
+        request.setEntity(ConsumerEntity.START.getValue());
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
-        request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
+        request.setType(ConsumerType.SYNC.getValue());
 
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
         request.setUdspUser("ERS");

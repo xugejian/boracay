@@ -114,8 +114,6 @@ public abstract class Wrapper {
         Datasource tDs = metadata.getDatasource();
         String tDsId = tDs.getId();
         String tDsType = tDs.getType();
-
-        // 获取是否暴力查询
         /*
         引擎是基于Hive的接口实现的，当引擎表创建好后就指定了查询的SQL，
         所以对于已经的引擎表来说每次都是暴力扫描获取大批量结果数据，然后在Hive中再进行过滤，
@@ -123,9 +121,7 @@ public abstract class Wrapper {
         所以这里在非暴力查询模式下，我们会每次都新建一个Hive的引擎表，表中指定过滤的查询语句，
         这样就可以达到不同的过滤条件时不会每次都暴力扫描，可以在源就做好过滤获取少量的结果数据，然后给到Hive。
          */
-        String violenceQueryValue = model.getProperty("violence.query").getValue();
-        if (StringUtils.isBlank(violenceQueryValue)) violenceQueryValue = "true";
-        boolean violenceQuery = Boolean.valueOf(violenceQueryValue);
+        boolean violenceQuery = model.getViolenceQuery();
 
         // 判断是否要覆盖数据，则先清空数据
         if (BuildMode.INSERT_OVERWRITE == model.getBuildMode()) {

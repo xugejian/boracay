@@ -54,8 +54,10 @@ ${extends("/goframe/function_layout.httl")}
                         </td>
                         <td class="tit roleLabel" style="width: 100px;text-align: right">目标元数据：</td>
                         <td class="roleText" style="width: 25%">
-                            <input id="targetMdId" name="targetMdId" class="nui-combobox" valueField="pkId" textField="name"
-                                   dataField="data" url="${basePath}/im/md/selectAll" allowInput="true" sortMode="client"
+                            <input id="targetMdId" name="targetMdId" class="nui-combobox" valueField="pkId"
+                                   textField="name"
+                                   dataField="data" url="${basePath}/im/md/selectAll" allowInput="true"
+                                   sortMode="client"
                                    showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>
                         </td>
                     </tr>
@@ -70,7 +72,8 @@ ${extends("/goframe/function_layout.httl")}
                         </td>
                         <td style="width: 100px;text-align: right">源数据源：</td>
                         <td style="width: 25%">
-                            <input id="sourceDsId" name="sourceDsId" class="nui-combobox" valueField="pkId" textField="name"
+                            <input id="sourceDsId" name="sourceDsId" class="nui-combobox" valueField="pkId"
+                                   textField="name"
                                    dataField="data" url="${basePath}/com/ds/selectImSourceDs" allowInput="true"
                                    sortMode="client"
                                    showNullItem="true" emptyText="全部" nullItemText="全部" style="width:98%;"/>
@@ -154,16 +157,16 @@ ${extends("/goframe/function_layout.httl")}
          allowCellSelect="false" onselectionchanged="selected" onrowdblclick="info">
         <div property="columns">
             <div type="checkcolumn" width="20"></div>
-            <div field="name" headerAlign="center" allowSort="true" >名称</div>
-            <div field="describe" headerAlign="center" allowSort="true" >说明</div>
+            <div field="name" headerAlign="center" allowSort="true">名称</div>
+            <div field="describe" headerAlign="center" allowSort="true">说明</div>
             <div field="sourceDsName" headerAlign="center" allowSort="true" renderer="dsRenderer">源数据源</div>
             <div field="targetMdName" headerAlign="center" allowSort="true" renderer="mdRenderer">目标元数据</div>
-            <div field="type" headerAlign="center" allowSort="true" renderer="typeRenderer" >类型</div>
-            <div field="buildStatus" headerAlign="center" allowSort="true" renderer="statusRenderer" >状态</div>
-            <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat" >创建时间</div>
-            <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat" >更新时间</div>
-            <div field="note" headerAlign="center" allowSort="true" >备注</div>
-            <div field="operator" headerAlign="center" renderer="operatorRenderer" >操作</div>
+            <div field="type" headerAlign="center" allowSort="true" renderer="typeRenderer">类型</div>
+            <div field="buildStatus" headerAlign="center" allowSort="true" renderer="statusRenderer">状态</div>
+            <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
+            <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat">更新时间</div>
+            <div field="note" headerAlign="center" allowSort="true">备注</div>
+            <div field="operator" headerAlign="center" renderer="operatorRenderer">操作</div>
         </div>
     </div>
 </div>
@@ -172,7 +175,7 @@ ${extends("/goframe/function_layout.httl")}
     var grid1;
     var dsIdObj;
 
-    var updateForm ;
+    var updateForm;
     var uploadFileStatus;
     var fileIndex = 0;
 
@@ -190,8 +193,8 @@ ${extends("/goframe/function_layout.httl")}
         $("#pull").hide();
         dsIdObj = nui.get("dsId");
 
-        updateForm =  new nui.Form("updateForm");
-        uploadFileStatus = false ;
+        updateForm = new nui.Form("updateForm");
+        uploadFileStatus = false;
     });
 
     /**
@@ -219,10 +222,10 @@ ${extends("/goframe/function_layout.httl")}
     function selected() {
         var rows = grid1.getSelecteds();
         if (rows.length == 1) {
-            if(rows[0].type == 1 && rows[0].status == 1) {// 批量、未建
+            if (rows[0].type == 1 && rows[0].status == 1) {// 批量、未建
                 nui.get("edit").enable();
                 nui.get("remove").enable();
-            }else if(rows[0].type == 2) { // 实时
+            } else if (rows[0].type == 2) { // 实时
                 nui.get("edit").enable();
                 nui.get("remove").enable();
             } else {
@@ -244,13 +247,13 @@ ${extends("/goframe/function_layout.httl")}
             });
             if (canRemove) nui.get("remove").enable();
         }
-        if(rows.length != 0){
+        if (rows.length != 0) {
             var json = nui.encode(getRows(rows));
             $.ajax({
                 url: "${basePath}/rc/service/checkAppUsed/IM",
                 type: 'POST',
                 data: json,
-                async:false,
+                async: false,
                 cache: false,
                 contentType: 'application/json',
                 success: function (result) {
@@ -394,7 +397,7 @@ ${extends("/goframe/function_layout.httl")}
      * @param pkId
      * @param dbName
      */
-    function showDatabaseInfo(dsId, dsName){
+    function showDatabaseInfo(dsId, dsName) {
         nui.open({
             url: "${basePath}/goframe/p/com.ds.info/?pkId=" + dsId + "&model=IM",
             title: "详情-" + dsName,
@@ -412,7 +415,7 @@ ${extends("/goframe/function_layout.httl")}
      * @param pkId
      * @param dbName
      */
-    function showMetadataInfo(mdId, mdName){
+    function showMetadataInfo(mdId, mdName) {
         nui.open({
             url: "${basePath}/goframe/p/im.cm.md.info/?pkId=" + mdId,
             title: "详情-" + mdName,
@@ -517,17 +520,17 @@ ${extends("/goframe/function_layout.httl")}
     function operatorRenderer(e) {
         var operatorS = "<div style='text-align: center'>";
         //先判断是否实时
-        if(e.row.type == '1'){ // 批量
+        if (e.row.type == '1') { // 批量
             //判断是否构建
-            if(e.row.status == '1'){ // 未建
-                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='createModel(\""+e.row.pkId+"\",this)'>建模</a>");
+            if (e.row.status == '1') { // 未建
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='createModel(\"" + e.row.pkId + "\",this)'>建模</a>");
             } else { // 已建
-                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='dropModel(\""+e.row.pkId+"\",this)'>删模</a>");
-                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='buildBatch(\""+e.row.pkId+"\",this)'>构建</a>");
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='dropModel(\"" + e.row.pkId + "\",this)'>删模</a>");
+                operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='buildBatch(\"" + e.row.pkId + "\",this)'>构建</a>");
             }
         } else { // 实时
             //实时的未删除的应该也可以运行
-            operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='buildRealtime(\""+e.row.pkId+"\",this)'>运行</a>");
+            operatorS = operatorS.concat("<a href='#' style='padding-left: 6px' onclick='buildRealtime(\"" + e.row.pkId + "\",this)'>运行</a>");
         }
         operatorS = operatorS.concat("</div>");
         return operatorS;
@@ -540,35 +543,35 @@ ${extends("/goframe/function_layout.httl")}
     function deleteOperator(pkId) {
         grid1.loading("正在删除中,请稍等...");
         $.ajax({
-            url:"${basePath}/im/model/updateModelDelStatus/"+pkId+"/1",
-            type : 'POST',
-            cache : false,
-            contentType : 'application/json',
-            success : function(data) {
-                if(data.status == true){
+            url: "${basePath}/im/model/updateModelDelStatus/" + pkId + "/1",
+            type: 'POST',
+            cache: false,
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.status == true) {
                     nui.alert("删除成功", "系统提示");
                     grid1.unmask();
                     grid1.reload();
-                }else{
+                } else {
                     grid1.unmask();
                     showMessage("删除失败，信息：" + data.message);
                 }
             }
         });
     }
-    function createOperator(pkId){
+    function createOperator(pkId) {
         grid1.loading("正在创建中,请稍等...");
         $.ajax({
-            url:"${basePath}/im/model/updateModelDelStatus/"+pkId+"/0",
-            type : 'POST',
-            cache : false,
-            contentType : 'application/json',
-            success : function(data) {
-                if(data.status == true){
+            url: "${basePath}/im/model/updateModelDelStatus/" + pkId + "/0",
+            type: 'POST',
+            cache: false,
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.status == true) {
                     nui.alert("创建成功", "系统提示");
                     grid1.unmask();
                     grid1.reload();
-                }else{
+                } else {
                     grid1.unmask();
                     showMessage("创建失败，信息：" + data.message);
                 }
@@ -579,25 +582,25 @@ ${extends("/goframe/function_layout.httl")}
     /**
      * 建模
      */
-    function createModel(pkId,e){
+    function createModel(pkId, e) {
         grid1.loading("正在创建模型中,请稍等...");
         //先将按钮灰度并修改点击事件，防止重复操作
-        $(e).attr("onclick","javascript:return false;");
-        $(e).attr("style","padding-left: 6px;opacity: 0.2");
+        $(e).attr("onclick", "javascript:return false;");
+        $(e).attr("style", "padding-left: 6px;opacity: 0.2");
         $.ajax({
-            url:"${basePath}/im/model/updateModelBuildStatus/"+pkId+"/2",
-            type : 'POST',
-            cache : false,
-            contentType : 'application/json',
-            success : function(data) {
-                if(data.status == true){
+            url: "${basePath}/im/model/updateModelBuildStatus/" + pkId + "/2",
+            type: 'POST',
+            cache: false,
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.status == true) {
                     nui.alert("创建模型成功", "系统提示");
                     grid1.unmask();
                     grid1.reload();
-                }else{
+                } else {
                     //失败后还原原来的点击事件和样式
-                    $(e).attr("onclick","createModel('"+pkId+"',this)");
-                    $(e).attr("style","padding-left: 6px");
+                    $(e).attr("onclick", "createModel('" + pkId + "',this)");
+                    $(e).attr("style", "padding-left: 6px");
                     grid1.unmask();
                     showMessage("创建模型失败，信息：" + data.message);
                 }
@@ -608,25 +611,25 @@ ${extends("/goframe/function_layout.httl")}
     /**
      * 删模
      */
-    function dropModel(pkId,e){
+    function dropModel(pkId, e) {
         grid1.loading("正在删除模型中,请稍等...");
         //先将按钮灰度并修改点击事件，防止重复操作
-        $(e).attr("onclick","javascript:return false;");
-        $(e).attr("style","padding-left: 6px;opacity: 0.2");
+        $(e).attr("onclick", "javascript:return false;");
+        $(e).attr("style", "padding-left: 6px;opacity: 0.2");
         $.ajax({
-            url:"${basePath}/im/model/updateModelBuildStatus/"+pkId+"/1",
-            type : 'POST',
-            cache : false,
-            contentType : 'application/json',
-            success : function(data) {
-                if(data.status == true){
+            url: "${basePath}/im/model/updateModelBuildStatus/" + pkId + "/1",
+            type: 'POST',
+            cache: false,
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.status == true) {
                     nui.alert("删除模型成功", "系统提示");
                     grid1.unmask();
                     grid1.reload();
-                }else{
+                } else {
                     //失败后还原原来的点击事件和样式
-                    $(e).attr("onclick","dropModel('"+pkId+"',this)");
-                    $(e).attr("style","padding-left: 6px");
+                    $(e).attr("onclick", "dropModel('" + pkId + "',this)");
+                    $(e).attr("style", "padding-left: 6px");
                     grid1.unmask();
                     showMessage("删除模型失败，信息：" + data.message);
                 }
@@ -637,24 +640,24 @@ ${extends("/goframe/function_layout.httl")}
     /**
      * 批量构建
      */
-    function buildBatch(pkId,e){
+    function buildBatch(pkId, e) {
         //如果是批量则先弹出窗口让输入过滤字段值
         var modelFilterCols;
         $.ajax({
-            url:"${basePath}/im/imMFilter/getImMFilterByMid/"+pkId,
-            type : 'POST',
-            cache : false,
-            contentType : 'application/json',
-            async:false,
-            success : function(data) {
-                if(data.status == true){
+            url: "${basePath}/im/imMFilter/getImMFilterByMid/" + pkId,
+            type: 'POST',
+            cache: false,
+            contentType: 'application/json',
+            async: false,
+            success: function (data) {
+                if (data.status == true) {
                     modelFilterCols = data.data;
-                }else{
-                    showMessage("获取过滤字段信息异常："+data.message);
+                } else {
+                    showMessage("获取过滤字段信息异常：" + data.message);
                 }
             }
         });
-        if(modelFilterCols) {
+        if (modelFilterCols) {
             //根据数据条数设置弹窗高度
             var height = 100 + (( modelFilterCols.length / 3 + 1) * 27);
             nui.open({
@@ -668,7 +671,7 @@ ${extends("/goframe/function_layout.httl")}
                 },
                 ondestroy: function (filteValues) {
                     $(e).attr("onclick", "buildBatch('" + pkId + "',this)");
-                    if (filteValues.status && filteValues.status == true ) {
+                    if (filteValues.status && filteValues.status == true) {
 //                        $.ajax({
 //                            url: "${basePath}/im/job/batch/start/" + pkId,
 //                            type: 'POST',
@@ -712,24 +715,24 @@ ${extends("/goframe/function_layout.httl")}
     /**
      * 实时构建
      */
-    function buildRealtime(pkId,e){
+    function buildRealtime(pkId, e) {
         //如果是批量则先弹出窗口让输入过滤字段值
         var modelFilterCols;
         $.ajax({
-            url:"${basePath}/im/imMFilter/getImMFilterByMid/"+pkId,
-            type : 'POST',
-            cache : false,
-            contentType : 'application/json',
-            async:false,
-            success : function(data) {
-                if(data.status == true){
+            url: "${basePath}/im/imMFilter/getImMFilterByMid/" + pkId,
+            type: 'POST',
+            cache: false,
+            contentType: 'application/json',
+            async: false,
+            success: function (data) {
+                if (data.status == true) {
                     modelFilterCols = data.data;
-                }else{
-                    showMessage("获取过滤字段信息异常："+data.message);
+                } else {
+                    showMessage("获取过滤字段信息异常：" + data.message);
                 }
             }
         });
-        if(modelFilterCols) {
+        if (modelFilterCols) {
             //根据数据条数设置弹窗高度
             var height = 100 + (( modelFilterCols.length / 3 + 1) * 27);
             nui.open({
@@ -743,7 +746,7 @@ ${extends("/goframe/function_layout.httl")}
                 },
                 ondestroy: function (filteValues) {
                     $(e).attr("onclick", "buildRealtime('" + pkId + "',this)");
-                    if (filteValues.status && filteValues.status == true ) {
+                    if (filteValues.status && filteValues.status == true) {
 //                        $.ajax({
 //                            url: "${basePath}/im/job/realtime/start/"+pkId,
 //                            type: 'POST',
@@ -790,7 +793,11 @@ ${extends("/goframe/function_layout.httl")}
      * @returns {string}
      */
     function dsRenderer(e) {
-        return "<a href='#' class='underline' onclick='showDatabaseInfo(\"" + e.row.sourceDsId + "\",\"" + e.row.sourceDsName + "\")'>" + e.row.sourceDsName + "</a>";
+        if (e.row.sourceDsName) {
+            return "<a href='#' class='underline' onclick='showDatabaseInfo(\"" + e.row.sourceDsId + "\",\"" + e.row.sourceDsName + "\")'>" + e.row.sourceDsName + "</a>";
+        } else {
+            return "<font color='red'>警告：数据源不存在，或已被删除！</font>";
+        }
     }
 
     /**
@@ -799,7 +806,11 @@ ${extends("/goframe/function_layout.httl")}
      * @returns {string}
      */
     function mdRenderer(e) {
-        return "<a href='#' class='underline' onclick='showMetadataInfo(\"" + e.row.targetMdId + "\",\"" + e.row.targetMdName + "\")'>" + e.row.targetMdName + "</a>";
+        if (e.row.targetMdName) {
+            return "<a href='#' class='underline' onclick='showMetadataInfo(\"" + e.row.targetMdId + "\",\"" + e.row.targetMdName + "\")'>" + e.row.targetMdName + "</a>";
+        } else {
+            return "<font color='red'>警告：元数据不存在，或已被删除！</font>";
+        }
     }
 
     /**

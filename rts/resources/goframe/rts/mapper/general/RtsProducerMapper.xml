@@ -14,9 +14,8 @@
     <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="FullResultMap" type="com.hex.bigdata.udsp.rts.dto.RtsProducerView" extends="BaseResultMap">
-    <result column="DS_NAME" property="dsName" jdbcType="VARCHAR" />
     <result column="MD_NAME" property="mdName" jdbcType="VARCHAR" />
-    <result column="DS_TYPE" property="dsType" jdbcType="VARCHAR" />
+    <result column="MD_DESC" property="mdTopic" jdbcType="VARCHAR" />
     <result column="MD_TOPIC" property="mdTopic" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
@@ -63,19 +62,13 @@
 
   <select id="selectPage" resultMap="FullResultMap" parameterType="com.hex.bigdata.udsp.rts.dto.RtsProducerView">
     select pc.PK_ID, pc.MD_ID, pc.NAME, pc.DESCRIPTION, pc.NOTE, pc.DEL_FLG, pc.CRT_USER, pc.CRT_TIME, pc.UPT_USER,
-    pc.UPT_TIME,md.NAME as MD_NAME,md.TOPIC as MD_TOPIC,ds.NAME as DS_NAME,ds.TYPE as DS_TYPE
+    pc.UPT_TIME, md.NAME as MD_NAME, md.DESCRIPTION as MD_DESC, md.TOPIC as MD_TOPIC
     from RTS_PRODUCRER_CONFIG pc
-    LEFT JOIN RTS_METADATA md
-    ON pc.MD_ID=md.PK_ID
-    LEFT JOIN COM_DATASOURCE ds
-    ON md.DS_ID=ds.PK_ID
+    left join RTS_METADATA md
+    on pc.MD_ID=md.PK_ID and md.DEL_FLG = '0'
     where pc.DEL_FLG = '0'
     <if test="mdId!='' and mdId!=null ">and pc.MD_ID = #{mdId,jdbcType=VARCHAR}</if>
     <if test="name!='' and name!=null ">and pc.NAME like '%'||#{name}||'%'</if>
-    <if test="dsName!='' and dsName!=null ">and ds.NAME like '%'||#{dsName}||'%'</if>
-    <if test="mdName!='' and mdName!=null ">and md.NAME like '%'||#{mdName}||'%'</if>
-    <if test="mdTopic!='' and mdTopic!=null ">and md.TOPIC  like '%'||#{mdTopic}||'%'</if>
-    <if test="dsType!='' and dsType!=null ">and ds.TYPE = #{dsType}</if>
     <if test="describe!='' and describe!=null ">and pc.DESCRIPTION like '%'||#{describe}||'%'</if>
     <if test="note!='' and note!=null ">and pc.NOTE LIKE '%'||#{note}||'%'</if>
     <if test="crtTimeStart!=null and crtTimeStart!='' ">and pc.CRT_TIME >= #{crtTimeStart}</if>

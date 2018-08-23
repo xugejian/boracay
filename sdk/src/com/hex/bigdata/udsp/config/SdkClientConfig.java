@@ -3,12 +3,6 @@ package com.hex.bigdata.udsp.config;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/6/27
- * TIME:11:12
- */
 public class SdkClientConfig {
     public static String consumeUrl;
     static {

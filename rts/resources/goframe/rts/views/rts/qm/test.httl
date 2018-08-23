@@ -23,7 +23,7 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                     <td>
                         #if(hasPermission("RTS.qm.producer.test"))
-                        <a class="nui-button" style="" iconCls="icon-search" onclick="producertest">测试</a>
+                        <a class="nui-button" style="" iconCls="icon-search" onclick="producertest">生产</a>
                         #end
                     </td>
                 </tr>
@@ -73,12 +73,14 @@ ${extends("/goframe/function_layout.httl")}
                                required="true" emptyText="请选择消费者"/>
                         -->
                     </td>
-                    <th class="nui-form-label" style="text-align: right"><label for="timeout">超时时间，单位（ms）：</label></th>
-                    <td colspan="2">
-                        <input  id="timeout" name="timeout" class="nui-dictcombobox"  valueField="dictId" textField="dictName" style="width:70%"
-                               dictTypeId="RTS_CONSUMER_TIMEOUT"  value="200"/>
+                    <th class="nui-form-label" style="text-align: right"><label for="timeout">超时时间（ms）：</label></th>
+                    <td>
+                        <input id="timeout" name="timeout" class="nui-dictcombobox"  valueField="dictId" textField="dictName" style="width:98%"
+                               dictTypeId="RTS_CONSUMER_TIMEOUT" value="200" required="true"/>
+                    </td>
+                    <td>
                         #if(hasPermission("RTS.qm.consumer.test"))
-                        <a class="nui-button" style="" iconCls="icon-search" onclick="consumertest">测试</a>
+                        <a class="nui-button" style="" iconCls="icon-search" onclick="consumertest">消费</a>
                         #end
                     </td>
                 </tr>

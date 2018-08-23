@@ -397,7 +397,6 @@ create table IQ_APPLICATION
   name     VARCHAR2(64) not null,
   describe VARCHAR2(256) not null,
   note     VARCHAR2(4000),
-  max_num  NUMBER(10),
   del_flg  CHAR(1) not null,
   crt_user VARCHAR2(32) not null,
   crt_time VARCHAR2(32) not null,
@@ -417,8 +416,6 @@ comment on column IQ_APPLICATION.describe
   is '说明';
 comment on column IQ_APPLICATION.note
   is '备注';
-comment on column IQ_APPLICATION.max_num
-  is '最大返回数';
 comment on column IQ_APPLICATION.del_flg
   is '删除标志（0：未删除，1：删除）';
 comment on column IQ_APPLICATION.crt_user
@@ -731,7 +728,6 @@ create table MM_APPLICATION
   model_id VARCHAR2(32) not null,
   name     VARCHAR2(64) not null,
   describe VARCHAR2(256) not null,
-  max_num  NUMBER(10),
   del_flg  CHAR(1) not null,
   crt_user VARCHAR2(32) not null,
   crt_time VARCHAR2(32) not null,
@@ -750,8 +746,6 @@ comment on column MM_APPLICATION.name
   is '名称((英文、唯一)';
 comment on column MM_APPLICATION.describe
   is '说明';
-comment on column MM_APPLICATION.max_num
-  is '最大返回数';
 comment on column MM_APPLICATION.del_flg
   is '删除标志(0：未删除，1：删除)';
 comment on column MM_APPLICATION.crt_user
@@ -1427,5 +1421,9 @@ COMMENT ON COLUMN RC_SERVICE.TIME_OUT IS '缓存时效（秒）';
 -- 消费日志表中添加是否从缓存获取字段
 ALTER TABLE MC_CONSUME_LOG ADD IS_CACHE CHAR(1);
 COMMENT ON COLUMN MC_CONSUME_LOG.IS_CACHE IS '是否从缓存获取（0：是，1：否）';
+
+-- 删除字段
+alter table IQ_APPLICATION drop column MAX_NUM;
+alter table MM_APPLICATION drop column MAX_NUM;
 
 spool off

@@ -41,9 +41,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by JunjieM on 2017-12-11.
- */
 public class HttpUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(HttpUtils.class);

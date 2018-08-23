@@ -5,12 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/18
- * TIME:15:43
- */
 public class SdkFtpClientConfig {
     private static String hostname;
     private static int port = 21;

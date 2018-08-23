@@ -10,7 +10,7 @@ public class ComExcelEnums {
     final static String sortNum = "sortNum";
 
     public enum DataSourceProperties implements ExcelProperty {
-        Excel_0(sortNum, "0"),
+        Excel_0("sortNum", "0"),
         Excel_1("name", "1"),
         Excel_2("value", "2"),
         Excel_3("describe", "3");
@@ -574,7 +574,7 @@ public class ComExcelEnums {
     }
 
 
-    public enum RtsMatedata implements ExcelProperty {
+    public enum RtsMetadata implements ExcelProperty {
         Excel_0("seq", "0"),
         Excel_1("name", "1"),
         Excel_2("describe", "2");
@@ -583,9 +583,9 @@ public class ComExcelEnums {
         private String value;
         private String name;
 
-        private static List<RtsMatedata> enums;
+        private static List<RtsMetadata> enums;
 
-        private RtsMatedata(String na, String va) {
+        private RtsMetadata(String na, String va) {
             value = va;
             name = na;
         }
@@ -691,7 +691,9 @@ public class ComExcelEnums {
         Excel_2("type", "2"),
         Excel_3("appId", "3"),
         Excel_4("describe", "4"),
-        Excel_5("status", "5");
+        Excel_5("status", "5"),
+        Excel_6("isCache", "6"),
+        Excel_7("timeout", "7");
 
         private String value;
         private String name;
@@ -712,6 +714,8 @@ public class ComExcelEnums {
                 enums.add(Excel_3);
                 enums.add(Excel_4);
                 enums.add(Excel_5);
+                enums.add(Excel_6);
+                enums.add(Excel_7);
             }
             return enums;
         }
@@ -725,6 +729,8 @@ public class ComExcelEnums {
                 enums.add(Excel_3);
                 enums.add(Excel_4);
                 enums.add(Excel_5);
+                enums.add(Excel_6);
+                enums.add(Excel_7);
             }
             return enums;
         }
@@ -1094,7 +1100,7 @@ public class ComExcelEnums {
         }
     }
 
-    public enum RtsMatedataCol implements ExcelProperty{
+    public enum RtsMetadataCol implements ExcelProperty{
         Excel_0("seq", "0"),
         Excel_1("name", "1"),
         Excel_2("type", "2"),
@@ -1104,9 +1110,9 @@ public class ComExcelEnums {
         private String value;
         private String name;
 
-        private static List<RtsMatedataCol> enums;
+        private static List<RtsMetadataCol> enums;
 
-        private RtsMatedataCol(String na, String va) {
+        private RtsMetadataCol(String na, String va) {
             value = va;
             name = na;
         }

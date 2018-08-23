@@ -2,22 +2,10 @@ package com.hex.bigdata.udsp.model.request;
 
 import com.hex.bigdata.udsp.model.Page;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/17
- * TIME:11:12
- */
 public class SqlRequest extends UdspRequest {
-    /**
-     * 执行sql语句
-     */
-    private String sql;
 
-    /**
-     * 分页参数
-     */
     private Page page;
+    private String sql;
 
     public String getSql() {
         return sql;

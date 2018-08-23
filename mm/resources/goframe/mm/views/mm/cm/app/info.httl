@@ -22,14 +22,9 @@ ${extends("/goframe/function_layout.httl")}
                 </tr>
                 <tr>
                     <th class="nui-form-label"><label for="describe">说明：</label></th>
-                    <td >
+                    <td colspan="3">
                         <input id="describe" name="describe" class="nui-textbox" style="width:99%" readonly="true"
                                vtype="maxLength:256"/>
-                    </td>
-                    <th class="nui-form-label"><label for="maxNum">最大返回数：</label></th>
-                    <td >
-                        <input id="maxNum" name="maxNum" class="nui-textbox" style="width:99%" readonly="true"
-                               vtype="maxLength:10;int"/>
                     </td>
                 </tr>
                 <tr>

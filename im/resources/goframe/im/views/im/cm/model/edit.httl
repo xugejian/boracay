@@ -835,19 +835,26 @@ ${extends("/goframe/function_layout.httl")}
                 result = false;
                 return false;
             }
-            if(record.label == null || record.label == ""){
-                record.label = record.name;
+            if (record.label == null || record.label == "") {
+                nui.alert("【过滤字段】的位置" + record.seq + "：别名不能为空");
+                result = false;
+                return false;
+            }
+            if (checkPattern(record.label) == false) {
+                nui.alert("【过滤字段】的位置" + record.seq + "：别名只能包含字母、数字、下划线，且以字母开头!");
+                result = false;
+                return false;
             }
         });
         // 检查重复
         var map = {};
         $.each(modelFilterCols, function (_index, record) {
-            if(map[record.name]){
-                nui.alert("【过滤字段】的位置" + record.seq + "：名称重复");
+            if(map[record.label]){
+                nui.alert("【过滤字段】的位置" + record.seq + "：别名重复");
                 result = false;
                 return false;
             }
-            map[record.name] = record.name;
+            map[record.label] = record.label;
         });
         if(result == false){
             return false;

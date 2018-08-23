@@ -8,7 +8,7 @@ public enum StatusCode {
     DEFEAT("失败", "000001"),
     TIMEOUT("超时", "000002"),
     KILLED("杀死", "000003"),
-    RUNING("运行", "000004"),
+    RUNNING("运行", "000004"),
     OTHER("其他", "000005");
 
     private String value;

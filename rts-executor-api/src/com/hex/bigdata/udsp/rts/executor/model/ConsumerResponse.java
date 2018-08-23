@@ -13,19 +13,12 @@ import java.util.List;
 public class ConsumerResponse {
 
     private ConsumerRequest consumerRequest; // 请求信息
-
     private List<Result> records; // 记录集合
-
-    private int totalCount; // 总记录数
-
+    private long totalCount; // 总记录数
     private long consumeTime; // 持续时间
-
     private Status status; // 状态
-
     private StatusCode statusCode; // 状态码
-
     private String message; // 信息
-
     private LinkedHashMap<String,String> columns;//返回字段信息
 
     public ConsumerRequest getConsumerRequest() {
@@ -44,11 +37,11 @@ public class ConsumerResponse {
         this.records = records;
     }
 
-    public int getTotalCount() {
+    public long getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(int totalCount) {
+    public void setTotalCount(long totalCount) {
         this.totalCount = totalCount;
     }
 

@@ -127,7 +127,7 @@ ${extends("/goframe/function_layout.httl")}
         <div property="columns">
             <div type="checkcolumn" width="20"></div>
             <div field="name" headerAlign="center" allowSort="true">模型名称</div>
-            <div field="contractor" headerAlign="center" allowSort="true">模型厂商</div>
+            <div field="contractor" headerAlign="center" allowSort="true" renderer="contractorRenderer">模型厂商</div>
             <div field="modelType" headerAlign="center" allowSort="true" renderer="showModelType">同步方式</div>
             <div field="describe" headerAlign="center" allowSort="true">模型说明</div>
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
@@ -369,20 +369,16 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     /**
-     * 转换模型厂商
+     * 厂商名称渲染
      * @param e
-     * @returns {*}
+     * @returns {string}
      */
-    function renderContractor(e) {
-        return nui.getDictText("MM_CONTRACTORS", e.row.contractor);
-    }
-    /**
-     * 转换模型状态
-     * @param e
-     * @returns {*}
-     */
-    function renderModelStatus(e) {
-        return nui.getDictText("MM_MODEL_STATUS", e.row.status);
+    function contractorRenderer(e) {
+        if (e.row.contractor) {
+            return e.row.contractor;
+        } else {
+            return "<font color='red'>警告：厂商不存在，或已被删除！</font>";
+        }
     }
 
     /**

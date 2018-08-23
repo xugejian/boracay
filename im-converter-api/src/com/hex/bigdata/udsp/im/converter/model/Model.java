@@ -204,4 +204,11 @@ public class Model extends Base implements Serializable {
     public void setUpdateKeys(List<MetadataCol> updateKeys) {
         this.updateKeys = updateKeys;
     }
+
+    public boolean getViolenceQuery() {
+        String value = getProperty("violence.query").getValue();
+        if (StringUtils.isBlank(value))
+            value = "true";
+        return Boolean.valueOf(value);
+    }
 }

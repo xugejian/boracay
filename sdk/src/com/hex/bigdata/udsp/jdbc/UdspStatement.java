@@ -2,14 +2,14 @@ package com.hex.bigdata.udsp.jdbc;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.constant.SdkConstant;
+import com.hex.bigdata.udsp.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.constant.ConsumerType;
 import com.hex.bigdata.udsp.constant.StatusCode;
 import com.hex.bigdata.udsp.jdbc.netty.Client;
 import com.hex.bigdata.udsp.jdbc.netty.ClientFactory;
 import com.hex.bigdata.udsp.jdbc.netty.RemotingUrl;
 import com.hex.bigdata.udsp.model.request.SqlRequest;
 import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
-import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -136,8 +136,8 @@ public class UdspStatement implements Statement {
 
         SqlRequest request = new SqlRequest();
         request.setServiceName(url.getServiceName());
-        request.setEntity(SdkConstant.CONSUMER_ENTITY_START);
-        request.setType(SdkConstant.CONSUMER_TYPE_SYNC);
+        request.setEntity(ConsumerEntity.START.getValue());
+        request.setType(ConsumerType.SYNC.getValue());
         request.setUdspUser(url.getUsername());
         request.setToken(url.getPassword());
         request.setSql(sql);

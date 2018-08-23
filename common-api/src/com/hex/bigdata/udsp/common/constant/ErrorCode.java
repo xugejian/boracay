@@ -1,10 +1,7 @@
 package com.hex.bigdata.udsp.common.constant;
 
 /**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/4/26
- * TIME:10:13
+ * 错误类型
  */
 public enum ErrorCode {
     ERROR_000001("权限不足","000001"),

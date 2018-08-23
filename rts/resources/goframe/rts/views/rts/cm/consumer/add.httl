@@ -13,10 +13,11 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                     <th class="nui-form-label"><label for="mdId">元数据：</label></th>
                     <td>
-                        <div id="mdId" class="nui-combobox" style="width:97%;"  popupWidth="400" textField="name" valueField="pkId"
+                        <div id="mdId" class="nui-combobox" style="width:97%;" popupWidth="400" textField="name"
+                             valueField="pkId"
                              url="${basePath}/rts/md/select" dataField="data" name="mdId" multiSelect="false"
                              allowInput="true" required="true" onvaluechanged="typeChanged">
-                            <div property="columns" >
+                            <div property="columns">
                                 <div header="名称" field="name"></div>
                                 <div header="说明" field="describe"></div>
                             </div>
@@ -25,20 +26,13 @@ ${extends("/goframe/function_layout.httl")}
                                required="true" emptyText="请选择元数据"/>-->
                     </td>
                 </tr>
-
                 <tr>
-                    <th class="nui-form-label"><label for="groupId">组ID：</label></th>
-                    <td >
-                        <input id="groupId" name="groupId" class="nui-textbox" style="width:99%" required="true"
-                               vtype="maxLength:256"/>
-                    </td>
                     <th class="nui-form-label"><label for="describe">说明：</label></th>
-                    <td >
+                    <td colspan="3">
                         <input id="describe" name="describe" class="nui-textbox" style="width:99%" required="true"
                                vtype="maxLength:256"/>
                     </td>
                 </tr>
-
                 <tr>
                     <th class="nui-form-label"><label for="note">备注：</label></th>
                     <td colspan="3">
@@ -56,15 +50,18 @@ ${extends("/goframe/function_layout.httl")}
                     <table style="width: 100%;">
                         <tr>
                             <td style="text-align: left;">
-                                <b>数据源配置</b>
+                                <b>配置参数</b><font color="red">（注：不需要的配置参数可以删除）</font>
                             </td>
                             <td style="text-align: right;">
                                 <a class="nui-button" iconCls="icon-add" onclick="add">添加</a>
-                                <!--<a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>-->
-                                <a class="nui-button" iconCls="icon-remove" onclick="remove" enabled="false" id="remove">删除</a>
+                                <a class="nui-button" iconCls="icon-add" onclick="adds">批量添加</a>
+                                <a class="nui-button" iconCls="icon-remove" onclick="remove" enabled="false"
+                                   id="remove">删除</a>
                                 <span class="separator"></span>
-                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp" enabled="false" id="moveUp">上移</a>
-                                <a class="nui-button" iconCls="icon-download" onclick="moveDown" enabled="false" id="moveDown">下移</a>
+                                <a class="nui-button" iconCls="icon-upload" onclick="moveUp" enabled="false"
+                                   id="moveUp">上移</a>
+                                <a class="nui-button" iconCls="icon-download" onclick="moveDown" enabled="false"
+                                   id="moveDown">下移</a>
                             </td>
                         </tr>
                     </table>
@@ -77,7 +74,7 @@ ${extends("/goframe/function_layout.httl")}
                     <div property="columns">
                         <div type="checkcolumn" headerAlign="center" width="5"></div>
                         <div type="indexcolumn" headerAlign="center" width="8">位置</div>
-                        <div  name="name" field="name"  headerAlign="center" allowSort="true" width="30">名称
+                        <div name="name" field="name" headerAlign="center" allowSort="true" width="30">名称
                             <input id="propsName" property="editor" class="nui-combobox" textField="dictId"
                                    valueField="dictId" name="propsName" allowInput="false"
                                    onbeforeshowpopup="propsNameBeforeShowPopup"
@@ -115,7 +112,7 @@ ${extends("/goframe/function_layout.httl")}
         nui.parse();
         form1 = new nui.Form("#form1");
         grid1 = nui.get("datagrid1");
-        mdIdObj=nui.get("mdId");
+        mdIdObj = nui.get("mdId");
         $.post("${basePath}/rts/md/select", {}, function (result) {
             mdIdObj.setData(result.data);
         });
@@ -145,12 +142,12 @@ ${extends("/goframe/function_layout.httl")}
      * 下拉框弹出前发生
      */
     var count = 0;
-    function propsNameBeforeShowPopup(e){
+    function propsNameBeforeShowPopup(e) {
         var mdIdObject = nui.get("mdId");
         var selected = mdIdObject.getSelected();
         dsType = selected.dsType;
         // --下拉选项变化--
-        if(count == 0) {
+        if (count == 0) {
             e.source.load("${basePath}/goframe/dict/getDictData?dictTypeId=RTS_CONSUMER_PROPS_" + dsType);
             count++;
         }
@@ -161,9 +158,9 @@ ${extends("/goframe/function_layout.httl")}
      */
     function typeChanged(e) {
         //根据元数据ID获取数据源类型。
-        count=0;
+        count = 0;
         var selected = e.selected;
-        dsType=selected.dsType;
+        dsType = selected.dsType;
         // --配置信息变化--
         grid1.clearRows();
         $.post("${basePath}/goframe/dict/getDictData?dictTypeId=RTS_CONSUMER_PROPS_" + dsType, {}, function (data) {
@@ -220,7 +217,7 @@ ${extends("/goframe/function_layout.httl")}
      */
     function adds() {
         nui.open({
-            url: "${basePath}/goframe/p/rts.cm.ds.multi?dictTypeId=RTS_CONSUMER_PROPS_" + dsType,
+            url: "${basePath}/goframe/p/com.ds.multi?dictTypeId=RTS_CONSUMER_PROPS_" + dsType,
             title: "批量选择配置参数",
             width: 650,
             height: 380,
@@ -433,7 +430,7 @@ ${extends("/goframe/function_layout.httl")}
      * 检查配置参数
      */
     function checkParams(v) {
-        var re  =new RegExp("^[A-Za-z][A-Za-z\.0-9_]{0,128}$");
+        var re = new RegExp("^[A-Za-z][A-Za-z\.0-9_]{0,128}$");
         if (re.test(v)) {
             return true;
         }

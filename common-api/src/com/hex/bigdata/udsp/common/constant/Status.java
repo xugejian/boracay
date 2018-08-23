@@ -1,14 +1,14 @@
 package com.hex.bigdata.udsp.common.constant;
 
 /**
- * 状态
+ * 结果状态
  */
 public enum Status {
     SUCCESS("成功", "SUCCESS"),
     DEFEAT("失败", "DEFEAT"),
     TIMEOUT("超时", "TIMEOUT"),
     KILLED("杀死", "KILLED"),
-    RUNING("运行","RUNING"),
+    RUNNING("运行","RUNNING"),
     OTHER("没有","OTHER");
 
     private String value;

@@ -26,11 +26,4 @@ public class SolrModel extends Model {
             throw new IllegalArgumentException("solr.collection.name不能为空");
         return value;
     }
-
-//    public boolean getViolenceQuery() {
-//        String value = getProperty("violence.query").getValue();
-//        if (StringUtils.isBlank(value))
-//            value = "true";
-//        return Boolean.valueOf(value);
-//    }
 }

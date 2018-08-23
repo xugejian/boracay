@@ -1,16 +1,18 @@
 package com.hex.bigdata.udsp.service;
 
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.RequestType;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
-import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
-import com.hex.bigdata.udsp.model.InnerRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.consumer.service.ConsumerService;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
+import com.hex.bigdata.udsp.model.InnerRequest;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import org.apache.logging.log4j.LogManager;
@@ -82,7 +84,7 @@ public class InnerConsumerService {
     private ConsumeRequest checkBeforInnerConsume(Request request, boolean isAdmin, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
         consumeRequest.setRequest(request);
-        request.setRequestType(ConsumerConstant.CONSUMER_REQUEST_TYPE_INNER);
+        request.setRequestType(RequestType.INNER.getValue());
         String udspUser = request.getUdspUser();
         String appType = request.getAppType();
         String appId = request.getAppId();
@@ -99,12 +101,12 @@ public class InnerConsumerService {
         //消费前公共输入参数检查
         //异同步类型检查和entity类型检查
         if (!(
-                ConsumerConstant.CONSUMER_TYPE_SYNC.equalsIgnoreCase(type)
-                        || ConsumerConstant.CONSUMER_TYPE_ASYNC.equalsIgnoreCase(type)
+                ConsumerType.SYNC.getValue().equalsIgnoreCase(type)
+                        || ConsumerType.ASYNC.getValue().equalsIgnoreCase(type)
         ) || !(
-                ConsumerConstant.CONSUMER_ENTITY_STATUS.equalsIgnoreCase(entity)
-                        || ConsumerConstant.CONSUMER_ENTITY_START.equalsIgnoreCase(entity)
-                        || ConsumerConstant.CONSUMER_ENTITY_STOP.equalsIgnoreCase(entity)
+                ConsumerEntity.STATUS.getValue().equalsIgnoreCase(entity)
+                        || ConsumerEntity.START.getValue().equalsIgnoreCase(entity)
+                        || ConsumerEntity.STOP.getValue().equalsIgnoreCase(entity)
         )) {
             consumeRequest.setError(ErrorCode.ERROR_000010);
             return consumeRequest;
