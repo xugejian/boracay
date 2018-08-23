@@ -94,8 +94,7 @@ class HBaseConnectionFactory extends BasePoolableObjectFactory {
 
     @Override
     public Object makeObject() throws Exception {
-        HConnection conn = HConnectionManager.createConnection(conf);
-        return conn;
+        return HConnectionManager.createConnection(conf);
     }
 
     public void destroyObject(Object obj) throws Exception {
