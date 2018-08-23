@@ -27,10 +27,12 @@ ${extends("/goframe/function_layout.httl")}
                     <a class="nui-button" iconCls="icon-add" plain="true" onclick="add">添加</a>
                     #end
                     #if(hasPermission("IQ.cm.md.list.edit"))
-                    <a class="nui-button" iconCls="icon-edit" plain="true" onclick="edit" enabled="false" id="edit">编辑</a>
+                    <a class="nui-button" iconCls="icon-edit" plain="true" onclick="edit" enabled="false"
+                       id="edit">编辑</a>
                     #end
                     #if(hasPermission("IQ.cm.md.list.remove"))
-                    <a class="nui-button" iconCls="icon-remove" plain="true" onclick="remove" enabled="false" id="remove">删除</a>
+                    <a class="nui-button" iconCls="icon-remove" plain="true" onclick="remove" enabled="false"
+                       id="remove">删除</a>
                     #end
                 </td>
             </tr>
@@ -96,16 +98,16 @@ ${extends("/goframe/function_layout.httl")}
     <div id="updateForm" style="width:100%;height:auto;overflow:hidden;">
         <table style="width:100%;table-layout:fixed;" class="nui-form-table">
             <tr>
-                <th class="nui-form-label"  width="15%" align="right"><label>EXCEL配置文件：</label></th>
+                <th class="nui-form-label" width="15%" align="right"><label>EXCEL配置文件：</label></th>
                 <td><input id="fileUpload" class="nui-fileupload" style="width:100%"
                            name="excelFile" limitType="*.xls;*.xlsx"
                            flashUrl="${basePath}/s/js/nui/swfupload/swfupload.swf"
                            uploadUrl="${basePath}/iq/md/upload"
                            onuploadsuccess="uploadSuccess"
-                        />
+                />
                 </td>
-                <td width="15%"  align="center">
-                    <a type="submit" id="impimp" class="nui-button"   iconCls="icon-upload" onclick="startUpload">上传</a>
+                <td width="15%" align="center">
+                    <a type="submit" id="impimp" class="nui-button" iconCls="icon-upload" onclick="startUpload">上传</a>
                 </td>
             </tr>
         </table>
@@ -114,7 +116,7 @@ ${extends("/goframe/function_layout.httl")}
     <div style="display:none">
         <table>
             <form id="downForm" action="${basePath}/com/file/download" method="get">
-                <input id="filePath" name="filePath" type="hidden" />
+                <input id="filePath" name="filePath" type="hidden"/>
             </form>
         </table>
     </div>
@@ -142,7 +144,7 @@ ${extends("/goframe/function_layout.httl")}
     var grid1;
     var dsIdObj;
 
-    var updateForm ;
+    var updateForm;
     var uploadFileStatus;
     var fileIndex = 0;
 
@@ -156,8 +158,8 @@ ${extends("/goframe/function_layout.httl")}
         $("#pull").hide();
         dsIdObj = nui.get("dsId");
 
-        updateForm =  new nui.Form("updateForm");
-        uploadFileStatus = false ;
+        updateForm = new nui.Form("updateForm");
+        uploadFileStatus = false;
     });
 
     /**
@@ -323,8 +325,12 @@ ${extends("/goframe/function_layout.httl")}
      * @param e
      * @returns {string}
      */
-    function dsRenderer(e){
-        return "<a href='#' class='underline' onclick='showDatabaseInfo(\""+e.row.dsId+"\",\""+e.row.dsName+"\")'>"+e.row.dsName+"</a>";
+    function dsRenderer(e) {
+        if (e.row.dsName) {
+            return "<a href='#' class='underline' onclick='showDatabaseInfo(\"" + e.row.dsId + "\",\"" + e.row.dsName + "\")'>" + e.row.dsName + "</a>";
+        } else {
+            return "<font color='red'>警告：数据源不存在，或已被删除！</font>";
+        }
     }
 
     /**
@@ -332,7 +338,7 @@ ${extends("/goframe/function_layout.httl")}
      * @param pkId
      * @param dbName
      */
-    function showDatabaseInfo(dsId, dsName){
+    function showDatabaseInfo(dsId, dsName) {
         nui.open({
             url: "${basePath}/goframe/p/com.ds.info/?pkId=" + dsId + "&model=IQ",
             title: "详情-" + dsName,
@@ -347,66 +353,66 @@ ${extends("/goframe/function_layout.httl")}
 
     // 开始上传文件
     function startUpload() {
-        var o = updateForm.getData(true,true);
+        var o = updateForm.getData(true, true);
         updateForm.validate();
         if (updateForm.isValid() == false) return;
         var fileupload = nui.get("fileUpload");
-        var file = fileupload.text ;
-        if(file==""){
+        var file = fileupload.text;
+        if (file == "") {
             nui.alert("请选择上传文件");
-            return ;
+            return;
         }
         var obj = fileupload.swfUpload.getFile(fileIndex);
-        if(obj==null&&fileIndex>0)
-            obj = fileupload.swfUpload.getFile(fileIndex-1);
-        if(obj==null){
+        if (obj == null && fileIndex > 0)
+            obj = fileupload.swfUpload.getFile(fileIndex - 1);
+        if (obj == null) {
             nui.alert("文件已上传，请重新选择文件上传");
-            return ;
-        }else if(obj.filestatus!=-1){
-            if(obj.filestatus==-4 && uploadFileStatus){
+            return;
+        } else if (obj.filestatus != -1) {
+            if (obj.filestatus == -4 && uploadFileStatus) {
                 nui.alert("文件已上传，请重新选择文件上传");
-                return ;
-            }else if(obj.filestatus==-3){
+                return;
+            } else if (obj.filestatus == -3) {
                 nui.alert("文件上传失败，请重新选择文件上传");
-                return ;
-            }else if(!uploadFileStatus){
+                return;
+            } else if (!uploadFileStatus) {
                 nui.alert("请重新选择文件上传");
-                return ;
+                return;
             }
         }
         fileupload.startUpload();
         mask();
     }
 
-    function mask(){
+    function mask() {
         mini.mask({
-            el:document.body,
-            cls:'mini-mask-loading',
-            html:'导入中...'
+            el: document.body,
+            cls: 'mini-mask-loading',
+            html: '导入中...'
         })
     }
 
 
-    function uploadSuccess(e){
+    function uploadSuccess(e) {
         var retData = nui.decode(e.serverData);
         uploadFileStatus = retData.status;
         nui.unmask(document.body);
-        if(uploadFileStatus){
-            nui.alert("导入成功！") ;
-            uploadFileStatus=true;
+        if (uploadFileStatus) {
+            nui.alert("导入成功！");
+            uploadFileStatus = true;
             grid1.reload();
-        }else{
-            if(undefined==retData.message || ""==retData.message){
-                nui.alert("上传失败！请重新上传") ;
-            }else{
-                nui.alert(retData.message) ;
+        } else {
+            if (undefined == retData.message || "" == retData.message) {
+                nui.alert("上传失败！请重新上传");
+            } else {
+                nui.alert(retData.message);
             }
-            uploadFileStatus=false;
+            uploadFileStatus = false;
         }
         fileIndex++;
     }
 
-    function downLoad(){
+    function downLoad() {
         var rows = grid1.getSelecteds();
         if (!rows || rows.length == 0) {
             nui.alert("请至少选择一条记录!");
@@ -415,12 +421,12 @@ ${extends("/goframe/function_layout.httl")}
         var json = nui.encode(getRows(rows));
         grid1.loading("正在导出中,请稍等...");
         $.ajax({
-            url:"${basePath}/iq/md/download",
-            type : 'POST',
-            data : json,
-            cache : false,
-            contentType : 'application/json',
-            success : function(text) {
+            url: "${basePath}/iq/md/download",
+            type: 'POST',
+            data: json,
+            cache: false,
+            contentType: 'application/json',
+            success: function (text) {
                 if (text != null && text.trim() != "") {
                     $("#filePath").val(text);
                     $("#downForm").submit();

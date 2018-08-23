@@ -43,7 +43,6 @@ public class SolrProvider implements Provider {
         response.setRequest(request);
 
         Application application = request.getApplication();
-        int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
         List<ReturnColumn> returnColumns = application.getReturnColumns();
@@ -56,9 +55,6 @@ public class SolrProvider implements Provider {
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
 
         int maxSize = solrDatasource.getMaxNum();
-        if (maxNum != 0) {
-            maxSize = maxNum;
-        }
 
         try {
             SolrQuery query = getSolrQuery(maxSize, queryColumns, orderColumns, returnColumns);
@@ -88,7 +84,6 @@ public class SolrProvider implements Provider {
         response.setRequest(request);
 
         Application application = request.getApplication();
-        int maxNum = application.getMaxNum();
         Metadata metadata = application.getMetadata();
         List<QueryColumn> queryColumns = application.getQueryColumns();
         List<ReturnColumn> returnColumns = application.getReturnColumns();
@@ -99,9 +94,6 @@ public class SolrProvider implements Provider {
         SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
 
         int maxSize = solrDatasource.getMaxNum();
-        if (maxNum != 0) {
-            maxSize = maxNum;
-        }
         if (pageSize > maxSize) {
             pageSize = maxSize;
         }
@@ -313,7 +305,7 @@ public class SolrProvider implements Provider {
             return null;
         }
         SolrDocumentList results = rsp.getResults();
-        int totalCount = (int) results.getNumFound();
+        long totalCount = results.getNumFound();
         List<Map<String, Object>> records = new ArrayList<Map<String, Object>>();
         Map<String, Object> map = null;
         for (int i = 0; i < results.size(); i++) {

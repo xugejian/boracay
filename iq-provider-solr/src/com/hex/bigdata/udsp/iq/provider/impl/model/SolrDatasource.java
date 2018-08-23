@@ -27,7 +27,7 @@ public class SolrDatasource extends Datasource {
     }
 
     public int getMaxNum() {
-        String value = getProperty("solr.max.data.size").getValue();
+        String value = getProperty("max.data.size").getValue();
         if (StringUtils.isBlank(value)) {
             value = "65536";
         }

@@ -203,8 +203,6 @@ public class IqProviderService extends BaseService {
         // ----------------数据封装-----------------------
         Application application = new Application(appPropertyList);
         application.setName(iqApplication.getName());
-        if (iqApplication.getMaxNum() != null)
-            application.setMaxNum(Integer.valueOf(iqApplication.getMaxNum().toString()));
         application.setDescribe(iqApplication.getDescribe());
         application.setNote(iqApplication.getNote());
         List<QueryColumn> queryColumnList = new ArrayList<>();
