@@ -2,15 +2,15 @@ package com.hex.bigdata.udsp.demo;
 
 import com.hex.bigdata.udsp.client.factory.ConsumerClientFactory;
 import com.hex.bigdata.udsp.client.impl.OlqAppClient;
-import com.hex.bigdata.udsp.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.constant.ConsumerType;
-import com.hex.bigdata.udsp.constant.StatusCode;
-import com.hex.bigdata.udsp.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.model.request.OlqAppRequest;
 import com.hex.bigdata.udsp.model.request.StatusRequest;
-import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
-import com.hex.bigdata.udsp.model.response.pack.StatusPackResponse;
-import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
+import com.hex.bigdata.udsp.model.response.AsyncPackResponse;
+import com.hex.bigdata.udsp.model.response.StatusPackResponse;
+import com.hex.bigdata.udsp.model.response.SyncPackResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

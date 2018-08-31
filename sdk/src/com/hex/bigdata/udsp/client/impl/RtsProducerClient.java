@@ -1,12 +1,12 @@
 package com.hex.bigdata.udsp.client.impl;
 
 import com.hex.bigdata.udsp.client.ConsumerClient;
-import com.hex.bigdata.udsp.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 import com.hex.bigdata.udsp.model.request.RtsProducerRequest;
-import com.hex.bigdata.udsp.model.request.UdspRequest;
-import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
-import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
+import com.hex.bigdata.udsp.model.response.SyncResponse;
+import com.hex.bigdata.udsp.model.response.SyncPackResponse;
 import com.hex.bigdata.udsp.util.SdkHttpUtil;
 
 import java.util.List;
@@ -38,8 +38,8 @@ public class RtsProducerClient extends ConsumerClient {
     }
 
     @Override
-    protected void checkStartBusinessParams(UdspRequest udspRequest) {
-        RtsProducerRequest request = (RtsProducerRequest) udspRequest;
+    protected void checkStartBusinessParams(BaseRequest baseRequest) {
+        RtsProducerRequest request = (RtsProducerRequest) baseRequest;
         List<Map<String, String>> dataStream = request.getDataStream();
         if (dataStream == null || dataStream.size() == 0) {
             throw new IllegalArgumentException("参数dataStream不能为空!");

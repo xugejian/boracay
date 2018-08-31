@@ -1,6 +1,8 @@
-package com.hex.bigdata.udsp.model.response.origin;
+package com.hex.bigdata.udsp.model.response;
 
-public class AsyncResponse extends UdspResponse {
+import com.hex.bigdata.udsp.consumer.model.BaseResponse;
+
+public class AsyncResponse extends BaseResponse {
 
     private String responseContent;
 

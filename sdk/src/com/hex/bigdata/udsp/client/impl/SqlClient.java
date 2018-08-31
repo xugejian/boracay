@@ -1,17 +1,17 @@
 package com.hex.bigdata.udsp.client.impl;
 
 import com.hex.bigdata.udsp.client.ConsumerClient;
-import com.hex.bigdata.udsp.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 import com.hex.bigdata.udsp.model.request.SqlRequest;
 import com.hex.bigdata.udsp.model.request.StatusRequest;
-import com.hex.bigdata.udsp.model.request.UdspRequest;
-import com.hex.bigdata.udsp.model.response.origin.AsyncResponse;
-import com.hex.bigdata.udsp.model.response.origin.StatusResponse;
-import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
-import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
-import com.hex.bigdata.udsp.model.response.pack.StatusPackResponse;
-import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
+import com.hex.bigdata.udsp.model.response.AsyncResponse;
+import com.hex.bigdata.udsp.model.response.StatusResponse;
+import com.hex.bigdata.udsp.model.response.SyncResponse;
+import com.hex.bigdata.udsp.model.response.AsyncPackResponse;
+import com.hex.bigdata.udsp.model.response.StatusPackResponse;
+import com.hex.bigdata.udsp.model.response.SyncPackResponse;
 import com.hex.bigdata.udsp.util.SdkHttpUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -73,8 +73,8 @@ public class SqlClient extends ConsumerClient {
 
 
     @Override
-    protected void checkStartBusinessParams(UdspRequest udspRequest) {
-        SqlRequest olqRequest = (SqlRequest) udspRequest;
+    protected void checkStartBusinessParams(BaseRequest baseRequest) {
+        SqlRequest olqRequest = (SqlRequest) baseRequest;
         if (StringUtils.isBlank(olqRequest.getSql())) {
             throw new IllegalArgumentException("查询业务参数sql不能为空!");
         }

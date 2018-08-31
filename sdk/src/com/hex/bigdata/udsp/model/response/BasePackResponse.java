@@ -1,13 +1,16 @@
-package com.hex.bigdata.udsp.model.response.origin;
+package com.hex.bigdata.udsp.model.response;
 
-public class UdspResponse {
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.StatusCode;
+
+public class BasePackResponse {
 
     private String status;
     private String consumeId;
     private long consumeTime;
-    private String errorCode;
+    private ErrorCode errorCode;
     private String message;
-    private String statusCode;
+    private StatusCode statusCode;
 
     public String getConsumeId() {
         return consumeId;
@@ -41,19 +44,20 @@ public class UdspResponse {
         this.message = message;
     }
 
-    public String getErrorCode() {
+    public ErrorCode getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(String errorCode) {
+    public void setErrorCode(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 
-    public String getStatusCode() {
+    public StatusCode getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(String statusCode) {
+    public void setStatusCode(StatusCode statusCode) {
         this.statusCode = statusCode;
     }
+
 }

@@ -9,33 +9,23 @@ import java.util.Map;
 /**
  * Created by PC on 2017/4/17.
  */
-public class Request implements Serializable {
-    private String appUser;
-    private String serviceName;
-    private String udspUser;
-    private String token;
-    private String appType;
-    private String appName;
-    private String appId;
-    private String requestType;
+public class Request extends BaseRequest implements Serializable{
 
-    private String type; // sync、async
-    private String entity; // start、status、stop
-    private Page page;
-    private String sql;
-    private long timeout;
+    private String appType; // 应用类型
+    private String appName; // 应用名称
+    private String appId; // 应用ID
+
+    private Page page; // 分页信息
+    private String sql; // SQL语句
+    private Map<String, String> data; // 请求数据
+
+    private long timeout; // 超时时间（毫秒）
+    private List<Map<String, String>> dataStream; // 数据流集合
+
     private String consumeId; // 消费ID
-    private Map<String, String> data;
-    private List<Map<String, String>> dataStream;
-    private String requestIp;//请求IP
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
+    private String requestType; // 请求类型
+    private String requestIp; // 请求IP
 
     public String getAppId() {
         return appId;
@@ -75,47 +65,6 @@ public class Request implements Serializable {
 
     public void setConsumeId(String consumeId) {
         this.consumeId = consumeId;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public String getAppUser() {
-        return appUser;
-    }
-
-    public void setAppUser(String appUser) {
-        this.appUser = appUser;
-    }
-
-    public String getUdspUser() {
-        return udspUser;
-    }
-
-    public void setUdspUser(String udspUser) {
-        this.udspUser = udspUser;
-    }
-
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getEntity() {
-        return entity;
-    }
-
-    public void setEntity(String entity) {
-        this.entity = entity;
     }
 
     public Page getPage() {

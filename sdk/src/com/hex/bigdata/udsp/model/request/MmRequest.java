@@ -1,8 +1,10 @@
 package com.hex.bigdata.udsp.model.request;
 
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
+
 import java.util.Map;
 
-public class MmRequest extends UdspRequest {
+public class MmRequest extends BaseRequest {
 
     private Map<String, String> data;
 

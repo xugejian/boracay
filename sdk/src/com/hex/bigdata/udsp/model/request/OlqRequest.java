@@ -1,9 +1,10 @@
 package com.hex.bigdata.udsp.model.request;
 
-import com.hex.bigdata.udsp.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 
 @Deprecated
-public class OlqRequest extends UdspRequest {
+public class OlqRequest extends BaseRequest {
 
     private Page page;
     private String sql;

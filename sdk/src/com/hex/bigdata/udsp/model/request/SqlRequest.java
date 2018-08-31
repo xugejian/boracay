@@ -1,8 +1,9 @@
 package com.hex.bigdata.udsp.model.request;
 
-import com.hex.bigdata.udsp.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 
-public class SqlRequest extends UdspRequest {
+public class SqlRequest extends BaseRequest {
 
     private Page page;
     private String sql;

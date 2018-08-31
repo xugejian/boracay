@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.model.request.UdspRequest;
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,21 +18,21 @@ public class SdkHttpUtil {
     /**
      * 调用UDSP
      *
-     * @param udspRequest
+     * @param request
      * @param url
      */
-    public static <T> T requestUdsp(UdspRequest udspRequest, String url, Class<T> clazz) {
-        return requestUdsp(udspRequest, url, clazz, Charset.forName("UTF-8"));
+    public static <T> T requestUdsp(BaseRequest request, String url, Class<T> clazz) {
+        return requestUdsp(request, url, clazz, Charset.forName("UTF-8"));
     }
 
     /**
      * 调用UDSP
      *
-     * @param udspRequest
+     * @param request
      * @param url
      */
-    public static <T> T requestUdsp(UdspRequest udspRequest, String url, Class<T> clazz, Charset charset) {
-        JSONObject jsonObject = (JSONObject) JSON.toJSON(udspRequest);
+    public static <T> T requestUdsp(BaseRequest request, String url, Class<T> clazz, Charset charset) {
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(request);
         String json = jsonObject.toJSONString();
         return HttpUtils.requestPost(url, json, null, clazz, charset, null, null);
     }

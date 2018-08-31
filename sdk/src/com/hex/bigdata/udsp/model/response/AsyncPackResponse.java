@@ -1,6 +1,6 @@
-package com.hex.bigdata.udsp.model.response.pack;
+package com.hex.bigdata.udsp.model.response;
 
-public class AsyncPackResponse extends UdspPackResponse {
+public class AsyncPackResponse extends BasePackResponse {
 
     private String responseContent;
 

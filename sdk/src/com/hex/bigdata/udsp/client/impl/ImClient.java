@@ -1,12 +1,12 @@
 package com.hex.bigdata.udsp.client.impl;
 
 import com.hex.bigdata.udsp.client.ConsumerClient;
-import com.hex.bigdata.udsp.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 import com.hex.bigdata.udsp.model.request.ImRequest;
-import com.hex.bigdata.udsp.model.request.UdspRequest;
-import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
-import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
+import com.hex.bigdata.udsp.model.response.SyncResponse;
+import com.hex.bigdata.udsp.model.response.SyncPackResponse;
 import com.hex.bigdata.udsp.util.SdkHttpUtil;
 
 import java.util.Map;
@@ -39,8 +39,8 @@ public class ImClient extends ConsumerClient {
     /**
      * 检查start业务参数
      */
-    protected void checkStartBusinessParams(UdspRequest udspRequest) {
-        ImRequest request = (ImRequest) udspRequest;
+    protected void checkStartBusinessParams(BaseRequest baseRequest) {
+        ImRequest request = (ImRequest) baseRequest;
         Map<String, String> data = request.getData();
         if (data == null || data.size() == 0) {
             throw new IllegalArgumentException("参数data不能为空!");

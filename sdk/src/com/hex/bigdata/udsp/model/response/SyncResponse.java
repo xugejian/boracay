@@ -1,12 +1,13 @@
-package com.hex.bigdata.udsp.model.response.origin;
+package com.hex.bigdata.udsp.model.response;
 
-import com.hex.bigdata.udsp.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.consumer.model.BaseResponse;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SyncResponse extends UdspResponse {
+public class SyncResponse extends BaseResponse {
 
     private Page page;
     private List<Map<String, String>> records;
