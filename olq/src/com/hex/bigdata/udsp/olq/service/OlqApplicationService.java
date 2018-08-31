@@ -2,6 +2,7 @@ package com.hex.bigdata.udsp.olq.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.DatasourceMode;
+import com.hex.bigdata.udsp.common.constant.YesOrNo;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComExcelParam;
@@ -12,7 +13,6 @@ import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.olq.constant.OlqConstant;
 import com.hex.bigdata.udsp.olq.dao.OlqApplicationMapper;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationView;
@@ -414,10 +414,10 @@ public class OlqApplicationService extends BaseService {
                 String isNeed = param.getIsNeed();
                 if (StringUtils.isBlank(isNeed)) {
                     checkResult.append("序号为" + seq + "的参数必填的值不能为空；");
-                } else if (OlqConstant.OLQ_IS_NEED_CN_YES.equals(isNeed)) {
-                    param.setIsNeed(OlqConstant.OLQ_IS_NEED_CODE_YES);
-                } else if (OlqConstant.OLQ_IS_NEED_CN_NO.equals(isNeed)) {
-                    param.setIsNeed(OlqConstant.OLQ_IS_NEED_CODE_NO);
+                } else if (YesOrNo.YES.getName().equals(isNeed)) {
+                    param.setIsNeed(YesOrNo.YES.getValue());
+                } else if (YesOrNo.NO.getName().equals(isNeed)) {
+                    param.setIsNeed(YesOrNo.NO.getValue());
                 } else {
                     checkResult.append("序号为" + seq + "的参数是必填的值非法，请输入是或否；");
                 }

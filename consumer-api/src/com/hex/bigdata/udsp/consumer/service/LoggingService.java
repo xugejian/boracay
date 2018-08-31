@@ -9,7 +9,6 @@ import com.hex.bigdata.udsp.common.util.StatementUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.mc.constant.McConstant;
 import com.hex.bigdata.udsp.mc.model.McConsumeLog;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
@@ -131,7 +130,7 @@ public class LoggingService {
         }
 
         //日志信息入库
-        writeLogToDb(request, mcConsumeLog, McConstant.MCLOG_STATUS_FAILED);
+        writeLogToDb(request, mcConsumeLog, YesOrNo.NO.getValue());
     }
 
     /**
@@ -243,9 +242,9 @@ public class LoggingService {
         }
         if (Status.SUCCESS.getValue().equals(response.getStatus())
                 || Status.RUNNING.getValue().equals(response.getStatus())) {
-            writeLogToDb(request, mcConsumeLog, McConstant.MCLOG_STATUS_SUCCESS, isCache);
+            writeLogToDb(request, mcConsumeLog, YesOrNo.YES.getValue(), isCache);
         } else {
-            writeLogToDb(request, mcConsumeLog, McConstant.MCLOG_STATUS_FAILED, isCache);
+            writeLogToDb(request, mcConsumeLog, YesOrNo.NO.getValue(), isCache);
         }
     }
 }
