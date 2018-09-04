@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.im.task;
 
 import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
-import com.hex.bigdata.udsp.im.converter.impl.model.modeling.MqModel;
+import com.hex.bigdata.udsp.im.converter.model.MqModel;
 import com.hex.bigdata.udsp.im.service.ImConverterService;
 import com.hex.bigdata.udsp.im.service.RealtimeTotalService;
 import com.hex.goframe.util.WebApplicationContextUtil;

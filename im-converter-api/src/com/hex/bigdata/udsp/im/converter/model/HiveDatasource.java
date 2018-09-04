@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.converter.impl.model.datasource;
+package com.hex.bigdata.udsp.im.converter.model;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import org.apache.commons.lang3.StringUtils;

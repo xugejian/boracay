@@ -1,17 +1,16 @@
-package com.hex.bigdata.udsp.im.converter.impl.util;
+package com.hex.bigdata.udsp.im.util;
 
-import com.hex.bigdata.udsp.im.converter.impl.model.datasource.JdbcDatasource;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
-import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
+import com.hex.bigdata.udsp.im.converter.model.JdbcDatasource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.Closeable;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,8 +143,8 @@ public class JdbcUtil {
             e.printStackTrace();
             throw new SQLException(e);
         } finally {
-            com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
-            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
+            close(stmt);
+            close(conn);
             logger.info("JDBC EXECUTE UPDATE SQL [END]");
         }
         return rs;
@@ -154,6 +153,27 @@ public class JdbcUtil {
     public static void executeUpdate(JdbcDatasource datasource, List<String> updateSqls) throws SQLException {
         for (String updateSql : updateSqls) {
             executeUpdate(datasource, updateSql);
+        }
+    }
+
+    public static void close(Object obj) {
+        if (obj == null) {
+            return;
+        }
+        try {
+            if (obj instanceof Connection) {
+                Connection conn = ((Connection) obj);
+                if(!conn.isClosed())
+                    conn.close();
+            } else if (obj instanceof Statement) {
+                ((Statement) obj).close();
+            } else if (obj instanceof ResultSet) {
+                ((ResultSet) obj).close();
+            } else if (obj instanceof Closeable) {
+                ((Closeable) obj).close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

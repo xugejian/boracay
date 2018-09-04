@@ -13,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 异步delete操作和同步select操作的抽象类，DDL操作都记日志但不入库
@@ -22,6 +26,17 @@ import java.util.Date;
 public abstract class AsyncDeleteMapper<T> extends BaseMapper implements Runnable {
     private static Logger logger = LogManager.getLogger(AsyncDeleteMapper.class);
     private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
+
+    private static final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactory() {
+        private AtomicInteger id = new AtomicInteger(0);
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setName("async-delete-mapper" + id.addAndGet(1));
+            return thread;
+        }
+    });
 
     private String clazz = this.getClass().getName();
 
@@ -67,8 +82,9 @@ public abstract class AsyncDeleteMapper<T> extends BaseMapper implements Runnabl
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        Thread thread = new Thread(mapper);
-        thread.start();
+//        Thread thread = new Thread(mapper);
+//        thread.start();
+        executorService.execute(mapper);
         return getCache().deleteCache(key);
     }
 

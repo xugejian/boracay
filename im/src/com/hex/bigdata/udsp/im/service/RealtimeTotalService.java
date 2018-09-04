@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
 import com.hex.bigdata.udsp.im.dao.RealtimeTotalMapper;
 import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
-import com.hex.bigdata.udsp.im.converter.impl.model.modeling.MqModel;
+import com.hex.bigdata.udsp.im.converter.model.MqModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

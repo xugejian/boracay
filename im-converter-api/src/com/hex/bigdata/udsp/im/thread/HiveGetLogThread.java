@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.converter.impl.thread;
+package com.hex.bigdata.udsp.im.thread;
 
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.im.service.BatchJobService;

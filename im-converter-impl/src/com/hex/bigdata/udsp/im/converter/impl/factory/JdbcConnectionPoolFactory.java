@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.im.converter.impl.factory;
 
-import com.hex.bigdata.udsp.im.converter.impl.model.datasource.JdbcDatasource;
+import com.hex.bigdata.udsp.im.converter.model.JdbcDatasource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;

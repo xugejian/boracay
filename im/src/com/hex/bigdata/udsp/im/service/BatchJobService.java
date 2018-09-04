@@ -8,7 +8,7 @@ import com.hex.bigdata.udsp.im.dao.BatchMapper;
 import com.hex.bigdata.udsp.im.dto.BatchInfoDto;
 import com.hex.bigdata.udsp.im.dto.BatchInfoView;
 import com.hex.bigdata.udsp.im.model.BatchInfo;
-import com.hex.bigdata.udsp.im.converter.impl.util.HiveJdbcUtil;
+import com.hex.bigdata.udsp.im.util.HiveJdbcUtil;
 import com.hex.bigdata.udsp.im.converter.model.Model;
 import com.hex.bigdata.udsp.im.converter.model.ModelFilterCol;
 import com.hex.goframe.model.Page;

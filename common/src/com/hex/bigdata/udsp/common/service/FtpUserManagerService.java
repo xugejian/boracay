@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.service;
+package com.hex.bigdata.udsp.common.service;
 
 import com.hex.bigdata.udsp.common.util.ShellUtil;
 import org.apache.logging.log4j.LogManager;

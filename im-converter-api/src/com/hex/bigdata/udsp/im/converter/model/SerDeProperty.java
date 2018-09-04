@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.im.converter.impl.util.model;
+package com.hex.bigdata.udsp.im.converter.model;
 
 public class SerDeProperty {
 	private String key;

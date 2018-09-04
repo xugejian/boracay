@@ -1,9 +1,10 @@
 package com.hex.bigdata.udsp.im.converter.impl.util;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
+import com.hex.bigdata.udsp.im.converter.model.TableColumn;
+import com.hex.bigdata.udsp.im.converter.model.ValueColumn;
+import com.hex.bigdata.udsp.im.converter.model.WhereProperty;
+import com.hex.bigdata.udsp.im.util.SqlUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

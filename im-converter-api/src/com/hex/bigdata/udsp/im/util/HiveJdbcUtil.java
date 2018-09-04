@@ -1,8 +1,8 @@
-package com.hex.bigdata.udsp.im.converter.impl.util;
+package com.hex.bigdata.udsp.im.util;
 
-import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.converter.model.HiveDatasource;
 import com.hex.bigdata.udsp.im.service.BatchJobService;
-import com.hex.bigdata.udsp.im.converter.impl.thread.HiveGetLogThread;
+import com.hex.bigdata.udsp.im.thread.HiveGetLogThread;
 import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.commons.dbcp.DelegatingStatement;
 import org.apache.hive.jdbc.HiveStatement;
@@ -69,8 +69,8 @@ public class HiveJdbcUtil {
             e.printStackTrace();
             throw new SQLException(e);
         } finally {
-            com.hex.bigdata.metadata.db.util.JdbcUtil.close(stmt);
-            com.hex.bigdata.metadata.db.util.JdbcUtil.close(conn);
+            JdbcUtil.close(stmt);
+            JdbcUtil.close(conn);
             removeHiveStatement(key);
             logger.info("HIVE EXECUTE UPDATE SQL [END]");
         }

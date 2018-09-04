@@ -11,8 +11,8 @@ import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.consumer.service.DatasourceTestService;
 import com.hex.bigdata.udsp.model.InnerRequest;
+import com.hex.bigdata.udsp.service.DatasourceTestService;
 import com.hex.bigdata.udsp.service.InnerConsumerService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.GFLoginUser;
@@ -60,7 +60,7 @@ public class HttpController extends BaseController {
     private InnerConsumerService consumerService;
 
     @Autowired
-    private DatasourceTestService dsTestService;
+    private DatasourceTestService datasourceTestService;
 
     /**
      * 内部请求1
@@ -211,7 +211,7 @@ public class HttpController extends BaseController {
             message = "请求参数为空";
         } else {
             try {
-                status = dsTestService.testDatasource(comDatasourcePropsView);
+                status = datasourceTestService.testDatasource(comDatasourcePropsView);
                 if (status) {
                     message = "测试数据源成功！";
                 } else {

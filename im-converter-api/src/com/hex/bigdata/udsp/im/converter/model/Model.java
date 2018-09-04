@@ -211,4 +211,11 @@ public class Model extends Base implements Serializable {
             value = "true";
         return Boolean.valueOf(value);
     }
+
+    public String getHiveSetSql() {
+        String value = getProperty("hive.set.sql").getValue();
+        if (StringUtils.isBlank(value))
+            value = "";
+        return value;
+    }
 }

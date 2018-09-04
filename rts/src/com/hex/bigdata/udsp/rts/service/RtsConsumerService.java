@@ -9,10 +9,6 @@ import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
-import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
-import com.hex.bigdata.udsp.rc.model.RcService;
-import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.bigdata.udsp.rts.dao.RtsConsumerMapper;
 import com.hex.bigdata.udsp.rts.dao.RtsMetadataMapper;
 import com.hex.bigdata.udsp.rts.dto.RtsConsumerProsView;
@@ -60,8 +56,6 @@ public class RtsConsumerService extends BaseService {
     private RtsMetadataColService rtsMetadataColService;
     @Autowired
     private RtsMetadataMapper rtsMetadataMapper;
-    @Autowired
-    private RcServiceService rcServiceService;
 
     private static List<ComExcelParam> comExcelParams;
 
@@ -341,7 +335,7 @@ public class RtsConsumerService extends BaseService {
         return null;
     }
 
-    public void setWorkbooksheet(HSSFWorkbook workbook, RcUserServiceView rcUserService) {
+    public void setWorkbooksheet(HSSFWorkbook workbook, Map<String,String> map, String appId) {
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
         String seprator = FileUtil.getFileSeparator();
@@ -357,15 +351,8 @@ public class RtsConsumerService extends BaseService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        RcService rcService = null;
-        if (StringUtils.isNotBlank(rcUserService.getServiceId())) {
-            rcService = rcServiceService.select(rcUserService.getServiceId());
-        }
 
-        RtsConsumer rtsConsumer = null;
-        if (null != rcService) {
-            rtsConsumer = this.select(rcService.getAppId());
-        }
+        RtsConsumer rtsConsumer = this.select(appId);
 
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
@@ -376,8 +363,6 @@ public class RtsConsumerService extends BaseService {
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
         comExcelParams.add(new ComExcelParam(4, 3, "userName"));
-
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
         HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
@@ -392,15 +377,13 @@ public class RtsConsumerService extends BaseService {
 
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
-                Field field = serviceBaseInfo.getClass().getDeclaredField(comExcelParam.getName());
-                field.setAccessible(true);
-                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
+                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), map.get(comExcelParam.getName()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        RtsIndexDto rtsIndexDto = new RtsIndexDto(i);
-        this.setWorkbookSheetPart(sheet, rtsConsumer, sourceSheet, workbook, rtsIndexDto);
+
+        this.setWorkbookSheetPart(sheet, rtsConsumer, sourceSheet, workbook, new RtsIndexDto(i));
     }
 
     /**

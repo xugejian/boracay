@@ -1,9 +1,8 @@
-package com.hex.bigdata.udsp.im.converter.impl.util;
+package com.hex.bigdata.udsp.im.util;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.im.converter.model.*;
-import com.hex.bigdata.udsp.im.util.SqlUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -36,16 +35,6 @@ public class HiveSqlUtil {
                 + getColumns(columns) + getTableComment(tableComment)
                 + getPartitions(partitions) + getRowFormat(rowFormat)
                 + getFileFormat(fileFormat);
-    }
-
-    /**
-     * 清空表数据
-     *
-     * @param tableName
-     * @return
-     */
-    public static String truncateTable(String tableName) {
-        return "TRUNCATE TABLE " + tableName;
     }
 
     /**

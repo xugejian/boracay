@@ -7,15 +7,15 @@ import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.constant.BuildMode;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.constant.UpdateMode;
-import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.converter.model.HiveDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.modeling.HiveModel;
 import com.hex.bigdata.udsp.im.converter.impl.model.modeling.KafkaModel;
-import com.hex.bigdata.udsp.im.converter.impl.util.HiveJdbcUtil;
+import com.hex.bigdata.udsp.im.util.HiveJdbcUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.KafkaUtil;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
+import com.hex.bigdata.udsp.im.converter.model.ValueColumn;
+import com.hex.bigdata.udsp.im.converter.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.model.*;
 import com.hex.bigdata.udsp.im.model.RealtimeNodeInfo;
 import com.hex.bigdata.udsp.im.service.ImConverterService;
@@ -192,9 +192,7 @@ public abstract class Wrapper {
                         selectColumns, selectTableName, whereProperties);
             }
 
-            // 使用set语法在Hive中设置参数
-            String hiveSetSql = model.getProperty("hive.set.sql").getValue();
-            if (StringUtils.isBlank(hiveSetSql)) hiveSetSql = "";
+            String hiveSetSql = model.getHiveSetSql(); // 使用set语法在Hive中设置参数
 
             // 执行SQL
             HiveJdbcUtil.executeUpdate(key, eHiveDs, hiveSetSql + insertSql);

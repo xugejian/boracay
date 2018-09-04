@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.consumer.service;
+package com.hex.bigdata.udsp.service;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.constant.DatasourceMode;

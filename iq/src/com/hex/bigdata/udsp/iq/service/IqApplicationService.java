@@ -14,10 +14,6 @@ import com.hex.bigdata.udsp.iq.dto.IqApplicationPropsView;
 import com.hex.bigdata.udsp.iq.dto.IqApplicationView;
 import com.hex.bigdata.udsp.iq.dto.IqIndexDto;
 import com.hex.bigdata.udsp.iq.model.*;
-import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
-import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
-import com.hex.bigdata.udsp.rc.model.RcService;
-import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
 import com.hex.goframe.util.DateUtil;
@@ -55,8 +51,6 @@ public class IqApplicationService extends BaseService {
     private IqAppOrderColService iqAppOrderColService;
     @Autowired
     private IqMetadataMapper iqMetadataMapper;
-    @Autowired
-    private RcServiceService rcServiceService;
     @Autowired
     private ComPropertiesService comPropertiesService;
 
@@ -258,11 +252,8 @@ public class IqApplicationService extends BaseService {
         dirPath += seprator + "download_iqApplication_excel_" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
-
         try {
-            sourceFile = new POIFSFileSystem(new FileInputStream(
-                    templateFile));
-
+            sourceFile = new POIFSFileSystem(new FileInputStream(templateFile));
             sourceWork = new HSSFWorkbook(sourceFile);
             sourceSheet = sourceWork.getSheetAt(0);
             //创建表格
@@ -295,32 +286,24 @@ public class IqApplicationService extends BaseService {
     /**
      * 设置信息到workbook
      *
-     * @param workbook
      */
-    public void setWorkbooksheet(HSSFWorkbook workbook, RcUserServiceView rcUserService) {
+    public void setWorkbooksheet(HSSFWorkbook workbook, Map<String,String> map, String appId) {
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
-        String seprator = FileUtil.getFileSeparator();
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_allServiceInfo.xls";
+        String templateFile = ExcelCopyUtils.templatePath + FileUtil.getFileSeparator() + "downLoadTemplate_allServiceInfo.xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
-
         try {
             sourceFile = new POIFSFileSystem(new FileInputStream(templateFile));
             sourceWork = new HSSFWorkbook(sourceFile);
             sourceSheet = sourceWork.getSheetAt(0);
             //创建表格
+            workbook = new HSSFWorkbook();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        RcService rcService = null;
-        if (StringUtils.isNotBlank(rcUserService.getServiceId())) {
-            rcService = rcServiceService.select(rcUserService.getServiceId());
-        }
-        IqApplication iqApplication = null;
-        if (null != rcService) {
-            iqApplication = this.select(rcService.getAppId());
-        }
+
+        IqApplication iqApplication = this.select(appId);
 
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
@@ -331,8 +314,6 @@ public class IqApplicationService extends BaseService {
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
         comExcelParams.add(new ComExcelParam(4, 3, "userName"));
-
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
         HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
@@ -347,15 +328,13 @@ public class IqApplicationService extends BaseService {
 
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
-                Field field = serviceBaseInfo.getClass().getDeclaredField(comExcelParam.getName());
-                field.setAccessible(true);
-                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
+                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), map.get(comExcelParam.getName()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        IqIndexDto iqIndexDto = new IqIndexDto(i, 20, 32);
-        this.setWorkbookSheetPart(sheet, iqApplication, sourceSheet, workbook, iqIndexDto);
+
+        this.setWorkbookSheetPart(sheet, iqApplication, sourceSheet, workbook, new IqIndexDto(i, 20, 32));
     }
 
     /**

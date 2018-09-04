@@ -14,8 +14,6 @@
     <result column="CRT_TIME" property="crtTime" jdbcType="VARCHAR" />
     <result column="UPT_USER" property="uptUser" jdbcType="VARCHAR" />
     <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR" />
-    <result column="EXTEND_FIELD1" property="extendField1" jdbcType="VARCHAR" />
-    <result column="EXTEND_FIELD2" property="extendField2" jdbcType="VARCHAR" />
     <result column="FTP_PASSWORD" property="ftpPassword" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
@@ -26,13 +24,11 @@
     insert into MM_CONTRACTOR (PK_ID, NAME,CN_NAME,HTTP_URL,
       PRINCIPAL, MOBILE, NOTE, 
       DEL_FLG, CRT_USER, CRT_TIME, 
-      UPT_USER, UPT_TIME, EXTEND_FIELD1, 
-      EXTEND_FIELD2,FTP_PASSWORD)
+      UPT_USER, UPT_TIME, FTP_PASSWORD)
     values (#{pkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{cnName,jdbcType=VARCHAR}, #{httpUrl,jdbcType=VARCHAR},
       #{principal,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
       #{delFlg,jdbcType=CHAR}, #{crtUser,jdbcType=VARCHAR}, #{crtTime,jdbcType=VARCHAR}, 
-      #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, #{extendField1,jdbcType=VARCHAR}, 
-      #{extendField2,jdbcType=VARCHAR} ,#{ftpPassword,jdbcType=VARCHAR})
+      #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, #{ftpPassword,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.mm.model.MmContractor" >
     update MM_CONTRACTOR
@@ -47,27 +43,25 @@
       CRT_TIME = #{crtTime,jdbcType=VARCHAR},
       UPT_USER = #{uptUser,jdbcType=VARCHAR},
       UPT_TIME = #{uptTime,jdbcType=VARCHAR},
-      EXTEND_FIELD1 = #{extendField1,jdbcType=VARCHAR},
-      EXTEND_FIELD2 = #{extendField2,jdbcType=VARCHAR},
       FTP_PASSWORD = #{ftpPassword,jdbcType=VARCHAR}
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
-    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2,FTP_PASSWORD
+    UPT_USER, UPT_TIME, FTP_PASSWORD
     from MM_CONTRACTOR
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
-    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2, FTP_PASSWORD
+    UPT_USER, UPT_TIME, FTP_PASSWORD
     from MM_CONTRACTOR
     where DEL_FLG = '0'
   </select>
   <!-- 根据姓名查询-->
   <select id="selectByName" resultMap="BaseResultMap" >
     select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
-    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2,FTP_PASSWORD
+    UPT_USER, UPT_TIME, FTP_PASSWORD
     from MM_CONTRACTOR
     where DEL_FLG = '0'
     and NAME = #{name,jdbcType=VARCHAR}
@@ -81,7 +75,7 @@
   <!--分页查询-->
   <select id="selectPage" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.mm.dto.MmContractorView">
     select PK_ID, NAME,CN_NAME, HTTP_URL, PRINCIPAL, MOBILE, NOTE, DEL_FLG, CRT_USER, CRT_TIME,
-    UPT_USER, UPT_TIME, EXTEND_FIELD1, EXTEND_FIELD2,FTP_PASSWORD
+    UPT_USER, UPT_TIME, FTP_PASSWORD
     from MM_CONTRACTOR
     where DEL_FLG = '0'
     <if test="name!='' and name!=null ">and NAME like '%'||#{name}||'%'</if>

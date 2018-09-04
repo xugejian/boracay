@@ -2,11 +2,11 @@ package com.hex.bigdata.udsp.im.converter.impl;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HBaseDatasource;
-import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.converter.model.HiveDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.metadata.HBaseMetadata;
 import com.hex.bigdata.udsp.im.converter.impl.util.HBaseUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.HBaseWrapper;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;

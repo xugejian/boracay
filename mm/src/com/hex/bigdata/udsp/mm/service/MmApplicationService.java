@@ -15,10 +15,6 @@ import com.hex.bigdata.udsp.mm.dto.MmIndexDto;
 import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
 import com.hex.bigdata.udsp.mm.model.MmAppReturnParam;
 import com.hex.bigdata.udsp.mm.model.MmApplication;
-import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
-import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
-import com.hex.bigdata.udsp.rc.model.RcService;
-import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
@@ -68,10 +64,6 @@ public class MmApplicationService extends BaseService {
 
     @Autowired
     private MmAppReturnParamService returnParamService;
-
-    @Autowired
-    private RcServiceService rcServiceService;
-
 
     @Autowired
     private MmModelInfoMapper modelInfoMapper;
@@ -369,7 +361,7 @@ public class MmApplicationService extends BaseService {
         return null;
     }
 
-    public void setWorkbooksheet(HSSFWorkbook workbook, RcUserServiceView rcUserService) {
+    public void setWorkbooksheet(HSSFWorkbook workbook, Map<String,String> map, String appId) {
 
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
@@ -387,14 +379,8 @@ public class MmApplicationService extends BaseService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        RcService rcService = null;
-        if (StringUtils.isNotBlank(rcUserService.getServiceId())) {
-            rcService = rcServiceService.select(rcUserService.getServiceId());
-        }
-        MmApplication mmApplication = null;
-        if (null != rcService) {
-            mmApplication = this.select(rcService.getAppId());
-        }
+
+        MmApplication mmApplication = this.select(appId);
 
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
@@ -405,8 +391,6 @@ public class MmApplicationService extends BaseService {
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
         comExcelParams.add(new ComExcelParam(4, 3, "userName"));
-
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
         HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
@@ -421,17 +405,13 @@ public class MmApplicationService extends BaseService {
 
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
-                Field field = serviceBaseInfo.getClass().getDeclaredField(comExcelParam.getName());
-                field.setAccessible(true);
-                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(),
-                        field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
+                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), map.get(comExcelParam.getName()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        MmIndexDto mmIndexDto = new MmIndexDto(i, 20);
-        this.setWorkbookSheetPart(sheet, mmApplication, sourceSheet, workbook, mmIndexDto);
 
+        this.setWorkbookSheetPart(sheet, mmApplication, sourceSheet, workbook, new MmIndexDto(i, 20));
     }
 
     /**

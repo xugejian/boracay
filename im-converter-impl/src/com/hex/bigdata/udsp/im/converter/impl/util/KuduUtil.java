@@ -4,7 +4,7 @@ import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.im.converter.impl.factory.KuduClientPoolFactory;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.KuduDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.metadata.KuduMetadata;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
+import com.hex.bigdata.udsp.im.converter.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.kudu.ColumnSchema;
