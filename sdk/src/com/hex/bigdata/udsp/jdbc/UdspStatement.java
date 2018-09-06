@@ -2,14 +2,14 @@ package com.hex.bigdata.udsp.jdbc;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.constant.ConsumerType;
-import com.hex.bigdata.udsp.constant.StatusCode;
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.jdbc.netty.Client;
 import com.hex.bigdata.udsp.jdbc.netty.ClientFactory;
 import com.hex.bigdata.udsp.jdbc.netty.RemotingUrl;
 import com.hex.bigdata.udsp.model.request.SqlRequest;
-import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
+import com.hex.bigdata.udsp.model.response.SyncResponse;
 
 import java.sql.*;
 import java.util.ArrayList;

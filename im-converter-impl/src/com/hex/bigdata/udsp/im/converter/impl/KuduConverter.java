@@ -1,15 +1,15 @@
 package com.hex.bigdata.udsp.im.converter.impl;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
-import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HiveDatasource;
+import com.hex.bigdata.udsp.im.converter.model.HiveDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.KuduDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.metadata.KuduMetadata;
 import com.hex.bigdata.udsp.im.converter.impl.model.modeling.KuduModel;
 import com.hex.bigdata.udsp.im.converter.impl.util.HiveSqlUtil;
-import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.KuduUtil;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.TableColumn;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.TblProperty;
+import com.hex.bigdata.udsp.im.converter.model.TableColumn;
+import com.hex.bigdata.udsp.im.converter.model.TblProperty;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.KuduWrapper;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;

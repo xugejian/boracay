@@ -10,7 +10,7 @@ import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoDto;
 import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoView;
 import com.hex.bigdata.udsp.im.model.RealtimeNodeInfo;
 import com.hex.bigdata.udsp.im.model.RealtimeTotalInfo;
-import com.hex.bigdata.udsp.im.converter.impl.model.modeling.MqModel;
+import com.hex.bigdata.udsp.im.converter.model.MqModel;
 import com.hex.bigdata.udsp.im.converter.model.Model;
 import com.hex.bigdata.udsp.im.converter.model.ModelFilterCol;
 import com.hex.bigdata.udsp.im.task.QuartzManager;

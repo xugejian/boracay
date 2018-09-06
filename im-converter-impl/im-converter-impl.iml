@@ -17,9 +17,9 @@
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="library" name="kudu" level="project" />
     <orderEntry type="library" name="impala" level="project" />
-    <orderEntry type="module" module-name="im" />
-    <orderEntry type="module" module-name="md" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="im-converter-api" />
+    <orderEntry type="module" module-name="md" />
+    <orderEntry type="module" module-name="im" />
   </component>
 </module>

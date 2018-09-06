@@ -1,8 +1,8 @@
 package com.hex.bigdata.udsp.im.converter.impl.wrapper;
 
 import com.hex.bigdata.udsp.im.converter.RealtimeSourceConverter;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.ValueColumn;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.WhereProperty;
+import com.hex.bigdata.udsp.im.converter.model.ValueColumn;
+import com.hex.bigdata.udsp.im.converter.model.WhereProperty;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import org.apache.logging.log4j.LogManager;

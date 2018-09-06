@@ -1,17 +1,12 @@
 package com.hex.bigdata.udsp.client.impl;
 
 import com.hex.bigdata.udsp.client.ConsumerClient;
-import com.hex.bigdata.udsp.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 import com.hex.bigdata.udsp.model.request.MmRequest;
 import com.hex.bigdata.udsp.model.request.StatusRequest;
-import com.hex.bigdata.udsp.model.request.UdspRequest;
-import com.hex.bigdata.udsp.model.response.origin.AsyncResponse;
-import com.hex.bigdata.udsp.model.response.origin.StatusResponse;
-import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
-import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
-import com.hex.bigdata.udsp.model.response.pack.StatusPackResponse;
-import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
+import com.hex.bigdata.udsp.model.response.*;
 import com.hex.bigdata.udsp.util.SdkHttpUtil;
 
 import java.util.Map;
@@ -68,8 +63,8 @@ public class MmClient extends ConsumerClient {
     }
 
     @Override
-    protected void checkStartBusinessParams(UdspRequest udspRequest) {
-        MmRequest request = (MmRequest) udspRequest;
+    protected void checkStartBusinessParams(BaseRequest baseRequest) {
+        MmRequest request = (MmRequest) baseRequest;
         Map<String, String> data = request.getData();
         if (data == null || data.size() == 0) {
             throw new IllegalArgumentException("参数data不能为空!");

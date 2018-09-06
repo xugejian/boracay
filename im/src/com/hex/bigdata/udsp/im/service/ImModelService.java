@@ -16,10 +16,6 @@ import com.hex.bigdata.udsp.im.dto.ImIndexDto;
 import com.hex.bigdata.udsp.im.dto.ImModelDto;
 import com.hex.bigdata.udsp.im.dto.ImModelView;
 import com.hex.bigdata.udsp.im.model.*;
-import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
-import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
-import com.hex.bigdata.udsp.rc.model.RcService;
-import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.goframe.dao.GFDictMapper;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.util.DateUtil;
@@ -58,36 +54,24 @@ public class ImModelService {
 
     @Autowired
     private ImModelMapper imModelMapper;
-
     @Autowired
     private ImModelFilterColMapper imModelFilterColMapper;
-
     @Autowired
     private ImModelMappingMapper imModelMappingMapper;
-
     @Autowired
     private ComPropertiesService comPropertiesService;
-
     @Autowired
     private ImModelUpdateKeyMapper imModelUpdateKeyMapper;
-
     @Autowired
     private ImConverterService imConverterService;
-
     @Autowired
     private ImMetadataMapper imMetadataMapper;
-
     @Autowired
     private ComDatasourceMapper comDatasourceMapper;
-
     @Autowired
     private GFDictMapper gfDictMapper;
-
     @Autowired
     private ImMetadataColMapper imMetadataColMapper;
-
-    @Autowired
-    private RcServiceService rcServiceService;
 
     private static List<ComExcelParam> comExcelParams;
 
@@ -856,10 +840,8 @@ public class ImModelService {
     /**
      * 服务信息导出
      *
-     * @param workbook
-     * @param rcUserService
      */
-    public void setWorkbooksheet(HSSFWorkbook workbook, RcUserServiceView rcUserService) {
+    public void setWorkbooksheet(HSSFWorkbook workbook, Map<String,String> map, String appId) {
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
         String seprator = FileUtil.getFileSeparator();
@@ -876,14 +858,8 @@ public class ImModelService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        RcService rcService = null;
-        if (org.apache.commons.lang.StringUtils.isNotBlank(rcUserService.getServiceId())) {
-            rcService = rcServiceService.select(rcUserService.getServiceId());
-        }
-        ImModel imModel = null;
-        if (null != rcService) {
-            imModel = select(rcService.getAppId());
-        }
+
+        ImModel imModel = select(appId);
 
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
@@ -894,8 +870,6 @@ public class ImModelService {
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
         comExcelParams.add(new ComExcelParam(4, 3, "userName"));
-
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
         HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
@@ -910,17 +884,13 @@ public class ImModelService {
 
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
-                Field field = serviceBaseInfo.getClass().getDeclaredField(comExcelParam.getName());
-                field.setAccessible(true);
-                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(),
-                        field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
+                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), map.get(comExcelParam.getName()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        ImIndexDto imIndexDto = new ImIndexDto(i);
-        this.setWorkbookSheetPart(sheet, imModel, sourceSheet, workbook, imIndexDto);
+        this.setWorkbookSheetPart(sheet, imModel, sourceSheet, workbook, new ImIndexDto(i));
     }
 
     public void setWorkbookSheetPart(HSSFSheet sheet, ImModel imModel, HSSFSheet sourceSheet,

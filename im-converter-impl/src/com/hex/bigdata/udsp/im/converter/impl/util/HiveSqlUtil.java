@@ -2,10 +2,10 @@ package com.hex.bigdata.udsp.im.converter.impl.util;
 
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.*;
+import com.hex.bigdata.udsp.im.converter.model.*;
+import com.hex.bigdata.udsp.im.util.SqlUtil;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

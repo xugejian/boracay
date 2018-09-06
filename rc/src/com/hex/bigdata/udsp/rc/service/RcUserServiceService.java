@@ -806,46 +806,56 @@ public class RcUserServiceService extends BaseService {
     }
 
     public String downStreamInfoDownload(RcUserService[] rcServices) {
-
-        HSSFWorkbook workbook = null;
         // 下载地址生成
-        String seprator = FileUtil.getFileSeparator();
-        String dirPath = CreateFileUtil.getLocalDirPath();
-        dirPath += seprator + "downStreamService_excel_" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xls";
-        workbook = new HSSFWorkbook();
-
+        String downloadFile = CreateFileUtil.getLocalDirPath() + FileUtil.getFileSeparator()
+                + "downStreamService_excel_" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xls";
+        HSSFWorkbook workbook = new HSSFWorkbook();
         for (RcUserService item : rcServices) {
             RcUserServiceView rcUserServiceView = this.selectFullResultMap(item.getPkId());
             String type = rcUserServiceView.getServiceType();
-
+            String appId = rcUserServiceView.getServiceAppId();
+            Map<String, String> map = new HashMap<>();
+            map.put("serviceName", rcUserServiceView.getServiceName());
+            map.put("serviceDescribe", rcUserServiceView.getServiceDescribe());
+            map.put("maxSyncNum", String.valueOf(rcUserServiceView.getMaxSyncNum()));
+            map.put("maxAsyncNum", String.valueOf(rcUserServiceView.getMaxAsyncNum()));
+            map.put("maxSyncWaitNum", String.valueOf(rcUserServiceView.getMaxSyncWaitNum()));
+            map.put("maxAsyncWaitNum", String.valueOf(rcUserServiceView.getMaxAsyncWaitNum()));
+            map.put("userId", rcUserServiceView.getUserId());
+            map.put("userName", rcUserServiceView.getUserName());
             if (ServiceType.IQ.getValue().equals(type)) {
-                iqApplicationService.setWorkbooksheet(workbook, rcUserServiceView);
+                iqApplicationService.setWorkbooksheet(workbook, map, appId);
             } else if (ServiceType.OLQ.getValue().equals(type)) {
-                olqService.setWorkbooksheet(workbook, rcUserServiceView);
+                olqService.setWorkbooksheet(workbook, map);
             } else if (ServiceType.MM.getValue().equals(type)) {
-                mmApplicationService.setWorkbooksheet(workbook, rcUserServiceView);
+                mmApplicationService.setWorkbooksheet(workbook, map, appId);
             } else if (ServiceType.RTS_PRODUCER.getValue().equals(type)) {
-                rtsProducerService.setWorkbooksheet(workbook, rcUserServiceView);
+                rtsProducerService.setWorkbooksheet(workbook, map, appId);
             } else if (ServiceType.RTS_CONSUMER.getValue().equals(type)) {
-                rtsConsumerService.setWorkbooksheet(workbook, rcUserServiceView);
+                rtsConsumerService.setWorkbooksheet(workbook, map, appId);
             } else if (ServiceType.OLQ_APP.getValue().equals(type)) {
-                olqApplicationService.setWorkbooksheet(workbook, rcUserServiceView);
+                olqApplicationService.setWorkbooksheet(workbook, map, appId);
             } else if (ServiceType.IM.getValue().equals(type)) {
-                imModelService.setWorkbooksheet(workbook, rcUserServiceView);
+                imModelService.setWorkbooksheet(workbook, map, appId);
             }
         }
-
         if (workbook != null) {
+            FileOutputStream stream = null;
             try {
-                FileOutputStream stream = new FileOutputStream(dirPath);
-                workbook.write(new FileOutputStream(dirPath));
-                stream.close();
-                return dirPath;
+                stream = new FileOutputStream(downloadFile);
+                workbook.write(new FileOutputStream(downloadFile));
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (stream != null) {
+                    try {
+                        stream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
-
-        return dirPath;
+        return downloadFile;
     }
 }

@@ -3,6 +3,7 @@ package com.hex.bigdata.udsp.im.converter.impl.model.modeling;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.im.converter.model.Model;
+import com.hex.bigdata.udsp.im.converter.model.MqModel;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;

@@ -141,13 +141,17 @@
 
     <select id="selectFullResultMap" resultMap="FullResultMap" parameterType="java.lang.String">
     select rcus.PK_ID, rcus.USER_ID, rcus.SERVICE_ID, rcus.IP_SECTION, rcus.MAX_SYNC_NUM, rcus.MAX_ASYNC_NUM,
-    rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_SYNC_WAIT_TIMEOUT,rcus.MAX_ASYNC_WAIT_TIMEOUT,rcus.MAX_SYNC_EXECUTE_TIMEOUT,
-    rcus.MAX_ASYNC_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER, rcus.CRT_TIME, rcus.UPT_USER, rcus.UPT_TIME, rcus.ALARM_TYPE,
-    rcs.NAME AS SERVICE_NAME, rcs.TYPE AS SERVICE_TYPE,gfuser.user_name AS USER_NAME,rcs.DESCRIPTION as SERVICE_DESCRIBE
+    rcus.MAX_SYNC_WAIT_NUM, rcus.MAX_ASYNC_WAIT_NUM, rcus.MAX_SYNC_WAIT_TIMEOUT, rcus.MAX_ASYNC_WAIT_TIMEOUT,
+    rcus.MAX_SYNC_EXECUTE_TIMEOUT, rcus.MAX_ASYNC_EXECUTE_TIMEOUT, rcus.DEL_FLG, rcus.CRT_USER, rcus.CRT_TIME,
+    rcus.UPT_USER, rcus.UPT_TIME, rcus.ALARM_TYPE, rcs.NAME as SERVICE_NAME, rcs.TYPE as SERVICE_TYPE,
+    rcs.DESCRIPTION as SERVICE_DESCRIBE, rcs.APP_ID as SERVICE_APP_ID, gfuser.user_name as USER_NAME
     from RC_USER_SERVICE rcus
-    LEFT JOIN T_GF_LOGINUSER gfuser ON  rcus.USER_ID=gfuser.USER_ID
-    LEFT JOIN RC_SERVICE rcs ON  rcus.SERVICE_ID=rcs.PK_ID
-    where rcus.DEL_FLG = '0' and rcus.PK_ID =#{serviceId}
+    left join T_GF_LOGINUSER gfuser
+    on rcus.USER_ID=gfuser.USER_ID
+    left join RC_SERVICE rcs
+    on rcus.SERVICE_ID=rcs.PK_ID
+    where rcus.DEL_FLG = '0'
+    and rcus.PK_ID =#{serviceId}
   </select>
 
     <select id="selectNotRelationUsers" resultMap="UserResultMap" parameterType="java.util.Map">

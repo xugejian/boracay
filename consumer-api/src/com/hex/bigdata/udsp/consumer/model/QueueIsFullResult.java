@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.consumer.model;
 
 import java.io.Serializable;
 
-public class QueueIsFullResult implements Serializable{
+public class QueueIsFullResult implements Serializable {
     /**
      * 等待队列是否满了，满了返回true，没满返回false
      */

@@ -23,7 +23,7 @@ public class ExternalRequest extends Request implements Serializable {
     private String consumeId; // 消费ID
     private Map<String, String> data;
     private List<Map<String, String>> dataStream;
-    private String requestIp;//请求IP
+    private String requestIp; // 请求IP
 
     public String getConsumeId() {
         return consumeId;

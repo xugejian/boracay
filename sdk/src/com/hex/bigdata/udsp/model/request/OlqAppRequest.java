@@ -1,11 +1,12 @@
 package com.hex.bigdata.udsp.model.request;
 
-import com.hex.bigdata.udsp.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 
 import java.util.Map;
 
 @Deprecated
-public class OlqAppRequest extends UdspRequest {
+public class OlqAppRequest extends BaseRequest {
 
     private Page page;
     private Map<String, String> data;

@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.listener;
 
 
-import com.hex.bigdata.udsp.service.FtpUserManagerService;
+import com.hex.bigdata.udsp.common.service.FtpUserManagerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

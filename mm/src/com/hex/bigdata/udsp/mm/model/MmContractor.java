@@ -9,20 +9,13 @@ import java.io.Serializable;
  * TIME:14:42
  */
 public class MmContractor implements Serializable {
-    /**
-     * 主键
-     */
     private String pkId;
 
-    /**
-     * 厂商英文名称-与异步生成文件的存储目录相关
-     */
-    private String name;
+    private String name; // 厂商英文名、ftp用户名
 
-    /**
-     * 厂商中文名称
-     */
-    private String cnName;
+    private String ftpPassword; // ftp密码
+
+    private String cnName; // 厂商中文名
 
     private String httpUrl;
 
@@ -41,12 +34,6 @@ public class MmContractor implements Serializable {
     private String uptUser;
 
     private String uptTime;
-
-    private String extendField1;
-
-    private String extendField2;
-
-    private String ftpPassword;
 
     public String getPkId() {
         return pkId;
@@ -143,23 +130,6 @@ public class MmContractor implements Serializable {
     public void setUptTime(String uptTime) {
         this.uptTime = uptTime;
     }
-
-    public String getExtendField1() {
-        return extendField1;
-    }
-
-    public void setExtendField1(String extendField1) {
-        this.extendField1 = extendField1;
-    }
-
-    public String getExtendField2() {
-        return extendField2;
-    }
-
-    public void setExtendField2(String extendField2) {
-        this.extendField2 = extendField2;
-    }
-
 
     public String getFtpPassword() {
         return ftpPassword;

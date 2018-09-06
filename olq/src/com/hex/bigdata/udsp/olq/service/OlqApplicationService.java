@@ -2,17 +2,16 @@ package com.hex.bigdata.udsp.olq.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.DatasourceMode;
+import com.hex.bigdata.udsp.common.constant.YesOrNo;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComExcelParam;
 import com.hex.bigdata.udsp.common.model.ComExcelProperties;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
-import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;
-import com.hex.bigdata.udsp.olq.constant.OlqConstant;
 import com.hex.bigdata.udsp.olq.dao.OlqApplicationMapper;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationView;
@@ -20,10 +19,6 @@ import com.hex.bigdata.udsp.olq.dto.OlqIndexDto;
 import com.hex.bigdata.udsp.olq.model.OlqApplication;
 import com.hex.bigdata.udsp.olq.model.OlqApplicationParam;
 import com.hex.bigdata.udsp.olq.utils.SqlExpressionEvaluator;
-import com.hex.bigdata.udsp.rc.dto.RcUserServiceView;
-import com.hex.bigdata.udsp.rc.dto.ServiceBaseInfo;
-import com.hex.bigdata.udsp.rc.model.RcService;
-import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.service.BaseService;
@@ -63,34 +58,14 @@ import java.util.Map;
 @Service
 public class OlqApplicationService extends BaseService {
 
-    /**
-     * 日志记录
-     */
     private static Logger logger = LogManager.getLogger(OlqApplicationService.class);
 
-    /**
-     * 联机查询应用管理DAO层服务
-     */
     @Autowired
     private OlqApplicationMapper olqApplicationMapper;
-
-    /**
-     * 数据源服务
-     */
     @Autowired
     private ComDatasourceService comDatasourceService;
-
-    /**
-     * 占位符参数服务
-     */
     @Autowired
     private OlqApplicationParamService olqApplicationParamService;
-
-    @Autowired
-    private RcServiceService rcServiceService;
-
-    @Autowired
-    private ComPropertiesService comPropertiesService;
 
     /**
      * 分页查询
@@ -414,10 +389,10 @@ public class OlqApplicationService extends BaseService {
                 String isNeed = param.getIsNeed();
                 if (StringUtils.isBlank(isNeed)) {
                     checkResult.append("序号为" + seq + "的参数必填的值不能为空；");
-                } else if (OlqConstant.OLQ_IS_NEED_CN_YES.equals(isNeed)) {
-                    param.setIsNeed(OlqConstant.OLQ_IS_NEED_CODE_YES);
-                } else if (OlqConstant.OLQ_IS_NEED_CN_NO.equals(isNeed)) {
-                    param.setIsNeed(OlqConstant.OLQ_IS_NEED_CODE_NO);
+                } else if (YesOrNo.YES.getName().equals(isNeed)) {
+                    param.setIsNeed(YesOrNo.YES.getValue());
+                } else if (YesOrNo.NO.getName().equals(isNeed)) {
+                    param.setIsNeed(YesOrNo.NO.getValue());
                 } else {
                     checkResult.append("序号为" + seq + "的参数是必填的值非法，请输入是或否；");
                 }
@@ -538,11 +513,8 @@ public class OlqApplicationService extends BaseService {
 
     /**
      * 服务信息导出
-     *
-     * @param workbook
-     * @param rcUserService
      */
-    public void setWorkbooksheet(HSSFWorkbook workbook, RcUserServiceView rcUserService) {
+    public void setWorkbooksheet(HSSFWorkbook workbook, Map<String,String> map, String appId) {
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
         String seprator = FileUtil.getFileSeparator();
@@ -559,14 +531,8 @@ public class OlqApplicationService extends BaseService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        RcService rcService = null;
-        if (StringUtils.isNotBlank(rcUserService.getServiceId())) {
-            rcService = rcServiceService.select(rcUserService.getServiceId());
-        }
-        OlqApplicationDto olqApplicationDto = null;
-        if (null != rcService) {
-            olqApplicationDto = this.selectFullAppInfo(rcService.getAppId());
-        }
+
+        OlqApplicationDto olqApplicationDto = this.selectFullAppInfo(appId);
 
         List<ComExcelParam> comExcelParams = new ArrayList<ComExcelParam>();
         comExcelParams.add(new ComExcelParam(2, 1, "serviceName"));
@@ -577,8 +543,6 @@ public class OlqApplicationService extends BaseService {
         comExcelParams.add(new ComExcelParam(3, 7, "maxAsyncWaitNum"));
         comExcelParams.add(new ComExcelParam(4, 1, "userId"));
         comExcelParams.add(new ComExcelParam(4, 3, "userName"));
-
-        ServiceBaseInfo serviceBaseInfo = new ServiceBaseInfo(rcUserService);
 
         HSSFSheet sheet = workbook.createSheet();
         //将前面样式内容复制到下载表中
@@ -593,13 +557,12 @@ public class OlqApplicationService extends BaseService {
 
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
-                Field field = serviceBaseInfo.getClass().getDeclaredField(comExcelParam.getName());
-                field.setAccessible(true);
-                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), field.get(serviceBaseInfo) == null ? "" : field.get(serviceBaseInfo).toString());
+                ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), map.get(comExcelParam.getName()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
         this.setWorkbookSheetPart(sheet, olqApplicationDto, sourceSheet, workbook, new OlqIndexDto(i));
     }
 

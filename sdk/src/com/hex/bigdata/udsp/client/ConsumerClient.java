@@ -1,15 +1,15 @@
 package com.hex.bigdata.udsp.client;
 
-import com.hex.bigdata.udsp.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.constant.ConsumerType;
-import com.hex.bigdata.udsp.constant.EnumTrans;
-import com.hex.bigdata.udsp.model.request.UdspRequest;
-import com.hex.bigdata.udsp.model.response.origin.AsyncResponse;
-import com.hex.bigdata.udsp.model.response.origin.SyncResponse;
-import com.hex.bigdata.udsp.model.response.pack.AsyncPackResponse;
-import com.hex.bigdata.udsp.model.response.pack.StatusPackResponse;
-import com.hex.bigdata.udsp.model.response.origin.StatusResponse;
-import com.hex.bigdata.udsp.model.response.pack.SyncPackResponse;
+import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.EnumTrans;
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
+import com.hex.bigdata.udsp.model.response.AsyncResponse;
+import com.hex.bigdata.udsp.model.response.StatusResponse;
+import com.hex.bigdata.udsp.model.response.SyncResponse;
+import com.hex.bigdata.udsp.model.response.AsyncPackResponse;
+import com.hex.bigdata.udsp.model.response.StatusPackResponse;
+import com.hex.bigdata.udsp.model.response.SyncPackResponse;
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class ConsumerClient {
@@ -39,21 +39,21 @@ public abstract class ConsumerClient {
     /**
      * 检查start业务参数
      */
-    protected abstract void checkStartBusinessParams(UdspRequest udspRequest);
+    protected abstract void checkStartBusinessParams(BaseRequest baseRequest);
 
     /**
      * 检查基础参数信息
      *
-     * @param udspRequest
+     * @param baseRequest
      */
-    protected void checkBasicParams(UdspRequest udspRequest, ConsumerType consumerType, ConsumerEntity consumerEntity) {
+    protected void checkBasicParams(BaseRequest baseRequest, ConsumerType consumerType, ConsumerEntity consumerEntity) {
 
-        String serviceName = udspRequest.getServiceName();
-        String udspUser = udspRequest.getUdspUser();
-        String udspPass = udspRequest.getToken();
-        String appUser = udspRequest.getAppUser();
-        String type = udspRequest.getType();
-        String entity = udspRequest.getEntity();
+        String serviceName = baseRequest.getServiceName();
+        String udspUser = baseRequest.getUdspUser();
+        String udspPass = baseRequest.getToken();
+        String appUser = baseRequest.getAppUser();
+        String type = baseRequest.getType();
+        String entity = baseRequest.getEntity();
         StringBuffer errorMessage = new StringBuffer();
 
         if (StringUtils.isBlank(serviceName)) {

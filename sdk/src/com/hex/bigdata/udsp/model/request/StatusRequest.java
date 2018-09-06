@@ -1,6 +1,8 @@
 package com.hex.bigdata.udsp.model.request;
 
-public class StatusRequest extends UdspRequest {
+import com.hex.bigdata.udsp.consumer.model.BaseRequest;
+
+public class StatusRequest extends BaseRequest {
 
     private String consumeId;
 

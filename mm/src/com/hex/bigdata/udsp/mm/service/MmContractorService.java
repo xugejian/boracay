@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.mm.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.model.ComUploadExcelContent;
-import com.hex.bigdata.udsp.service.FtpUserManagerService;
+import com.hex.bigdata.udsp.common.service.FtpUserManagerService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.ExcelCopyUtils;
 import com.hex.bigdata.udsp.common.util.ExcelUploadhelper;

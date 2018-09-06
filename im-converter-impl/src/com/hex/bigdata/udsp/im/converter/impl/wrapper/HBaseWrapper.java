@@ -9,16 +9,12 @@ import com.hex.bigdata.udsp.im.converter.RealtimeTargetConverter;
 import com.hex.bigdata.udsp.im.converter.impl.model.datasource.HBaseDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.metadata.HBaseMetadata;
 import com.hex.bigdata.udsp.im.converter.impl.util.HBaseUtil;
-import com.hex.bigdata.udsp.im.converter.impl.util.model.*;
-import com.hex.bigdata.udsp.im.converter.model.Metadata;
-import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
-import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
+import com.hex.bigdata.udsp.im.converter.model.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.xml.crypto.Data;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 

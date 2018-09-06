@@ -2,19 +2,16 @@ package com.hex.bigdata.udsp.mm.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.constant.Status;
-import com.hex.bigdata.udsp.common.constant.StatusCode;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.mm.constant.MmConstant;
+import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.mm.dto.MmFullAppInfoView;
 import com.hex.bigdata.udsp.mm.dto.MmRequest;
 import com.hex.bigdata.udsp.mm.dto.MmResponse;
 import com.hex.bigdata.udsp.mm.dto.MmResponseData;
 import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
 import com.hex.bigdata.udsp.mm.model.MmAppReturnParam;
-import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.goframe.util.DateUtil;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -198,7 +195,7 @@ public class MmProviderService {
                 String paramName = executeParam.getName();
                 String value = params.get(paramName);
                 //参数为必输参数，但是参数为空则报错
-                if (MmConstant.MM_PARAM_IS_NEED_YES.equals(executeParam.getIsNeed()) && StringUtils.isBlank(value)) {
+                if (YesOrNo.YES.getValue().equals(executeParam.getIsNeed()) && StringUtils.isBlank(value)) {
                     resultMap.put("errorCode", ErrorCode.ERROR_000009.getValue());
                     return resultMap;
                 }
@@ -208,7 +205,7 @@ public class MmProviderService {
         }
 
         //如果是异步调用则设置path
-        if (MmConstant.MM_TYPE_ASYNC.equalsIgnoreCase(request.getType())) {
+        if (ConsumerType.ASYNC.getValue().equalsIgnoreCase(request.getType())) {
             String path = CreateFileUtil.getFtpFileDir(request.getUdspUser()) + "/" +
                     appInfoView.getContractorName() + "/"+ DateUtil.format(new Date(), "yyyyMMdd");
             mmRequest.setPath(path);

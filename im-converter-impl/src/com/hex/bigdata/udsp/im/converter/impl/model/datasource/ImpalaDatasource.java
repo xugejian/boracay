@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.im.converter.impl.model.datasource;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.im.converter.model.JdbcDatasource;
 import org.apache.commons.lang3.StringUtils;
 
 /**

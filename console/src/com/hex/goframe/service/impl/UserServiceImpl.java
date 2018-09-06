@@ -1,6 +1,6 @@
 package com.hex.goframe.service.impl;
 
-import com.hex.bigdata.udsp.service.FtpUserManagerService;
+import com.hex.bigdata.udsp.common.service.FtpUserManagerService;
 import com.hex.goframe.dao.GFOrgMapper;
 import com.hex.goframe.dao.GFRoleMapper;
 import com.hex.goframe.dao.GFUserMapper;
