@@ -109,12 +109,10 @@ public class MmSyncService {
         Response response = new Response();
         try {
             MmResponse mmResponse = mmProviderService.status(request, appId);
-            if (response != null) {
-                response.setMessage(mmResponse.getMessage());
-                response.setErrorCode(mmResponse.getErrorCode());
-                response.setStatus(mmResponse.getStatus());
-                response.setStatusCode(mmResponse.getStatusCode().getValue());
-            }
+            response.setMessage(mmResponse.getMessage());
+            response.setErrorCode(mmResponse.getErrorCode());
+            response.setStatus(mmResponse.getStatus());
+            response.setStatusCode(mmResponse.getStatusCode().getValue());
         } catch (Exception e) {
             e.printStackTrace();
             response.setConsumeId(request.getConsumeId());

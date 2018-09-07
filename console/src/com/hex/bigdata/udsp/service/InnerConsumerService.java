@@ -10,9 +10,10 @@ import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.consumer.service.ConsumerService;
 import com.hex.bigdata.udsp.mc.model.Current;
-import com.hex.bigdata.udsp.mc.service.RunQueueService;
+import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class InnerConsumerService {
     @Autowired
     private ConsumerService consumerService;
     @Autowired
-    private RunQueueService runQueueService;
+    private CurrentService currentService;
 
     /**
      * 管理员用户最大同步并发数
@@ -48,8 +49,8 @@ public class InnerConsumerService {
     /**
      * 内部请求消费
      *
-     * @param request   内部请求内容
-     * @param isAdmin   是否是管理员
+     * @param request 内部请求内容
+     * @param isAdmin 是否是管理员
      * @return
      */
     public Response consume(Request request, boolean isAdmin) {
@@ -78,7 +79,7 @@ public class InnerConsumerService {
      */
     private ConsumeRequest checkConsume(Request request, boolean isAdmin, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
-        consumeRequest.setRequest(request);
+        consumeRequest.setRequest(request); // 必须先设置request
         request.setRequestType(RequestType.INNER.getValue());
         String udspUser = request.getUdspUser();
         String appType = request.getAppType();
@@ -86,7 +87,6 @@ public class InnerConsumerService {
         String appName = consumerService.getAppName(appType, appId);
         request.setAppName(appName);
         request.setAppUser(udspUser);
-        Current mcCurrent = null;
         String type = request.getType() == null ? "" : request.getType().toUpperCase();
         String entity = request.getEntity() == null ? "" : request.getEntity().toUpperCase();
         // 分页参数处理
@@ -108,13 +108,15 @@ public class InnerConsumerService {
         }
         // 管理员用户，直接访问
         if (isAdmin) {
-            mcCurrent = consumerService.getCurrent(request, adminMaxSyncNum, adminMaxAsyncNum);
-            if (!runQueueService.addCurrent(mcCurrent)) { // 队列已满
-                consumeRequest.setError(ErrorCode.ERROR_000003);
-                return consumeRequest;
-            }
+            // 管理员用户执行队列（同步/异步）没有限制
+            Current mcCurrent = consumerService.getCurrent(request, -1, -1);
             consumeRequest.setMcCurrent(mcCurrent);
-            consumeRequest.setRequest(request);
+            currentService.insert(mcCurrent);
+            // 重新设置request
+            if (StringUtils.isBlank(request.getConsumeId())) {
+                request.setConsumeId(mcCurrent.getPkId());
+                consumeRequest.setRequest(request);
+            }
             return consumeRequest;
         }
 

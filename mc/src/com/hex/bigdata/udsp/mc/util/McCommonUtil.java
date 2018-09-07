@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.mc.util;
 
-import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.common.util.UUIDUtil;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.mc.model.Current;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -22,7 +22,7 @@ public class McCommonUtil {
     public static Current getMcCurrent(Request request, int maxCurrentNum) {
         Current mcCurrent = new Current();
         String requestContent = JSONUtil.parseObj2JSON(request);
-        String consumeId = HostUtil.getConsumeId(requestContent);
+        String consumeId = UUIDUtil.consumeId(requestContent);
         mcCurrent.setStartTime(format.format(new Date()));
         mcCurrent.setServiceName(request.getServiceName());
         mcCurrent.setUserName(request.getUdspUser());

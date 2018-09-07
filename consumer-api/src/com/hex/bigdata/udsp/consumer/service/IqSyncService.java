@@ -5,7 +5,6 @@ import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.FTPClientConfig;
 import com.hex.bigdata.udsp.common.util.FTPHelper;
@@ -16,7 +15,6 @@ import com.hex.bigdata.udsp.iq.model.IqAppQueryCol;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
 import com.hex.bigdata.udsp.iq.service.IqAppQueryColService;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
-import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -58,8 +56,6 @@ public class IqSyncService {
     private IqAppQueryColService iqAppQueryColService;
     @Autowired
     private LoggingService loggingService;
-    @Autowired
-    private InitParamService initParamService;
 
     /**
      * 同步运行（添加了超时机制）
@@ -71,56 +67,58 @@ public class IqSyncService {
     public Response syncStartForTimeout(ConsumeRequest consumeRequest, long bef) {
         long runBef = System.currentTimeMillis();
         Response response = new Response();
+        final Request request = consumeRequest.getRequest();
+        String consumeId = request.getConsumeId();
         try {
-            final Request request = consumeRequest.getRequest();
             RcUserService rcUserService = consumeRequest.getRcUserService();
-            long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
-                    initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
-            // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(new Callable() {
-                @Override
-                public Response call() throws Exception {
-                    return syncStart(request.getAppId(), request.getData(), request.getPage());
-                }
-            });
-            response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+            if (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) { // 不开启超时
+                response = syncStart(request.getAppId(), request.getData(), request.getPage());
+            } else { // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
+                Future<Response> futureTask = executorService.submit(new Callable() {
+                    @Override
+                    public Response call() throws Exception {
+                        return syncStart(request.getAppId(), request.getData(), request.getPage());
+                    }
+                });
+                response = futureTask.get(rcUserService.getMaxSyncExecuteTimeout(), TimeUnit.SECONDS);
+            }
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), null);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
         }
         return response;
     }
 
     public void asyncStartForTimeout(ConsumeRequest consumeRequest, final String fileName, long bef) {
         long runBef = System.currentTimeMillis();
+        Response response = null;
+        final Request request = consumeRequest.getRequest();
+        String consumeId = request.getConsumeId();
         try {
-            final Request request = consumeRequest.getRequest();
-            Current mcCurrent = consumeRequest.getMcCurrent();
-            String consumeId = (StringUtils.isNotBlank(request.getConsumeId()) ? request.getConsumeId() : mcCurrent.getPkId());
-            final String userName = consumeRequest.getMcCurrent().getUserName();
             RcUserService rcUserService = consumeRequest.getRcUserService();
-            long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
-                    initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
-            // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(new Callable<Response>() {
-                @Override
-                public Response call() throws Exception {
-                    return asyncStart(request.getAppId(), request.getData(), request.getPage(), fileName, userName);
-                }
-            });
-            Response response = futureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
-            loggingService.writeResponseLog(consumeId, bef, runBef, request, response, false);
+            if (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) { // 不开启超时
+                response = asyncStart(request.getAppId(), request.getData(), request.getPage(), fileName, request.getUdspUser());
+            } else { // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
+                Future<Response> futureTask = executorService.submit(new Callable<Response>() {
+                    @Override
+                    public Response call() throws Exception {
+                        return asyncStart(request.getAppId(), request.getData(), request.getPage(), fileName, request.getUdspUser());
+                    }
+                });
+                response = futureTask.get(rcUserService.getMaxAsyncExecuteTimeout(), TimeUnit.SECONDS);
+            }
+            loggingService.writeResponseLog(request.getConsumeId(), bef, runBef, request, response, false);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), null);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
         }
     }
 

@@ -7,13 +7,10 @@ import java.io.Serializable;
  */
 public class BaseRequest implements Serializable {
     private String serviceName; // 服务名
-
     private String type; // sync、async
     private String entity; // start、status、stop
-
     private String udspUser; // UDSP用户
     private String token; // UDSP密码
-
     private String appUser; // 外部的用户
 
     public String getServiceName() {

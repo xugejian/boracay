@@ -1,8 +1,8 @@
 package com.hex.bigdata.udsp.consumer.service;
 
 import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.RequestType;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
@@ -45,7 +45,9 @@ public class ExternalConsumerService {
         ConsumeRequest consumeRequest = checkConsume(request, bef);
         logger.debug("检查耗时：" + (System.currentTimeMillis() - bef) + "ms");
 
+        long bef2 = System.currentTimeMillis();
         Response response = consumerService.consume(consumeRequest, bef);
+        logger.debug("执行耗时：" + (System.currentTimeMillis() - bef2) + "ms");
 
         long now = System.currentTimeMillis();
         long consumeTime = now - bef;
@@ -60,7 +62,7 @@ public class ExternalConsumerService {
      */
     private ConsumeRequest checkConsume(Request request, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
-        consumeRequest.setRequest(request);
+        consumeRequest.setRequest(request); // 必须先设置request
         request.setRequestType(RequestType.OUTER.getValue());
         String serviceName = request.getServiceName();
         String udspUser = request.getUdspUser();

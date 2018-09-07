@@ -6,7 +6,6 @@ import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,12 +88,12 @@ public class LocalCache<T> implements Cache<T> {
 
     @Override
     public boolean insertCache(String key, T t) {
-        return insert(key, cloneObj(t));
+        return insert(key, ObjectUtil.cloneObj(t));
     }
 
     @Override
     public boolean updateCache(String key, T t) {
-        return update(key, cloneObj(t));
+        return update(key, ObjectUtil.cloneObj(t));
     }
 
     @Override
@@ -118,17 +117,17 @@ public class LocalCache<T> implements Cache<T> {
                 r.unlock();
             }
         }
-        return cloneObj((T) obj);
+        return ObjectUtil.cloneObj((T) obj);
     }
 
     @Override
     public boolean insertListCache(String key, List<T> list) {
-        return insert(key, cloneList(list));
+        return insert(key, ObjectUtil.cloneList(list));
     }
 
     @Override
     public boolean updateListCache(String key, List<T> list) {
-        return update(key, cloneList(list));
+        return update(key, ObjectUtil.cloneList(list));
     }
 
     @Override
@@ -139,7 +138,7 @@ public class LocalCache<T> implements Cache<T> {
     @Override
     public List<T> selectListCache(String key) {
         Object obj = select(key);
-        return cloneList((List<T>) obj);
+        return ObjectUtil.cloneList((List<T>) obj);
     }
 
     @Override
@@ -167,63 +166,10 @@ public class LocalCache<T> implements Cache<T> {
         }
         w.lock();
         try {
-            cache.put(key, cloneObj(t));
+            cache.put(key, ObjectUtil.cloneObj(t));
         } finally {
             w.unlock();
         }
         return true;
-    }
-
-    /**
-     * 克隆对象
-     *
-     * @param obj
-     * @return
-     */
-    private T cloneObj(T obj) {
-        T t = null;
-        if (obj != null) {
-            try {
-                if (obj instanceof Integer) {
-                    t = (T) new Integer((Integer) obj);
-                } else if (obj instanceof Long) {
-                    t = (T) new Long((Long) obj);
-                } else if (obj instanceof Short) {
-                    t = (T) new Short((Short) obj);
-                } else if (obj instanceof Double) {
-                    t = (T) new Double((Double) obj);
-                } else if (obj instanceof Float) {
-                    t = (T) new Float((Float) obj);
-                } else {
-                    t = (T) obj.getClass().newInstance();
-                    ObjectUtil.copyObject(obj, t);
-                }
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        return t;
-    }
-
-    /**
-     * 克隆集合
-     *
-     * @param objs
-     * @return
-     */
-    private List<T> cloneList(List<T> objs) {
-        List<T> list = null;
-        if (objs != null) {
-            list = new ArrayList<>();
-            T t = null;
-            for (T obj : objs) {
-                t = cloneObj(obj);
-                if (t != null)
-                    list.add(t);
-            }
-        }
-        return list;
     }
 }

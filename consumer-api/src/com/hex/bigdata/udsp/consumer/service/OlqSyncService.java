@@ -4,13 +4,11 @@ import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.im.util.JdbcUtil;
-import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponseFetch;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
@@ -53,8 +51,6 @@ public class OlqSyncService {
     private OlqProviderService olqProviderService;
     @Autowired
     private LoggingService loggingService;
-    @Autowired
-    private InitParamService initParamService;
 
     /**
      * 同步运行（添加了超时机制）
@@ -64,23 +60,23 @@ public class OlqSyncService {
      * @return
      */
     public Response syncStartForTimeout(ConsumeRequest consumeRequest, long bef) {
-        final Request request = consumeRequest.getRequest();
-        Current mcCurrent = consumeRequest.getMcCurrent();
-        final String consumeId = (StringUtils.isNotBlank(request.getConsumeId()) ? request.getConsumeId() : mcCurrent.getPkId());
-        RcUserService rcUserService = consumeRequest.getRcUserService();
-        long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
-                initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
-        Response response = new Response();
         long runBef = System.currentTimeMillis();
+        Response response = new Response();
+        final Request request = consumeRequest.getRequest();
+        final String consumeId = request.getConsumeId();
         try {
-            // 开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(new Callable() {
-                @Override
-                public Response call() throws Exception {
-                    return syncStart(consumeId, request.getAppId(), request.getSql(), request.getPage());
-                }
-            });
-            response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+            RcUserService rcUserService = consumeRequest.getRcUserService();
+            if (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) { // 不开启超时
+                response = syncStart(consumeId, request.getAppId(), request.getSql(), request.getPage());
+            } else { // 开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
+                Future<Response> futureTask = executorService.submit(new Callable() {
+                    @Override
+                    public Response call() throws Exception {
+                        return syncStart(consumeId, request.getAppId(), request.getSql(), request.getPage());
+                    }
+                });
+                response = futureTask.get(rcUserService.getMaxSyncExecuteTimeout(), TimeUnit.SECONDS);
+            }
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
                     ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
@@ -101,22 +97,22 @@ public class OlqSyncService {
      */
     public void asyncStartForTimeout(ConsumeRequest consumeRequest, final String fileName, long bef) {
         long runBef = System.currentTimeMillis();
-        Current mcCurrent = consumeRequest.getMcCurrent();
-        final String consumeId = mcCurrent.getPkId();
+        Response response = null;
+        final Request request = consumeRequest.getRequest();
+        final String consumeId = request.getConsumeId();
         try {
-            final String userName = consumeRequest.getMcCurrent().getUserName();
-            final Request request = consumeRequest.getRequest();
             RcUserService rcUserService = consumeRequest.getRcUserService();
-            long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
-                    initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
-            // 开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(new Callable<Response>() {
-                @Override
-                public Response call() throws Exception {
-                    return asyncStart(consumeId, request.getAppId(), request.getSql(), request.getPage(), fileName, userName);
-                }
-            });
-            Response response = futureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
+            if (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) { // 不开启超时
+                response = asyncStart(consumeId, request.getAppId(), request.getSql(), request.getPage(), fileName, request.getUdspUser());
+            } else { // 开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
+                Future<Response> futureTask = executorService.submit(new Callable<Response>() {
+                    @Override
+                    public Response call() throws Exception {
+                        return asyncStart(consumeId, request.getAppId(), request.getSql(), request.getPage(), fileName, request.getUdspUser());
+                    }
+                });
+                response = futureTask.get(rcUserService.getMaxAsyncExecuteTimeout(), TimeUnit.SECONDS);
+            }
             loggingService.writeResponseLog(consumeId, bef, runBef, request, response, false);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(null, consumeRequest, bef, runBef,

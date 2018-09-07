@@ -15,28 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 同步交互建模的服务
  */
 @Service
 public class ImSyncService {
-    private static Logger logger = LoggerFactory.getLogger(IqSyncService.class);
-
-    private static final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactory() {
-        private AtomicInteger id = new AtomicInteger(0);
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread thread = new Thread(r);
-            thread.setName("im-service-" + id.addAndGet(1));
-            return thread;
-        }
-    });
+    private static Logger logger = LoggerFactory.getLogger(ImSyncService.class);
 
     @Autowired
     private BatchJobService batchJobService;

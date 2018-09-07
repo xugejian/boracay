@@ -3,9 +3,9 @@ package com.hex.bigdata.udsp.consumer.service;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.DateUtil;
-import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.StatementUtil;
+import com.hex.bigdata.udsp.common.util.UUIDUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
@@ -72,12 +72,8 @@ public class LoggingService {
             if (ErrorCode.ERROR_000014.getValue().equals(errorCode) || ErrorCode.ERROR_000015.getValue().equals(errorCode)) {
                 long timout = 0;
                 if (ErrorCode.ERROR_000014.getValue().equals(errorCode)) {
-                    long maxSyncExecuteTimeout = rcUserService.getMaxSyncExecuteTimeout() == 0 ?
-                            initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
-                    long maxAsyncExecuteTimeout = rcUserService.getMaxAsyncExecuteTimeout() == 0 ?
-                            initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
                     timout = ConsumerType.SYNC.getValue().equalsIgnoreCase(request.getType()) ?
-                            maxSyncExecuteTimeout : maxAsyncExecuteTimeout;
+                            rcUserService.getMaxSyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
                 } else {
                     long maxSyncWaitTimeout = rcUserService.getMaxSyncWaitTimeout() == 0 ?
                             initParamService.getMaxSyncWaitTimeout() : rcUserService.getMaxSyncWaitTimeout();
@@ -103,7 +99,7 @@ public class LoggingService {
         }
 
         if (StringUtils.isBlank(consumeId)) {
-            consumeId = HostUtil.getConsumeId(JSONUtil.parseObj2JSON(request));
+            consumeId = UUIDUtil.consumeId(JSONUtil.parseObj2JSON(request));
         }
 
         if (response != null) {

@@ -4,6 +4,7 @@ import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
 import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.HostUtil;
+import com.hex.bigdata.udsp.common.util.UUIDUtil;
 import com.hex.bigdata.udsp.im.constant.RealtimeStatus;
 import com.hex.bigdata.udsp.im.dto.RealtimeNodeInfoDto;
 import com.hex.bigdata.udsp.im.dto.RealtimeTotalInfoDto;
@@ -73,7 +74,7 @@ public class RealtimeJobService {
      * @param model
      */
     public void start(Model model) throws Exception {
-        String id = HostUtil.getConsumeId(model.getId());
+        String id = UUIDUtil.consumeId(model.getId());
         MqModel mqModel = new MqModel(model);
         realtimeTotalService.readyStart(id, mqModel);
     }

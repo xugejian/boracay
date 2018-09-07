@@ -1,18 +1,17 @@
 package com.hex.bigdata.udsp.service;
 
 import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ServiceType;
 import com.hex.bigdata.udsp.common.util.*;
-import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.service.IqAsyncService;
 import com.hex.bigdata.udsp.consumer.service.LoggingService;
 import com.hex.bigdata.udsp.consumer.service.OlqAsyncService;
-import com.hex.bigdata.udsp.common.util.HostUtil;
+import com.hex.bigdata.udsp.consumer.util.RequestUtil;
 import com.hex.bigdata.udsp.dao.HeartbeatMapper;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.CurrentService;
@@ -27,7 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 心跳的服务
@@ -172,10 +173,7 @@ public class HeartbeatService {
         for (Current mcCurrent : newCurrents) {
             String type = mcCurrent.getAppType();
             String appId = mcCurrent.getAppId();
-            Map<String, Class> classMap = new HashMap<>();
-            classMap.put(ConsumerConstant.CONSUME_RTS_DATASTREAM, Map.class);
-            String requestContentJson = JSONUtil.parseObj2JSON(mcCurrent.getRequestContent());
-            Request request = JSONUtil.parseJSON2Obj(requestContentJson, Request.class, classMap);
+            Request request = RequestUtil.jsonToRequest(mcCurrent.getRequestContent());
             request.setRequestType(mcCurrent.getRequestType());
             request.setAppType(type);
             request.setAppName(mcCurrent.getAppName());

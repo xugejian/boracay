@@ -10,7 +10,8 @@ import java.util.Map;
  * Created by JunjieM on 2018-9-7.
  */
 public class RequestUtil {
-    public static final String CONSUME_RTS_DATASTREAM = "dataStream";
+
+    private static final String CONSUME_RTS_DATASTREAM = "dataStream";
 
     /**
      * JSON字符串转Request对象

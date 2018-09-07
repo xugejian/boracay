@@ -54,11 +54,11 @@ public class WebServiceConsumer implements WebServiceInterface {
     @Override
     public WSResponse consume(@RequestBody WSRequest wsRequest) {
         Request request = new Request();
-        ObjectUtil.copyObject(wsRequest, request);
+        ObjectUtil.copyObjectForDeclaredField(wsRequest, request);
         request.setRequestIp(getClientIp()); //获取并设置客户端请求的IP
         Response response = consumerService.consume(request);
         WSResponse wsResponse = new WSResponse();
-        ObjectUtil.copyObject(response, wsResponse);
+        ObjectUtil.copyObjectForDeclaredField(response, wsResponse);
         return wsResponse;
     }
 

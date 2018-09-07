@@ -7,16 +7,11 @@ import com.hex.bigdata.udsp.rc.model.RcUserService;
 public class ConsumeRequest {
 
     private Request request;
-
     private Current mcCurrent;
-
     private ErrorCode error;
-
-    private RcUserService rcUserService;
-
-    private QueueIsFullResult queueIsFullResult;
-
     private String message;
+    private RcUserService rcUserService;
+    private QueueIsFullResult queueIsFullResult;
 
     public Request getRequest() {
         return request;
