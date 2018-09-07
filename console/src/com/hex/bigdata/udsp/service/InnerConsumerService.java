@@ -52,11 +52,11 @@ public class InnerConsumerService {
      * @param isAdmin   是否是管理员
      * @return
      */
-    public Response innerConsume(Request request, boolean isAdmin) {
+    public Response consume(Request request, boolean isAdmin) {
         logger.debug("Request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
-        ConsumeRequest consumeRequest = checkBeforInnerConsume(request, isAdmin, bef);
+        ConsumeRequest consumeRequest = checkConsume(request, isAdmin, bef);
         logger.debug("检查耗时：" + (System.currentTimeMillis() - bef) + "ms");
 
         Response response = consumerService.consume(consumeRequest, bef);
@@ -76,7 +76,7 @@ public class InnerConsumerService {
     /**
      * 内部消费前检查
      */
-    private ConsumeRequest checkBeforInnerConsume(Request request, boolean isAdmin, long bef) {
+    private ConsumeRequest checkConsume(Request request, boolean isAdmin, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
         consumeRequest.setRequest(request);
         request.setRequestType(RequestType.INNER.getValue());
@@ -120,7 +120,7 @@ public class InnerConsumerService {
 
         // 非管理员用户，授权访问
         RcService rcService = rcServiceService.selectByAppTypeAndAppId(appType, appId);
-        return consumerService.checkBeforConsume(request, udspUser, rcService, bef);
+        return consumerService.checkConsume(request, udspUser, rcService, bef);
     }
 
 }

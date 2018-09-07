@@ -60,8 +60,6 @@ public class IqSyncService {
     private LoggingService loggingService;
     @Autowired
     private InitParamService initParamService;
-    @Autowired
-    private IqSyncService iqSyncService;
 
     /**
      * 同步运行（添加了超时机制）
@@ -82,7 +80,7 @@ public class IqSyncService {
             Future<Response> futureTask = executorService.submit(new Callable() {
                 @Override
                 public Response call() throws Exception {
-                    return iqSyncService.syncStart(request.getAppId(), request.getData(), request.getPage());
+                    return syncStart(request.getAppId(), request.getData(), request.getPage());
                 }
             });
             response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
@@ -111,7 +109,7 @@ public class IqSyncService {
             Future<Response> futureTask = executorService.submit(new Callable<Response>() {
                 @Override
                 public Response call() throws Exception {
-                    return iqSyncService.asyncStart(request.getAppId(), request.getData(), request.getPage(), fileName, userName);
+                    return asyncStart(request.getAppId(), request.getData(), request.getPage(), fileName, userName);
                 }
             });
             Response response = futureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);

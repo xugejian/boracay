@@ -38,11 +38,11 @@ public class ExternalConsumerService {
      * @param request 外部请求内容
      * @return
      */
-    public Response externalConsume(Request request) {
+    public Response consume(Request request) {
         logger.debug("Request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
-        ConsumeRequest consumeRequest = checkBeforExternalConsume(request, bef);
+        ConsumeRequest consumeRequest = checkConsume(request, bef);
         logger.debug("检查耗时：" + (System.currentTimeMillis() - bef) + "ms");
 
         Response response = consumerService.consume(consumeRequest, bef);
@@ -58,7 +58,7 @@ public class ExternalConsumerService {
     /**
      * 外部消费前检查
      */
-    private ConsumeRequest checkBeforExternalConsume(Request request, long bef) {
+    private ConsumeRequest checkConsume(Request request, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
         consumeRequest.setRequest(request);
         request.setRequestType(RequestType.OUTER.getValue());
@@ -94,6 +94,6 @@ public class ExternalConsumerService {
         }
         //检查授权访问信息
         RcService rcService = rcServiceService.selectByServiceName(serviceName);
-        return consumerService.checkBeforConsume(request, udspUser, rcService, bef);
+        return consumerService.checkConsume(request, udspUser, rcService, bef);
     }
 }

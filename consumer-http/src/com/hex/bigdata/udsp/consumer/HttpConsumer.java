@@ -61,7 +61,7 @@ public class HttpConsumer extends BaseController {
         try {
             Request request = RequestUtil.jsonToRequest(json);
             request.setRequestIp(HostUtil.getRealRequestIp(httpServletRequest)); // 获取并设置客户端请求的IP
-            response = consumerService.externalConsume(request);
+            response = consumerService.consume(request);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,

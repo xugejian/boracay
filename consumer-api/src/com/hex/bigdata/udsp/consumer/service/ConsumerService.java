@@ -98,7 +98,7 @@ public class ConsumerService {
      * @param rcService
      * @return
      */
-    public ConsumeRequest checkBeforConsume(Request request, String udspUser, RcService rcService, long bef) {
+    public ConsumeRequest checkConsume(Request request, String udspUser, RcService rcService, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
         consumeRequest.setRequest(request);
         // 没有注册服务

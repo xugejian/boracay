@@ -53,7 +53,7 @@ public class RestfulConsumer extends BaseController {
         try {
             Request request = RequestUtil.jsonToRequest(json);
             request.setRequestIp(HostUtil.getRealRequestIp(httpServletRequest)); // 获取并设置客户端请求的IP
-            return consumerService.externalConsume(request);
+            return consumerService.consume(request);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,

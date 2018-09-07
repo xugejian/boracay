@@ -55,8 +55,6 @@ public class OlqSyncService {
     private LoggingService loggingService;
     @Autowired
     private InitParamService initParamService;
-    @Autowired
-    private OlqSyncService olqSyncService;
 
     /**
      * 同步运行（添加了超时机制）
@@ -79,7 +77,7 @@ public class OlqSyncService {
             Future<Response> futureTask = executorService.submit(new Callable() {
                 @Override
                 public Response call() throws Exception {
-                    return olqSyncService.syncStart(consumeId, request.getAppId(), request.getSql(), request.getPage());
+                    return syncStart(consumeId, request.getAppId(), request.getSql(), request.getPage());
                 }
             });
             response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
@@ -115,7 +113,7 @@ public class OlqSyncService {
             Future<Response> futureTask = executorService.submit(new Callable<Response>() {
                 @Override
                 public Response call() throws Exception {
-                    return olqSyncService.asyncStart(consumeId, request.getAppId(), request.getSql(), request.getPage(), fileName, userName);
+                    return asyncStart(consumeId, request.getAppId(), request.getSql(), request.getPage(), fileName, userName);
                 }
             });
             Response response = futureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);

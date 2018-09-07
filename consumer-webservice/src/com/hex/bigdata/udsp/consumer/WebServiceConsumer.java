@@ -56,7 +56,7 @@ public class WebServiceConsumer implements WebServiceInterface {
         Request request = new Request();
         ObjectUtil.copyObject(wsRequest, request);
         request.setRequestIp(getClientIp()); //获取并设置客户端请求的IP
-        Response response = consumerService.externalConsume(request);
+        Response response = consumerService.consume(request);
         WSResponse wsResponse = new WSResponse();
         ObjectUtil.copyObject(response, wsResponse);
         return wsResponse;
@@ -73,7 +73,7 @@ public class WebServiceConsumer implements WebServiceInterface {
         try {
             Request request = RequestUtil.jsonToRequest(json);
             request.setRequestIp(getClientIp()); //获取并设置客户端请求的IP
-            response = consumerService.externalConsume(request);
+            response = consumerService.consume(request);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,

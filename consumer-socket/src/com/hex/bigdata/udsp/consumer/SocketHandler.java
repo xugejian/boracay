@@ -78,7 +78,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
         try {
             Request request = RequestUtil.jsonToRequest(json);
             request.setRequestIp(ip);
-            response = consumerService.externalConsume(request);
+            response = consumerService.consume(request);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,

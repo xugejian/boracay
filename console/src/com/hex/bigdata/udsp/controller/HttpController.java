@@ -229,6 +229,6 @@ public class HttpController extends BaseController {
         boolean isAdmin = roles.contains("ADMIN");
         GFLoginUser loginUser = getLoginUser();
         request.setUdspUser(loginUser.getUserId());
-        return consumerService.innerConsume(request, isAdmin);
+        return consumerService.consume(request, isAdmin);
     }
 }

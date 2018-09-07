@@ -6,8 +6,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * WebService Response
@@ -15,23 +16,21 @@ import java.util.HashMap;
 @XmlRootElement(name = "udspResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WSResponse implements Serializable {
-    private ArrayList<HashMap<String, String>> records; // 记录集合
-
-    private Page page;
-
-    private long consumeTime; // 持续时间
 
     private String status; // 状态
-
     private String statusCode; // 状态码
-
     private String message; // 错误信息
-
+    private String errorCode; // 错误编码
     private String consumeId; // 消费ID
+    private long consumeTime; // 持续时间
 
-    private String errorCode; //错误编码
+    private List<HashMap<String, String>> records; // 记录集合
 
-    public String responseContent;//返回信息
+    private Page page; // 分页信息
+
+    public String responseContent; // 返回信息
+
+    private LinkedHashMap<String, String> returnColumns; // 返回字段信息
 
     public String getConsumeId() {
         return consumeId;
@@ -39,14 +38,6 @@ public class WSResponse implements Serializable {
 
     public void setConsumeId(String consumeId) {
         this.consumeId = consumeId;
-    }
-
-    public ArrayList<HashMap<String, String>> getRecords() {
-        return records;
-    }
-
-    public void setRecords(ArrayList<HashMap<String, String>> records) {
-        this.records = records;
     }
 
     public Page getPage() {
@@ -103,5 +94,21 @@ public class WSResponse implements Serializable {
 
     public void setResponseContent(String responseContent) {
         this.responseContent = responseContent;
+    }
+
+    public LinkedHashMap<String, String> getReturnColumns() {
+        return returnColumns;
+    }
+
+    public void setReturnColumns(LinkedHashMap<String, String> returnColumns) {
+        this.returnColumns = returnColumns;
+    }
+
+    public List<HashMap<String, String>> getRecords() {
+        return records;
+    }
+
+    public void setRecords(List<HashMap<String, String>> records) {
+        this.records = records;
     }
 }
