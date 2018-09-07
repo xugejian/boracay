@@ -29,7 +29,6 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -43,19 +42,6 @@ public class HBaseProvider implements Provider {
 
     private static final int HBASE_SCAN_CACHING_SIZE = 1024; // 每次RPC请求记录数
     private static final int HBASE_SCAN_BATCH_SIZE = 1024; // 每一批获取记录数
-
-    static {
-        // 解决winutils.exe不存在的问题
-        try {
-            File workaround = new File(".");
-            System.getProperties().put("hadoop.home.dir",
-                    workaround.getAbsolutePath());
-            new File("./bin").mkdirs();
-            new File("./bin/winutils.exe").createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static Logger logger = LogManager.getLogger(HBaseProvider.class);
     private static final FastDateFormat format8 = FastDateFormat.getInstance("yyyyMMdd");
@@ -116,8 +102,9 @@ public class HBaseProvider implements Provider {
         return response;
     }
 
-    public IqResponse query(IqRequest request, int pageIndex, int pageSize) {
-        logger.debug("request=" + JSONUtil.parseObj2JSON(request) + " pageIndex=" + pageIndex + " pageSize=" + pageSize);
+    public IqResponse query(IqRequest request, Page page) {
+        logger.debug("request=" + JSONUtil.parseObj2JSON(request)
+                + " pageIndex=" + page.getPageIndex() + " pageSize=" + page.getPageSize());
         long bef = System.currentTimeMillis();
         IqResponse response = new IqResponse();
         response.setRequest(request);
@@ -142,20 +129,11 @@ public class HBaseProvider implements Provider {
             String stopRow = getStopRow(queryColumns);
             logger.debug("startRow:" + startRow + ", startRow:" + startRow);
             Map<Integer, String> colMap = getColMap(metaReturnColumns);
-            int maxSize = hbaseDatasource.getMaxNum();
-            if (pageSize > maxSize) pageSize = maxSize;
-            HBasePage hbasePage = new HBasePage();
-            hbasePage.setPageIndex(pageIndex);
-            hbasePage.setPageSize(pageSize);
-            hbasePage.setStartRow(startRow);
-            hbasePage.setStopRow(stopRow);
+            HBasePage hbasePage = getHBasePage(page, hbaseDatasource.getMaxNum(), startRow, stopRow);
             hbasePage = scanPage(hbaseDatasource, tbName, hbasePage, colMap, hbaseMetadata);
             List<Map<String, String>> list = hbasePage.getRecords();
             list = orderBy(list, orderColumns); // 排序处理
             response.setRecords(getRecords(list, returnColumns)); // 字段过滤并字段名改别名
-            Page page = new Page();
-            page.setPageIndex(pageIndex);
-            page.setPageSize(pageSize);
             page.setTotalCount(hbasePage.getTotalCount());
             response.setPage(page);
             response.setStatus(Status.SUCCESS);
@@ -174,6 +152,12 @@ public class HBaseProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime());
         return response;
+    }
+
+    private HBasePage getHBasePage(Page page, int maxSize, String startRow, String stopRow) {
+        int pageSize = (page.getPageSize() > maxSize ? maxSize : page.getPageSize());
+        page.setPageSize(pageSize);
+        return new HBasePage(pageSize, page.getPageIndex(), startRow, stopRow);
     }
 
     //-------------------------------------------分割线---------------------------------------------
@@ -240,20 +224,17 @@ public class HBaseProvider implements Provider {
     }
 
     // 字段过滤并字段名改别名
-    private List<com.hex.bigdata.udsp.common.api.model.Result> getRecords(List<Map<String, String>> list, List<ReturnColumn> returnColumns) {
-        List<com.hex.bigdata.udsp.common.api.model.Result> records = new ArrayList<>();
+    private List<Map<String, String>> getRecords(List<Map<String, String>> list, List<ReturnColumn> returnColumns) {
+        List<Map<String, String>> records = new ArrayList<>();
         if (list == null || list.size() == 0) {
             return records;
         }
+        Map<String, String> result = null;
         for (Map<String, String> map : list) {
-            com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
-            Map<String, String> returnDataMap = new HashMap<String, String>();
+            result = new HashMap<>();
             for (ReturnColumn item : returnColumns) {
-                String colName = item.getName();
-                String label = item.getLabel();
-                returnDataMap.put(label, map.get(colName));
+                result.put(item.getLabel(), map.get(item.getName()));
             }
-            result.putAll(returnDataMap);
             records.add(result);
         }
         return records;

@@ -61,6 +61,7 @@ public class ImSyncService {
      * @param bef
      * @return
      */
+    @Deprecated
     public Response startForTimeout(ConsumeRequest consumeRequest, long bef) {
         Request request = consumeRequest.getRequest();
         RcUserService rcUserService = consumeRequest.getRcUserService();

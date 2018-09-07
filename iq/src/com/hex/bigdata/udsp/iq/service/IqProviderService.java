@@ -1,11 +1,12 @@
 package com.hex.bigdata.udsp.iq.service;
 
+import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Page;
+import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
-import com.hex.bigdata.udsp.common.api.model.Datasource;
-import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.DatasourceUtil;
@@ -95,16 +96,15 @@ public class IqProviderService extends BaseService {
      *
      * @param appId
      * @param paraMap
-     * @param pageIndex
-     * @param pageSize
+     * @param page
      * @return
      */
-    public IqResponse select(String appId, Map<String, String> paraMap, int pageIndex, int pageSize) {
+    public IqResponse select(String appId, Map<String, String> paraMap, Page page) {
         Application application = getApplication(appId, paraMap);
         IqRequest request = new IqRequest(application);
         Datasource datasource = application.getMetadata().getDatasource();
         Provider provider = getProviderImpl(datasource);
-        IqResponse response = provider.query(request, pageIndex, pageSize);
+        IqResponse response = provider.query(request, page);
         response.setColumns(getColumns(application.getReturnColumns())); // 设置返回字段信息
         return response;
     }

@@ -27,7 +27,6 @@ import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -41,19 +40,6 @@ import java.util.*;
 public class SolrHBaseProvider implements Provider {
 
     private static final int HBASE_GET_BATCH_SIZE = 1024;
-
-    static {
-        // 解决winutils.exe不存在的问题
-        try {
-            File workaround = new File(".");
-            System.getProperties().put("hadoop.home.dir",
-                    workaround.getAbsolutePath());
-            new File("./bin").mkdirs();
-            new File("./bin/winutils.exe").createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static Logger logger = LoggerFactory.getLogger(SolrHBaseProvider.class);
 
@@ -100,8 +86,9 @@ public class SolrHBaseProvider implements Provider {
         return response;
     }
 
-    public IqResponse query(IqRequest request, int pageIndex, int pageSize) {
-        logger.debug("request=" + JSONUtil.parseObj2JSON(request) + " pageIndex=" + pageIndex + " pageSize=" + pageSize);
+    public IqResponse query(IqRequest request, Page page) {
+        logger.debug("request=" + JSONUtil.parseObj2JSON(request)
+                + " pageIndex=" + page.getPageIndex() + " pageSize=" + page.getPageSize());
         long bef = System.currentTimeMillis();
         IqResponse response = new IqResponse();
         response.setRequest(request);
@@ -118,16 +105,14 @@ public class SolrHBaseProvider implements Provider {
             List<DataColumn> metaReturnColumns = metadata.getReturnColumns();
             SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource(datasource.getPropertyMap());
             int maxSize = solrHBaseDatasource.getMaxNum();
-            if (pageSize > maxSize) pageSize = maxSize;
-            String primaryKey = solrHBaseMetadata.getSolrPrimaryKey();
-            SolrQuery query = getSolrQuery(pageIndex, pageSize, queryColumns, orderColumns, primaryKey);
+            int pageIndex = page.getPageIndex();
+            int pageSize = (page.getPageSize() > maxSize ? maxSize : page.getPageSize());
+            page.setPageSize(pageSize);
+            SolrQuery query = getSolrQuery(pageIndex, pageSize, queryColumns, orderColumns, solrHBaseMetadata.getSolrPrimaryKey());
             Map<Integer, String> colMap = getColMap(metaReturnColumns);
             HBasePage hbasePage = searchPage(solrHBaseDatasource, tbName, query, pageIndex, pageSize, colMap, solrHBaseMetadata);
             List<Map<String, String>> list = orderBy(hbasePage.getRecords(), queryColumns, orderColumns); // 排序处理
             response.setRecords(getRecords(list, returnColumns));
-            Page page = new Page();
-            page.setPageIndex(pageIndex);
-            page.setPageSize(pageSize);
             page.setTotalCount(hbasePage.getTotalCount());
             response.setPage(page);
             response.setStatus(Status.SUCCESS);
@@ -258,22 +243,18 @@ public class SolrHBaseProvider implements Provider {
     }
 
     // 字段过滤并字段名改别名
-    private List<com.hex.bigdata.udsp.common.api.model.Result> getRecords(List<Map<String, String>> resultList,
-                                                                          List<ReturnColumn> returnColumns) {
-        List<com.hex.bigdata.udsp.common.api.model.Result> records = null;
-        if (resultList != null) {
-            records = new ArrayList<>();
-            for (Map<String, String> map : resultList) {
-                com.hex.bigdata.udsp.common.api.model.Result result = new com.hex.bigdata.udsp.common.api.model.Result();
-                Map<String, String> returnDataMap = new HashMap<>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    String label = item.getLabel();
-                    returnDataMap.put(label, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                records.add(result);
+    private List<Map<String, String>> getRecords(List<Map<String, String>> list, List<ReturnColumn> returnColumns) {
+        List<Map<String, String>> records = new ArrayList<>();
+        if (list == null || list.size() == 0) {
+            return records;
+        }
+        Map<String, String> result = null;
+        for (Map<String, String> map : list) {
+            result = new HashMap<>();
+            for (ReturnColumn item : returnColumns) {
+                result.put(item.getLabel(), map.get(item.getName()));
             }
+            records.add(result);
         }
         return records;
     }

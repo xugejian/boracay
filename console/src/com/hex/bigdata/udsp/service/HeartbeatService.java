@@ -170,13 +170,17 @@ public class HeartbeatService {
             mcCurrentNewService.delete(downHostKey, mcCurrent.getPkId());
         }
         for (Current mcCurrent : newCurrents) {
+            String type = mcCurrent.getAppType();
+            String appId = mcCurrent.getAppId();
             Map<String, Class> classMap = new HashMap<>();
             classMap.put(ConsumerConstant.CONSUME_RTS_DATASTREAM, Map.class);
             String requestContentJson = JSONUtil.parseObj2JSON(mcCurrent.getRequestContent());
             Request request = JSONUtil.parseJSON2Obj(requestContentJson, Request.class, classMap);
             request.setRequestType(mcCurrent.getRequestType());
-            request.setAppType(mcCurrent.getAppType());
+            request.setAppType(type);
             request.setAppName(mcCurrent.getAppName());
+            request.setAppId(appId);
+
             if (ConsumerEntity.STATUS.getValue().equalsIgnoreCase(request.getEntity())) {
                 continue;
             }
@@ -187,30 +191,26 @@ public class HeartbeatService {
                         ErrorCode.ERROR_000003.getValue(), ErrorCode.ERROR_000003.getName(), null);
             }
 
-            mcCurrent.setPkId(mcCurrent.getPkId());
-            String type = mcCurrent.getAppType();
-            String appId = mcCurrent.getAppId();
-
             //根据不同的APP类型、重新建任务
             //异步时文件
             String localFileName = CreateFileUtil.getFileName();
-            //新增消费请求类作为参数-start
-            //add 20170908
             ConsumeRequest consumeRequest = new ConsumeRequest();
             consumeRequest.setMcCurrent(mcCurrent);
             QueueIsFullResult isFullResult = new QueueIsFullResult();
             consumeRequest.setQueueIsFullResult(isFullResult);
-            //新增消费请求类作为参数-end
+            consumeRequest.setRequest(request);
             long bef = System.currentTimeMillis();
             if (ServiceType.IQ.getValue().equals(type)) {
-                ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), request.getPage(), localFileName, bef));
+                ThreadPool.execute(new IqAsyncService(consumeRequest, localFileName, bef));
             } else if (ServiceType.OLQ.getValue().equalsIgnoreCase(type)) {
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, request.getSql(), request.getPage(), localFileName, bef));
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, localFileName, bef));
             } else if (ServiceType.OLQ_APP.getValue().equals(type)) {
                 OlqApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 appId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 String sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, sql, request.getPage(), localFileName, bef));
+                consumeRequest.getRequest().setAppId(appId);
+                consumeRequest.getRequest().setSql(sql);
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, localFileName, bef));
             }
         }
         logger.info("转移服务IP为：" + downHostKey + "上的未完成的异步任务到本机【结束】");

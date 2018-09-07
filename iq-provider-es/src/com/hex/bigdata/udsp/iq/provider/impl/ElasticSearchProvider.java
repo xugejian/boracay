@@ -3,7 +3,6 @@ package com.hex.bigdata.udsp.iq.provider.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.api.model.Result;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.common.constant.Status;
@@ -76,7 +75,7 @@ public class ElasticSearchProvider implements Provider {
     }
 
     @Override
-    public IqResponse query(IqRequest request, int pageIndex, int pageSize) {
+    public IqResponse query(IqRequest request, Page page) {
         long bef = System.currentTimeMillis();
         IqResponse response = new IqResponse();
         response.setRequest(request);
@@ -93,9 +92,7 @@ public class ElasticSearchProvider implements Provider {
             Datasource datasource = metadata.getDatasource();
             ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource.getPropertyMap());
             int maxSize = elSearchDatasource.getMaxNum();
-            if (pageSize > maxSize) pageSize = maxSize;
-            Page page = new Page();
-            page.setPageIndex(pageIndex);
+            int pageSize = (page.getPageSize() > maxSize ? maxSize : page.getPageSize());
             page.setPageSize(pageSize);
             String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
             ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
@@ -120,21 +117,18 @@ public class ElasticSearchProvider implements Provider {
     }
 
     // 字段名改别名
-    private List<Result> getRecords(List<Map<String, Object>> resultList, List<ReturnColumn> returnColumns) {
-        List<Result> records = null;
-        if (resultList != null) {
-            records = new ArrayList<Result>();
-            for (Map<String, Object> map : resultList) {
-                Result result = new Result();
-                Map<String, Object> returnDataMap = new HashMap<String, Object>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    String label = item.getLabel();
-                    returnDataMap.put(label, map.get(colName));
-                }
-                result.set(returnDataMap);
-                records.add(result);
+    private List<Map<String, String>> getRecords(List<Map<String, Object>> list, List<ReturnColumn> returnColumns) {
+        List<Map<String, String>> records = new ArrayList<>();
+        if (list == null || list.size() == 0) {
+            return records;
+        }
+        Map<String, String> result = null;
+        for (Map<String, Object> map : list) {
+            result = new HashMap<>();
+            for (ReturnColumn item : returnColumns) {
+                result.put(item.getLabel(), String.valueOf(map.get(item.getName())));
             }
+            records.add(result);
         }
         return records;
     }

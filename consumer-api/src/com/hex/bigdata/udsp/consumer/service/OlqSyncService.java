@@ -7,16 +7,15 @@ import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
-import com.hex.bigdata.udsp.mc.model.Current;
-import com.hex.bigdata.udsp.mc.service.RunQueueService;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
+import com.hex.bigdata.udsp.consumer.thread.OlqAsyncCallable;
+import com.hex.bigdata.udsp.consumer.thread.OlqSyncServiceCallable;
+import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponseFetch;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
-import com.hex.bigdata.udsp.consumer.thread.OlqAsyncCallable;
-import com.hex.bigdata.udsp.consumer.thread.OlqSyncServiceCallable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,22 +57,18 @@ public class OlqSyncService {
     private LoggingService loggingService;
     @Autowired
     private InitParamService initParamService;
-    @Autowired
-    private RunQueueService runQueueService;
 
     /**
      * 同步运行（添加了超时机制）
      *
      * @param consumeRequest
-     * @param appId
-     * @param sql
      * @param bef
      * @return
      */
-    public Response syncStartForTimeout(ConsumeRequest consumeRequest, String appId, String sql, long bef) {
+    public Response syncStartForTimeout(ConsumeRequest consumeRequest, long bef) {
         Request request = consumeRequest.getRequest();
         Current mcCurrent = consumeRequest.getMcCurrent();
-        String consumeId = mcCurrent.getPkId();
+        String consumeId = (StringUtils.isNotBlank(request.getConsumeId()) ? request.getConsumeId() : mcCurrent.getPkId());
         RcUserService rcUserService = consumeRequest.getRcUserService();
         long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
                 initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
@@ -81,7 +76,8 @@ public class OlqSyncService {
         long runBef = System.currentTimeMillis();
         try {
             // 开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(new OlqSyncServiceCallable(consumeId, appId, sql, request.getPage()));
+            Future<Response> futureTask = executorService.submit(
+                    new OlqSyncServiceCallable(consumeId, request.getAppId(), request.getSql(), request.getPage()));
             response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
@@ -94,33 +90,38 @@ public class OlqSyncService {
         return response;
     }
 
-    public void asyncStartForTimeout(ConsumeRequest consumeRequest, long bef,
-                                     String appId, String sql, Page page, String fileName) {
-
+    /**
+     * 异步运行（添加了超时机制）
+     *
+     * @param consumeRequest
+     * @param fileName
+     * @param bef
+     */
+    public void asyncStartForTimeout(ConsumeRequest consumeRequest, String fileName, long bef) {
+        long runBef = System.currentTimeMillis();
         Current mcCurrent = consumeRequest.getMcCurrent();
         String consumeId = mcCurrent.getPkId();
-        String userName = consumeRequest.getMcCurrent().getUserName();
-        Request request = consumeRequest.getRequest();
-        RcUserService rcUserService = consumeRequest.getRcUserService();
-        long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
-                initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
-        Response response = new Response();
-        long runBef = System.currentTimeMillis();
         try {
+            String userName = consumeRequest.getMcCurrent().getUserName();
+            Request request = consumeRequest.getRequest();
+            RcUserService rcUserService = consumeRequest.getRcUserService();
+            long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
+                    initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
             // 开启一个新的线程，其内部执行联机查询任务，执行成功时或者执行超时时向下走
-            Future<OlqResponse> olqFutureTask = executorService.submit(new OlqAsyncCallable(consumeId, userName, appId, sql, page, fileName));
+            Future<OlqResponse> olqFutureTask = executorService.submit(
+                    new OlqAsyncCallable(consumeId, userName, request.getAppId(), request.getSql(), request.getPage(), fileName));
             OlqResponse olqResponse = olqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
+            Response response = new Response();
             response.setResponseContent(olqResponse.getFilePath());
             loggingService.writeResponseLog(consumeId, bef, runBef, request, response, false);
         } catch (TimeoutException e) {
-            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+            e.printStackTrace();
+            loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
                     ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
         } catch (Exception e) {
             e.printStackTrace();
-            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+            loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
                     ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
-        } finally {
-            runQueueService.reduceCurrent(mcCurrent);
         }
     }
 
@@ -158,29 +159,6 @@ public class OlqSyncService {
         return response;
     }
 
-    private Response checkResponseParam(String sql) {
-        Response response = null;
-        if (StringUtils.isBlank(sql)) {
-            response = new Response();
-            response.setStatus(Status.DEFEAT.getValue());
-            response.setStatusCode(StatusCode.DEFEAT.getValue());
-            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
-            response.setMessage(ErrorCode.ERROR_000009.getName());
-        }
-        return response;
-    }
-
-    private OlqResponse checkOlqResponseParam(String sql) {
-        OlqResponse response = null;
-        if (StringUtils.isBlank(sql)) {
-            response = new OlqResponse();
-            response.setStatus(Status.DEFEAT);
-            response.setStatusCode(StatusCode.DEFEAT);
-            response.setMessage(ErrorCode.ERROR_000009.getName());
-        }
-        return response;
-    }
-
     /**
      * 异步运行
      *
@@ -189,9 +167,16 @@ public class OlqSyncService {
      * @return
      */
     public OlqResponse asyncStart(String consumeId, String dsId, String sql, Page page, String fileName, String userName) {
-        OlqResponse response = checkOlqResponseParam(sql);
-        if (response != null) return response;
-
+        try {
+            checkParam(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+            OlqResponse response = new OlqResponse();
+            response.setStatus(Status.DEFEAT);
+            response.setStatusCode(StatusCode.DEFEAT);
+            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.getMessage());
+            return response;
+        }
         Status status = Status.SUCCESS;
         StatusCode statusCode = StatusCode.SUCCESS;
         String message = "成功";
@@ -234,7 +219,7 @@ public class OlqSyncService {
             } else {
                 status = Status.DEFEAT;
                 statusCode = StatusCode.DEFEAT;
-                message = response.getMessage();
+                message = responseFetch.getMessage();
             }
         } catch (Exception e) {
             status = Status.DEFEAT;
@@ -265,7 +250,7 @@ public class OlqSyncService {
             StatementUtil.removeStatement(consumeId);
         }
 
-        response = new OlqResponse();
+        OlqResponse response = new OlqResponse();
         response.setFilePath(filePath);
         response.setMessage(message);
         response.setStatus(status);
@@ -274,4 +259,21 @@ public class OlqSyncService {
         return response;
     }
 
+    private Response checkResponseParam(String sql) {
+        Response response = null;
+        if (StringUtils.isBlank(sql)) {
+            response = new Response();
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
+            response.setMessage(ErrorCode.ERROR_000009.getName());
+        }
+        return response;
+    }
+
+    private void checkParam(String sql) throws Exception {
+        if (StringUtils.isBlank(sql)) {
+            throw new Exception("sql字段不能为空！");
+        }
+    }
 }

@@ -54,7 +54,8 @@ public class LoggingService {
         /**
          * OLQ或OLQ_APP执行超时时，取消正在执行的SQL
          */
-        if ((ServiceType.OLQ.getValue().equalsIgnoreCase(appType) || ServiceType.OLQ_APP.getValue().equals(appType))
+        if (StringUtils.isNotBlank(consumeId)
+                && (ServiceType.OLQ.getValue().equalsIgnoreCase(appType) || ServiceType.OLQ_APP.getValue().equals(appType))
                 && ErrorCode.ERROR_000015.getValue().equals(errorCode)) {
             try {
                 StatementUtil.cancel(consumeId);

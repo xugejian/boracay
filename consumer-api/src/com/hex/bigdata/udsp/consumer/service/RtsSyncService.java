@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.consumer.service;
 
-import com.hex.bigdata.udsp.common.api.model.Result;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
@@ -115,16 +114,7 @@ public class RtsSyncService {
             response.setStatus(consumerResponse.getStatus().getValue());
             response.setStatusCode(consumerResponse.getStatusCode().getValue());
             response.setReturnColumns(consumerResponse.getColumns());
-            List<Map<String, String>> records = new ArrayList<>();
-            Map<String, String> map = null;
-            for (Result result : consumerResponse.getRecords()) {
-                map = new HashMap<>();
-                for (Map.Entry<String, Object> entry : result.entrySet()) {
-                    map.put(entry.getKey(), result.getString(entry.getKey()));
-                }
-                records.add(map);
-            }
-            response.setRecords(records);
+            response.setRecords(consumerResponse.getRecords());
         } catch (Exception e) {
             response.setMessage(e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());

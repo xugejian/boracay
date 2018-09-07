@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.consumer.service;
 
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.api.model.Result;
 import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
@@ -11,25 +10,22 @@ import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.FTPClientConfig;
 import com.hex.bigdata.udsp.common.util.FTPHelper;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
+import com.hex.bigdata.udsp.consumer.model.Request;
+import com.hex.bigdata.udsp.consumer.model.Response;
+import com.hex.bigdata.udsp.consumer.thread.IqAsyncCallable;
+import com.hex.bigdata.udsp.consumer.thread.IqSyncServiceCallable;
 import com.hex.bigdata.udsp.iq.model.IqAppQueryCol;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
 import com.hex.bigdata.udsp.iq.service.IqAppQueryColService;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
 import com.hex.bigdata.udsp.mc.model.Current;
-import com.hex.bigdata.udsp.mc.service.RunQueueService;
-import com.hex.bigdata.udsp.consumer.model.Request;
-import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
-import com.hex.bigdata.udsp.consumer.thread.IqAsyncCallable;
-import com.hex.bigdata.udsp.consumer.thread.IqSyncServiceCallable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -66,8 +62,6 @@ public class IqSyncService {
     private LoggingService loggingService;
     @Autowired
     private InitParamService initParamService;
-    @Autowired
-    private RunQueueService runQueueService;
 
     /**
      * 同步运行（添加了超时机制）
@@ -77,15 +71,16 @@ public class IqSyncService {
      * @return
      */
     public Response syncStartForTimeout(ConsumeRequest consumeRequest, long bef) {
-        Request request = consumeRequest.getRequest();
-        RcUserService rcUserService = consumeRequest.getRcUserService();
-        long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
-                initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
-        Response response = new Response();
         long runBef = System.currentTimeMillis();
+        Response response = new Response();
         try {
+            Request request = consumeRequest.getRequest();
+            RcUserService rcUserService = consumeRequest.getRcUserService();
+            long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
+                    initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
             // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(new IqSyncServiceCallable(request.getData(), request.getAppId(), request.getPage()));
+            Future<Response> futureTask = executorService.submit(
+                    new IqSyncServiceCallable(request.getData(), request.getAppId(), request.getPage()));
             response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
@@ -98,32 +93,30 @@ public class IqSyncService {
         return response;
     }
 
-    public void asyncStartForTimeout(ConsumeRequest consumeRequest, long bef,
-                                     String appId, Map<String, String> paraMap, Page page, String fileName) {
+    public void asyncStartForTimeout(ConsumeRequest consumeRequest, String fileName, long bef) {
+        long runBef = System.currentTimeMillis();
         Current mcCurrent = consumeRequest.getMcCurrent();
         String consumeId = mcCurrent.getPkId();
-        String userName = consumeRequest.getMcCurrent().getUserName();
-        Request request = consumeRequest.getRequest();
-        RcUserService rcUserService = consumeRequest.getRcUserService();
-        long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
-                initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
-        Response response = new Response();
-        long runBef = System.currentTimeMillis();
         try {
+            Request request = consumeRequest.getRequest();
+            String userName = consumeRequest.getMcCurrent().getUserName();
+            RcUserService rcUserService = consumeRequest.getRcUserService();
+            long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
+                    initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
             // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
-            Future<IqResponse> iqFutureTask = executorService.submit(new IqAsyncCallable(userName, appId, paraMap, page, fileName));
+            Future<IqResponse> iqFutureTask = executorService.submit(
+                    new IqAsyncCallable(userName, request.getAppId(), request.getData(), request.getPage(), fileName));
             IqResponse iqResponse = iqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
+            Response response = new Response();
             response.setResponseContent(iqResponse.getFilePath());
             loggingService.writeResponseLog(consumeId, bef, runBef, request, response, false);
         } catch (TimeoutException e) {
-            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+            loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
                     ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
         } catch (Exception e) {
             e.printStackTrace();
-            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
+            loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
                     ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
-        } finally {
-            runQueueService.reduceCurrent(mcCurrent);
         }
     }
 
@@ -144,21 +137,7 @@ public class IqSyncService {
             response.setConsumeTime(iqResponse.getConsumeTime());
             response.setStatus(iqResponse.getStatus().getValue());
             response.setStatusCode(iqResponse.getStatusCode().getValue());
-            List<Map<String, String>> records = new ArrayList<>();
-            Map<String, String> map = null;
-
-            List<Result> results = iqResponse.getRecords();
-            if (null != results && results.size() > 0) {
-                for (Result result : iqResponse.getRecords()) {
-                    map = new HashMap<>();
-                    for (Map.Entry<String, Object> entry : result.entrySet()) {
-                        map.put(entry.getKey(), result.getString(entry.getKey()));
-                    }
-                    records.add(map);
-                }
-                response.setRecords(records);
-                //返回字段名称及类型
-            }
+            response.setRecords(iqResponse.getRecords());
             response.setReturnColumns(iqResponse.getColumns());
         } catch (Exception e) {
             e.printStackTrace();
@@ -179,11 +158,17 @@ public class IqSyncService {
      * @return
      */
     private IqResponse run(String appId, Map<String, String> paraMap, Page page) {
-        IqResponse response = checkParam(appId, paraMap);
-        if (response != null) return response;
-
+        try {
+            checkParam(appId, paraMap);
+        } catch (Exception e) {
+            IqResponse response = new IqResponse();
+            response.setStatus(Status.DEFEAT);
+            response.setStatusCode(StatusCode.DEFEAT);
+            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.getMessage());
+            return response;
+        }
         if (page != null && page.getPageIndex() > 0) {
-            return iqProviderService.select(appId, paraMap, page.getPageIndex(), page.getPageSize());
+            return iqProviderService.select(appId, paraMap, page);
         } else {
             return iqProviderService.select(appId, paraMap);
         }
@@ -191,30 +176,27 @@ public class IqSyncService {
 
     /**
      * 检查输入的参数
-     *
-     * @param appId
-     * @param paraMap
-     * @return
      */
-    private IqResponse checkParam(String appId, Map<String, String> paraMap) {
-        IqResponse response = null;
-        boolean flg = false;
-        StringBuffer needColsName = new StringBuffer();
-        for (IqAppQueryCol iqAppQueryCol : iqAppQueryColService.selectByAppId(appId)) {
-            if (EnumTrans.transTrue(iqAppQueryCol.getIsNeed())) {
-                needColsName.append(iqAppQueryCol.getLabel() + ",");
-                if (StringUtils.isBlank(paraMap.get(iqAppQueryCol.getLabel()))) {
-                    flg = true;
+    private void checkParam(String appId, Map<String, String> paraMap) throws Exception {
+        if (paraMap != null && paraMap.size() != 0) {
+            boolean isError = false;
+            String message = "";
+            int count = 0;
+            for (IqAppQueryCol iqAppQueryCol : iqAppQueryColService.selectByAppId(appId)) {
+                if (EnumTrans.transTrue(iqAppQueryCol.getIsNeed())) {
+                    String name = iqAppQueryCol.getLabel();
+                    String value = paraMap.get(name);
+                    if (StringUtils.isBlank(value)) { // 没有传入值
+                        message += (count == 0 ? "" : ", ") + name;
+                        isError = true;
+                        count++;
+                    }
                 }
             }
+            if (isError) {
+                throw new Exception(message + "参数不能为空!");
+            }
         }
-        if (flg) {
-            response = new IqResponse();
-            response.setStatus(Status.DEFEAT);
-            response.setStatusCode(StatusCode.DEFEAT);
-            response.setMessage("请检查以下参数的值:" + needColsName.substring(0, needColsName.length() - 1));
-        }
-        return response;
     }
 
     /**
@@ -232,15 +214,7 @@ public class IqSyncService {
         String filePath = "";
         IqResponse response = run(appId, paraMap, page);
         if (Status.SUCCESS == response.getStatus()) {
-            List<Map<String, String>> records = new ArrayList<>();
-            Map<String, String> map = null;
-            for (Result result : response.getRecords()) {
-                map = new HashMap<>();
-                for (Map.Entry<String, Object> entry : result.entrySet()) {
-                    map.put(entry.getKey(), result.getString(entry.getKey()));
-                }
-                records.add(map);
-            }
+            List<Map<String, String>> records = response.getRecords();
             // 写数据文件和标记文件到本地，并上传至FTP服务器
             CreateFileUtil.createDelimiterFile(records, true, fileName);
             String dataFileName = CreateFileUtil.getDataFileName(fileName);

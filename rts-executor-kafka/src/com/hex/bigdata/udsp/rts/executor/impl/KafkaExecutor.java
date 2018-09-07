@@ -2,7 +2,6 @@ package com.hex.bigdata.udsp.rts.executor.impl;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
-import com.hex.bigdata.udsp.common.api.model.Result;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
@@ -226,7 +225,6 @@ public class KafkaExecutor implements Executor {
 
     public ConsumerResponse pull(ConsumerRequest consumerRequest) {
         long bef = System.currentTimeMillis();
-        List<Result> records = new ArrayList<>();
         ConsumerResponse consumerResponse = new ConsumerResponse();
         consumerResponse.setConsumerRequest(consumerRequest);
         Metadata metadata = consumerRequest.getApplication().getMetadata();
@@ -237,21 +235,25 @@ public class KafkaExecutor implements Executor {
         KafkaConsumerDatasource consumerDatasource = new KafkaConsumerDatasource(propertyMap);
         ConsumerConnector consumer = Consumer.createJavaConsumerConnector(getCnsumerConfig(consumerDatasource));
         int threadNum = consumerDatasource.getThreadNum();
+        List<Map<String, String>> records = new ArrayList<>();
         try {
             List<KafkaStream<byte[], byte[]>> streams = receive(consumer, topic, threadNum);
-            Map<String, Object> md = null;
+            Map<String, Object> map = null;
+            Map<String, String> result = null;
             for (KafkaStream<byte[], byte[]> stream : streams) {
                 ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
                 while (iterator.hasNext()) {
                     String message = new String(iterator.next().message());
                     logger.debug("kafka接收的信息为：" + message);
                     try {
-                        md = JSONUtil.parseJSON2Map(message);
+                        map = JSONUtil.parseJSON2Map(message, String.class);
+                        result = new HashMap<>();
+                        for (Map.Entry<String, Object> entry : map.entrySet()) {
+                            result.put(entry.getKey(), String.valueOf(entry.getValue()));
+                        }
                     } catch (Exception e) {
                         continue;
                     }
-                    Result result = new Result();
-                    result.putAll(md);
                     records.add(result);
                 }
             }
@@ -266,7 +268,6 @@ public class KafkaExecutor implements Executor {
             consumerResponse.setMessage(e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
-            consumerResponse.setRecords(records);
             consumerResponse.setStatus(Status.DEFEAT);
             consumerResponse.setStatusCode(StatusCode.DEFEAT);
             consumerResponse.setMessage(e.getMessage());

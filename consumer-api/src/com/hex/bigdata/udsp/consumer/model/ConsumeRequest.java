@@ -16,6 +16,8 @@ public class ConsumeRequest {
 
     private QueueIsFullResult queueIsFullResult;
 
+    private String message;
+
     public Request getRequest() {
         return request;
     }
@@ -54,5 +56,13 @@ public class ConsumeRequest {
 
     public void setQueueIsFullResult(QueueIsFullResult queueIsFullResult) {
         this.queueIsFullResult = queueIsFullResult;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

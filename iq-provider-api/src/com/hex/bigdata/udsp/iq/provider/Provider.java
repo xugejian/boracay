@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.iq.provider;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
+import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.iq.provider.model.IqRequest;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
 import com.hex.bigdata.udsp.iq.provider.model.MetadataCol;
@@ -24,11 +25,10 @@ public interface Provider {
      * 分页查询
      *
      * @param request
-     * @param pageIndex
-     * @param pageSize
+     * @param page
      * @return
      */
-    IqResponse query(IqRequest request, int pageIndex, int pageSize);
+    IqResponse query(IqRequest request, Page page);
 
     /**
      * 测试
