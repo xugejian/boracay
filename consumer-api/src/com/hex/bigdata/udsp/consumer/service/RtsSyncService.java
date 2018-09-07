@@ -40,9 +40,15 @@ public class RtsSyncService {
      * @return
      */
     public Response startProducer(String appId, List<Map<String, String>> datas) {
-        Response response = checkParam(appId, datas);
-        if (response != null) return response;
-        response = new Response();
+        Response response = new Response();
+        try {
+            checkParam(appId, datas);
+        } catch (Exception e) {
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
+            return response;
+        }
         try {
             RtsProducer rtsProducer = rtsProducerService.select(appId);
             String mdId = rtsProducer.getMdId();
@@ -78,24 +84,22 @@ public class RtsSyncService {
      * @param datas
      * @return
      */
-    private Response checkParam(String appId, List<Map<String, String>> datas) {
-        Response response = null;
+    private void checkParam(String appId, List<Map<String, String>> datas) throws Exception {
         boolean isError = false;
-        StringBuffer colsName = new StringBuffer();
+        String message = "";
+        int count = 0;
         for (RtsMetadataCol rtsMatedataCol : rtsMetadataColService.selectByProducerPkid(appId)) {
-            colsName.append(rtsMatedataCol.getName() + ",");
-            if (StringUtils.isBlank(datas.get(0).get(rtsMatedataCol.getName()))) {
+            String name = rtsMatedataCol.getName();
+            String value = datas.get(0).get(name);
+            if (StringUtils.isBlank(value)) {
+                message += (count == 0 ? "" : ", ") + name;
                 isError = true;
+                count++;
             }
         }
         if (isError) {
-            response = new Response();
-            response.setStatus(Status.DEFEAT.getValue());
-            response.setStatusCode(StatusCode.DEFEAT.getValue());
-            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
-            response.setMessage("请检查以下参数的值:" + colsName.substring(0, colsName.length() - 1));
+            throw new Exception(message + "参数不能为空!");
         }
-        return response;
     }
 
     /**

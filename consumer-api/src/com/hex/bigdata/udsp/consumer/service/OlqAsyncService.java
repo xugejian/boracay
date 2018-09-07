@@ -31,13 +31,11 @@ public class OlqAsyncService implements Runnable {
 
     @Override
     public void run() {
-        logger.debug("OLQ START 线程调用开始");
         try {
             // 没有进入等待队列或从等待队列中出来，则进入执行队列中执行任务
             olqSyncService.asyncStartForTimeout(consumeRequest, fileName, bef);
         } finally {
             runQueueService.reduceCurrent(consumeRequest.getMcCurrent());
         }
-        logger.debug(" OLQ START 线程调用结束");
     }
 }

@@ -12,8 +12,6 @@ import com.hex.bigdata.udsp.common.util.FTPHelper;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.consumer.thread.IqAsyncCallable;
-import com.hex.bigdata.udsp.consumer.thread.IqSyncServiceCallable;
 import com.hex.bigdata.udsp.iq.model.IqAppQueryCol;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
 import com.hex.bigdata.udsp.iq.service.IqAppQueryColService;
@@ -62,6 +60,8 @@ public class IqSyncService {
     private LoggingService loggingService;
     @Autowired
     private InitParamService initParamService;
+    @Autowired
+    private IqSyncService iqSyncService;
 
     /**
      * 同步运行（添加了超时机制）
@@ -74,13 +74,17 @@ public class IqSyncService {
         long runBef = System.currentTimeMillis();
         Response response = new Response();
         try {
-            Request request = consumeRequest.getRequest();
+            final Request request = consumeRequest.getRequest();
             RcUserService rcUserService = consumeRequest.getRcUserService();
             long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
                     initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
             // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(
-                    new IqSyncServiceCallable(request.getData(), request.getAppId(), request.getPage()));
+            Future<Response> futureTask = executorService.submit(new Callable() {
+                @Override
+                public Response call() throws Exception {
+                    return iqSyncService.syncStart(request.getAppId(), request.getData(), request.getPage());
+                }
+            });
             response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
@@ -93,30 +97,32 @@ public class IqSyncService {
         return response;
     }
 
-    public void asyncStartForTimeout(ConsumeRequest consumeRequest, String fileName, long bef) {
+    public void asyncStartForTimeout(ConsumeRequest consumeRequest, final String fileName, long bef) {
         long runBef = System.currentTimeMillis();
-        Current mcCurrent = consumeRequest.getMcCurrent();
-        String consumeId = mcCurrent.getPkId();
         try {
-            Request request = consumeRequest.getRequest();
-            String userName = consumeRequest.getMcCurrent().getUserName();
+            final Request request = consumeRequest.getRequest();
+            Current mcCurrent = consumeRequest.getMcCurrent();
+            String consumeId = (StringUtils.isNotBlank(request.getConsumeId()) ? request.getConsumeId() : mcCurrent.getPkId());
+            final String userName = consumeRequest.getMcCurrent().getUserName();
             RcUserService rcUserService = consumeRequest.getRcUserService();
             long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
                     initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
             // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
-            Future<IqResponse> iqFutureTask = executorService.submit(
-                    new IqAsyncCallable(userName, request.getAppId(), request.getData(), request.getPage(), fileName));
-            IqResponse iqResponse = iqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
-            Response response = new Response();
-            response.setResponseContent(iqResponse.getFilePath());
+            Future<Response> futureTask = executorService.submit(new Callable<Response>() {
+                @Override
+                public Response call() throws Exception {
+                    return iqSyncService.asyncStart(request.getAppId(), request.getData(), request.getPage(), fileName, userName);
+                }
+            });
+            Response response = futureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
             loggingService.writeResponseLog(consumeId, bef, runBef, request, response, false);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), null);
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
         }
     }
 
@@ -131,14 +137,7 @@ public class IqSyncService {
     public Response syncStart(String appId, Map<String, String> paraMap, Page page) {
         Response response = new Response();
         try {
-            IqResponse iqResponse = run(appId, paraMap, page);
-            response.setPage(iqResponse.getPage());
-            response.setMessage(iqResponse.getMessage());
-            response.setConsumeTime(iqResponse.getConsumeTime());
-            response.setStatus(iqResponse.getStatus().getValue());
-            response.setStatusCode(iqResponse.getStatusCode().getValue());
-            response.setRecords(iqResponse.getRecords());
-            response.setReturnColumns(iqResponse.getColumns());
+            response = run(appId, paraMap, page);
         } catch (Exception e) {
             e.printStackTrace();
             response.setMessage(e.getMessage());
@@ -157,21 +156,30 @@ public class IqSyncService {
      * @param page
      * @return
      */
-    private IqResponse run(String appId, Map<String, String> paraMap, Page page) {
+    private Response run(String appId, Map<String, String> paraMap, Page page) {
+        Response response = new Response();
         try {
             checkParam(appId, paraMap);
         } catch (Exception e) {
-            IqResponse response = new IqResponse();
-            response.setStatus(Status.DEFEAT);
-            response.setStatusCode(StatusCode.DEFEAT);
-            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.getMessage());
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
             return response;
         }
+        IqResponse iqResponse = null;
         if (page != null && page.getPageIndex() > 0) {
-            return iqProviderService.select(appId, paraMap, page);
+            iqResponse = iqProviderService.select(appId, paraMap, page);
         } else {
-            return iqProviderService.select(appId, paraMap);
+            iqResponse = iqProviderService.select(appId, paraMap);
         }
+        response.setPage(iqResponse.getPage());
+        response.setMessage(iqResponse.getMessage());
+        response.setConsumeTime(iqResponse.getConsumeTime());
+        response.setStatus(iqResponse.getStatus().getValue());
+        response.setStatusCode(iqResponse.getStatusCode().getValue());
+        response.setRecords(iqResponse.getRecords());
+        response.setReturnColumns(iqResponse.getColumns());
+        return response;
     }
 
     /**
@@ -207,13 +215,13 @@ public class IqSyncService {
      * @param page
      * @return
      */
-    public IqResponse asyncStart(String appId, Map<String, String> paraMap, Page page, String fileName, String userName) {
+    public Response asyncStart(String appId, Map<String, String> paraMap, Page page, String fileName, String userName) {
         Status status = Status.SUCCESS;
         StatusCode statusCode = StatusCode.SUCCESS;
         String message = "成功";
         String filePath = "";
-        IqResponse response = run(appId, paraMap, page);
-        if (Status.SUCCESS == response.getStatus()) {
+        Response response = run(appId, paraMap, page);
+        if (Status.SUCCESS.getValue().equals(response.getStatus())) {
             List<Map<String, String>> records = response.getRecords();
             // 写数据文件和标记文件到本地，并上传至FTP服务器
             CreateFileUtil.createDelimiterFile(records, true, fileName);
@@ -248,10 +256,10 @@ public class IqSyncService {
             statusCode = StatusCode.DEFEAT;
             message = response.getMessage();
         }
-        response.setFilePath(filePath);
+        response.setResponseContent(filePath);
+        response.setStatus(status.getValue());
+        response.setStatusCode(statusCode.getValue());
         response.setMessage(message);
-        response.setStatus(status);
-        response.setStatusCode(statusCode);
         return response;
     }
 

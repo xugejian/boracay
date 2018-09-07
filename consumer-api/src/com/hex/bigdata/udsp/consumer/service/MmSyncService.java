@@ -3,7 +3,6 @@ package com.hex.bigdata.udsp.consumer.service;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.mm.dto.MmFullAppInfoView;
 import com.hex.bigdata.udsp.mm.dto.MmResponse;
 import com.hex.bigdata.udsp.mm.dto.MmResponseData;
 import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
@@ -35,18 +34,21 @@ public class MmSyncService {
      * @return
      */
     public Response start(String consumeId, String appId, Request request) {
-        Response response = checkParam(appId, request.getData());
-        if (response != null) return response;
-
-        response = new Response();
+        Response response = new Response();
+        try {
+            checkParam(appId, request.getData());
+        } catch (Exception e) {
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
+            return response;
+        }
         MmResponse mmResponse = null;
         try {
-
             //内部请求，则设置serviceName
             if (RequestType.INNER.getValue().equals(request.getRequestType())) {
                 request.setServiceName(request.getAppName());
             }
-
             //模型调用
             mmResponse = mmProviderService.start(appId, consumeId, request);
             if (StringUtils.isBlank(mmResponse.getErrorCode())) {
@@ -60,10 +62,9 @@ public class MmSyncService {
             response.setErrorCode(mmResponse.getErrorCode());
             response.setStatus(mmResponse.getSystemStatus().getValue());
             response.setStatusCode(mmResponse.getStatusCode().getValue());
-
         } catch (Exception e) {
             e.printStackTrace();
-            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" +e.getMessage());
+            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.toString());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
@@ -78,27 +79,24 @@ public class MmSyncService {
      * @param paraMap
      * @return
      */
-    private Response checkParam(String appId, Map<String, String> paraMap) {
-        Response response = null;
+    private void checkParam(String appId, Map<String, String> paraMap) throws Exception {
         boolean isError = false;
-        StringBuffer needColsName = new StringBuffer();
-        MmFullAppInfoView mmFullAppInfoView = mmApplicationService.selectFullAppInfo(appId);
-        for (MmAppExecuteParam mmAppExecuteParam : mmFullAppInfoView.getExecuteParams()) {
+        String message = "";
+        int count = 0;
+        for (MmAppExecuteParam mmAppExecuteParam : mmApplicationService.selectFullAppInfo(appId).getExecuteParams()) {
             if (EnumTrans.transTrue(mmAppExecuteParam.getIsNeed())) {
-                needColsName.append(mmAppExecuteParam.getName() + ",");
-                if (StringUtils.isBlank(paraMap.get(mmAppExecuteParam.getName()))) {
+                String name = mmAppExecuteParam.getName();
+                String value = paraMap.get(name);
+                if (StringUtils.isBlank(value)) {
+                    message += (count == 0 ? "" : ", ") + name;
                     isError = true;
+                    count++;
                 }
             }
         }
         if (isError) {
-            response = new Response();
-            response.setStatus(Status.DEFEAT.getValue());
-            response.setStatusCode(StatusCode.DEFEAT.getValue());
-            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
-            response.setMessage("请检查以下参数的值:" + needColsName.substring(0, needColsName.length() - 1));
+            throw new Exception(message + "参数不能为空!");
         }
-        return response;
     }
 
     /**
@@ -109,9 +107,8 @@ public class MmSyncService {
      */
     public Response status(Request request, String appId) {
         Response response = new Response();
-        MmResponse mmResponse = null;
         try {
-            mmResponse = mmProviderService.status(request, appId);
+            MmResponse mmResponse = mmProviderService.status(request, appId);
             if (response != null) {
                 response.setMessage(mmResponse.getMessage());
                 response.setErrorCode(mmResponse.getErrorCode());
@@ -120,7 +117,6 @@ public class MmSyncService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            //设置消费id
             response.setConsumeId(request.getConsumeId());
             response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
