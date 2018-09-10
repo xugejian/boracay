@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -136,10 +135,10 @@ public class IqSyncService {
             response = run(appId, paraMap, page);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setMessage(e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
-            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(e.getMessage());
         }
         return response;
     }
@@ -159,6 +158,7 @@ public class IqSyncService {
         } catch (Exception e) {
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
             response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
             return response;
         }
@@ -168,13 +168,13 @@ public class IqSyncService {
         } else {
             iqResponse = iqProviderService.select(appId, paraMap);
         }
-        response.setPage(iqResponse.getPage());
-        response.setMessage(iqResponse.getMessage());
-        response.setConsumeTime(iqResponse.getConsumeTime());
         response.setStatus(iqResponse.getStatus().getValue());
         response.setStatusCode(iqResponse.getStatusCode().getValue());
         response.setRecords(iqResponse.getRecords());
         response.setReturnColumns(iqResponse.getColumns());
+        response.setPage(iqResponse.getPage());
+        response.setMessage(iqResponse.getMessage());
+        response.setConsumeTime(iqResponse.getConsumeTime());
         return response;
     }
 
@@ -212,50 +212,55 @@ public class IqSyncService {
      * @return
      */
     public Response asyncStart(String appId, Map<String, String> paraMap, Page page, String fileName, String userName) {
-        Status status = Status.SUCCESS;
-        StatusCode statusCode = StatusCode.SUCCESS;
-        String message = "成功";
-        String filePath = "";
         Response response = run(appId, paraMap, page);
-        if (Status.SUCCESS.getValue().equals(response.getStatus())) {
-            List<Map<String, String>> records = response.getRecords();
-            // 写数据文件和标记文件到本地，并上传至FTP服务器
-            CreateFileUtil.createDelimiterFile(records, true, fileName);
-            String dataFileName = CreateFileUtil.getDataFileName(fileName);
-            String flgFileName = CreateFileUtil.getFlgFileName(fileName);
-            String localDataFilePath = CreateFileUtil.getLocalDataFilePath(fileName);
-            String localFlgFilePath = CreateFileUtil.getLocalFlgFilePath(fileName);
-            String ftpFileDir = CreateFileUtil.getFtpFileDir(userName);
-            String ftpDataFilePath = ftpFileDir + "/" + dataFileName;
-            FTPHelper ftpHelper = new FTPHelper();
-            try {
-                ftpHelper.connectFTPServer();
-                ftpHelper.uploadFile(localDataFilePath, dataFileName, ftpFileDir);
-                ftpHelper.uploadFile(localFlgFilePath, flgFileName, ftpFileDir);
-                //filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
-                filePath = ftpDataFilePath;
-                message = localDataFilePath;
-            } catch (Exception e) {
-                status = Status.DEFEAT;
-                statusCode = StatusCode.DEFEAT;
-                message = "FTP上传失败！" + e.getMessage();
-                e.printStackTrace();
-            } finally {
-                try {
-                    ftpHelper.closeFTPClient();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            status = Status.DEFEAT;
-            statusCode = StatusCode.DEFEAT;
-            message = response.getMessage();
+        if (Status.DEFEAT.getValue().equals(response.getStatus())) {
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(response.getMessage());
+            return response;
         }
-        response.setResponseContent(filePath);
-        response.setStatus(status.getValue());
-        response.setStatusCode(statusCode.getValue());
-        response.setMessage(message);
+        try {
+            CreateFileUtil.createDelimiterFile(response.getRecords(), true, fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage("生成文件失败！" + e.getMessage());
+            return response;
+        }
+        String dataFileName = CreateFileUtil.getDataFileName(fileName);
+        String flgFileName = CreateFileUtil.getFlgFileName(fileName);
+        String localDataFilePath = CreateFileUtil.getLocalDataFilePath(fileName);
+        String localFlgFilePath = CreateFileUtil.getLocalFlgFilePath(fileName);
+        String ftpFileDir = CreateFileUtil.getFtpFileDir(userName);
+        String ftpDataFilePath = ftpFileDir + "/" + dataFileName;
+        // 写数据文件和标记文件到本地，并上传至FTP服务器
+        FTPHelper ftpHelper = new FTPHelper();
+        try {
+            ftpHelper.connectFTPServer();
+            ftpHelper.uploadFile(localDataFilePath, dataFileName, ftpFileDir);
+            ftpHelper.uploadFile(localFlgFilePath, flgFileName, ftpFileDir);
+            //String filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
+            String filePath = ftpDataFilePath;
+            response.setStatus(Status.SUCCESS.getValue());
+            response.setStatusCode(StatusCode.SUCCESS.getValue());
+            response.setMessage(localDataFilePath);
+            response.setResponseContent(filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage("FTP上传失败！" + e.getMessage());
+        } finally {
+            try {
+                ftpHelper.closeFTPClient();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return response;
     }
 

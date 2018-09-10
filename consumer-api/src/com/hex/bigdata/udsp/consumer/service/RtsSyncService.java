@@ -46,6 +46,7 @@ public class RtsSyncService {
         } catch (Exception e) {
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
             response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
             return response;
         }
@@ -68,10 +69,10 @@ public class RtsSyncService {
             response.setStatus(producerResponse.getStatus().getValue());
             response.setStatusCode(producerResponse.getStatusCode().getValue());
         } catch (Exception e) {
-            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(ErrorCode.ERROR_000007.getName() + ":" + e.getMessage());
             e.printStackTrace();
         }
         return response;
@@ -120,10 +121,11 @@ public class RtsSyncService {
             response.setReturnColumns(consumerResponse.getColumns());
             response.setRecords(consumerResponse.getRecords());
         } catch (Exception e) {
-            response.setMessage(e.getMessage());
+            e.printStackTrace();
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
-            e.printStackTrace();
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(e.getMessage());
         }
         return response;
     }

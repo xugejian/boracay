@@ -4,7 +4,10 @@ import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.util.*;
+import com.hex.bigdata.udsp.common.util.CreateFileUtil;
+import com.hex.bigdata.udsp.common.util.FTPClientConfig;
+import com.hex.bigdata.udsp.common.util.FTPHelper;
+import com.hex.bigdata.udsp.common.util.StatementUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
@@ -141,6 +144,7 @@ public class OlqSyncService {
             e.printStackTrace();
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
             response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.getMessage());
             return response;
         }
@@ -154,12 +158,11 @@ public class OlqSyncService {
             response.setReturnColumns(olqResponse.getColumns());
             response.setPage(olqResponse.getPage());
         } catch (Exception e) {
-            logger.error(ExceptionUtil.getMessage(e));
             e.printStackTrace();
-            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
         }
         return response;
     }
@@ -179,66 +182,66 @@ public class OlqSyncService {
             e.printStackTrace();
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
             response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.getMessage());
             return response;
         }
-        Status status = Status.SUCCESS;
-        StatusCode statusCode = StatusCode.SUCCESS;
-        String message = "成功";
-        String filePath = "";
         OlqResponseFetch responseFetch = olqProviderService.selectFetch(consumeId, dsId, sql, page);
+        if (Status.DEFEAT == responseFetch.getStatus()) {
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(responseFetch.getMessage());
+        }
         Connection conn = responseFetch.getConnection();
         Statement stmt = responseFetch.getStatement();
         ResultSet rs = responseFetch.getResultSet();
         try {
-            if (Status.SUCCESS == responseFetch.getStatus()) {
-                // 写数据文件和标记文件到本地，并上传至FTP服务器
-                CreateFileUtil.createDelimiterFile(rs, true, fileName);
-                String dataFileName = CreateFileUtil.getDataFileName(fileName);
-                String flgFileName = CreateFileUtil.getFlgFileName(fileName);
-                String localDataFilePath = CreateFileUtil.getLocalDataFilePath(fileName);
-                String localFlgFilePath = CreateFileUtil.getLocalFlgFilePath(fileName);
-                String ftpFileDir = CreateFileUtil.getFtpFileDir(userName);
-                String ftpDataFilePath = ftpFileDir + "/" + dataFileName;
-                FTPHelper ftpHelper = new FTPHelper();
-                try {
-                    ftpHelper.connectFTPServer();
-                    ftpHelper.uploadFile(localDataFilePath, dataFileName, ftpFileDir);
-                    ftpHelper.uploadFile(localFlgFilePath, flgFileName, ftpFileDir);
-                    //filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
-                    filePath = ftpDataFilePath;
-                    message = localDataFilePath;
-                } catch (Exception e) {
-                    status = Status.DEFEAT;
-                    statusCode = StatusCode.DEFEAT;
-                    message = "FTP上传失败！" + e.getMessage();
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        ftpHelper.closeFTPClient();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                status = Status.DEFEAT;
-                statusCode = StatusCode.DEFEAT;
-                message = responseFetch.getMessage();
-            }
+            CreateFileUtil.createDelimiterFile(rs, true, fileName);
         } catch (Exception e) {
-            status = Status.DEFEAT;
-            statusCode = StatusCode.DEFEAT;
-            message = e.getMessage();
+            e.printStackTrace();
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage("生成文件失败！" + e.getMessage());
+            return response;
         } finally {
             StatementUtil.removeStatement(consumeId);
             JdbcUtil.close(rs);
             JdbcUtil.close(stmt);
             JdbcUtil.close(conn);
         }
-        response.setResponseContent(filePath);
-        response.setMessage(message);
-        response.setStatus(status.getValue());
-        response.setStatusCode(statusCode.getValue());
+        String dataFileName = CreateFileUtil.getDataFileName(fileName);
+        String flgFileName = CreateFileUtil.getFlgFileName(fileName);
+        String localDataFilePath = CreateFileUtil.getLocalDataFilePath(fileName);
+        String localFlgFilePath = CreateFileUtil.getLocalFlgFilePath(fileName);
+        String ftpFileDir = CreateFileUtil.getFtpFileDir(userName);
+        String ftpDataFilePath = ftpFileDir + "/" + dataFileName;
+        // 写数据文件和标记文件到本地，并上传至FTP服务器
+        FTPHelper ftpHelper = new FTPHelper();
+        try {
+            ftpHelper.connectFTPServer();
+            ftpHelper.uploadFile(localDataFilePath, dataFileName, ftpFileDir);
+            ftpHelper.uploadFile(localFlgFilePath, flgFileName, ftpFileDir);
+            //String filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
+            String filePath = ftpDataFilePath;
+            response.setStatus(Status.SUCCESS.getValue());
+            response.setStatusCode(StatusCode.SUCCESS.getValue());
+            response.setMessage(localDataFilePath);
+            response.setResponseContent(filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage("FTP上传失败！" + e.getMessage());
+        } finally {
+            try {
+                ftpHelper.closeFTPClient();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return response;
     }
 

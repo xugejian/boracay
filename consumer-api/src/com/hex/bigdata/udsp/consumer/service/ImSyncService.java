@@ -38,6 +38,7 @@ public class ImSyncService {
      * @return
      */
     public Response start(String appId, Map<String, String> data) {
+        long bef = System.currentTimeMillis();
         Response response = new Response();
         try {
             Model model = imModelService.getModel(appId, data);
@@ -50,11 +51,12 @@ public class ImSyncService {
             response.setStatusCode(StatusCode.SUCCESS.getValue());
         } catch (Exception e) {
             e.printStackTrace();
-            response.setMessage(e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
-            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(e.getMessage());
         }
+        response.setConsumeTime(System.currentTimeMillis() - bef);
         return response;
     }
 }
