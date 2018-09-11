@@ -65,9 +65,9 @@ public class OlqSyncService {
     public Response syncStartForTimeout(ConsumeRequest consumeRequest, long bef) {
         long runBef = System.currentTimeMillis();
         Response response = new Response();
-        final Request request = consumeRequest.getRequest();
-        final String consumeId = request.getConsumeId();
         try {
+            final Request request = consumeRequest.getRequest();
+            final String consumeId = request.getConsumeId();
             RcUserService rcUserService = consumeRequest.getRcUserService();
             if (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) { // 不开启超时
                 response = syncStart(consumeId, request.getAppId(), request.getSql(), request.getPage());
@@ -82,11 +82,11 @@ public class OlqSyncService {
             }
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString());
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
         }
         return response;
     }
@@ -101,9 +101,9 @@ public class OlqSyncService {
     public void asyncStartForTimeout(ConsumeRequest consumeRequest, final String fileName, long bef) {
         long runBef = System.currentTimeMillis();
         Response response = null;
-        final Request request = consumeRequest.getRequest();
-        final String consumeId = request.getConsumeId();
         try {
+            final Request request = consumeRequest.getRequest();
+            final String consumeId = request.getConsumeId();
             RcUserService rcUserService = consumeRequest.getRcUserService();
             if (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) { // 不开启超时
                 response = asyncStart(consumeId, request.getAppId(), request.getSql(), request.getPage(), fileName, request.getUdspUser());
@@ -116,14 +116,14 @@ public class OlqSyncService {
                 });
                 response = futureTask.get(rcUserService.getMaxAsyncExecuteTimeout(), TimeUnit.SECONDS);
             }
-            loggingService.writeResponseLog(consumeId, bef, runBef, request, response, false);
+            loggingService.writeResponseLog(request, response, bef, runBef, false);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString());
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
         }
     }
 

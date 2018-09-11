@@ -66,9 +66,8 @@ public class IqSyncService {
     public Response syncStartForTimeout(ConsumeRequest consumeRequest, long bef) {
         long runBef = System.currentTimeMillis();
         Response response = new Response();
-        final Request request = consumeRequest.getRequest();
-        String consumeId = request.getConsumeId();
         try {
+            final Request request = consumeRequest.getRequest();
             RcUserService rcUserService = consumeRequest.getRcUserService();
             if (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) { // 不开启超时
                 response = syncStart(request.getAppId(), request.getData(), request.getPage());
@@ -83,11 +82,11 @@ public class IqSyncService {
             }
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString());
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
         }
         return response;
     }
@@ -95,9 +94,8 @@ public class IqSyncService {
     public void asyncStartForTimeout(ConsumeRequest consumeRequest, final String fileName, long bef) {
         long runBef = System.currentTimeMillis();
         Response response = null;
-        final Request request = consumeRequest.getRequest();
-        String consumeId = request.getConsumeId();
         try {
+            final Request request = consumeRequest.getRequest();
             RcUserService rcUserService = consumeRequest.getRcUserService();
             if (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) { // 不开启超时
                 response = asyncStart(request.getAppId(), request.getData(), request.getPage(), fileName, request.getUdspUser());
@@ -110,14 +108,14 @@ public class IqSyncService {
                 });
                 response = futureTask.get(rcUserService.getMaxAsyncExecuteTimeout(), TimeUnit.SECONDS);
             }
-            loggingService.writeResponseLog(request.getConsumeId(), bef, runBef, request, response, false);
+            loggingService.writeResponseLog(request, response, bef, runBef, false);
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString());
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
         }
     }
 

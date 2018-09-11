@@ -198,7 +198,7 @@ public class ConsumerService {
         // 这个里必须在try finally之前，因为这里处理的错误是运行队列已满的处理，是不需要finally中减去并发的
         if (errorCode != null) {
             loggingService.writeResponseLog(response, consumeRequest, bef, 0,
-                    errorCode.getValue(), (StringUtils.isBlank(message) ? errorCode.getName() : message), null);
+                    errorCode.getValue(), (StringUtils.isBlank(message) ? errorCode.getName() : message));
             return response;
         }
         // 消费处理
@@ -236,7 +236,7 @@ public class ConsumerService {
                     cacheId = MD5Util.MD5_16(JSONUtil.parseMap2JSON(map));
                     response = responseMapper.select(cacheId);
                     if (response != null) {
-                        loggingService.writeResponseLog(consumeId, bef, runBef, request, response, true); // 写消费信息到数据库
+                        loggingService.writeResponseLog(request, response, bef, runBef, true); // 写消费信息到数据库
                         return response;
                     }
                 }
@@ -316,7 +316,7 @@ public class ConsumerService {
                     responseMapper.insertTimeout(cacheId, response, cacheTime * 1000);
                 }
                 // -------------------把获取的数据插入缓存【END】---------------------
-                loggingService.writeResponseLog(consumeId, bef, runBef, request, response, false); // 写消费信息到数据库
+                loggingService.writeResponseLog(request, response, bef, runBef, false); // 写消费信息到数据库
             }
             return response;
         } finally {

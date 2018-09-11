@@ -186,7 +186,7 @@ public class HeartbeatService {
                 ConsumeRequest consumeRequest = new ConsumeRequest();
                 consumeRequest.setRequest(request);
                 loggingService.writeResponseLog(null, consumeRequest, DateUtil.getDataTimestamp(mcCurrent.getStartTime()), 0,
-                        ErrorCode.ERROR_000003.getValue(), ErrorCode.ERROR_000003.getName(), null);
+                        ErrorCode.ERROR_000003.getValue(), ErrorCode.ERROR_000003.getName());
             }
 
             //根据不同的APP类型、重新建任务

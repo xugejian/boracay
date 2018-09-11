@@ -57,7 +57,7 @@ public class RestfulConsumer extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
-                    ErrorCode.ERROR_000005.getValue(), e.getMessage(), null);
+                    ErrorCode.ERROR_000005.getValue(), e.getMessage());
         }
         return response;
     }

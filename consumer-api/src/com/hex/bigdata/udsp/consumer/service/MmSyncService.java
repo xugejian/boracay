@@ -37,6 +37,7 @@ public class MmSyncService {
      * @return
      */
     public Response start(Request request) {
+        long bef = System.currentTimeMillis();
         Response response = new Response();
         try {
             checkParam(request.getAppId(), request.getData());
@@ -61,6 +62,7 @@ public class MmSyncService {
                     response.setResponseContent(mmResponseData.getFile());
                 }
             }
+            response.setConsumeTime(System.currentTimeMillis() - bef);
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(Status.DEFEAT.getValue());
@@ -105,6 +107,7 @@ public class MmSyncService {
      * @return
      */
     public Response status(Request request) {
+        long bef = System.currentTimeMillis();
         Response response = new Response();
         try {
             MmResponse mmResponse = mmProviderService.status(request);
@@ -113,6 +116,7 @@ public class MmSyncService {
                     ? StatusCode.SUCCESS.getValue() : StatusCode.DEFEAT.getValue());
             response.setErrorCode(mmResponse.getErrorCode());
             response.setMessage(mmResponse.getMessage());
+            response.setConsumeTime(System.currentTimeMillis() - bef);
         } catch (Exception e) {
             e.printStackTrace();
             response.setConsumeId(request.getConsumeId());

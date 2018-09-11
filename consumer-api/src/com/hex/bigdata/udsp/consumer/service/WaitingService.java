@@ -119,11 +119,11 @@ public class WaitingService {
                 passFlg = futureTask.get(maxWaitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 loggingService.writeResponseLog(null, consumeRequest, bef, 0,
-                        ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName() + ":" + e.toString(), null);
+                        ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName() + ":" + e.toString());
             } catch (Exception e) {
                 e.printStackTrace();
                 loggingService.writeResponseLog(null, consumeRequest, bef, 0,
-                        ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
+                        ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
             }
         }
         return passFlg;
