@@ -3,30 +3,16 @@ package com.hex.bigdata.udsp.mm.model;
 import java.io.Serializable;
 
 public class MmAppReturnParam implements Serializable {
-    /**
-     * 主键
-     */
+
     private String pkId;
 
-    /**
-     * 字段顺序
-     */
-    private int seq;
+    private int seq; // 字段顺序
 
-    /**
-     * 字段名称
-     */
-    private String name;
+    private String name; // 字段名称
 
-    /**
-     * 字段说明
-     */
-    private String describe;
+    private String describe; // 字段说明
 
-    /**
-     * 应用Id
-     */
-    private String appId;
+    private String appId; // 应用Id
 
     public String getPkId() {
         return pkId;

@@ -17,7 +17,6 @@ public class MmApplicationParamView implements Serializable {
 
     private List<MmAppReturnParam> mmAppReturnParam;
 
-
     public MmApplication getMmapplication() {
         return mmapplication;
     }

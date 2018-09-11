@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.mm.dto;
+package com.hex.bigdata.udsp.mm.provider.model;
 
 import com.hex.bigdata.udsp.common.api.model.Page;
 
@@ -6,18 +6,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/5/3
- * TIME:14:32
- */
 public class MmResponseData implements Serializable {
-
+    /*
+    同步
+     */
     private List<Map<String, String>> records; // 记录集合
-
     private Page page;//分页信息
 
+    /*
+    异步
+     */
     private String file;//文件路径
 
     public List<Map<String, String>> getRecords() {

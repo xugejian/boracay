@@ -4,12 +4,8 @@ import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.mm.dto.MmApplicationParamView;
 import com.hex.bigdata.udsp.mm.dto.MmApplicationView;
 import com.hex.bigdata.udsp.mm.dto.MmModelInfoView;
-import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
-import com.hex.bigdata.udsp.mm.model.MmAppReturnParam;
 import com.hex.bigdata.udsp.mm.model.MmApplication;
-import com.hex.bigdata.udsp.mm.service.MmAppExecuteParamService;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
-import com.hex.bigdata.udsp.mm.service.MmAppReturnParamService;
 import com.hex.goframe.controller.BaseController;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -30,46 +26,20 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * 模型管理-模型应用管理控制器
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/4/6
- * TIME:9:11
- */
 @RequestMapping("/mm/app/")
 @Controller
-public class MmApplicationController extends BaseController{
-    /**
-     * 日志记录
-     */
+public class MmApplicationController extends BaseController {
+
     private static Logger logger = LogManager.getLogger(MmApplicationController.class);
 
-    /**
-     * 模型管理-模型应用管理服务
-     */
     @Autowired
     private MmApplicationService MmApplicationService;
 
     /**
-     * 模型管理-模型应用配置管理字段定义
-     */
-    @Autowired
-    private MmAppExecuteParamService executeParamService;
-
-    /**
-     * 模型管理-模型应用配置返回字段定义
-     */
-    @Autowired
-    private MmAppReturnParamService returnParamService;
-
-
-
-    /**
      * 分页多条件查询
+     *
      * @param mmApplicationView 查询参数
-     * @param page 分页参数
+     * @param page              分页参数
      * @return
      */
     @RequestMapping({"/page"})
@@ -82,6 +52,7 @@ public class MmApplicationController extends BaseController{
 
     /**
      * 模型管理-新增模型应用记录
+     *
      * @param mmApplicationParamView
      * @return
      */
@@ -147,7 +118,6 @@ public class MmApplicationController extends BaseController{
         return new MessageResult(status, message);
     }
 
-
     @RequestMapping({"/select/{pkId}"})
     @ResponseBody
     public MessageResult select(@PathVariable("pkId") String pkId) {
@@ -173,33 +143,6 @@ public class MmApplicationController extends BaseController{
         return new MessageResult(status, message, mmApplication);
     }
 
-   /* @RequestMapping({"/update"})
-    @ResponseBody
-    public MessageResult update(@RequestBody MmApplication mmApplication) {
-        boolean status = true;
-        String message = "更新成功";
-        if (mmApplication == null) {
-            status = false;
-            message = "请求参数为空";
-        } else {
-            try {
-                if (!MmApplicationService.update(mmApplication)) {
-                    status = false;
-                    message = "更新失败";
-                }
-            } catch (Exception e) {
-                status = false;
-                message = "系统异常：" + e.getMessage();
-            }
-        }
-        if (status) {
-            logger.debug(message);
-        } else {
-            logger.warn(message);
-        }
-        return new MessageResult(status, message);
-    }*/
-
     @RequestMapping("/delete")
     @ResponseBody
     public MessageResult delete(@RequestBody MmApplication[] mmApplications) {
@@ -210,7 +153,7 @@ public class MmApplicationController extends BaseController{
             message = "请求参数为空";
         }
         try {
-           return MmApplicationService.delete(mmApplications);
+            return MmApplicationService.delete(mmApplications);
         } catch (Exception e) {
             status = false;
             message = "系统异常：" + e.getMessage();
@@ -225,6 +168,7 @@ public class MmApplicationController extends BaseController{
 
     /**
      * 查询所有有效应用
+     *
      * @param modelInfoView
      * @return
      */
@@ -243,45 +187,8 @@ public class MmApplicationController extends BaseController{
     }
 
     /**
-     * 查询模型应用配置查询字段
-     * @param appId
-     * @return
-     */
-    @RequestMapping({"/selectByAppId/{appId}"})
-    @ResponseBody
-    public PageListResult executeParamInfo(@PathVariable("appId") String appId) {
-        logger.debug("select search=" + appId);
-        List<MmAppExecuteParam> list = null;
-        try {
-            list = executeParamService.selectByFkId(appId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("系统异常：" + e);
-        }
-        return new PageListResult(list);
-    }
-
-    /**
-     * 查询模型应用返回参数查询字段
-     * @param appId
-     * @return
-     */
-    @RequestMapping({"/selectBackByAppId/{appId}"})
-    @ResponseBody
-    public PageListResult returnParamInfo(@PathVariable("appId") String appId) {
-        logger.debug("select search=" + appId);
-        List<MmAppReturnParam> list = null;
-        try {
-            list = returnParamService.selectByFkId(appId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("系统异常：" + e);
-        }
-        return new PageListResult(list);
-    }
-
-    /**
      * 更新模型应用配置
+     *
      * @param mmApplicationParamView
      * @return
      */
@@ -313,34 +220,33 @@ public class MmApplicationController extends BaseController{
         return new MessageResult(status, message);
     }
 
-
     @RequestMapping("upload")
     @ResponseBody
-    public MessageResult upload(MultipartFile excelFile){
+    public MessageResult upload(MultipartFile excelFile) {
         boolean status = true;
         String message = "上传成功";
 
         //判断结尾是否为xl或者xlsx
-        if (((CommonsMultipartFile)excelFile).getFileItem().getName().endsWith(".xls")
-                || ((CommonsMultipartFile)excelFile).getFileItem().getName().endsWith(".xlsx")) {
+        if (((CommonsMultipartFile) excelFile).getFileItem().getName().endsWith(".xls")
+                || ((CommonsMultipartFile) excelFile).getFileItem().getName().endsWith(".xlsx")) {
             //将文件放到项目上传文件目录中
             String uploadFilePath = FileUtil.uploadFile(FileUtil
                     .getRealUploadPath("EXCEL_UPLOAD"), excelFile);
-            Map<String,String> result = MmApplicationService.uploadExcel(uploadFilePath);
-            if("false".equals(result.get("status"))){
+            Map<String, String> result = MmApplicationService.uploadExcel(uploadFilePath);
+            if ("false".equals(result.get("status"))) {
                 status = false;
                 message = result.get("message");
             }
-        }else{
+        } else {
             status = false;
             message = "请上传正确格式的文件！";
         }
-        return new MessageResult(status,message);
+        return new MessageResult(status, message);
     }
 
     @ResponseBody
     @RequestMapping("/download")
-    public String createExcel(@RequestBody MmApplication[] mmApplications){
+    public String createExcel(@RequestBody MmApplication[] mmApplications) {
         // 写入Excel文件
         String filePath = "";
         try {

@@ -1,10 +1,13 @@
 package com.hex.bigdata.udsp.consumer.service;
 
-import com.hex.bigdata.udsp.common.constant.*;
+import com.hex.bigdata.udsp.common.constant.EnumTrans;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.Status;
+import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.mm.dto.MmResponse;
-import com.hex.bigdata.udsp.mm.dto.MmResponseData;
+import com.hex.bigdata.udsp.mm.provider.model.MmResponse;
+import com.hex.bigdata.udsp.mm.provider.model.MmResponseData;
 import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
 import com.hex.bigdata.udsp.mm.service.MmProviderService;
@@ -28,46 +31,42 @@ public class MmSyncService {
     private MmApplicationService mmApplicationService;
 
     /**
-     * @param consumeId 消费Id
-     * @param appId     应用Id
-     * @param request   请求实体
+     * 调用（同步、异步）
+     *
+     * @param request 请求实体
      * @return
      */
-    public Response start(String consumeId, String appId, Request request) {
+    public Response start(Request request) {
         Response response = new Response();
         try {
-            checkParam(appId, request.getData());
+            checkParam(request.getAppId(), request.getData());
         } catch (Exception e) {
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
             response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
             return response;
         }
-        MmResponse mmResponse = null;
         try {
-            //内部请求，则设置serviceName
-            if (RequestType.INNER.getValue().equals(request.getRequestType())) {
-                request.setServiceName(request.getAppName());
-            }
-            //模型调用
-            mmResponse = mmProviderService.start(appId, consumeId, request);
-            if (StringUtils.isBlank(mmResponse.getErrorCode())) {
+            MmResponse mmResponse = mmProviderService.start(request);
+            response.setStatus(mmResponse.getStatus());
+            response.setStatusCode(Status.SUCCESS.getValue().equals(mmResponse.getStatus())
+                    ? StatusCode.SUCCESS.getValue() : StatusCode.DEFEAT.getValue());
+            response.setErrorCode(mmResponse.getErrorCode());
+            response.setMessage(mmResponse.getMessage());
+            if (Status.SUCCESS.getValue().equals(mmResponse.getStatus())) {
                 MmResponseData mmResponseData = mmResponse.getData();
                 if (mmResponseData != null) {
                     response.setRecords(mmResponseData.getRecords());
                     response.setResponseContent(mmResponseData.getFile());
                 }
             }
-            response.setMessage(mmResponse.getMessage());
-            response.setErrorCode(mmResponse.getErrorCode());
-            response.setStatus(mmResponse.getSystemStatus().getValue());
-            response.setStatusCode(mmResponse.getStatusCode().getValue());
         } catch (Exception e) {
             e.printStackTrace();
-            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.toString());
-            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.toString());
         }
         return response;
     }
@@ -100,19 +99,20 @@ public class MmSyncService {
     }
 
     /**
-     * 模型调用-异步status
+     * 查看状态
      *
      * @param request
      * @return
      */
-    public Response status(Request request, String appId) {
+    public Response status(Request request) {
         Response response = new Response();
         try {
-            MmResponse mmResponse = mmProviderService.status(request, appId);
-            response.setMessage(mmResponse.getMessage());
-            response.setErrorCode(mmResponse.getErrorCode());
+            MmResponse mmResponse = mmProviderService.status(request);
             response.setStatus(mmResponse.getStatus());
-            response.setStatusCode(mmResponse.getStatusCode().getValue());
+            response.setStatusCode(Status.SUCCESS.getValue().equals(mmResponse.getStatus())
+                    ? StatusCode.SUCCESS.getValue() : StatusCode.DEFEAT.getValue());
+            response.setErrorCode(mmResponse.getErrorCode());
+            response.setMessage(mmResponse.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             response.setConsumeId(request.getConsumeId());

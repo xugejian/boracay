@@ -211,8 +211,6 @@ public class MmApplicationService extends BaseService {
      * @return
      */
     public MmFullAppInfoView selectFullAppInfo(String appId) {
-
-        //根据应用Ip查询应用基本信息
         MmFullAppInfoView appInfo = this.mmApplicationMapper.selectFullAppInfo(appId);
         if (appInfo == null) {
             return null;

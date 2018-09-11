@@ -33,14 +33,9 @@ import java.util.Map;
 @RequestMapping("/mm/contractor/")
 @Controller
 public class MmContractorController extends BaseController{
-    /**
-     * 日志记录
-     */
+
     private static Logger logger = LogManager.getLogger(MmContractorController.class);
 
-    /**
-     * 模型管理-模型基础信息管理服务
-     */
     @Autowired
     private MmContractorService contractorService;
 
@@ -57,7 +52,6 @@ public class MmContractorController extends BaseController{
         logger.debug("selectPage search=" + JSONUtil.parseObj2JSON(contractorView) + " page=" + JSONUtil.parseObj2JSON(page));
         return new PageListResult(list, page);
     }
-
 
     /**
      * 实时流-新增服务记录
@@ -125,7 +119,6 @@ public class MmContractorController extends BaseController{
         }
         return new MessageResult(status, message);
     }
-
 
     @RequestMapping({"/select/{pkId}"})
     @ResponseBody
@@ -220,7 +213,6 @@ public class MmContractorController extends BaseController{
         }
         return new PageListResult(list);
     }
-
 
     @RequestMapping("upload")
     @ResponseBody

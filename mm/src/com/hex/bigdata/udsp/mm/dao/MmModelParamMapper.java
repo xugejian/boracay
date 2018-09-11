@@ -11,7 +11,6 @@ import java.util.List;
 public class MmModelParamMapper extends SyncMapper<MmModelParam> {
 
     protected boolean insertExe(MmModelParam modelParam) {
-
         return sqlSessionTemplate.insert("com.hex.bigdata.udsp.mm.dao.MmModelParamMapper.insert", modelParam) == 1;
     }
 
