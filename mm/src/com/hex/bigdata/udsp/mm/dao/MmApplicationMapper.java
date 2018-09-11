@@ -32,7 +32,6 @@ public class MmApplicationMapper extends SyncMapper<MmApplication> {
         return this.sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.mm.dao.MmApplicationMapper.selectByPrimaryKey", id);
     }
 
-
     @Override
     protected boolean deleteListExe(String id) {
         return false;
@@ -67,6 +66,7 @@ public class MmApplicationMapper extends SyncMapper<MmApplication> {
 
     /**
      * 根据应用Ip查询应用信息
+     *
      * @param pkId
      * @return
      */
@@ -77,6 +77,7 @@ public class MmApplicationMapper extends SyncMapper<MmApplication> {
 
     /**
      * 查询所有
+     *
      * @return
      */
     public List<MmApplication> selectAll() {
@@ -86,11 +87,12 @@ public class MmApplicationMapper extends SyncMapper<MmApplication> {
 
     /**
      * 根据模型id查询应用信息
+     *
      * @param modelId
      * @return
      */
     public List<MmApplication> selectByModelId(String modelId) {
         return sqlSessionTemplate.selectList(
-                "com.hex.bigdata.udsp.mm.dao.MmApplicationMapper.selectByModelId",modelId);
+                "com.hex.bigdata.udsp.mm.dao.MmApplicationMapper.selectByModelId", modelId);
     }
 }

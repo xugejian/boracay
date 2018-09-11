@@ -27,9 +27,9 @@ public class MmModelInfo implements Serializable {
 
     private String uptTime;
 
-    private String contractor;
+    private String contractor; // 厂商ID
 
-    private String modelType;
+    private String modelType; // 模型调用类型，1：同步、2：异步（多个用逗号分隔）
 
     public String getPkId() {
         return pkId;

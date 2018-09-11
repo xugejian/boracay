@@ -58,8 +58,7 @@ public class SqlExpressionEvaluator {
             str = StringUtils.replace(str, $exp, value); // 替换表达式为正确的结果字符串
         }
         // 再处理${}
-        str = evaluates(str, params);
-        return str;
+        return evaluates(str, params);
     }
 
     /**

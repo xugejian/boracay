@@ -156,6 +156,7 @@ ${extends("/goframe/function_layout.httl")}
             <div field="runEndTime" headerAlign="center" allowSort="true"  renderer="timeFormat">执行结束时间</div>
             -->
             <div field="runInterval" headerAlign="center"  renderer="renderRunInterval">执行耗时（s）</div>
+            <div field="consumeTime" headerAlign="center"  renderer="renderConsumeTime">接口耗时（s）</div>
             <div field="status" headerAlign="center" allowSort="true" renderer="renderStatus">结果状态</div>
             <div field="isCache" headerAlign="center" allowSort="true" renderer="renderIsCache">是否从缓存获取</div>
             <div field="errorCode" headerAlign="center" allowSort="true" renderer="renderErrorCode">错误类型</div>
@@ -242,7 +243,7 @@ ${extends("/goframe/function_layout.httl")}
         }
         var requestStartTime = new Date(e.row.requestStartTime);
         var requestEndTime = new Date(e.row.requestEndTime);
-        return "" + (requestEndTime.getTime() - requestStartTime.getTime()) / 1000;
+        return (requestEndTime.getTime() - requestStartTime.getTime()) / 1000;
     }
 
     /**
@@ -256,7 +257,19 @@ ${extends("/goframe/function_layout.httl")}
         }
         var runStartTime = new Date(e.row.runStartTime);
         var runEndTime = new Date(e.row.runEndTime);
-        return "" + (runEndTime.getTime() - runStartTime.getTime()) / 1000;
+        return (runEndTime.getTime() - runStartTime.getTime()) / 1000;
+    }
+
+    /**
+     * 接口耗时
+     * @param e
+     * @returns {*}
+     */
+    function renderConsumeTime(e) {
+        if (!e.row.consumeTime) {
+            return "";
+        }
+        return e.row.consumeTime / 1000;
     }
 
     /**

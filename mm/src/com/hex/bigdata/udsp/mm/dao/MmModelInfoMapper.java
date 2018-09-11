@@ -31,7 +31,6 @@ public class MmModelInfoMapper extends SyncMapper<MmModelInfo> {
         return this.sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.mm.dao.MmModelInfoMapper.selectByPrimaryKey", id);
     }
 
-
     @Override
     protected boolean deleteListExe(String id) {
         return false;
@@ -55,16 +54,18 @@ public class MmModelInfoMapper extends SyncMapper<MmModelInfo> {
 
     /**
      * 根据名称查找
+     *
      * @param name
      * @return
      */
     public MmModelInfo selectByName(String name) {
         return sqlSessionTemplate.selectOne(
-                "com.hex.bigdata.udsp.mm.dao.MmModelInfoMapper.selectByName",name);
+                "com.hex.bigdata.udsp.mm.dao.MmModelInfoMapper.selectByName", name);
     }
 
     /**
      * 查询所有模型
+     *
      * @return
      */
     public List<MmModelInfo> selectAll() {
@@ -74,6 +75,6 @@ public class MmModelInfoMapper extends SyncMapper<MmModelInfo> {
 
     public List<MmModelInfo> selectByContractorId(String contractorId) {
         return sqlSessionTemplate.selectList(
-                "com.hex.bigdata.udsp.mm.dao.MmModelInfoMapper.selectByContractorId",contractorId);
+                "com.hex.bigdata.udsp.mm.dao.MmModelInfoMapper.selectByContractorId", contractorId);
     }
 }

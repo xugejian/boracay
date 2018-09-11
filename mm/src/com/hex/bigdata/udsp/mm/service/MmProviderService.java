@@ -2,20 +2,21 @@ package com.hex.bigdata.udsp.mm.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.common.constant.*;
+import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.mm.dto.MmFullAppInfoView;
-import com.hex.bigdata.udsp.mm.dto.MmRequest;
-import com.hex.bigdata.udsp.mm.dto.MmResponse;
-import com.hex.bigdata.udsp.mm.dto.MmResponseData;
 import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
 import com.hex.bigdata.udsp.mm.model.MmAppReturnParam;
+import com.hex.bigdata.udsp.mm.provider.model.MmRequest;
+import com.hex.bigdata.udsp.mm.provider.model.MmResponse;
+import com.hex.bigdata.udsp.mm.provider.model.MmResponseData;
 import com.hex.goframe.util.DateUtil;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
@@ -58,7 +60,6 @@ public class MmProviderService {
     private static final Map<String, String> typeMap = new HashMap<String, String>() {{
         put("sync", "1");
         put("async", "2");
-        put("batch", "3");
     }};
 
     @Autowired
@@ -71,217 +72,126 @@ public class MmProviderService {
     private long returnLimit;
 
     /**
-     * @param appId     应用ID
-     * @param consumeId 消费ID
-     * @param request   请求实体
-     * @return
+     * 调用（同步、异步）
      */
-    public MmResponse start(String appId, String consumeId, Request request) {
-        MmFullAppInfoView appInfoView = mmApplicationService.selectFullAppInfo(appId);
+    public MmResponse start(Request request) {
+        MmResponse response = new MmResponse();
+        response.setUuid(request.getConsumeId());
+        MmFullAppInfoView appInfoView = mmApplicationService.selectFullAppInfo(request.getAppId());
         if (appInfoView == null) {
-            return null;
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_200004.getValue());
+            response.setMessage(ErrorCode.ERROR_200004.getName() + ":获取不到模型应用信息！");
+            return response;
         }
-        //请求参数
-        MmRequest mmRequest = null;
-        //返回对象
-        MmResponse response = null;
-        Map<String, Object> resultMap = new HashMap<>();
-        response = this.initResponse(request);
-        try {
-            resultMap = initRequest(appInfoView, request);
-            String errorCode = (String) resultMap.get("errorCode");
-            //如果有错误
-            if (StringUtils.isNotBlank(errorCode)) {
-                response.setSystemStatus(Status.DEFEAT);
-                response.setStatusCode(StatusCode.DEFEAT);
-                if (ErrorCode.ERROR_000009.getValue().equals(errorCode)) {
-                    response.setErrorCode(ErrorCode.ERROR_000009.getValue());
-                    response.setMessage(ErrorCode.ERROR_000009.getName());
-                } else if (ErrorCode.ERROR_200002.getValue().equals(errorCode)) {
-                    response.setErrorCode(ErrorCode.ERROR_200002.getValue());
-                    response.setMessage(ErrorCode.ERROR_200002.getName());
-                } else {
-                    response.setErrorCode(ErrorCode.ERROR_000099.getValue());
-                    response.setMessage(ErrorCode.ERROR_000099.getName());
-                }
-                return response;
-            }
-        } catch (Exception e) {
-            response.setSystemStatus(Status.DEFEAT);
-            response.setStatusCode(StatusCode.DEFEAT);
-            response.setErrorCode(ErrorCode.ERROR_000099.getValue());
-            response.setMessage(ErrorCode.ERROR_000099.getName());
+        String modelType = appInfoView.getModelType();
+        String type = request.getType().toLowerCase();
+        String typeKey = typeMap.get(type);
+        if (!modelType.contains(typeKey)) {
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_200005.getValue());
+            response.setMessage(ErrorCode.ERROR_200005.getName() + ":该模型不支持" + type + "类型!");
+            return response;
         }
-        mmRequest = (MmRequest) resultMap.get("request");
-        //设置消费id为uuid
-        mmRequest.setUuid(consumeId);
-
         try {
-            response = this.requestModelService(mmRequest, appInfoView.getHttpUrl());
-        }catch (ConnectException e){
+            MmRequest mmRequest = getMmRequest(appInfoView, request);
+            response = requestModelService(mmRequest, appInfoView.getHttpUrl());
+        } catch (ConnectException e) {
+            e.printStackTrace();
             response.setErrorCode(ErrorCode.ERROR_200001.getValue());
-            response.setMessage(ErrorCode.ERROR_200001.getName());
+            response.setMessage(ErrorCode.ERROR_200001.getName() + ":" + e.toString());
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (StringUtils.isNotBlank(response.getStatus()) && Status.SUCCESS.getValue().equals(response.getStatus())) {
-            response.setSystemStatus(Status.SUCCESS);
-            response.setStatusCode(StatusCode.SUCCESS);
-        } else {
-            response.setSystemStatus(Status.DEFEAT);
-            response.setStatusCode(StatusCode.DEFEAT);
+            response.setErrorCode(ErrorCode.ERROR_200004.getValue());
+            response.setMessage(ErrorCode.ERROR_200004.getName() + ":" + e.toString());
         }
         return response;
     }
 
     /**
-     * 初始化返回参数
-     * @param request
-     * @return
+     * 查看状态
      */
-    private MmResponse initResponse(Request request) {
-        MmResponse mmResponse = new MmResponse();
-        mmResponse.setServiceName(request.getServiceName());
-        mmResponse.setEntity(request.getEntity());
-        mmResponse.setUuid(request.getConsumeId());
-        mmResponse.setType(request.getType());
-        return mmResponse;
-    }
-
-    /**
-     * 初始化请求参数
-     *
-     * @param appInfoView
-     * @return
-     */
-    private Map<String, Object> initRequest(MmFullAppInfoView appInfoView, Request request) {
-        Map<String, String> params = request.getData();
-        Map<String, Object> resultMap = new HashMap<>();
-        String errorCode = "";
-
-        //判断模型是否支持请求中的业务类型
-        String modelType = appInfoView.getModelType();
-        String requestType = request.getType().toLowerCase();
-        String typeKey = typeMap.get(requestType);
-        if (modelType.indexOf(typeKey) == -1) {
-            resultMap.put("errorCode", ErrorCode.ERROR_200002.getValue());
-            return resultMap;
+    public MmResponse status(Request request) throws Exception {
+        MmFullAppInfoView appInfoView = mmApplicationService.selectFullAppInfo(request.getAppId());
+        if (appInfoView == null) {
+            MmResponse response = new MmResponse();
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_200004.getValue());
+            response.setMessage(ErrorCode.ERROR_200004.getName() + ":获取不到模型应用信息！");
+            return response;
         }
         MmRequest mmRequest = new MmRequest();
+        mmRequest.setModelName(appInfoView.getModelName());
+        mmRequest.setType(request.getType());
         mmRequest.setEntity(request.getEntity());
+        mmRequest.setUuid(request.getConsumeId());
+        return this.requestModelService(mmRequest, appInfoView.getHttpUrl());
+    }
+
+    private MmRequest getMmRequest(MmFullAppInfoView appInfoView, Request request) {
+        MmRequest mmRequest = new MmRequest();
+        mmRequest.setType(request.getType());
+        mmRequest.setEntity(request.getEntity());
+        mmRequest.setModelName(appInfoView.getModelName());
         mmRequest.setAppUser(request.getAppUser());
         mmRequest.setLimit(returnLimit);
-        mmRequest.setServiceName(request.getServiceName());
-        mmRequest.setType(request.getType());
         mmRequest.setUuid(request.getConsumeId());
-        //mmRequest.setAppId(appInfoView.getAppId());
-        mmRequest.setModelName(appInfoView.getModelName());
-
         List<MmAppReturnParam> returnParams = appInfoView.getReturnParams();
         if (returnParams != null && returnParams.size() != 0) {
-            StringBuffer returnString = new StringBuffer();
+            String responseField = "";
+            int count = 0;
             for (MmAppReturnParam returnParam : returnParams) {
-                returnString.append(returnParam.getName()).append(",");
+                responseField += (count == 0 ? "" : ",") + returnParam.getName();
+                count++;
             }
-            mmRequest.setReponseField(returnString.substring(0, returnString.length() - 1));
+            mmRequest.setResponseField(responseField);
         }
-
-        //执行参数解析、设置
+        Map<String, String> paraMap = request.getData();
         List<MmAppExecuteParam> executeParams = appInfoView.getExecuteParams();
-        if (executeParams != null || executeParams.size() != 0) {
-            Map<String, String> conditions = new HashMap<>();
+        if (executeParams != null && executeParams.size() != 0) {
+            Map<String, String> map = new HashMap<>();
             for (MmAppExecuteParam executeParam : executeParams) {
-                String paramName = executeParam.getName();
-                String value = params.get(paramName);
-                //参数为必输参数，但是参数为空则报错
-                if (YesOrNo.YES.getValue().equals(executeParam.getIsNeed()) && StringUtils.isBlank(value)) {
-                    resultMap.put("errorCode", ErrorCode.ERROR_000009.getValue());
-                    return resultMap;
-                }
-                conditions.put(paramName, value);
+                String name = executeParam.getName();
+                String value = (paraMap != null ? paraMap.get(name) : null);
+                map.put(name, value);
             }
-            mmRequest.setRequest(conditions);
+            mmRequest.setRequest(map);
         }
-
-        //如果是异步调用则设置path
         if (ConsumerType.ASYNC.getValue().equalsIgnoreCase(request.getType())) {
             String path = CreateFileUtil.getFtpFileDir(request.getUdspUser()) + "/" +
-                    appInfoView.getContractorName() + "/"+ DateUtil.format(new Date(), "yyyyMMdd");
+                    appInfoView.getContractorName() + "/" + DateUtil.format(new Date(), "yyyyMMdd");
             mmRequest.setPath(path);
         }
-
-        resultMap.put("request", mmRequest);
-        resultMap.put("errorCode", errorCode);
-
-        return resultMap;
+        return mmRequest;
     }
 
     /**
-     * 模型调用-查看模型运行状态
-     * @param request
-     * @return
-     */
-    public MmResponse status(Request request,String appId) throws Exception {
-        MmFullAppInfoView appInfoView = mmApplicationService.selectFullAppInfo(appId);
-        if (appInfoView == null) {
-            return null;
-        }
-        //请求参数
-        MmRequest mmRequest = new MmRequest();
-        //返回对象
-        MmResponse response = null;
-        mmRequest.setModelName(appInfoView.getModelName());
-        mmRequest.setUuid(request.getConsumeId());
-        mmRequest.setAppUser(request.getAppUser());
-        mmRequest.setServiceName(request.getServiceName());
-        mmRequest.setEntity(request.getEntity());
-        mmRequest.setType(request.getType());
-
-        response = this.requestModelService(mmRequest, appInfoView.getHttpUrl());
-        return response;
-    }
-
-    /**
-     * 公共方法
+     * 请求调用模型接口
      *
      * @param mmRequest
      * @param url
      */
-    private MmResponse requestModelService (MmRequest mmRequest, String url)throws Exception {
-
+    private MmResponse requestModelService(MmRequest mmRequest, String url) throws Exception {
         JSONObject jsonObject = (JSONObject) JSON.toJSON(mmRequest);
-
-        logger.info("请求地址："+url);
-        //打印json参数
-        logger.info("请求参数："+jsonObject.toJSONString());
-
+        logger.info("请求地址：" + url);
+        logger.info("请求参数：" + jsonObject.toJSONString());
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader(HTTP.CONTENT_TYPE, APPLICATION_JSON);
-        InputStream resultStream = null;
-        MmResponse responseObject = null;
-        StringEntity se = new StringEntity(jsonObject.toJSONString());
-        se.setContentType(CONTEXT_TYPE_TEXT_JSON);
-        se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, APPLICATION_JSON));
-        httpPost.setEntity(se);
+        StringEntity entity = new StringEntity(jsonObject.toJSONString());
+        entity.setContentType(CONTEXT_TYPE_TEXT_JSON);
+        entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, APPLICATION_JSON));
+        httpPost.setEntity(entity);
         HttpResponse response = httpClient.execute(httpPost);
         String returnString = analysisResponse(response);
-
-        logger.warn("模型返回信息：" + returnString);
-
-        JSONObject returnObject=JSON.parseObject(returnString);
-
-        //获取data信息
-        JSONObject dataObject=returnObject.getJSONObject("data");
-        responseObject = JSONUtil.parseJSON2Obj(returnString, MmResponse.class);
-
-        //返回数据可能为空
-        if (dataObject != null){
-            MmResponseData mmResponseData=JSONUtil.parseJSON2Obj(dataObject.toJSONString(),MmResponseData.class);
-            responseObject.setData(mmResponseData);
+        logger.info("模型返回信息：" + returnString);
+        MmResponse mmResponse = JSONUtil.parseJSON2Obj(returnString, MmResponse.class);
+        JSONObject dataObject = JSON.parseObject(returnString).getJSONObject("data");
+        if (dataObject != null) {
+            MmResponseData mmResponseData = JSONUtil.parseJSON2Obj(dataObject.toJSONString(), MmResponseData.class);
+            mmResponse.setData(mmResponseData);
         }
-        return responseObject;
+        return mmResponse;
     }
 
     /**
@@ -290,36 +200,46 @@ public class MmProviderService {
      * @param httpResponse
      * @return
      */
-    private String analysisResponse(HttpResponse httpResponse) {
+    private String analysisResponse(HttpResponse httpResponse) throws Exception {
         if (httpResponse == null) {
-            return null;
+            throw new Exception("httpResponse为空");
         }
+        int statusCode = httpResponse.getStatusLine().getStatusCode();
+        if (HttpStatus.SC_OK != statusCode) {
+            throw new Exception(httpResponse.toString());
+        }
+        InputStream is = null;
+        BufferedReader br = null;
+        StringBuilder buffer = new StringBuilder();
+        HttpEntity entity = httpResponse.getEntity();
         String returnString = "";
-        int statuscode = httpResponse.getStatusLine().getStatusCode();
-        if (statuscode == HttpStatus.SC_NOT_FOUND) {
-            throw new RuntimeException("请检查URL!");
-        } else if (statuscode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            throw new RuntimeException("服务器内部错误!");
-        } else if (statuscode == HttpStatus.SC_BAD_REQUEST) {
-            throw new RuntimeException("错误的请求!");
-        } else {
-            InputStream resultStream = null;
-            BufferedReader br = null;
-            StringBuffer buffer = new StringBuffer();
-            HttpEntity responseEntity = httpResponse.getEntity();
-            try {
-                resultStream = responseEntity.getContent();
-                br = new BufferedReader(new InputStreamReader(resultStream));
-                String tempStr;
-                while ((tempStr = br.readLine()) != null) {
-                    buffer.append(tempStr);
-                }
-                returnString = buffer.toString();
-                returnString = StringEscapeUtils.unescapeJava(returnString);
-            } catch (Exception e) {
-                throw new RuntimeException("解析返回结果失败!");
+        try {
+            is = entity.getContent();
+            br = new BufferedReader(new InputStreamReader(is));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                buffer.append(line);
             }
-            return returnString;
+            returnString = buffer.toString();
+            returnString = StringEscapeUtils.unescapeJava(returnString);
+        } catch (Exception e) {
+            throw new Exception("解析返回结果失败!" + e.toString());
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        return returnString;
     }
 }

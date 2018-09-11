@@ -1,36 +1,27 @@
 package com.hex.bigdata.udsp.consumer.service;
 
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.api.model.Result;
 import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import com.hex.bigdata.udsp.common.util.FTPClientConfig;
 import com.hex.bigdata.udsp.common.util.FTPHelper;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
+import com.hex.bigdata.udsp.consumer.model.Request;
+import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.iq.model.IqAppQueryCol;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
 import com.hex.bigdata.udsp.iq.service.IqAppQueryColService;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
-import com.hex.bigdata.udsp.mc.model.Current;
-import com.hex.bigdata.udsp.mc.service.RunQueueService;
-import com.hex.bigdata.udsp.consumer.model.Request;
-import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
-import com.hex.bigdata.udsp.consumer.thread.IqAsyncCallable;
-import com.hex.bigdata.udsp.consumer.thread.IqSyncServiceCallable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -64,10 +55,6 @@ public class IqSyncService {
     private IqAppQueryColService iqAppQueryColService;
     @Autowired
     private LoggingService loggingService;
-    @Autowired
-    private InitParamService initParamService;
-    @Autowired
-    private RunQueueService runQueueService;
 
     /**
      * 同步运行（添加了超时机制）
@@ -77,53 +64,58 @@ public class IqSyncService {
      * @return
      */
     public Response syncStartForTimeout(ConsumeRequest consumeRequest, long bef) {
-        Request request = consumeRequest.getRequest();
-        RcUserService rcUserService = consumeRequest.getRcUserService();
-        long maxSyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) ?
-                initParamService.getMaxSyncExecuteTimeout() : rcUserService.getMaxSyncExecuteTimeout();
-        Response response = new Response();
         long runBef = System.currentTimeMillis();
+        Response response = new Response();
         try {
-            // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
-            Future<Response> futureTask = executorService.submit(new IqSyncServiceCallable(request.getData(), request.getAppId(), request.getPage()));
-            response = futureTask.get(maxSyncExecuteTimeout, TimeUnit.SECONDS);
+            final Request request = consumeRequest.getRequest();
+            RcUserService rcUserService = consumeRequest.getRcUserService();
+            if (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout() == 0) { // 不开启超时
+                response = syncStart(request.getAppId(), request.getData(), request.getPage());
+            } else { // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
+                Future<Response> futureTask = executorService.submit(new Callable() {
+                    @Override
+                    public Response call() throws Exception {
+                        return syncStart(request.getAppId(), request.getData(), request.getPage());
+                    }
+                });
+                response = futureTask.get(rcUserService.getMaxSyncExecuteTimeout(), TimeUnit.SECONDS);
+            }
         } catch (TimeoutException e) {
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), null);
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString());
         } catch (Exception e) {
             e.printStackTrace();
             loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), null);
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
         }
         return response;
     }
 
-    public void asyncStartForTimeout(ConsumeRequest consumeRequest, long bef,
-                                     String appId, Map<String, String> paraMap, Page page, String fileName) {
-        Current mcCurrent = consumeRequest.getMcCurrent();
-        String consumeId = mcCurrent.getPkId();
-        String userName = consumeRequest.getMcCurrent().getUserName();
-        Request request = consumeRequest.getRequest();
-        RcUserService rcUserService = consumeRequest.getRcUserService();
-        long maxAsyncExecuteTimeout = (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) ?
-                initParamService.getMaxAsyncExecuteTimeout() : rcUserService.getMaxAsyncExecuteTimeout();
-        Response response = new Response();
+    public void asyncStartForTimeout(ConsumeRequest consumeRequest, final String fileName, long bef) {
         long runBef = System.currentTimeMillis();
+        Response response = null;
         try {
-            // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
-            Future<IqResponse> iqFutureTask = executorService.submit(new IqAsyncCallable(userName, appId, paraMap, page, fileName));
-            IqResponse iqResponse = iqFutureTask.get(maxAsyncExecuteTimeout, TimeUnit.SECONDS);
-            response.setResponseContent(iqResponse.getFilePath());
-            loggingService.writeResponseLog(consumeId, bef, runBef, request, response, false);
+            final Request request = consumeRequest.getRequest();
+            RcUserService rcUserService = consumeRequest.getRcUserService();
+            if (rcUserService == null || rcUserService.getMaxAsyncExecuteTimeout() == 0) { // 不开启超时
+                response = asyncStart(request.getAppId(), request.getData(), request.getPage(), fileName, request.getUdspUser());
+            } else { // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
+                Future<Response> futureTask = executorService.submit(new Callable<Response>() {
+                    @Override
+                    public Response call() throws Exception {
+                        return asyncStart(request.getAppId(), request.getData(), request.getPage(), fileName, request.getUdspUser());
+                    }
+                });
+                response = futureTask.get(rcUserService.getMaxAsyncExecuteTimeout(), TimeUnit.SECONDS);
+            }
+            loggingService.writeResponseLog(request, response, bef, runBef, false);
         } catch (TimeoutException e) {
-            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString(), consumeId);
+            loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000015.getValue(), ErrorCode.ERROR_000015.getName() + ":" + e.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            loggingService.writeResponseLog(response, consumeRequest, bef, runBef,
-                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
-        } finally {
-            runQueueService.reduceCurrent(mcCurrent);
+            loggingService.writeResponseLog(null, consumeRequest, bef, runBef,
+                    ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
         }
     }
 
@@ -138,34 +130,13 @@ public class IqSyncService {
     public Response syncStart(String appId, Map<String, String> paraMap, Page page) {
         Response response = new Response();
         try {
-            IqResponse iqResponse = run(appId, paraMap, page);
-            response.setPage(iqResponse.getPage());
-            response.setMessage(iqResponse.getMessage());
-            response.setConsumeTime(iqResponse.getConsumeTime());
-            response.setStatus(iqResponse.getStatus().getValue());
-            response.setStatusCode(iqResponse.getStatusCode().getValue());
-            List<Map<String, String>> records = new ArrayList<>();
-            Map<String, String> map = null;
-
-            List<Result> results = iqResponse.getRecords();
-            if (null != results && results.size() > 0) {
-                for (Result result : iqResponse.getRecords()) {
-                    map = new HashMap<>();
-                    for (Map.Entry<String, Object> entry : result.entrySet()) {
-                        map.put(entry.getKey(), result.getString(entry.getKey()));
-                    }
-                    records.add(map);
-                }
-                response.setRecords(records);
-                //返回字段名称及类型
-            }
-            response.setReturnColumns(iqResponse.getColumns());
+            response = run(appId, paraMap, page);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setMessage(e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
-            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(e.getMessage());
         }
         return response;
     }
@@ -178,43 +149,56 @@ public class IqSyncService {
      * @param page
      * @return
      */
-    private IqResponse run(String appId, Map<String, String> paraMap, Page page) {
-        IqResponse response = checkParam(appId, paraMap);
-        if (response != null) return response;
-
-        if (page != null && page.getPageIndex() > 0) {
-            return iqProviderService.select(appId, paraMap, page.getPageIndex(), page.getPageSize());
-        } else {
-            return iqProviderService.select(appId, paraMap);
+    private Response run(String appId, Map<String, String> paraMap, Page page) {
+        Response response = new Response();
+        try {
+            checkParam(appId, paraMap);
+        } catch (Exception e) {
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
+            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
+            return response;
         }
+        IqResponse iqResponse = null;
+        if (page != null && page.getPageIndex() > 0) {
+            iqResponse = iqProviderService.select(appId, paraMap, page);
+        } else {
+            iqResponse = iqProviderService.select(appId, paraMap);
+        }
+        response.setStatus(iqResponse.getStatus().getValue());
+        response.setStatusCode(iqResponse.getStatusCode().getValue());
+        response.setRecords(iqResponse.getRecords());
+        response.setReturnColumns(iqResponse.getColumns());
+        response.setPage(iqResponse.getPage());
+        response.setMessage(iqResponse.getMessage());
+        response.setConsumeTime(iqResponse.getConsumeTime());
+        return response;
     }
 
     /**
      * 检查输入的参数
-     *
-     * @param appId
-     * @param paraMap
-     * @return
      */
-    private IqResponse checkParam(String appId, Map<String, String> paraMap) {
-        IqResponse response = null;
-        boolean flg = false;
-        StringBuffer needColsName = new StringBuffer();
-        for (IqAppQueryCol iqAppQueryCol : iqAppQueryColService.selectByAppId(appId)) {
-            if (EnumTrans.transTrue(iqAppQueryCol.getIsNeed())) {
-                needColsName.append(iqAppQueryCol.getLabel() + ",");
-                if (StringUtils.isBlank(paraMap.get(iqAppQueryCol.getLabel()))) {
-                    flg = true;
+    private void checkParam(String appId, Map<String, String> paraMap) throws Exception {
+        if (paraMap != null && paraMap.size() != 0) {
+            boolean isError = false;
+            String message = "";
+            int count = 0;
+            for (IqAppQueryCol iqAppQueryCol : iqAppQueryColService.selectByAppId(appId)) {
+                if (EnumTrans.transTrue(iqAppQueryCol.getIsNeed())) {
+                    String name = iqAppQueryCol.getLabel();
+                    String value = paraMap.get(name);
+                    if (StringUtils.isBlank(value)) { // 没有传入值
+                        message += (count == 0 ? "" : ", ") + name;
+                        isError = true;
+                        count++;
+                    }
                 }
             }
+            if (isError) {
+                throw new Exception(message + "参数不能为空!");
+            }
         }
-        if (flg) {
-            response = new IqResponse();
-            response.setStatus(Status.DEFEAT);
-            response.setStatusCode(StatusCode.DEFEAT);
-            response.setMessage("请检查以下参数的值:" + needColsName.substring(0, needColsName.length() - 1));
-        }
-        return response;
     }
 
     /**
@@ -225,59 +209,56 @@ public class IqSyncService {
      * @param page
      * @return
      */
-    public IqResponse asyncStart(String appId, Map<String, String> paraMap, Page page, String fileName, String userName) {
-        Status status = Status.SUCCESS;
-        StatusCode statusCode = StatusCode.SUCCESS;
-        String message = "成功";
-        String filePath = "";
-        IqResponse response = run(appId, paraMap, page);
-        if (Status.SUCCESS == response.getStatus()) {
-            List<Map<String, String>> records = new ArrayList<>();
-            Map<String, String> map = null;
-            for (Result result : response.getRecords()) {
-                map = new HashMap<>();
-                for (Map.Entry<String, Object> entry : result.entrySet()) {
-                    map.put(entry.getKey(), result.getString(entry.getKey()));
-                }
-                records.add(map);
-            }
-            // 写数据文件和标记文件到本地，并上传至FTP服务器
-            CreateFileUtil.createDelimiterFile(records, true, fileName);
-            String dataFileName = CreateFileUtil.getDataFileName(fileName);
-            String flgFileName = CreateFileUtil.getFlgFileName(fileName);
-            String localDataFilePath = CreateFileUtil.getLocalDataFilePath(fileName);
-            String localFlgFilePath = CreateFileUtil.getLocalFlgFilePath(fileName);
-            String ftpFileDir = CreateFileUtil.getFtpFileDir(userName);
-            String ftpDataFilePath = ftpFileDir + "/" + dataFileName;
-            FTPHelper ftpHelper = new FTPHelper();
-            try {
-                ftpHelper.connectFTPServer();
-                ftpHelper.uploadFile(localDataFilePath, dataFileName, ftpFileDir);
-                ftpHelper.uploadFile(localFlgFilePath, flgFileName, ftpFileDir);
-                //filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
-                filePath = ftpDataFilePath;
-                message = localDataFilePath;
-            } catch (Exception e) {
-                status = Status.DEFEAT;
-                statusCode = StatusCode.DEFEAT;
-                message = "FTP上传失败！" + e.getMessage();
-                e.printStackTrace();
-            } finally {
-                try {
-                    ftpHelper.closeFTPClient();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            status = Status.DEFEAT;
-            statusCode = StatusCode.DEFEAT;
-            message = response.getMessage();
+    public Response asyncStart(String appId, Map<String, String> paraMap, Page page, String fileName, String userName) {
+        Response response = run(appId, paraMap, page);
+        if (Status.DEFEAT.getValue().equals(response.getStatus())) {
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(response.getMessage());
+            return response;
         }
-        response.setFilePath(filePath);
-        response.setMessage(message);
-        response.setStatus(status);
-        response.setStatusCode(statusCode);
+        try {
+            CreateFileUtil.createDelimiterFile(response.getRecords(), true, fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage("生成文件失败！" + e.getMessage());
+            return response;
+        }
+        String dataFileName = CreateFileUtil.getDataFileName(fileName);
+        String flgFileName = CreateFileUtil.getFlgFileName(fileName);
+        String localDataFilePath = CreateFileUtil.getLocalDataFilePath(fileName);
+        String localFlgFilePath = CreateFileUtil.getLocalFlgFilePath(fileName);
+        String ftpFileDir = CreateFileUtil.getFtpFileDir(userName);
+        String ftpDataFilePath = ftpFileDir + "/" + dataFileName;
+        // 写数据文件和标记文件到本地，并上传至FTP服务器
+        FTPHelper ftpHelper = new FTPHelper();
+        try {
+            ftpHelper.connectFTPServer();
+            ftpHelper.uploadFile(localDataFilePath, dataFileName, ftpFileDir);
+            ftpHelper.uploadFile(localFlgFilePath, flgFileName, ftpFileDir);
+            //String filePath = "ftp://" + FTPClientConfig.getHostname() + ":" + FTPClientConfig.getPort() + ftpFilePath;
+            String filePath = ftpDataFilePath;
+            response.setStatus(Status.SUCCESS.getValue());
+            response.setStatusCode(StatusCode.SUCCESS.getValue());
+            response.setMessage(localDataFilePath);
+            response.setResponseContent(filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage("FTP上传失败！" + e.getMessage());
+        } finally {
+            try {
+                ftpHelper.closeFTPClient();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return response;
     }
 

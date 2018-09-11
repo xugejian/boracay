@@ -13,7 +13,7 @@ public interface WebServiceInterface {
     String welcome();
 
     @WebMethod
-    WSResponse consume(WSRequest request);
+    WSResponse consume(WSRequest wsRequest);
 
     @WebMethod
     String consumeJson(String json);

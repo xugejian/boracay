@@ -2,10 +2,10 @@ package com.hex.bigdata.udsp.rts.executor.model;
 
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.common.api.model.Result;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by junjiem on 2017-2-20.
@@ -13,7 +13,7 @@ import java.util.List;
 public class ConsumerResponse {
 
     private ConsumerRequest consumerRequest; // 请求信息
-    private List<Result> records; // 记录集合
+    private List<Map<String,String>> records; // 记录集合
     private long totalCount; // 总记录数
     private long consumeTime; // 持续时间
     private Status status; // 状态
@@ -29,11 +29,11 @@ public class ConsumerResponse {
         this.consumerRequest = consumerRequest;
     }
 
-    public List<Result> getRecords() {
+    public List<Map<String, String>> getRecords() {
         return records;
     }
 
-    public void setRecords(List<Result> records) {
+    public void setRecords(List<Map<String, String>> records) {
         this.records = records;
     }
 

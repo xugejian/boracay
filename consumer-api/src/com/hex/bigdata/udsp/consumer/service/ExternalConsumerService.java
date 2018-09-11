@@ -1,13 +1,11 @@
 package com.hex.bigdata.udsp.consumer.service;
 
 import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.RequestType;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
-import com.hex.bigdata.udsp.consumer.model.ExternalRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.rc.model.RcService;
@@ -37,20 +35,19 @@ public class ExternalConsumerService {
     /**
      * 外部请求消费
      *
-     * @param externalRequest 外部请求内容
+     * @param request 外部请求内容
      * @return
      */
-    public Response externalConsume(ExternalRequest externalRequest) {
-        logger.debug("ExternalRequest=" + JSONUtil.parseObj2JSON(externalRequest));
+    public Response consume(Request request) {
+        logger.debug("Request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
-        Request request = new Request();
-        ObjectUtil.copyObject(externalRequest, request);
-
-        ConsumeRequest consumeRequest = checkBeforExternalConsume(request, bef);
+        ConsumeRequest consumeRequest = checkConsume(request, bef);
         logger.debug("检查耗时：" + (System.currentTimeMillis() - bef) + "ms");
 
+        long bef2 = System.currentTimeMillis();
         Response response = consumerService.consume(consumeRequest, bef);
+        logger.debug("执行耗时：" + (System.currentTimeMillis() - bef2) + "ms");
 
         long now = System.currentTimeMillis();
         long consumeTime = now - bef;
@@ -63,9 +60,9 @@ public class ExternalConsumerService {
     /**
      * 外部消费前检查
      */
-    private ConsumeRequest checkBeforExternalConsume(Request request, long bef) {
+    private ConsumeRequest checkConsume(Request request, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
-        consumeRequest.setRequest(request);
+        consumeRequest.setRequest(request); // 必须先设置request
         request.setRequestType(RequestType.OUTER.getValue());
         String serviceName = request.getServiceName();
         String udspUser = request.getUdspUser();
@@ -99,6 +96,6 @@ public class ExternalConsumerService {
         }
         //检查授权访问信息
         RcService rcService = rcServiceService.selectByServiceName(serviceName);
-        return consumerService.checkBeforConsume(request, udspUser, rcService, bef);
+        return consumerService.checkConsume(request, udspUser, rcService, bef);
     }
 }

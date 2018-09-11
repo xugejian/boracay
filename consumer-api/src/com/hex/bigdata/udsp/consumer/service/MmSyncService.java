@@ -1,11 +1,13 @@
 package com.hex.bigdata.udsp.consumer.service;
 
-import com.hex.bigdata.udsp.common.constant.*;
+import com.hex.bigdata.udsp.common.constant.EnumTrans;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.Status;
+import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.mm.dto.MmFullAppInfoView;
-import com.hex.bigdata.udsp.mm.dto.MmResponse;
-import com.hex.bigdata.udsp.mm.dto.MmResponseData;
+import com.hex.bigdata.udsp.mm.provider.model.MmResponse;
+import com.hex.bigdata.udsp.mm.provider.model.MmResponseData;
 import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
 import com.hex.bigdata.udsp.mm.service.MmProviderService;
@@ -29,44 +31,44 @@ public class MmSyncService {
     private MmApplicationService mmApplicationService;
 
     /**
-     * @param consumeId 消费Id
-     * @param appId     应用Id
-     * @param request   请求实体
+     * 调用（同步、异步）
+     *
+     * @param request 请求实体
      * @return
      */
-    public Response start(String consumeId, String appId, Request request) {
-        Response response = checkParam(appId, request.getData());
-        if (response != null) return response;
-
-        response = new Response();
-        MmResponse mmResponse = null;
+    public Response start(Request request) {
+        long bef = System.currentTimeMillis();
+        Response response = new Response();
         try {
-
-            //内部请求，则设置serviceName
-            if (RequestType.INNER.getValue().equals(request.getRequestType())) {
-                request.setServiceName(request.getAppName());
-            }
-
-            //模型调用
-            mmResponse = mmProviderService.start(appId, consumeId, request);
-            if (StringUtils.isBlank(mmResponse.getErrorCode())) {
+            checkParam(request.getAppId(), request.getData());
+        } catch (Exception e) {
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
+            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
+            return response;
+        }
+        try {
+            MmResponse mmResponse = mmProviderService.start(request);
+            response.setStatus(mmResponse.getStatus());
+            response.setStatusCode(Status.SUCCESS.getValue().equals(mmResponse.getStatus())
+                    ? StatusCode.SUCCESS.getValue() : StatusCode.DEFEAT.getValue());
+            response.setErrorCode(mmResponse.getErrorCode());
+            response.setMessage(mmResponse.getMessage());
+            if (Status.SUCCESS.getValue().equals(mmResponse.getStatus())) {
                 MmResponseData mmResponseData = mmResponse.getData();
                 if (mmResponseData != null) {
                     response.setRecords(mmResponseData.getRecords());
                     response.setResponseContent(mmResponseData.getFile());
                 }
             }
-            response.setMessage(mmResponse.getMessage());
-            response.setErrorCode(mmResponse.getErrorCode());
-            response.setStatus(mmResponse.getSystemStatus().getValue());
-            response.setStatusCode(mmResponse.getStatusCode().getValue());
-
+            response.setConsumeTime(System.currentTimeMillis() - bef);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" +e.getMessage());
-            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.toString());
         }
         return response;
     }
@@ -78,49 +80,45 @@ public class MmSyncService {
      * @param paraMap
      * @return
      */
-    private Response checkParam(String appId, Map<String, String> paraMap) {
-        Response response = null;
+    private void checkParam(String appId, Map<String, String> paraMap) throws Exception {
         boolean isError = false;
-        StringBuffer needColsName = new StringBuffer();
-        MmFullAppInfoView mmFullAppInfoView = mmApplicationService.selectFullAppInfo(appId);
-        for (MmAppExecuteParam mmAppExecuteParam : mmFullAppInfoView.getExecuteParams()) {
+        String message = "";
+        int count = 0;
+        for (MmAppExecuteParam mmAppExecuteParam : mmApplicationService.selectFullAppInfo(appId).getExecuteParams()) {
             if (EnumTrans.transTrue(mmAppExecuteParam.getIsNeed())) {
-                needColsName.append(mmAppExecuteParam.getName() + ",");
-                if (StringUtils.isBlank(paraMap.get(mmAppExecuteParam.getName()))) {
+                String name = mmAppExecuteParam.getName();
+                String value = paraMap.get(name);
+                if (StringUtils.isBlank(value)) {
+                    message += (count == 0 ? "" : ", ") + name;
                     isError = true;
+                    count++;
                 }
             }
         }
         if (isError) {
-            response = new Response();
-            response.setStatus(Status.DEFEAT.getValue());
-            response.setStatusCode(StatusCode.DEFEAT.getValue());
-            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
-            response.setMessage("请检查以下参数的值:" + needColsName.substring(0, needColsName.length() - 1));
+            throw new Exception(message + "参数不能为空!");
         }
-        return response;
     }
 
     /**
-     * 模型调用-异步status
+     * 查看状态
      *
      * @param request
      * @return
      */
-    public Response status(Request request, String appId) {
+    public Response status(Request request) {
+        long bef = System.currentTimeMillis();
         Response response = new Response();
-        MmResponse mmResponse = null;
         try {
-            mmResponse = mmProviderService.status(request, appId);
-            if (response != null) {
-                response.setMessage(mmResponse.getMessage());
-                response.setErrorCode(mmResponse.getErrorCode());
-                response.setStatus(mmResponse.getStatus());
-                response.setStatusCode(mmResponse.getStatusCode().getValue());
-            }
+            MmResponse mmResponse = mmProviderService.status(request);
+            response.setStatus(mmResponse.getStatus());
+            response.setStatusCode(Status.SUCCESS.getValue().equals(mmResponse.getStatus())
+                    ? StatusCode.SUCCESS.getValue() : StatusCode.DEFEAT.getValue());
+            response.setErrorCode(mmResponse.getErrorCode());
+            response.setMessage(mmResponse.getMessage());
+            response.setConsumeTime(System.currentTimeMillis() - bef);
         } catch (Exception e) {
             e.printStackTrace();
-            //设置消费id
             response.setConsumeId(request.getConsumeId());
             response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());

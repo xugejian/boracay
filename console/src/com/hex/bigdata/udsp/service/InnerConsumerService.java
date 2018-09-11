@@ -1,20 +1,19 @@
 package com.hex.bigdata.udsp.service;
 
 import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.RequestType;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.consumer.service.ConsumerService;
 import com.hex.bigdata.udsp.mc.model.Current;
-import com.hex.bigdata.udsp.mc.service.RunQueueService;
-import com.hex.bigdata.udsp.model.InnerRequest;
+import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class InnerConsumerService {
     @Autowired
     private ConsumerService consumerService;
     @Autowired
-    private RunQueueService runQueueService;
+    private CurrentService currentService;
 
     /**
      * 管理员用户最大同步并发数
@@ -50,18 +49,15 @@ public class InnerConsumerService {
     /**
      * 内部请求消费
      *
-     * @param innerRequest 内部请求内容
-     * @param isAdmin      是否是管理员
+     * @param request 内部请求内容
+     * @param isAdmin 是否是管理员
      * @return
      */
-    public Response innerConsume(InnerRequest innerRequest, boolean isAdmin) {
-        logger.debug("InnerRequest=" + JSONUtil.parseObj2JSON(innerRequest));
+    public Response consume(Request request, boolean isAdmin) {
+        logger.debug("Request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
 
-        Request request = new Request();
-        ObjectUtil.copyObject(innerRequest, request);
-
-        ConsumeRequest consumeRequest = checkBeforInnerConsume(request, isAdmin, bef);
+        ConsumeRequest consumeRequest = checkConsume(request, isAdmin, bef);
         logger.debug("检查耗时：" + (System.currentTimeMillis() - bef) + "ms");
 
         Response response = consumerService.consume(consumeRequest, bef);
@@ -81,9 +77,9 @@ public class InnerConsumerService {
     /**
      * 内部消费前检查
      */
-    private ConsumeRequest checkBeforInnerConsume(Request request, boolean isAdmin, long bef) {
+    private ConsumeRequest checkConsume(Request request, boolean isAdmin, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
-        consumeRequest.setRequest(request);
+        consumeRequest.setRequest(request); // 必须先设置request
         request.setRequestType(RequestType.INNER.getValue());
         String udspUser = request.getUdspUser();
         String appType = request.getAppType();
@@ -91,7 +87,6 @@ public class InnerConsumerService {
         String appName = consumerService.getAppName(appType, appId);
         request.setAppName(appName);
         request.setAppUser(udspUser);
-        Current mcCurrent = null;
         String type = request.getType() == null ? "" : request.getType().toUpperCase();
         String entity = request.getEntity() == null ? "" : request.getEntity().toUpperCase();
         // 分页参数处理
@@ -113,19 +108,21 @@ public class InnerConsumerService {
         }
         // 管理员用户，直接访问
         if (isAdmin) {
-            mcCurrent = consumerService.getCurrent(request, adminMaxSyncNum, adminMaxAsyncNum);
-            if (!runQueueService.addCurrent(mcCurrent)) { // 队列已满
-                consumeRequest.setError(ErrorCode.ERROR_000003);
-                return consumeRequest;
-            }
+            // 管理员用户执行队列（同步/异步）没有限制
+            Current mcCurrent = consumerService.getCurrent(request, -1, -1);
             consumeRequest.setMcCurrent(mcCurrent);
-            consumeRequest.setRequest(request);
+            currentService.insert(mcCurrent);
+            // 重新设置request
+            if (StringUtils.isBlank(request.getConsumeId())) {
+                request.setConsumeId(mcCurrent.getPkId());
+                consumeRequest.setRequest(request);
+            }
             return consumeRequest;
         }
 
         // 非管理员用户，授权访问
         RcService rcService = rcServiceService.selectByAppTypeAndAppId(appType, appId);
-        return consumerService.checkBeforConsume(request, udspUser, rcService, bef);
+        return consumerService.checkConsume(request, udspUser, rcService, bef);
     }
 
 }

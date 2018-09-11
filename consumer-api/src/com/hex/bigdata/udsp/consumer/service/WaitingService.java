@@ -1,12 +1,14 @@
 package com.hex.bigdata.udsp.consumer.service;
 
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
 import com.hex.bigdata.udsp.common.service.InitParamService;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
-import com.hex.bigdata.udsp.consumer.thread.WaitQueueCallable;
 import com.hex.bigdata.udsp.mc.model.Current;
+import com.hex.bigdata.udsp.mc.service.RunQueueService;
+import com.hex.bigdata.udsp.mc.service.WaitQueueService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +53,12 @@ public class WaitingService {
     private LoggingService loggingService;
     @Autowired
     private InitParamService initParamService;
+    @Autowired
+    private RunQueueService runQueueService;
+    @Autowired
+    private WaitQueueService waitQueueService;
+    @Autowired
+    private RedisDistributedLock redisDistributedLock;
 
     /**
      * 判断是否进入等待队列，如果进入则等待其满足条件出来
@@ -60,14 +68,7 @@ public class WaitingService {
      * @return
      */
     public boolean isWaiting(ConsumeRequest consumeRequest, long bef) {
-        Current mcCurrent = consumeRequest.getMcCurrent();
-        String consumeId = mcCurrent.getPkId();
-        long cycleTimeInterval = 0;
-        if (ConsumerType.SYNC.getValue().equalsIgnoreCase(mcCurrent.getSyncType())) {
-            cycleTimeInterval = syncCycleTimeInterval;
-        } else {
-            cycleTimeInterval = asyncCycleTimeInterval;
-        }
+        final Current mcCurrent = consumeRequest.getMcCurrent();
         QueueIsFullResult isFullResult = consumeRequest.getQueueIsFullResult();
         long maxWaitTimeout = 0;
         RcUserService rcUserService = consumeRequest.getRcUserService();
@@ -80,18 +81,49 @@ public class WaitingService {
         }
         boolean passFlg = true;
         if (isFullResult != null && !isFullResult.isWaitQueueIsFull()) { // 任务进入等待队列
+            final String waitQueueTaskId = isFullResult.getWaitQueueTaskId();
             passFlg = false;
             try {
                 // 开启一个新的线程，其内部循环判断是否可以执行，可以执行时或者等待超时时向下走
-                Future<Boolean> waitFutureTask = executorService.submit(new WaitQueueCallable(mcCurrent, isFullResult.getWaitQueueTaskId(), cycleTimeInterval));
-                passFlg = waitFutureTask.get(maxWaitTimeout, TimeUnit.SECONDS);
+                Future<Boolean> futureTask = executorService.submit(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        String key = mcCurrent.getUserName() + ":" + mcCurrent.getAppId()
+                                + ":" + mcCurrent.getAppType().toUpperCase() + ":" + mcCurrent.getSyncType().toUpperCase();
+                        long cycleTimeInterval = 0;
+                        if (ConsumerType.SYNC.getValue().equalsIgnoreCase(mcCurrent.getSyncType())) {
+                            cycleTimeInterval = syncCycleTimeInterval;
+                        } else {
+                            cycleTimeInterval = asyncCycleTimeInterval;
+                        }
+                        while (true) {
+                            synchronized (key.intern()) {
+                                if (initParamService.isUseClusterRedisLock())
+                                    redisDistributedLock.lock(key);
+                                try {
+                                    // 检查执行队列是否满
+                                    if (runQueueService.runQueueFull(mcCurrent)) continue; // 已满则继续循环
+                                    // 检查任务是否是等待队列中的第一个
+                                    if (waitQueueService.checkWaitQueueIsFirst(mcCurrent, waitQueueTaskId)) {
+                                        return true;
+                                    }
+                                } finally {
+                                    if (initParamService.isUseClusterRedisLock())
+                                        redisDistributedLock.unlock(key);
+                                }
+                            }
+                            Thread.sleep(cycleTimeInterval);
+                        }
+                    }
+                });
+                passFlg = futureTask.get(maxWaitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 loggingService.writeResponseLog(null, consumeRequest, bef, 0,
-                        ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName() + ":" + e.toString(), consumeId);
+                        ErrorCode.ERROR_000014.getValue(), ErrorCode.ERROR_000014.getName() + ":" + e.toString());
             } catch (Exception e) {
                 e.printStackTrace();
                 loggingService.writeResponseLog(null, consumeRequest, bef, 0,
-                        ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString(), consumeId);
+                        ErrorCode.ERROR_000007.getValue(), ErrorCode.ERROR_000007.getName() + ":" + e.toString());
             }
         }
         return passFlg;

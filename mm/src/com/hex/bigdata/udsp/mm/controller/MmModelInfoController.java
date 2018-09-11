@@ -35,14 +35,9 @@ import java.util.Map;
 @RequestMapping("/mm/modelInfo/")
 @Controller
 public class MmModelInfoController extends BaseController {
-    /**
-     * 日志记录
-     */
+
     private static Logger logger = LogManager.getLogger(MmModelInfoController.class);
 
-    /**
-     * 模型管理-模型基础信息管理服务
-     */
     @Autowired
     private MmModelInfoService modelInfoService;
 
@@ -144,7 +139,6 @@ public class MmModelInfoController extends BaseController {
         }
         return new MessageResult(status, message);
     }
-
 
     @RequestMapping({"/select/{pkId}"})
     @ResponseBody
@@ -249,7 +243,6 @@ public class MmModelInfoController extends BaseController {
         }
         return new MessageResult(status, message, modelInfo);
     }
-
 
     @RequestMapping("upload")
     @ResponseBody

@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.common.util;
 
-import com.hex.goframe.util.Util;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,12 +99,4 @@ public class HostUtil {
         logger.info("clientIp:" + clientIp);
         return clientIp;
     }
-
-    public static String getConsumeId(String key) {
-//        synchronized (HostUtil.class) {
-            if (key == null) key = "";
-            return Util.MD5(key + "|" + Util.uuid());
-//        }
-    }
-
 }

@@ -1,16 +1,17 @@
 package com.hex.bigdata.udsp.im.service;
 
-import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.HostUtil;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.common.util.UUIDUtil;
 import com.hex.bigdata.udsp.im.constant.BatchStatus;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
+import com.hex.bigdata.udsp.im.converter.model.Model;
+import com.hex.bigdata.udsp.im.converter.model.ModelFilterCol;
 import com.hex.bigdata.udsp.im.dao.BatchMapper;
 import com.hex.bigdata.udsp.im.dto.BatchInfoDto;
 import com.hex.bigdata.udsp.im.dto.BatchInfoView;
 import com.hex.bigdata.udsp.im.model.BatchInfo;
 import com.hex.bigdata.udsp.im.util.HiveJdbcUtil;
-import com.hex.bigdata.udsp.im.converter.model.Model;
-import com.hex.bigdata.udsp.im.converter.model.ModelFilterCol;
 import com.hex.goframe.model.Page;
 import com.hex.goframe.model.PageListResult;
 import httl.util.StringUtils;
@@ -50,7 +51,7 @@ public class BatchJobService {
      * 启动
      */
     public void start(Model model) throws Exception {
-        String id = HostUtil.getConsumeId(model.getId());
+        String id = UUIDUtil.consumeId(model.getId());
         String tDsType = model.getTargetMetadata().getDatasource().getType();
         if (DatasourceType.SOLR_HBASE.getValue().equals(tDsType)) {
             String hbaseId = "HBASE_" + id;

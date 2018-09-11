@@ -23,6 +23,13 @@ public class HBasePage {
         super();
     }
 
+    public HBasePage(int pageSize, int pageIndex, String startRow, String stopRow) {
+        this.pageSize = pageSize;
+        this.pageIndex = pageIndex;
+        this.startRow = startRow;
+        this.stopRow = stopRow;
+    }
+
     public HBasePage(List<Map<String, String>> records, int pageSize, int pageIndex, long totalCount) {
         this.records = records;
         this.pageSize = pageSize;

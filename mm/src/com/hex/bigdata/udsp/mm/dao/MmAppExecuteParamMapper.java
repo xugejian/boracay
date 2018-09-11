@@ -5,6 +5,7 @@ import com.hex.bigdata.udsp.mm.model.MmAppExecuteParam;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 @Repository
 public class MmAppExecuteParamMapper extends SyncMapper<MmAppExecuteParam> {
 
@@ -28,15 +29,13 @@ public class MmAppExecuteParamMapper extends SyncMapper<MmAppExecuteParam> {
         return this.sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.mm.dao.MmAppExecuteParamMapper.selectByPrimaryKey", id);
     }
 
-
     @Override
     protected boolean deleteListExe(String fkId) {
-        this.sqlSessionTemplate.delete("com.hex.bigdata.udsp.mm.dao.MmAppExecuteParamMapper.deleteListByFkId", fkId);
-        return true;
+        return this.sqlSessionTemplate.delete("com.hex.bigdata.udsp.mm.dao.MmAppExecuteParamMapper.deleteListByFkId", fkId) >= 0;
     }
 
     @Override
     protected List<MmAppExecuteParam> selectListExe(String fkId) {
-        return this.sqlSessionTemplate.selectList("com.hex.bigdata.udsp.mm.dao.MmAppExecuteParamMapper.selectListByFkId",fkId);
+        return this.sqlSessionTemplate.selectList("com.hex.bigdata.udsp.mm.dao.MmAppExecuteParamMapper.selectListByFkId", fkId);
     }
 }

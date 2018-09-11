@@ -37,6 +37,8 @@ public class McConsumeLog implements Serializable {
 
     private String isCache; // 是否从缓存获取（0：是，1：否）
 
+    private long consumeTime; // 接口耗时（ms）
+
     public String getPkId() {
         return pkId;
     }
@@ -171,5 +173,13 @@ public class McConsumeLog implements Serializable {
 
     public void setIsCache(String isCache) {
         this.isCache = isCache;
+    }
+
+    public long getConsumeTime() {
+        return consumeTime;
+    }
+
+    public void setConsumeTime(long consumeTime) {
+        this.consumeTime = consumeTime;
     }
 }

@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.consumer.service;
 
-import com.hex.bigdata.udsp.common.api.model.Result;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
@@ -41,9 +40,16 @@ public class RtsSyncService {
      * @return
      */
     public Response startProducer(String appId, List<Map<String, String>> datas) {
-        Response response = checkParam(appId, datas);
-        if (response != null) return response;
-        response = new Response();
+        Response response = new Response();
+        try {
+            checkParam(appId, datas);
+        } catch (Exception e) {
+            response.setStatus(Status.DEFEAT.getValue());
+            response.setStatusCode(StatusCode.DEFEAT.getValue());
+            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
+            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
+            return response;
+        }
         try {
             RtsProducer rtsProducer = rtsProducerService.select(appId);
             String mdId = rtsProducer.getMdId();
@@ -63,10 +69,10 @@ public class RtsSyncService {
             response.setStatus(producerResponse.getStatus().getValue());
             response.setStatusCode(producerResponse.getStatusCode().getValue());
         } catch (Exception e) {
-            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(ErrorCode.ERROR_000007.getName() + ":" + e.getMessage());
             e.printStackTrace();
         }
         return response;
@@ -79,24 +85,22 @@ public class RtsSyncService {
      * @param datas
      * @return
      */
-    private Response checkParam(String appId, List<Map<String, String>> datas) {
-        Response response = null;
+    private void checkParam(String appId, List<Map<String, String>> datas) throws Exception {
         boolean isError = false;
-        StringBuffer colsName = new StringBuffer();
+        String message = "";
+        int count = 0;
         for (RtsMetadataCol rtsMatedataCol : rtsMetadataColService.selectByProducerPkid(appId)) {
-            colsName.append(rtsMatedataCol.getName() + ",");
-            if (StringUtils.isBlank(datas.get(0).get(rtsMatedataCol.getName()))) {
+            String name = rtsMatedataCol.getName();
+            String value = datas.get(0).get(name);
+            if (StringUtils.isBlank(value)) {
+                message += (count == 0 ? "" : ", ") + name;
                 isError = true;
+                count++;
             }
         }
         if (isError) {
-            response = new Response();
-            response.setStatus(Status.DEFEAT.getValue());
-            response.setStatusCode(StatusCode.DEFEAT.getValue());
-            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
-            response.setMessage("请检查以下参数的值:" + colsName.substring(0, colsName.length() - 1));
+            throw new Exception(message + "参数不能为空!");
         }
-        return response;
     }
 
     /**
@@ -115,21 +119,13 @@ public class RtsSyncService {
             response.setStatus(consumerResponse.getStatus().getValue());
             response.setStatusCode(consumerResponse.getStatusCode().getValue());
             response.setReturnColumns(consumerResponse.getColumns());
-            List<Map<String, String>> records = new ArrayList<>();
-            Map<String, String> map = null;
-            for (Result result : consumerResponse.getRecords()) {
-                map = new HashMap<>();
-                for (Map.Entry<String, Object> entry : result.entrySet()) {
-                    map.put(entry.getKey(), result.getString(entry.getKey()));
-                }
-                records.add(map);
-            }
-            response.setRecords(records);
+            response.setRecords(consumerResponse.getRecords());
         } catch (Exception e) {
-            response.setMessage(e.getMessage());
+            e.printStackTrace();
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
-            e.printStackTrace();
+            response.setErrorCode(ErrorCode.ERROR_000007.getValue());
+            response.setMessage(e.getMessage());
         }
         return response;
     }

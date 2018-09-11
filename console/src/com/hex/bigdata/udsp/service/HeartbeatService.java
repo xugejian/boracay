@@ -1,18 +1,17 @@
 package com.hex.bigdata.udsp.service;
 
 import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
+import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ServiceType;
 import com.hex.bigdata.udsp.common.util.*;
-import com.hex.bigdata.udsp.consumer.constant.ConsumerConstant;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.service.IqAsyncService;
 import com.hex.bigdata.udsp.consumer.service.LoggingService;
 import com.hex.bigdata.udsp.consumer.service.OlqAsyncService;
-import com.hex.bigdata.udsp.common.util.HostUtil;
+import com.hex.bigdata.udsp.consumer.util.RequestUtil;
 import com.hex.bigdata.udsp.dao.HeartbeatMapper;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.mc.service.CurrentService;
@@ -27,7 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 心跳的服务
@@ -170,13 +171,14 @@ public class HeartbeatService {
             mcCurrentNewService.delete(downHostKey, mcCurrent.getPkId());
         }
         for (Current mcCurrent : newCurrents) {
-            Map<String, Class> classMap = new HashMap<>();
-            classMap.put(ConsumerConstant.CONSUME_RTS_DATASTREAM, Map.class);
-            String requestContentJson = JSONUtil.parseObj2JSON(mcCurrent.getRequestContent());
-            Request request = JSONUtil.parseJSON2Obj(requestContentJson, Request.class, classMap);
+            String type = mcCurrent.getAppType();
+            String appId = mcCurrent.getAppId();
+            Request request = RequestUtil.jsonToRequest(mcCurrent.getRequestContent());
             request.setRequestType(mcCurrent.getRequestType());
-            request.setAppType(mcCurrent.getAppType());
+            request.setAppType(type);
             request.setAppName(mcCurrent.getAppName());
+            request.setAppId(appId);
+
             if (ConsumerEntity.STATUS.getValue().equalsIgnoreCase(request.getEntity())) {
                 continue;
             }
@@ -184,33 +186,29 @@ public class HeartbeatService {
                 ConsumeRequest consumeRequest = new ConsumeRequest();
                 consumeRequest.setRequest(request);
                 loggingService.writeResponseLog(null, consumeRequest, DateUtil.getDataTimestamp(mcCurrent.getStartTime()), 0,
-                        ErrorCode.ERROR_000003.getValue(), ErrorCode.ERROR_000003.getName(), null);
+                        ErrorCode.ERROR_000003.getValue(), ErrorCode.ERROR_000003.getName());
             }
-
-            mcCurrent.setPkId(mcCurrent.getPkId());
-            String type = mcCurrent.getAppType();
-            String appId = mcCurrent.getAppId();
 
             //根据不同的APP类型、重新建任务
             //异步时文件
             String localFileName = CreateFileUtil.getFileName();
-            //新增消费请求类作为参数-start
-            //add 20170908
             ConsumeRequest consumeRequest = new ConsumeRequest();
             consumeRequest.setMcCurrent(mcCurrent);
             QueueIsFullResult isFullResult = new QueueIsFullResult();
             consumeRequest.setQueueIsFullResult(isFullResult);
-            //新增消费请求类作为参数-end
+            consumeRequest.setRequest(request);
             long bef = System.currentTimeMillis();
             if (ServiceType.IQ.getValue().equals(type)) {
-                ThreadPool.execute(new IqAsyncService(consumeRequest, appId, request.getData(), request.getPage(), localFileName, bef));
+                ThreadPool.execute(new IqAsyncService(consumeRequest, localFileName, bef));
             } else if (ServiceType.OLQ.getValue().equalsIgnoreCase(type)) {
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, request.getSql(), request.getPage(), localFileName, bef));
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, localFileName, bef));
             } else if (ServiceType.OLQ_APP.getValue().equals(type)) {
                 OlqApplicationDto olqApplicationDto = this.olqApplicationService.selectFullAppInfo(appId);
                 appId = olqApplicationDto.getOlqApplication().getOlqDsId();
                 String sql = this.olqApplicationService.getExecuteSQL(olqApplicationDto, request.getData());
-                ThreadPool.execute(new OlqAsyncService(consumeRequest, appId, sql, request.getPage(), localFileName, bef));
+                consumeRequest.getRequest().setAppId(appId);
+                consumeRequest.getRequest().setSql(sql);
+                ThreadPool.execute(new OlqAsyncService(consumeRequest, localFileName, bef));
             }
         }
         logger.info("转移服务IP为：" + downHostKey + "上的未完成的异步任务到本机【结束】");

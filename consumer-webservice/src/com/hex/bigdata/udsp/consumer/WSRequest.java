@@ -3,30 +3,38 @@ package com.hex.bigdata.udsp.consumer;
 import com.hex.bigdata.udsp.common.api.model.Page;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * WebService Request
  */
 public class WSRequest implements Serializable {
-    private String appUser;
-    private String serviceName;
-    private String udspUser;
-    private String appType;
-    private String appName;
-    private String appId;
-    private String requestType;
+    private String serviceName; // 服务名
 
     private String type; // sync、async
     private String entity; // start、status、stop
-    private Page page;
-    private String sql;
-    private long timeout;
+
+    private String udspUser; // UDSP用户
+    private String token; // UDSP密码
+
+    private String appUser; // 外部的用户
+
+    private String appType; // 应用类型
+    private String appName; // 应用名称
+    private String appId; // 应用ID
+
+    private String requestType; // 请求类型
+    private String requestIp; // 请求IP
+
+    private Page page; // 分页信息
+    private String sql; // SQL语句
+    private HashMap<String, String> data; // 请求数据
+
+    private long timeout; // 超时时间（毫秒）
+    private List<HashMap<String, String>> dataStream; // 数据流集合
+
     private String consumeId; // 消费ID
-    private HashMap<String, String> data;
-    private ArrayList<HashMap<String, String>> dataStream;
-    private String requestIp;//请求IP
 
     public String getAppId() {
         return appId;
@@ -133,6 +141,22 @@ public class WSRequest implements Serializable {
         this.timeout = timeout;
     }
 
+    public String getRequestIp() {
+        return requestIp;
+    }
+
+    public void setRequestIp(String requestIp) {
+        this.requestIp = requestIp;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public HashMap<String, String> getData() {
         return data;
     }
@@ -141,19 +165,11 @@ public class WSRequest implements Serializable {
         this.data = data;
     }
 
-    public ArrayList<HashMap<String, String>> getDataStream() {
+    public List<HashMap<String, String>> getDataStream() {
         return dataStream;
     }
 
-    public void setDataStream(ArrayList<HashMap<String, String>> dataStream) {
+    public void setDataStream(List<HashMap<String, String>> dataStream) {
         this.dataStream = dataStream;
-    }
-
-    public String getRequestIp() {
-        return requestIp;
-    }
-
-    public void setRequestIp(String requestIp) {
-        this.requestIp = requestIp;
     }
 }

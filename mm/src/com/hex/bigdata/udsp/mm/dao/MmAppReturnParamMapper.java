@@ -29,15 +29,13 @@ public class MmAppReturnParamMapper extends SyncMapper<MmAppReturnParam> {
         return this.sqlSessionTemplate.selectOne("com.hex.bigdata.udsp.mm.dao.MmAppReturnParamMapper.selectByPrimaryKey", id);
     }
 
-
     @Override
     protected boolean deleteListExe(String fkId) {
-        this.sqlSessionTemplate.delete("com.hex.bigdata.udsp.mm.dao.MmAppReturnParamMapper.deleteListByFkId",fkId);
-        return true;
+        return this.sqlSessionTemplate.delete("com.hex.bigdata.udsp.mm.dao.MmAppReturnParamMapper.deleteListByFkId", fkId) >= 0;
     }
 
     @Override
     protected List<MmAppReturnParam> selectListExe(String fkId) {
-        return this.sqlSessionTemplate.selectList("com.hex.bigdata.udsp.mm.dao.MmAppReturnParamMapper.selectListByFkId",fkId);
+        return this.sqlSessionTemplate.selectList("com.hex.bigdata.udsp.mm.dao.MmAppReturnParamMapper.selectListByFkId", fkId);
     }
 }

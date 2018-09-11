@@ -7,13 +7,10 @@ import com.hex.bigdata.udsp.rc.model.RcUserService;
 public class ConsumeRequest {
 
     private Request request;
-
     private Current mcCurrent;
-
     private ErrorCode error;
-
+    private String message;
     private RcUserService rcUserService;
-
     private QueueIsFullResult queueIsFullResult;
 
     public Request getRequest() {
@@ -54,5 +51,13 @@ public class ConsumeRequest {
 
     public void setQueueIsFullResult(QueueIsFullResult queueIsFullResult) {
         this.queueIsFullResult = queueIsFullResult;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

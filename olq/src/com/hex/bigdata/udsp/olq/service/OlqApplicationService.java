@@ -2,6 +2,7 @@ package com.hex.bigdata.udsp.olq.service;
 
 import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
 import com.hex.bigdata.udsp.common.constant.DatasourceMode;
+import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.constant.YesOrNo;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
@@ -410,44 +411,45 @@ public class OlqApplicationService extends BaseService {
      * 根据应用配置信息、参数值获取sql语句
      *
      * @param olqApplicationDto
-     * @param paramVals
+     * @param paraMap
      * @return
      */
-    public String getExecuteSQL(OlqApplicationDto olqApplicationDto, Map<String, String> paramVals) {
+    public String getExecuteSQL(OlqApplicationDto olqApplicationDto, Map<String, String> paraMap){
         String sql = olqApplicationDto.getOlqApplication().getOlqSql();
         List<OlqApplicationParam> appParams = olqApplicationDto.getParams();
-        if (appParams == null || appParams.size() == 0) return sql;
-        checkParam(appParams, paramVals); // 检查传入参数
-        sql = SqlExpressionEvaluator.parseSql(sql, paramVals); // 解析字符串并批量替换表达式
+        if (appParams != null && appParams.size() != 0) {
+            sql = SqlExpressionEvaluator.parseSql(sql, paraMap); // 解析字符串并批量替换表达式
+        }
         logger.info("SQL:" + sql);
         return sql;
     }
 
     /**
-     * 检查传入参数
-     *
-     * @param paramVals
+     * 检查输入的参数
      */
-    public void checkParam(List<OlqApplicationParam> appParams, Map<String, String> paramVals) {
-        if (paramVals != null && paramVals.size() >= 1) {
-            boolean flg = false;
+    public void checkParam(List<OlqApplicationParam> appParams, Map<String, String> paraMap) throws Exception {
+        if (paraMap != null && paraMap.size() != 0) {
+            boolean isError = false;
             String message = "";
+            int count = 0;
             for (OlqApplicationParam appParam : appParams) {
                 String name = appParam.getParamName();
-                String isNeed = appParam.getIsNeed(); // 是否必输，0：是 1：否
                 String defaultValue = appParam.getDefaultValue(); // 默认值
-                String value = paramVals.get(name);
+                String value = paraMap.get(name);
                 if (StringUtils.isBlank(value)) { // 没有传入值
                     if (StringUtils.isNotBlank(defaultValue)) { // 有默认值
-                        paramVals.put(name, defaultValue);
-                    } else if ("0".equals(isNeed) && StringUtils.isBlank(defaultValue)) { // 必输且没有默认值
-                        flg = true;
-                        message += name + "是必输参数且没有默认值，需要客户端传入非空值!";
+                        paraMap.put(name, defaultValue);
+                    } else { // 没有默认值
+                        if (EnumTrans.transTrue(appParam.getIsNeed())) { // 必输
+                            isError = true;
+                            message += (count == 0 ? "" : ", ") + name;
+                            count++;
+                        }
                     }
                 }
             }
-            if (flg) {
-                throw new RuntimeException(message);
+            if (isError) {
+                throw new Exception(message + "参数不能为空!");
             }
         }
     }
@@ -514,7 +516,7 @@ public class OlqApplicationService extends BaseService {
     /**
      * 服务信息导出
      */
-    public void setWorkbooksheet(HSSFWorkbook workbook, Map<String,String> map, String appId) {
+    public void setWorkbooksheet(HSSFWorkbook workbook, Map<String, String> map, String appId) {
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
         String seprator = FileUtil.getFileSeparator();

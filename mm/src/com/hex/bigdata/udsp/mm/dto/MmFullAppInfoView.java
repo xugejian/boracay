@@ -46,7 +46,7 @@ public class MmFullAppInfoView implements Serializable {
 
 
     /**
-     * 模型调用类型，1：同步；2：异步；3：批处理，多个用逗号分隔
+     * 模型调用类型，1：同步、2：异步（多个用逗号分隔）
      */
     private String modelType;
 

@@ -13,7 +13,7 @@ public class MmModelParam implements Serializable {
 
     private String describe;
 
-    private String type;
+    private String type; // 1:查询字段 2:返回字段
 
     private String length;
 

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.api.model.Result;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
@@ -72,8 +71,9 @@ public class SolrProvider implements Provider {
         return response;
     }
 
-    public IqResponse query(IqRequest request, int pageIndex, int pageSize) {
-        logger.debug("request=" + JSONUtil.parseObj2JSON(request) + " pageIndex=" + pageIndex + " pageSize=" + pageSize);
+    public IqResponse query(IqRequest request, Page page) {
+        logger.debug("request=" + JSONUtil.parseObj2JSON(request)
+                + " pageIndex=" + page.getPageIndex() + " pageSize=" + page.getPageSize());
         long bef = System.currentTimeMillis();
         IqResponse response = new IqResponse();
         response.setRequest(request);
@@ -88,13 +88,12 @@ public class SolrProvider implements Provider {
             Datasource datasource = metadata.getDatasource();
             SolrDatasource solrDatasource = new SolrDatasource(datasource.getPropertyMap());
             int maxSize = solrDatasource.getMaxNum();
-            if (pageSize > maxSize) pageSize = maxSize;
+            int pageIndex = page.getPageIndex();
+            int pageSize = (page.getPageSize() > maxSize ? maxSize : page.getPageSize());
+            page.setPageSize(pageSize);
             SolrQuery query = getSolrQuery(pageIndex, pageSize, queryColumns, orderColumns, returnColumns);
             SolrPage solrPage = searchPage(tbName, query, pageIndex, pageSize, solrDatasource);
             response.setRecords(getRecords(solrPage.getRecords(), returnColumns));
-            Page page = new Page();
-            page.setPageIndex(pageIndex);
-            page.setPageSize(pageSize);
             page.setTotalCount(solrPage.getTotalCount());
             response.setPage(page);
             response.setStatus(Status.SUCCESS);
@@ -173,21 +172,18 @@ public class SolrProvider implements Provider {
     }
 
     // 字段名改别名
-    private List<Result> getRecords(List<Map<String, Object>> resultList, List<ReturnColumn> returnColumns) {
-        List<Result> records = null;
-        if (resultList != null) {
-            records = new ArrayList<Result>();
-            for (Map<String, Object> map : resultList) {
-                Result result = new Result();
-                Map<String, Object> returnDataMap = new HashMap<String, Object>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    String label = item.getLabel();
-                    returnDataMap.put(label, map.get(colName));
-                }
-                result.set(returnDataMap);
-                records.add(result);
+    private List<Map<String, String>> getRecords(List<Map<String, Object>> list, List<ReturnColumn> returnColumns) {
+        List<Map<String, String>> records = new ArrayList<>();
+        if (list == null || list.size() == 0) {
+            return records;
+        }
+        Map<String, String> result = null;
+        for (Map<String, Object> map : list) {
+            result = new HashMap<>();
+            for (ReturnColumn item : returnColumns) {
+                result.put(item.getLabel(), String.valueOf(map.get(item.getName())));
             }
+            records.add(result);
         }
         return records;
     }
@@ -351,7 +347,7 @@ public class SolrProvider implements Provider {
                     connection.setInstanceFollowRedirects(true);
                     connection.connect();
                     if (connection != null) {
-                        return  true;
+                        return true;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

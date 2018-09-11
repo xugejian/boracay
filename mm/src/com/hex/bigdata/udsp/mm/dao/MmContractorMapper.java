@@ -7,6 +7,7 @@ import com.hex.goframe.model.Page;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 @Repository
 public class MmContractorMapper extends SyncMapper<MmContractor> {
 
@@ -33,7 +34,7 @@ public class MmContractorMapper extends SyncMapper<MmContractor> {
 
     @Override
     protected boolean deleteListExe(String fkId) {
-        return true;
+        return false;
     }
 
     @Override
@@ -43,6 +44,7 @@ public class MmContractorMapper extends SyncMapper<MmContractor> {
 
     /**
      * 多田间分页查询
+     *
      * @param contractorView
      * @param page
      * @return
@@ -55,21 +57,22 @@ public class MmContractorMapper extends SyncMapper<MmContractor> {
 
     /**
      * 查询所有厂商
+     *
      * @return
      */
-    public List<MmContractor> selectAll(){
+    public List<MmContractor> selectAll() {
         return this.sqlSessionTemplate.selectList("com.hex.bigdata.udsp.mm.dao.MmContractorMapper.selectAll");
     }
 
     /**
      * 根据名称查找
+     *
      * @param name
      * @return
      */
     public MmContractor selectByName(String name) {
         return sqlSessionTemplate.selectOne(
-                "com.hex.bigdata.udsp.mm.dao.MmContractorMapper.selectByName",name);
+                "com.hex.bigdata.udsp.mm.dao.MmContractorMapper.selectByName", name);
     }
-
 
 }

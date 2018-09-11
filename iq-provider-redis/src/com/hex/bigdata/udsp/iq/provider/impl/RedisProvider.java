@@ -2,7 +2,6 @@ package com.hex.bigdata.udsp.iq.provider.impl;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.api.model.Result;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
@@ -27,7 +26,7 @@ public class RedisProvider implements Provider {
     private static final String tableColumnSeq = ":";
 
     public IqResponse query(IqRequest request) {
-        return query(request, -1, -1);
+        return query(request, null);
     }
 
     private String getRedisQuery(List<DataColumn> metaDataQueryColumns, List<QueryColumn> queryColumns, String tableName) {
@@ -72,7 +71,7 @@ public class RedisProvider implements Provider {
     }
 
 
-    public IqResponse query(IqRequest request, int pageIndex, int pageSize) {
+    public IqResponse query(IqRequest request, Page page) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
         long bef = System.currentTimeMillis();
         IqResponse response = new IqResponse();
@@ -92,23 +91,20 @@ public class RedisProvider implements Provider {
             String fqSep = redisDatasource.getSeprator();
             int maxSize = redisDatasource.getMaxNum();
             List<Map<String, String>> list = null;
-            int startRow = -1;
-            int endRow = -1;
-            Page page = null;
-            if (pageIndex != -1 && pageSize != -1) {
-                startRow = (pageIndex - 1) * pageSize;
-                endRow = pageIndex * pageSize;
-                page = new Page();
-                page.setPageIndex(pageIndex);
+            if (page != null) {
+                int pageIndex = page.getPageIndex();
+                int pageSize = (page.getPageSize() > maxSize ? maxSize : page.getPageSize());
                 page.setPageSize(pageSize);
+                response.setPage(page);
+                int startRow = (pageIndex - 1) * pageSize;
+                int endRow = pageIndex * pageSize;
                 page.setTotalCount(getCountNum(query, redisDatasource));
-                list = search(fqSep, query, redisDatasource, metaReturnColumns, startRow, endRow, maxSize);
+                list = search(fqSep, query, redisDatasource, metaReturnColumns, startRow, endRow);
             } else {
                 list = search(fqSep, query, redisDatasource, metaReturnColumns, maxSize);
             }
             list = orderBy(list, orderColumns); // 排序
             response.setRecords(getRecords(list, returnColumns));
-            response.setPage(page);
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -146,26 +142,24 @@ public class RedisProvider implements Provider {
     }
 
     // 字段过滤并字段名改别名
-    private List<Result> getRecords(List<Map<String, String>> resultList, List<ReturnColumn> returnColumns) {
-        List<Result> records = null;
-        if (resultList != null) {
-            records = new ArrayList<Result>();
-            for (Map<String, String> map : resultList) {
-                Result result = new Result();
-                Map<String, String> returnDataMap = new HashMap<String, String>();
-                for (ReturnColumn item : returnColumns) {
-                    String colName = item.getName();
-                    String label = item.getLabel();
-                    returnDataMap.put(label, map.get(colName));
-                }
-                result.putAll(returnDataMap);
-                records.add(result);
+    private List<Map<String, String>> getRecords(List<Map<String, String>> list, List<ReturnColumn> returnColumns) {
+        List<Map<String, String>> records = new ArrayList<>();
+        if (list == null || list.size() == 0) {
+            return records;
+        }
+        Map<String, String> result = null;
+        for (Map<String, String> map : list) {
+            result = new HashMap<>();
+            for (ReturnColumn item : returnColumns) {
+                result.put(item.getLabel(), map.get(item.getName()));
             }
+            records.add(result);
         }
         return records;
     }
 
-    private List<Map<String, String>> search(String fqSep, String queryString, RedisDatasource datasource, List<DataColumn> returnColumns, int startRow, int endRow, int maxNum) {
+    private List<Map<String, String>> search(String fqSep, String queryString, RedisDatasource datasource,
+                                             List<DataColumn> returnColumns, int startRow, int endRow) {
         RedisConnectionPoolFactory redisConnectionPoolFactory = getDataSource(datasource);
         Jedis jedis = redisConnectionPoolFactory.getConnection();
 
@@ -175,7 +169,6 @@ public class RedisProvider implements Provider {
         try {
             //获取模糊匹配的key
             Set<String> keys = jedis.keys(queryString);
-
             String[] results = new String[keys.size()];
             results = keys.toArray(results);
             for (int i = 0; i < results.length && i <= endRow && i >= startRow; i++) {
@@ -185,9 +178,6 @@ public class RedisProvider implements Provider {
                     record.put(returnColumn.getName(), JSONUtil.encode(returnResults[returnColumn.getSeq() - 1]));
                 }
                 records.add(record);
-                if (records.size() >= maxNum) {
-                    break;
-                }
             }
         } finally {
             if (jedis != null) {
