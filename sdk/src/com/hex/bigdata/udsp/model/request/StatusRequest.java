@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.model.request;
 
-import com.hex.bigdata.udsp.consumer.model.BaseRequest;
+import com.hex.bigdata.udsp.common.api.model.BaseRequest;
 
 public class StatusRequest extends BaseRequest {
 

@@ -3,7 +3,7 @@ package com.hex.bigdata.udsp.client.impl;
 import com.hex.bigdata.udsp.client.ConsumerClient;
 import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
-import com.hex.bigdata.udsp.consumer.model.BaseRequest;
+import com.hex.bigdata.udsp.common.api.model.BaseRequest;
 import com.hex.bigdata.udsp.model.request.RtsProducerRequest;
 import com.hex.bigdata.udsp.model.response.SyncResponse;
 import com.hex.bigdata.udsp.model.response.SyncPackResponse;

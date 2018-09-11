@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.consumer.model;
+package com.hex.bigdata.udsp.common.api.model;
 
 import java.io.Serializable;
 

@@ -6,7 +6,6 @@ import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ServiceType;
 import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
-import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.service.IqAsyncService;
 import com.hex.bigdata.udsp.consumer.service.LoggingService;
@@ -194,8 +193,6 @@ public class HeartbeatService {
             String localFileName = CreateFileUtil.getFileName();
             ConsumeRequest consumeRequest = new ConsumeRequest();
             consumeRequest.setMcCurrent(mcCurrent);
-            QueueIsFullResult isFullResult = new QueueIsFullResult();
-            consumeRequest.setQueueIsFullResult(isFullResult);
             consumeRequest.setRequest(request);
             long bef = System.currentTimeMillis();
             if (ServiceType.IQ.getValue().equals(type)) {

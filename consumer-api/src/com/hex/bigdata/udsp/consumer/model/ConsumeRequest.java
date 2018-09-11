@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.consumer.model;
 
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.mc.model.Current;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 
