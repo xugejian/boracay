@@ -1431,4 +1431,8 @@ alter table RTS_CUSTOMER_CONFIG drop column GROUP_ID;
 alter table MM_CONTRACTOR drop column EXTEND_FIELD1;
 alter table MM_CONTRACTOR drop column EXTEND_FIELD2;
 
+-- 消费日志表中添加接口耗时字段
+ALTER TABLE MC_CONSUME_LOG ADD CONSUME_TIME NUMBER(13);
+COMMENT ON COLUMN MC_CONSUME_LOG.CONSUME_TIME IS '接口耗时（ms）';
+
 spool off

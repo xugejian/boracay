@@ -11,7 +11,7 @@ import com.hex.bigdata.udsp.common.util.StatementUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.im.util.JdbcUtil;
+import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponse;
 import com.hex.bigdata.udsp.olq.provider.model.OlqResponseFetch;
 import com.hex.bigdata.udsp.olq.service.OlqProviderService;
