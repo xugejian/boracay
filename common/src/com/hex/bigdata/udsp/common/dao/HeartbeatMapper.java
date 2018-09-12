@@ -10,12 +10,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HeartbeatMapper extends SyncCacheMapper<HeartbeatInfo> {
 
-//    @Autowired
-//    @Qualifier("ehCache")
-//    private Cache<HeartbeatInfo> cache;
-//
-//    protected Cache<HeartbeatInfo> getCache() {
-//        return this.cache;
-//    }
-
 }
