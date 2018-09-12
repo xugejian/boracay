@@ -2,11 +2,11 @@ package com.hex.bigdata.udsp.consumer.service;
 
 import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.*;
+import com.hex.bigdata.udsp.common.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.util.*;
 import com.hex.bigdata.udsp.consumer.dao.ResponseMapper;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
-import com.hex.bigdata.udsp.consumer.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
@@ -16,7 +16,6 @@ import com.hex.bigdata.udsp.mc.service.CurrentService;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
 import com.hex.bigdata.udsp.mc.service.RunQueueService;
 import com.hex.bigdata.udsp.mc.service.WaitQueueService;
-import com.hex.bigdata.udsp.mc.util.McCommonUtil;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
 import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
@@ -27,6 +26,7 @@ import com.hex.bigdata.udsp.rc.service.RcUserServiceService;
 import com.hex.bigdata.udsp.rts.service.RtsConsumerService;
 import com.hex.bigdata.udsp.rts.service.RtsProducerService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,10 @@ import java.util.Map;
  */
 @Service
 public class ConsumerService {
+
     private static Logger logger = LogManager.getLogger(ConsumerService.class);
+
+    private static final FastDateFormat format = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
 
     @Autowired
     private RcUserServiceService rcUserServiceService;
@@ -401,10 +404,29 @@ public class ConsumerService {
 
     public Current getCurrent(Request request, int maxSyncNum, int maxAsyncNum) {
         if (ConsumerType.SYNC.getValue().equalsIgnoreCase(request.getType())) {
-            return McCommonUtil.getMcCurrent(request, maxSyncNum);
+            return getMcCurrent(request, maxSyncNum);
         } else {
-            return McCommonUtil.getMcCurrent(request, maxAsyncNum);
+            return getMcCurrent(request, maxAsyncNum);
         }
+    }
+
+    private static Current getMcCurrent(Request request, int maxCurrentNum) {
+        Current mcCurrent = new Current();
+        String requestContent = JSONUtil.parseObj2JSON(request);
+        String consumeId = UUIDUtil.consumeId(requestContent);
+        mcCurrent.setStartTime(format.format(new Date()));
+        mcCurrent.setServiceName(request.getServiceName());
+        mcCurrent.setUserName(request.getUdspUser());
+        mcCurrent.setAppType(request.getAppType());
+        mcCurrent.setAppName(request.getAppName());
+        mcCurrent.setRequestType(request.getRequestType());
+        mcCurrent.setPid(consumeId);
+        mcCurrent.setAppId(request.getAppId());
+        mcCurrent.setSyncType(request.getType().toUpperCase());
+        mcCurrent.setPkId(consumeId);
+        mcCurrent.setMaxCurrentNum(maxCurrentNum);
+        mcCurrent.setRequestContent(requestContent);
+        return mcCurrent;
     }
 
     /**

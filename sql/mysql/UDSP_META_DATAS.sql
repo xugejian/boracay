@@ -1190,3 +1190,17 @@ values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.fq.dsv.separator', '结果数据分隔�
 -- 更新IM的字典信息
 update T_GF_DICT set dict_id='hbase.fq.dsv.separator' where dict_type_id='IM_MD_PROPS_HBASE' and dict_id='hbase.fq.dsv.seprator';
 update T_GF_DICT set dict_id='hbase.fq.dsv.separator' where dict_type_id='IM_MD_PROPS_SOLR_HBASE' and dict_id='hbase.fq.dsv.seprator';
+
+-- 添加错误信息字典
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '200005', '模型不支持该类型', null, 200005, null, null, 'default', null);
+
+-- 修改“运行队列”菜单指向的页面地址
+update T_GF_MENU set menu_action = 'mc.queue.run.list' where menuid = '115041';
+-- 修改“等待队列”菜单指向的页面地址
+update T_GF_MENU set menu_action = 'mc.queue.wait.list' where menuid = '115051';
+
+-- 修改“批量作业”菜单指向的页面地址
+update T_GF_MENU set menu_action = 'im.job.batch.list' where menuid = '115011';
+-- 修改“实时作业”菜单指向的页面地址
+update T_GF_MENU set menu_action = 'im.job.realtime.list' where menuid = '115021';

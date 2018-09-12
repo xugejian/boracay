@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.client;
 
+import com.hex.bigdata.udsp.common.api.model.BaseRequest;
 import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
 import com.hex.bigdata.udsp.common.constant.EnumTrans;
-import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 import com.hex.bigdata.udsp.model.response.AsyncResponse;
 import com.hex.bigdata.udsp.model.response.StatusResponse;
 import com.hex.bigdata.udsp.model.response.SyncResponse;

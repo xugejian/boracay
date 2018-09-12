@@ -17,8 +17,6 @@
     <orderEntry type="library" name="hive" level="project" />
     <orderEntry type="library" name="jetty" level="project" />
     <orderEntry type="module" module-name="common" />
-    <orderEntry type="module" module-name="console" />
-    <orderEntry type="module" module-name="md" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="im-converter-api" />
   </component>

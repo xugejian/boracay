@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.model.request;
 
+import com.hex.bigdata.udsp.common.api.model.BaseRequest;
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.consumer.model.BaseRequest;
 
 @Deprecated
 public class OlqRequest extends BaseRequest {

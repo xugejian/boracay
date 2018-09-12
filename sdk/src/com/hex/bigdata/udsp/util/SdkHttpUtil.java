@@ -2,7 +2,8 @@ package com.hex.bigdata.udsp.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.consumer.model.BaseRequest;
+
+import com.hex.bigdata.udsp.common.api.model.BaseRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

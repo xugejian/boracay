@@ -16,6 +16,5 @@
     <orderEntry type="library" name="poi" level="project" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="common-api" />
-    <orderEntry type="module" module-name="consumer-api" />
   </component>
 </module>
