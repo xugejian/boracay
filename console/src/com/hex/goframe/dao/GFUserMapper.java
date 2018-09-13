@@ -13,12 +13,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// ---------------------2018-09-13 by Junjie.M--------------------------
+// 添加了数据缓存功能
+// --------------------- END --------------------------
 @Repository
 public class GFUserMapper extends SyncMapper<GFUser> {
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     @Autowired
     private GFUserForAppIdAndUserIdMapper mapper;
+    // --------------------- END --------------------------
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public int deleteByPrimaryKey(String id) {
         GFUser user = select(id);
         try {
@@ -28,11 +34,14 @@ public class GFUserMapper extends SyncMapper<GFUser> {
             mapper.delete(key);
         }
     }
+    // --------------------- END --------------------------
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public GFUser selectByUserId(String userId, String appId) {
         String key = appId + "|" + userId;
         return mapper.select(key);
     }
+    // --------------------- END --------------------------
 
     public GFLoginUser selectFullUserByUserId(String userId, String appId) {
         HashMap map = new HashMap();
@@ -41,6 +50,7 @@ public class GFUserMapper extends SyncMapper<GFUser> {
         return (GFLoginUser) this.sqlSessionTemplate.selectOne("com.hex.goframe.dao.GFUserMapper.selectFullUserByUserId", map);
     }
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public int insert(GFUser user) {
         try {
             return insert(user.getId(), user) ? 1 : 0;
@@ -49,15 +59,19 @@ public class GFUserMapper extends SyncMapper<GFUser> {
             mapper.insert(key, user);
         }
     }
+    // --------------------- END --------------------------
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public GFUser selectByPrimaryKey(String id) {
         return select(id);
     }
+    // --------------------- END --------------------------
 
     public List<GFUser> selectAll() {
         return this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFUserMapper.selectAll");
     }
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public int updateByPrimaryKey(GFUser user) {
         try {
             return update(user.getId(), user) ? 1 : 0;
@@ -66,6 +80,7 @@ public class GFUserMapper extends SyncMapper<GFUser> {
             mapper.update(key, user);
         }
     }
+    // --------------------- END --------------------------
 
     public int updateStatus(String id, int status) {
         return this.sqlSessionTemplate.update("com.hex.goframe.dao.GFUserMapper.updateStatus", Integer.valueOf(status));
@@ -93,6 +108,7 @@ public class GFUserMapper extends SyncMapper<GFUser> {
         return list;
     }
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public int resetPassword(String id) {
         String passWord = "000000";
         GFUser user = select(id);
@@ -104,6 +120,7 @@ public class GFUserMapper extends SyncMapper<GFUser> {
             mapper.update(key, user);
         }
     }
+    // --------------------- END --------------------------
 
     public boolean checkPassword(String id, String oldPassword) {
         HashMap map = new HashMap();
@@ -113,6 +130,7 @@ public class GFUserMapper extends SyncMapper<GFUser> {
         return result == 1;
     }
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public boolean changePassword(String id, String newPassword) {
         GFUser user = select(id);
         user.setPassword(DigestUtils.md5Hex(newPassword));
@@ -123,6 +141,7 @@ public class GFUserMapper extends SyncMapper<GFUser> {
             mapper.update(key, user);
         }
     }
+    // --------------------- END --------------------------
 
     public List<GFUser> queryUsersByEmpId(String empId) {
         HashMap map = new HashMap();
@@ -152,8 +171,7 @@ public class GFUserMapper extends SyncMapper<GFUser> {
         return Integer.valueOf(this.sqlSessionTemplate.delete("com.hex.goframe.dao.GFUserMapper.deleteLoginUserByEmpId", empId));
     }
 
-    //  -----------------------------------------------------------------------------------------
-
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     @Override
     protected boolean insertExe(GFUser user) {
         return this.sqlSessionTemplate.insert("com.hex.goframe.dao.GFUserMapper.insert", user) == 1;
@@ -183,5 +201,6 @@ public class GFUserMapper extends SyncMapper<GFUser> {
     protected List<GFUser> selectListExe(String id) {
         return null;
     }
+    // --------------------- END --------------------------
 
 }
