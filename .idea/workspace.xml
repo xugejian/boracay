@@ -1,16 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ArtifactsWorkspaceSettings">
-    <artifacts-to-build>
-      <artifact name="udsp" />
-    </artifacts-to-build>
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="72e5f216-bde4-4813-a9eb-1a4d0f1a67f9" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImModelFilterColMapper.java" afterPath="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImModelFilterColMapper.java" />
+    <list default="true" id="3de56842-f8ef-456c-a296-c07706604bbf" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/ant.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_bigdata_metadata.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_common_api.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_consumer_api.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_consumer_http.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_consumer_restful.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_consumer_socket.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_consumer_webservice.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_im_converter_api.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_im_converter_impl.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_iq_provider_api.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_iq_provider_es.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_iq_provider_hbase.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_iq_provider_redis.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_iq_provider_solr.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_iq_provider_solr_hbase.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_olq_provider_api.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_olq_provider_db2.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_olq_provider_hive.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_olq_provider_impala.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_olq_provider_inceptor.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_olq_provider_kylin.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_olq_provider_mysql.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_olq_provider_oracle.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_olq_provider_pgsql.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_rts_executor_api.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_rts_executor_kafka.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/hex_udsp_sdk.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/artifacts/udsp.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/common.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/cxf.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/elasticsearch.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/goframe.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/hbase.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/hive.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/impala.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/jdbc.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/jetty.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/kafka.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/kudu.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/mail.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/mybatis.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/poi.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/redis.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/sdk.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/solr.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/spring.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/tools.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/impy/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/impy/build-start.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mmpy/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mmpy/model-start.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/mmpy/model-stop.py" afterPath="" />
     </list>
+    <ignored path="$PROJECT_DIR$/im-converter-api/target/" />
+    <ignored path="$PROJECT_DIR$/rts-executor-api/target/" />
+    <ignored path="$PROJECT_DIR$/target/" />
+    <ignored path="$PROJECT_DIR$/rc/target/" />
+    <ignored path="$PROJECT_DIR$/olq-provider-mysql/target/" />
+    <ignored path="$PROJECT_DIR$/olq-provider-impala/target/" />
+    <ignored path="$PROJECT_DIR$/iq-provider-es/target/" />
+    <ignored path="$PROJECT_DIR$/olq-provider-pgsql/target/" />
+    <ignored path="$PROJECT_DIR$/iq-provider-redis/target/" />
+    <ignored path="$PROJECT_DIR$/olq-provider-db2/target/" />
+    <ignored path="$PROJECT_DIR$/rts/target/" />
+    <ignored path="$PROJECT_DIR$/olq-provider-inceptor/target/" />
+    <ignored path="$PROJECT_DIR$/iq-provider-api/target/" />
+    <ignored path="$PROJECT_DIR$/consumer-socket/target/" />
+    <ignored path="$PROJECT_DIR$/consumer-http/target/" />
+    <ignored path="$PROJECT_DIR$/common/target/" />
+    <ignored path="$PROJECT_DIR$/olq-provider-hive/target/" />
+    <ignored path="$PROJECT_DIR$/rts-executor-kafka/target/" />
+    <ignored path="$PROJECT_DIR$/md/target/" />
+    <ignored path="$PROJECT_DIR$/olq-provider-oracle/target/" />
+    <ignored path="$PROJECT_DIR$/olq/target/" />
+    <ignored path="$PROJECT_DIR$/im-converter-oracle/target/" />
+    <ignored path="$PROJECT_DIR$/console/target/" />
+    <ignored path="$PROJECT_DIR$/im-converter-kudu/target/" />
+    <ignored path="$PROJECT_DIR$/consumer-api/target/" />
+    <ignored path="$PROJECT_DIR$/im-converter-hbase/target/" />
+    <ignored path="$PROJECT_DIR$/olq-provider-api/target/" />
+    <ignored path="$PROJECT_DIR$/sdk/target/" />
+    <ignored path="$PROJECT_DIR$/im/target/" />
+    <ignored path="$PROJECT_DIR$/im-converter-impala/target/" />
+    <ignored path="$PROJECT_DIR$/im-converter-hive/target/" />
+    <ignored path="$PROJECT_DIR$/im-converter-solr_hbase/target/" />
+    <ignored path="$PROJECT_DIR$/iq/target/" />
+    <ignored path="$PROJECT_DIR$/olq-provider-kylin/target/" />
+    <ignored path="$PROJECT_DIR$/im-converter-solr/target/" />
+    <ignored path="$PROJECT_DIR$/iq-provider-solr_hbase/target/" />
+    <ignored path="$PROJECT_DIR$/im-converter-kafka/target/" />
+    <ignored path="$PROJECT_DIR$/iq-provider-hbase/target/" />
+    <ignored path="$PROJECT_DIR$/mc/target/" />
+    <ignored path="$PROJECT_DIR$/consumer-webservice/target/" />
+    <ignored path="$PROJECT_DIR$/im-converter-mysql/target/" />
+    <ignored path="$PROJECT_DIR$/common-api/target/" />
+    <ignored path="$PROJECT_DIR$/consumer-restful/target/" />
+    <ignored path="$PROJECT_DIR$/mm/target/" />
+    <ignored path="$PROJECT_DIR$/iq-provider-solr/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,79 +116,19 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="DatabaseView">
-    <option name="SHOW_INTERMEDIATE" value="true" />
-    <option name="GROUP_SCHEMA" value="true" />
-    <option name="GROUP_CONTENTS" value="false" />
-    <option name="SORT_POSITIONED" value="false" />
-    <option name="SHOW_TABLE_DETAILS" value="true" />
-    <option name="SHOW_EMPTY_GROUPS" value="false" />
-    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Interface" />
-        <option value="package-info" />
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>MetadataCol</find>
-      <find>ComDatasource</find>
-      <find>Datasource</find>
-      <find>new Datasource</find>
-      <find>DatasourceUtil</find>
-      <find>ExceptionUtil</find>
-      <find>StatementUtil</find>
-      <find>OlqCommUtil</find>
-      <find>mergeProperties</find>
-      <find>ConsumerApplication</find>
-      <find>KafkaConsumer</find>
-      <find>KafkaProducer</find>
-      <find>WebApplicationContextUtil</find>
-      <find>ImProviderService</find>
-      <find>HttpServletRequest</find>
-      <find>Property</find>
-      <find>Provider</find>
-      <find>com.hex.bigdata.udsp.rts</find>
-      <find>RealtimeNodeInfo</find>
-      <find>HiveGetLogThread</find>
-      <find>com.hex.bigdata.udsp.im.provider.impl.HBaseProvider</find>
-      <find>IM_IMPL_CLASS</find>
-      <find>ImConvertorService</find>
-      <find>RtsExecutorService</find>
-      <find>getExecutorImpl</find>
-      <find>getTargetProvider</find>
-      <find>getLocalIpFromInetAddress</find>
-      <find>getRealRequestIp</find>
-      <find>getDateString</find>
-      <find>Util</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>logger.info</replace>
-      <replace>logger.debug</replace>
-    </replaceStrings>
-    <dirStrings>
-      <dir>B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\olq\src\com\hex\bigdata\udsp\olq\dao</dir>
-      <dir>B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\common</dir>
-    </dirStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="udsp-2.2" />
-      </map>
-    </option>
   </component>
   <component name="GradleLocalSettings">
+    <option name="modificationStamps">
+      <map>
+        <entry key="$PROJECT_DIR$/../../githex/goframe3" value="3070008412777" />
+      </map>
+    </option>
     <option name="externalProjectsViewState">
       <projects_view />
     </option>
@@ -101,57 +136,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/BatchJobService.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImModelService.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/task/RealtimeJob.java" />
-        <option value="$PROJECT_DIR$/im-convertor-impl/src/com/hex/bigdata/udsp/im/converter/impl/wrapper/Wrapper.java" />
-        <option value="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/DatasourceTestService.java" />
-        <option value="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/RtsSyncService.java" />
-        <option value="$PROJECT_DIR$/rts/src/com/hex/bigdata/udsp/rts/service/RtsExecutorService.java" />
-        <option value="$PROJECT_DIR$/iq/src/com/hex/bigdata/udsp/iq/service/IqProviderService.java" />
-        <option value="$PROJECT_DIR$/olq/src/com/hex/bigdata/udsp/olq/service/OlqProviderService.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImConvertorService.java" />
-        <option value="$PROJECT_DIR$/im-convertor-impl/src/com/hex/bigdata/udsp/im/converter/impl/KafkaConvertor.java" />
-        <option value="$PROJECT_DIR$/im-convertor-impl/src/com/hex/bigdata/udsp/im/converter/impl/MysqlConvertor.java" />
-        <option value="$PROJECT_DIR$/im-convertor-impl/src/com/hex/bigdata/udsp/im/converter/impl/HiveConvertor.java" />
-        <option value="$PROJECT_DIR$/im-convertor-impl/src/com/hex/bigdata/udsp/im/converter/impl/HBaseConvertor.java" />
-        <option value="$PROJECT_DIR$/im-convertor-impl/src/com/hex/bigdata/udsp/im/converter/impl/OracleConvertor.java" />
-        <option value="$PROJECT_DIR$/im-convertor-impl/src/com/hex/bigdata/udsp/im/converter/impl/SolrConvertor.java" />
-        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/ObjectUtil.java" />
-        <option value="$PROJECT_DIR$/im-convertor-impl/src/com/hex/bigdata/udsp/im/converter/impl/SolrHBaseConvertor.java" />
-        <option value="$PROJECT_DIR$/iq-provider-es/src/com/hex/bigdata/udsp/iq/provider/impl/ElasticSearchProvider.java" />
-        <option value="$PROJECT_DIR$/iq-provider-hbase/src/com/hex/bigdata/udsp/iq/provider/impl/HBaseProvider.java" />
-        <option value="$PROJECT_DIR$/iq-provider-redis/src/com/hex/bigdata/udsp/iq/provider/impl/RedisProvider.java" />
-        <option value="$PROJECT_DIR$/iq-provider-solr/src/com/hex/bigdata/udsp/iq/provider/impl/SolrProvider.java" />
-        <option value="$PROJECT_DIR$/iq-provider-solr_hbase/src/com/hex/bigdata/udsp/iq/provider/impl/SolrHBaseProvider.java" />
-        <option value="$PROJECT_DIR$/olq-provider-db2/src/com/hex/bigdata/udsp/olq/provider/impl/Db2Provider.java" />
-        <option value="$PROJECT_DIR$/olq-provider-hive/src/com/hex/bigdata/udsp/olq/provider/impl/HiveProvider.java" />
-        <option value="$PROJECT_DIR$/olq-provider-impala/src/com/hex/bigdata/udsp/olq/provider/impl/ImpalaProvider.java" />
-        <option value="$PROJECT_DIR$/olq-provider-inceptor/src/com/hex/bigdata/udsp/olq/provider/impl/InceptorProvider.java" />
-        <option value="$PROJECT_DIR$/olq-provider-kylin/src/com/hex/bigdata/udsp/olq/provider/impl/KylinProvider.java" />
-        <option value="$PROJECT_DIR$/olq-provider-mysql/src/com/hex/bigdata/udsp/olq/provider/impl/MysqlProvider.java" />
-        <option value="$PROJECT_DIR$/olq-provider-oracle/src/com/hex/bigdata/udsp/olq/provider/impl/OracleProvider.java" />
-        <option value="$PROJECT_DIR$/olq-provider-pgsql/src/com/hex/bigdata/udsp/olq/provider/impl/PgsqlProvider.java" />
-        <option value="$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/KafkaExecutor.java" />
-        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/MD5Util.java" />
-        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/UdspCommonUtil.java" />
-        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/CommonUtil.java" />
-        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/DateUtil.java" />
-        <option value="$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/HostUtil.java" />
-        <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/HeartbeatService.java" />
-        <option value="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/model/InnerRequest.java" />
-        <option value="$PROJECT_DIR$/mc/src/com/hex/bigdata/udsp/mc/service/WaitQueueService.java" />
-        <option value="$PROJECT_DIR$/mm/src/com/hex/bigdata/udsp/mm/service/MmProviderService.java" />
-        <option value="$PROJECT_DIR$/mc/src/com/hex/bigdata/udsp/mc/util/McCommonUtil.java" />
-        <option value="$PROJECT_DIR$/console/test/com/hex/bigdata/udsp/controller/HttpTestRunable.java" />
-        <option value="$PROJECT_DIR$/console/test/com/hex/bigdata/udsp/controller/SocketControllerTest.java" />
-        <option value="$PROJECT_DIR$/console/test/com/hex/bigdata/udsp/controller/HttpControllerTest.java" />
-        <option value="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/controller/HttpController.java" />
-        <option value="$PROJECT_DIR$/console/resources/goframe/udsp/spring/udsp.config.xml" />
-        <option value="$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/aop/ConsumeStatusInterceptor.java" />
-        <option value="$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImModelFilterColMapper.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/common/pom.xml" />
       </list>
     </option>
   </component>
@@ -160,13 +146,6 @@
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
-  </component>
-  <component name="LogFilters">
-    <option name="FILTER_ERRORS" value="false" />
-    <option name="FILTER_WARNINGS" value="false" />
-    <option name="FILTER_INFO" value="true" />
-    <option name="FILTER_DEBUG" value="true" />
-    <option name="CUSTOM_FILTER" />
   </component>
   <component name="MavenProjectNavigator">
     <treeState />
@@ -177,7 +156,6 @@
     <option name="width" value="1382" />
     <option name="height" value="744" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
@@ -194,6 +172,8 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -202,116 +182,26 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="rts-executor-kafka" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
               <option name="myItemId" value="boracay" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rts-executor-kafka" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="impl" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="boracay" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rts-executor-kafka" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="impl" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="model" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.26382488" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/im-converter-impl/im-converter-impl.iml" />
-    <property name="js.eslint.eslintPackage" value="" />
-    <property name="settings.editor.selected.configurable" value="preferences.general" />
-    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
-    <property name="extract.method.default.visibility" value="private" />
+    <property name="project.structure.side.proportion" value="0.24078341" />
     <property name="nodejs_interpreter_path" value="A:/Program Files/nodejs/node" />
+    <property name="js.eslint.eslintPackage" value="" />
     <property name="js-jscs-nodeInterpreter" value="A:\Program Files\nodejs\node.exe" />
   </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-convertor-impl\src\com\hex\bigdata\udsp\im\converter\impl" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-convertor-api\src\com\hex\bigdata\udsp\im\constant" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-convertor-api\src\com\hex\bigdata\udsp\im\converter" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\oracle\patch" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im-converter-api\src\com\hex\bigdata\udsp\im\converter\impl\util" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.hex.bigdata.udsp.common.util" />
-      <recent name="com.hex.bigdata.udsp.im.converter.impl.thread" />
-      <recent name="com.hex.bigdata.udsp.im.converter.impl.model" />
-      <recent name="com.hex.bigdata.udsp.im.converter.impl.wrapper" />
-      <recent name="com.hex.bigdata.udsp.im.converter.impl.model.datasource" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\deploy\oracle" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\sql\update\20171026" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\im\test" />
-      <recent name="B:\workspaces\IntellijIdeaGithubWorkspaces\github\boracay\console\resources\goframe\udsp\sql\deploy" />
-    </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Application.udsp">
-    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
-      <deployment />
-      <server-settings />
-      <predefined_log_file id="Tomcat" enabled="true" />
-      <predefined_log_file id="Tomcat Catalina" enabled="true" />
-      <predefined_log_file id="Tomcat Manager" enabled="false" />
-      <predefined_log_file id="Tomcat Host Manager" enabled="false" />
-      <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <method />
-    </configuration>
+  <component name="RunManager">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
@@ -612,7 +502,7 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="console" />
+      <module name="boracay" />
       <envs />
       <method />
     </configuration>
@@ -737,97 +627,6 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="false" name="udsp" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" value="com.hex.http.WebApp" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="8088 /udsp" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/console" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="console" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="false" name="tomcat" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="tomcat6_8088" ALTERNATIVE_JRE_ENABLED="false">
-      <option name="UPDATING_POLICY" value="restart-server" />
-      <deployment>
-        <artifact name="udsp">
-          <settings>
-            <option name="CONTEXT_PATH" value="/udsp" />
-          </settings>
-        </artifact>
-      </deployment>
-      <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="Unnamed_boracay" />
-      </server-settings>
-      <predefined_log_file id="Tomcat" enabled="true" />
-      <predefined_log_file id="Tomcat Catalina" enabled="true" />
-      <predefined_log_file id="Tomcat Manager" enabled="false" />
-      <predefined_log_file id="Tomcat Host Manager" enabled="false" />
-      <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="56903" />
-      </RunnerSettings>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <method>
-        <option name="BuildArtifacts" enabled="true">
-          <artifact name="udsp" />
-        </option>
-      </method>
-    </configuration>
-    <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="Application.udsp" />
-      <item index="1" class="java.lang.String" itemvalue="Tomcat Server.tomcat" />
-    </list>
   </component>
   <component name="SbtLocalSettings">
     <option name="externalProjectsViewState">
@@ -837,924 +636,135 @@
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
   </component>
-  <component name="SvnConfiguration">
-    <configuration />
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="72e5f216-bde4-4813-a9eb-1a4d0f1a67f9" name="Default" comment="" />
-      <created>1504255483070</created>
+      <changelist id="3de56842-f8ef-456c-a296-c07706604bbf" name="Default" comment="" />
+      <created>1536921421875</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1504255483070</updated>
-      <workItem from="1504255485567" duration="3230000" />
-      <workItem from="1504266566001" duration="64000" />
-      <workItem from="1504308935565" duration="20000" />
-      <workItem from="1504309918986" duration="1918000" />
-      <workItem from="1504316068699" duration="17000" />
-      <workItem from="1504317078532" duration="5055000" />
-      <workItem from="1504428011281" duration="601000" />
-      <workItem from="1504432301896" duration="519000" />
-      <workItem from="1504484456312" duration="5001000" />
-      <workItem from="1505872648812" duration="4579000" />
-      <workItem from="1505887632060" duration="9388000" />
-      <workItem from="1505897089385" duration="1323000" />
-      <workItem from="1505898815399" duration="20000" />
-      <workItem from="1505899214390" duration="76000" />
-      <workItem from="1505927771784" duration="2288000" />
-      <workItem from="1505930241072" duration="355000" />
-      <workItem from="1505954468628" duration="470000" />
-      <workItem from="1509011626367" duration="3168000" />
-      <workItem from="1509166061160" duration="1013000" />
-      <workItem from="1509168736710" duration="152000" />
-      <workItem from="1511167235110" duration="405000" />
-      <workItem from="1511242742918" duration="336000" />
-      <workItem from="1511245791879" duration="12000" />
-      <workItem from="1511247405850" duration="5000" />
-      <workItem from="1511247437845" duration="1044000" />
-      <workItem from="1511249438033" duration="159000" />
-      <workItem from="1511249624003" duration="14000" />
-      <workItem from="1511249679776" duration="134000" />
-      <workItem from="1511250044227" duration="23000" />
-      <workItem from="1511250074776" duration="4653000" />
-      <workItem from="1511311199782" duration="31588000" />
-      <workItem from="1511398122305" duration="29343000" />
-      <workItem from="1511484718500" duration="727000" />
-      <workItem from="1511485561716" duration="829000" />
-      <workItem from="1511751873569" duration="286000" />
-      <workItem from="1511757327817" duration="80000" />
-      <workItem from="1512027953641" duration="630000" />
-      <workItem from="1512460568529" duration="48000" />
-      <workItem from="1512460917082" duration="6462000" />
-      <workItem from="1512522150994" duration="16470000" />
-      <workItem from="1512608168361" duration="18000" />
-      <workItem from="1512608222233" duration="15058000" />
-      <workItem from="1512637631476" duration="622000" />
-      <workItem from="1512695545445" duration="1855000" />
-      <workItem from="1512701953879" duration="248000" />
-      <workItem from="1512970737486" duration="435000" />
-      <workItem from="1512977349712" duration="715000" />
-      <workItem from="1512985553740" duration="947000" />
-      <workItem from="1512988341666" duration="875000" />
-      <workItem from="1512995289970" duration="203000" />
-      <workItem from="1512995607220" duration="277000" />
-      <workItem from="1512995914787" duration="109000" />
-      <workItem from="1513057399035" duration="602000" />
-      <workItem from="1513155059622" duration="1385000" />
-      <workItem from="1513156472033" duration="57000" />
-      <workItem from="1513299195278" duration="769000" />
-      <workItem from="1513309281508" duration="629000" />
-      <workItem from="1513324619786" duration="1005000" />
-      <workItem from="1513326590487" duration="610000" />
-      <workItem from="1513339588728" duration="2512000" />
-      <workItem from="1513344038381" duration="736000" />
-      <workItem from="1513346538163" duration="3316000" />
-      <workItem from="1513690427802" duration="1029000" />
-      <workItem from="1513737166889" duration="598000" />
-      <workItem from="1514459280944" duration="1023000" />
-      <workItem from="1514862684961" duration="278000" />
-      <workItem from="1515118109009" duration="206000" />
-      <workItem from="1515118340839" duration="792000" />
-      <workItem from="1516253515393" duration="40000" />
-      <workItem from="1516254011861" duration="1285000" />
-      <workItem from="1516256928329" duration="959000" />
-      <workItem from="1523174745385" duration="2529000" />
-      <workItem from="1523184731506" duration="466000" />
-      <workItem from="1523242284088" duration="22000" />
-      <workItem from="1523530332392" duration="2720000" />
-      <workItem from="1523867323437" duration="1311000" />
-      <workItem from="1524038518573" duration="276000" />
-      <workItem from="1524567686207" duration="1503000" />
-      <workItem from="1524625805587" duration="157000" />
-      <workItem from="1524703303286" duration="1986000" />
-      <workItem from="1524742782204" duration="2965000" />
-      <workItem from="1524752807601" duration="5949000" />
-      <workItem from="1524815284379" duration="2616000" />
-      <workItem from="1524832156444" duration="3484000" />
-      <workItem from="1524838117182" duration="830000" />
-      <workItem from="1524892538989" duration="269000" />
-      <workItem from="1525224301529" duration="7632000" />
-      <workItem from="1525255658454" duration="2152000" />
-      <workItem from="1525309383963" duration="4573000" />
-      <workItem from="1525317009159" duration="5283000" />
-      <workItem from="1525397997272" duration="7778000" />
-      <workItem from="1525408173200" duration="1071000" />
-      <workItem from="1528167858095" duration="6000" />
-      <workItem from="1528168157074" duration="19000" />
-      <workItem from="1529541450649" duration="6713000" />
-      <workItem from="1529550986113" duration="221000" />
+      <updated>1536921421875</updated>
+      <workItem from="1536921426029" duration="1679000" />
+      <workItem from="1536926259756" duration="475000" />
+      <workItem from="1536926756276" duration="1384000" />
     </task>
-    <task id="LOCAL-00001" summary="异常捕获处理">
-      <created>1505875263874</created>
+    <task id="LOCAL-00001" summary="update">
+      <created>1536927186631</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1505875263874</updated>
+      <updated>1536927186631</updated>
     </task>
-    <task id="LOCAL-00002" summary="增加添加目标元数据时限制">
-      <created>1505897205735</created>
+    <task id="LOCAL-00002" summary="update">
+      <created>1536927569589</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1505897205735</updated>
+      <updated>1536927569589</updated>
     </task>
-    <task id="LOCAL-00003" summary="增加添加目标元数据时限制">
-      <created>1505927900955</created>
+    <task id="LOCAL-00003" summary="update">
+      <created>1536927824974</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1505927900955</updated>
+      <updated>1536927824974</updated>
     </task>
-    <task id="LOCAL-00004" summary="Merge branch 'udsp-2.0.0-tzb' of https://github.com/junjiem/boracay into udsp-2.0.0-tzb&#10;&#10;# Conflicts:&#10;#&#9;im/resources/goframe/im/views/im/cm/md/add.httl">
-      <created>1505929481356</created>
+    <task id="LOCAL-00004" summary="update">
+      <created>1536928136625</created>
       <option name="number" value="00004" />
       <option name="presentableId" value="LOCAL-00004" />
       <option name="project" value="LOCAL" />
-      <updated>1505929481356</updated>
+      <updated>1536928136625</updated>
     </task>
-    <task id="LOCAL-00005" summary="Merge branch 'udsp-2.0.0-tzb' of https://github.com/junjiem/boracay into udsp-2.0.0-tzb&#10;&#10;# Conflicts:&#10;#&#9;im/resources/goframe/im/views/im/cm/md/add.httl">
-      <created>1505930442557</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1505930442557</updated>
-    </task>
-    <task id="LOCAL-00006" summary="update">
-      <created>1511167485861</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1511167485861</updated>
-    </task>
-    <task id="LOCAL-00007" summary="update">
-      <created>1511242970058</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1511242970058</updated>
-    </task>
-    <task id="LOCAL-00008" summary="添加超时告警的功能">
-      <created>1511356684065</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1511356684065</updated>
-    </task>
-    <task id="LOCAL-00009" summary="修改了等待和执行队列的判断逻辑">
-      <created>1511438339516</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1511438339516</updated>
-    </task>
-    <task id="LOCAL-00010" summary="获取数据值对于分号进行转义">
-      <created>1511438432815</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1511438432815</updated>
-    </task>
-    <task id="LOCAL-00011" summary="update">
-      <created>1511485407494</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1511485407494</updated>
-    </task>
-    <task id="LOCAL-00012" summary="add">
-      <created>1511752081608</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1511752081608</updated>
-    </task>
-    <task id="LOCAL-00013" summary="delete">
-      <created>1511752122663</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1511752122663</updated>
-    </task>
-    <task id="LOCAL-00014" summary="更新metadata获取impala\hive的元信息">
-      <created>1512461284095</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1512461284095</updated>
-    </task>
-    <task id="LOCAL-00015" summary="添加了是否严格控制分布式并发的配置">
-      <created>1512461326468</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1512461326468</updated>
-    </task>
-    <task id="LOCAL-00016" summary="修复了分布式锁嵌套的BUG">
-      <created>1512461387104</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1512461387104</updated>
-    </task>
-    <task id="LOCAL-00017" summary="修改了联机查询SQL占位符规则和解析方式">
-      <created>1512633463906</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1512633463907</updated>
-    </task>
-    <task id="LOCAL-00018" summary="添加jdbcsql获取表注释信息">
-      <created>1512696668613</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1512696668613</updated>
-    </task>
-    <task id="LOCAL-00019" summary="update">
-      <created>1512977442576</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1512977442576</updated>
-    </task>
-    <task id="LOCAL-00020" summary="添加超时告警的SQL">
-      <created>1513155208544</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1513155208544</updated>
-    </task>
-    <task id="LOCAL-00021" summary="update bug">
-      <created>1513299489583</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1513299489583</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Add Exception Message">
-      <created>1513339784784</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1513339784784</updated>
-    </task>
-    <task id="LOCAL-00023" summary="update">
-      <created>1514459555201</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1514459555201</updated>
-    </task>
-    <task id="LOCAL-00024" summary="update im real time job add implements Serializable">
-      <created>1515118476569</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1515118476569</updated>
-    </task>
-    <task id="LOCAL-00025" summary="update rc list httl">
-      <created>1515118538049</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1515118538049</updated>
-    </task>
-    <task id="LOCAL-00026" summary="add udsp sdk for java dev manual">
-      <created>1515118604190</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1515118604190</updated>
-    </task>
-    <task id="LOCAL-00027" summary="update olq provider">
-      <created>1516254673079</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1516254673079</updated>
-    </task>
-    <task id="LOCAL-00028" summary="修复了SDK当并发高时出现Http获取不到连接的问题">
-      <created>1516254777470</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1516254777470</updated>
-    </task>
-    <task id="LOCAL-00029" summary="修复了内部消费查看状态的问题">
-      <created>1516254837601</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1516254837601</updated>
-    </task>
-    <task id="LOCAL-00030" summary="修改了IQ中错误信息捕获">
-      <created>1516254921947</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1516254921947</updated>
-    </task>
-    <task id="LOCAL-00031" summary="修改了重置无效的BUG">
-      <created>1516254961278</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1516254961278</updated>
-    </task>
-    <task id="LOCAL-00032" summary="2.2.7">
-      <created>1523175622200</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1523175622200</updated>
-    </task>
-    <task id="LOCAL-00033" summary="update">
-      <created>1523176073903</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1523176073903</updated>
-    </task>
-    <task id="LOCAL-00034" summary="update">
-      <created>1523185125416</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1523185125416</updated>
-    </task>
-    <task id="LOCAL-00035" summary="fix Distributed locks bug">
-      <created>1523535691977</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1523535691977</updated>
-    </task>
-    <task id="LOCAL-00036" summary="update Distributed locks bug">
-      <created>1523535745004</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1523535745004</updated>
-    </task>
-    <task id="LOCAL-00037" summary="update">
-      <created>1525345802830</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1525345802830</updated>
-    </task>
-    <task id="LOCAL-00038" summary="update">
-      <created>1525400867426</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1525400867426</updated>
-    </task>
-    <task id="LOCAL-00039" summary="update">
-      <created>1525401326320</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1525401326320</updated>
-    </task>
-    <task id="LOCAL-00040" summary="update">
-      <created>1525403411786</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1525403411786</updated>
-    </task>
-    <task id="LOCAL-00041" summary="update">
-      <created>1529543364503</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1529543364503</updated>
-    </task>
-    <task id="LOCAL-00042" summary="update">
-      <created>1529543470496</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1529543470496</updated>
-    </task>
-    <task id="LOCAL-00043" summary="update">
-      <created>1529544040169</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1529544040169</updated>
-    </task>
-    <task id="LOCAL-00044" summary="update">
-      <created>1529548050786</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1529548050786</updated>
-    </task>
-    <option name="localTasksCounter" value="45" />
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
-  <component name="TestHistory">
-    <history-entry file="OlqDatasourceTest2_syncStart - 2017.11.23 at 19h 55m 10s.xml">
-      <configuration name="OlqDatasourceTest2.syncStart" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="OlqDatasourceTest2_syncStart - 2017.11.24 at 09h 00m 43s.xml">
-      <configuration name="OlqDatasourceTest2.syncStart" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="OlqDatasourceTest3_syncStart - 2017.11.23 at 19h 55m 14s.xml">
-      <configuration name="OlqDatasourceTest3.syncStart" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="OlqDatasourceTest3_syncStart - 2017.11.24 at 09h 01m 08s.xml">
-      <configuration name="OlqDatasourceTest3.syncStart" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="OlqDatasourceTest_syncStart - 2017.11.23 at 19h 40m 40s.xml">
-      <configuration name="OlqDatasourceTest.syncStart" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="OlqDatasourceTest_syncStart - 2017.11.23 at 19h 42m 06s.xml">
-      <configuration name="OlqDatasourceTest.syncStart" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="OlqDatasourceTest_syncStart - 2017.11.23 at 19h 43m 53s.xml">
-      <configuration name="OlqDatasourceTest.syncStart" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="OlqDatasourceTest_syncStart - 2017.11.23 at 19h 45m 05s.xml">
-      <configuration name="OlqDatasourceTest.syncStart" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="OlqDatasourceTest_syncStart - 2017.11.23 at 19h 55m 04s.xml">
-      <configuration name="OlqDatasourceTest.syncStart" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="OlqDatasourceTest_syncStart - 2017.11.24 at 09h 00m 47s.xml">
-      <configuration name="OlqDatasourceTest.syncStart" configurationId="JUnit" />
-    </history-entry>
-  </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="234229000" />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
+    <option name="totallyTimeSpent" value="3538000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47945204" sideWeight="0.5060514" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980332" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11649016" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2569558" sideWeight="0.49394855" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32733223" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25204584" sideWeight="0.4969743" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13356164" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30257186" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24386252" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18154311" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25718608" sideWeight="0.5" order="7" side_tool="false" content_ui="combo" />
+      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="9" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="processedProjectFiles" value="true" />
   </component>
-  <component name="Vcs.Log.History.Properties">
-    <option name="COLUMN_ORDER">
-      <list>
-        <option value="0" />
-        <option value="2" />
-        <option value="3" />
-        <option value="1" />
-      </list>
-    </option>
-  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="获取数据值对于分号进行转义" />
-    <MESSAGE value="add" />
-    <MESSAGE value="delete" />
-    <MESSAGE value="更新metadata获取impala\hive的元信息" />
-    <MESSAGE value="添加了是否严格控制分布式并发的配置" />
-    <MESSAGE value="修复了分布式锁嵌套的BUG" />
-    <MESSAGE value="修改了联机查询SQL占位符规则和解析方式" />
-    <MESSAGE value="添加jdbcsql获取表注释信息" />
-    <MESSAGE value="添加超时告警的功能" />
-    <MESSAGE value="添加超时告警的SQL" />
-    <MESSAGE value="update bug" />
-    <MESSAGE value="Add Exception Message" />
-    <MESSAGE value="update im real time job add implements Serializable" />
-    <MESSAGE value="update rc list httl" />
-    <MESSAGE value="add udsp sdk for java dev manual" />
-    <MESSAGE value="Merge branch 'udsp-2.0.0-tzb' of https://github.com/junjiem/boracay into udsp-2.0.0-tzb&#10;&#10;# Conflicts:&#10;#&#9;im/resources/goframe/im/views/im/cm/md/add.httl" />
-    <MESSAGE value="update olq provider" />
-    <MESSAGE value="修复了SDK当并发高时出现Http获取不到连接的问题" />
-    <MESSAGE value="修复了内部消费查看状态的问题" />
-    <MESSAGE value="修改了IQ中错误信息捕获" />
-    <MESSAGE value="修改了重置无效的BUG" />
-    <MESSAGE value="2.2.7" />
-    <MESSAGE value="fix Distributed locks bug" />
-    <MESSAGE value="update Distributed locks bug" />
     <MESSAGE value="update" />
     <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/ImMetadataService.java</url>
-          <line>417</line>
-          <properties />
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-      <breakpoints-dialog>
-        <breakpoints-dialog />
-      </breakpoints-dialog>
-      <option name="time" value="66" />
-    </breakpoint-manager>
+    <breakpoint-manager />
     <watches-manager />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
     <option name="FILTER_TARGETS" value="false" />
-    <buildFile url="file://$PROJECT_DIR$/im/build.xml">
-      <targetFilters>
-        <filter targetName="mybatisGeneratorMysql" isVisible="false" />
-        <filter targetName="compile" isVisible="true" />
-        <filter targetName="jar" isVisible="false" />
-        <filter targetName="clean" isVisible="true" />
-      </targetFilters>
-      <expanded value="true" />
-    </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/common-api/src/com/hex/bigdata/udsp/common/api/model/Datasource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="51" column="33" lean-forward="false" selection-start-line="51" selection-start-column="15" selection-end-line="51" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/MD5Util.java" />
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/PropertyUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="13" column="13" lean-forward="false" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/ShellUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="8" column="13" lean-forward="false" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/ThreadPool.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="7" column="38" lean-forward="true" selection-start-line="7" selection-start-column="38" selection-end-line="7" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common-api/src/com/hex/bigdata/udsp/common/util/MD5Util.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="13" column="33" lean-forward="false" selection-start-line="13" selection-start-column="15" selection-end-line="13" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/service/BatchJobService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="33" column="52" lean-forward="false" selection-start-line="33" selection-start-column="52" selection-end-line="33" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/goframe/goframe-3.2.5-20180427.jar!/com/hex/goframe/util/Util.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="163">
-          <caret line="23" column="63" lean-forward="false" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/ConsumerService.java" />
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/DateUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/HostUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="107" column="53" lean-forward="true" selection-start-line="107" selection-start-column="53" selection-end-line="107" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/DatasourceUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/CreateFileUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="20" column="13" lean-forward="false" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/com/hex/bigdata/udsp/common/util/CacheUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
+    <entry file="file://$PROJECT_DIR$/console/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="120">
-            <caret line="88" column="9" lean-forward="false" selection-start-line="88" selection-start-column="9" selection-end-line="88" selection-end-column="9" />
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-api/consumer-api.iml">
+    <entry file="file://$PROJECT_DIR$/common/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="76">
+          <caret line="4" column="12" lean-forward="false" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/thread/SocketRunnable.java" />
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/model/InnerRequest.java">
+    <entry file="file://$PROJECT_DIR$/console/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="10" column="30" lean-forward="true" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
+        <state relative-caret-position="133">
+          <caret line="7" column="39" lean-forward="false" selection-start-line="7" selection-start-column="39" selection-end-line="7" selection-end-column="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/HeartbeatService.java">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="200" column="29" lean-forward="true" selection-start-line="200" selection-start-column="29" selection-end-line="200" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/model/HeartbeatInfo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="30" lean-forward="true" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/filter/EleployeeUpdateFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/dao/HeartbeatMapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="15" column="13" lean-forward="false" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/dao/ConsumeStatusMapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
+        <state relative-caret-position="162">
           <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-api/src/com/hex/bigdata/udsp/consumer/service/ExternalConsumerService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="32" column="44" lean-forward="true" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/service/InnerConsumerService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="497">
-          <caret line="30" column="14" lean-forward="true" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/task/HeartbeatTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mc/src/com/hex/bigdata/udsp/mc/service/WaitQueueService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="45" lean-forward="false" selection-start-line="6" selection-start-column="45" selection-end-line="6" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mm/src/com/hex/bigdata/udsp/mm/service/MmProviderService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="20" column="44" lean-forward="true" selection-start-line="20" selection-start-column="44" selection-end-line="20" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mc/src/com/hex/bigdata/udsp/mc/util/McCommonUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/test/com/hex/bigdata/udsp/controller/HttpTestRunable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2543">
-          <caret line="9" column="36" lean-forward="true" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/test/com/hex/bigdata/udsp/controller/SocketControllerTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="6" column="30" lean-forward="true" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/test/com/hex/bigdata/udsp/controller/HttpControllerTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="9" column="36" lean-forward="true" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-restful/src/com/hex/bigdata/udsp/consumer/RestfulConsumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="36" column="6" lean-forward="true" selection-start-line="36" selection-start-column="6" selection-end-line="36" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-socket/src/com/hex/bigdata/udsp/consumer/SocketRunnable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="21" column="13" lean-forward="false" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-webservice/src/com/hex/bigdata/udsp/consumer/WebServiceConsumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="30" column="13" lean-forward="false" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-webservice/src/com/hex/bigdata/udsp/consumer/WSRequest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="11" column="13" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-webservice/src/com/hex/bigdata/udsp/consumer/WSResponse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="16" column="13" lean-forward="false" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-http/src/com/hex/bigdata/udsp/consumer/HttpConsumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="75" column="41" lean-forward="false" selection-start-line="75" selection-start-column="28" selection-end-line="75" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/controller/HttpController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2055">
-          <caret line="120" column="7" lean-forward="true" selection-start-line="120" selection-start-column="7" selection-end-line="120" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-webservice/src/com/hex/bigdata/udsp/consumer/WebServiceInterface.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/resources/goframe/udsp/spring/udsp.config.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="100" column="39" lean-forward="true" selection-start-line="100" selection-start-column="39" selection-end-line="100" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-api/src/com/hex/bigdata/udsp/consumer/model/QueueIsFullResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-api/src/com/hex/bigdata/udsp/consumer/model/ConsumeRequest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="6" column="13" lean-forward="false" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-api/src/com/hex/bigdata/udsp/consumer/model/ExternalRequest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="15" column="32" lean-forward="true" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/console/src/com/hex/bigdata/udsp/aop/ConsumeStatusInterceptor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="149">
-          <caret line="83" column="4" lean-forward="false" selection-start-line="83" selection-start-column="4" selection-end-line="83" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/consumer-socket/src/com/hex/bigdata/udsp/consumer/SocketConsumer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="25" column="29" lean-forward="true" selection-start-line="25" selection-start-column="29" selection-end-line="25" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImModelFilterColMapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="5" column="44" lean-forward="true" selection-start-line="5" selection-start-column="44" selection-end-line="5" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/im/src/com/hex/bigdata/udsp/im/dao/ImModelMapper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="5" column="34" lean-forward="true" selection-start-line="5" selection-start-column="34" selection-end-line="5" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/model/KafkaConsumerDatasource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/model/KafkaProducerDatasource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="11" column="13" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rts-executor-kafka/src/com/hex/bigdata/udsp/rts/executor/impl/KafkaExecutor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="28" column="3" lean-forward="true" selection-start-line="28" selection-start-column="3" selection-end-line="28" selection-end-column="3" />
           <folding />
         </state>
       </provider>
@@ -1765,11 +775,11 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
-          <last-edited>udsp_war</last-edited>
+          <last-edited>console:war</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.26382488" />
+                <option value="0.2" />
                 <option value="0.5" />
               </list>
             </option>
@@ -1778,11 +788,11 @@
       </state>
       <state key="FacetStructureConfigurable.UI">
         <settings>
-          <last-edited>Web (console)|Web</last-edited>
+          <last-edited>Web</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.26382488" />
+                <option value="0.2" />
               </list>
             </option>
           </splitter-proportions>
@@ -1814,11 +824,11 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>im</last-edited>
+          <last-edited>common</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.26382488" />
+                <option value="0.24078341" />
               </list>
             </option>
           </splitter-proportions>
@@ -1838,11 +848,11 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>tools</last-edited>
+          <last-edited>Maven: antlr:antlr:2.7.7</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.26382488" />
+                <option value="0.2" />
               </list>
             </option>
           </splitter-proportions>
