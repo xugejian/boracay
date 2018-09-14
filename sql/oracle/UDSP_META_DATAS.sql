@@ -2,6 +2,11 @@
 prompt Created on 2018年2月1日 by PC
 set feedback off
 set define off
+
+ALTER TABLE T_GF_DICT modify(DICT_NAME VARCHAR2(512));
+ALTER TABLE T_GF_DICT modify(FILTER VARCHAR2(512));
+ALTER TABLE T_GF_DICT_TYPE modify(DICT_TYPE_NAME VARCHAR2(512));
+
 prompt Loading T_GF_APPLICATION...
 insert into T_GF_APPLICATION (app_code, app_name, app_comment, app_status)
 values ('default', '系统管理平台', '系统管理平台', 1);

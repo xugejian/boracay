@@ -15,6 +15,10 @@ Date: 2018-04-27 10:22:04
 
 SET FOREIGN_KEY_CHECKS=0;
 
+ALTER TABLE T_GF_DICT modify  column DICT_NAME VARCHAR2(512);
+ALTER TABLE T_GF_DICT modify column FILTER VARCHAR2(512);
+ALTER TABLE T_GF_DICT_TYPE modify column DICT_TYPE_NAME VARCHAR2(512);
+
 -- ----------------------------
 -- Records of t_gf_application
 -- ----------------------------
