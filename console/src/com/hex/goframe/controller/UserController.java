@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// ---------------------2018-09-13 by Junjie.M--------------------------
+// 去除了同一个用户只能同时有一个登录的代码
+// --------------------- END --------------------------
 @Controller
 @RequestMapping({"/goframe"})
 public class UserController {
@@ -76,11 +79,14 @@ public class UserController {
         if(StringUtils.hasText(user.getUserId()) && StringUtils.hasText(user.getPassword())) {
             GFUserSession userSession = this.userService.getUserSession(user.getUserId());
             if(userSession != null) {
+                // ---------------------2018-09-13 by Junjie.M--------------------------
 //                if(!DateUtil.isAfterThirtyMinutes(userSession.getLoginTime())) {
 //                    String loginUser1 = "用户[" + user.getUserId() + "]已在" + userSession.getClientIp() + "登录";
 //                    return new MessageResult(false, loginUser1);
 //                }
+//
 //                this.userService.deleteUserSessionByUserId(userSession.getUserId());
+                // --------------------- END --------------------------
             }
 
             if(!StringUtils.hasLength(user.getAppId())) {
