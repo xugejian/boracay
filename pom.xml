@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.hex.bigdata</groupId>
+    <artifactId>udsp</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>common</module>
+        <module>common-api</module>
+        <module>console</module>
+        <module>consumer-api</module>
+        <module>consumer-http</module>
+        <module>consumer-restful</module>
+        <module>consumer-socket</module>
+        <module>consumer-webservice</module>
+        <module>im</module>
+        <module>im-converter-api</module>
+        <module>im-converter-kafka</module>
+        <module>im-converter-hbase</module>
+        <module>im-converter-kudu</module>
+        <module>im-converter-solr_hbase</module>
+        <module>im-converter-solr</module>
+        <module>im-converter-impala</module>
+        <module>im-converter-oracle</module>
+        <module>im-converter-mysql</module>
+        <module>im-converter-hive</module>
+        <module>iq</module>
+        <module>iq-provider-api</module>
+        <module>iq-provider-es</module>
+        <module>iq-provider-hbase</module>
+        <module>iq-provider-redis</module>
+        <module>iq-provider-solr</module>
+        <module>iq-provider-solr_hbase</module>
+        <module>mc</module>
+        <module>md</module>
+        <module>mm</module>
+        <module>olq</module>
+        <module>olq-provider-api</module>
+        <module>olq-provider-db2</module>
+        <module>olq-provider-impala</module>
+        <module>olq-provider-inceptor</module>
+        <module>olq-provider-pgsql</module>
+        <module>olq-provider-kylin</module>
+        <module>olq-provider-oracle</module>
+        <module>olq-provider-hive</module>
+        <module>olq-provider-mysql</module>
+        <module>rc</module>
+        <module>rts</module>
+        <module>rts-executor-api</module>
+        <module>rts-executor-kafka</module>
+        <module>sdk</module>
+    </modules>
+
+</project>
