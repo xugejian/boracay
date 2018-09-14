@@ -42,8 +42,10 @@ public class UserServiceImpl extends BaseService implements ApplicationContextAw
     private GFUserSessionMapper userSessionMapper;
     private ApplicationContext applicationContext;
 
+   // ---------------------2018-09-13 by Junjie.M--------------------------
    @Autowired
    private FtpUserManagerService ftpUserManagerService;
+   // --------------------- END --------------------------
 
     public UserServiceImpl() {
     }
@@ -58,7 +60,9 @@ public class UserServiceImpl extends BaseService implements ApplicationContextAw
 
     public boolean addUser(GFUser user) {
 
+        // ---------------------2018-09-13 by Junjie.M--------------------------
         ftpUserManagerService.addConsumerFtpUser(user.getUserId(), user.getPassword());
+        // --------------------- END --------------------------
 
         int id = (int) this.getNextPrimaryId("GFUser");
         user.setId(String.valueOf(id));
@@ -69,7 +73,9 @@ public class UserServiceImpl extends BaseService implements ApplicationContextAw
 
     public boolean addUserHasEmp(GFUser user) {
 
+        // ---------------------2018-09-13 by Junjie.M--------------------------
         ftpUserManagerService.addConsumerFtpUser(user.getUserId(), user.getPassword());
+        // --------------------- END --------------------------
 
         int id = (int) this.getNextPrimaryId("GFUser");
         user.setId(String.valueOf(id));
@@ -105,8 +111,10 @@ public class UserServiceImpl extends BaseService implements ApplicationContextAw
         for (int i$ = 0; i$ < len$; ++i$) {
             GFUser user = arr$[i$];
 
+            // ---------------------2018-09-13 by Junjie.M--------------------------
             user = userMapper.selectByPrimaryKey(user.getId());
             ftpUserManagerService.delConsumerFtpUser(user.getUserId());
+            // --------------------- END --------------------------
 
             this.userMapper.deleteByPrimaryKey(user.getId());
         }
@@ -123,10 +131,12 @@ public class UserServiceImpl extends BaseService implements ApplicationContextAw
             OrgTreeNode node = arr$[i$];
             if ("emp".equals(node.getNodeType())) {
 
+                // ---------------------2018-09-13 by Junjie.M--------------------------
                 List<GFUser> list = userMapper.queryUsersByEmpId(node.getNodeId());
                 for (GFUser user : list) {
                     ftpUserManagerService.delConsumerFtpUser(user.getUserId());
                 }
+                // --------------------- END --------------------------
 
                 this.userMapper.deleteLoginUserByEmpId(node.getNodeId());
             }
@@ -254,10 +264,12 @@ public class UserServiceImpl extends BaseService implements ApplicationContextAw
         for (int i = 0; i < len; i++) {
             GFUser user = arr[i];
 
+            // ---------------------2018-09-13 by Junjie.M--------------------------
             user = userMapper.selectByPrimaryKey(user.getId());
             user.setPassword("000000");
             ftpUserManagerService.delConsumerFtpUser(user.getUserId());
             ftpUserManagerService.addConsumerFtpUser(user.getUserId(), user.getPassword());
+            // --------------------- END --------------------------
 
             this.userMapper.resetPassword(user.getId());
         }
@@ -271,10 +283,12 @@ public class UserServiceImpl extends BaseService implements ApplicationContextAw
 
     @Transactional
     public boolean changePassword(String id, String newPassword) {
+        // ---------------------2018-09-13 by Junjie.M--------------------------
         GFUser user = userMapper.selectByPrimaryKey(id);
         user.setPassword(newPassword);
         ftpUserManagerService.delConsumerFtpUser(user.getUserId());
         ftpUserManagerService.addConsumerFtpUser(user.getUserId(),user.getPassword());
+        // --------------------- END --------------------------
 
         return this.userMapper.changePassword(id, newPassword);
     }

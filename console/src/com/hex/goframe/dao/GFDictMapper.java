@@ -9,23 +9,32 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 
+// ---------------------2018-09-13 by Junjie.M--------------------------
+// 添加了数据缓存功能
+// --------------------- END --------------------------
 @Repository
 public class GFDictMapper extends SyncMapper<GFDict> {
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public int deleteByPrimaryKey(String dictTypeId, String dictId) {
         String id = dictTypeId + "|" + dictId;
         return delete(id) ? 1 : 0;
     }
+    // --------------------- END --------------------------
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public int insert(GFDict dict) {
         String id = dict.getDictTypeId() + "|" + dict.getDictId();
         return insert(id, dict) ? 1 : 0;
     }
+    // --------------------- END --------------------------
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public GFDict selectByPrimaryKey(String dictTypeId, String dictId) {
         String id = dictTypeId + "|" + dictId;
         return select(id);
     }
+    // --------------------- END --------------------------
 
     public List<GFDict> selectAll() {
         return this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFDictMapper.selectAll");
@@ -39,10 +48,12 @@ public class GFDictMapper extends SyncMapper<GFDict> {
         return this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFDictMapper.getDictFilterData", dict);
     }
 
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public int updateByPrimaryKey(GFDict dict) {
         String id = dict.getDictTypeId() + "|" + dict.getDictId();
         return update(id, dict) ? 1 : 0;
     }
+    // --------------------- END --------------------------
 
     public List<GFDict> query(GFDict dict, Page page) {
         HashMap map = new HashMap();
@@ -61,8 +72,7 @@ public class GFDictMapper extends SyncMapper<GFDict> {
         return this.sqlSessionTemplate.delete("com.hex.goframe.dao.GFDictMapper.deleteByDictTypeId", dictTypeId);
     }
 
-    //  -----------------------------------------------------------------------------------------
-
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     @Override
     protected boolean insertExe(GFDict dict) {
         return this.sqlSessionTemplate.insert("com.hex.goframe.dao.GFDictMapper.insert", dict) == 1;
@@ -104,5 +114,6 @@ public class GFDictMapper extends SyncMapper<GFDict> {
     protected List<GFDict> selectListExe(String id) {
         return null;
     }
+    // --------------------- END --------------------------
 
 }

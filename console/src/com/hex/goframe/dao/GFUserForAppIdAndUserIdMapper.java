@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 
+// ---------------------2018-09-13 by Junjie.M--------------------------
+// GFUserMapper添加缓存功能用到该类
+// --------------------- END --------------------------
 @Repository
 public class GFUserForAppIdAndUserIdMapper extends SyncMapper<GFUser> {
 
