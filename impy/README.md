@@ -1,1 +1,0 @@
-# interaction modeling python script（交互建模Python脚本）

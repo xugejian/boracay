@@ -18,5 +18,6 @@
     <orderEntry type="library" name="poi" level="project" />
     <orderEntry type="library" name="jetty" level="project" />
     <orderEntry type="module" module-name="common-api" />
+    <orderEntry type="library" name="hbase" level="project" />
   </component>
 </module>
