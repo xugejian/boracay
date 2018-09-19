@@ -59,4 +59,5 @@
             <ref bean="outInterceptor"/>
         </jaxws:outInterceptors>
     </jaxws:server>
+
 </beans>
