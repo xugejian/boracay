@@ -36,6 +36,13 @@
             <groupId>com.hex.goframe</groupId>
             <artifactId>goframe.core</artifactId>
             <version>3.3.1.39</version>
+            <!-- org.ow2.asm和cxf中的asm冲突了，所以这里排除org.ow2.asm -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -72,9 +79,25 @@
             <artifactId>jtds</artifactId>
             <version>1.3.1</version>
         </dependency>
+
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>consumer-http</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hex.bigdata.udsp</groupId>
+            <artifactId>consumer-socket</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hex.bigdata.udsp</groupId>
+            <artifactId>consumer-restful</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hex.bigdata.udsp</groupId>
+            <artifactId>consumer-webservice</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

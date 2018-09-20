@@ -35,6 +35,13 @@
             <groupId>com.hex.goframe</groupId>
             <artifactId>goframe.core</artifactId>
             <version>3.3.1.39</version>
+            <!-- org.ow2.asm和cxf中的asm冲突了，所以这里排除org.ow2.asm -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
