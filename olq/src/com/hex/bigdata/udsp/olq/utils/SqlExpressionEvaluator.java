@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.olq.utils;
 
-import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,7 +45,9 @@ public class SqlExpressionEvaluator {
      * @return
      */
     public static String parseSql(String str, Map<String, String> params) {
-        Preconditions.checkArgument(StringUtils.isNotBlank(str));
+        if (StringUtils.isBlank(str)) {
+            throw new IllegalArgumentException("SQL字符串为空");
+        }
         // 先处理#[]
         Matcher m = PATTERN.matcher(str);
         while (m.find()) {
@@ -135,7 +136,9 @@ public class SqlExpressionEvaluator {
      */
     @Deprecated
     public static List<String> parseParams(String str) {
-        Preconditions.checkArgument(StringUtils.isNotBlank(str));
+        if (StringUtils.isBlank(str)) {
+            throw new IllegalArgumentException("SQL字符串为空");
+        }
         List<String> params = new ArrayList<String>();
         Matcher m = PATTERN2.matcher(str);
         while (m.find()) {
@@ -151,8 +154,7 @@ public class SqlExpressionEvaluator {
             params.add(exp);
         }
         // 去重
-        params = new ArrayList(new HashSet(params));
-        return params;
+        return new ArrayList(new HashSet(params));
     }
 
     /**
@@ -161,8 +163,10 @@ public class SqlExpressionEvaluator {
      * @param str
      * @return
      */
-    public static List<String> parseParams2(String str) {
-        Preconditions.checkArgument(StringUtils.isNotBlank(str));
+    public static ArrayList parseParams2(String str) {
+        if (StringUtils.isBlank(str)) {
+            throw new IllegalArgumentException("SQL字符串为空");
+        }
         List<String> params = new ArrayList<>();
         // 先处理#[]
         Matcher m = PATTERN.matcher(str);
@@ -182,8 +186,7 @@ public class SqlExpressionEvaluator {
         // 再处理${}
         params.addAll(evaluateParams(str));
         // 去重
-        params = new ArrayList(new HashSet(params));
-        return params;
+        return new ArrayList(new HashSet(params));
     }
 
     /**
@@ -245,7 +248,9 @@ public class SqlExpressionEvaluator {
      * @return
      */
     public static Map<String, Boolean> parseParamMap(String str) {
-        Preconditions.checkArgument(StringUtils.isNotBlank(str));
+        if (StringUtils.isBlank(str)) {
+            throw new IllegalArgumentException("SQL字符串为空");
+        }
         Map<String, Boolean> params = new HashMap<>();
         // 先处理#[]
         Matcher m = PATTERN.matcher(str);

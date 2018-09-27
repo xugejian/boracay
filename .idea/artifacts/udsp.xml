@@ -26,7 +26,6 @@
           <element id="library" level="project" name="common" />
           <element id="library" level="project" name="goframe" />
           <element id="library" level="project" name="hbase" />
-          <element id="library" level="project" name="jdbc" />
           <element id="library" level="project" name="mybatis" />
           <element id="library" level="project" name="poi" />
           <element id="library" level="project" name="redis" />
@@ -34,7 +33,6 @@
           <element id="library" level="project" name="tools" />
           <element id="library" level="project" name="cxf" />
           <element id="library" level="project" name="elasticsearch" />
-          <element id="library" level="project" name="hive" />
           <element id="library" level="project" name="kafka" />
           <element id="library" level="project" name="solr" />
           <element id="library" level="project" name="mail" />
@@ -64,7 +62,6 @@
           <element id="artifact" artifact-name="hex-udsp-consumer-restful" />
           <element id="artifact" artifact-name="hex-udsp-consumer-socket" />
           <element id="artifact" artifact-name="hex-udsp-consumer-webservice" />
-          <element id="library" level="project" name="impala" />
           <element id="library" level="project" name="kudu" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-hive" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-impala" />
