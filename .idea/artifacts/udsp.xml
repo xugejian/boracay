@@ -13,6 +13,14 @@
           <element id="module-output" name="olq" />
           <element id="module-output" name="rc" />
           <element id="module-output" name="rts" />
+          <element id="module-output" name="im-converter-hive" />
+          <element id="module-output" name="im-converter-impala" />
+          <element id="module-output" name="im-converter-kafka" />
+          <element id="module-output" name="im-converter-kudu" />
+          <element id="module-output" name="im-converter-mysql" />
+          <element id="module-output" name="im-converter-oracle" />
+          <element id="module-output" name="im-converter-solr" />
+          <element id="module-output" name="im-converter-solr_hbase" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="common" />
@@ -32,7 +40,7 @@
           <element id="library" level="project" name="mail" />
           <element id="artifact" artifact-name="hex-udsp-common-api" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-api" />
-          <element id="artifact" artifact-name="hex-udsp-im-converter-impl" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-hbase" />
           <element id="artifact" artifact-name="hex-udsp-iq-provider-api" />
           <element id="artifact" artifact-name="hex-udsp-iq-provider-es" />
           <element id="artifact" artifact-name="hex-udsp-iq-provider-hbase" />
@@ -58,6 +66,14 @@
           <element id="artifact" artifact-name="hex-udsp-consumer-webservice" />
           <element id="library" level="project" name="impala" />
           <element id="library" level="project" name="kudu" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-hive" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-impala" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-kafka" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-kudu" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-mysql" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-oracle" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-solr" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-solr_hbase" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="console/web/Web" />
