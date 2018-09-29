@@ -163,7 +163,7 @@ public class SqlExpressionEvaluator {
      * @param str
      * @return
      */
-    public static ArrayList parseParams2(String str) {
+    public static List<String> parseParams2(String str) {
         if (StringUtils.isBlank(str)) {
             throw new IllegalArgumentException("SQL字符串为空");
         }

@@ -696,9 +696,7 @@ public class HBaseProvider implements Provider {
             conf.set("hbase.client.retries.number", "3");
             conf.set("zookeeper.recovery.retry", "1");
             hConnection = HConnectionManager.createConnection(conf);
-            if (hConnection == null || hConnection.isAborted()) {
-                return false;
-            } else {
+            if (hConnection != null && !hConnection.isAborted()) {
                 //尝试获取当中的表，如果获取抛异常则获取连接失败
                 hConnection.getAdmin().tableExists(TableName.valueOf("TEST"));
                 return true;
