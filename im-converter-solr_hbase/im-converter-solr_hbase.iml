@@ -7,9 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="common" level="project" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="im-converter-api" />
-    <orderEntry type="library" name="common" level="project" />
     <orderEntry type="module" module-name="im-converter-solr" />
     <orderEntry type="module" module-name="im-converter-hbase" />
   </component>

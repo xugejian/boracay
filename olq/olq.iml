@@ -13,11 +13,9 @@
     <orderEntry type="library" name="mybatis" level="project" />
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="library" name="poi" level="project" />
-    <orderEntry type="library" name="hive" level="project" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="olq-provider-api" />
-    <orderEntry type="library" name="jdbc" level="project" />
     <orderEntry type="module" module-name="olq-provider-db2" />
     <orderEntry type="module" module-name="olq-provider-hive" />
     <orderEntry type="module" module-name="olq-provider-impala" />
@@ -26,5 +24,6 @@
     <orderEntry type="module" module-name="olq-provider-mysql" />
     <orderEntry type="module" module-name="olq-provider-oracle" />
     <orderEntry type="module" module-name="olq-provider-pgsql" />
+    <orderEntry type="library" name="hbase" level="project" />
   </component>
 </module>

@@ -8,11 +8,11 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="common" level="project" />
+    <orderEntry type="library" name="hbase" level="project" />
+    <orderEntry type="library" name="solr" level="project" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="iq-provider-api" />
-    <orderEntry type="library" name="hbase" level="project" />
-    <orderEntry type="module" module-name="iq-provider-hbase" />
-    <orderEntry type="library" name="solr" level="project" />
     <orderEntry type="module" module-name="iq-provider-solr" />
+    <orderEntry type="module" module-name="iq-provider-hbase" />
   </component>
 </module>
