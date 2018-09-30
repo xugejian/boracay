@@ -71,6 +71,14 @@
           <element id="artifact" artifact-name="hex-udsp-im-converter-oracle" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-solr" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-solr_hbase" />
+          <element id="library" level="project" name="jdbc" />
+          <element id="library" level="project" name="db2-jdbc" />
+          <element id="library" level="project" name="oracle-jdbc" />
+          <element id="library" level="project" name="pgsql-jdbc" />
+          <element id="library" level="project" name="mysql-jdbc" />
+          <element id="library" level="project" name="kylin-jdbc" />
+          <element id="library" level="project" name="hive-jdbc" />
+          <element id="library" level="project" name="impala-jdbc" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="console/web/Web" />
