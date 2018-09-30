@@ -79,6 +79,7 @@
           <element id="library" level="project" name="kylin-jdbc" />
           <element id="library" level="project" name="hive-jdbc" />
           <element id="library" level="project" name="impala-jdbc" />
+          <element id="artifact" artifact-name="hex-udsp-olq-provider-phoenix" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="console/web/Web" />
