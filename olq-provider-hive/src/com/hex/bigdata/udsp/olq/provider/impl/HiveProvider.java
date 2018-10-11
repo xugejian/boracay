@@ -24,12 +24,12 @@ public class HiveProvider extends JdbcProvider {
         String pageSql = null;
         // TODO 以下方式实际是错误的！Hive分页必须指定唯一字段集进行排序，否则分页结果不正确。
         if (pageIndex == 1) {
-            pageSql = "SELECT * FROM (" + sql + " ) UDSP_VIEW LIMIT " + pageSize;
+            pageSql = "SELECT * FROM (" + sql + ") UDSP_VIEW LIMIT " + pageSize;
         } else {
             Integer startRow = (pageIndex - 1) * pageSize;
             Integer endRow = pageSize * pageIndex;
             pageSql = "SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY 1) AS ROWNUM, UDSP_VIEW.*  FROM (" + sql +
-                    " ) UDSP_VIEW) UDSP_VIEW2 WHERE UDSP_VIEW2.ROWNUM BETWEEN " + startRow + " AND " + endRow;
+                    ") UDSP_VIEW) UDSP_VIEW2 WHERE UDSP_VIEW2.ROWNUM BETWEEN " + startRow + " AND " + endRow;
         }
         olqQuerySql.setPageSql(pageSql);
         // 总记录数查询SQL组装

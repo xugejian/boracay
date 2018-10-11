@@ -22,7 +22,7 @@ public class InceptorProvider extends JdbcProvider {
         int pageIndex = page.getPageIndex();
         pageIndex = (pageIndex == 0 ? 1 : pageIndex);
         int startRow = (pageIndex - 1) * pageSize;
-        String pageSql = "SELECT * FROM (" + sql + " ) UDSP_VIEW LIMIT " + pageSize + ", " + startRow;
+        String pageSql = "SELECT * FROM (" + sql + ") UDSP_VIEW LIMIT " + pageSize + ", " + startRow;
         olqQuerySql.setPageSql(pageSql);
         // 总记录数查询SQL组装
         String totalSql = "SELECT COUNT(1) FROM (" + sql + ") UDSP_VIEW";

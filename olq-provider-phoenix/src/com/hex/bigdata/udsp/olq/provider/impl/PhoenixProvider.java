@@ -21,14 +21,8 @@ public class PhoenixProvider extends JdbcProvider {
         int pageSize = page.getPageSize();
         int pageIndex = page.getPageIndex();
         pageIndex = (pageIndex == 0 ? 1 : pageIndex);
-        // TODO 以下方式实际是错误的！Phoenix分页必须指定唯一字段集进行排序，否则分页结果不正确。
-        String pageSql = null;
-        if (pageIndex == 1) {
-            pageSql = "SELECT * FROM (" + sql + " ) UDSP_VIEW LIMIT " + pageSize;
-        } else {
-            Integer startRow = (pageIndex - 1) * pageSize;
-            pageSql = "SELECT * FROM (" + sql + " ) UDSP_VIEW ORDER BY 1 LIMIT " + pageSize + " OFFSET " + startRow;
-        }
+        Integer startRow = (pageIndex - 1) * pageSize;
+        String pageSql = "SELECT * FROM (" + sql + ") UDSP_VIEW LIMIT " + pageSize + " OFFSET " + startRow;
         olqQuerySql.setPageSql(pageSql);
         // 总记录数查询SQL组装
         String totalSql = "SELECT COUNT(1) FROM (" + sql + ") UDSP_VIEW";
