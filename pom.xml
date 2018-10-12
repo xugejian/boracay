@@ -53,6 +53,7 @@
         <module>rts-executor-api</module>
         <module>rts-executor-kafka</module>
         <module>sdk</module>
+        <module>olq-provider-phoenix</module>
     </modules>
 
     <build>
