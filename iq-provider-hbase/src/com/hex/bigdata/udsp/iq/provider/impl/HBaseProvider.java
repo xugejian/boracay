@@ -462,8 +462,8 @@ public class HBaseProvider implements Provider {
         try {
             return client.rowCount(table, new LongColumnInterpreter(), scan);
         } catch (Throwable throwable) {
-//            throwable.printStackTrace();
-            logger.warn(throwable.getMessage());
+            //logger.warn(throwable.getMessage());
+            logger.warn("HBase表" + table.toString() + "没有注册集合协处理器，无法使用协处理器方式获取总行数！");
             return count(table, scan);
         }
     }

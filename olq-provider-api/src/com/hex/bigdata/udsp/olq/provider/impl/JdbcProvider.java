@@ -116,6 +116,7 @@ public abstract class JdbcProvider implements Provider {
         BasicDataSource dataSource = getDataSource(jdbcDatasource);
         if (dataSource != null) {
             conn = dataSource.getConnection();
+            logger.info("JDBC DB Type: " + conn.getMetaData().getDatabaseProductName());
         }
         return conn;
     }
