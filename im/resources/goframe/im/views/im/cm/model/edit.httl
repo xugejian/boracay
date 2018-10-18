@@ -569,6 +569,8 @@ ${extends("/goframe/function_layout.httl")}
                             "stored":data[i].stored ? 0 : 1
                         });
                     }
+                } else {
+                    nui.alert(result.message);
                 }
             }
         });

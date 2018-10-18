@@ -20,7 +20,6 @@ ${extends("/goframe/function_layout.httl")}
                 <tr>
                     <th class="nui-form-label"><label for="dsId">数据源：</label></th>
                     <td>
-
                         <div id="dsId" class="nui-combobox" style="width:97%;" popupWidth="400" textField="name"
                              valueField="pkId" onvaluechanged="typeChanged" allowInput="true"
                              url="${basePath}/com/ds/select?model=IM&imDsTypeDictId=IM_DS_TARGET_TYPE"
@@ -32,7 +31,7 @@ ${extends("/goframe/function_layout.httl")}
                             </div>
                         </div>
                     </td>
-                    <th class="nui-form-label"></th>
+                    <th class="nui-form-label"><label for="tbName">类型：</label></th>
                     <td>
                         <div id="type" name="type" onvaluechanged="onvaluechangedType" class="nui-radiobuttonlist"
                              repeatItems="2" repeatLayout="table" repeatDirection="horizontal"
@@ -46,6 +45,9 @@ ${extends("/goframe/function_layout.httl")}
                     <td>
                         <input id="tbName" name="tbName" class="nui-textbox" style="width:97%" required="true"
                                vtype="maxLength:64" onblur="setCols"/>
+                    </td>
+                    <td colspan="2">
+                        <font color="red">提示：数据源支持SQL建议使用SQL建表然后选择外表！</font>
                     </td>
                 </tr>
                 <tr>
@@ -800,7 +802,7 @@ ${extends("/goframe/function_layout.httl")}
         $.each(data, function (i, val) {
             cols.push({
                 "name": val.name,
-                "describe": val.describe,
+                "describe": val.describe ? val.describe : val.name,
                 "type": val.type,
                 "length": val.length,
                 "indexed": val.indexed ? 0 : 1,
