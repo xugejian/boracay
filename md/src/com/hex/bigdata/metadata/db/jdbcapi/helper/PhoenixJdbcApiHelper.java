@@ -9,42 +9,41 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Created by junjiem on 2016-6-21.
+ * Created by junjiem on 2018-10-08.
  */
-public class MysqlJdbcApiHelper extends BaseJdbcApiHelper {
+public class PhoenixJdbcApiHelper extends BaseJdbcApiHelper {
 
-    public MysqlJdbcApiHelper(Connection conn) throws SQLException {
+    public PhoenixJdbcApiHelper(Connection conn) throws SQLException {
         super(conn);
     }
 
     @Override
     public ResultSet getDatabasesResultSet(DatabaseMetaData dbmd) throws SQLException {
-        return dbmd.getCatalogs();
+        return dbmd.getSchemas();
     }
 
     @Override
     public ResultSet getTablesResultSet(DatabaseMetaData dbmd, String dbName) throws SQLException {
-        checkDatabaseName(dbName);
-        return dbmd.getTables(dbName, null, null, new String[]{"TABLE", "VIEW"});
+        //checkDatabaseName(dbName);
+        return dbmd.getTables(null, dbName, null, new String[]{"TABLE", "VIEW"});
     }
 
     @Override
     public ResultSet getColumnsResultSet(DatabaseMetaData dbmd, String dbName, String tbName) throws SQLException {
-        checkDatabaseName(dbName);
+        //checkDatabaseName(dbName);
         checkTableName(tbName);
-        return dbmd.getColumns(dbName, null, tbName, null);
+        return dbmd.getColumns(null, dbName, tbName, null);
     }
 
     @Override
     public ResultSet getPrimaryKeysResultSet(DatabaseMetaData dbmd, String dbName, String tbName) throws SQLException {
-        checkDatabaseName(dbName);
+        //checkDatabaseName(dbName);
         checkTableName(tbName);
-        return dbmd.getPrimaryKeys(dbName, null, tbName);
+        return dbmd.getPrimaryKeys(null, dbName, tbName);
     }
 
     @Override
     public String getDbType() {
-        return DBType.MYSQL.getValue();
+        return DBType.PHOENIX.getValue();
     }
-
 }
