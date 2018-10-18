@@ -230,7 +230,9 @@ public class LoggingService {
         if (StringUtils.isNotBlank(response.getResponseContent())) {
             mcConsumeLog.setResponseContent(response.getResponseContent());
         }
-        mcConsumeLog.setConsumeTime(response.getConsumeTime());
+        if (!isCache) { // 非从缓存中获取的结果数据才要写入接口耗时
+            mcConsumeLog.setConsumeTime(response.getConsumeTime());
+        }
         if (Status.SUCCESS.getValue().equals(response.getStatus())
                 || Status.RUNNING.getValue().equals(response.getStatus())) {
             writeLogToDb(request, mcConsumeLog, YesOrNo.YES.getValue(), isCache);
