@@ -363,5 +363,4 @@ create table T_GF_USER_SESSION
 alter table T_GF_USER_SESSION
   add primary key (USER_ID);
 
-
 spool off
