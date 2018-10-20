@@ -18,14 +18,5 @@
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="im-converter-api" />
-    <orderEntry type="module" module-name="im-converter-hbase" />
-    <orderEntry type="module" module-name="im-converter-hive" />
-    <orderEntry type="module" module-name="im-converter-impala" />
-    <orderEntry type="module" module-name="im-converter-kafka" />
-    <orderEntry type="module" module-name="im-converter-kudu" />
-    <orderEntry type="module" module-name="im-converter-mysql" />
-    <orderEntry type="module" module-name="im-converter-oracle" />
-    <orderEntry type="module" module-name="im-converter-solr" />
-    <orderEntry type="module" module-name="im-converter-solr_hbase" />
   </component>
 </module>

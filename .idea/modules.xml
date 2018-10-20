@@ -10,18 +10,8 @@
       <module fileurl="file://$PROJECT_DIR$/consumer-restful/consumer-restful.iml" filepath="$PROJECT_DIR$/consumer-restful/consumer-restful.iml" group="consumer" />
       <module fileurl="file://$PROJECT_DIR$/consumer-socket/consumer-socket.iml" filepath="$PROJECT_DIR$/consumer-socket/consumer-socket.iml" group="consumer" />
       <module fileurl="file://$PROJECT_DIR$/consumer-webservice/consumer-webservice.iml" filepath="$PROJECT_DIR$/consumer-webservice/consumer-webservice.iml" group="consumer" />
-      <module fileurl="file://$PROJECT_DIR$/doc/doc.iml" filepath="$PROJECT_DIR$/doc/doc.iml" />
       <module fileurl="file://$PROJECT_DIR$/im/im.iml" filepath="$PROJECT_DIR$/im/im.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-api/im-converter-api.iml" filepath="$PROJECT_DIR$/im-converter-api/im-converter-api.iml" group="im" />
-      <module fileurl="file://$PROJECT_DIR$/im-converter-hbase/im-converter-hbase.iml" filepath="$PROJECT_DIR$/im-converter-hbase/im-converter-hbase.iml" group="im" />
-      <module fileurl="file://$PROJECT_DIR$/im-converter-hive/im-converter-hive.iml" filepath="$PROJECT_DIR$/im-converter-hive/im-converter-hive.iml" group="im" />
-      <module fileurl="file://$PROJECT_DIR$/im-converter-impala/im-converter-impala.iml" filepath="$PROJECT_DIR$/im-converter-impala/im-converter-impala.iml" group="im" />
-      <module fileurl="file://$PROJECT_DIR$/im-converter-kafka/im-converter-kafka.iml" filepath="$PROJECT_DIR$/im-converter-kafka/im-converter-kafka.iml" group="im" />
-      <module fileurl="file://$PROJECT_DIR$/im-converter-kudu/im-converter-kudu.iml" filepath="$PROJECT_DIR$/im-converter-kudu/im-converter-kudu.iml" group="im" />
-      <module fileurl="file://$PROJECT_DIR$/im-converter-mysql/im-converter-mysql.iml" filepath="$PROJECT_DIR$/im-converter-mysql/im-converter-mysql.iml" group="im" />
-      <module fileurl="file://$PROJECT_DIR$/im-converter-oracle/im-converter-oracle.iml" filepath="$PROJECT_DIR$/im-converter-oracle/im-converter-oracle.iml" group="im" />
-      <module fileurl="file://$PROJECT_DIR$/im-converter-solr/im-converter-solr.iml" filepath="$PROJECT_DIR$/im-converter-solr/im-converter-solr.iml" group="im" />
-      <module fileurl="file://$PROJECT_DIR$/im-converter-solr_hbase/im-converter-solr_hbase.iml" filepath="$PROJECT_DIR$/im-converter-solr_hbase/im-converter-solr_hbase.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/iq/iq.iml" filepath="$PROJECT_DIR$/iq/iq.iml" group="iq" />
       <module fileurl="file://$PROJECT_DIR$/iq-provider-api/iq-provider-api.iml" filepath="$PROJECT_DIR$/iq-provider-api/iq-provider-api.iml" group="iq" />
       <module fileurl="file://$PROJECT_DIR$/iq-provider-es/iq-provider-es.iml" filepath="$PROJECT_DIR$/iq-provider-es/iq-provider-es.iml" group="iq" />
@@ -45,8 +35,6 @@
       <module fileurl="file://$PROJECT_DIR$/rc/rc.iml" filepath="$PROJECT_DIR$/rc/rc.iml" />
       <module fileurl="file://$PROJECT_DIR$/rts/rts.iml" filepath="$PROJECT_DIR$/rts/rts.iml" group="rts" />
       <module fileurl="file://$PROJECT_DIR$/rts-executor-api/rts-executor-api.iml" filepath="$PROJECT_DIR$/rts-executor-api/rts-executor-api.iml" group="rts" />
-      <module fileurl="file://$PROJECT_DIR$/rts-executor-kafka/rts-executor-kafka.iml" filepath="$PROJECT_DIR$/rts-executor-kafka/rts-executor-kafka.iml" group="rts" />
-      <module fileurl="file://$PROJECT_DIR$/sdk/sdk.iml" filepath="$PROJECT_DIR$/sdk/sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/sql/sql.iml" filepath="$PROJECT_DIR$/sql/sql.iml" />
     </modules>
   </component>
