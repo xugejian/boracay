@@ -14,9 +14,9 @@
     <orderEntry type="library" name="mybatis" level="project" />
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="library" name="poi" level="project" />
-    <orderEntry type="library" name="jetty" level="project" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="im-converter-api" />
+    <orderEntry type="library" name="jetty" level="project" />
   </component>
 </module>
