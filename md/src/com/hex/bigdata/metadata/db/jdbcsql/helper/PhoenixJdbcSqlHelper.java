@@ -3,7 +3,7 @@ package com.hex.bigdata.metadata.db.jdbcsql.helper;
 import com.hex.bigdata.metadata.db.jdbcsql.BaseJdbcSqlHelper;
 import com.hex.bigdata.metadata.db.util.Constant;
 import com.hex.bigdata.metadata.db.util.DBType;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.sql.Connection;
 

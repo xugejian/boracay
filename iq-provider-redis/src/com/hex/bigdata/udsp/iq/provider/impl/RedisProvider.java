@@ -8,7 +8,7 @@ import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.RedisConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.RedisDatasource;
 import com.hex.bigdata.udsp.iq.provider.model.*;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.Jedis;

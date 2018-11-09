@@ -12,7 +12,7 @@ import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.ElasticSearchConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.*;
 import com.hex.bigdata.udsp.iq.provider.model.*;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.http.HttpHost;
 import org.apache.http.nio.entity.NStringEntity;
