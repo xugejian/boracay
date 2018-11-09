@@ -10,7 +10,7 @@ import com.hex.bigdata.udsp.model.response.SyncResponse;
 import com.hex.bigdata.udsp.model.response.AsyncPackResponse;
 import com.hex.bigdata.udsp.model.response.StatusPackResponse;
 import com.hex.bigdata.udsp.model.response.SyncPackResponse;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class ConsumerClient {
 
@@ -18,7 +18,6 @@ public abstract class ConsumerClient {
      * 请求地址
      */
     private String requestUrl;
-
 
     protected ConsumerClient() {
     }
@@ -83,7 +82,7 @@ public abstract class ConsumerClient {
             }
         }
 
-        if (StringUtils.isNotBlank(errorMessage.toString())) {
+        if (StringUtils.isNotBlank(errorMessage)) {
             throw new IllegalArgumentException(errorMessage.toString());
         }
     }

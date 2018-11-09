@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.config;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
 import java.util.Properties;

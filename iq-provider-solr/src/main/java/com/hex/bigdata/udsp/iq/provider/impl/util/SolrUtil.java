@@ -30,7 +30,7 @@ public class SolrUtil {
         BufferedReader in = null;
         try {
             String urlNameString = url;
-            if (StringUtils.isNotBlank(param)) {
+            if (StringUtils.isNotEmpty(param)) {
                 urlNameString += "?" + param;
             }
             logger.info("solrUrlApi: " + urlNameString);

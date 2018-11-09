@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class MmResponse implements Serializable {
     private String status;
-    private String errorCode;
     private String message;
     private String uuid;
     private MmResponseData data;
@@ -39,13 +38,5 @@ public class MmResponse implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
     }
 }

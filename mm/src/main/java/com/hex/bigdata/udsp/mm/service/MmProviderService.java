@@ -118,4 +118,22 @@ public class MmProviderService {
         }
         return returnString;
     }
+
+    public static void main(String[] args) {
+        String json = "{\n" +
+                "\"status\": \"SUCCESS\",\n" +
+                "    \"uuid\": \"453dft5465fdg456546fdsd4343dsd\",\n" +
+                "    \"message\": \"调用成功\",\n" +
+                "    \"data\": {\n" +
+                "        \"file\":\"/rootPath/CORE/BJ/20170411/mode1_XXXXXX.txt\"\n" +
+                "    }\n" +
+                "}";
+        MmResponse mmResponse = JSONUtil.parseJSON2Obj(json, MmResponse.class);
+        JSONObject dataObject = JSON.parseObject(json).getJSONObject("data");
+        if (dataObject != null) {
+            MmResponseData mmResponseData = JSONUtil.parseJSON2Obj(dataObject.toJSONString(), MmResponseData.class);
+            mmResponse.setData(mmResponseData);
+        }
+        System.out.println(JSONUtil.parseObj2JSON(mmResponse));
+    }
 }

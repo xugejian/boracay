@@ -2,7 +2,7 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <properties>
-        <property name="goframe.schema" value="udsp3" />
+        <property name="goframe.schema" value="udsp"/>
     </properties>
 
     <settings>
@@ -17,11 +17,9 @@
         <setting name="logImpl" value="LOG4J2"/>
     </settings>
 
-
-
     <plugins>
         <!--<plugin interceptor="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">-->
-        <!--<property name="dialectClass" value="com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect"/>-->
+            <!--<property name="dialectClass" value="com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect"/>-->
         <!--</plugin>-->
         <plugin interceptor="com.hex.goframe.plugin.SQLPrintPlugin" />
     </plugins>

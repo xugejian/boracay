@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.jdbc.netty;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class RemotingUrl {
     /**

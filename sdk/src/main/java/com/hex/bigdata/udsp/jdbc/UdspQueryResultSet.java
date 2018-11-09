@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.jdbc;
 
 import com.hex.bigdata.udsp.jdbc.netty.Client;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -12,6 +12,7 @@ import java.net.URL;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by JunjieM on 2018-7-26.

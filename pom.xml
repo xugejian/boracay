@@ -28,6 +28,7 @@
         <module>im-converter-oracle</module>
         <module>im-converter-mysql</module>
         <module>im-converter-hive</module>
+        <module>im-converter-phoenix</module>
         <module>iq</module>
         <module>iq-provider-api</module>
         <module>iq-provider-es</module>
@@ -48,12 +49,12 @@
         <module>olq-provider-oracle</module>
         <module>olq-provider-hive</module>
         <module>olq-provider-mysql</module>
+        <module>olq-provider-phoenix</module>
         <module>rc</module>
         <module>rts</module>
         <module>rts-executor-api</module>
         <module>rts-executor-kafka</module>
-        <module>sdk</module>
-        <module>olq-provider-phoenix</module>
+        <!--<module>sdk</module>-->
     </modules>
 
     <build>

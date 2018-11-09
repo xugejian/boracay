@@ -336,19 +336,17 @@ public class SolrProvider implements Provider {
         URL url = null;
         try {
             SolrDatasource solrDatasource = new SolrDatasource(datasource.getProperties());
-            String[] tempServers = solrDatasource.getSolrServers().split(",");
-            for (int i = 0; i < tempServers.length; i++) {
+            String[] servers = solrDatasource.getSolrServers().split(",");
+            for (String server : servers) {
                 try {
-                    url = new URL("http://" + tempServers[i] + "/solr");
+                    url = new URL("http://" + server + "/solr");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
                     connection.setUseCaches(false);
                     connection.setInstanceFollowRedirects(true);
                     connection.connect();
-                    if (connection != null) {
-                        return true;
-                    }
+                    return true;
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.warn("获取solr连接失败的地址为：" + (url == null ? "" : url.toString()));
@@ -372,7 +370,7 @@ public class SolrProvider implements Provider {
     }
 
     public List<MetadataCol> getColumns(String collectionName, String solrServers) {
-        if (StringUtils.isBlank(collectionName) || StringUtils.isBlank(solrServers)) {
+        if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {
             return null;
         }
         String response = "";
@@ -380,7 +378,7 @@ public class SolrProvider implements Provider {
         for (String solrServer : addresses) {
             String url = "http://" + solrServer + "/solr/" + collectionName + "/schema/fields";
             response = SolrUtil.sendGet(url, "");
-            if (StringUtils.isBlank(response)) {
+            if (StringUtils.isEmpty(response)) {
                 continue;
             } else {
                 break;

@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.iq.provider.impl.factory;
 
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.hadoop.conf.Configuration;

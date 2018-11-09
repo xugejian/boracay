@@ -37,47 +37,6 @@
             <artifactId>im-converter-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!-- 引用本地jar包 -->
-        <dependency>
-            <groupId>com.cloudera.impala</groupId>
-            <artifactId>ImpalaJDBC41</artifactId>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/ImpalaJDBC41.jar</systemPath>
-        </dependency>
-        <!-- 引用本地jar包 -->
-        <dependency>
-            <groupId>com.cloudera.impala</groupId>
-            <artifactId>hive_metastore</artifactId>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/hive_metastore.jar</systemPath>
-        </dependency>
-        <!-- 引用本地jar包 -->
-        <dependency>
-            <groupId>com.cloudera.impala</groupId>
-            <artifactId>hive_service</artifactId>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/hive_service.jar</systemPath>
-        </dependency>
-        <!-- 引用本地jar包 -->
-        <dependency>
-            <groupId>com.cloudera.impala</groupId>
-            <artifactId>ql</artifactId>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/ql.jar</systemPath>
-        </dependency>
-        <!-- 引用本地jar包 -->
-        <dependency>
-            <groupId>com.cloudera.impala</groupId>
-            <artifactId>TCLIServiceClient</artifactId>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/TCLIServiceClient.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.cloudera.impala</groupId>
-            <artifactId>TCLIServiceClient</artifactId>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/TCLIServiceClient.jar</systemPath>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>
             <groupId>commons-codec</groupId>

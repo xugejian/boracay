@@ -11,7 +11,7 @@ import com.hex.bigdata.udsp.iq.provider.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.*;
 import com.hex.bigdata.udsp.iq.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.iq.provider.model.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -623,32 +623,27 @@ public class SolrHBaseProvider implements Provider {
             conf.set("hbase.client.retries.number", "3");
             conf.set("zookeeper.recovery.retry", "1");
             hConnection = HConnectionManager.createConnection(conf);
-            if (hConnection == null || hConnection.isAborted()) {
-                HbaseCanConnection = false;
-            } else {
+            if (hConnection != null && !hConnection.isAborted()) {
                 //尝试获取当中的表，如果获取抛异常则获取连接失败
                 hConnection.getAdmin().tableExists(TableName.valueOf("TEST"));
+                HbaseCanConnection = true;
             }
-            if (HbaseCanConnection == true) {
-                //测试获取solr连接
-                String[] tempServers = solrHBaseDatasource.getSolrServers().split(",");
-                for (int i = 0; i < tempServers.length; i++) {
-                    try {
-                        url = new URL("http://" + tempServers[i] + "/solr");
-                        connection = (HttpURLConnection) url.openConnection();
-                        connection.setDoInput(true);
-                        connection.setDoOutput(true);
-                        connection.setUseCaches(false);
-                        connection.setInstanceFollowRedirects(true);
-                        connection.connect();
-                        if (connection != null) {
-                            SolrCanConnection = true;
-                            break;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        logger.warn("获取solr连接失败的地址为：" + (url == null ? "" : url.toString()));
-                    }
+            //测试获取solr连接
+            String[] servers = solrHBaseDatasource.getSolrServers().split(",");
+            for (String server : servers) {
+                try {
+                    url = new URL("http://" + server + "/solr");
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+                    connection.setUseCaches(false);
+                    connection.setInstanceFollowRedirects(true);
+                    connection.connect();
+                    SolrCanConnection = true;
+                    break;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.warn("获取solr连接失败的地址为：" + (url == null ? "" : url.toString()));
                 }
             }
         } catch (Exception e) {
@@ -677,7 +672,7 @@ public class SolrHBaseProvider implements Provider {
     }
 
     private List<MetadataCol> getColumns(String collectionName, String solrServers) {
-        if (StringUtils.isBlank(collectionName) || StringUtils.isBlank(solrServers)) {
+        if (StringUtils.isEmpty(collectionName) || StringUtils.isEmpty(solrServers)) {
             return null;
         }
         String response = "";

@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.util;
 
 import com.hex.bigdata.udsp.config.SdkFtpClientConfig;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.*;
 
 import java.io.*;

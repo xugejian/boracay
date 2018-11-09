@@ -32,7 +32,7 @@ public class SolrHBaseMetadata extends Metadata {
 
     public String getFqDataType() {
         String value = getProperty("hbase.fq.data.type").getValue();
-        if (StringUtils.isBlank(value)) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(value)) {
             value = "dsv";
         }
         return value;
@@ -40,7 +40,7 @@ public class SolrHBaseMetadata extends Metadata {
 
     public String getDsvSeparator() {
         String value = getProperty("hbase.fq.dsv.separator").getValue();
-        if (StringUtils.isBlank(value)) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(value)) {
             value = "\\007";
         }
         return value;
@@ -48,7 +48,7 @@ public class SolrHBaseMetadata extends Metadata {
 
     public byte[] getFamilyName() {
         String value = getProperty("hbase.family.name").getValue();
-        if (StringUtils.isBlank(value)) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(value)) {
             value = "f";
         }
         return Bytes.toBytes(value);
@@ -56,7 +56,7 @@ public class SolrHBaseMetadata extends Metadata {
 
     public byte[] getQualifierName() {
         String value = getProperty("hbase.qualifier.name").getValue();
-        if (StringUtils.isBlank(value)) {
+        if (org.apache.commons.lang3.StringUtils.isBlank(value)) {
             value = "q";
         }
         return Bytes.toBytes(value);

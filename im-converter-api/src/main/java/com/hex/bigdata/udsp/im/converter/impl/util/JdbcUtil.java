@@ -119,6 +119,7 @@ public class JdbcUtil {
         BasicDataSource dataSource = getDataSource(datasource);
         if (dataSource != null) {
             conn = dataSource.getConnection();
+            logger.info("JDBC DB Type: " + conn.getMetaData().getDatabaseProductName());
         }
         return conn;
     }
@@ -163,7 +164,7 @@ public class JdbcUtil {
         try {
             if (obj instanceof Connection) {
                 Connection conn = ((Connection) obj);
-                if(!conn.isClosed())
+                if (!conn.isClosed())
                     conn.close();
             } else if (obj instanceof Statement) {
                 ((Statement) obj).close();

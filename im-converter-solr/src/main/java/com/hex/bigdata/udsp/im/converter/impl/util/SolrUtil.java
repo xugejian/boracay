@@ -400,7 +400,7 @@ public class SolrUtil {
 
         @Override
         public void process(WatchedEvent event) {
-            if (event.getState() == Event.KeeperState.SyncConnected) {
+            if (event.getState() == Watcher.Event.KeeperState.SyncConnected) {
                 connectedLatch.countDown();
             }
         }

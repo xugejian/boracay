@@ -180,20 +180,18 @@ public class SolrConverter extends SolrWrapper {
         URL url = null;
         try {
             SolrDatasource solrDatasource = new SolrDatasource(datasource);
-            String[] tempServers = solrDatasource.getSolrServers().split(",");
-            for (int i = 0; i < tempServers.length; i++) {
+            String[] servers = solrDatasource.getSolrServers().split(",");
+            for (String server : servers) {
                 try {
-                    url = new URL("http://" + tempServers[i] + "/solr");
+                    url = new URL("http://" + server + "/solr");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
                     connection.setUseCaches(false);
                     connection.setInstanceFollowRedirects(true);
                     connection.connect();
-                    if (connection != null) {
-                        canConnection = true;
-                        break;
-                    }
+                    canConnection = true;
+                    break;
                 } catch (Exception e) {
                     logger.debug("获取solr连接失败的地址为：" + (url == null ? "" : url.toString()));
                     canConnection = false;

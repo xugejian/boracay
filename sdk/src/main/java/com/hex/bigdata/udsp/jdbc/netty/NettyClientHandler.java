@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.jdbc.netty;
 
+import com.hex.bigdata.udsp.client.FtpFileClient;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -7,9 +8,11 @@ import io.netty.util.CharsetUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 import java.util.concurrent.CountDownLatch;
 
 public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
+
     private static Logger logger = LogManager.getLogger(NettyClientHandler.class);
 
     private CountDownLatch lathc = new CountDownLatch(1); // 闭锁

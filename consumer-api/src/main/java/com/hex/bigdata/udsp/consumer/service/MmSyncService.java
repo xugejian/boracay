@@ -62,8 +62,8 @@ public class MmSyncService {
         } catch (Exception e) {
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
-            response.setErrorCode(ErrorCode.ERROR_000009.getValue());
-            response.setMessage(ErrorCode.ERROR_000009.getName() + ":" + e.toString());
+            response.setErrorCode(ErrorCode.ERROR_200003.getValue());
+            response.setMessage(ErrorCode.ERROR_200003.getName() + ":" + e.toString());
             return response;
         }
         MmFullAppInfoView appInfoView = mmApplicationService.selectFullAppInfo(request.getAppId());
@@ -89,7 +89,8 @@ public class MmSyncService {
             response.setStatus(mmResponse.getStatus());
             response.setStatusCode(Status.SUCCESS.getValue().equals(mmResponse.getStatus())
                     ? StatusCode.SUCCESS.getValue() : StatusCode.DEFEAT.getValue());
-            response.setErrorCode(mmResponse.getErrorCode());
+            response.setErrorCode(Status.DEFEAT.getValue().equals(mmResponse.getStatus())
+                    ? ErrorCode.ERROR_200004.getValue() : "");
             response.setMessage(mmResponse.getMessage());
             if (Status.SUCCESS.getValue().equals(mmResponse.getStatus())) {
                 MmResponseData mmResponseData = mmResponse.getData();
@@ -179,7 +180,8 @@ public class MmSyncService {
             response.setStatus(mmResponse.getStatus());
             response.setStatusCode(Status.SUCCESS.getValue().equals(mmResponse.getStatus())
                     ? StatusCode.SUCCESS.getValue() : StatusCode.DEFEAT.getValue());
-            response.setErrorCode(mmResponse.getErrorCode());
+            response.setErrorCode(Status.DEFEAT.getValue().equals(mmResponse.getStatus())
+                    ? ErrorCode.ERROR_200004.getValue() : "");
             response.setMessage(mmResponse.getMessage());
             response.setConsumeTime(System.currentTimeMillis() - bef);
         } catch (Exception e) {

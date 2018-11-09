@@ -107,6 +107,8 @@ public abstract class Wrapper {
      */
     public void buildBatch(String key, Model model) throws Exception {
         String id = model.getId();
+        String name = model.getName();
+        String describe = model.getDescribe();
         Metadata metadata = model.getTargetMetadata();
         List<ModelMapping> modelMappings = model.getModelMappings();
         List<ModelFilterCol> modelFilterCols = model.getModelFilterCols();
@@ -195,10 +197,14 @@ public abstract class Wrapper {
                         selectColumns, selectTableName, whereProperties);
             }
 
-            String hiveSetSql = model.getHiveSetSql(); // 使用set语法在Hive中设置参数
+            // 使用set语法在Hive中设置参数
+            String hiveSetSql = model.getHiveSetSql();
+
+            // 设置MapReduce的job名称
+            hiveSetSql += "set mapred.job.name=" + id + " " + describe + " " + name + ";";
 
             // 执行SQL
-            HiveJdbcUtil.executeUpdate(key, eHiveDs, hiveSetSql + insertSql);
+            HiveJdbcUtil.executeUpdate(key, eHiveDs, hiveSetSql + "\n" + insertSql);
 
         } finally {
             // 源、引擎的数据源不同且非暴力查询

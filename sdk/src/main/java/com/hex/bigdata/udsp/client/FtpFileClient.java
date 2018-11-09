@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.client;
 
 import com.hex.bigdata.udsp.config.SdkFtpClientConfig;
 import com.hex.bigdata.udsp.util.SdkFtpUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,9 +11,6 @@ import java.util.List;
 
 public class FtpFileClient {
 
-    /**
-     * 日志记录
-     */
     private static Logger logger = LogManager.getLogger(FtpFileClient.class);
 
     private SdkFtpUtil sdkFtpUtil;
