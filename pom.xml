@@ -9,14 +9,19 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
+        <module>console</module>
+
+        <module>md</module>
+
         <module>common</module>
         <module>common-api</module>
-        <module>console</module>
-        <module>consumer-api</module>
-        <module>consumer-http</module>
-        <module>consumer-restful</module>
-        <module>consumer-socket</module>
-        <module>consumer-webservice</module>
+
+        <module>mc</module>
+
+        <module>rc</module>
+
+        <module>mm</module>
+
         <module>im</module>
         <module>im-converter-api</module>
         <module>im-converter-kafka</module>
@@ -29,6 +34,7 @@
         <module>im-converter-mysql</module>
         <module>im-converter-hive</module>
         <module>im-converter-phoenix</module>
+
         <module>iq</module>
         <module>iq-provider-api</module>
         <module>iq-provider-es</module>
@@ -36,9 +42,7 @@
         <module>iq-provider-redis</module>
         <module>iq-provider-solr</module>
         <module>iq-provider-solr_hbase</module>
-        <module>mc</module>
-        <module>md</module>
-        <module>mm</module>
+
         <module>olq</module>
         <module>olq-provider-api</module>
         <module>olq-provider-db2</module>
@@ -50,10 +54,17 @@
         <module>olq-provider-hive</module>
         <module>olq-provider-mysql</module>
         <module>olq-provider-phoenix</module>
-        <module>rc</module>
+
         <module>rts</module>
         <module>rts-executor-api</module>
         <module>rts-executor-kafka</module>
+
+        <module>consumer-api</module>
+        <module>consumer-http</module>
+        <module>consumer-restful</module>
+        <module>consumer-socket</module>
+        <module>consumer-webservice</module>
+
         <module>sdk</module>
     </modules>
 
