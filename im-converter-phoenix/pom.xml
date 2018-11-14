@@ -42,6 +42,15 @@
             <groupId>org.apache.phoenix</groupId>
             <artifactId>phoenix-core</artifactId>
             <version>4.14.0-cdh5.11.2</version>
+            <!-- 内部依赖的org.ow2.asm:asm-all和consumer-webservice模块依赖cxf中的asm:asm冲突了，所以这里排除 -->
+            <!-- START -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-all</artifactId>
+                </exclusion>
+            </exclusions>
+            <!-- END -->
         </dependency>
     </dependencies>
 </project>
