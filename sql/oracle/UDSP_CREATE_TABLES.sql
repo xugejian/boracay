@@ -1423,8 +1423,6 @@ ALTER TABLE MC_CONSUME_LOG ADD IS_CACHE CHAR(1);
 COMMENT ON COLUMN MC_CONSUME_LOG.IS_CACHE IS '是否从缓存获取（0：是，1：否）';
 
 -- 删除字段
-alter table IQ_APPLICATION drop column MAX_NUM;
-alter table MM_APPLICATION drop column MAX_NUM;
 alter table RTS_CUSTOMER_CONFIG drop column GROUP_ID;
 
 -- 删除字段

@@ -113,7 +113,7 @@ create table T_GF_FUNCATION
 (
   func_id        VARCHAR2(32) not null,
   func_code      VARCHAR2(32) not null,
-  func_name      VARCHAR2(64),
+  func_name      VARCHAR2(512),
   is_func        VARCHAR2(32),
   displayorder   INTEGER,
   url_acction    VARCHAR2(128),
@@ -175,7 +175,7 @@ prompt
 create table T_GF_MENU
 (
   menuid       VARCHAR2(32) not null,
-  menuname     VARCHAR2(60) not null,
+  menuname     VARCHAR2(256) not null,
   menulabel    VARCHAR2(80),
   menucode     VARCHAR2(120),
   isleaf       CHAR(1),
