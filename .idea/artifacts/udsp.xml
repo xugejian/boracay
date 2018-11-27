@@ -71,6 +71,7 @@
           <element id="library" level="project" name="pgsql-jdbc" />
           <element id="library" level="project" name="jdbc" />
           <element id="library" level="project" name="mail" />
+          <element id="artifact" artifact-name="hex-udsp-rts-executor-kafka1" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="console/web/Web" />

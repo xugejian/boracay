@@ -7,13 +7,11 @@ import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
-import com.hex.bigdata.udsp.iq.provider.impl.factory.SolrConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.SolrDatasource;
 import com.hex.bigdata.udsp.iq.provider.impl.model.SolrPage;
 import com.hex.bigdata.udsp.iq.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -33,7 +31,6 @@ import java.util.*;
 //@Component("com.hex.bigdata.udsp.iq.provider.impl.SolrProvider")
 public class SolrProvider implements Provider {
     private static Logger logger = LogManager.getLogger(SolrProvider.class);
-    private static Map<String, SolrConnectionPoolFactory> dataSourcePool;
 
     public IqResponse query(IqRequest request) {
         logger.debug("request=" + JSONUtil.parseObj2JSON(request));
@@ -115,29 +112,6 @@ public class SolrProvider implements Provider {
 
     //-------------------------------------------分割线---------------------------------------------
 
-    private synchronized SolrConnectionPoolFactory getDataSource(String collectionName, SolrDatasource datasource) {
-        String dsId = datasource.getId() + ":" + collectionName;
-        if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<>();
-        }
-        SolrConnectionPoolFactory factory = dataSourcePool.remove(dsId);
-        if (factory == null) {
-            GenericObjectPool.Config config = new GenericObjectPool.Config();
-            config.lifo = true;
-            config.minIdle = 1;
-            config.maxIdle = 10;
-            config.maxWait = 3000;
-            config.maxActive = 5;
-            config.timeBetweenEvictionRunsMillis = 30000;
-            config.testWhileIdle = true;
-            config.testOnBorrow = false;
-            config.testOnReturn = false;
-            factory = new SolrConnectionPoolFactory(config, datasource.getSolrServers(), collectionName);
-        }
-        dataSourcePool.put(dsId, factory);
-        return factory;
-    }
-
     public SolrServer getSolrServer(String solrServices, String collectionName) throws MalformedURLException {
         String[] tempServers = solrServices.split(",");
         String[] servers = new String[tempServers.length];
@@ -145,14 +119,6 @@ public class SolrProvider implements Provider {
             servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
         }
         return new LBHttpSolrServer(servers);
-    }
-
-    private SolrServer getConnection(String collectionName, SolrDatasource datasource) throws Exception {
-        return getDataSource(collectionName, datasource).getConnection();
-    }
-
-    private void release(String collectionName, SolrDatasource datasource, SolrServer solrServer) {
-        getDataSource(collectionName, datasource).releaseConnection(solrServer);
     }
 
     private SolrQuery getSolrQuery(int rows, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns, List<ReturnColumn> returnColumns) {
@@ -318,15 +284,10 @@ public class SolrProvider implements Provider {
         SolrServer solrServer = null;
         QueryResponse res = null;
         try {
-            //solrServer = getConnection(collectionName, datasource);
             solrServer = getSolrServer(datasource.getSolrServers(), collectionName);
             res = solrServer.query(query);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-//            if (solrServer != null) {
-//                release(collectionName, datasource, solrServer);
-//            }
         }
         return res;
     }

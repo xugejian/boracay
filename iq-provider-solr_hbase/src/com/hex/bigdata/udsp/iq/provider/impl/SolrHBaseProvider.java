@@ -165,13 +165,6 @@ public class SolrHBaseProvider implements Provider {
         getDataSource(datasource).releaseConnection(conn);
     }
 
-    private Configuration getConfig(SolrHBaseDatasource datasource) {
-        Configuration conf = HBaseConfiguration.create();
-        conf.set("hbase.zookeeper.quorum", datasource.getZkQuorum());
-        conf.set("hbase.zookeeper.property.clientPort", datasource.getZkPort());
-        return conf;
-    }
-
     private SolrQuery getSolrQuery(int rows, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns, String primaryKey) {
         return new SolrQuery() //
                 .setQuery(getQuery(queryColumns)) //

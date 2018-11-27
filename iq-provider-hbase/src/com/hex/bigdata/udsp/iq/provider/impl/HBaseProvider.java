@@ -689,28 +689,16 @@ public class HBaseProvider implements Provider {
         HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getProperties());
         HConnection hConnection = null;
         try {
-            Configuration conf = HBaseConfiguration.create();
-            conf.set("hbase.zookeeper.quorum", hBaseDatasource.getZkQuorum());
-            conf.set("hbase.zookeeper.property.clientPort", hBaseDatasource.getZkPort());
-            conf.set("hbase.rpc.timeout", "2");
-            conf.set("hbase.client.retries.number", "3");
-            conf.set("zookeeper.recovery.retry", "1");
-            hConnection = HConnectionManager.createConnection(conf);
+            hConnection = getConnection(hBaseDatasource);
             if (hConnection != null && !hConnection.isAborted()) {
-                //尝试获取当中的表，如果获取抛异常则获取连接失败
+                // 尝试获取当中的表，如果获取抛异常则获取连接失败
                 hConnection.getAdmin().tableExists(TableName.valueOf("TEST"));
                 return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (hConnection != null) {
-                try {
-                    hConnection.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            release(hBaseDatasource, hConnection);
         }
         return false;
     }

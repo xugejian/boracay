@@ -17,6 +17,7 @@
       <module fileurl="file://$PROJECT_DIR$/im-converter-hive/im-converter-hive.iml" filepath="$PROJECT_DIR$/im-converter-hive/im-converter-hive.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-impala/im-converter-impala.iml" filepath="$PROJECT_DIR$/im-converter-impala/im-converter-impala.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-kafka/im-converter-kafka.iml" filepath="$PROJECT_DIR$/im-converter-kafka/im-converter-kafka.iml" group="im" />
+      <module fileurl="file://$PROJECT_DIR$/im-converter-kafka1/im-converter-kafka1.iml" filepath="$PROJECT_DIR$/im-converter-kafka1/im-converter-kafka1.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-kudu/im-converter-kudu.iml" filepath="$PROJECT_DIR$/im-converter-kudu/im-converter-kudu.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-mysql/im-converter-mysql.iml" filepath="$PROJECT_DIR$/im-converter-mysql/im-converter-mysql.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-oracle/im-converter-oracle.iml" filepath="$PROJECT_DIR$/im-converter-oracle/im-converter-oracle.iml" group="im" />
@@ -46,6 +47,7 @@
       <module fileurl="file://$PROJECT_DIR$/rts/rts.iml" filepath="$PROJECT_DIR$/rts/rts.iml" group="rts" />
       <module fileurl="file://$PROJECT_DIR$/rts-executor-api/rts-executor-api.iml" filepath="$PROJECT_DIR$/rts-executor-api/rts-executor-api.iml" group="rts" />
       <module fileurl="file://$PROJECT_DIR$/rts-executor-kafka/rts-executor-kafka.iml" filepath="$PROJECT_DIR$/rts-executor-kafka/rts-executor-kafka.iml" group="rts" />
+      <module fileurl="file://$PROJECT_DIR$/rts-executor-kafka1/rts-executor-kafka1.iml" filepath="$PROJECT_DIR$/rts-executor-kafka1/rts-executor-kafka1.iml" group="rts" />
       <module fileurl="file://$PROJECT_DIR$/sdk/sdk.iml" filepath="$PROJECT_DIR$/sdk/sdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/sql/sql.iml" filepath="$PROJECT_DIR$/sql/sql.iml" />
     </modules>

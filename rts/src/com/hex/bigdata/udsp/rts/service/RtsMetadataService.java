@@ -253,6 +253,13 @@ public class RtsMetadataService extends BaseService {
                 rtsMetadata.setDsId(comDatasourceMapper.selectByModelAndName("RTS", rtsMetadata.getDsId()).getPkId());
                 String pkId = insert(rtsMetadata);
                 List<RtsMetadataCol> rtsMetadataCols = (List<RtsMetadataCol>) uploadExcelModel.get("com.hex.bigdata.udsp.rts.model.RtsMetadataCol");
+                for(RtsMetadataCol rtsMetadataCol: rtsMetadataCols){
+                    if(rtsMetadataCol.getName().trim().equals("time")) {
+                        resultMap.put ("status", "false");
+                        resultMap.put ("message", "第" + (i + 1) + "个数据列配置中不能有保留名称'time'！");
+                        break;
+                    }
+                }
                 boolean insert = rtsMetadataColService.insertList(pkId, rtsMetadataCols);
                 if (insert) {
                     resultMap.put("status", "true");

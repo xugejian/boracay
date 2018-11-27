@@ -59,12 +59,38 @@ public class HBaseDatasource extends Datasource {
         return getProperty("hbase.client.operation.timeout").getValue();
     }
 
+    // 已被弃用
+    @Deprecated
     public String getRegionserverLeasePeriod() {
         return getProperty("hbase.regionserver.lease.period").getValue();
     }
 
     public String getClientScannerTimeoutPeriod() {
         return getProperty("hbase.client.scanner.timeout.period").getValue();
+    }
+
+    public String getHbaseSecurityAuthentication() {
+        return getProperty("hbase.security.authentication").getValue();
+    }
+
+    public String getHadoopSecurityAuthentication() {
+        return getProperty("hadoop.security.authentication").getValue();
+    }
+
+    public String getHbaseMasterKerberosPrincipal() {
+        return getProperty("hbase.master.kerberos.principal").getValue();
+    }
+
+    public String getHbaseRegionserverKerberosPrincipal() {
+        return getProperty("hbase.regionserver.kerberos.principal").getValue();
+    }
+
+    public String getKerberosPrincipal() {
+        return getProperty("kerberos.principal").getValue();
+    }
+
+    public String getKerberosKeytab() {
+        return getProperty("kerberos.keytab").getValue();
     }
 
     public int getMaxNum() {
