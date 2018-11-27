@@ -89,8 +89,8 @@ public class RtsSyncService {
         boolean isError = false;
         String message = "";
         int count = 0;
-        for (RtsMetadataCol rtsMatedataCol : rtsMetadataColService.selectByProducerPkid(appId)) {
-            String name = rtsMatedataCol.getName();
+        for (RtsMetadataCol rtsMetadataCol : rtsMetadataColService.selectByProducerPkid(appId)) {
+            String name = rtsMetadataCol.getName();
             String value = datas.get(0).get(name);
             if (StringUtils.isBlank(value)) {
                 message += (count == 0 ? "" : ", ") + name;

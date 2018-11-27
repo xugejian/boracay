@@ -169,12 +169,12 @@ public class RcUserServiceService extends BaseService {
     /**
      * 分页多条件查询
      *
-     * @param rtsMatedataView 查询参数
+     * @param rcUserServiceView 查询参数
      * @param page            分页参数
      * @return
      */
-    public List<RcUserServiceView> select(RcUserServiceView rtsMatedataView, Page page) {
-        return rcUserServiceMapper.selectPage(rtsMatedataView, page);
+    public List<RcUserServiceView> select(RcUserServiceView rcUserServiceView, Page page) {
+        return rcUserServiceMapper.selectPage(rcUserServiceView, page);
     }
 
     /**

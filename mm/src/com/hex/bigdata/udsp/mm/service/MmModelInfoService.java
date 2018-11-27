@@ -153,12 +153,12 @@ public class MmModelInfoService extends BaseService {
     /**
      * 分页多条件查询
      *
-     * @param rtsMatedataView 查询参数
+     * @param mmModelInfoView 查询参数
      * @param page            分页参数
      * @return
      */
-    public List<MmModelInfoView> select(MmModelInfoView rtsMatedataView, Page page) {
-        return modelInfoMapper.selectPage(rtsMatedataView, page);
+    public List<MmModelInfoView> select(MmModelInfoView mmModelInfoView, Page page) {
+        return modelInfoMapper.selectPage(mmModelInfoView, page);
     }
 
     /**
@@ -168,8 +168,7 @@ public class MmModelInfoService extends BaseService {
      * @return 存在返回true，不存在返回false
      */
     public boolean checekUniqueName(String name) {
-        MmModelInfo rtsMatedata = this.modelInfoMapper.selectByName(name);
-        return rtsMatedata != null;
+        return this.modelInfoMapper.selectByName(name) != null;
     }
 
     /**

@@ -170,12 +170,12 @@ public class RcServiceService {
     /**
      * 分页多条件查询
      *
-     * @param rtsMatedataView 查询参数
+     * @param rcServiceView 查询参数
      * @param page            分页参数
      * @return
      */
-    public List<RcServiceView> select(RcServiceView rtsMatedataView, Page page) {
-        return rcServiceMapper.selectPage(rtsMatedataView, page);
+    public List<RcServiceView> select(RcServiceView rcServiceView, Page page) {
+        return rcServiceMapper.selectPage(rcServiceView, page);
     }
 
     /**
@@ -185,8 +185,7 @@ public class RcServiceService {
      * @return 存在返回true，不存在返回false
      */
     public boolean checekUniqueName(String name) {
-        RcService rtsMatedata = this.rcServiceMapper.selectByName(name);
-        return rtsMatedata != null;
+        return this.rcServiceMapper.selectByName(name) != null;
     }
 
     /**

@@ -211,7 +211,7 @@ ${extends("/goframe/function_layout.httl")}
                         <div field="name" headerAlign="center" allowSort="true" width="30">目标名称<font color="#FF0000">（必填）</font>
                             <input property="editor" class="nui-combobox"
                                    textField="name" valueField="name" allowInput="true" dataField="data"
-                                   onbeforeshowpopup="targetMateColumn" vtype="maxLength:64" required="true"
+                                   onbeforeshowpopup="targetMetadataColumn" vtype="maxLength:64" required="true"
                                    onvaluechanged="mappingTargetColChange"/>
                         </div>
                         <div field="type" headerAlign="center" width="25" readonly="true">类型</div>
@@ -393,7 +393,7 @@ ${extends("/goframe/function_layout.httl")}
                     srcSourceType = "1";
                 }
                 //加载目标元数据可选内容
-                getTargetMates();
+                getTargetMetadata();
                 targetDsModel.setValue(targetSourceId);
                 form1.setData(data);
                 form1.setChanged(false);
@@ -425,10 +425,10 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     //获取目标元数据可选内容
-    function getTargetMates(){
+    function getTargetMetadata(){
         //加载目标元数据可选内容
         $.ajax({
-            url: "${basePath}/im/md/getTargetMateData/" + srcSourceType,
+            url: "${basePath}/im/md/getTargetMetadata/" + srcSourceType,
             type: 'POST',
             cache: false,
             async:false,
@@ -492,7 +492,7 @@ ${extends("/goframe/function_layout.httl")}
         });
 
         //目标元数据可选择项修改
-        getTargetMates();
+        getTargetMetadata();
     }
 
     //加载字段映射
@@ -880,7 +880,7 @@ ${extends("/goframe/function_layout.httl")}
             },
             ondestroy: function (action) {
                 //重新加载下
-                getTargetMates();
+                getTargetMetadata();
                 var k = 0;
                 for(;k < targetDsModel.data.length ;k++){
                     if(targetDsModel.data[k].pkId == action){
@@ -965,7 +965,7 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     //获取目标元数据字段
-    function targetMateColumn(e){
+    function targetMetadataColumn(e){
         if(!targetSelectedCols || targetSelectedCols == null){
             getTargetCols();
             autoMapping();

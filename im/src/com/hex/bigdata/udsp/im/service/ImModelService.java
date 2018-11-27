@@ -223,7 +223,7 @@ public class ImModelService {
         return imModelMapper.selectByName(modelName);
     }
 
-    public List<MetadataCol> getSrcMateData(Property[] properties, String srcDataSourceId) {
+    public List<MetadataCol> getSrcMetadata(Property[] properties, String srcDataSourceId) {
         //根据元数据获取相关信息
         Model model = new Model(Arrays.asList(properties));
         ComDatasource comDatasource = comDatasourceMapper.select(srcDataSourceId);
@@ -676,7 +676,7 @@ public class ImModelService {
         //设置一些基础信息
         transformModel(model, imModel);
         //设置目标数据元信息
-        model.setTargetMetadata(getMateDataById(imModel.getTargetMdId()));
+        model.setTargetMetadata(getMetadataById(imModel.getTargetMdId()));
         //设置引擎数据源信息
         model.setEngineDatasource(getDatasourceById(imModel.getEngineDsId()));
         //设置更新键值
@@ -718,7 +718,7 @@ public class ImModelService {
         return model;
     }
 
-    private Metadata getMateDataById(String mdId) throws Exception {
+    private Metadata getMetadataById(String mdId) throws Exception {
 
         List<ComProperties> comProperties = comPropertiesService.selectList(mdId);
         Metadata metadata = new Metadata(PropertyUtil.convertToPropertyList(comProperties));

@@ -482,8 +482,8 @@ public class ImMetadataService extends BaseService {
         return null;
     }
 
-    public List<ImMetadataView> selectTargetMateData(String type) {
-        return imMetadataMapper.selectTargetMateData(type);
+    public List<ImMetadataView> selectTargetMetadata(String type) {
+        return imMetadataMapper.selectTargetMetadata(type);
     }
 
     /**
@@ -492,7 +492,7 @@ public class ImMetadataService extends BaseService {
      * @param imMetadataView
      * @return
      */
-    public List<ImMetadataView> selectMateDataByCondition(ImMetadataView imMetadataView) {
+    public List<ImMetadataView> selectMetadataByCondition(ImMetadataView imMetadataView) {
         return imMetadataMapper.select(imMetadataView);
     }
 }

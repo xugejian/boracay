@@ -445,12 +445,12 @@ public class ImMetadataController {
      * @param type
      * @return
      */
-    @RequestMapping("getTargetMateData/{type}")
+    @RequestMapping("getTargetMetadata/{type}")
     @ResponseBody
-    public MessageResult getTargetMateData(@PathVariable String type) {
+    public MessageResult getTargetMetadata(@PathVariable String type) {
         List<ImMetadataView> imMetadatas = null;
         try {
-            imMetadatas = imMetadataService.selectTargetMateData(type);
+            imMetadatas = imMetadataService.selectTargetMetadata(type);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -465,10 +465,10 @@ public class ImMetadataController {
      */
     @RequestMapping("selectByCondition")
     @ResponseBody
-    public MessageResult selectMateDataByCondition(@RequestBody ImMetadataView imMetadataView) {
+    public MessageResult selectMetadataByCondition(@RequestBody ImMetadataView imMetadataView) {
         List<ImMetadataView> imMetadatas = null;
         try {
-            imMetadatas = imMetadataService.selectMateDataByCondition(imMetadataView);
+            imMetadatas = imMetadataService.selectMetadataByCondition(imMetadataView);
         } catch (Exception e) {
             e.printStackTrace();
         }
