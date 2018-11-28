@@ -12,6 +12,7 @@ import java.util.List;
  * Created by JunjieM on 2017-9-15.
  */
 public class MqModel extends Model implements Serializable {
+
     // Redis使用Jackson进行序列化和反序列化时对于get开头的方法必须要有对应的变量
     private String topic;
     private String consumerTimeoutMs;

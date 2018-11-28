@@ -32,22 +32,10 @@ public class Kafka1Executor implements Executor {
 
     private Properties getProducerConfig(Kafka1ProducerDatasource datasource) {
         Properties props = new Properties ();
-        if (StringUtils.isNotBlank (datasource.getBootstrapServers ()))
-            props.put (ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, datasource.getBootstrapServers ());
-        if (StringUtils.isNotBlank (datasource.getKeySerializer ()))
-            props.put (ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, datasource.getKeySerializer ());
-        if (StringUtils.isNotBlank (datasource.getValueSerializer ()))
-            props.put (ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, datasource.getValueSerializer ());
-        if (StringUtils.isNotBlank (datasource.getAcks ()))
-            props.put (ProducerConfig.ACKS_CONFIG, datasource.getAcks ());
-        if (StringUtils.isNotBlank (datasource.getRetries ()))
-            props.put (ProducerConfig.RETRIES_CONFIG, datasource.getRetries ());
-        if (StringUtils.isNotBlank (datasource.getRetryBackoffMs ()))
-            props.put (ProducerConfig.RETRY_BACKOFF_MS_CONFIG, datasource.getRetryBackoffMs ());
-        if (StringUtils.isNotBlank (datasource.getSecurityProtocol ()))
-            props.put ("security.protocol", datasource.getSecurityProtocol ());
-        if (StringUtils.isNotBlank (datasource.getSaslKerberosServiceName ()))
-            props.put ("sasl.kerberos.service.name", datasource.getSaslKerberosServiceName ());
+        List<Property> properties = datasource.getProperties ();
+        for (Property property : properties) {
+            props.put (property.getName (), property.getValue ());
+        }
         return props;
     }
 
@@ -147,22 +135,10 @@ public class Kafka1Executor implements Executor {
 
     private Properties getCnsumerConfig(Kafka1ConsumerDatasource datasource) {
         Properties props = new Properties ();
-        if (StringUtils.isNotBlank (datasource.getBootstrapServers ()))
-            props.put (ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, datasource.getBootstrapServers ());
-        if (StringUtils.isNotBlank (datasource.getGroupId ()))
-            props.put (ConsumerConfig.GROUP_ID_CONFIG, datasource.getGroupId ());
-        if (StringUtils.isNotBlank (datasource.getKeyDeserializer ()))
-            props.put (ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, datasource.getKeyDeserializer ());
-        if (StringUtils.isNotBlank (datasource.getValueDeserializer ()))
-            props.put (ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, datasource.getValueDeserializer ());
-        if (StringUtils.isNotBlank (datasource.getEnableAutoCommit ()))
-            props.put (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, datasource.getEnableAutoCommit ());
-        if (StringUtils.isNotBlank (datasource.getAutoCommitIntervalMs ()))
-            props.put (ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, datasource.getAutoCommitIntervalMs ());
-        if (StringUtils.isNotBlank (datasource.getSecurityProtocol ()))
-            props.put ("security.protocol", datasource.getSecurityProtocol ());
-        if (StringUtils.isNotBlank (datasource.getSaslKerberosServiceName ()))
-            props.put ("sasl.kerberos.service.name", datasource.getSaslKerberosServiceName ());
+        List<Property> properties = datasource.getProperties ();
+        for (Property property : properties) {
+            props.put (property.getName (), property.getValue ());
+        }
         return props;
     }
 
@@ -180,6 +156,10 @@ public class Kafka1Executor implements Executor {
         Metadata metadata = consumerRequest.getApplication ().getMetadata ();
         String topic = metadata.getTopic ();
         Datasource datasource = metadata.getDatasource ();
+//        Map<String, Property> propertyMap = datasource.getPropertyMap ();
+//        propertyMap.put (ConsumerConfig.CONNECTIONS_MAX_IDLE_MS_CONFIG,
+//                new Property (ConsumerConfig.CONNECTIONS_MAX_IDLE_MS_CONFIG, Long.toString (consumerRequest.getTimeout ())));
+//        Kafka1ConsumerDatasource consumerDatasource = new Kafka1ConsumerDatasource (propertyMap);
         Kafka1ConsumerDatasource consumerDatasource = new Kafka1ConsumerDatasource (datasource.getProperties ());
         KafkaConsumer<String, String> consumer = new KafkaConsumer<> (getCnsumerConfig (consumerDatasource));
         try {
@@ -188,14 +168,7 @@ public class Kafka1Executor implements Executor {
             consumerResponse.setTotalCount (records.size ());
             consumerResponse.setStatus (Status.SUCCESS);
             consumerResponse.setStatusCode (StatusCode.SUCCESS);
-        }
-//        catch (ConsumerTimeoutException e) {
-//            consumerResponse.setStatus (Status.TIMEOUT);
-//            consumerResponse.setStatusCode (StatusCode.TIMEOUT);
-//            consumerResponse.setMessage (e.getMessage ());
-//            e.printStackTrace ();
-//        }
-        catch (Exception e) {
+        } catch (Exception e) {
             consumerResponse.setStatus (Status.DEFEAT);
             consumerResponse.setStatusCode (StatusCode.DEFEAT);
             consumerResponse.setMessage (e.getMessage ());
@@ -211,16 +184,26 @@ public class Kafka1Executor implements Executor {
         return consumerResponse;
     }
 
+    /*
+     TODO 经测试consumer.poll(timeout)的超时时间必须大于3秒，否则无法消费到数据，尝试各种感觉是超时设置的参数都没有效果。
+     */
     private List<Map<String, String>> receive(KafkaConsumer<String, String> consumer, String topic, long timeout) {
         if (StringUtils.isBlank (topic)) {
             throw new RuntimeException ("kafka topic can not be empty!");
         }
-        consumer.subscribe (Collections.singletonList (topic));
-        ConsumerRecords<String, String> crs = consumer.poll (timeout);
-        if (crs == null || crs.isEmpty ()) {
-            return null;
+        if (timeout <= 3000) {
+            throw new RuntimeException ("kafka consumer timeout must greater than 3000 ms!");
         }
         List<Map<String, String>> records = new ArrayList<> ();
+        consumer.subscribe (Collections.singletonList (topic));
+        long bef = System.currentTimeMillis ();
+        ConsumerRecords<String, String> crs = consumer.poll (timeout);
+        long now = System.currentTimeMillis ();
+        long consumeTime = now - bef;
+        logger.info ("kafka consumer poll consume time ================================> " + consumeTime);
+        if (crs == null || crs.isEmpty ()) {
+            return records;
+        }
         Map<String, Object> map = null;
         Map<String, String> result = null;
         Iterator<ConsumerRecord<String, String>> iterator = crs.iterator ();

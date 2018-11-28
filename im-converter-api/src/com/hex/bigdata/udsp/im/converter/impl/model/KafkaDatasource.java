@@ -73,32 +73,4 @@ public class KafkaDatasource extends Datasource {
     public String getRebalanceBackoffMs() {
         return getProperty("rebalance.backoff.ms").getValue();
     }
-
-    public String getGroupId() {
-        String value = getProperty("group.id").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("group.id不能为空");
-        return value;
-    }
-
-    public String getSerializerClass() {
-        String value = getProperty("serializer.class").getValue();
-        if (StringUtils.isBlank(value))
-            value = "kafka.serializer.StringEncoder";
-        return value;
-    }
-
-    public String getKeySerializerClass() {
-        String value = getProperty("key.serializer.class").getValue();
-        if (StringUtils.isBlank(value))
-            value = "kafka.serializer.StringEncoder";
-        return value;
-    }
-
-    public String getRequestRequiredAcks() {
-        String value = getProperty("request.required.acks").getValue();
-        if (StringUtils.isBlank(value))
-            value = "0";
-        return value;
-    }
 }

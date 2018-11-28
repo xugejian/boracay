@@ -32,14 +32,10 @@ public class KafkaExecutor implements Executor {
 
     private ProducerConfig getProducerConfig(KafkaProducerDatasource datasource) {
         Properties props = new Properties ();
-        if (StringUtils.isNotBlank (datasource.getMetadataBrokerList ()))
-            props.put ("metadata.broker.list", datasource.getMetadataBrokerList ());
-        if (StringUtils.isNotBlank (datasource.getSerializerClass ()))
-            props.put ("serializer.class", datasource.getSerializerClass ());
-        if (StringUtils.isNotBlank (datasource.getKeySerializerClass ()))
-            props.put ("key.serializer.class", datasource.getKeySerializerClass ());
-        if (StringUtils.isNotBlank (datasource.getRequestRequiredAcks ()))
-            props.put ("request.required.acks", datasource.getRequestRequiredAcks ());
+        List<Property> properties = datasource.getProperties ();
+        for (Property property : properties) {
+            props.put (property.getName (), property.getValue ());
+        }
         return new ProducerConfig (props);
     }
 
@@ -148,32 +144,10 @@ public class KafkaExecutor implements Executor {
 
     private ConsumerConfig getCnsumerConfig(KafkaConsumerDatasource datasource) {
         Properties props = new Properties ();
-        if (StringUtils.isNotBlank (datasource.getZookeeperConnect ()))
-            props.put ("zookeeper.connect", datasource.getZookeeperConnect ());
-        if (StringUtils.isNotBlank (datasource.getMetadataBrokerList ()))
-            props.put ("metadata.broker.list", datasource.getMetadataBrokerList ());
-        if (StringUtils.isNotBlank (datasource.getGroupId ()))
-            props.put ("group.id", datasource.getGroupId ());
-        if (StringUtils.isNotBlank (datasource.getZookeeperSessionTimeoutMs ()))
-            props.put ("zookeeper.session.timeout.ms",
-                    datasource.getZookeeperSessionTimeoutMs ());
-        if (StringUtils.isNotBlank (datasource.getZookeeperConnectionTimeoutMs ()))
-            props.put ("zookeeper.connection.timeout.ms",
-                    datasource.getZookeeperConnectionTimeoutMs ());
-        if (StringUtils.isNotBlank (datasource.getZookeeperSyncTimeMs ()))
-            props.put ("zookeeper.sync.time.ms", datasource.getZookeeperSyncTimeMs ());
-        if (StringUtils.isNotBlank (datasource.getAutoCommitIntervalMs ()))
-            props.put ("auto.commit.interval.ms", datasource.getAutoCommitIntervalMs ());
-        if (StringUtils.isNotBlank (datasource.getConsumerTimeoutMs ()))
-            props.put ("consumer.timeout.ms", datasource.getConsumerTimeoutMs ());
-        if (StringUtils.isNotBlank (datasource.getAutoCommitEnable ()))
-            props.put ("auto.commit.enable", datasource.getAutoCommitEnable ());
-        if (StringUtils.isNotBlank (datasource.getAutoOffsetReset ()))
-            props.put ("auto.offset.reset", datasource.getAutoOffsetReset ());
-        if (StringUtils.isNotBlank (datasource.getRebalanceMaxRetries ()))
-            props.put ("rebalance.max.retries", datasource.getRebalanceMaxRetries ());
-        if (StringUtils.isNotBlank (datasource.getRebalanceBackoffMs ()))
-            props.put ("rebalance.backoff.ms", datasource.getRebalanceBackoffMs ());
+        List<Property> properties = datasource.getProperties ();
+        for (Property property : properties) {
+            props.put (property.getName (), property.getValue ());
+        }
         return new ConsumerConfig (props);
     }
 
@@ -252,8 +226,7 @@ public class KafkaExecutor implements Executor {
         String topicName = topic;
         topicCountMap.put (topicName, 1);
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams (topicCountMap);
-        KafkaStream<byte[], byte[]> stream = consumerMap.get (topicName).get (0);
-        return stream;
+        return consumerMap.get (topicName).get (0);
     }
 
     private Map<String, KafkaStream<byte[], byte[]>> receiveMap(ConsumerConnector consumer, String topic) {
@@ -286,8 +259,7 @@ public class KafkaExecutor implements Executor {
         String topicName = topic;
         topicCountMap.put (topicName, threadNum);
         Map<String, List<KafkaStream<byte[], byte[]>>> consumerMap = consumer.createMessageStreams (topicCountMap);
-        List<KafkaStream<byte[], byte[]>> streamList = consumerMap.get (topicName);
-        return streamList;
+        return consumerMap.get (topicName);
     }
 
     private Map<String, List<KafkaStream<byte[], byte[]>>> receiveMap(ConsumerConnector consumer, String topic, Integer threadNum) {
@@ -322,7 +294,9 @@ public class KafkaExecutor implements Executor {
 
         try {
             List<Property> propertyList = datasource.getProperties ();
-            Property prop = new Property ();
+            Property prop = null;
+
+            prop = new Property ();
             prop.setName ("serializer.class");
             prop.setValue ("kafka.serializer.StringEncoder");
             propertyList.add (prop);
@@ -347,8 +321,8 @@ public class KafkaExecutor implements Executor {
             prop.setValue ("1000");
             propertyList.add (prop);
 
-            KafkaProducerDatasource kafkaProducerDsConfig = new KafkaProducerDatasource (propertyList);
-            producer = new Producer<> (getProducerConfig (kafkaProducerDsConfig));
+            KafkaProducerDatasource producerDatasource = new KafkaProducerDatasource (propertyList);
+            producer = new Producer<> (getProducerConfig (producerDatasource));
 
             if (producer == null) {
                 canConnection = false;

@@ -38,12 +38,14 @@ public class Kafka1ConsumerTest {
         TopicPartition partition1 = new TopicPartition (TOPIC_NAME, 1);
 
         consumer.assign (Arrays.asList (partition0, partition1));
-        ConsumerRecords<String, String> records = consumer.poll (Long.MAX_VALUE);
-        Iterator<ConsumerRecord<String, String>> iterator = records.iterator ();
-        while (iterator.hasNext ()) {
-            ConsumerRecord<String, String> record = iterator.next ();
-            System.out.println ("Receivedmessage: (" + record.key () + "," + record.value () + ") at offset " + record.offset ());
-        }
 
+        while(true) {
+            ConsumerRecords<String, String> records = consumer.poll (100);
+            Iterator<ConsumerRecord<String, String>> iterator = records.iterator ();
+            while (iterator.hasNext ()) {
+                ConsumerRecord<String, String> record = iterator.next ();
+                System.out.println ("Receivedmessage: (" + record.key () + "," + record.value () + ") at offset " + record.offset ());
+            }
+        }
     }
 }
