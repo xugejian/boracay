@@ -23,6 +23,7 @@ public class Kafka1Model extends MqModel implements Serializable {
         super(properties, srcDatasource);
     }
 
+    // 消费组ID
     public String getGroupId() {
         String value = getProperty("group.id").getValue();
         if (StringUtils.isBlank(value))

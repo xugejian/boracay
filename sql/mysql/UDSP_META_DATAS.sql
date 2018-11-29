@@ -114,9 +114,18 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA','rebalance.backoff.ms','平衡补偿重试间隔时间',NULL,'9.000000000000000000000000000000',NULL,NULL,'default','2000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA','rebalance.retries.max','rebalance时的最大尝试次数',NULL,'8.000000000000000000000000000000',NULL,NULL,'default','10');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA','zookeeper.connect','zookeeper集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA','zookeeper.connection.timeout.ms','户端连接zookeeper的最大超时时间',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','6000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA','zookeeper.connection.timeout.ms','客户端连接zookeeper的最大超时时间',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','6000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA','zookeeper.session.timeout.ms','连接zookeeper的session超时时间',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','5000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA','zookeeper.sync.time.ms','zookeeper同步时间',NULL,'5.000000000000000000000000000000',NULL,NULL,'default','2000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA1','auto.commit.interval.ms','如果enable.auto.commit=true，消费者向kafka自动提交offsets的频率',NULL,'7.000000000000000000000000000000',NULL,NULL,'default','1000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA1','auto.offset.reset','在kafka中没有初始的offset或者当前的offset不存在将返回的offset值，latest、earliest',NULL,'8.000000000000000000000000000000',NULL,NULL,'default','latest');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA1','bootstrap.servers','Kafka集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA1','enable.auto.commit','如果为true消费者会定期在后台提交offset偏移量',NULL,'6.000000000000000000000000000000',NULL,NULL,'default','true');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA1','key.deserializer','Key的反序列化类',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','org.apache.kafka.common.serialization.StringDeserializer');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA1','max.poll.records','在一次调用poll()中返回的最大记录数',NULL,'9.000000000000000000000000000000',NULL,NULL,'default','500');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA1','sasl.kerberos.service.name','Kerberos服务名',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','kafka');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA1','security.protocol','安全协议',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','SASL_PLAINTEXT');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KAFKA1','value.deserializer','Value的反序列化类',NULL,'5.000000000000000000000000000000',NULL,NULL,'default','org.apache.kafka.common.serialization.StringDeserializer');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KUDU','boss.count','boss数量（选填，默认为1）',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','1');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KUDU','default.admin.operation.timeout.ms','用于管理操作的超时时间（毫秒）（选填，默认为30000）',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','30000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_KUDU','default.operation.timeout.ms','用于用户操作的超时时间（毫秒）（选填，默认为30000）',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','30000');
@@ -182,6 +191,7 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_SOURCE_BATCH_TYPE','ORACLE','ORACLE',NULL,'3.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_SOURCE_BATCH_TYPE','SOLR','SOLR',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_SOURCE_REALTIME_TYPE','KAFKA','KAFKA',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_SOURCE_REALTIME_TYPE','KAFKA1','KAFKA1',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TARGET_BATCH_TYPE','HBASE','HBASE',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TARGET_BATCH_TYPE','HIVE','HIVE',NULL,'4.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TARGET_BATCH_TYPE','KUDU','KUDU',NULL,'7.000000000000000000000000000000',NULL,NULL,'default',NULL);
@@ -206,6 +216,7 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TYPE','HIVE','HIVE',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TYPE','IMPALA','IMPALA',NULL,'9.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TYPE','KAFKA','KAFKA',NULL,'5.000000000000000000000000000000',NULL,NULL,'default',NULL);
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TYPE','KAFKA1','KAFKA1',NULL,'10.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TYPE','KUDU','KUDU',NULL,'8.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TYPE','MYSQL','MYSQL',NULL,'7.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_TYPE','ORACLE','ORACLE',NULL,'6.000000000000000000000000000000',NULL,NULL,'default',NULL);
@@ -215,6 +226,7 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_IMPL_CLASS','HIVE','com.hex.bigdata.udsp.im.converter.impl.HiveConverter',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','交互建模的Hive接口实现类');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_IMPL_CLASS','IMPALA','com.hex.bigdata.udsp.im.converter.impl.ImpalaConverter',NULL,'9.000000000000000000000000000000',NULL,NULL,'default','交互建模的Impala接口实现类');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_IMPL_CLASS','KAFKA','com.hex.bigdata.udsp.im.converter.impl.KafkaConverter',NULL,'6.000000000000000000000000000000',NULL,NULL,'default','交互建模的Kafka接口实现类');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_IMPL_CLASS','KAFKA1','com.hex.bigdata.udsp.im.converter.impl.Kafka1Converter',NULL,'10.000000000000000000000000000000',NULL,NULL,'default','交互建模的Kafka1接口实现类');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_IMPL_CLASS','KUDU','com.hex.bigdata.udsp.im.converter.impl.KuduConverter',NULL,'8.000000000000000000000000000000',NULL,NULL,'default','交互建模的Kudu接口实现类');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_IMPL_CLASS','MYSQL','com.hex.bigdata.udsp.im.converter.impl.MysqlConverter',NULL,'1.000000000000000000000000000000',NULL,NULL,'default','交互建模的Mysql接口实现类');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_IMPL_CLASS','ORACLE','com.hex.bigdata.udsp.im.converter.impl.OracleConverter',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','交互建模的Oracle接口实现类');
@@ -272,6 +284,10 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_KAFKA','consumer.timeout.ms','消费超时时间（毫秒）',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','1000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_KAFKA','group.id','消费组ID',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_KAFKA','topic','主题',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_KAFKA1','consumer.cron.expression','消费计划任务表达式',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','0/10 * * * * ?');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_KAFKA1','consumer.timeout.ms','消费超时时间（毫秒）',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','5000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_KAFKA1','group.id','消费组ID',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_KAFKA1','topic','主题',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_KUDU','kudu.table.name','Kudu表名称',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_KUDU','violence.query','是否暴力查询（true/false）',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','false');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_MODEL_PROPS_MYSQL','database.name','库名',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
@@ -612,21 +628,23 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RC_IMPL_CLASS','MAIL','com.hex.bigdata.udsp.rc.alarm.impl.MailAlarm',NULL,'1.000000000000000000000000000000',NULL,NULL,'default','注册中心的MAIL接口实现类');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RC_SERVICE_STATUS','0','启用',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RC_SERVICE_STATUS','1','停用',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','auto.commit.enable','如果true,consumer定期地往zookeeper写入每个分区的offset',NULL,'6.000000000000000000000000000000',NULL,NULL,'default','true');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','auto.commit.interval.ms','消费者向zookeeper发送offset的时间',NULL,'7.000000000000000000000000000000',NULL,NULL,'default','60000');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','auto.offset.reset','offset初始化或者达到上线时的处理方式',NULL,'10.000000000000000000000000000000',NULL,NULL,'default','largest');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','consumer.timeout.ms','消费者超时时间',NULL,'5.000000000000000000000000000000',NULL,NULL,'default','-1');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','group.id','消费者组ID，如：group1',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','rebalance.backoff.ms','平衡补偿重试间隔时间',NULL,'9.000000000000000000000000000000',NULL,NULL,'default','2000');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','rebalance.retries.max','rebalance时的最大尝试次数',NULL,'8.000000000000000000000000000000',NULL,NULL,'default','10');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','auto.commit.enable','如果true,consumer定期地往zookeeper写入每个分区的offset',NULL,'7.000000000000000000000000000000',NULL,NULL,'default','true');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','auto.commit.interval.ms','消费者向zookeeper发送offset的时间',NULL,'8.000000000000000000000000000000',NULL,NULL,'default','60000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','auto.offset.reset','offset初始化或者达到上线时的处理方式',NULL,'11.000000000000000000000000000000',NULL,NULL,'default','largest');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','consumer.timeout.ms','消费者超时时间',NULL,'6.000000000000000000000000000000',NULL,NULL,'default','-1');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','group.id','组ID',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','group1');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','rebalance.backoff.ms','平衡补偿重试间隔时间',NULL,'10.000000000000000000000000000000',NULL,NULL,'default','2000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','rebalance.retries.max','rebalance时的最大尝试次数',NULL,'9.000000000000000000000000000000',NULL,NULL,'default','10');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','zookeeper.connect','zookeeper集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','zookeeper.connection.timeout.ms','户端连接zookeeper的最大超时时间',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','6000');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','zookeeper.session.timeout.ms','连接zookeeper的session超时时间',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','5000');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','zookeeper.sync.time.ms','zookeeper同步时间',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','2000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','zookeeper.connection.timeout.ms','客户端连接zookeeper的最大超时时间',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','6000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','zookeeper.session.timeout.ms','连接zookeeper的session超时时间',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','5000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA','zookeeper.sync.time.ms','zookeeper同步时间',NULL,'5.000000000000000000000000000000',NULL,NULL,'default','2000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA1','auto.commit.interval.ms','如果enable.auto.commit=true，消费者向kafka自动提交offsets的频率',NULL,'5.000000000000000000000000000000',NULL,NULL,'default','1000');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA1','auto.offset.reset','在kafka中没有初始的offset或者当前的offset不存在将返回的offset值，latest、earliest',NULL,'6.000000000000000000000000000000',NULL,NULL,'default','latest');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA1','enable.auto.commit','如果为true消费者会定期在后台提交offset偏移量',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','true');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA1','group.id','组ID',NULL,'1.000000000000000000000000000000',NULL,NULL,'default','group1');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA1','key.deserializer','Key的反序列化类',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','org.apache.kafka.common.serialization.StringDeserializer');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA1','max.poll.records','在一次调用poll()中返回的最大记录数',NULL,'7.000000000000000000000000000000',NULL,NULL,'default','500');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_PROPS_KAFKA1','value.deserializer','Value的反序列化类',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','org.apache.kafka.common.serialization.StringDeserializer');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_TIMEOUT','100','100ms',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_CONSUMER_TIMEOUT','1000','1000ms',NULL,'4.000000000000000000000000000000',NULL,NULL,'default',NULL);
@@ -641,10 +659,10 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_DS_TYPE','KAFKA1','KAFKA1',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_IMPL_CLASS','KAFKA','com.hex.bigdata.udsp.rts.executor.impl.KafkaExecutor',NULL,'1.000000000000000000000000000000',NULL,NULL,'default','实时流的Kafka接口实现类');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_IMPL_CLASS','KAFKA1','com.hex.bigdata.udsp.rts.executor.impl.Kafka1Executor',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','实时流的Kafka1接口实现类');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_PRODUCER_PROPS_KAFKA','key.serializer.class','key对象的serializer类',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','kafka.serializer.StringEncoder');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_PRODUCER_PROPS_KAFKA','key.serializer.class','Key的序列化类',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','kafka.serializer.StringEncoder');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_PRODUCER_PROPS_KAFKA','metadata.broker.list','Kafka集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_PRODUCER_PROPS_KAFKA','request.required.acks','请求确认模式',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','0');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_PRODUCER_PROPS_KAFKA','serializer.class','序列化类',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','kafka.serializer.StringEncoder');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_PRODUCER_PROPS_KAFKA','serializer.class','Value的序列化类',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','kafka.serializer.StringEncoder');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_PRODUCER_PROPS_KAFKA1','acks','请求确认模式，0、1、2、all',NULL,'3.000000000000000000000000000000',NULL,NULL,'default','0');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_PRODUCER_PROPS_KAFKA1','key.serializer','Key的序列化类',NULL,'1.000000000000000000000000000000',NULL,NULL,'default','org.apache.kafka.common.serialization.StringSerializer');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('RTS_PRODUCER_PROPS_KAFKA1','retries','失败重试次数',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','3');
@@ -713,6 +731,7 @@ insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_DS_PROPS_HIVE','交互建模-数据源配置-HIVE参数','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_DS_PROPS_IMPALA','交互建模-数据源配置-IMPALA','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_DS_PROPS_KAFKA','交互建模-数据源配置-KAFKA','default');
+insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_DS_PROPS_KAFKA1','交互建模-数据源配置-KAFKA1','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_DS_PROPS_KUDU','交互建模-数据源配置-KUDU','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_DS_PROPS_MYSQL','交互建模-数据源配置-MYSQL','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_DS_PROPS_ORACLE','交互建模-数据源配置-ORACLE','default');
@@ -737,6 +756,7 @@ insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_MODEL_PROPS_HIVE','交互建模-模型参数-HIVE','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_MODEL_PROPS_IMPALA','交互建模-模型参数-IMPALA','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_MODEL_PROPS_KAFKA','交互建模-模型参数-KAFKA','default');
+insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_MODEL_PROPS_KAFKA1','交互建模-模型参数-KAFKA1','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_MODEL_PROPS_KUDU','交互建模-模型参数-KUDU','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_MODEL_PROPS_MYSQL','交互建模-模型参数-MYSQL','default');
 insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('IM_MODEL_PROPS_ORACLE','交互建模-模型参数-ORACLE','default');
@@ -800,6 +820,9 @@ insert  into `t_gf_dict_type`(`DICT_TYPE_ID`,`DICT_TYPE_NAME`,`APPID`) values ('
 /*Data for the table `t_gf_employee` */
 
 insert  into `t_gf_employee`(`EMP_ID`,`JOB_ID`,`USER_NAME`,`SEX`,`BIRTHDAY`,`STATUS`,`CARD_NO`,`CARD_TYPE`,`INDATE`,`OUTDATE`,`OTEL`,`MOBILE_NO`,`HTEL`,`HADDRESS`,`HZIPCODE`,`PEMAIL`,`CREATE_DATE`,`APP_ID`,`ORGID`,`EMP_COMMENT`,`OEMAIL`,`MANAGERID`,`MANAGERNAME`) values ('1','00001','admin','1.000000000000000000000000000000','2014-11-22','1',NULL,'1','2014-11-17',NULL,'111','111111',NULL,NULL,NULL,'admin@grouwith.com','2015-11-28 23:19:20','default','1',NULL,'admin@grouwith.com',NULL,NULL);
+insert  into `t_gf_employee`(`EMP_ID`,`JOB_ID`,`USER_NAME`,`SEX`,`BIRTHDAY`,`STATUS`,`CARD_NO`,`CARD_TYPE`,`INDATE`,`OUTDATE`,`OTEL`,`MOBILE_NO`,`HTEL`,`HADDRESS`,`HZIPCODE`,`PEMAIL`,`CREATE_DATE`,`APP_ID`,`ORGID`,`EMP_COMMENT`,`OEMAIL`,`MANAGERID`,`MANAGERNAME`) values ('10011','HJ3B0001','HJ3B0001','3.000000000000000000000000000000',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2018-11-20 16:40:36','default','1',NULL,NULL,NULL,NULL);
+insert  into `t_gf_employee`(`EMP_ID`,`JOB_ID`,`USER_NAME`,`SEX`,`BIRTHDAY`,`STATUS`,`CARD_NO`,`CARD_TYPE`,`INDATE`,`OUTDATE`,`OTEL`,`MOBILE_NO`,`HTEL`,`HADDRESS`,`HZIPCODE`,`PEMAIL`,`CREATE_DATE`,`APP_ID`,`ORGID`,`EMP_COMMENT`,`OEMAIL`,`MANAGERID`,`MANAGERNAME`) values ('10021','HJ3B0001','HJ3B0001','1.000000000000000000000000000000',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2018-11-20 16:43:54','default','1',NULL,NULL,NULL,NULL);
+insert  into `t_gf_employee`(`EMP_ID`,`JOB_ID`,`USER_NAME`,`SEX`,`BIRTHDAY`,`STATUS`,`CARD_NO`,`CARD_TYPE`,`INDATE`,`OUTDATE`,`OTEL`,`MOBILE_NO`,`HTEL`,`HADDRESS`,`HZIPCODE`,`PEMAIL`,`CREATE_DATE`,`APP_ID`,`ORGID`,`EMP_COMMENT`,`OEMAIL`,`MANAGERID`,`MANAGERNAME`) values ('9011','junjie','junjie','1.000000000000000000000000000000',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2018-09-07 21:54:39','default','1',NULL,NULL,NULL,NULL);
 
 /*Data for the table `t_gf_funcation` */
 
@@ -949,7 +972,7 @@ insert  into `t_gf_nextid`(`SEQ_TYPE`,`NEXT_ID`,`LAST_TIME`) values ('GFFuncatio
 insert  into `t_gf_nextid`(`SEQ_TYPE`,`NEXT_ID`,`LAST_TIME`) values ('GFMENU','11700','2018-01-04 15:04:44');
 insert  into `t_gf_nextid`(`SEQ_TYPE`,`NEXT_ID`,`LAST_TIME`) values ('GFUser','1401','2018-11-20 16:40:36');
 insert  into `t_gf_nextid`(`SEQ_TYPE`,`NEXT_ID`,`LAST_TIME`) values ('GF_RES_AUTH','15600','2018-10-30 15:05:44');
-insert  into `t_gf_nextid`(`SEQ_TYPE`,`NEXT_ID`,`LAST_TIME`) values ('LOG_ID','282900','2018-11-27 22:01:41');
+insert  into `t_gf_nextid`(`SEQ_TYPE`,`NEXT_ID`,`LAST_TIME`) values ('LOG_ID','283600','2018-11-29 14:13:46');
 
 /*Data for the table `t_gf_org` */
 
@@ -1075,45 +1098,3 @@ insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_T
 insert  into `t_gf_role`(`ROLEID`,`APP_ID`,`ROLENAME`,`ROLE_DESC`) values ('ADMIN','default','系统管理员',NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-
--- 添加IM的数据源类型
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_TYPE', 'KAFKA1', 'KAFKA1', null, 10, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_SOURCE_REALTIME_TYPE', 'KAFKA1', 'KAFKA1', null, 2, null, null, 'default', null);
-
--- 添加IM的数据源配置
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_PROPS_KAFKA1', '交互建模-数据源配置-KAFKA1', 'default');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA1', 'bootstrap.servers', 'Kafka集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA1', 'security.protocol', '安全协议', null, 2, null, null, 'default', 'SASL_PLAINTEXT');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA1', 'sasl.kerberos.service.name', 'Kerberos服务名', null, 3, null, null, 'default', 'kafka');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA1', 'key.serializer', 'Key的序列化类', null, 4, null, null, 'default', 'org.apache.kafka.common.serialization.StringSerializer');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA1', 'value.serializer', 'Value的序列化类', null, 5, null, null, 'default', 'org.apache.kafka.common.serialization.StringSerializer');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA1', 'acks', '请求确认模式，0、1、2、all', null, 6, null, null, 'default', '0');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA1', 'retries', '失败重试次数', null, 7, null, null, 'default', '3');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_KAFKA1', 'retry.backoff.ms', '失败重试间隔（毫秒）', null, 8, null, null, 'default', '1000');
-
--- 添加IM的（源）模型配置
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MODEL_PROPS_KAFKA1', '交互建模-模型参数-KAFKA1', 'default');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_KAFKA1', 'topic', '主题', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_KAFKA1', 'group.id', '消费组ID', null, 2, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_KAFKA1', 'consumer.timeout.ms', '消费超时时间（毫秒）', null, 3, null, null, 'default', '5000');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MODEL_PROPS_KAFKA1', 'consumer.cron.expression', '消费计划任务表达式', null, 4, null, null, 'default', '0/10 * * * * ?');
-
--- 添加IM的接口实现类
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_IMPL_CLASS', 'KAFKA1', 'com.hex.bigdata.udsp.im.converter.impl.Kafka1Converter', null, 10, null, null, 'default', '交互建模的Kafka1接口实现类');
