@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by JunjieM on 2018-11-28.
+ * 0.9版本及之后的kafka，支持Kerberos安全认证
  */
 //@Component("com.hex.bigdata.udsp.im.converter.impl.Kafka1Converter")
 public class Kafka1Converter extends Wrapper implements RealtimeSourceConverter {
@@ -70,11 +70,7 @@ public class Kafka1Converter extends Wrapper implements RealtimeSourceConverter 
             Kafka1Datasource kafka1Datasource = new Kafka1Datasource (propertyList);
             producer = Kafka1Util.getProducer (kafka1Datasource);
 
-            if (producer == null) {
-                canConnection = false;
-            } else {
-                Kafka1Util.send (producer, TEST_TOPIC, TEST_MESSAGE);
-            }
+            Kafka1Util.send (producer, TEST_TOPIC, TEST_MESSAGE);
         } catch (Exception e) {
             e.printStackTrace ();
             canConnection = false;
@@ -98,7 +94,7 @@ public class Kafka1Converter extends Wrapper implements RealtimeSourceConverter 
             consumer = Kafka1Util.getConsumer (kafka1Datasource);
             List<String> list = Kafka1Util.receive (consumer, kafka1Model.getTopic (), CONSUMER_TIMEOUT_MS);
             for (String message : list) {
-                logger.debug ("KAFKA接收的信息为：" + message);
+                logger.debug ("KAFKA1接收的信息为：" + message);
                 try {
                     Map<String, Object> map = JSONUtil.parseJSON2Map (message);
                     metadataCols = new ArrayList<> ();
@@ -118,11 +114,13 @@ public class Kafka1Converter extends Wrapper implements RealtimeSourceConverter 
                     }
                     return metadataCols;
                 } catch (Exception e) {
-                    logger.warn (ExceptionUtil.getMessage (e));
+                    e.printStackTrace ();
+                    //logger.warn (ExceptionUtil.getMessage (e));
                 }
             }
         } catch (Exception e) {
-            logger.warn (ExceptionUtil.getMessage (e));
+            e.printStackTrace ();
+            //logger.warn (ExceptionUtil.getMessage (e));
         } finally {
             Kafka1Util.close (consumer);
         }

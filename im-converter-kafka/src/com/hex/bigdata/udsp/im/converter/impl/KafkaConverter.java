@@ -72,7 +72,8 @@ public class KafkaConverter extends KafkaWrapper {
                         }
                         return metadataCols;
                     } catch (Exception e) {
-                        logger.warn (ExceptionUtil.getMessage (e));
+                        e.printStackTrace ();
+                        //logger.warn (ExceptionUtil.getMessage (e));
                     }
                 }
             }
@@ -80,7 +81,8 @@ public class KafkaConverter extends KafkaWrapper {
             logger.debug ("KAFKA消费超时！");
             return metadataCols;
         } catch (Exception e) {
-            logger.warn (ExceptionUtil.getMessage (e));
+            e.printStackTrace ();
+            //logger.warn (ExceptionUtil.getMessage (e));
         } finally {
             KafkaUtil.close (consumer);
         }
@@ -123,11 +125,7 @@ public class KafkaConverter extends KafkaWrapper {
             KafkaDatasource kafkaDatasource = new KafkaDatasource (propertyList);
             producer = KafkaUtil.getProducer (kafkaDatasource);
 
-            if (producer == null) {
-                canConnection = false;
-            } else {
-                KafkaUtil.send (producer, TEST_TOPIC, TEST_MESSAGE);
-            }
+            KafkaUtil.send (producer, TEST_TOPIC, TEST_MESSAGE);
         } catch (Exception e) {
             e.printStackTrace ();
             canConnection = false;

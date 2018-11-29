@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 
 /**
- * Created by JunjieM on 2018-11-27.
+ * 0.9版本及之后的kafka，支持Kerberos安全认证
  */
 //@Component("com.hex.bigdata.udsp.rts.executor.impl.Kafka1Executor")
 public class Kafka1Executor implements Executor {
@@ -53,14 +53,15 @@ public class Kafka1Executor implements Executor {
         Metadata producerMetadata = producerRequest.getApplication ().getMetadata ();
         Datasource datasource = producerMetadata.getDatasource ();
         Kafka1ProducerDatasource producerDatasource = new Kafka1ProducerDatasource (datasource.getProperties ());
-        KafkaProducer<String, String> producer = new KafkaProducer<> (getProducerConfig (producerDatasource));
-        String topic = producerMetadata.getTopic ();
-        List<Map<String, String>> dataMap = producerRequest.getMessageDatas ();
-        List<String> messageList = new ArrayList<> ();
-        for (Map<String, String> data : dataMap) {
-            messageList.add (JSONUtil.parseObj2JSON (data));
-        }
+        KafkaProducer<String, String> producer = null;
         try {
+            producer = new KafkaProducer<> (getProducerConfig (producerDatasource));
+            String topic = producerMetadata.getTopic ();
+            List<Map<String, String>> dataMap = producerRequest.getMessageDatas ();
+            List<String> messageList = new ArrayList<> ();
+            for (Map<String, String> data : dataMap) {
+                messageList.add (JSONUtil.parseObj2JSON (data));
+            }
             send (producer, topic, messageList);
             producerResponse.setStatus (Status.SUCCESS);
             producerResponse.setStatusCode (StatusCode.SUCCESS);
@@ -161,9 +162,11 @@ public class Kafka1Executor implements Executor {
 //                new Property (ConsumerConfig.CONNECTIONS_MAX_IDLE_MS_CONFIG, Long.toString (consumerRequest.getTimeout ())));
 //        Kafka1ConsumerDatasource consumerDatasource = new Kafka1ConsumerDatasource (propertyMap);
         Kafka1ConsumerDatasource consumerDatasource = new Kafka1ConsumerDatasource (datasource.getProperties ());
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<> (getCnsumerConfig (consumerDatasource));
+        KafkaConsumer<String, String> consumer = null;
+        List<Map<String, String>> records = null;
         try {
-            List<Map<String, String>> records = receive (consumer, topic, consumerRequest.getTimeout ());
+            consumer = new KafkaConsumer<> (getCnsumerConfig (consumerDatasource));
+            records = receive (consumer, topic, consumerRequest.getTimeout ());
             consumerResponse.setRecords (records);
             consumerResponse.setTotalCount (records.size ());
             consumerResponse.setStatus (Status.SUCCESS);
@@ -174,6 +177,11 @@ public class Kafka1Executor implements Executor {
             consumerResponse.setMessage (e.getMessage ());
             e.printStackTrace ();
         } finally {
+            // 非自动提交offset且获取的数据大于0
+            if ("false".equals (consumerDatasource.getEnableAutoCommit ())
+                    && records != null && records.size () > 0) {
+                consumer.commitSync (); // 手动同步提交offset
+            }
             if (consumer != null) {
                 consumer.close ();
             }
@@ -218,6 +226,7 @@ public class Kafka1Executor implements Executor {
                     result.put (entry.getKey (), String.valueOf (entry.getValue ()));
                 }
             } catch (Exception e) {
+                logger.warn (e.getMessage ());
                 continue;
             }
             records.add (result);
@@ -235,7 +244,6 @@ public class Kafka1Executor implements Executor {
     public boolean testDatasource(Datasource datasource) {
         boolean canConnection = true;
         KafkaProducer<String, String> producer = null;
-
         try {
             List<Property> propertyList = datasource.getProperties ();
             Property prop = null;
@@ -268,11 +276,7 @@ public class Kafka1Executor implements Executor {
             Kafka1ProducerDatasource producerDatasource = new Kafka1ProducerDatasource (propertyList);
             producer = new KafkaProducer<> (getProducerConfig (producerDatasource));
 
-            if (producer == null) {
-                canConnection = false;
-            } else {
-                producer.send (new ProducerRecord<String, String> ("udsp-rts-ds-test", "udsp rts datasource test info"));
-            }
+            send (producer, "udsp-rts-ds-test", "udsp rts datasource test info");
         } catch (Exception e) {
             canConnection = false;
             e.printStackTrace ();

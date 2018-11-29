@@ -27,12 +27,19 @@ public class Kafka1Util {
                 new Property (ConsumerConfig.GROUP_ID_CONFIG, model.getGroupId ()));
         Kafka1Datasource kafka1Datasource = new Kafka1Datasource (propertyMap);
         KafkaConsumer<String, String> consumer = null;
+        List<String> list = null;
         try {
             consumer = getConsumer (kafka1Datasource);
-            return receive (consumer, model.getTopic (), Long.valueOf (model.getConsumerTimeoutMs ()));
+            list = receive (consumer, model.getTopic (), Long.valueOf (model.getConsumerTimeoutMs ()));
         } finally {
+            // 非自动提交offset且获取的数据大于0
+            if ("false".equals (kafka1Datasource.getEnableAutoCommit ())
+                    && list != null && list.size () > 0) {
+                consumer.commitSync (); // 手动同步提交offset
+            }
             close (consumer);
         }
+        return list;
     }
 
     // ----------------------------------------------------Consumer-------------------------------------------------------------

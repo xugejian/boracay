@@ -22,8 +22,10 @@ public class KafkaUtil {
 
     public static List<String> buildRealtime(KafkaModel model) {
         Map<String, Property> propertyMap = model.getSourceDatasource ().getPropertyMap ();
-        propertyMap.put ("consumer.timeout.ms", new Property ("consumer.timeout.ms", model.getConsumerTimeoutMs ()));
-        propertyMap.put ("group.id", new Property ("group.id", model.getGroupId ()));
+        propertyMap.put ("consumer.timeout.ms",
+                new Property ("consumer.timeout.ms", model.getConsumerTimeoutMs ()));
+        propertyMap.put ("group.id",
+                new Property ("group.id", model.getGroupId ()));
         KafkaDatasource kafkaDatasource = new KafkaDatasource (propertyMap);
         ConsumerConnector consumer = null;
         List<String> list = new ArrayList<> ();
@@ -97,8 +99,7 @@ public class KafkaUtil {
             throw new RuntimeException ("send message is null!");
         }
         // 如果具有多个partitions,请使用new KeyedMessage(String topicName, K key, V value).
-        KeyedMessage<String, String> km = new KeyedMessage<> (topic, message);
-        producer.send (km);
+        producer.send (new KeyedMessage<String, String> (topic, message));
     }
 
     public static void send(Producer<String, String> producer, String topic, List<String> messages) {
@@ -110,8 +111,7 @@ public class KafkaUtil {
         }
         List<KeyedMessage<String, String>> kms = new ArrayList<> ();
         for (String message : messages) {
-            KeyedMessage<String, String> km = new KeyedMessage<> (topic, message);
-            kms.add (km);
+            kms.add (new KeyedMessage<String, String> (topic, message));
         }
         producer.send (kms);
     }

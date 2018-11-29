@@ -53,14 +53,15 @@ public class KafkaExecutor implements Executor {
         Metadata producerMetadata = producerRequest.getApplication ().getMetadata ();
         Datasource producerDatasource = producerMetadata.getDatasource ();
         KafkaProducerDatasource datasource = new KafkaProducerDatasource (producerDatasource.getProperties ());
-        Producer<String, String> producer = new Producer<> (getProducerConfig (datasource));
-        String topic = producerMetadata.getTopic ();
-        List<Map<String, String>> dataMap = producerRequest.getMessageDatas ();
-        List<String> messageList = new ArrayList<> ();
-        for (Map<String, String> data : dataMap) {
-            messageList.add (JSONUtil.parseObj2JSON (data));
-        }
+        Producer<String, String> producer = null;
         try {
+            producer = new Producer<> (getProducerConfig (datasource));
+            String topic = producerMetadata.getTopic ();
+            List<Map<String, String>> dataMap = producerRequest.getMessageDatas ();
+            List<String> messageList = new ArrayList<> ();
+            for (Map<String, String> data : dataMap) {
+                messageList.add (JSONUtil.parseObj2JSON (data));
+            }
             send (producer, topic, messageList);
             producerResponse.setStatus (Status.SUCCESS);
             producerResponse.setStatusCode (StatusCode.SUCCESS);
@@ -88,8 +89,7 @@ public class KafkaExecutor implements Executor {
             throw new RuntimeException ("send message is null!");
         }
         // 如果具有多个partitions,请使用new KeyedMessage(String topicName, K key, V value).
-        KeyedMessage<String, String> km = new KeyedMessage<> (topic, message);
-        producer.send (km);
+        producer.send (new KeyedMessage<String, String> (topic, message));
     }
 
     private void send(Producer<String, String> producer, String topic, List<String> messages) {
@@ -101,8 +101,7 @@ public class KafkaExecutor implements Executor {
         }
         List<KeyedMessage<String, String>> kms = new ArrayList<> ();
         for (String message : messages) {
-            KeyedMessage<String, String> km = new KeyedMessage<> (topic, message);
-            kms.add (km);
+            kms.add (new KeyedMessage<String, String> (topic, message));
         }
         producer.send (kms);
     }
@@ -117,8 +116,7 @@ public class KafkaExecutor implements Executor {
         if (key == null) {
             throw new RuntimeException ("send key is null!");
         }
-        KeyedMessage<String, String> km = new KeyedMessage<> (topic, key, message);
-        producer.send (km);
+        producer.send (new KeyedMessage<String, String> (topic, key, message));
     }
 
     private void send(Producer<String, String> producer, String topic, Map<String, List<String>> messages) {
@@ -133,8 +131,7 @@ public class KafkaExecutor implements Executor {
             String key = entry.getKey ();
             List<String> value = entry.getValue ();
             for (String message : value) {
-                KeyedMessage<String, String> km = new KeyedMessage<> (topic, key, message);
-                kms.add (km);
+                kms.add (new KeyedMessage<String, String> (topic, key, message));
             }
         }
         producer.send (kms);
@@ -166,12 +163,14 @@ public class KafkaExecutor implements Executor {
         String topic = metadata.getTopic ();
         Datasource datasource = metadata.getDatasource ();
         Map<String, Property> propertyMap = datasource.getPropertyMap ();
-        propertyMap.put ("consumer.timeout.ms", new Property ("consumer.timeout.ms", Long.toString (consumerRequest.getTimeout ())));
+        propertyMap.put ("consumer.timeout.ms",
+                new Property ("consumer.timeout.ms", Long.toString (consumerRequest.getTimeout ())));
         KafkaConsumerDatasource consumerDatasource = new KafkaConsumerDatasource (propertyMap);
-        ConsumerConnector consumer = Consumer.createJavaConsumerConnector (getCnsumerConfig (consumerDatasource));
-        int threadNum = consumerDatasource.getThreadNum ();
+        ConsumerConnector consumer = null;
         List<Map<String, String>> records = new ArrayList<> ();
         try {
+            consumer = Consumer.createJavaConsumerConnector (getCnsumerConfig (consumerDatasource));
+            int threadNum = consumerDatasource.getThreadNum ();
             List<KafkaStream<byte[], byte[]>> streams = receive (consumer, topic, threadNum);
             Map<String, Object> map = null;
             Map<String, String> result = null;
@@ -187,6 +186,7 @@ public class KafkaExecutor implements Executor {
                             result.put (entry.getKey (), String.valueOf (entry.getValue ()));
                         }
                     } catch (Exception e) {
+                        logger.warn (e.getMessage ());
                         continue;
                     }
                     records.add (result);
@@ -197,7 +197,6 @@ public class KafkaExecutor implements Executor {
             consumerResponse.setStatus (Status.SUCCESS);
             consumerResponse.setStatusCode (StatusCode.SUCCESS);
         } catch (ConsumerTimeoutException e) {
-            consumerResponse.setRecords (records);
             consumerResponse.setStatus (Status.TIMEOUT);
             consumerResponse.setStatusCode (StatusCode.TIMEOUT);
             consumerResponse.setMessage (e.getMessage ());
@@ -291,7 +290,6 @@ public class KafkaExecutor implements Executor {
     public boolean testDatasource(com.hex.bigdata.udsp.common.api.model.Datasource datasource) {
         boolean canConnection = true;
         Producer<String, String> producer = null;
-
         try {
             List<Property> propertyList = datasource.getProperties ();
             Property prop = null;
@@ -324,11 +322,7 @@ public class KafkaExecutor implements Executor {
             KafkaProducerDatasource producerDatasource = new KafkaProducerDatasource (propertyList);
             producer = new Producer<> (getProducerConfig (producerDatasource));
 
-            if (producer == null) {
-                canConnection = false;
-            } else {
-                producer.send (new KeyedMessage<String, String> ("udsp-rts-ds-test", "udsp rts datasource test info"));
-            }
+            send (producer, "udsp-rts-ds-test", "udsp rts datasource test info");
         } catch (Exception e) {
             canConnection = false;
             e.printStackTrace ();
