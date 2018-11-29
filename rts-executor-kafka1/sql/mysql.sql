@@ -20,7 +20,7 @@ values ('RTS_PRODUCER_PROPS_KAFKA1', 'key.serializer', 'Key的序列化类', nul
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_PRODUCER_PROPS_KAFKA1', 'value.serializer', 'Value的序列化类', null, 2, null, null, 'default', 'org.apache.kafka.common.serialization.StringSerializer');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('RTS_PRODUCER_PROPS_KAFKA1', 'acks', '请求确认模式，0、1、2、all', null, 3, null, null, 'default', '0');
+values ('RTS_PRODUCER_PROPS_KAFKA1', 'acks', '请求确认模式，0、1、2、all', null, 3, null, null, 'default', 'all');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_PRODUCER_PROPS_KAFKA1', 'retries', '失败重试次数', null, 4, null, null, 'default', '3');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
