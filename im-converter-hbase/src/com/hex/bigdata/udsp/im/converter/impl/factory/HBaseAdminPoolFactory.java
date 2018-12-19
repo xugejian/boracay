@@ -113,8 +113,7 @@ class HBaseAdminFactory extends BasePoolableObjectFactory {
 
     @Override
     public Object makeObject() throws Exception {
-        HBaseAdmin admin = new HBaseAdmin (conf);
-        return admin;
+        return new HBaseAdmin (conf);
     }
 
     public void destroyObject(Object obj) throws Exception {

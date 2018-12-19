@@ -954,7 +954,7 @@ values ('IM_MD_PROPS_HBASE', 'hbase.split.policy', 'HBase 分区策略类', null
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_HBASE', 'hbase.family', 'HBase 族名', null, 5, null, null, 'default', 'f');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR', 'solr.shards', 'Solr 分片数', null, 1, null, null, 'default', null);
+values ('IM_MD_PROPS_SOLR', 'solr.shards', 'Solr 分片数（solr.shards*solr.replicas<=solr.max.shards.per.node*节点数）', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_SOLR', 'solr.replicas', 'Solr 副本数', null, 2, null, null, 'default', '2');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -964,7 +964,7 @@ values ('IM_MD_PROPS_SOLR_HBASE', 'solr.max.shards.per.node', 'Solr 单节点最
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_SOLR_HBASE', 'solr.replicas', 'Solr 副本数', null, 2, null, null, 'default', '2');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_MD_PROPS_SOLR_HBASE', 'solr.shards', 'Solr 分片数', null, 1, null, null, 'default', null);
+values ('IM_MD_PROPS_SOLR_HBASE', 'solr.shards', 'Solr 分片数（solr.shards*solr.replicas<=solr.max.shards.per.node*节点数）', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.compression', 'HBase 压缩格式', null, 5, null, null, 'default', 'snappy');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1216,11 +1216,11 @@ values ('IM_DS_TYPE', 'IMPALA', 'IMPALA', null, 9, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_SOURCE_BATCH_TYPE', 'IMPALA', 'IMPALA', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_IMPALA', 'driver.class', '驱动类', null, 1, null, null, 'default', 'com.cloudera.impala.jdbc41.Driver');
+values ('IM_DS_PROPS_IMPALA', 'driver.class', '驱动类', null, 1, null, null, 'default', 'org.apache.hive.jdbc.HiveDriver');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_IMPALA', 'initial.size', '初始连接数', null, 5, null, null, 'default', '1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_IMPALA', 'jdbc.url', 'JDBC URL，如：无密码dbc:impala://${ip}:${port}/${database}  有密码jdbc:impala://${ip}:${port}/${database};AuthMech=3', null, 2, null, null, 'default', null);
+values ('IM_DS_PROPS_IMPALA', 'jdbc.url', 'JDBC URL，如：无密码jdbc:hive2://${ip}:${port}/${database};auth=noSasl，有密码jdbc:hive2://${ip}:${port}/${database}', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_IMPALA', 'username', '用户名', null, 3, null, null, 'default', null);
 commit;

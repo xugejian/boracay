@@ -199,7 +199,7 @@ public abstract class Wrapper {
             String hiveSetSql = model.getHiveSetSql ();
 
             // 设置MapReduce的job名称
-            hiveSetSql += "set mapred.job.name=" + id + " " + describe + " " + name + ";";
+            hiveSetSql += "set mapred.job.name=" + name + "(" + describe + ");";
 
             // 执行SQL
             HiveJdbcUtil.executeUpdate (key, eHiveDs, hiveSetSql + "\n" + insertSql);

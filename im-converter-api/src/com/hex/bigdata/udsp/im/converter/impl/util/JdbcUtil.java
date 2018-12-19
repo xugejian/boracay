@@ -125,8 +125,9 @@ public class JdbcUtil {
     }
 
     public static void createEngineSchema(JdbcDatasource datasource, String dbName, String updateSql) throws SQLException {
-        String sql = HiveSqlUtil.createDatabase(true, dbName);
-        executeUpdate(datasource, sql);
+        // 不建议建表前判断并创建数据库
+        //String sql = HiveSqlUtil.createDatabase(true, dbName);
+        //executeUpdate(datasource, sql);
         executeUpdate(datasource, updateSql);
     }
 

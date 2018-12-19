@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -13,7 +12,7 @@ import java.util.Properties;
 /**
  * Created by JunjieM on 2018-11-26.
  */
-public class Kafka1ConsumerTest {
+public class Kafka1ConsumerKerberosTest {
 
     private static String TOPIC_NAME = "test1";
 

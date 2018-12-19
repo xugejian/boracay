@@ -330,7 +330,7 @@ public class HBaseProvider implements Provider {
                         value = tarnDateStr(length, value); // 日期格式转换
                     }
                     if (StringUtils.isNotBlank(value)) {
-                        startRow += (StringUtils.isBlank(startRow) ? value : this.rkSep + value);
+                        startRow += (StringUtils.isBlank(startRow) ? value : rkSep + value);
                     }
                 }
             }
@@ -362,7 +362,7 @@ public class HBaseProvider implements Provider {
                         value = tarnDateStr(length, value); // 日期格式转换
                     }
                     if (StringUtils.isNotBlank(value)) {
-                        stopRow += (StringUtils.isBlank(stopRow) ? value : this.rkSep + value);
+                        stopRow += (StringUtils.isBlank(stopRow) ? value : rkSep + value);
                     }
                 }
             }
@@ -428,7 +428,7 @@ public class HBaseProvider implements Provider {
                 if (StringUtils.isBlank(value)) {
                     throw new IllegalArgumentException("必输项值为空");
                 }
-                str += (count == 0 ? value : this.rkSep + value);
+                str += (count == 0 ? value : rkSep + value);
                 count++;
             } else {
                 break;
@@ -582,11 +582,11 @@ public class HBaseProvider implements Provider {
         // Cannot set batch on a scan using a filter that returns true for filter.hasFilterRow
         //scan.setBatch(HBASE_SCAN_BATCH_SIZE); // 每一批获取记录数
         if (startRow != null) {
-            startRow = startRow + this.rkSep + this.startStr;
+            startRow = startRow + rkSep + startStr;
             scan.setStartRow(Bytes.toBytes(startRow));
         }
         if (stopRow != null) {
-            stopRow = stopRow + this.rkSep + this.stopStr;
+            stopRow = stopRow + rkSep + stopStr;
             scan.setStopRow(Bytes.toBytes(stopRow));
         }
     }

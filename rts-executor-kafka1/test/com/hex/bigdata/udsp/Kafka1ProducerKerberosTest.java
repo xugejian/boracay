@@ -9,7 +9,7 @@ import java.util.Properties;
 /**
  * Created by JunjieM on 2018-11-26.
  */
-public class Kafka1ProducerTest {
+public class Kafka1ProducerKerberosTest {
     private static String TOPIC_NAME = "test1";
 
     public static void main(String[] args) {

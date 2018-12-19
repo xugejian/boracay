@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * Created by JunjieM on 2018-11-21.
  */
-public class HBaseTest {
+public class HBaseKerberosTest {
     static {
         // 解决winutils.exe不存在的问题
         try {
