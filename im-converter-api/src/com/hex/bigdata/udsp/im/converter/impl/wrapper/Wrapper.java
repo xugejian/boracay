@@ -195,7 +195,7 @@ public abstract class Wrapper {
                         selectColumns, selectTableName, whereProperties);
             }
 
-            // 使用set语法在Hive中设置参数
+            // 使用set语法在Hive中设置参数，如：set mapred.map.tasks=50;
             String hiveSetSql = model.getHiveSetSql ();
 
             // 设置MapReduce的job名称
