@@ -67,16 +67,14 @@ public abstract class Wrapper {
 
     protected String getDataType(DataType type, String length) {
         String dataType = DataType.STRING.getValue ();
-        if (StringUtils.isBlank (length)) {
+        if (DataType.STRING == type || DataType.INT == type || DataType.SMALLINT == type
+                || DataType.BIGINT == type || DataType.BOOLEAN == type || DataType.DOUBLE == type
+                || DataType.FLOAT == type || DataType.TINYINT == type) {
             dataType = type.getValue ();
-        } else {
-            if (DataType.STRING == type || DataType.INT == type || DataType.SMALLINT == type
-                    || DataType.BIGINT == type || DataType.BOOLEAN == type || DataType.DOUBLE == type
-                    || DataType.FLOAT == type || DataType.TINYINT == type || DataType.TIMESTAMP == type) {
-                dataType = type.getValue ();
-            } else if (DataType.CHAR == type || DataType.VARCHAR == type || DataType.DECIMAL == type) {
-                dataType = type.getValue () + "(" + length + ")";
-            }
+        } else if (DataType.CHAR == type || DataType.VARCHAR == type || DataType.DECIMAL == type) {
+            dataType = type.getValue () + (StringUtils.isBlank (length) ? "" : "(" + length + ")");
+        } else if (DataType.TIMESTAMP == type) { // TIMESTAMP类型对于SOLR、Kudu、JDBC等会转换失败
+            dataType = DataType.STRING.getValue ();
         }
         return dataType;
     }
