@@ -162,7 +162,7 @@ public class OlqSyncService {
             response.setStatus(Status.DEFEAT.getValue());
             response.setStatusCode(StatusCode.DEFEAT.getValue());
             response.setErrorCode(ErrorCode.ERROR_000007.getValue());
-            response.setMessage(ErrorCode.ERROR_000007.getName() + "：" + e.getMessage());
+            response.setMessage(ErrorCode.ERROR_000007.getName() + ":" + e.getMessage());
         }
         return response;
     }

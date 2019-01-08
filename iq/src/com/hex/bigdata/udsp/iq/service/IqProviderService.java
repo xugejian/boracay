@@ -130,7 +130,7 @@ public class IqProviderService extends BaseService {
      * @param paraMap
      * @return
      */
-    private Application getApplication(String appId, Map<String, String> paraMap) {
+    public Application getApplication(String appId, Map<String, String> paraMap) {
         Application application = getApplication(appId);
 //        List<QueryColumn> queryColumns = application.getQueryColumns();
         for (QueryColumn queryColumn : application.getQueryColumns()) {
@@ -165,7 +165,7 @@ public class IqProviderService extends BaseService {
      * @param appId
      * @return
      */
-    private Application getApplication(String appId) {
+    public Application getApplication(String appId) {
         IqApplication iqApplication = iqApplicationService.select(appId);
         List<IqAppQueryCol> iqAppQueryColList = iqAppQueryColService.selectByAppId(appId);
         List<IqAppReturnCol> iqAppReturnColList = iqAppReturnColService.selectByAppId(appId);
@@ -181,24 +181,6 @@ public class IqProviderService extends BaseService {
             property.setDescribe(properties.getDescribe());
             appPropertyList.add(property);
         }
-
-        IqMetadata iqMetadata = iqMetadataService.select(mdId);
-        List<IqMetadataCol> iqMetadataQueryColList = iqMetadataColService.selectQueryColList(mdId);
-        List<IqMetadataCol> iqMetadataReturnColList = iqMetadataColService.selectReturnColList(mdId);
-        String dsId = iqMetadata.getDsId();
-
-        List<ComProperties> mdProperties = comPropertiesService.selectList(mdId);
-        List<Property> mdPropertyList = new ArrayList<>(mdProperties.size());
-        for (ComProperties properties : mdProperties) {
-            Property property = new Property();
-            property.setName(properties.getName());
-            property.setValue(properties.getValue());
-            property.setDescribe(properties.getDescribe());
-            mdPropertyList.add(property);
-        }
-
-        ComDatasource comDatasource = comDatasourceService.select(dsId);
-        List<ComProperties> comPropertiesList = comPropertiesService.selectList(dsId);
 
         // ----------------数据封装-----------------------
         Application application = new Application(appPropertyList);
@@ -246,7 +228,27 @@ public class IqProviderService extends BaseService {
             orderColumnList.add(orderColumn);
         }
         application.setOrderColumns(orderColumnList);
+        application.setMetadata(getMetadata(mdId));
+        return application;
+    }
 
+    public Metadata getMetadata(String mdId){
+        IqMetadata iqMetadata = iqMetadataService.select(mdId);
+        List<IqMetadataCol> iqMetadataQueryColList = iqMetadataColService.selectQueryColList(mdId);
+        List<IqMetadataCol> iqMetadataReturnColList = iqMetadataColService.selectReturnColList(mdId);
+        String dsId = iqMetadata.getDsId();
+
+        List<ComProperties> mdProperties = comPropertiesService.selectList(mdId);
+        List<Property> mdPropertyList = new ArrayList<>(mdProperties.size());
+        for (ComProperties properties : mdProperties) {
+            Property property = new Property();
+            property.setName(properties.getName());
+            property.setValue(properties.getValue());
+            property.setDescribe(properties.getDescribe());
+            mdPropertyList.add(property);
+        }
+
+        // ----------------数据封装-----------------------
         Metadata metadata = new Metadata(mdPropertyList);
         metadata.setName(iqMetadata.getName());
         metadata.setDescribe(iqMetadata.getDescribe());
@@ -276,13 +278,14 @@ public class IqProviderService extends BaseService {
             returnColumns.add(dataColumn);
         }
         metadata.setReturnColumns(returnColumns);
+        metadata.setDatasource(getDatasource(dsId));
+        return metadata;
+    }
 
-        Datasource datasource = DatasourceUtil.getDatasource(comDatasource, comPropertiesList);
-
-        metadata.setDatasource(datasource);
-        application.setMetadata(metadata);
-
-        return application;
+    public Datasource getDatasource(String dsId){
+        ComDatasource comDatasource = comDatasourceService.select(dsId);
+        List<ComProperties> comPropertiesList = comPropertiesService.selectList(dsId);
+        return DatasourceUtil.getDatasource(comDatasource, comPropertiesList);
     }
 
     public boolean testDatasource(Datasource datasource) {

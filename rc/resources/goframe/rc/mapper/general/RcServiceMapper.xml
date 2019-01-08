@@ -111,6 +111,14 @@
     and TYPE = #{serviceType,jdbcType=VARCHAR}
   </select>
 
+  <select id="selectStartByType" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+    from RC_SERVICE
+    where DEL_FLG = '0' AND STATUS = '0'
+    and TYPE = #{serviceType,jdbcType=VARCHAR}
+  </select>
+
   <select id="selectByServiceName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
