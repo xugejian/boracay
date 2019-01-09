@@ -72,6 +72,12 @@
           <element id="library" level="project" name="jdbc" />
           <element id="library" level="project" name="mail" />
           <element id="artifact" artifact-name="hex-udsp-rts-executor-kafka1" />
+          <element id="library" level="project" name="antlr4" />
+          <element id="artifact" artifact-name="hex-udsp-sdk" />
+          <element id="artifact" artifact-name="hex-udsp-dsl" />
+          <element id="artifact" artifact-name="hex-udsp-olq-provider-dsl" />
+          <element id="library" level="project" name="sdk" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-kafka1" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="console/web/Web" />

@@ -93,7 +93,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
             String sql = request.getSql ();
             if (StringUtils.isBlank (request.getServiceName ())
                     && StringUtils.isNotBlank (sql)) { // 针对IQ模块的应用提供自定义SQL语法服务
-                logger.info ("DSL:" + sql);
+                logger.info ("DSL: " + sql);
                 DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
                 DSLSQLParser.StatementContext context = parser.statement ();
                 if (context.getChildCount () == 1) {
@@ -274,6 +274,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                         record.put (alias, String.valueOf (totalCount));
                         records.add (record);
                         response.setRecords (records);
+                        response.setReturnColumns (null);
                     }
                 } else {
                     if ("*".equals (parse.getText ())) {

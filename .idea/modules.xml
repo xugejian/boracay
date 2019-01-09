@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/consumer-socket/consumer-socket.iml" filepath="$PROJECT_DIR$/consumer-socket/consumer-socket.iml" group="consumer" />
       <module fileurl="file://$PROJECT_DIR$/consumer-webservice/consumer-webservice.iml" filepath="$PROJECT_DIR$/consumer-webservice/consumer-webservice.iml" group="consumer" />
       <module fileurl="file://$PROJECT_DIR$/doc/doc.iml" filepath="$PROJECT_DIR$/doc/doc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dsl/dsl.iml" filepath="$PROJECT_DIR$/dsl/dsl.iml" group="common" />
       <module fileurl="file://$PROJECT_DIR$/im/im.iml" filepath="$PROJECT_DIR$/im/im.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-api/im-converter-api.iml" filepath="$PROJECT_DIR$/im-converter-api/im-converter-api.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-hbase/im-converter-hbase.iml" filepath="$PROJECT_DIR$/im-converter-hbase/im-converter-hbase.iml" group="im" />
@@ -36,6 +37,7 @@
       <module fileurl="file://$PROJECT_DIR$/olq/olq.iml" filepath="$PROJECT_DIR$/olq/olq.iml" group="olq" />
       <module fileurl="file://$PROJECT_DIR$/olq-provider-api/olq-provider-api.iml" filepath="$PROJECT_DIR$/olq-provider-api/olq-provider-api.iml" group="olq" />
       <module fileurl="file://$PROJECT_DIR$/olq-provider-db2/olq-provider-db2.iml" filepath="$PROJECT_DIR$/olq-provider-db2/olq-provider-db2.iml" group="olq" />
+      <module fileurl="file://$PROJECT_DIR$/olq-provider-dsl/olq-provider-dsl.iml" filepath="$PROJECT_DIR$/olq-provider-dsl/olq-provider-dsl.iml" group="olq" />
       <module fileurl="file://$PROJECT_DIR$/olq-provider-hive/olq-provider-hive.iml" filepath="$PROJECT_DIR$/olq-provider-hive/olq-provider-hive.iml" group="olq" />
       <module fileurl="file://$PROJECT_DIR$/olq-provider-impala/olq-provider-impala.iml" filepath="$PROJECT_DIR$/olq-provider-impala/olq-provider-impala.iml" group="olq" />
       <module fileurl="file://$PROJECT_DIR$/olq-provider-inceptor/olq-provider-inceptor.iml" filepath="$PROJECT_DIR$/olq-provider-inceptor/olq-provider-inceptor.iml" group="olq" />

@@ -28,7 +28,7 @@ values ('OLQ_DS_PROPS_DSL', 'validation.query', '验证链接的SQL语句，必�
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_DSL', 'validation.query.timeout', '验证有效连接的超时时间', null, 11, null, null, 'default', '0');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DSL', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
+values ('OLQ_DS_PROPS_DSL', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '600000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_DSL', 'min.evictable.idle.time.millis', '空闲连接N毫秒中后释放', null, 13, null, null, 'default', '1800000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
