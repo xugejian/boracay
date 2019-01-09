@@ -125,7 +125,7 @@ public class ExternalConsumerService {
                 record = new HashMap<> ();
                 record.put ("name", service.getName ());
                 record.put ("type", service.getType ());
-                record.put ("describe", service.getDescribe ());
+                record.put ("comment", service.getDescribe ());
                 records.add (record);
             }
         }
@@ -171,7 +171,7 @@ public class ExternalConsumerService {
                     record.put ("type", "");
                     record.put ("required", "");
                     //record.put ("default", "");
-                    record.put ("describe", "");
+                    record.put ("comment", "");
                     records.add (record);
                     for (QueryColumn column : queryColumns) {
                         record = new HashMap<> ();
@@ -181,7 +181,7 @@ public class ExternalConsumerService {
                                 : column.getType ().getValue () + "(" + column.getLength () + ")");
                         record.put ("required", String.valueOf (column.isNeed ()));
                         //record.put ("default", column.getDefaultVal ());
-                        record.put ("describe", column.getDescribe ());
+                        record.put ("comment", column.getDescribe ());
                         records.add (record);
                     }
                 }
@@ -195,7 +195,7 @@ public class ExternalConsumerService {
                     record.put ("type", "");
                     record.put ("required", "");
                     //record.put ("default", "");
-                    record.put ("describe", "");
+                    record.put ("comment", "");
                     records.add (record);
                     for (ReturnColumn column : returnColumns) {
                         record = new HashMap<> ();
@@ -205,7 +205,7 @@ public class ExternalConsumerService {
                                 : column.getType ().getValue () + "(" + column.getLength () + ")");
                         record.put ("required", "");
                         //record.put ("default", "");
-                        record.put ("describe", column.getDescribe ());
+                        record.put ("comment", column.getDescribe ());
                         records.add (record);
                     }
                 }
@@ -219,7 +219,7 @@ public class ExternalConsumerService {
                     record.put ("type", "");
                     record.put ("required", "");
                     //record.put ("default", "");
-                    record.put ("describe", "");
+                    record.put ("comment", "");
                     records.add (record);
                     for (OrderColumn column : orderColumns) {
                         record = new HashMap<> ();
@@ -228,7 +228,7 @@ public class ExternalConsumerService {
                         record.put ("type", column.getType ().getValue ());
                         record.put ("required", "");
                         //record.put ("default", "");
-                        record.put ("describe", column.getDescribe ());
+                        record.put ("comment", column.getDescribe ());
                         records.add (record);
                     }
                 }
@@ -243,14 +243,14 @@ public class ExternalConsumerService {
                     为空时也必须都设置，否则jdbc客户端可能无法获取到元字段信息。
                      */
                     record.put ("type", "");
-                    record.put ("describe", "");
+                    record.put ("comment", "");
                     records.add (record);
                     for (DataColumn column : queryColumns) {
                         record = new HashMap<> ();
                         record.put ("name", column.getName ());
                         record.put ("type", StringUtils.isBlank (column.getLength ()) ? column.getType ().getValue ()
                                 : column.getType ().getValue () + "(" + column.getLength () + ")");
-                        record.put ("describe", column.getDescribe ());
+                        record.put ("comment", column.getDescribe ());
                         records.add (record);
                     }
                 }
@@ -261,14 +261,14 @@ public class ExternalConsumerService {
                     为空时也必须都设置，否则jdbc客户端可能无法获取到元字段信息。
                      */
                     record.put ("type", "");
-                    record.put ("describe", "");
+                    record.put ("comment", "");
                     records.add (record);
                     for (DataColumn column : returnColumns) {
                         record = new HashMap<> ();
                         record.put ("name", column.getName ());
                         record.put ("type", StringUtils.isBlank (column.getLength ()) ? column.getType ().getValue ()
                                 : column.getType ().getValue () + "(" + column.getLength () + ")");
-                        record.put ("describe", column.getDescribe ());
+                        record.put ("comment", column.getDescribe ());
                         records.add (record);
                     }
                 }
