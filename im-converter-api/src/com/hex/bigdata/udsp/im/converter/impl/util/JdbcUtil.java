@@ -119,7 +119,11 @@ public class JdbcUtil {
         BasicDataSource dataSource = getDataSource(datasource);
         if (dataSource != null) {
             conn = dataSource.getConnection();
-            logger.info("JDBC DB Type: " + conn.getMetaData().getDatabaseProductName());
+            try {
+                logger.info ("JDBC DB Type: " + conn.getMetaData ().getDatabaseProductName ());
+            } catch (Exception e) {
+                //
+            }
         }
         return conn;
     }

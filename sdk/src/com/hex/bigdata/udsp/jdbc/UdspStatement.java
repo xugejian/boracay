@@ -57,12 +57,7 @@ public class UdspStatement implements Statement {
     @Override
     public void close() throws SQLException {
         if (!isClosed ()) {
-            try {
-                factory.remove (url);
-            } catch (Exception e) {
-                client.close ();
-                e.printStackTrace ();
-            }
+            // 不做任何操作
         }
     }
 

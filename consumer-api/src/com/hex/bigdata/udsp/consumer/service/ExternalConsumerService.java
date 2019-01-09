@@ -19,10 +19,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 消费的服务
@@ -173,7 +170,7 @@ public class ExternalConsumerService {
                     record.put ("operator", "");
                     record.put ("type", "");
                     record.put ("required", "");
-                    record.put ("default", "");
+                    //record.put ("default", "");
                     record.put ("describe", "");
                     records.add (record);
                     for (QueryColumn column : queryColumns) {
@@ -183,7 +180,7 @@ public class ExternalConsumerService {
                         record.put ("type", StringUtils.isBlank (column.getLength ()) ? column.getType ().getValue ()
                                 : column.getType ().getValue () + "(" + column.getLength () + ")");
                         record.put ("required", String.valueOf (column.isNeed ()));
-                        record.put ("default", column.getDefaultVal ());
+                        //record.put ("default", column.getDefaultVal ());
                         record.put ("describe", column.getDescribe ());
                         records.add (record);
                     }
@@ -197,7 +194,7 @@ public class ExternalConsumerService {
                     record.put ("operator", "");
                     record.put ("type", "");
                     record.put ("required", "");
-                    record.put ("default", "");
+                    //record.put ("default", "");
                     record.put ("describe", "");
                     records.add (record);
                     for (ReturnColumn column : returnColumns) {
@@ -207,7 +204,7 @@ public class ExternalConsumerService {
                         record.put ("type", StringUtils.isBlank (column.getLength ()) ? column.getType ().getValue ()
                                 : column.getType ().getValue () + "(" + column.getLength () + ")");
                         record.put ("required", "");
-                        record.put ("default", "");
+                        //record.put ("default", "");
                         record.put ("describe", column.getDescribe ());
                         records.add (record);
                     }
@@ -221,7 +218,7 @@ public class ExternalConsumerService {
                     record.put ("operator", "");
                     record.put ("type", "");
                     record.put ("required", "");
-                    record.put ("default", "");
+                    //record.put ("default", "");
                     record.put ("describe", "");
                     records.add (record);
                     for (OrderColumn column : orderColumns) {
@@ -230,7 +227,7 @@ public class ExternalConsumerService {
                         record.put ("operator", column.getOrder ().getValue ());
                         record.put ("type", column.getType ().getValue ());
                         record.put ("required", "");
-                        record.put ("default", "");
+                        //record.put ("default", "");
                         record.put ("describe", column.getDescribe ());
                         records.add (record);
                     }

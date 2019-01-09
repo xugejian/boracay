@@ -143,9 +143,9 @@ public class IqJdbcClientDemo {
     }
 
     public static void main(String[] args) throws Exception {
-//        showServices();
-//        describeService();
-        select();
+        showServices();
+        describeService();
+//        select();
 //        selectCount();
         System.exit (0);
     }
