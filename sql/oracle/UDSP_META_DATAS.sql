@@ -1164,12 +1164,6 @@ values ('OLQ_DS_PROPS_PGSQL', 'test.on.borrow', '是否从池中取出链接前�
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_PGSQL', 'test.on.return', '是否在归还到池中前进行检验', null, 16, null, null, 'default', 'false');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_TYPE', 'EDMS', 'EDMS', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_EDMS', 'edms_url', 'EDMS服务的URL地址', null, 1, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_IMPL_CLASS', 'EDMS', 'com.hex.udsp.iq.provider.edms.EdmsProvider', null, 1, null, null, 'default', '交互查询的Edms接口实现类');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_HBASE', 'hbase.rpc.timeout', '一次RPC请求的超时时间（毫秒）', null, 3, null, null, 'default', '5000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_HBASE', 'hbase.client.retries.number', '客户端重试最大次数', null, 4, 'IQ_DS_PROPS_HBASE', null, 'default', '3');
@@ -1610,8 +1604,6 @@ insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IQ_MD_PROPS_SOLR_HBASE', '交互查询-元数据配置-SOLR+HBASE', 'default');
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('RTS_CONSUMER_PROPS_KAFKA1', '实时流-消费者配置-KAFKA1', 'default');
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IQ_DS_PROPS_EDMS', '交互查询-数据源配置-EDMS', 'default');
 commit;
 prompt 95 records loaded
 prompt Loading T_GF_EMPLOYEE...
