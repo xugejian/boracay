@@ -98,17 +98,8 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 DSLSQLParser.StatementContext context = parser.statement ();
                 if (context.getChildCount () == 1) {
                     ParseTree parse = context.getChild (0);
-                    if (parse instanceof DSLSQLParser.ShowServicesStatementContext) {
-                        // show services
-                        logger.debug ("show services");
-                        response = consumerService.showServices ();
-                    } else if (parse instanceof DSLSQLParser.DescribeServiceStatementContext) {
-                        // describe <service_name>
-                        String serviceName = ((DSLSQLParser.DescribeServiceStatementContext) parse).serviceName ().getText ();
-                        logger.debug ("describe " + serviceName);
-                        response = consumerService.describeService (serviceName);
-                    } else if (parse instanceof DSLSQLParser.SelectStatementContext) {
-                        // select ...
+                    if (parse instanceof DSLSQLParser.SelectStatementContext) { // select ...
+                        logger.debug ("select ...");
                         String serviceName = ((DSLSQLParser.SelectStatementContext) parse).serviceName ().getText ();
                         String serviceType = consumerService.getServiceType (serviceName);
                         if (ServiceType.IQ_DSL.getValue ().equals (serviceType)) {
@@ -118,6 +109,13 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                         } else {
                             throw new Exception ("该服务：" + serviceName + "不是交互查询类型");
                         }
+                    } else if (parse instanceof DSLSQLParser.ShowServicesStatementContext) { // show services
+                        logger.debug ("show services");
+                        response = consumerService.showServices ();
+                    } else if (parse instanceof DSLSQLParser.DescribeServiceStatementContext) { // describe <service_name>
+                        String serviceName = ((DSLSQLParser.DescribeServiceStatementContext) parse).serviceName ().getText ();
+                        logger.debug ("describe " + serviceName);
+                        response = consumerService.describeService (serviceName);
                     } else {
                         throw new Exception ("交互查询不支持该SQL语句：" + sql);
                     }
