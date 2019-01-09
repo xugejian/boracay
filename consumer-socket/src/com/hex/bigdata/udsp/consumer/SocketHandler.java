@@ -96,29 +96,27 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 logger.info ("DSL: " + sql);
                 DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
                 DSLSQLParser.StatementContext context = parser.statement ();
-                if (context.getChildCount () == 1) {
-                    ParseTree parse = context.getChild (0);
-                    if (parse instanceof DSLSQLParser.SelectStatementContext) { // select ...
-                        logger.debug ("select ...");
-                        String serviceName = ((DSLSQLParser.SelectStatementContext) parse).serviceName ().getText ();
-                        String serviceType = consumerService.getServiceType (serviceName);
-                        if (ServiceType.IQ_DSL.getValue ().equals (serviceType)) {
-                            response = sdlSqlSelect (request); // 交互查询的自定义select SQL
-                        } else if (ServiceType.IQ.getValue ().equals (serviceType)) {
-                            response = appSdlSelect (request); // 交互查询应用的自定义select SQL
-                        } else {
-                            throw new Exception ("该服务：" + serviceName + "不是交互查询类型");
-                        }
-                    } else if (parse instanceof DSLSQLParser.ShowServicesStatementContext) { // show services
-                        logger.debug ("show services");
-                        response = consumerService.showServices ();
-                    } else if (parse instanceof DSLSQLParser.DescribeServiceStatementContext) { // describe <service_name>
-                        String serviceName = ((DSLSQLParser.DescribeServiceStatementContext) parse).serviceName ().getText ();
-                        logger.debug ("describe " + serviceName);
-                        response = consumerService.describeService (serviceName);
+                ParseTree parse = context.getChild (0);
+                if (parse instanceof DSLSQLParser.SelectStatementContext) { // select ...
+                    logger.debug ("select ...");
+                    String serviceName = ((DSLSQLParser.SelectStatementContext) parse).serviceName ().getText ();
+                    String serviceType = consumerService.getServiceType (serviceName);
+                    if (ServiceType.IQ_DSL.getValue ().equals (serviceType)) {
+                        response = sdlSqlSelect (request); // 交互查询的自定义select SQL
+                    } else if (ServiceType.IQ.getValue ().equals (serviceType)) {
+                        response = appSdlSelect (request); // 交互查询应用的自定义select SQL
                     } else {
-                        throw new Exception ("交互查询不支持该SQL语句：" + sql);
+                        throw new Exception ("该服务：" + serviceName + "不是交互查询类型");
                     }
+                } else if (parse instanceof DSLSQLParser.ShowServicesStatementContext) { // show services
+                    logger.debug ("show services");
+                    response = consumerService.showServices ();
+                } else if (parse instanceof DSLSQLParser.DescribeServiceStatementContext) { // describe <service_name>
+                    String serviceName = ((DSLSQLParser.DescribeServiceStatementContext) parse).serviceName ().getText ();
+                    logger.debug ("describe " + serviceName);
+                    response = consumerService.describeService (serviceName);
+                } else {
+                    throw new Exception ("交互查询不支持该SQL语句：" + sql);
                 }
             } else { // 老的请求方式
                 response = consumerService.consume (request);
