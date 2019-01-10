@@ -51,7 +51,6 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
-        System.out.println ("服务端接受的消息 : " + msg);
         InetSocketAddress insocket = (InetSocketAddress) ctx.channel ().remoteAddress ();
         String clientIp = insocket.getAddress ().getHostAddress ();
 
@@ -59,13 +58,13 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
         byte[] reqByte = new byte[msg.readableBytes ()];
         msg.readBytes (reqByte);
         String reqJson = new String (reqByte, CharsetUtil.UTF_8);
-        logger.info ("接收报文内容:\n" + reqJson);
+        logger.debug ("接收报文内容:\n" + reqJson);
 
         // 消费
         String rsponse = consume (reqJson, clientIp);
 
         // 响应数据
-        logger.info ("响应报文内容:\n" + rsponse);
+        logger.debug ("响应报文内容:\n" + rsponse);
         byte[] rspByte = rsponse.getBytes (CharsetUtil.UTF_8);
         if (rspByte.length > 0) {
             ByteBuf buf = ctx.alloc ().buffer (rspByte.length);
@@ -90,7 +89,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
             String sql = request.getSql ();
             if (StringUtils.isBlank (request.getServiceName ())
                     && StringUtils.isNotBlank (sql)) { // 针对IQ模块的应用提供自定义SQL语法服务
-                logger.info ("DSL: " + sql);
+                logger.debug ("DSL: " + sql);
                 APPDSLParser parser = AppDslAdaptor.getAPPDSLParser (sql);
                 APPDSLParser.StatementContext context = parser.statement ();
                 ParseTree parse = context.getChild (0);
@@ -249,7 +248,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.info ("连接的客户端地址:" + ctx.channel ().remoteAddress ());
+        logger.debug ("连接的客户端地址:" + ctx.channel ().remoteAddress ());
     }
 
     private final ChannelFutureListener generateDataGenerator = new ChannelFutureListener () {
