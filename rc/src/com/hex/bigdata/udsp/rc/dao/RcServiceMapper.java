@@ -80,12 +80,16 @@ public class RcServiceMapper extends SyncMapper<RcService> {
     /**
      * 根据服务类型查询启用状态的服务
      *
-     * @param serviceType 服务类型
+     * @param type 类型
+     * @param name 名称
      * @return
      */
-    public List<RcService> selectStartByType(String serviceType) {
+    public List<RcService> selectStartByTypeAndName(String type, String name) {
+        RcService rcService = new RcService ();
+        rcService.setType (type);
+        rcService.setName (name);
         return sqlSessionTemplate.selectList (
-                "com.hex.bigdata.udsp.rc.dao.RcServiceMapper.selectStartByType", serviceType);
+                "com.hex.bigdata.udsp.rc.dao.RcServiceMapper.selectStartByTypeAndName", rcService);
     }
 
     /**

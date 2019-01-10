@@ -19,6 +19,7 @@ OFFSET: O F F S E T;
 DESCRIBE: D E S C R I B E;
 SHOW: S H O W;
 SERVICES: S E R V I C E S;
+LIKE: L I K E;
 
 fragment A: [aA];
 fragment B: [bB];
@@ -67,7 +68,7 @@ describeServiceStatement
     ;
 
 showServicesStatement
-    : SHOW SERVICES
+    : SHOW SERVICES (LIKE textLiteral)?
     ;
 
 selectStatement

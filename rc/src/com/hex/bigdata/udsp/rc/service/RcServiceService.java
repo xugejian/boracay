@@ -309,11 +309,12 @@ public class RcServiceService {
     /**
      * 根据服务类型查询启用状态的服务
      *
-     * @param serviceType 服务类型
+     * @param type 类型
+     * @param name 名称
      * @return
      */
-    public List<RcService> selectStartByType(String serviceType) {
-        return this.rcServiceMapper.selectStartByType (serviceType);
+    public List<RcService> selectStartByTypeAndName(String type, String name) {
+        return this.rcServiceMapper.selectStartByTypeAndName (type, name);
     }
 
     /**

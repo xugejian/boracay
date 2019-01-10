@@ -99,7 +99,12 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     response = appSdlSelect (request);
                 } else if (parse instanceof APPDSLParser.ShowServicesStatementContext) { // show services
                     logger.debug ("show services");
-                    response = consumerService.showServices ();
+                    APPDSLParser.ShowServicesStatementContext showServicesStatementContext = (APPDSLParser.ShowServicesStatementContext) parse;
+                    String likeName = null;
+                    if (showServicesStatementContext.LIKE () != null) {
+                        likeName = textLiteralContextToValue (showServicesStatementContext.textLiteral ());
+                    }
+                    response = consumerService.showServices (likeName);
                 } else if (parse instanceof APPDSLParser.DescribeServiceStatementContext) { // describe <service_name>
                     String serviceName = ((APPDSLParser.DescribeServiceStatementContext) parse).serviceName ().getText ();
                     logger.debug ("describe " + serviceName);
@@ -150,8 +155,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 APPDSLParser.DecimalLiteralContext decimalLiteralContext = valueContext.decimalLiteral ();
                 String value = null;
                 if (textLiteralContext != null) {
-                    value = textLiteralContext.getText ();
-                    value = value.substring (1, value.length () - 1); // 去除首尾的单引号
+                    value = textLiteralContextToValue (textLiteralContext);
                 } else if (decimalLiteralContext != null) {
                     value = decimalLiteralContext.getText ();
                 }
@@ -218,6 +222,11 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
             }
         }
         return response;
+    }
+
+    private String textLiteralContextToValue(APPDSLParser.TextLiteralContext textLiteralContext) {
+        String value = textLiteralContext.getText ();
+        return value.substring (1, value.length () - 1); // 去除首尾的单引号
     }
 
     /**

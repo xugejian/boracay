@@ -149,18 +149,14 @@ public class UdspStatement implements Statement {
             }
             List<Map<String, String>> records = response.getRecords ();
             LinkedHashMap<String, String> columns = response.getReturnColumns ();
-            List<String> columnNames = null;
-            List<String> columnTypes = null;
+            List<String> columnNames = new ArrayList<> ();
+            List<String> columnTypes = new ArrayList<> ();
             if (columns != null && columns.size () != 0) { // 有返回字段信息
-                columnNames = new ArrayList<> ();
-                columnTypes = new ArrayList<> ();
                 for (Map.Entry<String, String> entry : columns.entrySet ()) {
                     columnNames.add (entry.getKey ());
                     columnTypes.add (entry.getValue ());
                 }
             } else if (records != null && records.size () != 0) { // 无返回字段信息
-                columnNames = new ArrayList<> ();
-                columnTypes = new ArrayList<> ();
                 for (Map.Entry<String, String> entry : records.get (0).entrySet ()) {
                     columnNames.add (entry.getKey ());
                     columnTypes.add (DataType.STRING.getValue ());
