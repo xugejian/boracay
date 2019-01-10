@@ -2,7 +2,6 @@ package com.hex.bigdata.udsp.consumer;
 
 import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.constant.ServiceType;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
@@ -11,9 +10,7 @@ import com.hex.bigdata.udsp.consumer.service.ExternalConsumerService;
 import com.hex.bigdata.udsp.consumer.service.LoggingService;
 import com.hex.bigdata.udsp.consumer.util.RequestUtil;
 import com.hex.bigdata.udsp.dsl.AppDslAdaptor;
-import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
 import com.hex.bigdata.udsp.dsl.parser.APPDSLParser;
-import com.hex.bigdata.udsp.dsl.parser.DSLSQLParser;
 import com.hex.goframe.util.WebApplicationContextUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
@@ -94,25 +91,17 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
             if (StringUtils.isBlank (request.getServiceName ())
                     && StringUtils.isNotBlank (sql)) { // 针对IQ模块的应用提供自定义SQL语法服务
                 logger.info ("DSL: " + sql);
-                DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
-                DSLSQLParser.StatementContext context = parser.statement ();
+                APPDSLParser parser = AppDslAdaptor.getAPPDSLParser (sql);
+                APPDSLParser.StatementContext context = parser.statement ();
                 ParseTree parse = context.getChild (0);
-                if (parse instanceof DSLSQLParser.SelectStatementContext) { // select ...
+                if (parse instanceof APPDSLParser.SelectStatementContext) { // select ...
                     logger.debug ("select ...");
-                    String serviceName = ((DSLSQLParser.SelectStatementContext) parse).serviceName ().getText ();
-                    String serviceType = consumerService.getServiceType (serviceName);
-                    if (ServiceType.IQ_DSL.getValue ().equals (serviceType)) {
-                        response = sdlSqlSelect (request); // 交互查询的自定义select SQL
-                    } else if (ServiceType.IQ.getValue ().equals (serviceType)) {
-                        response = appSdlSelect (request); // 交互查询应用的自定义select SQL
-                    } else {
-                        throw new Exception ("该服务：" + serviceName + "不是交互查询类型");
-                    }
-                } else if (parse instanceof DSLSQLParser.ShowServicesStatementContext) { // show services
+                    response = appSdlSelect (request);
+                } else if (parse instanceof APPDSLParser.ShowServicesStatementContext) { // show services
                     logger.debug ("show services");
                     response = consumerService.showServices ();
-                } else if (parse instanceof DSLSQLParser.DescribeServiceStatementContext) { // describe <service_name>
-                    String serviceName = ((DSLSQLParser.DescribeServiceStatementContext) parse).serviceName ().getText ();
+                } else if (parse instanceof APPDSLParser.DescribeServiceStatementContext) { // describe <service_name>
+                    String serviceName = ((APPDSLParser.DescribeServiceStatementContext) parse).serviceName ().getText ();
                     logger.debug ("describe " + serviceName);
                     response = consumerService.describeService (serviceName);
                 } else {
@@ -127,58 +116,6 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     ErrorCode.ERROR_000005.getValue (), ErrorCode.ERROR_000005.getName () + ":" + e.getMessage ());
         }
         return JSONUtil.parseObj2JSON (response);
-    }
-
-    /**
-     * 交互查询的自定义select SQL
-     *
-     * @param request
-     * @return
-     */
-    private Response sdlSqlSelect(Request request) {
-        Response response = new Response ();
-        String sql = request.getSql ();
-        ParseTree parse = null;
-        DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
-        DSLSQLParser.SelectStatementContext selectStatementContext = parser.selectStatement ();
-        // serviceName
-        DSLSQLParser.ServiceNameContext serviceNameContext = selectStatementContext.serviceName ();
-        String serviceName = serviceNameContext.getText ();
-        logger.debug ("serviceName:" + serviceName);
-        request.setServiceName (serviceName); // 设置serviceName
-        // where
-        DSLSQLParser.WhereClauseContext whereClauseContext = selectStatementContext.whereClause ();
-        if (whereClauseContext != null) {
-            logger.debug ("whereClause:" + whereClauseContext.toStringTree (parser));
-            // TODO ...
-        }
-        // limit
-        DSLSQLParser.LimitClauseContext limitClauseContext = selectStatementContext.limitClause ();
-        if (limitClauseContext != null) {
-            logger.debug ("limitClause:" + limitClauseContext.toStringTree (parser));
-            // TODO ...
-        }
-        // group by
-        DSLSQLParser.GroupByCaluseContext groupByCaluseContext = selectStatementContext.groupByCaluse ();
-        if (groupByCaluseContext != null) {
-            logger.debug ("groupByCaluse:" + groupByCaluseContext.toStringTree (parser));
-            // TODO ...
-        }
-        // order by
-        DSLSQLParser.OrderByClauseContext orderByClauseContext = selectStatementContext.orderByClause ();
-        if (orderByClauseContext != null) {
-            logger.debug ("orderByClause:" + orderByClauseContext.toStringTree (parser));
-            // TODO ...
-        }
-        // select
-        DSLSQLParser.SelectElementsContext selectElementsContext = selectStatementContext.selectElements ();
-        if (selectElementsContext != null) {
-            logger.debug ("selectElements:" + selectElementsContext.toStringTree (parser));
-            // TODO ...
-        }
-
-
-        return response;
     }
 
     /**
