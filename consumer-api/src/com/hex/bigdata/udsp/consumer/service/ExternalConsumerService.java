@@ -5,10 +5,7 @@ import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.iq.provider.model.Application;
-import com.hex.bigdata.udsp.iq.provider.model.OrderColumn;
-import com.hex.bigdata.udsp.iq.provider.model.QueryColumn;
-import com.hex.bigdata.udsp.iq.provider.model.ReturnColumn;
+import com.hex.bigdata.udsp.iq.provider.model.*;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
@@ -121,7 +118,10 @@ public class ExternalConsumerService {
         List<Map<String, String>> records = new ArrayList<> ();
         Map<String, String> record = null;
         List<RcService> iqServices = rcServiceService.selectStartByTypeAndName (ServiceType.IQ.getValue (), likeName);
-        if (iqServices != null && iqServices.size () != 0) {
+        List<RcService> iqDslServices = rcServiceService.selectStartByTypeAndName (ServiceType.IQ_DSL.getValue (), likeName);
+        if (iqServices == null) iqServices = new ArrayList<> ();
+        iqServices.addAll (iqDslServices);
+        if (iqServices.size () != 0) {
             for (RcService service : iqServices) {
                 record = new HashMap<> ();
                 record.put ("name", service.getName ());
@@ -233,6 +233,46 @@ public class ExternalConsumerService {
                         records.add (record);
                     }
                 }
+            } else if (ServiceType.IQ_DSL.getValue ().equals (appType)) { // 交互查询的自定义SQL
+                Metadata metadate = iqProviderService.getMetadata (appId);
+                List<DataColumn> queryColumns = metadate.getQueryColumns ();
+                List<DataColumn> returnColumns = metadate.getReturnColumns ();
+                if (queryColumns != null && queryColumns.size () != 0) {
+                    record = new HashMap<> ();
+                    record.put ("name", "query:");
+                    /*
+                    为空时也必须都设置，否则jdbc客户端可能无法获取到元字段信息。
+                     */
+                    record.put ("type", "");
+                    record.put ("comment", "");
+                    records.add (record);
+                    for (DataColumn column : queryColumns) {
+                        record = new HashMap<> ();
+                        record.put ("name", column.getName ());
+                        record.put ("type", StringUtils.isBlank (column.getLength ()) ? column.getType ().getValue ()
+                                : column.getType ().getValue () + "(" + column.getLength () + ")");
+                        record.put ("comment", column.getDescribe ());
+                        records.add (record);
+                    }
+                }
+                if (returnColumns != null && returnColumns.size () != 0) {
+                    record = new HashMap<> ();
+                    record.put ("name", "return:");
+                    /*
+                    为空时也必须都设置，否则jdbc客户端可能无法获取到元字段信息。
+                     */
+                    record.put ("type", "");
+                    record.put ("comment", "");
+                    records.add (record);
+                    for (DataColumn column : returnColumns) {
+                        record = new HashMap<> ();
+                        record.put ("name", column.getName ());
+                        record.put ("type", StringUtils.isBlank (column.getLength ()) ? column.getType ().getValue ()
+                                : column.getType ().getValue () + "(" + column.getLength () + ")");
+                        record.put ("comment", column.getDescribe ());
+                        records.add (record);
+                    }
+                }
             }
             response.setRecords (records);
             response.setStatus (Status.SUCCESS.getValue ());
@@ -246,6 +286,12 @@ public class ExternalConsumerService {
         return response;
     }
 
+    /**
+     * 通过服务名称获取服务类型
+     *
+     * @param serviceName
+     * @return
+     */
     public String getServiceType(String serviceName) {
         RcService service = rcServiceService.selectByName (serviceName);
         if (service == null) {
