@@ -8,8 +8,8 @@ import java.util.List;
 public class DslRequest {
 
     private String name; // 名称
-    private List<Column> columns; // 返回字段
-    private List<Component> where; // 过滤
+    private List<Column> select; // 查询
+    private Component where; // 过滤
     private List<String> groupBy; // 分组
     private List<Order> orderBy; // 排序
     private Limit limit; // 限制
@@ -22,19 +22,19 @@ public class DslRequest {
         this.name = name;
     }
 
-    public List<Column> getColumns() {
-        return columns;
+    public List<Column> getSelect() {
+        return select;
     }
 
-    public void setColumns(List<Column> columns) {
-        this.columns = columns;
+    public void setSelect(List<Column> select) {
+        this.select = select;
     }
 
-    public List<Component> getWhere() {
+    public Component getWhere() {
         return where;
     }
 
-    public void setWhere(List<Component> where) {
+    public void setWhere(Component where) {
         this.where = where;
     }
 

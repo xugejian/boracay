@@ -159,7 +159,7 @@ public class APPDSLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitColumn_name(APPDSLParser.Column_nameContext ctx) { return visitChildren(ctx); }
+	@Override public T visitColumnName(APPDSLParser.ColumnNameContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

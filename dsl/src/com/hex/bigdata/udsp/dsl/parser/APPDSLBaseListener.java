@@ -258,13 +258,13 @@ public class APPDSLBaseListener implements APPDSLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterColumn_name(APPDSLParser.Column_nameContext ctx) { }
+	@Override public void enterColumnName(APPDSLParser.ColumnNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitColumn_name(APPDSLParser.Column_nameContext ctx) { }
+	@Override public void exitColumnName(APPDSLParser.ColumnNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

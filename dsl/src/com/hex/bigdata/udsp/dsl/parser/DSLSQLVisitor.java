@@ -163,11 +163,11 @@ public interface DSLSQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitServiceName(DSLSQLParser.ServiceNameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DSLSQLParser#column_name}.
+	 * Visit a parse tree produced by {@link DSLSQLParser#columnName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitColumn_name(DSLSQLParser.Column_nameContext ctx);
+	T visitColumnName(DSLSQLParser.ColumnNameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#uid}.
 	 * @param ctx the parse tree

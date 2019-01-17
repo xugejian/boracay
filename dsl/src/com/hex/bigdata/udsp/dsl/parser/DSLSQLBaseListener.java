@@ -318,13 +318,13 @@ public class DSLSQLBaseListener implements DSLSQLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterColumn_name(DSLSQLParser.Column_nameContext ctx) { }
+	@Override public void enterColumnName(DSLSQLParser.ColumnNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitColumn_name(DSLSQLParser.Column_nameContext ctx) { }
+	@Override public void exitColumnName(DSLSQLParser.ColumnNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

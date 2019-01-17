@@ -92,7 +92,8 @@ selectStatement
     ;
 
 selectElements
-    : (star='*' | selectElement ) (',' selectElement)*
+    : star='*'
+    | selectElement (',' selectElement)*
     ;
 
 whereClause
@@ -167,7 +168,7 @@ selectElement
     ;
 
 fullColumnName
-    : column_name
+    : columnName
     ;
 
 functionCall
@@ -181,16 +182,16 @@ aggregateWindowedFunction
     ;
 
 functionArg
-    :  column_name
+    :  columnName
     ;
 
 functionArgs
-    : column_name (',' column_name)*
+    : columnName (',' columnName)*
     ;
 
 serviceName: tmpName=ID;
 
-column_name: ID;
+columnName: ID;
 
 uid
     : ID

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 维度类
  */
-public class Dimension extends Component{
+public class Dimension extends Component {
     private String columnName; // 字段名称
     private ComparisonOperator compOper; // 比较操作符
     private List<String> values; // 数值集合

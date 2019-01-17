@@ -12,7 +12,10 @@ import com.hex.bigdata.udsp.consumer.service.LoggingService;
 import com.hex.bigdata.udsp.consumer.util.RequestUtil;
 import com.hex.bigdata.udsp.dsl.AppDslAdaptor;
 import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
+import com.hex.bigdata.udsp.dsl.model.Column;
+import com.hex.bigdata.udsp.dsl.model.Component;
 import com.hex.bigdata.udsp.dsl.model.Limit;
+import com.hex.bigdata.udsp.dsl.model.Order;
 import com.hex.bigdata.udsp.dsl.parser.APPDSLParser;
 import com.hex.bigdata.udsp.dsl.parser.DSLSQLParser;
 import com.hex.goframe.util.WebApplicationContextUtil;
@@ -113,7 +116,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     DSLSQLParser.ShowServicesStatementContext showServicesStatementContext = (DSLSQLParser.ShowServicesStatementContext) parse;
                     String likeName = null;
                     if (showServicesStatementContext.LIKE () != null) {
-                        likeName = textLiteralToValue (showServicesStatementContext.textLiteral ().getText ());
+                        likeName = DslSqlAdaptor.textLiteralContextToValue (showServicesStatementContext.textLiteral ());
                     }
                     response = consumerService.showServices (likeName);
                 } else if (parse instanceof DSLSQLParser.DescribeServiceStatementContext) { // describe <service_name>
@@ -155,43 +158,33 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
         DSLSQLParser.WhereClauseContext whereClauseContext = selectStatementContext.whereClause ();
         if (whereClauseContext != null) {
             logger.debug ("whereClause:" + whereClauseContext.toStringTree (parser));
-            // TODO ...
+            DSLSQLParser.LogicExpressionsContext logicExpressionsContext = whereClauseContext.logicExpressions ();
+            Component where = DslSqlAdaptor.logicExpressionsContextToComponent (logicExpressionsContext);
         }
         // limit
         DSLSQLParser.LimitClauseContext limitClauseContext = selectStatementContext.limitClause ();
         if (limitClauseContext != null) {
             logger.debug ("limitClause:" + limitClauseContext.toStringTree (parser));
-            int offset = 0;
-            int limit = 1;
-            DSLSQLParser.DecimalLiteralContext limitContext = limitClauseContext.limit;
-            DSLSQLParser.DecimalLiteralContext offsetContext = limitClauseContext.offset;
-            if (limitContext != null) {
-                limit = Integer.valueOf (limitContext.getText ());
-            }
-            if (offsetContext != null) {
-                offset = Integer.valueOf (offsetContext.getText ());
-            }
-            Limit limitOffset = new Limit (limit, offset);
+            Limit limit = DslSqlAdaptor.limitClauseContextToLimit (limitClauseContext);
         }
         // group by
         DSLSQLParser.GroupByCaluseContext groupByCaluseContext = selectStatementContext.groupByCaluse ();
         if (groupByCaluseContext != null) {
             logger.debug ("groupByCaluse:" + groupByCaluseContext.toStringTree (parser));
-            // TODO ...
+            List<String> groupBy = DslSqlAdaptor.groupByCaluseContextToGroupBy (groupByCaluseContext);
         }
         // order by
         DSLSQLParser.OrderByClauseContext orderByClauseContext = selectStatementContext.orderByClause ();
         if (orderByClauseContext != null) {
             logger.debug ("orderByClause:" + orderByClauseContext.toStringTree (parser));
-            // TODO ...
+            List<Order> orderBy = DslSqlAdaptor.orderByClauseContextToOrderBy (orderByClauseContext);
         }
         // select
         DSLSQLParser.SelectElementsContext selectElementsContext = selectStatementContext.selectElements ();
         if (selectElementsContext != null) {
             logger.debug ("selectElements:" + selectElementsContext.toStringTree (parser));
-            // TODO ...
+            List<Column> select = DslSqlAdaptor.selectElementsContextToSelect (selectElementsContext);
         }
-
 
         return response;
     }
@@ -217,88 +210,45 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
         APPDSLParser.WhereClauseContext whereClauseContext = selectStatementContext.whereClause ();
         if (whereClauseContext != null) {
             logger.debug ("whereClause:" + whereClauseContext.toStringTree (parser));
-            Map<String, String> data = new HashMap<> ();
-            APPDSLParser.LogicExpressionsContext logicExpressionsContext = whereClauseContext.logicExpressions ();
-            List<APPDSLParser.LogicExpressionContext> logicExpressionContexts = logicExpressionsContext.logicExpression ();
-            for (APPDSLParser.LogicExpressionContext logicExpressionContext : logicExpressionContexts) {
-                APPDSLParser.FullColumnNameContext fullColumnNameContext = logicExpressionContext.fullColumnName ();
-                APPDSLParser.ValueContext valueContext = logicExpressionContext.value ();
-                String name = fullColumnNameContext.getText ();
-                APPDSLParser.TextLiteralContext textLiteralContext = valueContext.textLiteral ();
-                APPDSLParser.DecimalLiteralContext decimalLiteralContext = valueContext.decimalLiteral ();
-                String value = null;
-                if (textLiteralContext != null) {
-                    value = textLiteralToValue (textLiteralContext.getText ());
-                } else if (decimalLiteralContext != null) {
-                    value = decimalLiteralContext.getText ();
-                }
-                data.put (name, value);
-            }
+            Map<String, String> data = AppDslAdaptor.whereClauseContextToData (whereClauseContext);
             request.setData (data); // 设置请求参数
         }
         // limit
         APPDSLParser.LimitClauseContext limitClauseContext = selectStatementContext.limitClause ();
         if (limitClauseContext != null) {
             logger.debug ("limitClause:" + limitClauseContext.toStringTree (parser));
-            Page page = new Page ();
-            int offset = 0;
-            int limit = 1;
-            APPDSLParser.DecimalLiteralContext limitContext = limitClauseContext.limit;
-            APPDSLParser.DecimalLiteralContext offsetContext = limitClauseContext.offset;
-            if (limitContext != null) {
-                limit = Integer.valueOf (limitContext.getText ());
-            }
-            if (offsetContext != null) {
-                offset = Integer.valueOf (offsetContext.getText ());
-            }
-            int pageIndex = offset / limit + 1;
-            int pageSize = limit;
-            page.setPageIndex (pageIndex);
-            page.setPageSize (pageSize);
+            Page page = AppDslAdaptor.limitClauseContextToPage (limitClauseContext);
             request.setPage (page); // 设置分页信息
         }
         // select
         APPDSLParser.SelectElementsContext selectElementsContext = selectStatementContext.selectElements ();
         if (selectElementsContext != null) {
             logger.debug ("selectElements:" + selectElementsContext.toStringTree (parser));
-            if (selectElementsContext.getChildCount () == 1) {
-                parse = selectElementsContext.getChild (0);
-                if (parse instanceof APPDSLParser.SelectElementContext) {
-                    String alias = parse.getText ();
-                    if (parse.getChildCount () == 3) {
-                        alias = parse.getChild (2).getText (); // AS别名
-                    }
-                    APPDSLParser.FunctionCallContext functionCallContext = ((APPDSLParser.SelectElementContext) parse).functionCall ();
-                    APPDSLParser.AggregateWindowedFunctionContext aggregateWindowedFunctionContext = functionCallContext.aggregateWindowedFunction ();
-                    if (aggregateWindowedFunctionContext.getChildCount () == 4
-                            && "COUNT".equalsIgnoreCase (aggregateWindowedFunctionContext.getChild (0).getText ())) {
-                        // 获取总行数
-                        response = consumerService.consume (request);
-                        long totalCount = response.getRecords ().size ();
-                        Page page = response.getPage ();
-                        if (page != null) {
-                            totalCount = page.getTotalCount ();
-                        }
-                        List<Map<String, String>> records = new ArrayList<> ();
-                        Map<String, String> record = new HashMap<> ();
-                        record.put (alias, String.valueOf (totalCount));
-                        records.add (record);
-                        response.setRecords (records);
-                        response.setReturnColumns (null);
-                    }
-                } else {
-                    if ("*".equals (parse.getText ())) {
-                        // 获取数据集
-                        response = consumerService.consume (request);
-                    }
+            if (selectElementsContext.star != null) {
+                // 获取数据集
+                response = consumerService.consume (request);
+            } else {
+                // 获取总行数
+                APPDSLParser.SelectElementContext selectElementContext = selectElementsContext.selectElement ();
+                String alias = selectElementContext.functionCall ().aggregateWindowedFunction ().getText ();
+                if (selectElementContext.AS () != null || selectElementContext.uid () != null) {
+                    alias = selectElementContext.uid ().getText (); // AS别名
                 }
+                response = consumerService.consume (request);
+                long totalCount = response.getRecords ().size ();
+                Page page = response.getPage ();
+                if (page != null) {
+                    totalCount = page.getTotalCount ();
+                }
+                List<Map<String, String>> records = new ArrayList<> ();
+                Map<String, String> record = new HashMap<> ();
+                record.put (alias, String.valueOf (totalCount));
+                records.add (record);
+                response.setRecords (records);
+                response.setReturnColumns (null);
             }
         }
         return response;
-    }
-
-    private String textLiteralToValue(String textLiteral) {
-        return textLiteral.substring (1, textLiteral.length () - 1); // 去除首尾的单引号
     }
 
     /**

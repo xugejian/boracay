@@ -4,12 +4,13 @@ package com.hex.bigdata.udsp.dsl.constant;
  * 聚合函数
  */
 public enum AggregateFunction {
+    NONE("无", "NONE"),
     SUM("合计", "SUM"),
     MIN("最小", "MIN"),
     MAX("最大", "MAX"),
     AVG("平均", "AVG"),
     COUNT("数量", "COUNT"),
-    COUNT_DISTINCT("去重数量", "COUNT DISTINCT");
+    COUNT_DISTINCT("去重数量", "COUNT_DISTINCT");
 
     private String value;
     private String name;

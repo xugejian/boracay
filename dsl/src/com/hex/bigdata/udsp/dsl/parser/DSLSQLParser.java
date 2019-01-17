@@ -34,7 +34,7 @@ public class DSLSQLParser extends Parser {
 		RULE_value = 15, RULE_decimalLiteral = 16, RULE_textLiteral = 17, RULE_selectElement = 18, 
 		RULE_fullColumnName = 19, RULE_functionCall = 20, RULE_aggregateWindowedFunction = 21, 
 		RULE_functionArg = 22, RULE_functionArgs = 23, RULE_serviceName = 24, 
-		RULE_column_name = 25, RULE_uid = 26;
+		RULE_columnName = 25, RULE_uid = 26;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"statement", "describeServiceStatement", "showServicesStatement", "selectStatement", 
@@ -42,7 +42,7 @@ public class DSLSQLParser extends Parser {
 			"groupByCaluse", "orderByClause", "limitClause", "orderByExpression", 
 			"groupByItem", "logicalOperator", "comparisonOperator", "value", "decimalLiteral", 
 			"textLiteral", "selectElement", "fullColumnName", "functionCall", "aggregateWindowedFunction", 
-			"functionArg", "functionArgs", "serviceName", "column_name", "uid"
+			"functionArg", "functionArgs", "serviceName", "columnName", "uid"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -1483,8 +1483,8 @@ public class DSLSQLParser extends Parser {
 	}
 
 	public static class FullColumnNameContext extends ParserRuleContext {
-		public Column_nameContext column_name() {
-			return getRuleContext(Column_nameContext.class,0);
+		public ColumnNameContext columnName() {
+			return getRuleContext(ColumnNameContext.class,0);
 		}
 		public FullColumnNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1512,7 +1512,7 @@ public class DSLSQLParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(216);
-			column_name();
+			columnName();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1700,8 +1700,8 @@ public class DSLSQLParser extends Parser {
 	}
 
 	public static class FunctionArgContext extends ParserRuleContext {
-		public Column_nameContext column_name() {
-			return getRuleContext(Column_nameContext.class,0);
+		public ColumnNameContext columnName() {
+			return getRuleContext(ColumnNameContext.class,0);
 		}
 		public FunctionArgContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1729,7 +1729,7 @@ public class DSLSQLParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(242);
-			column_name();
+			columnName();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1744,11 +1744,11 @@ public class DSLSQLParser extends Parser {
 	}
 
 	public static class FunctionArgsContext extends ParserRuleContext {
-		public List<Column_nameContext> column_name() {
-			return getRuleContexts(Column_nameContext.class);
+		public List<ColumnNameContext> columnName() {
+			return getRuleContexts(ColumnNameContext.class);
 		}
-		public Column_nameContext column_name(int i) {
-			return getRuleContext(Column_nameContext.class,i);
+		public ColumnNameContext columnName(int i) {
+			return getRuleContext(ColumnNameContext.class,i);
 		}
 		public FunctionArgsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1777,7 +1777,7 @@ public class DSLSQLParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(244);
-			column_name();
+			columnName();
 			setState(249);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -1787,7 +1787,7 @@ public class DSLSQLParser extends Parser {
 				setState(245);
 				match(T__1);
 				setState(246);
-				column_name();
+				columnName();
 				}
 				}
 				setState(251);
@@ -1850,30 +1850,30 @@ public class DSLSQLParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Column_nameContext extends ParserRuleContext {
+	public static class ColumnNameContext extends ParserRuleContext {
 		public TerminalNode ID() { return getToken(DSLSQLParser.ID, 0); }
-		public Column_nameContext(ParserRuleContext parent, int invokingState) {
+		public ColumnNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_column_name; }
+		@Override public int getRuleIndex() { return RULE_columnName; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof DSLSQLListener ) ((DSLSQLListener)listener).enterColumn_name(this);
+			if ( listener instanceof DSLSQLListener ) ((DSLSQLListener)listener).enterColumnName(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof DSLSQLListener ) ((DSLSQLListener)listener).exitColumn_name(this);
+			if ( listener instanceof DSLSQLListener ) ((DSLSQLListener)listener).exitColumnName(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof DSLSQLVisitor ) return ((DSLSQLVisitor<? extends T>)visitor).visitColumn_name(this);
+			if ( visitor instanceof DSLSQLVisitor ) return ((DSLSQLVisitor<? extends T>)visitor).visitColumnName(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Column_nameContext column_name() throws RecognitionException {
-		Column_nameContext _localctx = new Column_nameContext(_ctx, getState());
-		enterRule(_localctx, 50, RULE_column_name);
+	public final ColumnNameContext columnName() throws RecognitionException {
+		ColumnNameContext _localctx = new ColumnNameContext(_ctx, getState());
+		enterRule(_localctx, 50, RULE_columnName);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

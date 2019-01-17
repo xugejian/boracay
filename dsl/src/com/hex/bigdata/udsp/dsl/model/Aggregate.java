@@ -19,6 +19,11 @@ public class Aggregate {
         this.dataType = dataType;
     }
 
+    public Aggregate(String name, AggregateFunction aggFun) {
+        this.name = name;
+        this.aggFun = aggFun;
+    }
+
     public Aggregate(String name, DataType dataType, AggregateFunction aggFun) {
         this.name = name;
         this.dataType = dataType;

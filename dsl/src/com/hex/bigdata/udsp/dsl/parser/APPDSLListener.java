@@ -210,15 +210,15 @@ public interface APPDSLListener extends ParseTreeListener {
 	 */
 	void exitServiceName(APPDSLParser.ServiceNameContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link APPDSLParser#column_name}.
+	 * Enter a parse tree produced by {@link APPDSLParser#columnName}.
 	 * @param ctx the parse tree
 	 */
-	void enterColumn_name(APPDSLParser.Column_nameContext ctx);
+	void enterColumnName(APPDSLParser.ColumnNameContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link APPDSLParser#column_name}.
+	 * Exit a parse tree produced by {@link APPDSLParser#columnName}.
 	 * @param ctx the parse tree
 	 */
-	void exitColumn_name(APPDSLParser.Column_nameContext ctx);
+	void exitColumnName(APPDSLParser.ColumnNameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link APPDSLParser#uid}.
 	 * @param ctx the parse tree

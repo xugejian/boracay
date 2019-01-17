@@ -29,15 +29,14 @@ public class APPDSLParser extends Parser {
 		RULE_logicalOperator = 9, RULE_comparisonOperator = 10, RULE_value = 11, 
 		RULE_decimalLiteral = 12, RULE_textLiteral = 13, RULE_selectElement = 14, 
 		RULE_aggregateWindowedFunction = 15, RULE_functionArg = 16, RULE_fullColumnName = 17, 
-		RULE_functionCall = 18, RULE_serviceName = 19, RULE_column_name = 20, 
-		RULE_uid = 21;
+		RULE_functionCall = 18, RULE_serviceName = 19, RULE_columnName = 20, RULE_uid = 21;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"statement", "describeServiceStatement", "showServicesStatement", "selectStatement", 
 			"selectElements", "whereClause", "logicExpressions", "logicExpression", 
 			"limitClause", "logicalOperator", "comparisonOperator", "value", "decimalLiteral", 
 			"textLiteral", "selectElement", "aggregateWindowedFunction", "functionArg", 
-			"fullColumnName", "functionCall", "serviceName", "column_name", "uid"
+			"fullColumnName", "functionCall", "serviceName", "columnName", "uid"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -397,18 +396,18 @@ public class APPDSLParser extends Parser {
 		SelectElementsContext _localctx = new SelectElementsContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_selectElements);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
 			setState(70);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
+				enterOuterAlt(_localctx, 1);
 				{
 				setState(68);
 				((SelectElementsContext)_localctx).star = match(T__0);
 				}
 				break;
 			case COUNT:
+				enterOuterAlt(_localctx, 2);
 				{
 				setState(69);
 				selectElement();
@@ -416,7 +415,6 @@ public class APPDSLParser extends Parser {
 				break;
 			default:
 				throw new NoViableAltException(this);
-			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -1061,8 +1059,8 @@ public class APPDSLParser extends Parser {
 	}
 
 	public static class FunctionArgContext extends ParserRuleContext {
-		public Column_nameContext column_name() {
-			return getRuleContext(Column_nameContext.class,0);
+		public ColumnNameContext columnName() {
+			return getRuleContext(ColumnNameContext.class,0);
 		}
 		public FunctionArgContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1090,7 +1088,7 @@ public class APPDSLParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(130);
-			column_name();
+			columnName();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1105,8 +1103,8 @@ public class APPDSLParser extends Parser {
 	}
 
 	public static class FullColumnNameContext extends ParserRuleContext {
-		public Column_nameContext column_name() {
-			return getRuleContext(Column_nameContext.class,0);
+		public ColumnNameContext columnName() {
+			return getRuleContext(ColumnNameContext.class,0);
 		}
 		public FullColumnNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1134,7 +1132,7 @@ public class APPDSLParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(132);
-			column_name();
+			columnName();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1235,30 +1233,30 @@ public class APPDSLParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Column_nameContext extends ParserRuleContext {
+	public static class ColumnNameContext extends ParserRuleContext {
 		public TerminalNode ID() { return getToken(APPDSLParser.ID, 0); }
-		public Column_nameContext(ParserRuleContext parent, int invokingState) {
+		public ColumnNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_column_name; }
+		@Override public int getRuleIndex() { return RULE_columnName; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof APPDSLListener ) ((APPDSLListener)listener).enterColumn_name(this);
+			if ( listener instanceof APPDSLListener ) ((APPDSLListener)listener).enterColumnName(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof APPDSLListener ) ((APPDSLListener)listener).exitColumn_name(this);
+			if ( listener instanceof APPDSLListener ) ((APPDSLListener)listener).exitColumnName(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof APPDSLVisitor ) return ((APPDSLVisitor<? extends T>)visitor).visitColumn_name(this);
+			if ( visitor instanceof APPDSLVisitor ) return ((APPDSLVisitor<? extends T>)visitor).visitColumnName(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Column_nameContext column_name() throws RecognitionException {
-		Column_nameContext _localctx = new Column_nameContext(_ctx, getState());
-		enterRule(_localctx, 40, RULE_column_name);
+	public final ColumnNameContext columnName() throws RecognitionException {
+		ColumnNameContext _localctx = new ColumnNameContext(_ctx, getState());
+		enterRule(_localctx, 40, RULE_columnName);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

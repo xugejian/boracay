@@ -110,7 +110,7 @@ aggregateWindowedFunction
 functionArg
 functionArgs
 serviceName
-column_name
+columnName
 uid
 
 

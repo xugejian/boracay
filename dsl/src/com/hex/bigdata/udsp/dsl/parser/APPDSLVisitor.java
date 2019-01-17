@@ -133,11 +133,11 @@ public interface APPDSLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitServiceName(APPDSLParser.ServiceNameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link APPDSLParser#column_name}.
+	 * Visit a parse tree produced by {@link APPDSLParser#columnName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitColumn_name(APPDSLParser.Column_nameContext ctx);
+	T visitColumnName(APPDSLParser.ColumnNameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link APPDSLParser#uid}.
 	 * @param ctx the parse tree
