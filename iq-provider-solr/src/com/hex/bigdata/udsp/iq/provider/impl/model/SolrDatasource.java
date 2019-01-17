@@ -26,11 +26,19 @@ public class SolrDatasource extends Datasource {
         return value;
     }
 
-    public int getMaxNum() {
+    public int getMaxSize() {
         String value = getProperty("max.data.size").getValue();
         if (StringUtils.isBlank(value)) {
             value = "65536";
         }
         return Integer.valueOf(value);
+    }
+
+    public boolean getMaxSizeAlarm() {
+        String value = getProperty ("max.data.size.alarm").getValue ();
+        if (org.apache.commons.lang.StringUtils.isBlank (value)) {
+            return true;
+        }
+        return Boolean.valueOf (value);
     }
 }

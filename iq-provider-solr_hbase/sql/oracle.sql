@@ -39,6 +39,8 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IQ_DS_PROPS_SOLR_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/kerberos/test.keytab 或 /root/test.keytab', null, 16, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'max.data.size', '最大返回数', null, 99, null, null, 'default', '65535');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_PROPS_SOLR_HBASE', 'max.data.size.alarm', '超过最大返回数是否告警', null, 100, null, null, 'default', 'true');
 
 -- 添加IQ的元数据配置
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)

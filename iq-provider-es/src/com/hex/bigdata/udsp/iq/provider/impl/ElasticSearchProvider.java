@@ -50,10 +50,9 @@ public class ElasticSearchProvider implements Provider {
             Datasource datasource = metadata.getDatasource();
             ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource.getPropertyMap());
             //最大查询数量
-            int maxSize = elSearchDatasource.getMaxNum();
             Page page = new Page();
             page.setPageIndex(0);
-            page.setPageSize(maxSize);
+            page.setPageSize(elSearchDatasource.getMaxSize ());
             String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
             ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
             response.setRecords(getRecords(elSearchPage.getRecords(), returnColumns));
@@ -91,9 +90,7 @@ public class ElasticSearchProvider implements Provider {
             //数据源信息
             Datasource datasource = metadata.getDatasource();
             ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource.getPropertyMap());
-            int maxSize = elSearchDatasource.getMaxNum();
-            int pageSize = (page.getPageSize() > maxSize ? maxSize : page.getPageSize());
-            page.setPageSize(pageSize);
+            page = getPage(page, elSearchDatasource.getMaxSize(), elSearchDatasource.getMaxSizeAlarm ());
             String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
             ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
             response.setRecords(getRecords(elSearchPage.getRecords(), returnColumns));
@@ -114,6 +111,17 @@ public class ElasticSearchProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime());
         return response;
+    }
+
+    private Page getPage(Page page, int maxSize, boolean maxSizeAlarm) {
+        int pageSize = page.getPageSize ();
+        if (pageSize > maxSize) {
+            if (maxSizeAlarm)
+                throw new RuntimeException ("每页返回数据大小超过了最大返回数据条数的限制");
+            pageSize = maxSize;
+        }
+        page.setPageSize (pageSize);
+        return page;
     }
 
     // 字段名改别名
@@ -374,7 +382,8 @@ public class ElasticSearchProvider implements Provider {
      * @param page
      * @return
      */
-    public static String getQueryString(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns, List<ReturnColumn> returnColumns, Page page) {
+    public static String getQueryString(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns,
+                                        List<ReturnColumn> returnColumns, Page page) {
         JSONObject topObject = new JSONObject();
         JSONObject queryObject = new JSONObject();
         JSONObject boolObject = new JSONObject();

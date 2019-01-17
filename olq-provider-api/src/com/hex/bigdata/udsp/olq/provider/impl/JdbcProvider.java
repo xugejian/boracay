@@ -125,6 +125,14 @@ public abstract class JdbcProvider implements Provider {
         return conn;
     }
 
+    /**
+     * 执行
+     *
+     * @param consumeId
+     * @param request
+     * @return
+     */
+    @Override
     public OlqResponse execute(String consumeId, OlqRequest request) {
         logger.debug ("request=" + JSONUtil.parseObj2JSON (request));
         long bef = System.currentTimeMillis ();
@@ -156,8 +164,9 @@ public abstract class JdbcProvider implements Provider {
             }
 
             LinkedHashMap<String, String> columns = getColumns (rs);
-            List<Map<String, String>> records = getRecords (rs, jdbcDatasource.getMaxNum ());
             response.setColumns (columns);
+            // 根据结果集大小限制返回结果集数据
+            List<Map<String, String>> records = getRecords (rs, jdbcDatasource.getMaxSize (), jdbcDatasource.getMaxSizeAlarm ());
             response.setRecords (records);
             response.setTotalCount (records.size ());
             response.setPage (getPage (stmt, olqQuerySql));
@@ -196,7 +205,7 @@ public abstract class JdbcProvider implements Provider {
         return null;
     }
 
-    private List<Map<String, String>> getRecords(ResultSet rs, int maxNum) throws SQLException {
+    private List<Map<String, String>> getRecords(ResultSet rs, int maxSize, boolean maxSizeAlarm) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData ();
         List<Map<String, String>> list = new ArrayList<> ();
         LinkedHashMap<String, String> map = null;
@@ -213,7 +222,9 @@ public abstract class JdbcProvider implements Provider {
             }
             list.add (map);
             count++;
-            if (count >= maxNum) {
+            if (count >= maxSize) {
+                if (maxSizeAlarm)
+                    throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
                 break;
             }
         }
@@ -253,6 +264,12 @@ public abstract class JdbcProvider implements Provider {
         }
     }
 
+    /**
+     * 测试数据源
+     *
+     * @param datasource
+     * @return
+     */
     @Override
     public boolean testDatasource(Datasource datasource) {
         Connection connection = null;
@@ -276,6 +293,13 @@ public abstract class JdbcProvider implements Provider {
         return false;
     }
 
+    /**
+     * 执行（结果集一批批抽取）
+     *
+     * @param consumeId
+     * @param request
+     * @return
+     */
     @Override
     public OlqResponseFetch executeFetch(String consumeId, OlqRequest request) {
         logger.debug ("request=" + JSONUtil.parseObj2JSON (request));

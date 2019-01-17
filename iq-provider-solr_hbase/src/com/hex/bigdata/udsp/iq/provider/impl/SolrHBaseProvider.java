@@ -62,9 +62,8 @@ public class SolrHBaseProvider implements Provider {
             Datasource datasource = metadata.getDatasource();
             List<DataColumn> metaReturnColumns = metadata.getReturnColumns();
             SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource(datasource.getPropertyMap());
-            int maxSize = solrHBaseDatasource.getMaxNum();
             String primaryKey = solrHBaseMetadata.getSolrPrimaryKey();
-            SolrQuery query = getSolrQuery(maxSize, queryColumns, orderColumns, primaryKey);
+            SolrQuery query = getSolrQuery(queryColumns, orderColumns, primaryKey, solrHBaseDatasource.getMaxSize());
             Map<Integer, String> colMap = getColMap(metaReturnColumns);
             List<Map<String, String>> list = search(solrHBaseDatasource, tbName, query, colMap, solrHBaseMetadata);
             list = orderBy(list, queryColumns, orderColumns); // 排序处理
@@ -104,13 +103,10 @@ public class SolrHBaseProvider implements Provider {
             Datasource datasource = metadata.getDatasource();
             List<DataColumn> metaReturnColumns = metadata.getReturnColumns();
             SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource(datasource.getPropertyMap());
-            int maxSize = solrHBaseDatasource.getMaxNum();
-            int pageIndex = page.getPageIndex();
-            int pageSize = (page.getPageSize() > maxSize ? maxSize : page.getPageSize());
-            page.setPageSize(pageSize);
-            SolrQuery query = getSolrQuery(pageIndex, pageSize, queryColumns, orderColumns, solrHBaseMetadata.getSolrPrimaryKey());
+            page = getPage(page, solrHBaseDatasource.getMaxSize (), solrHBaseDatasource.getMaxSizeAlarm ());
+            SolrQuery query = getSolrQuery(queryColumns, orderColumns, solrHBaseMetadata.getSolrPrimaryKey(), page.getPageIndex (), page.getPageSize ());
             Map<Integer, String> colMap = getColMap(metaReturnColumns);
-            HBasePage hbasePage = searchPage(solrHBaseDatasource, tbName, query, pageIndex, pageSize, colMap, solrHBaseMetadata);
+            HBasePage hbasePage = searchPage(solrHBaseDatasource, tbName, query, page.getPageIndex (), page.getPageSize (), colMap, solrHBaseMetadata);
             List<Map<String, String>> list = orderBy(hbasePage.getRecords(), queryColumns, orderColumns); // 排序处理
             response.setRecords(getRecords(list, returnColumns));
             page.setTotalCount(hbasePage.getTotalCount());
@@ -132,7 +128,17 @@ public class SolrHBaseProvider implements Provider {
         return response;
     }
 
-    //-------------------------------------------分割线---------------------------------------------
+    private Page getPage(Page page, int maxSize, boolean maxSizeAlarm) {
+        int pageSize = page.getPageSize ();
+        if (pageSize > maxSize) {
+            if (maxSizeAlarm)
+                throw new RuntimeException ("每页返回数据大小超过了最大返回数据条数的限制");
+            pageSize = maxSize;
+        }
+        page.setPageSize (pageSize);
+        return page;
+    }
+
     private synchronized HBaseConnectionPoolFactory getDataSource(SolrHBaseDatasource datasource) {
         HBaseDatasource hBaseDatasource = new HBaseDatasource(datasource.getPropertyMap());
         String dsId = datasource.getId();
@@ -165,7 +171,7 @@ public class SolrHBaseProvider implements Provider {
         getDataSource(datasource).releaseConnection(conn);
     }
 
-    private SolrQuery getSolrQuery(int rows, List<QueryColumn> queryColumns, List<OrderColumn> orderColumns, String primaryKey) {
+    private SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns, String primaryKey, int rows) {
         return new SolrQuery() //
                 .setQuery(getQuery(queryColumns)) //
                 .setStart(0) //
@@ -174,8 +180,8 @@ public class SolrHBaseProvider implements Provider {
                 .setFields(primaryKey);
     }
 
-    private SolrQuery getSolrQuery(int pageIndex, int pageSize, List<QueryColumn> queryColumns,
-                                   List<OrderColumn> orderColumns, String primaryKey) {
+    private SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns,
+                                   String primaryKey, int pageIndex, int pageSize) {
         return new SolrQuery() //
                 .setQuery(getQuery(queryColumns)) //
                 .setStart((pageIndex - 1) * pageSize) //

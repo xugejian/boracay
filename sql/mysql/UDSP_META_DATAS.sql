@@ -1143,5 +1143,34 @@ values ('OLQ_DS_PROPS_DSL', 'max.data.size', '最大数据返回条数', null, 1
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_IMPL_CLASS', 'DSL', 'com.hex.bigdata.udsp.olq.provider.impl.DslProvider', null, 2, null, null, 'default', '联机查询的DSL接口实现类');
 
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_PROPS_ELASTICSEARCH', 'max.data.size.alarm', '超过最大返回数是否告警', null, 3, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_PROPS_HBASE', 'max.data.size.alarm', '超过最大返回数是否告警', null, 100, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_PROPS_REDIS', 'max.data.size.alarm', '超过最大返回数是否告警', null, 12, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_PROPS_SOLR', 'max.data.size.alarm', '超过最大返回数是否告警', null, 3, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_DS_PROPS_SOLR_HBASE', 'max.data.size.alarm', '超过最大返回数是否告警', null, 100, null, null, 'default', 'true');
+
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DB2', 'max.data.size.alarm', '超过最大返回数是否告警', null, 20, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_DSL', 'max.data.size.alarm', '超过最大返回数是否告警', null, 20, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_HIVE', 'max.data.size.alarm', '超过最大返回数是否告警', null, 20, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_IMPALA', 'max.data.size.alarm', '超过最大返回数是否告警', null, 20, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_INCEPTOR', 'max.data.size.alarm', '超过最大返回数是否告警', null, 20, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_KYLIN', 'max.data.size.alarm', '超过最大返回数是否告警', null, 20, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_MYSQL', 'max.data.size.alarm', '超过最大返回数是否告警', null, 20, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_ORACLE', 'max.data.size.alarm', '超过最大返回数是否告警', null, 20, null, null, 'default', 'true');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('OLQ_DS_PROPS_PGSQL', 'max.data.size.alarm', '超过最大返回数是否告警', null, 20, null, null, 'default', 'true');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
