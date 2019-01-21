@@ -14,7 +14,7 @@ public class Db2Provider extends JdbcProvider {
 
     protected OlqQuerySql getPageSql(String sql, Page page) {
         OlqQuerySql olqQuerySql = new OlqQuerySql(sql);
-        if (page == null || !sql.toUpperCase().trim().contains("SELECT")) {
+        if (page == null || !sql.toUpperCase().contains("SELECT")) {
             return olqQuerySql;
         }
         // 分页sql组装

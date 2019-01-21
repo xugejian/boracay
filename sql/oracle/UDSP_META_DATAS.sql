@@ -220,7 +220,7 @@ values ('IQ_DS_PROPS_REDIS', 'redis.max.total', 'redis连接池最大连接数',
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_PRODUCER_PROPS_KAFKA', 'serializer.class', 'Value的序列化类', null, 2, null, null, 'default', 'kafka.serializer.StringEncoder');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'max.data.size', '最大返回数', null, 99, null, null, 'default', '65535');
+values ('IQ_DS_PROPS_SOLR_HBASE', 'max.data.size', '最大返回数', null, 99, null, null, 'default', '4000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_PRODUCER_PROPS_KAFKA', 'metadata.broker.list', 'Kafka集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9092,10.1.97.2:9092,10.1.97.3:9092', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -2187,7 +2187,7 @@ values ('OLQ_DS_PROPS_DSL', 'remove.abandoned.timeout', '回收没用的连接�
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_DSL', 'remove.abandoned', '是否进行没用连接的回收', null, 18, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('OLQ_DS_PROPS_DSL', 'max.data.size', '最大数据返回条数', null, 19, null, null, 'default', '65535');
+values ('OLQ_DS_PROPS_DSL', 'max.data.size', '最大数据返回条数', null, 19, null, null, 'default', '4000');
 
 -- 添加OLQ的接口实现类
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
