@@ -56,6 +56,7 @@ public class DslSqlAdaptor {
     }
 
     private static ComparisonOperator transComparisonOperator(String operator) {
+        operator = operator.toUpperCase ();
         ComparisonOperator comparison = ComparisonOperator.EQ;
         if (ComparisonOperator.EQ.getValue ().equals (operator)) {
             comparison = ComparisonOperator.EQ;
@@ -96,10 +97,12 @@ public class DslSqlAdaptor {
      * @return
      */
     public static Component logicExpressionsContextToComponent(DSLSQLParser.LogicExpressionsContext logicExpressionsContext) {
+        int count = logicExpressionsContext.getChildCount ();
+        // 拆分OR逻辑操作
         Map<Integer, Integer> map = new HashMap<> ();
         int startIndex = 0;
         int endIndex = 0;
-        for (int i = 0; i < logicExpressionsContext.getChildCount (); i++) {
+        for (int i = 0; i < count; i++) {
             if (i % 2 == 1) { // 逻辑操作符
                 DSLSQLParser.LogicalOperatorContext logicalOperatorContext = (DSLSQLParser.LogicalOperatorContext) logicExpressionsContext.getChild (i);
                 if (logicalOperatorContext.OR () != null) {
@@ -109,26 +112,19 @@ public class DslSqlAdaptor {
                 }
             }
         }
-        if (map.size () == 0) { // 都是AND逻辑操作符
-            if (logicExpressionsContext.getChildCount () == 1) {
-                DSLSQLParser.LogicExpressionContext logicExpressionContext = (DSLSQLParser.LogicExpressionContext) logicExpressionsContext.getChild (0);
-                return logicExpressionContextToComponent (logicExpressionContext);
-            } else {
-                return logicExpressionsContextToComponent (logicExpressionsContext, 0, logicExpressionsContext.getChildCount ());
-            }
-        } else { // 有OR逻辑操作符
-            List<Component> components = new ArrayList<> ();
-            for (Map.Entry<Integer, Integer> entry : map.entrySet ()) {
-                Component component = logicExpressionsContextToComponent (logicExpressionsContext, entry.getKey (), entry.getValue ());
-                components.add (component);
-            }
-            return new Composite (LogicalOperator.OR, components);
+        map.put (startIndex, count - 1);
+        // 处理每个拆分的逻辑操作
+        List<Component> components = new ArrayList<> ();
+        for (Map.Entry<Integer, Integer> entry : map.entrySet ()) {
+            Component component = logicExpressionsContextToComponent (logicExpressionsContext, entry.getKey (), entry.getValue ());
+            components.add (component);
         }
+        return new Composite (LogicalOperator.OR, components);
     }
 
     private static Component logicExpressionsContextToComponent(DSLSQLParser.LogicExpressionsContext logicExpressionsContext, int startIndex, int endIndex) {
         List<Component> components = new ArrayList<> ();
-        for (int i = startIndex; i < endIndex; i++) {
+        for (int i = startIndex; i <= endIndex; i++) {
             if (i % 2 == 0) { // 逻辑操作
                 DSLSQLParser.LogicExpressionContext logicExpressionContext = (DSLSQLParser.LogicExpressionContext) logicExpressionsContext.getChild (i);
                 Component component = logicExpressionContextToComponent (logicExpressionContext);

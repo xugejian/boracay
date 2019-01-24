@@ -12,10 +12,7 @@ import com.hex.bigdata.udsp.consumer.service.LoggingService;
 import com.hex.bigdata.udsp.consumer.util.RequestUtil;
 import com.hex.bigdata.udsp.dsl.AppDslAdaptor;
 import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
-import com.hex.bigdata.udsp.dsl.model.Column;
-import com.hex.bigdata.udsp.dsl.model.Component;
-import com.hex.bigdata.udsp.dsl.model.Limit;
-import com.hex.bigdata.udsp.dsl.model.Order;
+import com.hex.bigdata.udsp.dsl.model.*;
 import com.hex.bigdata.udsp.dsl.parser.APPDSLParser;
 import com.hex.bigdata.udsp.dsl.parser.DSLSQLParser;
 import com.hex.goframe.util.WebApplicationContextUtil;
@@ -153,6 +150,13 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
         String serviceName = serviceNameContext.getText ();
         logger.debug ("serviceName:" + serviceName);
         request.setServiceName (serviceName); // 设置serviceName
+        // select
+        List<Column> select = null;
+        DSLSQLParser.SelectElementsContext selectElementsContext = selectStatementContext.selectElements ();
+        if (selectElementsContext != null) {
+            logger.debug ("selectElements:" + selectElementsContext.toStringTree (parser));
+            select = DslSqlAdaptor.selectElementsContextToSelect (selectElementsContext);
+        }
         // where
         Component where = null;
         DSLSQLParser.WhereClauseContext whereClauseContext = selectStatementContext.whereClause ();
@@ -160,13 +164,6 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
             logger.debug ("whereClause:" + whereClauseContext.toStringTree (parser));
             DSLSQLParser.LogicExpressionsContext logicExpressionsContext = whereClauseContext.logicExpressions ();
             where = DslSqlAdaptor.logicExpressionsContextToComponent (logicExpressionsContext);
-        }
-        // limit
-        Limit limit = null;
-        DSLSQLParser.LimitClauseContext limitClauseContext = selectStatementContext.limitClause ();
-        if (limitClauseContext != null) {
-            logger.debug ("limitClause:" + limitClauseContext.toStringTree (parser));
-            limit = DslSqlAdaptor.limitClauseContextToLimit (limitClauseContext);
         }
         // group by
         List<String> groupBy = null;
@@ -182,13 +179,21 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
             logger.debug ("orderByClause:" + orderByClauseContext.toStringTree (parser));
             orderBy = DslSqlAdaptor.orderByClauseContextToOrderBy (orderByClauseContext);
         }
-        // select
-        List<Column> select = null;
-        DSLSQLParser.SelectElementsContext selectElementsContext = selectStatementContext.selectElements ();
-        if (selectElementsContext != null) {
-            logger.debug ("selectElements:" + selectElementsContext.toStringTree (parser));
-            select = DslSqlAdaptor.selectElementsContextToSelect (selectElementsContext);
+        // limit
+        Limit limit = null;
+        DSLSQLParser.LimitClauseContext limitClauseContext = selectStatementContext.limitClause ();
+        if (limitClauseContext != null) {
+            logger.debug ("limitClause:" + limitClauseContext.toStringTree (parser));
+            limit = DslSqlAdaptor.limitClauseContextToLimit (limitClauseContext);
         }
+
+        DslRequest dslRequest = new DslRequest ();
+        dslRequest.setName (serviceName);
+        dslRequest.setSelect (select);
+        dslRequest.setWhere (where);
+        dslRequest.setGroupBy (groupBy);
+        dslRequest.setOrderBy (orderBy);
+        dslRequest.setLimit (limit);
 
         return response;
     }
