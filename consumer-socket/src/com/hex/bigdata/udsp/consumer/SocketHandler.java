@@ -146,7 +146,6 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private Response sdlSqlSelect(Request request) {
         Response response = new Response ();
         String sql = request.getSql ();
-        ParseTree parse = null;
         DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
         DSLSQLParser.SelectStatementContext selectStatementContext = parser.selectStatement ();
         // serviceName
@@ -155,35 +154,40 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
         logger.debug ("serviceName:" + serviceName);
         request.setServiceName (serviceName); // 设置serviceName
         // where
+        Component where = null;
         DSLSQLParser.WhereClauseContext whereClauseContext = selectStatementContext.whereClause ();
         if (whereClauseContext != null) {
             logger.debug ("whereClause:" + whereClauseContext.toStringTree (parser));
             DSLSQLParser.LogicExpressionsContext logicExpressionsContext = whereClauseContext.logicExpressions ();
-            Component where = DslSqlAdaptor.logicExpressionsContextToComponent (logicExpressionsContext);
+            where = DslSqlAdaptor.logicExpressionsContextToComponent (logicExpressionsContext);
         }
         // limit
+        Limit limit = null;
         DSLSQLParser.LimitClauseContext limitClauseContext = selectStatementContext.limitClause ();
         if (limitClauseContext != null) {
             logger.debug ("limitClause:" + limitClauseContext.toStringTree (parser));
-            Limit limit = DslSqlAdaptor.limitClauseContextToLimit (limitClauseContext);
+            limit = DslSqlAdaptor.limitClauseContextToLimit (limitClauseContext);
         }
         // group by
+        List<String> groupBy = null;
         DSLSQLParser.GroupByCaluseContext groupByCaluseContext = selectStatementContext.groupByCaluse ();
         if (groupByCaluseContext != null) {
             logger.debug ("groupByCaluse:" + groupByCaluseContext.toStringTree (parser));
-            List<String> groupBy = DslSqlAdaptor.groupByCaluseContextToGroupBy (groupByCaluseContext);
+            groupBy = DslSqlAdaptor.groupByCaluseContextToGroupBy (groupByCaluseContext);
         }
         // order by
+        List<Order> orderBy = null;
         DSLSQLParser.OrderByClauseContext orderByClauseContext = selectStatementContext.orderByClause ();
         if (orderByClauseContext != null) {
             logger.debug ("orderByClause:" + orderByClauseContext.toStringTree (parser));
-            List<Order> orderBy = DslSqlAdaptor.orderByClauseContextToOrderBy (orderByClauseContext);
+            orderBy = DslSqlAdaptor.orderByClauseContextToOrderBy (orderByClauseContext);
         }
         // select
+        List<Column> select = null;
         DSLSQLParser.SelectElementsContext selectElementsContext = selectStatementContext.selectElements ();
         if (selectElementsContext != null) {
             logger.debug ("selectElements:" + selectElementsContext.toStringTree (parser));
-            List<Column> select = DslSqlAdaptor.selectElementsContextToSelect (selectElementsContext);
+            select = DslSqlAdaptor.selectElementsContextToSelect (selectElementsContext);
         }
 
         return response;

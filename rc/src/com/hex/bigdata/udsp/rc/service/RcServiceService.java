@@ -11,6 +11,7 @@ import com.hex.bigdata.udsp.im.model.ImModel;
 import com.hex.bigdata.udsp.im.service.ImModelService;
 import com.hex.bigdata.udsp.iq.model.IqApplication;
 import com.hex.bigdata.udsp.iq.service.IqApplicationService;
+import com.hex.bigdata.udsp.iq.service.IqMetadataService;
 import com.hex.bigdata.udsp.mm.dao.MmApplicationMapper;
 import com.hex.bigdata.udsp.mm.model.MmApplication;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
@@ -86,6 +87,8 @@ public class RcServiceService {
     private OlqApplicationService olqApplicationService;
     @Autowired
     private ImModelService imModelService;
+    @Autowired
+    private IqMetadataService iqMetadataService;
 
     /**
      * 服务授权
@@ -252,19 +255,21 @@ public class RcServiceService {
     public List selectApps(String type) {
         List searchList = null;
         if (ServiceType.IQ.getValue ().equals (type)) {
-            searchList = this.iqApplicationService.selectAll ();
+            searchList = iqApplicationService.selectAll ();
         } else if (ServiceType.OLQ.getValue ().equals (type)) {
             searchList = comDatasourceService.selectByModel (DatasourceMode.OLQ.getValue ());
         } else if (ServiceType.MM.getValue ().equals (type)) {
             searchList = mmApplicationService.selectAll ();
         } else if (ServiceType.RTS_PRODUCER.getValue ().equals (type)) {
-            searchList = this.rtsProducerService.selectAll ();
+            searchList = rtsProducerService.selectAll ();
         } else if (ServiceType.RTS_CONSUMER.getValue ().equals (type)) {
-            searchList = this.rtsConsumerService.selectAll ();
+            searchList = rtsConsumerService.selectAll ();
         } else if (ServiceType.OLQ_APP.getValue ().equals (type)) {
-            searchList = this.olqApplicationService.selectAll ();
+            searchList = olqApplicationService.selectAll ();
         } else if (ServiceType.IM.getValue ().equals (type)) {
-            searchList = this.imModelService.selectAll ();
+            searchList = imModelService.selectAll ();
+        } else if (ServiceType.IQ_DSL.getValue ().equals (type)) {
+            searchList = iqMetadataService.selectAll ();
         }
         return searchList;
     }
@@ -292,6 +297,8 @@ public class RcServiceService {
             app = this.olqApplicationService.select (appId);
         } else if (ServiceType.IM.getValue ().equals (type)) {
             app = this.imModelService.select (appId);
+        } else if (ServiceType.IQ_DSL.getValue ().equals (type)) {
+            app = this.iqMetadataService.select (appId);
         }
         return app;
     }

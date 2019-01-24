@@ -127,6 +127,10 @@ public class IqMetadataService extends BaseService {
         return iqMetadataMapper.select(iqMetadataView);
     }
 
+    public List<IqMetadata> selectAll() {
+        return iqMetadataMapper.selectAll();
+    }
+
     public boolean checkName(String name) {
         return iqMetadataMapper.selectByName(name) != null;
     }
