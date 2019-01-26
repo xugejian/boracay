@@ -12,6 +12,8 @@ import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.ElasticSearchConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.*;
 import com.hex.bigdata.udsp.iq.provider.model.*;
+import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslRequest;
+import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.http.HttpHost;
@@ -25,7 +27,6 @@ import org.elasticsearch.client.RestClient;
 import java.io.IOException;
 import java.util.*;
 
-//@Component("com.hex.bigdata.udsp.iq.provider.impl.ElasticSearchProvider")
 public class ElasticSearchProvider implements Provider {
 
     private static Logger logger = LogManager.getLogger(ElasticSearchProvider.class);
@@ -47,8 +48,7 @@ public class ElasticSearchProvider implements Provider {
             //表名，索引名称.类型名称
             String schemaName = metadata.getTbName();
             //数据源信息
-            Datasource datasource = metadata.getDatasource();
-            ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource.getPropertyMap());
+            ELSearchDatasource elSearchDatasource = new ELSearchDatasource(metadata.getDatasource());
             //最大查询数量
             Page page = new Page();
             page.setPageIndex(0);
@@ -88,9 +88,7 @@ public class ElasticSearchProvider implements Provider {
             //表名，索引名称.类型名称
             String schemaName = metadata.getTbName();
             //数据源信息
-            Datasource datasource = metadata.getDatasource();
-            ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource.getPropertyMap());
-            page = getPage(page, elSearchDatasource.getMaxSize(), elSearchDatasource.getMaxSizeAlarm ());
+            ELSearchDatasource elSearchDatasource = new ELSearchDatasource(metadata.getDatasource());
             String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
             ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
             response.setRecords(getRecords(elSearchPage.getRecords(), returnColumns));
@@ -111,17 +109,6 @@ public class ElasticSearchProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime());
         return response;
-    }
-
-    private Page getPage(Page page, int maxSize, boolean maxSizeAlarm) {
-        int pageSize = page.getPageSize ();
-        if (pageSize > maxSize) {
-            if (maxSizeAlarm)
-                throw new RuntimeException ("每页返回数据大小超过了最大返回数据条数的限制");
-            pageSize = maxSize;
-        }
-        page.setPageSize (pageSize);
-        return page;
     }
 
     // 字段名改别名
@@ -205,7 +192,7 @@ public class ElasticSearchProvider implements Provider {
 
     @Override
     public boolean testDatasource(Datasource datasource) {
-        ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource.getProperties());
+        ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource);
         String[] tempServers = elSearchDatasource.getElasticsearchServers().split(",");
         if (tempServers.length == 0) {
             return false;
@@ -236,7 +223,7 @@ public class ElasticSearchProvider implements Provider {
     public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
         List<MetadataCol> list = null;
         MetadataCol col = null;
-        ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource.getPropertyMap());
+        ELSearchDatasource elSearchDatasource = new ELSearchDatasource(datasource);
         RestClient restClient = null;
         NStringEntity stringEntity = null;
         Response response = null;
@@ -299,7 +286,12 @@ public class ElasticSearchProvider implements Provider {
         return list;
     }
 
-    public static DataType getColType(String type) {
+    @Override
+    public IqDslResponse select(IqDslRequest request) {
+        throw new RuntimeException ("ES目前暂时不支持DSL");
+    }
+
+    private DataType getColType(String type) {
         type = type.toUpperCase();
         DataType dataType = null;
         switch (type) {

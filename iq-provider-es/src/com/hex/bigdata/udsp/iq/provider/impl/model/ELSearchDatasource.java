@@ -1,45 +1,23 @@
 package com.hex.bigdata.udsp.iq.provider.impl.model;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
-import com.hex.bigdata.udsp.common.api.model.Property;
+import com.hex.bigdata.udsp.iq.provider.model.IqDatasource;
 import org.apache.commons.lang.StringUtils;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Solr的数据源配置
  */
-public class ELSearchDatasource extends Datasource {
+public class ELSearchDatasource extends IqDatasource {
 
-    public ELSearchDatasource(List<Property> properties) {
-        super(properties);
-    }
-
-    public ELSearchDatasource(Map<String, Property> propertieMap) {
-        super(propertieMap);
+    public ELSearchDatasource(Datasource datasource) {
+        super (datasource);
     }
 
     public String getElasticsearchServers() {
-        String value = getProperty("elasticsearch.servers").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("elasticsearch.servers不能为空");
+        String value = getProperty ("elasticsearch.servers").getValue ();
+        if (StringUtils.isBlank (value)) {
+            throw new IllegalArgumentException ("elasticsearch.servers不能为空");
+        }
         return value;
-    }
-
-    public int getMaxSize() {
-        String value = getProperty("max.data.size").getValue();
-        if (StringUtils.isBlank(value)) {
-            value = "65536";
-        }
-        return Integer.valueOf(value);
-    }
-
-    public boolean getMaxSizeAlarm() {
-        String value = getProperty ("max.data.size.alarm").getValue ();
-        if (org.apache.commons.lang.StringUtils.isBlank (value)) {
-            return true;
-        }
-        return Boolean.valueOf (value);
     }
 }

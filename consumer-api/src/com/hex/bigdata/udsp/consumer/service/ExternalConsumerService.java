@@ -5,6 +5,7 @@ import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
+import com.hex.bigdata.udsp.consumer.util.Util;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
 import com.hex.bigdata.udsp.rc.model.RcService;
@@ -27,6 +28,7 @@ import java.util.Map;
  */
 @Service
 public class ExternalConsumerService {
+
     private static Logger logger = LogManager.getLogger (ExternalConsumerService.class);
 
     @Autowired
@@ -80,6 +82,23 @@ public class ExternalConsumerService {
                 || StringUtils.isBlank (udspUser) || StringUtils.isBlank (udspPass)
                 || StringUtils.isBlank (entity) || StringUtils.isBlank (type)) {
             consumeRequest.setError (ErrorCode.ERROR_000009);
+            String message = "";
+            if (StringUtils.isBlank (serviceName)) {
+                message += "服务名不能为空！";
+            }
+            if (StringUtils.isBlank (udspUser)) {
+                message += "用户名不能为空！";
+            }
+            if (StringUtils.isBlank (udspPass)) {
+                message += "密码不能为空！";
+            }
+            if (StringUtils.isBlank (entity)) {
+                message += "实体不能为空！";
+            }
+            if (StringUtils.isBlank (type)) {
+                message += "类型不能为空！";
+            }
+            consumeRequest.setMessage (message);
             return consumeRequest;
         }
         //消费前公共输入参数检查
@@ -119,7 +138,9 @@ public class ExternalConsumerService {
         Map<String, String> record = null;
         List<RcService> iqServices = rcServiceService.selectStartByTypeAndName (ServiceType.IQ.getValue (), likeName);
         List<RcService> iqDslServices = rcServiceService.selectStartByTypeAndName (ServiceType.IQ_DSL.getValue (), likeName);
-        if (iqServices == null) iqServices = new ArrayList<> ();
+        if (iqServices == null) {
+            iqServices = new ArrayList<> ();
+        }
         iqServices.addAll (iqDslServices);
         if (iqServices.size () != 0) {
             for (RcService service : iqServices) {
@@ -148,11 +169,7 @@ public class ExternalConsumerService {
         Map<String, String> record = null;
         RcService service = rcServiceService.selectByName (serviceName);
         if (service == null) {
-            response.setStatus (Status.DEFEAT.getValue ());
-            response.setStatusCode (StatusCode.DEFEAT.getValue ());
-            response.setErrorCode (ErrorCode.ERROR_000099.getValue ());
-            response.setMessage ("服务名错误或不存在");
-            return response;
+            return Util.errorResponse (ErrorCode.ERROR_000099, "服务名错误或不存在!");
         }
         try {
             String appType = service.getType ();
@@ -277,13 +294,11 @@ public class ExternalConsumerService {
             response.setRecords (records);
             response.setStatus (Status.SUCCESS.getValue ());
             response.setStatusCode (StatusCode.SUCCESS.getValue ());
+            return response;
         } catch (Exception e) {
-            response.setStatus (Status.DEFEAT.getValue ());
-            response.setStatusCode (StatusCode.DEFEAT.getValue ());
-            response.setErrorCode (ErrorCode.ERROR_000007.getValue ());
-            response.setMessage (e.getMessage ());
+            e.printStackTrace ();
+            return Util.errorResponse (ErrorCode.ERROR_000007, e.toString ());
         }
-        return response;
     }
 
     /**

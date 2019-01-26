@@ -8,7 +8,7 @@ import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.consumer.service.ExternalConsumerService;
 import com.hex.bigdata.udsp.consumer.service.LoggingService;
-import com.hex.bigdata.udsp.consumer.util.RequestUtil;
+import com.hex.bigdata.udsp.consumer.util.Util;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
@@ -67,17 +67,17 @@ public class WebServiceConsumer implements WebServiceInterface {
      * <p>
      * 这里用json字符串作为请求参数是为了自己转换成Request，出错时把信息返回给请求方。
      */
+    @Override
     public String consumeJson(@RequestBody String json) {
         Response response = new Response();
         long bef = System.currentTimeMillis();
         try {
-            Request request = RequestUtil.jsonToRequest(json);
+            Request request = Util.jsonToRequest(json);
             request.setRequestIp(getClientIp()); //获取并设置客户端请求的IP
             response = consumerService.consume(request);
         } catch (Exception e) {
             e.printStackTrace();
-            loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
-                    ErrorCode.ERROR_000005.getValue(), e.getMessage());
+            loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0, ErrorCode.ERROR_000005, e.toString ());
         }
         return JSONUtil.parseObj2JSON(response);
     }

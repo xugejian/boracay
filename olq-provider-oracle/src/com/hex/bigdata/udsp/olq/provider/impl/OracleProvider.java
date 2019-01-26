@@ -8,11 +8,11 @@ import org.apache.logging.log4j.Logger;
 /**
  * Created by PC on 2017/6/26.
  */
-//@Component("com.hex.bigdata.udsp.olq.provider.impl.OracleProvider")
 public class OracleProvider extends JdbcProvider {
 
     private Logger logger = LogManager.getLogger(OracleProvider.class);
 
+    @Override
     protected OlqQuerySql getPageSql(String sql, Page page) {
         OlqQuerySql olqQuerySql = new OlqQuerySql(sql);
         if (page == null || !sql.toUpperCase().contains("SELECT")) {

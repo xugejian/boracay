@@ -12,12 +12,12 @@ import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseMetadata;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBasePage;
 import com.hex.bigdata.udsp.iq.provider.model.*;
+import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslRequest;
+import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.commons.pool.impl.GenericObjectPool;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
@@ -37,7 +37,6 @@ import java.util.*;
 /**
  * Created by junjiem on 2017-3-3.
  */
-//@Component("com.hex.bigdata.udsp.iq.provider.impl.HBaseProvider")
 public class HBaseProvider implements Provider {
 
     private static final int HBASE_SCAN_CACHING_SIZE = 1024; // 每次RPC请求记录数
@@ -55,6 +54,7 @@ public class HBaseProvider implements Provider {
     private static Map<String, HBaseConnectionPoolFactory> dataSourcePool;
     private static Map<String, HBaseAggregationClientPoolFactory> aggregationClientDataSourcePool;
 
+    @Override
     public IqResponse query(IqRequest request) {
         logger.debug ("request=" + JSONUtil.parseObj2JSON (request));
         long bef = System.currentTimeMillis ();
@@ -66,6 +66,7 @@ public class HBaseProvider implements Provider {
             Metadata metadata = application.getMetadata ();
             List<QueryColumn> queryColumns = application.getQueryColumns ();
             Collections.sort (queryColumns, new Comparator<QueryColumn> () {
+                @Override
                 public int compare(QueryColumn obj1, QueryColumn obj2) {
                     return obj1.getSeq ().compareTo (obj2.getSeq ());
                 }
@@ -75,8 +76,7 @@ public class HBaseProvider implements Provider {
             List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
             String tbName = metadata.getTbName ();
             HBaseMetadata hbaseMetadata = new HBaseMetadata (metadata.getPropertyMap ());
-            Datasource datasource = metadata.getDatasource ();
-            HBaseDatasource hbaseDatasource = new HBaseDatasource (datasource.getPropertyMap ());
+            HBaseDatasource hbaseDatasource = new HBaseDatasource (metadata.getDatasource ());
             String startRow = getStartRow (queryColumns);
             String stopRow = getStopRow (queryColumns);
             logger.debug ("startRow:" + startRow + ", startRow:" + startRow);
@@ -102,6 +102,7 @@ public class HBaseProvider implements Provider {
         return response;
     }
 
+    @Override
     public IqResponse query(IqRequest request, Page page) {
         logger.debug ("request=" + JSONUtil.parseObj2JSON (request)
                 + " pageIndex=" + page.getPageIndex () + " pageSize=" + page.getPageSize ());
@@ -114,6 +115,7 @@ public class HBaseProvider implements Provider {
             Metadata metadata = application.getMetadata ();
             List<QueryColumn> queryColumns = application.getQueryColumns ();
             Collections.sort (queryColumns, new Comparator<QueryColumn> () {
+                @Override
                 public int compare(QueryColumn obj1, QueryColumn obj2) {
                     return obj1.getSeq ().compareTo (obj2.getSeq ());
                 }
@@ -123,13 +125,12 @@ public class HBaseProvider implements Provider {
             List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
             String tbName = metadata.getTbName ();
             HBaseMetadata hbaseMetadata = new HBaseMetadata (metadata.getPropertyMap ());
-            Datasource datasource = metadata.getDatasource ();
-            HBaseDatasource hbaseDatasource = new HBaseDatasource (datasource.getPropertyMap ());
+            HBaseDatasource hbaseDatasource = new HBaseDatasource (metadata.getDatasource ());
             String startRow = getStartRow (queryColumns);
             String stopRow = getStopRow (queryColumns);
             logger.debug ("startRow:" + startRow + ", startRow:" + startRow);
             Map<Integer, String> colMap = getColMap (metaReturnColumns);
-            HBasePage hbasePage = getHBasePage (page, startRow, stopRow, hbaseDatasource.getMaxSize (), hbaseDatasource.getMaxSizeAlarm ());
+            HBasePage hbasePage = new HBasePage (page.getPageSize (), page.getPageIndex (), startRow, stopRow);
             hbasePage = scanPage (hbaseDatasource, tbName, hbasePage, colMap, hbaseMetadata);
             List<Map<String, String>> list = hbasePage.getRecords ();
             list = orderBy (list, orderColumns); // 排序处理
@@ -152,17 +153,6 @@ public class HBaseProvider implements Provider {
 
         logger.debug ("consumeTime=" + response.getConsumeTime ());
         return response;
-    }
-
-    private HBasePage getHBasePage(Page page, String startRow, String stopRow, int maxSize, boolean maxSizeAlarm) {
-        int pageSize = page.getPageSize ();
-        if (pageSize > maxSize) {
-            if (maxSizeAlarm)
-                throw new RuntimeException ("每页返回数据大小超过了最大返回数据条数的限制");
-            pageSize = maxSize;
-        }
-        page.setPageSize (pageSize);
-        return new HBasePage (pageSize, page.getPageIndex (), startRow, stopRow);
     }
 
     private synchronized HBaseConnectionPoolFactory getDataSource(HBaseDatasource datasource) {
@@ -249,12 +239,14 @@ public class HBaseProvider implements Provider {
             return list;
         }
         Collections.sort (orderColumns, new Comparator<OrderColumn> () {
+            @Override
             public int compare(OrderColumn obj1, OrderColumn obj2) {
                 return obj1.getSeq ().compareTo (obj2.getSeq ());
             }
         });
         // 多字段混合排序
         Collections.sort (list, new Comparator<Map<String, String>> () {
+            @Override
             public int compare(Map<String, String> obj1, Map<String, String> obj2) {
                 int flg = 0;
                 for (OrderColumn orderColumn : orderColumns) {
@@ -265,7 +257,9 @@ public class HBaseProvider implements Provider {
                     String val2 = obj2.get (colName);
                     if (StringUtils.isNotBlank (val1) && StringUtils.isNotBlank (val2)) {
                         flg = compareTo (val1, val2, order, dataType);
-                        if (flg != 0) break;
+                        if (flg != 0) {
+                            break;
+                        }
                     }
                 }
                 return flg;
@@ -447,6 +441,7 @@ public class HBaseProvider implements Provider {
     private Map<Integer, String> getColMap(List<DataColumn> returnColumns) {
         Map<Integer, String> colMap = new HashMap<Integer, String> ();
         Collections.sort (returnColumns, new Comparator<DataColumn> () {
+            @Override
             public int compare(DataColumn obj1, DataColumn obj2) {
                 return obj1.getSeq ().compareTo (obj2.getSeq ());
             }
@@ -689,8 +684,9 @@ public class HBaseProvider implements Provider {
         return str.getBytes (code).length;
     }
 
+    @Override
     public boolean testDatasource(Datasource datasource) {
-        HBaseDatasource hBaseDatasource = new HBaseDatasource (datasource.getProperties ());
+        HBaseDatasource hBaseDatasource = new HBaseDatasource (datasource);
         HConnection hConnection = null;
         try {
             hConnection = getConnection (hBaseDatasource);
@@ -710,6 +706,11 @@ public class HBaseProvider implements Provider {
     @Override
     public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
         return null;
+    }
+
+    @Override
+    public IqDslResponse select(IqDslRequest request) {
+        throw new RuntimeException ("HBase目前暂时不支持DSL");
     }
 
 }

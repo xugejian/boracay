@@ -11,6 +11,8 @@ import com.hex.bigdata.udsp.iq.provider.impl.model.SolrDatasource;
 import com.hex.bigdata.udsp.iq.provider.impl.model.SolrPage;
 import com.hex.bigdata.udsp.iq.provider.impl.util.SolrUtil;
 import com.hex.bigdata.udsp.iq.provider.model.*;
+import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslRequest;
+import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,10 +30,10 @@ import java.util.*;
 /**
  * Created by junjiem on 2017-3-3.
  */
-//@Component("com.hex.bigdata.udsp.iq.provider.impl.SolrProvider")
 public class SolrProvider implements Provider {
     private static Logger logger = LogManager.getLogger (SolrProvider.class);
 
+    @Override
     public IqResponse query(IqRequest request) {
         logger.debug ("request=" + JSONUtil.parseObj2JSON (request));
         long bef = System.currentTimeMillis ();
@@ -45,8 +47,7 @@ public class SolrProvider implements Provider {
             List<ReturnColumn> returnColumns = application.getReturnColumns ();
             List<OrderColumn> orderColumns = application.getOrderColumns ();
             String tbName = metadata.getTbName ();
-            Datasource datasource = metadata.getDatasource ();
-            SolrDatasource solrDatasource = new SolrDatasource (datasource.getPropertyMap ());
+            SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
             SolrQuery query = getSolrQuery (queryColumns, orderColumns, returnColumns, solrDatasource.getMaxSize ());
             List<Map<String, Object>> resultList = search (tbName, query, solrDatasource);
             response.setRecords (getRecords (resultList, returnColumns));
@@ -67,6 +68,7 @@ public class SolrProvider implements Provider {
         return response;
     }
 
+    @Override
     public IqResponse query(IqRequest request, Page page) {
         logger.debug ("request=" + JSONUtil.parseObj2JSON (request)
                 + " pageIndex=" + page.getPageIndex () + " pageSize=" + page.getPageSize ());
@@ -81,9 +83,7 @@ public class SolrProvider implements Provider {
             List<ReturnColumn> returnColumns = application.getReturnColumns ();
             List<OrderColumn> orderColumns = application.getOrderColumns ();
             String tbName = metadata.getTbName ();
-            Datasource datasource = metadata.getDatasource ();
-            SolrDatasource solrDatasource = new SolrDatasource (datasource.getPropertyMap ());
-            page = getPage(page, solrDatasource.getMaxSize (), solrDatasource.getMaxSizeAlarm ());
+            SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
             SolrQuery query = getSolrQuery (queryColumns, orderColumns, returnColumns, page.getPageIndex (), page.getPageSize ());
             SolrPage solrPage = searchPage (tbName, query, page.getPageIndex (), page.getPageSize (), solrDatasource);
             response.setRecords (getRecords (solrPage.getRecords (), returnColumns));
@@ -104,17 +104,6 @@ public class SolrProvider implements Provider {
 
         logger.debug ("consumeTime=" + response.getConsumeTime ());
         return response;
-    }
-
-    private Page getPage(Page page, int maxSize, boolean maxSizeAlarm) {
-        int pageSize = page.getPageSize ();
-        if (pageSize > maxSize) {
-            if (maxSizeAlarm)
-                throw new RuntimeException ("每页返回数据大小超过了最大返回数据条数的限制");
-            pageSize = maxSize;
-        }
-        page.setPageSize (pageSize);
-        return page;
     }
 
     private SolrServer getSolrServer(String solrServices, String collectionName) throws MalformedURLException {
@@ -163,6 +152,7 @@ public class SolrProvider implements Provider {
 
     private String getFields(List<ReturnColumn> returnColumns) {
         Collections.sort (returnColumns, new Comparator<ReturnColumn> () {
+            @Override
             public int compare(ReturnColumn obj1, ReturnColumn obj2) {
                 return obj1.getSeq ().compareTo (obj2.getSeq ());
             }
@@ -236,6 +226,7 @@ public class SolrProvider implements Provider {
     private List<SolrQuery.SortClause> getSort(List<OrderColumn> orderColumns) {
         // 排序字段按照序号排序
         Collections.sort (orderColumns, new Comparator<OrderColumn> () {
+            @Override
             public int compare(OrderColumn obj1, OrderColumn obj2) {
                 return obj1.getSeq ().compareTo (obj2.getSeq ());
             }
@@ -299,11 +290,12 @@ public class SolrProvider implements Provider {
         return res;
     }
 
+    @Override
     public boolean testDatasource(Datasource datasource) {
         HttpURLConnection connection = null;
         URL url = null;
         try {
-            SolrDatasource solrDatasource = new SolrDatasource (datasource.getProperties ());
+            SolrDatasource solrDatasource = new SolrDatasource (datasource);
             String[] servers = solrDatasource.getSolrServers ().split (",");
             for (String server : servers) {
                 try {
@@ -332,9 +324,14 @@ public class SolrProvider implements Provider {
 
     @Override
     public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
-        SolrDatasource solrDatasource = new SolrDatasource (datasource.getPropertyMap ());
+        SolrDatasource solrDatasource = new SolrDatasource (datasource);
         String solrServers = solrDatasource.getSolrServers ();
         return getColumns (schemaName, solrServers);
+    }
+
+    @Override
+    public IqDslResponse select(IqDslRequest request) {
+        throw new RuntimeException ("Solr目前暂时不支持DSL");
     }
 
     public List<MetadataCol> getColumns(String collectionName, String solrServers) {

@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.olq.provider.impl.model;
 
 import com.hex.bigdata.udsp.common.api.model.Property;
-import com.hex.bigdata.udsp.olq.provider.impl.model.JdbcDatasource;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
@@ -25,10 +24,12 @@ public class DslDatasource extends JdbcDatasource {
         super (datasource);
     }
 
+    @Override
     public String getDriverClass() {
-        String value = getProperty("driver.class").getValue();
-        if (StringUtils.isBlank(value))
+        String value = getProperty ("driver.class").getValue ();
+        if (StringUtils.isBlank (value)) {
             value = "com.hex.bigdata.udsp.jdbc.UdspDriver";
+        }
         return value;
     }
 }

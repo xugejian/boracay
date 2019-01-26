@@ -21,5 +21,6 @@
     <orderEntry type="module" module-name="iq-provider-redis" />
     <orderEntry type="module" module-name="iq-provider-solr" />
     <orderEntry type="module" module-name="iq-provider-solr_hbase" />
+    <orderEntry type="module" module-name="dsl" />
   </component>
 </module>

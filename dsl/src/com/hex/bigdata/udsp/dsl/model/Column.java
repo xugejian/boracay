@@ -4,27 +4,24 @@ package com.hex.bigdata.udsp.dsl.model;
  * 字段类
  */
 public class Column {
-    private String name; // 字段名称（别名）
+    private String alias; // 别名
     private Aggregate aggregate; // 聚合类型
 
-    public Column() {
+    public Column(String alias) {
+        this.alias = alias;
     }
 
-    public Column(String name) {
-        this.name = name;
-    }
-
-    public Column(String name, Aggregate aggregate) {
-        this.name = name;
+    public Column(String alias, Aggregate aggregate) {
+        this.alias = alias;
         this.aggregate = aggregate;
     }
 
-    public String getName() {
-        return name;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public Aggregate getAggregate() {

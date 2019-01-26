@@ -12,6 +12,14 @@ public class IqDslRequest {
 
     private Metadata metadata; // 元数据
 
+    public IqDslRequest() {
+    }
+
+    public IqDslRequest(DslRequest request, Metadata metadata) {
+        this.request = request;
+        this.metadata = metadata;
+    }
+
     public DslRequest getRequest() {
         return request;
     }

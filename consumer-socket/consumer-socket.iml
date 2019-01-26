@@ -13,10 +13,10 @@
     <orderEntry type="library" name="goframe" level="project" />
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="library" name="hbase" level="project" />
+    <orderEntry type="library" name="netty" level="project" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="consumer-api" />
     <orderEntry type="library" name="antlr4" level="project" />
     <orderEntry type="module" module-name="dsl" />
-    <orderEntry type="library" name="netty" level="project" />
   </component>
 </module>

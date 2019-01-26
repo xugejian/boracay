@@ -9,19 +9,19 @@ import com.hex.bigdata.udsp.dsl.model.DslResponse;
  */
 public class IqDslResponse {
 
-    private DslResponse response; // 响应信息
+    private DslResponse dslResponse; // 响应信息
 
     private long consumeTime; // 持续时间(毫秒)
     private Status status; // 状态
     private StatusCode statusCode; // 状态码
     private String message; // 信息
 
-    public DslResponse getResponse() {
-        return response;
+    public DslResponse getDslResponse() {
+        return dslResponse;
     }
 
-    public void setResponse(DslResponse response) {
-        this.response = response;
+    public void setDslResponse(DslResponse dslResponse) {
+        this.dslResponse = dslResponse;
     }
 
     public long getConsumeTime() {

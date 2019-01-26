@@ -103,12 +103,14 @@ class HBaseAggregationClientFactory extends BasePoolableObjectFactory {
         return new AggregationClient (conf);
     }
 
+    @Override
     public void destroyObject(Object obj) throws Exception {
         if (obj instanceof AggregationClient) {
             ((AggregationClient) obj).close ();
         }
     }
 
+    @Override
     public boolean validateObject(Object obj) {
         if (obj instanceof AggregationClient) {
             return false;

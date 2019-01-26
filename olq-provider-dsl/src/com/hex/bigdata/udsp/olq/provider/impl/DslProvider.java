@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
  * Created by JunjieM on 2019-1-8.
  */
 public class DslProvider extends JdbcProvider {
+
     private static Logger logger = LogManager.getLogger(DslProvider.class);
 
     @Override

@@ -167,8 +167,9 @@ public class KafkaExecutor implements Executor {
                 new Property ("consumer.timeout.ms", Long.toString (consumerRequest.getTimeout ())));
         KafkaConsumerDatasource consumerDatasource = new KafkaConsumerDatasource (propertyMap);
         ConsumerConnector consumer = null;
-        List<Map<String, String>> records = new ArrayList<> ();
+        List<Map<String, String>> records = null;
         try {
+            records = new ArrayList<> ();
             consumer = Consumer.createJavaConsumerConnector (getCnsumerConfig (consumerDatasource));
             int threadNum = consumerDatasource.getThreadNum ();
             List<KafkaStream<byte[], byte[]>> streams = receive (consumer, topic, threadNum);
@@ -197,8 +198,8 @@ public class KafkaExecutor implements Executor {
             consumerResponse.setStatus (Status.SUCCESS);
             consumerResponse.setStatusCode (StatusCode.SUCCESS);
         } catch (ConsumerTimeoutException e) {
-            consumerResponse.setStatus (Status.TIMEOUT);
-            consumerResponse.setStatusCode (StatusCode.TIMEOUT);
+            consumerResponse.setStatus (Status.SUCCESS);
+            consumerResponse.setStatusCode (StatusCode.SUCCESS);
             consumerResponse.setMessage (e.getMessage ());
             e.printStackTrace ();
         } catch (Exception e) {

@@ -8,6 +8,8 @@ import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.factory.RedisConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.RedisDatasource;
 import com.hex.bigdata.udsp.iq.provider.model.*;
+import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslRequest;
+import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,13 +20,13 @@ import java.util.*;
 /**
  * redis接口实现类
  */
-//@Component("com.hex.bigdata.udsp.iq.provider.impl.RedisProvider")
 public class RedisProvider implements Provider {
     private static Logger logger = LogManager.getLogger (RedisProvider.class);
     private static Map<String, RedisConnectionPoolFactory> dataSourcePool;
     private static final String rkSep = "|";
     private static final String tableColumnSeq = ":";
 
+    @Override
     public IqResponse query(IqRequest request) {
         return query (request, null);
     }
@@ -70,7 +72,7 @@ public class RedisProvider implements Provider {
         return queryString.toString ();
     }
 
-
+    @Override
     public IqResponse query(IqRequest request, Page page) {
         logger.debug ("request=" + JSONUtil.parseObj2JSON (request));
         long bef = System.currentTimeMillis ();
@@ -83,15 +85,13 @@ public class RedisProvider implements Provider {
             List<QueryColumn> queryColumns = application.getQueryColumns ();
             List<ReturnColumn> returnColumns = application.getReturnColumns ();
             List<OrderColumn> orderColumns = application.getOrderColumns ();
-            Datasource datasource = metadata.getDatasource ();
-            List<DataColumn> metaReturnColumns = metadata.getReturnColumns (); // 获取元数据返回字段
-            RedisDatasource redisDatasource = new RedisDatasource (datasource.getPropertyMap ());
+            List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
+            RedisDatasource redisDatasource = new RedisDatasource (metadata.getDatasource ());
             String tableName = metadata.getTbName ();
             String query = getRedisQuery (metadata.getQueryColumns (), queryColumns, tableName);
             String fqSep = redisDatasource.getSeprator ();
             List<Map<String, String>> list = null;
             if (page != null) {
-                page = getPage (page, redisDatasource.getMaxSize (), redisDatasource.getMaxSizeAlarm ());
                 page.setTotalCount (getCountNum (query, redisDatasource));
                 list = search (fqSep, query, redisDatasource, metaReturnColumns, page);
             } else {
@@ -115,17 +115,6 @@ public class RedisProvider implements Provider {
 
         logger.debug ("consumeTime=" + response.getConsumeTime ());
         return response;
-    }
-
-    private Page getPage(Page page, int maxSize, boolean maxSizeAlarm) {
-        int pageSize = page.getPageSize ();
-        if (pageSize > maxSize) {
-            if (maxSizeAlarm)
-                throw new RuntimeException ("每页返回数据大小超过了最大返回数据条数的限制");
-            pageSize = maxSize;
-        }
-        page.setPageSize (pageSize);
-        return page;
     }
 
     private synchronized RedisConnectionPoolFactory getDataSource(RedisDatasource datasource) {
@@ -247,9 +236,10 @@ public class RedisProvider implements Provider {
         return records;
     }
 
+    @Override
     public boolean testDatasource(Datasource datasource) {
         Jedis jedis = null;
-        RedisDatasource redisDatasource = new RedisDatasource (datasource.getPropertyMap ());
+        RedisDatasource redisDatasource = new RedisDatasource (datasource);
         try {
             jedis = getConnection (redisDatasource);
             return jedis.isConnected ();
@@ -268,15 +258,22 @@ public class RedisProvider implements Provider {
         return null;
     }
 
+    @Override
+    public IqDslResponse select(IqDslRequest request) {
+        throw new RuntimeException ("Redis目前暂时不支持DSL");
+    }
+
 
     private List<Map<String, String>> orderBy(List<Map<String, String>> records, final List<OrderColumn> orderColumns) {
         Collections.sort (orderColumns, new Comparator<OrderColumn> () {
+            @Override
             public int compare(OrderColumn obj1, OrderColumn obj2) {
                 return obj1.getSeq ().compareTo (obj2.getSeq ());
             }
         });
         // 多字段混合排序
         Collections.sort (records, new Comparator<Map<String, String>> () {
+            @Override
             public int compare(Map<String, String> obj1, Map<String, String> obj2) {
                 int flg = 0;
                 for (OrderColumn orderColumn : orderColumns) {
@@ -286,7 +283,9 @@ public class RedisProvider implements Provider {
                     String val1 = obj1.get (colName);
                     String val2 = obj2.get (colName);
                     flg = compareTo (val1, val2, order, dataType);
-                    if (flg != 0) break;
+                    if (flg != 0) {
+                        break;
+                    }
                 }
                 return flg;
             }

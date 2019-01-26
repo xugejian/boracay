@@ -69,6 +69,7 @@ class ElasticSearchConnectionFactory extends BasePoolableObjectFactory {
         return solrServer;
     }
 
+    @Override
     public void destroyObject(Object obj) throws Exception {
         if (obj instanceof RestClient) {
             ((RestClient) obj).close();

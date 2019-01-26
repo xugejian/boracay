@@ -26,15 +26,17 @@ public class JdbcDatasource extends Datasource {
 
     public String getDriverClass() {
         String value = getProperty ("driver.class").getValue ();
-        if (StringUtils.isBlank (value))
+        if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("driver.class不能为空");
+        }
         return value;
     }
 
     public String getJdbcUrl() {
         String value = getProperty ("jdbc.url").getValue ();
-        if (StringUtils.isBlank (value))
+        if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("jdbc.url不能为空");
+        }
         return value;
     }
 

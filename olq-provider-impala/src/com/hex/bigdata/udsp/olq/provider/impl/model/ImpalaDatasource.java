@@ -13,21 +13,23 @@ import java.util.Map;
 public class ImpalaDatasource extends JdbcDatasource {
 
     public ImpalaDatasource(List<Property> properties) {
-        super(properties);
+        super (properties);
     }
 
     public ImpalaDatasource(Map<String, Property> propertieMap) {
-        super(propertieMap);
+        super (propertieMap);
     }
 
     public ImpalaDatasource(Datasource datasource) {
-        super(datasource);
+        super (datasource);
     }
 
+    @Override
     public String getDriverClass() {
-        String value = getProperty("driver.class").getValue();
-        if (StringUtils.isBlank(value))
+        String value = getProperty ("driver.class").getValue ();
+        if (StringUtils.isBlank (value)) {
             value = "org.apache.hive.jdbc.HiveDriver";
+        }
         return value;
     }
 
