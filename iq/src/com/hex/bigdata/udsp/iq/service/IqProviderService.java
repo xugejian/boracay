@@ -120,28 +120,26 @@ public class IqProviderService extends BaseService {
      */
     public IqDslResponse select(String mdId, DslRequest dslRequest) {
         Metadata metadata = getMetadata (mdId);
-        newDslRequest (dslRequest, metadata);
+        checkDslRequest (dslRequest, metadata);
         IqDslRequest request = new IqDslRequest (dslRequest, metadata);
         Datasource datasource = metadata.getDatasource ();
         return getProviderImpl (datasource).select (request);
     }
 
-    private void newDslRequest(DslRequest dslRequest, Metadata metadata) {
+    private void checkDslRequest(DslRequest dslRequest, Metadata metadata) {
+        Datasource datasource = metadata.getDatasource ();
         List<String> returnList = new ArrayList<> ();
         List<DataColumn> returnColumns = metadata.getReturnColumns ();
         for (DataColumn col : returnColumns) {
             returnList.add (col.getName ());
         }
-
         List<String> queryList = new ArrayList<> ();
         List<DataColumn> queryColumns = metadata.getQueryColumns ();
         for (DataColumn col : queryColumns) {
             queryList.add (col.getName ());
         }
-
         // 表名
         dslRequest.setName (metadata.getTbName ());
-
         // 返回字段
         List<Column> select = dslRequest.getSelect ();
         if (select.size () == 1 && "*".equals (select.get (0).getAlias ())) {
@@ -153,28 +151,40 @@ public class IqProviderService extends BaseService {
         } else {
             checkSelect (select, returnList);
         }
-
         // 查询字段
         Component where = dslRequest.getWhere ();
         if (where != null) {
             checkWhere (where, queryList);
         }
-
         // 分组字段
         List<String> groupBy = dslRequest.getGroupBy ();
         if (groupBy != null && groupBy.size () != 0) {
             checkGroupBy (groupBy, returnList);
         }
-
         // 排序字段
         List<Order> orderBy = dslRequest.getOrderBy ();
         if (orderBy != null && orderBy.size () != 0) {
             checkOrderBy (orderBy, returnList);
         }
-
         // 限制
-        // TODO ....
+        Limit limit = dslRequest.getLimit ();
+        if (limit != null) {
+            checkLimit (limit, datasource);
+        }
+    }
 
+    private void checkLimit(Limit limitObj, Datasource datasource) {
+        IqDatasource iqDatasource = new IqDatasource (datasource);
+        int maxSize = iqDatasource.getMaxSize ();
+        boolean maxSizeAlarm = iqDatasource.getMaxSizeAlarm ();
+        int limit = limitObj.getLimit ();
+        if (limit > maxSize) {
+            if (maxSizeAlarm) {
+                throw new IllegalArgumentException ("Invalid limit value: the value exceeds the maximum number of data returned.");
+            }
+            limit = maxSize;
+        }
+        limitObj.setLimit (limit);
     }
 
     private void checkOrderBy(List<Order> orderBy, List<String> returnList) {
@@ -187,7 +197,7 @@ public class IqProviderService extends BaseService {
             }
         }
         if (StringUtils.isNotBlank (message)) {
-            throw new IllegalArgumentException ("Invalid order by fields " + message);
+            throw new IllegalArgumentException ("Invalid order by fields " + message + ".");
         }
     }
 
@@ -200,7 +210,7 @@ public class IqProviderService extends BaseService {
             }
         }
         if (StringUtils.isNotBlank (message)) {
-            throw new IllegalArgumentException ("Invalid group by fields " + message);
+            throw new IllegalArgumentException ("Invalid group by fields " + message + ".");
         }
     }
 
@@ -208,7 +218,7 @@ public class IqProviderService extends BaseService {
         // TODO 严格模式：判断是否有不存在的字段并抛异常
         String message = checkWhere (queryList, where, "");
         if (StringUtils.isNotBlank (message)) {
-            throw new IllegalArgumentException ("Invalid where fields " + message);
+            throw new IllegalArgumentException ("Invalid where fields " + message + ".");
         }
     }
 
@@ -243,7 +253,7 @@ public class IqProviderService extends BaseService {
             }
         }
         if (StringUtils.isNotBlank (message)) {
-            throw new IllegalArgumentException ("Invalid select fields " + message);
+            throw new IllegalArgumentException ("Invalid select fields " + message + ".");
         }
     }
 
