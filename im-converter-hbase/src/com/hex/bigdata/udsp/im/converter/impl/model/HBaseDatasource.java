@@ -83,4 +83,12 @@ public class HBaseDatasource extends Datasource {
     public String getKerberosKeytab() {
         return getProperty("kerberos.keytab").getValue();
     }
+
+    public String getHBaseRootdir() {
+        return getProperty ("hbase.rootdir").getValue ();
+    }
+
+    public String getZookeeperZnodeParent() {
+        return getProperty ("zookeeper.znode.parent").getValue ();
+    }
 }

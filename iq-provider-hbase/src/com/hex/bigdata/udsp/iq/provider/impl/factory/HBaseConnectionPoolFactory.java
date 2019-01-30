@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.iq.provider.impl.factory;
 
+import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool.BasePoolableObjectFactory;
@@ -73,6 +74,9 @@ class HBaseConnectionFactory extends BasePoolableObjectFactory {
 
     public HBaseConnectionFactory(HBaseDatasource datasource) {
         conf = HBaseConfiguration.create ();
+        for (Property property : datasource.getProperties ()) {
+            conf.set (property.getName (), property.getValue ());
+        }
         conf.set ("hbase.zookeeper.quorum", datasource.getZkQuorum ());
         conf.set ("hbase.zookeeper.property.clientPort", datasource.getZkPort ());
         if (StringUtils.isNotBlank (datasource.getRpcTimeout ()))
@@ -91,6 +95,10 @@ class HBaseConnectionFactory extends BasePoolableObjectFactory {
 //            conf.set("hbase.regionserver.lease.period", datasource.getRegionserverLeasePeriod()); // 已被弃用
         if (StringUtils.isNotBlank (datasource.getClientScannerTimeoutPeriod ()))
             conf.set ("hbase.client.scanner.timeout.period", datasource.getClientScannerTimeoutPeriod ());
+        if (StringUtils.isNotBlank (datasource.getHBaseRootdir ()))
+            conf.set ("hbase.rootdir", datasource.getHBaseRootdir ());
+        if (StringUtils.isNotBlank (datasource.getZookeeperZnodeParent ()))
+            conf.set ("zookeeper.znode.parent", datasource.getZookeeperZnodeParent ());
 
         /*
         以下是HBase开启Kerberos认证后需要的配置

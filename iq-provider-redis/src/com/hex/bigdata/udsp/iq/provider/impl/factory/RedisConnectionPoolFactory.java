@@ -18,7 +18,8 @@ public class RedisConnectionPoolFactory {
         config.setMaxTotal (dataSource.getMaxTotal ());
         config.setMaxWaitMillis (dataSource.getMaxWait ());
         config.setTestOnBorrow (dataSource.isTestOnBrrow ());
-        this.jedisPool = new JedisPool (config, dataSource.getIp (), dataSource.getPort (), dataSource.getTimeOut (), dataSource.getPassword ());
+        this.jedisPool = new JedisPool (config, dataSource.getIp (), dataSource.getPort (),
+                dataSource.getTimeOut (), dataSource.getPassword ());
     }
 
     //获取连接
