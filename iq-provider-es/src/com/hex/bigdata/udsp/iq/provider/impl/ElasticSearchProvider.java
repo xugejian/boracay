@@ -37,7 +37,6 @@ public class ElasticSearchProvider implements Provider {
     public IqResponse query(IqRequest request) {
         long bef = System.currentTimeMillis();
         IqResponse response = new IqResponse();
-        response.setRequest(request);
 
         try {
             Application application = request.getApplication();
@@ -77,7 +76,6 @@ public class ElasticSearchProvider implements Provider {
     public IqResponse query(IqRequest request, Page page) {
         long bef = System.currentTimeMillis();
         IqResponse response = new IqResponse();
-        response.setRequest(request);
 
         try {
             Application application = request.getApplication();

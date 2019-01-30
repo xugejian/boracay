@@ -13,5 +13,6 @@
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="iq-provider-api" />
     <orderEntry type="library" name="kafka" level="project" />
+    <orderEntry type="module" module-name="dsl" />
   </component>
 </module>

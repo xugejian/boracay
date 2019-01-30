@@ -10,7 +10,6 @@ import com.hex.bigdata.udsp.dsl.model.DslResponse;
 public class IqDslResponse {
 
     private DslResponse dslResponse; // 响应信息
-
     private long consumeTime; // 持续时间(毫秒)
     private Status status; // 状态
     private StatusCode statusCode; // 状态码

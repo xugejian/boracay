@@ -11,6 +11,10 @@ public class Aggregate {
     private DataType dataType; // 字段类型
     private AggregateFunction aggFun; // 聚合函数
 
+    public Aggregate(String name) {
+        this.name = name;
+    }
+
     public Aggregate(String name, DataType dataType) {
         this.name = name;
         this.dataType = dataType;
@@ -25,6 +29,14 @@ public class Aggregate {
         this.name = name;
         this.dataType = dataType;
         this.aggFun = aggFun;
+    }
+
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
     }
 
     public String getName() {

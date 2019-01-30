@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by JunjieM on 2019-1-2.
+ * APPDSL的适配器
  */
 public class AppDslAdaptor {
 

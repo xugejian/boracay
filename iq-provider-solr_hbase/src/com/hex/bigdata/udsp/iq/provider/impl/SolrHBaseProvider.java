@@ -51,7 +51,6 @@ public class SolrHBaseProvider implements Provider {
         logger.debug ("request=" + JSONUtil.parseObj2JSON (request));
         long bef = System.currentTimeMillis ();
         IqResponse response = new IqResponse ();
-        response.setRequest (request);
 
         try {
             Application application = request.getApplication ();
@@ -92,7 +91,6 @@ public class SolrHBaseProvider implements Provider {
                 + " pageIndex=" + page.getPageIndex () + " pageSize=" + page.getPageSize ());
         long bef = System.currentTimeMillis ();
         IqResponse response = new IqResponse ();
-        response.setRequest (request);
 
         try {
             Application application = request.getApplication ();

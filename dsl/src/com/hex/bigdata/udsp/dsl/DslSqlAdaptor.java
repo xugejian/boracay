@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by JunjieM on 2019-1-8.
+ * DSLSQL的适配器
  */
 public class DslSqlAdaptor {
 
@@ -237,12 +237,12 @@ public class DslSqlAdaptor {
                 Aggregate aggregate = null;
                 if (fullColumnNameContext != null) {
                     String name = fullColumnNameContext.columnName ().getText ();
-                    aggregate = new Aggregate (name, AggregateFunction.NONE);
+                    aggregate = new Aggregate (name);
                 } else {
                     DSLSQLParser.AggregateWindowedFunctionContext aggregateWindowedFunctionContext =
                             selectElementContext.functionCall ().aggregateWindowedFunction ();
                     String name = null;
-                    AggregateFunction function = AggregateFunction.NONE;
+                    AggregateFunction function = null;
                     if (aggregateWindowedFunctionContext.functionArg () != null) {
                         name = aggregateWindowedFunctionContext.functionArg ().columnName ().getText ();
                     }

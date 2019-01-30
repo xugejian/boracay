@@ -89,7 +89,7 @@ public class IqProviderService extends BaseService {
         IqRequest request = new IqRequest (application);
         Datasource datasource = application.getMetadata ().getDatasource ();
         IqResponse response = getProviderImpl (datasource).query (request);
-        response.setColumns (getColumns (application.getReturnColumns ())); // 设置返回字段信息
+        response.setColumns (returnColumns (application.getReturnColumns ())); // 设置返回字段信息
         return response;
     }
 
@@ -107,7 +107,7 @@ public class IqProviderService extends BaseService {
         page = getPage (page, datasource);
         IqRequest request = new IqRequest (application);
         IqResponse response = getProviderImpl (datasource).query (request, page);
-        response.setColumns (getColumns (application.getReturnColumns ())); // 设置返回字段信息
+        response.setColumns (returnColumns (application.getReturnColumns ())); // 设置返回字段信息
         return response;
     }
 
@@ -120,51 +120,63 @@ public class IqProviderService extends BaseService {
      */
     public IqDslResponse select(String mdId, DslRequest dslRequest) {
         Metadata metadata = getMetadata (mdId);
-        checkDslRequest (dslRequest, metadata);
+        checkDslRequest (dslRequest, metadata); // 检查和重构DslRequest
         IqDslRequest request = new IqDslRequest (dslRequest, metadata);
         Datasource datasource = metadata.getDatasource ();
-        return getProviderImpl (datasource).select (request);
+        IqDslResponse response = getProviderImpl (datasource).select (request);
+        response.getDslResponse ().setColumns (returnColumns (dslRequest)); // 设置返回字段信息
+        return response;
+    }
+
+    private LinkedHashMap<String, String> returnColumns(DslRequest dslRequest) {
+        List<Column> select = dslRequest.getSelect ();
+        LinkedHashMap<String, String> columnMap = new LinkedHashMap<> ();
+        for (Column column : select) {
+            columnMap.put (column.getAggregate ().getName (), column.getAggregate ().getDataType ().getName ());
+        }
+        return columnMap;
     }
 
     private void checkDslRequest(DslRequest dslRequest, Metadata metadata) {
         Datasource datasource = metadata.getDatasource ();
-        List<String> returnList = new ArrayList<> ();
         List<DataColumn> returnColumns = metadata.getReturnColumns ();
+        Map<String, DataType> returnMap = new HashMap<> ();
         for (DataColumn col : returnColumns) {
-            returnList.add (col.getName ());
+            returnMap.put (col.getName (), col.getType ());
         }
-        List<String> queryList = new ArrayList<> ();
         List<DataColumn> queryColumns = metadata.getQueryColumns ();
+        Map<String, DataType> queryMap = new HashMap<> ();
         for (DataColumn col : queryColumns) {
-            queryList.add (col.getName ());
+            queryMap.put (col.getName (), col.getType ());
         }
         // 表名
-        dslRequest.setName (metadata.getTbName ());
+        // 注：可能有多个表名比如HBase+Solr，所以这里还是使用服务名
+        //dslRequest.setName (metadata.getTbName ());
         // 返回字段
         List<Column> select = dslRequest.getSelect ();
         if (select.size () == 1 && "*".equals (select.get (0).getAlias ())) {
             select = new ArrayList<> ();
             for (DataColumn col : returnColumns) {
-                select.add (new Column (null, new Aggregate (col.getName (), AggregateFunction.NONE)));
+                select.add (new Column (null, new Aggregate (col.getName (), col.getType ())));
             }
             dslRequest.setSelect (select);
         } else {
-            checkSelect (select, returnList);
+            checkSelect (select, returnMap);
         }
         // 查询字段
         Component where = dslRequest.getWhere ();
         if (where != null) {
-            checkWhere (where, queryList);
+            checkWhere (where, queryMap);
         }
         // 分组字段
         List<String> groupBy = dslRequest.getGroupBy ();
         if (groupBy != null && groupBy.size () != 0) {
-            checkGroupBy (groupBy, returnList);
+            checkGroupBy (groupBy, returnMap);
         }
         // 排序字段
         List<Order> orderBy = dslRequest.getOrderBy ();
         if (orderBy != null && orderBy.size () != 0) {
-            checkOrderBy (orderBy, returnList);
+            checkOrderBy (orderBy, returnMap);
         }
         // 限制
         Limit limit = dslRequest.getLimit ();
@@ -187,12 +199,12 @@ public class IqProviderService extends BaseService {
         limitObj.setLimit (limit);
     }
 
-    private void checkOrderBy(List<Order> orderBy, List<String> returnList) {
+    private void checkOrderBy(List<Order> orderBy, Map<String, DataType> returnMap) {
         // TODO 严格模式：判断是否有不存在的字段并抛异常
         String message = "";
         for (Order order : orderBy) {
             String name = order.getName ();
-            if (!returnList.contains (name)) {
+            if (returnMap.get (name) == null) {
                 message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
             }
         }
@@ -201,11 +213,11 @@ public class IqProviderService extends BaseService {
         }
     }
 
-    private void checkGroupBy(List<String> groupBy, List<String> returnList) {
+    private void checkGroupBy(List<String> groupBy, Map<String, DataType> returnMap) {
         // TODO 严格模式：判断是否有不存在的字段并抛异常
         String message = "";
         for (String name : groupBy) {
-            if (!returnList.contains (name)) {
+            if (returnMap.get (name) == null) {
                 message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
             }
         }
@@ -214,42 +226,40 @@ public class IqProviderService extends BaseService {
         }
     }
 
-    private void checkWhere(Component where, List<String> queryList) {
+    private void checkWhere(Component where, Map<String, DataType> queryMap) {
         // TODO 严格模式：判断是否有不存在的字段并抛异常
-        String message = checkWhere (queryList, where, "");
+        String message = checkWhere (queryMap, where, "");
         if (StringUtils.isNotBlank (message)) {
             throw new IllegalArgumentException ("Invalid where fields " + message + ".");
         }
     }
 
-    private String checkWhere(List<String> queryList, Component component, String message) {
+    private String checkWhere(Map<String, DataType> queryMap, Component component, String message) {
         if (component instanceof Composite) {
             Composite composite = (Composite) component;
             List<Component> components = composite.getComponents ();
             for (Component c : components) {
-                message = checkWhere (queryList, c, message);
+                message = checkWhere (queryMap, c, message);
             }
         } else if (component instanceof Dimension) {
             Dimension dimension = (Dimension) component;
             String name = dimension.getColumnName ();
-            if (!queryList.contains (name)) {
+            if (queryMap.get (name) == null) {
                 message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
             }
         }
         return message;
     }
 
-    private void checkSelect(List<Column> select, List<String> returnList) {
+    private void checkSelect(List<Column> select, Map<String, DataType> returnMap) {
         // TODO 严格模式：判断是否有不存在的字段并抛异常
         String message = "";
         for (Column col : select) {
-            String name = null;
-            Aggregate aggregate = col.getAggregate ();
-            if (aggregate != null) {
-                name = aggregate.getName ();
-            }
-            if (!returnList.contains (name)) {
+            String name = col.getAggregate ().getName ();
+            if (returnMap.get (name) == null) {
                 message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
+            } else {
+                col.getAggregate ().setDataType (returnMap.get (name));
             }
         }
         if (StringUtils.isNotBlank (message)) {
@@ -272,7 +282,7 @@ public class IqProviderService extends BaseService {
         return page;
     }
 
-    private LinkedHashMap<String, String> getColumns(List<ReturnColumn> returnColumns) {
+    private LinkedHashMap<String, String> returnColumns(List<ReturnColumn> returnColumns) {
         LinkedHashMap<String, String> columnMap = new LinkedHashMap<> ();
         for (ReturnColumn returnColumn : returnColumns) {
             columnMap.put (returnColumn.getLabel (), returnColumn.getType ().getValue ());
