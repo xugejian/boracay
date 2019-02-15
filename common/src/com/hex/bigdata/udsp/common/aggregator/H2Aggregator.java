@@ -127,42 +127,43 @@ public class H2Aggregator {
         logger.info ("H2 Database loading using time: {} ms", System.currentTimeMillis () - bef);
     }
 
-    public AggregateResult queryAggData(AggConfig config) throws Exception {
-        long bef = System.currentTimeMillis ();
-        List<String[]> list = new LinkedList<> ();
-        ResultSet rs = null;
-        try (Connection conn = h2DataSource.getConnection ();
-             Statement stat = conn.createStatement ();) {
-            stat.execute (H2SqlUtil.createStringToDoubleFunction ());
-            String sql = H2SqlUtil.queryAggData (getTmpTblName ());
-            logger.info (sql);
-            rs = stat.executeQuery (sql);
-            ResultSetMetaData metaData = rs.getMetaData ();
-            int columnCount = metaData.getColumnCount ();
-            while (rs.next ()) {
-                String[] row = new String[columnCount];
-                for (int j = 0; j < columnCount; j++) {
-                    row[j] = rs.getString (j + 1);
-                }
-                list.add (row);
-            }
-        } catch (Exception e) {
-            logger.error ("ERROR:" + e.getMessage ());
-            throw new Exception ("ERROR:" + e.getMessage (), e);
-        } finally {
-            if (rs != null) {
-                rs.close ();
-            }
-        }
-        logger.info ("H2 Database queryAggData using time: {} ms", System.currentTimeMillis () - bef);
-        return null;
-    }
+//    public AggregateResult queryAggData(AggConfig config) throws Exception {
+//        long bef = System.currentTimeMillis ();
+//        List<String[]> list = new LinkedList<> ();
+//        ResultSet rs = null;
+//        try (Connection conn = h2DataSource.getConnection ();
+//             Statement stat = conn.createStatement ();) {
+//            stat.execute (H2SqlUtil.createStringToDoubleFunction ());
+//            String sql = H2SqlUtil.queryAggData (getTmpTblName ());
+//            logger.info (sql);
+//            rs = stat.executeQuery (sql);
+//            ResultSetMetaData metaData = rs.getMetaData ();
+//            int columnCount = metaData.getColumnCount ();
+//            while (rs.next ()) {
+//                String[] row = new String[columnCount];
+//                for (int j = 0; j < columnCount; j++) {
+//                    row[j] = rs.getString (j + 1);
+//                }
+//                list.add (row);
+//            }
+//        } catch (Exception e) {
+//            logger.error ("ERROR:" + e.getMessage ());
+//            throw new Exception ("ERROR:" + e.getMessage (), e);
+//        } finally {
+//            if (rs != null) {
+//                rs.close ();
+//            }
+//        }
+//        logger.info ("H2 Database queryAggData using time: {} ms", System.currentTimeMillis () - bef);
+//        return null;
+//    }
 
     private String buildPreparedInsertSql(String[] header) {
         String tableName = getTmpTblName ();
-        StringJoiner insertJoiner = new StringJoiner (", ", "INSERT INTO " + tableName + " VALUES (", ");");
-        IntStream.range (0, header.length).forEach (i -> insertJoiner.add ("?"));
-        return insertJoiner.toString ();
+//        StringJoiner insertJoiner = new StringJoiner (", ", "INSERT INTO " + tableName + " VALUES (", ");");
+//        IntStream.range (0, header.length).forEach (i -> insertJoiner.add ("?"));
+//        return insertJoiner.toString ();
+        return "";
     }
 
     public Map<String, DataType> getColumnType() throws Exception {
@@ -231,5 +232,6 @@ public class H2Aggregator {
 
     private String getCacheKey() {
         // TODO ...
+        return "";
     }
 }

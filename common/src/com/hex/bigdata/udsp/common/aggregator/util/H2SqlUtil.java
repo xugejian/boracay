@@ -22,6 +22,7 @@ public class H2SqlUtil {
     }
 
     public static String queryAggData(String tableName) {
+        return "";
     }
 
     public static String tablesInfo(String tableName) {
