@@ -13,7 +13,7 @@ public class OlqJdbcClientDemo {
 
     public static void main(String[] args) throws Exception {
         // jdbc:udsp://[hostname]:[port]/[service_name]
-        String jdbcUrl = "jdbc:udsp://localhost:9089/dev_oracle";
+        String jdbcUrl = "jdbc:udsp://localhost:9089/hex_oracle";
         String username = "admin";
         String password = "000000";
         Class.forName ("com.hex.bigdata.udsp.jdbc.UdspDriver");

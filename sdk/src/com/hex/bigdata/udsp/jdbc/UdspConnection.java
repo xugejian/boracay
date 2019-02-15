@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.jdbc;
 
+import com.hex.bigdata.udsp.config.NettyClientConfig;
 import com.hex.bigdata.udsp.jdbc.netty.Client;
 import com.hex.bigdata.udsp.jdbc.netty.ClientFactory;
 import com.hex.bigdata.udsp.jdbc.netty.NettyClientFactory;
@@ -25,7 +26,7 @@ public class UdspConnection implements Connection {
 
     private RemotingUrl url;
 
-    private int loginTimeout = 3000; // 超时时间（毫秒）
+    private int loginTimeout = NettyClientConfig.getConnectTimeout ();
 
     private SQLWarning warningChain = null;
     private ClientFactory factory;

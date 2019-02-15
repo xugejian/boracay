@@ -60,7 +60,7 @@ public class IqJdbcClientDemo {
         try {
             conn = DriverManager.getConnection (jdbcUrl, username, password);
             stmt = conn.createStatement ();
-            rs = stmt.executeQuery ("describe TD2005012");
+            rs = stmt.executeQuery ("describe hbase_test1");
             ResultSetMetaData rsmd = rs.getMetaData ();
             while (rs.next ()) {
                 logger.info ("-----------------------------------------");
