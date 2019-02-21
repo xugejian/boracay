@@ -300,6 +300,9 @@ public class IqProviderService extends BaseService {
             int length = getLen (queryColumn.getLength ());
             String label = queryColumn.getLabel ();
             String value = (paraMap != null ? paraMap.get (label) : null);
+            if (StringUtils.isBlank (value)) {
+                value = queryColumn.getDefaultVal (); // 默认值
+            }
             if (StringUtils.isNotBlank (value)) {
                 if (DataType.TIMESTAMP.equals (type)) { // 字段类型是TIMESTAMP
                     value = tarnDateStr (length, value); // 日期格式转换

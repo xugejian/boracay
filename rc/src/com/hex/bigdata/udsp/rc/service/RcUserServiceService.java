@@ -510,7 +510,7 @@ public class RcUserServiceService extends BaseService {
         // 下载地址生成
         String downloadFile = CreateFileUtil.getLocalDirPath() + FileUtil.getFileSeparator()
                 + "downStreamService_excel_" + DateUtil.format(new Date(), "yyyyMMddHHmmss") + ".xls";
-        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFWorkbook workbook = null;
         for (RcUserService item : rcServices) {
             RcUserServiceView rcUserServiceView = this.selectFullResultMap(item.getPkId());
             String type = rcUserServiceView.getServiceType();
@@ -525,7 +525,7 @@ public class RcUserServiceService extends BaseService {
             map.put("userId", rcUserServiceView.getUserId());
             map.put("userName", rcUserServiceView.getUserName());
             if (ServiceType.IQ.getValue().equals(type)) {
-                iqApplicationService.setWorkbooksheet(workbook, map, appId);
+                workbook = iqApplicationService.setWorkbook(map, appId);
             } else if (ServiceType.OLQ.getValue().equals(type)) {
                 olqService.setWorkbooksheet(workbook, map);
             } else if (ServiceType.MM.getValue().equals(type)) {

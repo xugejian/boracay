@@ -731,7 +731,10 @@ ${extends("/goframe/function_layout.httl")}
     function onvaluechangedType() {
         originTbName = "";
         setSaveButton();
-        setCols();
+        // 注释掉的原因：想保留一种入口，可以使用同一个表（HBase、Solr）可以有不同的字段信息，
+        // 但是又能可以自动从数据源类型（如：Hive、Impala、Mysql等）的某个表中自动拉取字段信息，
+        // 然后改回真实的数据源（如：HBase、Solr等）的某个表且设置为外表时不会又重新拉取新的字段信息。
+        // setCols();
         setParams();
     }
 
