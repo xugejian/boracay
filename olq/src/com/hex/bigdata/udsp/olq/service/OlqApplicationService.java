@@ -514,20 +514,18 @@ public class OlqApplicationService extends BaseService {
     /**
      * 服务信息导出
      */
-    public void setWorkbooksheet(HSSFWorkbook workbook, Map<String, String> map, String appId) {
-        HSSFWorkbook sourceWork;
-        HSSFSheet sourceSheet = null;
-        String seprator = FileUtil.getFileSeparator ();
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_allServiceInfo.xls";
+    public HSSFWorkbook setWorkbook(Map<String, String> map, String appId) {
+        HSSFWorkbook workbook = new HSSFWorkbook (); // 创建表格
+        String templateFile = ExcelCopyUtils.templatePath + FileUtil.getFileSeparator () + "downLoadTemplate_allServiceInfo.xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
-
+        HSSFWorkbook sourceWork = null;
+        HSSFSheet sourceSheet = null;
         try {
             sourceFile = new POIFSFileSystem (new FileInputStream (templateFile));
             sourceWork = new HSSFWorkbook (sourceFile);
-            //联机查询应用为第三个sheet
+            // 联机查询应用为第3个sheet
             sourceSheet = sourceWork.getSheetAt (2);
-            //创建表格
         } catch (IOException e) {
             e.printStackTrace ();
         }
@@ -564,17 +562,11 @@ public class OlqApplicationService extends BaseService {
         }
 
         this.setWorkbookSheetPart (sheet, olqApplicationDto, sourceSheet, workbook, new OlqIndexDto (i));
+
+        return workbook;
     }
 
-    /**
-     * 设置信息到workbook
-     *
-     * @param workbook
-     * @param sourceSheet
-     * @param comExcelParams
-     * @param olqApplicationDto
-     */
-    public void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, OlqApplicationDto olqApplicationDto) {
+    private void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, OlqApplicationDto olqApplicationDto) {
         HSSFSheet sheet = workbook.createSheet ();
         //将前面样式内容复制到下载表中
         int i = 0;
@@ -599,7 +591,7 @@ public class OlqApplicationService extends BaseService {
         this.setWorkbookSheetPart (sheet, olqApplicationDto, sourceSheet, workbook, new OlqIndexDto (i));
     }
 
-    public void setWorkbookSheetPart(HSSFSheet sheet, OlqApplicationDto olqApplicationDto, HSSFSheet sourceSheet, HSSFWorkbook workbook, OlqIndexDto olqIndexDto) {
+    private void setWorkbookSheetPart(HSSFSheet sheet, OlqApplicationDto olqApplicationDto, HSSFSheet sourceSheet, HSSFWorkbook workbook, OlqIndexDto olqIndexDto) {
         HSSFRow row;
         HSSFCell cell;
         int rowIndex = olqIndexDto.getRowIndex ();

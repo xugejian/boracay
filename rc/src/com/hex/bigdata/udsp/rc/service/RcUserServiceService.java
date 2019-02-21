@@ -527,17 +527,17 @@ public class RcUserServiceService extends BaseService {
             if (ServiceType.IQ.getValue().equals(type)) {
                 workbook = iqApplicationService.setWorkbook(map, appId);
             } else if (ServiceType.OLQ.getValue().equals(type)) {
-                olqService.setWorkbooksheet(workbook, map);
+                workbook =olqService.setWorkbook(map);
             } else if (ServiceType.MM.getValue().equals(type)) {
-                mmApplicationService.setWorkbooksheet(workbook, map, appId);
+                workbook =mmApplicationService.setWorkbook(map, appId);
             } else if (ServiceType.RTS_PRODUCER.getValue().equals(type)) {
-                rtsProducerService.setWorkbooksheet(workbook, map, appId);
+                workbook =rtsProducerService.setWorkbook(map, appId);
             } else if (ServiceType.RTS_CONSUMER.getValue().equals(type)) {
-                rtsConsumerService.setWorkbooksheet(workbook, map, appId);
+                workbook =rtsConsumerService.setWorkbook(map, appId);
             } else if (ServiceType.OLQ_APP.getValue().equals(type)) {
-                olqApplicationService.setWorkbooksheet(workbook, map, appId);
+                workbook =olqApplicationService.setWorkbook(map, appId);
             } else if (ServiceType.IM.getValue().equals(type)) {
-                imModelService.setWorkbooksheet(workbook, map, appId);
+                workbook =imModelService.setWorkbook(map, appId);
             }
         }
         if (workbook != null) {

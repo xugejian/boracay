@@ -296,6 +296,7 @@ public class IqApplicationService extends BaseService {
         try {
             sourceFile = new POIFSFileSystem (new FileInputStream (templateFile));
             sourceWork = new HSSFWorkbook (sourceFile);
+            // 交互查询模板为第1个sheet
             sourceSheet = sourceWork.getSheetAt (0);
         } catch (IOException e) {
             e.printStackTrace ();

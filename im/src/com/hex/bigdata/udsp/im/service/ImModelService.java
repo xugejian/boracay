@@ -841,20 +841,18 @@ public class ImModelService {
      * 服务信息导出
      *
      */
-    public void setWorkbooksheet(HSSFWorkbook workbook, Map<String,String> map, String appId) {
-        HSSFWorkbook sourceWork;
-        HSSFSheet sourceSheet = null;
-        String seprator = FileUtil.getFileSeparator();
-        String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_allServiceInfo.xls";
+    public HSSFWorkbook setWorkbook(Map<String,String> map, String appId) {
+        HSSFWorkbook workbook = new HSSFWorkbook (); // 创建表格
+        String templateFile = ExcelCopyUtils.templatePath + FileUtil.getFileSeparator() + "downLoadTemplate_allServiceInfo.xls";
         // 获取模板文件第一个Sheet对象
         POIFSFileSystem sourceFile = null;
-
+        HSSFWorkbook sourceWork = null;
+        HSSFSheet sourceSheet = null;
         try {
             sourceFile = new POIFSFileSystem(new FileInputStream(templateFile));
             sourceWork = new HSSFWorkbook(sourceFile);
-            //交互建模为第7个sheet
+            // 交互建模为第7个sheet
             sourceSheet = sourceWork.getSheetAt(6);
-            //创建表格
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -891,9 +889,11 @@ public class ImModelService {
         }
 
         this.setWorkbookSheetPart(sheet, imModel, sourceSheet, workbook, new ImIndexDto(i));
+
+        return workbook;
     }
 
-    public void setWorkbookSheetPart(HSSFSheet sheet, ImModel imModel, HSSFSheet sourceSheet,
+    private void setWorkbookSheetPart(HSSFSheet sheet, ImModel imModel, HSSFSheet sourceSheet,
                                      HSSFWorkbook workbook, ImIndexDto imIndexDto) {
         HSSFRow row;
         HSSFCell cell;
