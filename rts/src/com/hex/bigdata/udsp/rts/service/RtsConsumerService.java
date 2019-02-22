@@ -335,8 +335,7 @@ public class RtsConsumerService extends BaseService {
         return null;
     }
 
-    public HSSFWorkbook setWorkbook(Map<String, String> map, String appId) {
-        HSSFWorkbook workbook = new HSSFWorkbook (); // 创建表格
+    public HSSFWorkbook setWorkbookSheet(HSSFWorkbook workbook, Map<String, String> map, String appId) {
         String seprator = FileUtil.getFileSeparator ();
         String templateFile = ExcelCopyUtils.templatePath + seprator + "downLoadTemplate_allServiceInfo.xls";
         // 获取模板文件第一个Sheet对象
@@ -364,7 +363,8 @@ public class RtsConsumerService extends BaseService {
         comExcelParams.add (new ComExcelParam (4, 1, "userId"));
         comExcelParams.add (new ComExcelParam (4, 3, "userName"));
 
-        HSSFSheet sheet = workbook.createSheet ();
+        HSSFSheet sheet = workbook.createSheet (map.get ("serviceName"));
+
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 10; i++) {
