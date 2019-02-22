@@ -78,6 +78,7 @@
     <if test="dsId!='' and dsId!=null ">and IM.DS_ID = #{dsId}</if>
     <if test="name!='' and name!=null ">and IM.NAME like '%' || #{name} || '%'</if>
     <if test="describe!='' and describe!=null ">and IM.DESCRIPTION like '%' || #{describe} || '%'</if>
+    <if test="tbName!='' and tbName!=null ">and IM.TB_NAME like '%' || #{tbName} || '%'</if>
     <if test="note!='' and note!=null ">and IM.NOTE like '%' || #{note} || '%'</if>
     <if test="type!='' and type!=null ">and IM.TYPE = #{type}</if>
     <if test="status!='' and status!=null ">and IM.STATUS = #{status}</if>
