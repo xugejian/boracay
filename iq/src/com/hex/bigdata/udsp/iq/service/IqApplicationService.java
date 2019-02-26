@@ -336,8 +336,7 @@ public class IqApplicationService extends BaseService {
     }
 
     public void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, IqApplication iqApplication) {
-        HSSFSheet sheet;
-        sheet = workbook.createSheet ();
+        HSSFSheet sheet = workbook.createSheet (iqApplication.getName ());
         //将前面样式内容复制到下载表中
         int i = 0; // 必须放外面
         for (; i < 11; i++) {

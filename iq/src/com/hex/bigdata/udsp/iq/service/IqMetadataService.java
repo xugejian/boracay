@@ -216,8 +216,8 @@ public class IqMetadataService extends BaseService {
     }
 
     public String createExcel(IqMetadata[] iqMetadatas) {
-        HSSFWorkbook workbook = null;
-        HSSFWorkbook sourceWork;
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFWorkbook sourceWork = null;
         HSSFSheet sourceSheet = null;
         HSSFRow row;
         HSSFCell cell;
@@ -237,17 +237,13 @@ public class IqMetadataService extends BaseService {
         POIFSFileSystem sourceFile = null;
 
         try {
-            sourceFile = new POIFSFileSystem(new FileInputStream(
-                    templateFile));
-
+            sourceFile = new POIFSFileSystem(new FileInputStream(templateFile));
             sourceWork = new HSSFWorkbook(sourceFile);
             sourceSheet = sourceWork.getSheetAt(0);
-            //创建表格
-            workbook = new HSSFWorkbook();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        HSSFSheet sheet;
+
         List<ComExcelParam> comExcelParams = new ArrayList<>();
         comExcelParams.add(new ComExcelParam(2, 1, "name"));
         comExcelParams.add(new ComExcelParam(2, 3, "dsId"));
@@ -255,9 +251,9 @@ public class IqMetadataService extends BaseService {
         comExcelParams.add(new ComExcelParam(3, 1, "describe"));
         comExcelParams.add(new ComExcelParam(3, 3, "tbName"));
 
+        HSSFSheet sheet = null;
         for (IqMetadata iqMetadata : iqMetadatas) {
-            sheet = workbook.createSheet();
-
+            sheet = workbook.createSheet(iqMetadata.getName ());
 
             //将前面样式内容复制到下载表中
             int i = 0;

@@ -365,8 +365,8 @@ public class ImModelService {
     }
 
     public String createExcel(ImModel[] imModels) {
-        HSSFWorkbook workbook = null;
-        HSSFWorkbook sourceWork;
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFWorkbook sourceWork = null;
         HSSFSheet sourceSheet = null;
         HSSFRow row;
         HSSFCell cell;
@@ -380,19 +380,15 @@ public class ImModelService {
         POIFSFileSystem sourceFile = null;
 
         try {
-            sourceFile = new POIFSFileSystem(new FileInputStream(
-                    templateFile));
-
+            sourceFile = new POIFSFileSystem(new FileInputStream(templateFile));
             sourceWork = new HSSFWorkbook(sourceFile);
             sourceSheet = sourceWork.getSheetAt(0);
-            //创建表格
-            workbook = new HSSFWorkbook();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        HSSFSheet sheet;
+        HSSFSheet sheet = null;
         for (ImModel imModel : imModels) {
-            sheet = workbook.createSheet();
+            sheet = workbook.createSheet(imModel.getName ());
 
             //将前面样式内容复制到下载表中
             int i = 0;

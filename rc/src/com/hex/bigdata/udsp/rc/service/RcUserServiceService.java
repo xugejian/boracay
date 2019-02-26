@@ -393,8 +393,8 @@ public class RcUserServiceService extends BaseService {
     }
 
     public String createExcel(RcUserService[] rcServices) {
-        HSSFWorkbook workbook = null;
-        HSSFWorkbook sourceWork;
+        HSSFWorkbook workbook = new HSSFWorkbook ();
+        HSSFWorkbook sourceWork = null;
         HSSFSheet sourceSheet = null;
         HSSFSheet sheet = null;
         HSSFRow row;
@@ -415,12 +415,9 @@ public class RcUserServiceService extends BaseService {
         POIFSFileSystem sourceFile = null;
 
         try {
-            sourceFile = new POIFSFileSystem (new FileInputStream (
-                    templateFile));
+            sourceFile = new POIFSFileSystem (new FileInputStream (templateFile));
             sourceWork = new HSSFWorkbook (sourceFile);
             sourceSheet = sourceWork.getSheetAt (0);
-            //创建表格
-            workbook = new HSSFWorkbook ();
             sheet = workbook.createSheet ();
             ExcelCopyUtils.copyRow (sheet.createRow (0), sourceSheet.getRow (0), sheet.createDrawingPatriarch (), workbook);
         } catch (Exception e) {

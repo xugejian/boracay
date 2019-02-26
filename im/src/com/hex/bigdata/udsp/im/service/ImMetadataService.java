@@ -362,8 +362,8 @@ public class ImMetadataService extends BaseService {
     }
 
     public String createExcel(ImMetadata[] imMetadatas) {
-        HSSFWorkbook workbook = null;
-        HSSFWorkbook sourceWork;
+        HSSFWorkbook workbook = new HSSFWorkbook ();
+        HSSFWorkbook sourceWork = null;
         HSSFSheet sourceSheet = null;
         HSSFRow row;
         HSSFCell cell;
@@ -377,19 +377,16 @@ public class ImMetadataService extends BaseService {
         POIFSFileSystem sourceFile = null;
 
         try {
-            sourceFile = new POIFSFileSystem (new FileInputStream (
-                    templateFile));
-
+            sourceFile = new POIFSFileSystem (new FileInputStream (templateFile));
             sourceWork = new HSSFWorkbook (sourceFile);
             sourceSheet = sourceWork.getSheetAt (0);
-            //创建表格
-            workbook = new HSSFWorkbook ();
         } catch (IOException e) {
             e.printStackTrace ();
         }
-        HSSFSheet sheet;
+
+        HSSFSheet sheet = null;
         for (ImMetadata imMetadata : imMetadatas) {
-            sheet = workbook.createSheet ();
+            sheet = workbook.createSheet (imMetadata.getName ());
 
             //将前面样式内容复制到下载表中
             int i = 0;

@@ -296,7 +296,7 @@ public class RtsProducerService extends BaseService {
 
 
     public String createExcel(RtsProducer[] rtsProducers) {
-        HSSFWorkbook workbook = null;
+        HSSFWorkbook workbook = new HSSFWorkbook ();
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
         HSSFRow row;
@@ -314,8 +314,6 @@ public class RtsProducerService extends BaseService {
             sourceFile = new POIFSFileSystem (new FileInputStream (templateFile));
             sourceWork = new HSSFWorkbook (sourceFile);
             sourceSheet = sourceWork.getSheetAt (0);
-            //创建表格
-            workbook = new HSSFWorkbook ();
         } catch (IOException e) {
             e.printStackTrace ();
         }
@@ -390,8 +388,7 @@ public class RtsProducerService extends BaseService {
     }
 
     private void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, RtsProducer rtsProducer) {
-
-        HSSFSheet sheet = workbook.createSheet ();
+        HSSFSheet sheet = workbook.createSheet (rtsProducer.getName ());
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 10; i++) {

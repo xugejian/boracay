@@ -464,7 +464,7 @@ public class OlqApplicationService extends BaseService {
             olqApplicationDtos.add (this.selectFullAppInfo (olqApplication.getPkId ()));
         }
 
-        HSSFWorkbook workbook = null;
+        HSSFWorkbook workbook = new HSSFWorkbook ();
         HSSFWorkbook sourceWork;
         HSSFSheet sourceSheet = null;
 
@@ -478,26 +478,24 @@ public class OlqApplicationService extends BaseService {
         POIFSFileSystem sourceFile = null;
 
         try {
-            sourceFile = new POIFSFileSystem (new FileInputStream (
-                    templateFile));
-
+            sourceFile = new POIFSFileSystem (new FileInputStream (templateFile));
             sourceWork = new HSSFWorkbook (sourceFile);
             sourceSheet = sourceWork.getSheetAt (0);
-            //创建表格
-            workbook = new HSSFWorkbook ();
         } catch (IOException e) {
             e.printStackTrace ();
         }
-        HSSFSheet sheet;
+
         List<ComExcelParam> comExcelParams = new ArrayList<> ();
         comExcelParams.add (new ComExcelParam (2, 1, "name"));
         comExcelParams.add (new ComExcelParam (2, 3, "olqDsName"));
         comExcelParams.add (new ComExcelParam (2, 5, "note"));
         comExcelParams.add (new ComExcelParam (3, 1, "describe"));
         comExcelParams.add (new ComExcelParam (3, 3, "olqSql"));
+
         for (OlqApplicationDto olqApplicationDto : olqApplicationDtos) {
             this.setWorkbookSheet (workbook, sourceSheet, comExcelParams, olqApplicationDto);
         }
+
         if (workbook != null) {
             try {
                 FileOutputStream stream = new FileOutputStream (dirPath);
@@ -564,7 +562,7 @@ public class OlqApplicationService extends BaseService {
     }
 
     private void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, OlqApplicationDto olqApplicationDto) {
-        HSSFSheet sheet = workbook.createSheet ();
+        HSSFSheet sheet = workbook.createSheet (olqApplicationDto.getOlqApplication ().getName ());
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 10; i++) {
