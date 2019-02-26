@@ -253,6 +253,7 @@ public class IqMetadataService extends BaseService {
 
         HSSFSheet sheet = null;
         for (IqMetadata iqMetadata : iqMetadatas) {
+            iqMetadata = iqMetadataMapper.select(iqMetadata.getPkId());
             sheet = workbook.createSheet(iqMetadata.getName ());
 
             //将前面样式内容复制到下载表中
@@ -265,20 +266,19 @@ public class IqMetadataService extends BaseService {
                 }
             }
 
-            //设置内容
-            IqMetadata iqmeta = iqMetadataMapper.select(iqMetadata.getPkId());
             //设置数据源名
-            iqmeta.setDsId(comDatasourceMapper.select(iqmeta.getDsId()).getName());
+            iqMetadata.setDsId(comDatasourceMapper.select(iqMetadata.getDsId()).getName());
             for (ComExcelParam comExcelParam : comExcelParams) {
                 try {
-                    Field field = iqmeta.getClass().getDeclaredField(comExcelParam.getName());
+                    Field field = iqMetadata.getClass().getDeclaredField(comExcelParam.getName());
                     field.setAccessible(true);
-                    ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(), field.get(iqmeta) == null ? "" : field.get(iqmeta).toString());
+                    ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(),
+                            field.get(iqMetadata) == null ? "" : field.get(iqMetadata).toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            List<IqMetadataCol> iqMetadataQueryCols = iqMetadataColService.selectQueryColList(iqmeta.getPkId());
+            List<IqMetadataCol> iqMetadataQueryCols = iqMetadataColService.selectQueryColList(iqMetadata.getPkId());
             if (iqMetadataQueryCols.size() > 0) {
                 for (IqMetadataCol iqMetadataCol : iqMetadataQueryCols) {
                     row = sheet.createRow(i);
@@ -304,7 +304,7 @@ public class IqMetadataService extends BaseService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            List<IqMetadataCol> iqMetadataReturnCols = iqMetadataColService.selectReturnColList(iqmeta.getPkId());
+            List<IqMetadataCol> iqMetadataReturnCols = iqMetadataColService.selectReturnColList(iqMetadata.getPkId());
             if (iqMetadataReturnCols.size() > 0) {
                 for (IqMetadataCol iqMetadataCol : iqMetadataReturnCols) {
                     row = sheet.createRow(i);

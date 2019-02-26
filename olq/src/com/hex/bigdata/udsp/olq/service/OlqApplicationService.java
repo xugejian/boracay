@@ -562,7 +562,13 @@ public class OlqApplicationService extends BaseService {
     }
 
     private void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, OlqApplicationDto olqApplicationDto) {
-        HSSFSheet sheet = workbook.createSheet (olqApplicationDto.getOlqApplication ().getName ());
+
+        OlqApplication olqApp = olqApplicationDto.getOlqApplication ();
+        olqApp = select(olqApp.getPkId ());
+        ComDatasource comDs = comDatasourceService.select (olqApp.getOlqDsId ());
+        olqApp.setOlqDsName (comDs.getName ());
+        HSSFSheet sheet = workbook.createSheet (olqApp.getName ());
+
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 10; i++) {
@@ -572,17 +578,18 @@ public class OlqApplicationService extends BaseService {
                 e.printStackTrace ();
             }
         }
-        OlqApplication olqApp = olqApplicationDto.getOlqApplication ();
-        olqApp.setOlqDsName (comDatasourceService.select (olqApp.getOlqDsId ()).getName ());
+
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
                 Field field = olqApp.getClass ().getDeclaredField (comExcelParam.getName ());
                 field.setAccessible (true);
-                ExcelCopyUtils.setCellValue (sheet, comExcelParam.getRowNum (), comExcelParam.getCellNum (), field.get (olqApp) == null ? "" : field.get (olqApp).toString ());
+                ExcelCopyUtils.setCellValue (sheet, comExcelParam.getRowNum (), comExcelParam.getCellNum (),
+                        field.get (olqApp) == null ? "" : field.get (olqApp).toString ());
             } catch (Exception e) {
                 e.printStackTrace ();
             }
         }
+
         this.setWorkbookSheetPart (sheet, olqApplicationDto, sourceSheet, workbook, new OlqIndexDto (i));
     }
 

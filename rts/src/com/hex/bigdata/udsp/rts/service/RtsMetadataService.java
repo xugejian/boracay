@@ -316,7 +316,9 @@ public class RtsMetadataService extends BaseService {
 
         HSSFSheet sheet = null;
         for (RtsMetadata rtsMetadata : rtsMetadatas) {
+            rtsMetadata = rtsMetadataMapper.select(rtsMetadata.getPkId());
             sheet = workbook.createSheet(rtsMetadata.getName ());
+
             //将前面样式内容复制到下载表中
             int i = 0;
             for (; i < 10; i++) {
@@ -327,16 +329,14 @@ public class RtsMetadataService extends BaseService {
                 }
             }
 
-            //设置内容
-            RtsMetadata metadata = rtsMetadataMapper.select(rtsMetadata.getPkId());
             //设置数据源名字
-            metadata.setDsId(comDatasourceMapper.select(metadata.getDsId()).getName());
+            rtsMetadata.setDsId(comDatasourceMapper.select(rtsMetadata.getDsId()).getName());
             for (ComExcelParam comExcelParam : comExcelParams) {
                 try {
-                    Field field = metadata.getClass().getDeclaredField(comExcelParam.getName());
+                    Field field = rtsMetadata.getClass().getDeclaredField(comExcelParam.getName());
                     field.setAccessible(true);
                     ExcelCopyUtils.setCellValue(sheet, comExcelParam.getRowNum(), comExcelParam.getCellNum(),
-                            field.get(metadata) == null ? "" : field.get(metadata).toString());
+                            field.get(rtsMetadata) == null ? "" : field.get(rtsMetadata).toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -357,6 +357,7 @@ public class RtsMetadataService extends BaseService {
                 }
             }
         }
+
         if (workbook != null) {
             try {
                 FileOutputStream stream = new FileOutputStream(dirPath);

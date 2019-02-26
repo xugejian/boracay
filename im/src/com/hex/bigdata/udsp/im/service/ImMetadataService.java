@@ -386,6 +386,7 @@ public class ImMetadataService extends BaseService {
 
         HSSFSheet sheet = null;
         for (ImMetadata imMetadata : imMetadatas) {
+            imMetadata = imMetadataMapper.select (imMetadata.getPkId ());
             sheet = workbook.createSheet (imMetadata.getName ());
 
             //将前面样式内容复制到下载表中
@@ -398,8 +399,6 @@ public class ImMetadataService extends BaseService {
                 }
             }
 
-            //设置内容
-            imMetadata = imMetadataMapper.select (imMetadata.getPkId ());
             //设置数据源
             if (StringUtils.isNotEmpty (imMetadata.getDsId ())) {
                 imMetadata.setDsId (comDatasourceService.select (imMetadata.getDsId ()).getName ());

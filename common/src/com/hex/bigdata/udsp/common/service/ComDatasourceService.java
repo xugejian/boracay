@@ -222,7 +222,9 @@ public class ComDatasourceService extends BaseService {
 
         HSSFSheet sheet = null;
         for (ComDatasource comDatasource : comDatasources) {
+            ComDatasource comdata = comDatasourceMapper.select(comDatasource.getPkId());
             sheet = workbook.createSheet(comDatasource.getName ());
+
             //将前面样式内容复制到下载表中
             int i = 0;
             for (; i < 10; i++) {
@@ -234,7 +236,6 @@ public class ComDatasourceService extends BaseService {
             }
 
             //设置内容
-            ComDatasource comdata = comDatasourceMapper.select(comDatasource.getPkId());
             for (ComExcelParam comExcelParam : comExcelParams) {
                 try {
                     Field field = comdata.getClass().getDeclaredField(comExcelParam.getName());

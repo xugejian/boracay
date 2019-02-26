@@ -388,7 +388,9 @@ public class RtsProducerService extends BaseService {
     }
 
     private void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, RtsProducer rtsProducer) {
+        rtsProducer = rtsProducerMapper.select (rtsProducer.getPkId ());
         HSSFSheet sheet = workbook.createSheet (rtsProducer.getName ());
+
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 10; i++) {
@@ -399,20 +401,19 @@ public class RtsProducerService extends BaseService {
             }
         }
 
-        //设置内容
-        RtsProducer rtsProducer1 = rtsProducerMapper.select (rtsProducer.getPkId ());
         //设置元数据名字
-        rtsProducer1.setMdId (rtsMetadataMapper.select (rtsProducer1.getMdId ()).getName ());
+        rtsProducer.setMdId (rtsMetadataMapper.select (rtsProducer.getMdId ()).getName ());
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
-                Field field = rtsProducer1.getClass ().getDeclaredField (comExcelParam.getName ());
+                Field field = rtsProducer.getClass ().getDeclaredField (comExcelParam.getName ());
                 field.setAccessible (true);
                 ExcelCopyUtils.setCellValue (sheet, comExcelParam.getRowNum (), comExcelParam.getCellNum (),
-                        field.get (rtsProducer1) == null ? "" : field.get (rtsProducer1).toString ());
+                        field.get (rtsProducer) == null ? "" : field.get (rtsProducer).toString ());
             } catch (Exception e) {
                 e.printStackTrace ();
             }
         }
+
         this.setWorkbookSheetPart (sheet, rtsProducer, sourceSheet, workbook, new RtsIndexDto (i));
     }
 

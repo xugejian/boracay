@@ -386,8 +386,10 @@ public class ImModelService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         HSSFSheet sheet = null;
         for (ImModel imModel : imModels) {
+            imModel = imModelMapper.select(imModel.getPkId());
             sheet = workbook.createSheet(imModel.getName ());
 
             //将前面样式内容复制到下载表中
@@ -400,8 +402,6 @@ public class ImModelService {
                 }
             }
 
-            //设置内容
-            imModel = imModelMapper.select(imModel.getPkId());
             //设置引擎数据源
             if (StringUtils.isNotBlank(imModel.getEngineDsId())) {
                 imModel.setEngineDsId(comDatasourceMapper.select(imModel.getEngineDsId()).getName());

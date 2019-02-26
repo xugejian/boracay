@@ -336,7 +336,10 @@ public class IqApplicationService extends BaseService {
     }
 
     public void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, IqApplication iqApplication) {
+
+        iqApplication = iqApplicationMapper.select (iqApplication.getPkId ());
         HSSFSheet sheet = workbook.createSheet (iqApplication.getName ());
+
         //将前面样式内容复制到下载表中
         int i = 0; // 必须放外面
         for (; i < 11; i++) {
@@ -347,19 +350,19 @@ public class IqApplicationService extends BaseService {
             }
         }
 
-        //设置内容
-        IqApplication iqApp = iqApplicationMapper.select (iqApplication.getPkId ());
         //设置元数据名
-        iqApp.setMdId (iqMetadataMapper.select (iqApp.getMdId ()).getName ());
+        iqApplication.setMdId (iqMetadataMapper.select (iqApplication.getMdId ()).getName ());
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
-                Field field = iqApp.getClass ().getDeclaredField (comExcelParam.getName ());
+                Field field = iqApplication.getClass ().getDeclaredField (comExcelParam.getName ());
                 field.setAccessible (true);
-                ExcelCopyUtils.setCellValue (sheet, comExcelParam.getRowNum (), comExcelParam.getCellNum (), field.get (iqApp) == null ? "" : field.get (iqApp).toString ());
+                ExcelCopyUtils.setCellValue (sheet, comExcelParam.getRowNum (), comExcelParam.getCellNum (),
+                        field.get (iqApplication) == null ? "" : field.get (iqApplication).toString ());
             } catch (Exception e) {
                 e.printStackTrace ();
             }
         }
+
         IqIndexDto iqIndexDto = new IqIndexDto (i, 16, 24);
         this.setWorkbookSheetPart (sheet, iqApplication, sourceSheet, workbook, iqIndexDto);
     }

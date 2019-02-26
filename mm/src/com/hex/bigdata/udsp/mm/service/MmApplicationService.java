@@ -408,7 +408,9 @@ public class MmApplicationService extends BaseService {
     }
 
     private void setWorkbookSheet(HSSFWorkbook workbook, HSSFSheet sourceSheet, List<ComExcelParam> comExcelParams, MmApplication mmApplication) {
+        mmApplication = mmApplicationMapper.select (mmApplication.getPkId ());
         HSSFSheet sheet = workbook.createSheet (mmApplication.getName ());
+
         //将前面样式内容复制到下载表中
         int i = 0;
         for (; i < 10; i++) {
@@ -418,19 +420,20 @@ public class MmApplicationService extends BaseService {
                 e.printStackTrace ();
             }
         }
-        //设置内容
-        MmApplication mmApp = mmApplicationMapper.select (mmApplication.getPkId ());
+
         //设置模型名称
-        mmApp.setModelId (modelInfoMapper.select (mmApp.getModelId ()).getName ());
+        mmApplication.setModelId (modelInfoMapper.select (mmApplication.getModelId ()).getName ());
         for (ComExcelParam comExcelParam : comExcelParams) {
             try {
-                Field field = mmApp.getClass ().getDeclaredField (comExcelParam.getName ());
+                Field field = mmApplication.getClass ().getDeclaredField (comExcelParam.getName ());
                 field.setAccessible (true);
-                ExcelCopyUtils.setCellValue (sheet, comExcelParam.getRowNum (), comExcelParam.getCellNum (), field.get (mmApp) == null ? "" : field.get (mmApp).toString ());
+                ExcelCopyUtils.setCellValue (sheet, comExcelParam.getRowNum (), comExcelParam.getCellNum (),
+                        field.get (mmApplication) == null ? "" : field.get (mmApplication).toString ());
             } catch (Exception e) {
                 e.printStackTrace ();
             }
         }
+
         MmIndexDto mmIndexDto = new MmIndexDto (i, 17);
         this.setWorkbookSheetPart (sheet, mmApplication, sourceSheet, workbook, mmIndexDto);
     }
