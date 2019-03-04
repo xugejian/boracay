@@ -388,15 +388,15 @@ public class IqApplicationService extends BaseService {
                 cell = row.createCell (5);
                 cell.setCellValue (iqAppQueryCol.getLength ());
                 cell = row.createCell (6);
-                cell.setCellValue (iqAppQueryCol.getNote ());
-                cell = row.createCell (7);
                 cell.setCellValue (iqAppQueryCol.getDefaultVal ());
-                cell = row.createCell (8);
+                cell = row.createCell (7);
                 cell.setCellValue (iqAppQueryCol.getLabel ());
-                cell = row.createCell (9);
+                cell = row.createCell (8);
                 cell.setCellValue (iqAppQueryCol.getIsNeed ().equals ("1") ? "否" : "是");
-                cell = row.createCell (10);
+                cell = row.createCell (9);
                 cell.setCellValue (iqAppQueryCol.getIsOfferOut ().equals ("1") ? "否" : "是");
+                cell = row.createCell (10);
+                cell.setCellValue (iqAppQueryCol.getNote ());
                 rowIndex++;
             }
         }
@@ -421,11 +421,11 @@ public class IqApplicationService extends BaseService {
                 cell = row.createCell (4);
                 cell.setCellValue (iqAppReturnCol.getLength ());
                 cell = row.createCell (5);
-                cell.setCellValue (iqAppReturnCol.getNote ());
-                cell = row.createCell (6);
                 cell.setCellValue (iqAppReturnCol.getStats ());
-                cell = row.createCell (7);
+                cell = row.createCell (6);
                 cell.setCellValue (iqAppReturnCol.getLabel ());
+                cell = row.createCell (7);
+                cell.setCellValue (iqAppReturnCol.getNote ());
                 rowIndex++;
             }
         }
@@ -449,9 +449,9 @@ public class IqApplicationService extends BaseService {
                 cell = row.createCell (3);
                 cell.setCellValue (iqAppOrderCol.getType ());
                 cell = row.createCell (4);
-                cell.setCellValue (iqAppOrderCol.getNote ());
-                cell = row.createCell (5);
                 cell.setCellValue (iqAppOrderCol.getOrderType ());
+                cell = row.createCell (5);
+                cell.setCellValue (iqAppOrderCol.getNote ());
                 rowIndex++;
             }
         }
