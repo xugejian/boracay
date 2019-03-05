@@ -826,7 +826,7 @@ ${extends("/goframe/function_layout.httl")}
                 "name": val.name,
                 "describe": val.describe ? val.describe : val.name,
                 "type": val.type,
-                "length": val.length,
+                "length": val.type == "STRING" ? "" : val.length,
                 "indexed": val.indexed ? 0 : 1,
                 "primary": val.primary ? 0 : 1,
                 "stored": val.stored ? 0 : 1

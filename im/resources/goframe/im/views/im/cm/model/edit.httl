@@ -562,7 +562,7 @@ ${extends("/goframe/function_layout.httl")}
                             "colId": "",
                             "note": data[i].note,
                             "describe": data[i].describe ? data[i].describe : data[i].name,
-                            "length": data[i].length,
+                            "length": data[i].type == "STRING" ? "" : data[i].length,
                             "type": data[i].type,
                             "indexed":data[i].indexed ? 0 : 1,
                             "primary":data[i].primary ? 0 : 1,
