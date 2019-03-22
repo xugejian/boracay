@@ -643,9 +643,9 @@ ${extends("/goframe/function_layout.httl")}
         // --同一行的说明、长度和别名变化--
         var selected = e.selected;
         var row = grid1.getSelected();
-        row.describe = selected.describe;
-        row.type = selected.type;
-        row.length = selected.length;
+        row.type = (selected.type == "" ? "STRING" : selected.type);
+        row.length = (selected.type == "STRING" ? "" : selected.length);
+        row.describe = (selected.describe ? selected.describe : selected.name);
         row.indexed = selected.indexed ? 0 : 1;
         row.primary = selected.primary ? 0 : 1;
         row.stored = selected.stored ? 0 : 1;
@@ -824,9 +824,9 @@ ${extends("/goframe/function_layout.httl")}
         $.each(data, function (i, val) {
             cols.push({
                 "name": val.name,
-                "describe": val.describe ? val.describe : val.name,
-                "type": val.type,
+                "type": val.type ? "STRING" : val.type,
                 "length": val.type == "STRING" ? "" : val.length,
+                "describe": val.describe ? val.describe : val.name,
                 "indexed": val.indexed ? 0 : 1,
                 "primary": val.primary ? 0 : 1,
                 "stored": val.stored ? 0 : 1
