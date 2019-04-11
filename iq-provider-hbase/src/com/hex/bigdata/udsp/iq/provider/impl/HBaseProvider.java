@@ -298,7 +298,7 @@ public class HBaseProvider implements Provider {
                 }
                 return 1;
             } else {
-                if (Integer.valueOf (str1).compareTo (Integer.valueOf (str2)) > 0) {
+                if (Double.valueOf (str1).compareTo (Double.valueOf (str2)) > 0) {
                     return 1;
                 } else if (str1.compareTo (str2) == 0) {
                     return 0;
