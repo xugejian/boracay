@@ -53,11 +53,48 @@
         <property name="maxWaitMillis" value="${redis.maxWaitMillis}"/>
         <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
     </bean>
+
+    <!--============ Redis单机 ============-->
     <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
           p:hostName="${redis.host}" p:port="${redis.port}" p:poolConfig-ref="jedisPoolConfig"
     />
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
         <property name="connectionFactory" ref="jedisConnectionFactory"/>
+        <property name="keySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>
+        <property name="valueSerializer">
+            <!-- 使用Java自带的序列化机制将对象序列化为一个字符串，存储较大，速度最快 -->
+            <!--<bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"></bean>-->
+            <!-- 将对象序列化为xml字符串，存储最大，速度最慢 -->
+            <!--<bean class="org.springframework.data.redis.serializer.OxmSerializer"></bean>-->
+            <!-- 将对象序列化为json字符串，存储最小，速度较快（推荐） -->
+            <bean class="org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer"></bean>
+        </property>
+        <property name="hashKeySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>
+        <property name="hashValueSerializer">
+            <!--<bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"></bean>-->
+            <!--<bean class="org.springframework.data.redis.serializer.OxmSerializer"></bean>-->
+            <bean class="org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer"></bean>
+        </property>
+    </bean>
+
+    <!--============ Redis集群 ============-->
+    <bean id="jedisClusterConnectionFactory"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <constructor-arg ref="jedisPoolConfig"/>
+        <constructor-arg ref="jedisClusterConfig"/>
+    </bean>
+    <bean id="jedisClusterConfig" class="org.springframework.data.redis.connection.RedisClusterConfiguration">
+        <constructor-arg name="propertySource" ref="jedisClusterPropertySource"/>
+    </bean>
+    <bean name="jedisClusterPropertySource" class="org.springframework.core.io.support.ResourcePropertySource">
+        <constructor-arg name="location" value="${redis.cluster.config}"/>
+    </bean>
+    <bean id="redisClusterTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="jedisClusterConnectionFactory"/>
         <property name="keySerializer">
             <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
         </property>
@@ -87,25 +124,26 @@
 
     <!-- ==================================== Quartz =====================================-->
     <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序  -->
-    <bean id="scheduler" lazy-init="true" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"></bean>
+    <bean id="scheduler" lazy-init="true" autowire="no"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean"></bean>
 
     <!-- ==================================== H2 =====================================-->
-    <bean id="h2DataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" >
-        <property name="driverClassName" value="org.h2.Driver" />
-        <property name="url" value="${aggregator.h2.url}" />
-        <property name="username" value="sa" />
-        <property name="password" value="" />
-        <property name="minIdle" value="1" /> <!-- 队列中的最小等待数 -->
-        <property name="maxIdle" value="10" /> <!-- 队列中的最大等待数 -->
-        <property name="maxWait" value="3000" /> <!-- 最长等待时间，单位毫秒 -->
-        <property name="maxActive" value="5" /> <!-- 最大活跃数 -->
-        <property name="initialSize" value="5" /> <!-- 初始大小 -->
-        <property name="validationQuery" value="select 1" /> <!-- 验证链接 -->
-        <property name="testWhileIdle" value="true" />
-        <property name="testOnBorrow" value="false" />
-        <property name="testOnReturn" value="false" />
-        <property name="validationQueryTimeout" value="1" />
-        <property name="timeBetweenEvictionRunsMillis" value="3000" />
+    <bean id="h2DataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="${aggregator.h2.url}"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+        <property name="minIdle" value="1"/> <!-- 队列中的最小等待数 -->
+        <property name="maxIdle" value="10"/> <!-- 队列中的最大等待数 -->
+        <property name="maxWait" value="3000"/> <!-- 最长等待时间，单位毫秒 -->
+        <property name="maxActive" value="5"/> <!-- 最大活跃数 -->
+        <property name="initialSize" value="5"/> <!-- 初始大小 -->
+        <property name="validationQuery" value="select 1"/> <!-- 验证链接 -->
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="validationQueryTimeout" value="1"/>
+        <property name="timeBetweenEvictionRunsMillis" value="3000"/>
     </bean>
 
 </beans>

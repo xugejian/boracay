@@ -30,6 +30,9 @@ public class ListenerContent implements ApplicationListener<ContextRefreshedEven
     @Value("${sun.security.krb5.debug}")
     private String sunSecurityKrb5Debug;
 
+    @Value("${ipc.client.fallback-to-simple-auth-allowed}")
+    private String ipcClientFallbackToSimpleAuthAllowed;
+
     @Autowired
     private FtpUserManagerService ftpUserManagerService;
 //    @Autowired
@@ -59,6 +62,10 @@ public class ListenerContent implements ApplicationListener<ContextRefreshedEven
         if (StringUtils.isNotBlank (sunSecurityKrb5Debug)) {
             System.setProperty ("sun.security.krb5.debug", sunSecurityKrb5Debug);
             logger.info ("系统配置：sun.security.krb5.debug = " + System.getProperty ("sun.security.krb5.debug"));
+        }
+        if (StringUtils.isNotBlank (ipcClientFallbackToSimpleAuthAllowed)) {
+            System.setProperty ("ipc.client.fallback-to-simple-auth-allowed", ipcClientFallbackToSimpleAuthAllowed);
+            logger.info ("系统配置：ipc.client.fallback-to-simple-auth-allowed = " + System.getProperty ("ipc.client.fallback-to-simple-auth-allowed"));
         }
 
         logger.info ("启动服务时初始化FTP服务器上UDSP用户和用户组");

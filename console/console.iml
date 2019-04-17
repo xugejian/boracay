@@ -37,7 +37,6 @@
     <orderEntry type="module" module-name="consumer-http" />
     <orderEntry type="module" module-name="consumer-restful" />
     <orderEntry type="module" module-name="consumer-socket" />
-    <orderEntry type="module" module-name="consumer-webservice" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="mc" />
