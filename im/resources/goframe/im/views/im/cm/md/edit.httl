@@ -54,7 +54,7 @@ ${extends("/goframe/function_layout.httl")}
                                vtype="maxLength:64" onblur="setCols"/>
                     </td>
                     <td colspan="2">
-                        <font color="red">提示：数据源支持SQL建议使用SQL建表然后选择外表！</font>
+                        <font color="red">提示：数据源支持SQL，建议使用SQL建表，然后选择外表！</font>
                     </td>
                 </tr>
                 <tr>
@@ -434,6 +434,9 @@ ${extends("/goframe/function_layout.httl")}
         if (!baseData) {
             return;
         }
+        if(!checkSchema()){
+            return;
+        }
         var colsData = getColsData();
         if (!colsData) {
             return;
@@ -458,8 +461,7 @@ ${extends("/goframe/function_layout.httl")}
         if (form1.isValid() == false) {
             return;
         }
-        var baseData = form1.getData(true, true);
-        return baseData;
+        return form1.getData(true, true);
     }
 
     /**
@@ -768,6 +770,33 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     /**
+     * 检查表是否存在
+     */
+    function checkSchema() {
+        var status = false;
+        var type = nui.get("type").getValue();
+        var dsId = nui.get("dsId").getValue();
+        var tbName = nui.get("tbName").getValue();
+        $.ajax({
+            url: "${basePath}/im/md/checkSchema/" + dsId + "/" + tbName,
+            type: 'POST',
+            cache: false,
+            async: false,
+            contentType: 'application/json',
+            success: function (result) {
+                if (type == 0 && !result.status) {
+                    nui.alert("内表已存在，请检查后重新输入！");
+                } else if(type == 1 && result.status){
+                    nui.alert("外表不存在，请检查后重新输入！");
+                } else {
+                    status = true;
+                }
+            }
+        });
+        return status;
+    }
+
+    /**
      * 设置外表字段信息
      */
     function setCols() {
@@ -785,7 +814,7 @@ ${extends("/goframe/function_layout.httl")}
         var json = nui.encode({"dsId": dsId, "tbName": tbName});
         if (type == 0) { // 内表
             form1.loading("正在检查表中,请稍等...");
-            $.post("${basePath}/im/md/checkSchema/"+dsId,{"tbName":tbName}, function (result) {
+            $.post("${basePath}/im/md/checkSchema/" + dsId + "/" + tbName, function (result) {
                 if (!result.status) {
                     nui.alert(result.message);
                 }
@@ -794,7 +823,7 @@ ${extends("/goframe/function_layout.httl")}
         } else { // 外表
             form1.loading("正在获取字段中,请稍等...");
             grid1.clearRows();
-            $.post("${basePath}/im/md/getCloumnInfo/"+dsId,{"tbName":tbName}, function (result) {
+            $.post("${basePath}/im/md/getCloumnInfo/" + dsId + "/" + tbName, function (result) {
                 if (result.status && result.data && result.data.length > 0) {
                     grid1.addRows(dealCols(result.data));
                 }

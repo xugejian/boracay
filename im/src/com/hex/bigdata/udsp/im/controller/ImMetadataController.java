@@ -344,22 +344,22 @@ public class ImMetadataController {
         return getCloumnInfo(dsId, tbName);
     }
 
-    @RequestMapping({"/checkSchema/{dsId}"})
+    @RequestMapping({"/checkSchema/{dsId}/{tbName}"})
     @ResponseBody
-    public MessageResult checkSchema(@PathVariable("dsId") String dsId, String tbName) {
+    public MessageResult checkSchema(@PathVariable("dsId") String dsId, @PathVariable("tbName") String tbName) {
         try {
             if (imMetadataService.checkSchema(dsId, tbName)) {
-                return new MessageResult(false, "表已经存在，不可使用！");
+                return new MessageResult(false, "内表已存在，请检查后重新输入！");
             }
         } catch (Exception e) {
             return new MessageResult(false, e.getMessage());
         }
-        return new MessageResult(true, "表不存在，可以使用！");
+        return new MessageResult(true, "内表不存在，可以使用！");
     }
 
-    @RequestMapping({"/getCloumnInfo/{dsId}"})
+    @RequestMapping({"/getCloumnInfo/{dsId}/{tbName}"})
     @ResponseBody
-    public MessageResult getCloumnInfo(@PathVariable("dsId") String dsId, String tbName) {
+    public MessageResult getCloumnInfo(@PathVariable("dsId") String dsId, @PathVariable("tbName") String tbName) {
         boolean status = true;
         String message = "获取外表字段信息成功！";
         List<MetadataCol> metadataCols = null;

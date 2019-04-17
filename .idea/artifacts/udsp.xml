@@ -40,7 +40,6 @@
           <element id="artifact" artifact-name="hex-udsp-consumer-http" />
           <element id="artifact" artifact-name="hex-udsp-consumer-restful" />
           <element id="artifact" artifact-name="hex-udsp-consumer-socket" />
-          <element id="artifact" artifact-name="hex-udsp-consumer-webservice" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-hive" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-impala" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-kafka" />
@@ -58,7 +57,6 @@
           <element id="library" level="project" name="redis" />
           <element id="library" level="project" name="spring" />
           <element id="library" level="project" name="tools" />
-          <element id="library" level="project" name="cxf" />
           <element id="library" level="project" name="hive-jdbc" />
           <element id="library" level="project" name="kafka" />
           <element id="library" level="project" name="kudu" />
