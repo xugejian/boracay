@@ -3,16 +3,16 @@ package com.hex.bigdata.udsp.iq.service;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.api.model.Property;
-import com.hex.bigdata.udsp.common.constant.DataType;
-import com.hex.bigdata.udsp.common.constant.EnumTrans;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.DatasourceUtil;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
-import com.hex.bigdata.udsp.dsl.constant.AggregateFunction;
 import com.hex.bigdata.udsp.dsl.model.*;
+import com.hex.bigdata.udsp.dsl.model.Order;
 import com.hex.bigdata.udsp.iq.model.*;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.model.*;
@@ -38,6 +38,7 @@ import java.util.*;
 public class IqProviderService extends BaseService {
     private static Logger logger = LogManager.getLogger (IqProviderService.class);
     private static final String IQ_IMPL_CLASS = "IQ_IMPL_CLASS";
+    private static final String MAX_VALUE_EXPRESSION = "${maxValue}";
 
     private static final FastDateFormat format8 = FastDateFormat.getInstance ("yyyyMMdd");
     private static final FastDateFormat format10 = FastDateFormat.getInstance ("yyyy-MM-dd");
@@ -85,6 +86,7 @@ public class IqProviderService extends BaseService {
      * @return
      */
     public IqResponse select(String appId, Map<String, String> paraMap) {
+        paraMap = getMaxValuesParaMap (appId, paraMap);
         Application application = getApplication (appId, paraMap);
         IqRequest request = new IqRequest (application);
         Datasource datasource = application.getMetadata ().getDatasource ();
@@ -109,6 +111,83 @@ public class IqProviderService extends BaseService {
         IqResponse response = getProviderImpl (datasource).query (request, page);
         response.setColumns (returnColumns (application.getReturnColumns ())); // 设置返回字段信息
         return response;
+    }
+
+    private Map<String, String> getMaxValuesParaMap(String appId, Map<String, String> paraMap) {
+        Map<String, String> maxValues = getMaxValues (appId, paraMap);
+        if (maxValues != null && maxValues.size () != 0) {
+            for (Map.Entry<String, String> entry : maxValues.entrySet ()) {
+                paraMap.put (entry.getKey (), entry.getValue ());
+            }
+        }
+        logger.info ("paraMap: " + JSONUtil.parseMap2JSON (paraMap));
+        return paraMap;
+    }
+
+    private Map<String, String> getMaxValues(String appId, Map<String, String> paraMap) {
+        Map<String, String> maxValues = new HashMap<> ();
+        Application application = getApplication (appId);
+        // 重新组织查询字段
+        Map<String, QueryColumn> maxValueQueryColumns = new HashMap<> ();
+        List<QueryColumn> queryColumns = new ArrayList<> ();
+        for (QueryColumn queryColumn : application.getQueryColumns ()) {
+            // 值为${maxValue}时，即最大值表达式
+            if (MAX_VALUE_EXPRESSION.equalsIgnoreCase (queryColumn.getValue ().trim ())) {
+                maxValueQueryColumns.put (queryColumn.getName (), queryColumn);
+            } else {
+                queryColumns.add (queryColumn);
+            }
+        }
+        application.setQueryColumns (queryColumns);
+        // 查询参数的值中有${maxValue}
+        if (maxValueQueryColumns.size () != 0) {
+            // 重新组织排序字段
+            List<OrderColumn> orderColumns = new ArrayList<> ();
+            short seq = 0;
+            for (Map.Entry<String, QueryColumn> entry : maxValueQueryColumns.entrySet ()) {
+                QueryColumn queryColumn = entry.getValue ();
+                OrderColumn orderColumn = new OrderColumn ();
+                orderColumn.setSeq (seq);
+                orderColumn.setOrder (com.hex.bigdata.udsp.common.constant.Order.DESC);
+                orderColumn.setName (queryColumn.getName ());
+                orderColumn.setType (queryColumn.getType ());
+                orderColumn.setDescribe (queryColumn.getDescribe ());
+                orderColumns.add (orderColumn);
+                seq++;
+            }
+            application.setOrderColumns (orderColumns);
+            // 重新组织返回字段
+            List<ReturnColumn> returnColumns = new ArrayList<> ();
+            for (DataColumn dataColumn : application.getMetadata ().getReturnColumns ()) {
+                ReturnColumn returnColumn = new ReturnColumn ();
+                returnColumn.setSeq (dataColumn.getSeq ());
+                returnColumn.setName (dataColumn.getName ());
+                returnColumn.setType (dataColumn.getType ());
+                returnColumn.setDescribe (dataColumn.getDescribe ());
+                returnColumn.setLength (dataColumn.getLength ());
+                returnColumn.setLabel (dataColumn.getName ()); // 别名和字段名一致
+                returnColumn.setStats (Stats.NONE);
+                returnColumns.add (returnColumn);
+            }
+            application.setReturnColumns (returnColumns);
+            IqRequest request = new IqRequest (application);
+            Datasource datasource = application.getMetadata ().getDatasource ();
+            IqResponse response = getProviderImpl (datasource).query (request);
+            if (Status.SUCCESS == response.getStatus ()) {
+                // key值是别名，这里由于returnColumns中别名和字段名一致，所以不需要转换
+                List<Map<String, String>> records = response.getRecords ();
+                logger.debug ("records: " + JSONUtil.parseList2JSON (records));
+                if (records != null && records.size () != 0) {
+                    Map<String, String> record = records.get (0);
+                    logger.debug ("record: " + JSONUtil.parseMap2JSON (record));
+                    for (Map.Entry<String, QueryColumn> entry : maxValueQueryColumns.entrySet ()) {
+                        maxValues.put (entry.getValue ().getLabel (), record.get (entry.getValue ().getName ()));
+                    }
+                }
+            }
+        }
+        logger.info ("maxValues: " + JSONUtil.parseMap2JSON (maxValues));
+        return maxValues;
     }
 
     /**

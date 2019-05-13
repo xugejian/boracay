@@ -96,7 +96,9 @@ ${extends("/goframe/function_layout.httl")}
                             <input property="editor" class="nui-textbox" vtype="maxLength:32"/>
                         </div>
                         <div field="defaultVal" headerAlign="center" allowSort="true" width="15">默认值
-                            <input property="editor" class="nui-textbox" vtype="maxLength:64"/>
+                            <!--<input property="editor" class="nui-textbox" vtype="maxLength:64"/>-->
+                            <input property="editor" class="nui-dictcombobox" valueField="dictId" textField="dictName"
+                                   allowInput="true" dictTypeId="IQ_APP_QUERY_COL_EXPRESSION" vtype="maxLength:64"/>
                         </div>
                         <div field="label" headerAlign="center" allowSort="true" width="15">别名
                             <input property="editor" class="nui-textbox" vtype="maxLength:64"
