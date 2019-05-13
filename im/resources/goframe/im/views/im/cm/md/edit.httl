@@ -778,7 +778,7 @@ ${extends("/goframe/function_layout.httl")}
         var dsId = nui.get("dsId").getValue();
         var tbName = nui.get("tbName").getValue();
         $.ajax({
-            url: "${basePath}/im/md/checkSchema/" + dsId + "/" + tbName,
+            url: "${basePath}/im/md/checkSchema?dsId=" + dsId + "&tbName=" + tbName,
             type: 'POST',
             cache: false,
             async: false,
@@ -814,7 +814,7 @@ ${extends("/goframe/function_layout.httl")}
         var json = nui.encode({"dsId": dsId, "tbName": tbName});
         if (type == 0) { // 内表
             form1.loading("正在检查表中,请稍等...");
-            $.post("${basePath}/im/md/checkSchema/" + dsId + "/" + tbName, function (result) {
+            $.post("${basePath}/im/md/checkSchema/" + dsId, {"tbName": tbName}, function (result) {
                 if (!result.status) {
                     nui.alert(result.message);
                 }
@@ -823,7 +823,7 @@ ${extends("/goframe/function_layout.httl")}
         } else { // 外表
             form1.loading("正在获取字段中,请稍等...");
             grid1.clearRows();
-            $.post("${basePath}/im/md/getCloumnInfo/" + dsId + "/" + tbName, function (result) {
+            $.post("${basePath}/im/md/getCloumnInfo/" + dsId, {"tbName": tbName}, function (result) {
                 if (result.status && result.data && result.data.length > 0) {
                     grid1.addRows(dealCols(result.data));
                 }
