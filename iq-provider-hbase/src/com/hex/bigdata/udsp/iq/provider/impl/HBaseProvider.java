@@ -258,7 +258,10 @@ public class HBaseProvider implements Provider {
                     DataType dataType = orderColumn.getType ();
                     String val1 = obj1.get (colName);
                     String val2 = obj2.get (colName);
-                    if (StringUtils.isNotBlank (val1) && StringUtils.isNotBlank (val2)) {
+                    if(val1 == null || val2 == null){
+                        throw new RuntimeException ("返回字段中不存在" + colName + "排序字段");
+                    }
+                    if(val1 != null && val2 != null){
                         flg = compareTo (val1, val2, order, dataType);
                         if (flg != 0) {
                             break;
