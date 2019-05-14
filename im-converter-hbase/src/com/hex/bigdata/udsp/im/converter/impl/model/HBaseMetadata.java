@@ -89,4 +89,8 @@ public class HBaseMetadata extends Metadata {
         return value;
     }
 
+    public String getFamilyReplicationScope() {
+        return getProperty("hbase.family.replication.scope").getValue();
+    }
+
 }
