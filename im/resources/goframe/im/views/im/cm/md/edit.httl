@@ -778,7 +778,7 @@ ${extends("/goframe/function_layout.httl")}
         var dsId = nui.get("dsId").getValue();
         var tbName = nui.get("tbName").getValue();
         $.ajax({
-            url: "${basePath}/im/md/checkSchema?dsId=" + dsId + "&tbName=" + tbName,
+            url: "${basePath}/im/md/checkSchema2?dsId=" + dsId + "&tbName=" + tbName,
             type: 'POST',
             cache: false,
             async: false,
