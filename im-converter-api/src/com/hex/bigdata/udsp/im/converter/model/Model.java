@@ -56,32 +56,28 @@ public class Model extends Base implements Serializable {
         super(propertyMap);
     }
 
-    public Model(List<Property> properties, Datasource srcDatasource) {
-        this.sourceDatasource = srcDatasource;
-        setProperties(properties);
-    }
-
     public Model(Model model) {
-        super(model.getPropertyMap());
-        this.id = model.getId();
-        this.name = model.getName();
-        this.describe = model.getDescribe();
-        this.note = model.getNote();
-        this.type = model.getType();
-        this.status = model.getStatus();
-        this.buildMode = model.getBuildMode();
-        this.updateMode = model.getUpdateMode();
-        this.updateKeys = model.getUpdateKeys();
-        this.sourceDatasource = model.getSourceDatasource();
-        this.targetMetadata = model.getTargetMetadata();
-        this.engineDatasource = model.getEngineDatasource();
-        this.modelMappings = model.getModelMappings();
-        this.modelFilterCols = model.getModelFilterCols();
+        super(model.propertyMap);
+        this.id = model.id;
+        this.name = model.name;
+        this.describe = model.describe;
+        this.note = model.note;
+        this.type = model.type;
+        this.status = model.status;
+        this.buildMode = model.buildMode;
+        this.updateMode = model.updateMode;
+        this.updateKeys = model.updateKeys;
+        this.sourceDatasource = model.sourceDatasource;
+        this.targetMetadata = model.targetMetadata;
+        this.engineDatasource = model.engineDatasource;
+        this.modelMappings = model.modelMappings;
+        this.modelFilterCols = model.modelFilterCols;
     }
 
     public String getId() {
-        if (StringUtils.isBlank(id))
-            throw new IllegalArgumentException("id不能为空");
+        if (StringUtils.isBlank(id)) {
+            throw new IllegalArgumentException ("id不能为空");
+        }
         return id;
     }
 
@@ -90,8 +86,9 @@ public class Model extends Base implements Serializable {
     }
 
     public String getName() {
-        if (StringUtils.isBlank(name))
-            throw new IllegalArgumentException("name不能为空");
+        if (StringUtils.isBlank(name)) {
+            throw new IllegalArgumentException ("name不能为空");
+        }
         return name;
     }
 
@@ -116,8 +113,9 @@ public class Model extends Base implements Serializable {
     }
 
     public ModelType getType() {
-        if (type == null)
-            throw new IllegalArgumentException("type不能为空");
+        if (type == null) {
+            throw new IllegalArgumentException ("type不能为空");
+        }
         return type;
     }
 
@@ -126,8 +124,9 @@ public class Model extends Base implements Serializable {
     }
 
     public ModelStatus getStatus() {
-        if (status == null)
-            throw new IllegalArgumentException("status不能为空");
+        if (status == null) {
+            throw new IllegalArgumentException ("status不能为空");
+        }
         return status;
     }
 
@@ -152,8 +151,9 @@ public class Model extends Base implements Serializable {
     }
 
     public Datasource getSourceDatasource() {
-        if (sourceDatasource == null)
-            throw new IllegalArgumentException("sourceDatasource不能为空");
+        if (sourceDatasource == null) {
+            throw new IllegalArgumentException ("sourceDatasource不能为空");
+        }
         return sourceDatasource;
     }
 
@@ -162,8 +162,9 @@ public class Model extends Base implements Serializable {
     }
 
     public Metadata getTargetMetadata() {
-        if (targetMetadata == null)
-            throw new IllegalArgumentException("targetMetadata不能为空");
+        if (targetMetadata == null) {
+            throw new IllegalArgumentException ("targetMetadata不能为空");
+        }
         return targetMetadata;
     }
 
@@ -180,8 +181,9 @@ public class Model extends Base implements Serializable {
     }
 
     public List<ModelMapping> getModelMappings() {
-        if (modelMappings == null || modelMappings.size() == 0)
-            throw new IllegalArgumentException("modelMappings不能为空");
+        if (modelMappings == null || modelMappings.size() == 0) {
+            throw new IllegalArgumentException ("modelMappings不能为空");
+        }
         return modelMappings;
     }
 
@@ -205,10 +207,11 @@ public class Model extends Base implements Serializable {
         this.updateKeys = updateKeys;
     }
 
-    public boolean getViolenceQuery() {
-        String value = getProperty("violence.query").getValue();
-        if (StringUtils.isBlank(value))
+    public boolean gainViolenceQuery() {
+        String value = gainProperty("violence.query").getValue();
+        if (StringUtils.isBlank(value)) {
             value = "true";
+        }
         return Boolean.valueOf(value);
     }
 
@@ -216,10 +219,11 @@ public class Model extends Base implements Serializable {
      * hive.set.sql="set mapred.map.tasks=1;"
      * @return
      */
-    public String getHiveSetSql() {
-        String value = getProperty("hive.set.sql").getValue();
-        if (StringUtils.isBlank(value))
+    public String gainHiveSetSql() {
+        String value = gainProperty("hive.set.sql").getValue();
+        if (StringUtils.isBlank(value)) {
             value = "";
+        }
         return value;
     }
 }

@@ -51,7 +51,7 @@ public class ElasticSearchProvider implements Provider {
             //最大查询数量
             Page page = new Page();
             page.setPageIndex(0);
-            page.setPageSize(elSearchDatasource.getMaxSize ());
+            page.setPageSize(elSearchDatasource.gainMaxSize ());
             String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
             ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
             response.setRecords(getRecords(elSearchPage.getRecords(), returnColumns));

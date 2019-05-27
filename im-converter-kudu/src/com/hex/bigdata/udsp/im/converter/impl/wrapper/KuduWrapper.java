@@ -94,23 +94,25 @@ public abstract class KuduWrapper extends Wrapper implements BatchSourceConverte
 
     @Override
     protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
-        if (modelMappings == null || modelMappings.size() == 0)
+        if (modelMappings == null || modelMappings.size() == 0) {
             return null;
+        }
         List<String> selectColumns = new ArrayList<>();
-        for (ModelMapping mapping : modelMappings)
-            selectColumns.add(mapping.getName());
+        for (ModelMapping mapping : modelMappings) {
+            selectColumns.add (mapping.getName ());
+        }
         return selectColumns;
     }
 
     @Override
-    protected void emptyDatas(Metadata metadata) throws Exception {
+    public void emptyDatas(Metadata metadata) throws Exception {
         KuduMetadata kuduMetadata = new KuduMetadata(metadata);
         KuduUtil.emptyHTable(kuduMetadata);
     }
 
     protected List<MetadataCol> getColumns(KuduDatasource datasource, String tableName) {
         List<ColumnSchema> columns = KuduUtil.getColumns(datasource, tableName);
-        if (columns == null) return null;
+        if (columns == null) {return null;}
         List<MetadataCol> mdCols = new ArrayList<>();
         MetadataCol mdCol = null;
         ColumnSchema column = null;
@@ -150,14 +152,14 @@ public abstract class KuduWrapper extends Wrapper implements BatchSourceConverte
 
     protected List<TblProperty> getSourceTblProperties(KuduDatasource datasource, String tableName) {
         List<TblProperty> tblProperties = new ArrayList<>();
-        tblProperties.add(new TblProperty("kudu.master.addresses", datasource.getKuduMasterHosts())); // Kudu服务器地址
+        tblProperties.add(new TblProperty("kudu.master.addresses", datasource.gainKuduMasterHosts())); // Kudu服务器地址
         tblProperties.add(new TblProperty("kudu.table.name", tableName)); // Kudu表名
         return tblProperties;
     }
 
     protected List<TblProperty> getTargetTblProperties(KuduDatasource datasource, String tableName) {
         List<TblProperty> tblProperties = new ArrayList<>();
-        tblProperties.add(new TblProperty("kudu.master.addresses", datasource.getKuduMasterHosts())); // Kudu服务器地址
+        tblProperties.add(new TblProperty("kudu.master.addresses", datasource.gainKuduMasterHosts())); // Kudu服务器地址
         tblProperties.add(new TblProperty("kudu.table.name", tableName)); // Kudu表名
         return tblProperties;
     }

@@ -124,7 +124,7 @@ public abstract class Wrapper {
         所以这里在非暴力查询模式下，我们会每次都新建一个Hive的引擎表，表中指定过滤的查询语句，
         这样就可以达到不同的过滤条件时不会每次都暴力扫描，可以在源就做好过滤获取少量的结果数据，然后给到Hive。
          */
-        boolean violenceQuery = model.getViolenceQuery ();
+        boolean violenceQuery = model.gainViolenceQuery ();
 
         // 判断是否要覆盖数据，则先清空数据
         if (BuildMode.INSERT_OVERWRITE == model.getBuildMode ()) {
@@ -147,8 +147,8 @@ public abstract class Wrapper {
 
             if (sDsId.equals (eDsId)) { // 源、引擎的数据源相同
                 HiveModel hiveModel = new HiveModel (model);
-                selectSql = hiveModel.getSelectSql ();
-                selectTableName = hiveModel.getDatabaseName () + DATABASE_AND_TABLE_SEP + hiveModel.getTableName ();
+                selectSql = hiveModel.gainSelectSql ();
+                selectTableName = hiveModel.gainDatabaseName () + DATABASE_AND_TABLE_SEP + hiveModel.gainTableName ();
             } else { // 源、引擎的数据源不同
                 if (violenceQuery) { // 暴力查询
                     selectTableName = getSourceTableName (id);
@@ -198,7 +198,7 @@ public abstract class Wrapper {
             }
 
             // 使用set语法在Hive中设置参数，如：set mapred.map.tasks=50;
-            String hiveSetSql = model.getHiveSetSql ();
+            String hiveSetSql = model.gainHiveSetSql ();
 
             // 设置MapReduce的job名称
             hiveSetSql += "set mapred.job.name=" + name + "(" + describe + ");";
@@ -279,8 +279,9 @@ public abstract class Wrapper {
     }
 
     protected List<WhereProperty> getWhereProperties(List<ModelFilterCol> modelFilterCols) {
-        if (modelFilterCols == null || modelFilterCols.size () == 0)
+        if (modelFilterCols == null || modelFilterCols.size () == 0) {
             return null;
+        }
         List<WhereProperty> whereProperties = new ArrayList<> ();
         for (ModelFilterCol filterCol : modelFilterCols) {
             WhereProperty whereProperty = new WhereProperty ();
@@ -524,5 +525,5 @@ public abstract class Wrapper {
      *
      * @param metadata
      */
-    protected abstract void emptyDatas(Metadata metadata) throws Exception;
+    public abstract void emptyDatas(Metadata metadata) throws Exception;
 }

@@ -31,16 +31,28 @@ public class Metadata extends Base {
     }
 
     public Metadata(List<Property> properties) {
-        super(properties);
+        super (properties);
     }
 
     public Metadata(Map<String, Property> propertyMap) {
-        super(propertyMap);
+        super (propertyMap);
+    }
+
+    public Metadata(Metadata metadata) {
+        super (metadata.propertyMap);
+        this.name = metadata.name;
+        this.describe = metadata.describe;
+        this.note = metadata.note;
+        this.tbName = metadata.tbName;
+        this.queryColumns = metadata.queryColumns;
+        this.returnColumns = metadata.returnColumns;
+        this.datasource = metadata.datasource;
     }
 
     public String getTbName() {
-        if (StringUtils.isBlank(tbName))
-            throw new IllegalArgumentException("type不能为空");
+        if (StringUtils.isBlank (tbName)) {
+            throw new IllegalArgumentException ("type不能为空");
+        }
         return tbName;
     }
 
@@ -49,8 +61,9 @@ public class Metadata extends Base {
     }
 
     public List<DataColumn> getQueryColumns() {
-        if (queryColumns == null)
-            throw new IllegalArgumentException("queryColumns不能为空");
+        if (queryColumns == null) {
+            throw new IllegalArgumentException ("queryColumns不能为空");
+        }
         return queryColumns;
     }
 
@@ -59,8 +72,9 @@ public class Metadata extends Base {
     }
 
     public List<DataColumn> getReturnColumns() {
-        if (returnColumns == null)
-            throw new IllegalArgumentException("returnColumns不能为空");
+        if (returnColumns == null) {
+            throw new IllegalArgumentException ("returnColumns不能为空");
+        }
         return returnColumns;
     }
 
@@ -93,8 +107,9 @@ public class Metadata extends Base {
     }
 
     public Datasource getDatasource() {
-        if (datasource == null)
-            throw new IllegalArgumentException("datasource不能为空");
+        if (datasource == null) {
+            throw new IllegalArgumentException ("datasource不能为空");
+        }
         return datasource;
     }
 

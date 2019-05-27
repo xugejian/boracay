@@ -21,51 +21,54 @@ public class Kafka1ProducerDatasource extends Datasource {
     }
 
     // Kafka集群的IP和端口地址，多个地址用逗号分隔
-    public String getBootstrapServers() {
-        String value = getProperty ("bootstrap.servers").getValue ();
-        if (StringUtils.isBlank (value))
+    public String gainBootstrapServers() {
+        String value = gainProperty ("bootstrap.servers").getValue ();
+        if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("bootstrap.servers不能为空");
+        }
         return value;
     }
 
     // Key的序列化类
-    public String getKeySerializer() {
-        String value = getProperty ("key.serializer").getValue ();
-        if (StringUtils.isBlank (value))
+    public String gainKeySerializer() {
+        String value = gainProperty ("key.serializer").getValue ();
+        if (StringUtils.isBlank (value)) {
             value = "org.apache.kafka.common.serialization.StringSerializer";
+        }
         return value;
     }
 
     // Value的序列化类
-    public String getValueSerializer() {
-        String value = getProperty ("value.serializer").getValue ();
-        if (org.apache.commons.lang.StringUtils.isBlank (value))
+    public String gainValueSerializer() {
+        String value = gainProperty ("value.serializer").getValue ();
+        if (org.apache.commons.lang.StringUtils.isBlank (value)) {
             value = "org.apache.kafka.common.serialization.StringSerializer";
+        }
         return value;
     }
 
     // 请求确认模式，0、1、2、all
-    public String getAcks() {
-        return getProperty ("acks").getValue ();
+    public String gainAcks() {
+        return gainProperty ("acks").getValue ();
     }
 
     // 失败重试次数
-    public String getRetries() {
-        return getProperty ("retries").getValue ();
+    public String gainRetries() {
+        return gainProperty ("retries").getValue ();
     }
 
     // 失败重试间隔（毫秒）
-    public String getRetryBackoffMs() {
-        return getProperty ("retry.backoff.ms").getValue ();
+    public String gainRetryBackoffMs() {
+        return gainProperty ("retry.backoff.ms").getValue ();
     }
 
     // 安全协议
-    public String getSecurityProtocol() {
-        return getProperty ("security.protocol").getValue ();
+    public String gainSecurityProtocol() {
+        return gainProperty ("security.protocol").getValue ();
     }
 
     // Kerberos服务名
-    public String getSaslKerberosServiceName() {
-        return getProperty ("sasl.kerberos.service.name").getValue ();
+    public String gainSaslKerberosServiceName() {
+        return gainProperty ("sasl.kerberos.service.name").getValue ();
     }
 }

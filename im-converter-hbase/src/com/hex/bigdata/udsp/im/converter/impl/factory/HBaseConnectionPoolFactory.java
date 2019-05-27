@@ -77,45 +77,58 @@ class HBaseConnectionFactory extends BasePoolableObjectFactory {
         for (Property property : datasource.getProperties ()) {
             conf.set (property.getName (), property.getValue ());
         }
-        conf.set("hbase.zookeeper.quorum", datasource.getZkQuorum());
-        conf.set("hbase.zookeeper.property.clientPort", datasource.getZkPort());
-        if (StringUtils.isNotBlank(datasource.getRpcTimeout()))
-            conf.set("hbase.rpc.timeout", datasource.getRpcTimeout());
-        if (StringUtils.isNotBlank(datasource.getClientRetriesNumber()))
-            conf.set("hbase.client.retries.number", datasource.getClientRetriesNumber());
-        if (StringUtils.isNotBlank(datasource.getClientPause()))
-            conf.set("hbase.client.pause", datasource.getClientPause());
-        if (StringUtils.isNotBlank(datasource.getZkRecoveryRetry()))
-            conf.set("zookeeper.recovery.retry", datasource.getZkRecoveryRetry());
-        if (StringUtils.isNotBlank(datasource.getZkRecoveryRetryIntervalmill()))
-            conf.set("zookeeper.recovery.retry.intervalmill", datasource.getZkRecoveryRetryIntervalmill());
-        if (StringUtils.isNotBlank(datasource.getClientOperationTimeout()))
-            conf.set("hbase.client.operation.timeout", datasource.getClientOperationTimeout());
+        conf.set("hbase.zookeeper.quorum", datasource.gainZkQuorum());
+        conf.set("hbase.zookeeper.property.clientPort", datasource.gainZkPort());
+        if (StringUtils.isNotBlank(datasource.gainRpcTimeout())) {
+            conf.set ("hbase.rpc.timeout", datasource.gainRpcTimeout ());
+        }
+        if (StringUtils.isNotBlank(datasource.gainClientRetriesNumber())) {
+            conf.set ("hbase.client.retries.number", datasource.gainClientRetriesNumber ());
+        }
+        if (StringUtils.isNotBlank(datasource.gainClientPause())) {
+            conf.set ("hbase.client.pause", datasource.gainClientPause ());
+        }
+        if (StringUtils.isNotBlank(datasource.gainZkRecoveryRetry())) {
+            conf.set ("zookeeper.recovery.retry", datasource.gainZkRecoveryRetry ());
+        }
+        if (StringUtils.isNotBlank(datasource.gainZkRecoveryRetryIntervalmill())) {
+            conf.set ("zookeeper.recovery.retry.intervalmill", datasource.gainZkRecoveryRetryIntervalmill ());
+        }
+        if (StringUtils.isNotBlank(datasource.gainClientOperationTimeout())) {
+            conf.set ("hbase.client.operation.timeout", datasource.gainClientOperationTimeout ());
+        }
 //        if (StringUtils.isNotBlank(datasource.getRegionserverLeasePeriod()))
 //            conf.set("hbase.regionserver.lease.period", datasource.getRegionserverLeasePeriod()); // 已被弃用
-        if (StringUtils.isNotBlank(datasource.getClientScannerTimeoutPeriod()))
-            conf.set("hbase.client.scanner.timeout.period", datasource.getClientScannerTimeoutPeriod());
-        if (StringUtils.isNotBlank (datasource.getHBaseRootdir ()))
-            conf.set ("hbase.rootdir", datasource.getHBaseRootdir ());
-        if (StringUtils.isNotBlank (datasource.getZookeeperZnodeParent ()))
-            conf.set ("zookeeper.znode.parent", datasource.getZookeeperZnodeParent ());
+        if (StringUtils.isNotBlank(datasource.gainClientScannerTimeoutPeriod())) {
+            conf.set ("hbase.client.scanner.timeout.period", datasource.gainClientScannerTimeoutPeriod ());
+        }
+        if (StringUtils.isNotBlank (datasource.gainHBaseRootdir ())) {
+            conf.set ("hbase.rootdir", datasource.gainHBaseRootdir ());
+        }
+        if (StringUtils.isNotBlank (datasource.gainZookeeperZnodeParent ())) {
+            conf.set ("zookeeper.znode.parent", datasource.gainZookeeperZnodeParent ());
+        }
 
         /*
         以下是HBase开启Kerberos认证后需要的配置
          */
-        if (StringUtils.isNotBlank (datasource.getKerberosPrincipal ())
-                && StringUtils.isNotBlank (datasource.getKerberosKeytab ())) {
-            if (StringUtils.isNotBlank (datasource.getHbaseSecurityAuthentication ()))
-                conf.set ("hbase.security.authentication", datasource.getHbaseSecurityAuthentication ());
-            if (StringUtils.isNotBlank (datasource.getHadoopSecurityAuthentication ()))
-                conf.set ("hadoop.security.authentication", datasource.getHadoopSecurityAuthentication ());
-            if (StringUtils.isNotBlank (datasource.getHbaseMasterKerberosPrincipal ()))
-                conf.set ("hbase.master.kerberos.principal", datasource.getHbaseMasterKerberosPrincipal ());
-            if (StringUtils.isNotBlank (datasource.getHbaseRegionserverKerberosPrincipal ()))
-                conf.set ("hbase.regionserver.kerberos.principal", datasource.getHbaseRegionserverKerberosPrincipal ());
+        if (StringUtils.isNotBlank (datasource.gainKerberosPrincipal ())
+                && StringUtils.isNotBlank (datasource.gainKerberosKeytab ())) {
+            if (StringUtils.isNotBlank (datasource.gainHbaseSecurityAuthentication ())) {
+                conf.set ("hbase.security.authentication", datasource.gainHbaseSecurityAuthentication ());
+            }
+            if (StringUtils.isNotBlank (datasource.gainHadoopSecurityAuthentication ())) {
+                conf.set ("hadoop.security.authentication", datasource.gainHadoopSecurityAuthentication ());
+            }
+            if (StringUtils.isNotBlank (datasource.gainHbaseMasterKerberosPrincipal ())) {
+                conf.set ("hbase.master.kerberos.principal", datasource.gainHbaseMasterKerberosPrincipal ());
+            }
+            if (StringUtils.isNotBlank (datasource.gainHbaseRegionserverKerberosPrincipal ())) {
+                conf.set ("hbase.regionserver.kerberos.principal", datasource.gainHbaseRegionserverKerberosPrincipal ());
+            }
             UserGroupInformation.setConfiguration (conf);
             try {
-                UserGroupInformation.loginUserFromKeytab (datasource.getKerberosPrincipal (), datasource.getKerberosKeytab ());
+                UserGroupInformation.loginUserFromKeytab (datasource.gainKerberosPrincipal (), datasource.gainKerberosKeytab ());
             } catch (IOException e) {
                 throw new RuntimeException (e);
             }
@@ -127,12 +140,14 @@ class HBaseConnectionFactory extends BasePoolableObjectFactory {
         return HConnectionManager.createConnection(conf);
     }
 
+    @Override
     public void destroyObject(Object obj) throws Exception {
         if (obj instanceof HConnection) {
             ((HConnection) obj).close();
         }
     }
 
+    @Override
     public boolean validateObject(Object obj) {
         if (obj instanceof HConnection) {
             HConnection conn = ((HConnection) obj);

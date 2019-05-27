@@ -12,16 +12,16 @@ public class IqDatasource extends Datasource {
         super (datasource);
     }
 
-    public int getMaxSize() {
-        String value = getProperty ("max.data.size").getValue ();
+    public int gainMaxSize() {
+        String value = gainProperty ("max.data.size").getValue ();
         if (StringUtils.isBlank (value)) {
             value = "65535";
         }
         return Integer.valueOf (value);
     }
 
-    public boolean getMaxSizeAlarm() {
-        String value = getProperty ("max.data.size.alarm").getValue ();
+    public boolean gainMaxSizeAlarm() {
+        String value = gainProperty ("max.data.size.alarm").getValue ();
         if (org.apache.commons.lang.StringUtils.isBlank (value)) {
             return true;
         }

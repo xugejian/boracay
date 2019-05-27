@@ -53,7 +53,7 @@ public class BatchJobService {
     public void start(Model model) throws Exception {
         String id = UUIDUtil.consumeId(model.getId());
         String tDsType = model.getTargetMetadata().getDatasource().getType();
-        if (DatasourceType.SOLR_HBASE.getValue().equals(tDsType)) {
+        if (DatasourceType.SOLR_HBASE.getValue().equals(tDsType)) { // Solr+HBase
             String hbaseId = "HBASE_" + id;
             String solrId = "SOLR_" + id;
             readyBuild(hbaseId, model);
@@ -67,7 +67,21 @@ public class BatchJobService {
                 buildFail(solrId, e.getMessage());
                 throw new Exception(e);
             }
-        } else {
+        } else if (DatasourceType.PAIR_SOLR.getValue().equals(tDsType)) { // 主备Solr
+            String activeId = "ACTIVE_" + id;
+            String standbyId = "STANDBY_" + id;
+            readyBuild(activeId, model);
+            readyBuild(standbyId, model);
+            try {
+                imConverterService.buildBatch(id, model);
+                buildSuccess(activeId);
+                buildSuccess(standbyId);
+            } catch (Exception e) {
+                buildFail(activeId, e.getMessage());
+                buildFail(standbyId, e.getMessage());
+                throw new Exception(e);
+            }
+        } else { // 其他
             readyBuild(id, model);
             try {
                 imConverterService.buildBatch(id, model);

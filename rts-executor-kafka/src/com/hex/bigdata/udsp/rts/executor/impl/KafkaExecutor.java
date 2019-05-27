@@ -171,7 +171,7 @@ public class KafkaExecutor implements Executor {
         try {
             records = new ArrayList<> ();
             consumer = Consumer.createJavaConsumerConnector (getCnsumerConfig (consumerDatasource));
-            int threadNum = consumerDatasource.getThreadNum ();
+            int threadNum = consumerDatasource.gainThreadNum ();
             List<KafkaStream<byte[], byte[]>> streams = receive (consumer, topic, threadNum);
             Map<String, Object> map = null;
             Map<String, String> result = null;

@@ -84,7 +84,7 @@ public class Kafka1Converter extends Wrapper implements RealtimeSourceConverter 
     public List<MetadataCol> columnInfo(Model model) {
         List<MetadataCol> metadataCols = null;
         Datasource datasource = model.getSourceDatasource ();
-        Kafka1Model kafka1Model = new Kafka1Model (model.getProperties (), model.getSourceDatasource ());
+        Kafka1Model kafka1Model = new Kafka1Model (model);
         Map<String, Property> propertyMap = datasource.getPropertyMap ();
         propertyMap.put (ConsumerConfig.GROUP_ID_CONFIG,
                 new Property (ConsumerConfig.GROUP_ID_CONFIG, DEFAULT_GROUP_ID));
@@ -92,7 +92,7 @@ public class Kafka1Converter extends Wrapper implements RealtimeSourceConverter 
         KafkaConsumer<String, String> consumer = null;
         try {
             consumer = Kafka1Util.getConsumer (kafka1Datasource);
-            List<String> list = Kafka1Util.receive (consumer, kafka1Model.getTopic (), CONSUMER_TIMEOUT_MS);
+            List<String> list = Kafka1Util.receive (consumer, kafka1Model.gainTopic (), CONSUMER_TIMEOUT_MS);
             for (String message : list) {
                 logger.debug ("KAFKA1接收的信息为：" + message);
                 try {
@@ -165,7 +165,7 @@ public class Kafka1Converter extends Wrapper implements RealtimeSourceConverter 
     }
 
     @Override
-    protected void emptyDatas(Metadata metadata) throws IOException, Exception {
+    public void emptyDatas(Metadata metadata) throws Exception {
         try {
             throw new Exception ("不支持该方法");
         } catch (Exception e) {

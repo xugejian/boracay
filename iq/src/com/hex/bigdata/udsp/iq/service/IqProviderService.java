@@ -266,8 +266,8 @@ public class IqProviderService extends BaseService {
 
     private void checkLimit(Limit limitObj, Datasource datasource) {
         IqDatasource iqDatasource = new IqDatasource (datasource);
-        int maxSize = iqDatasource.getMaxSize ();
-        boolean maxSizeAlarm = iqDatasource.getMaxSizeAlarm ();
+        int maxSize = iqDatasource.gainMaxSize ();
+        boolean maxSizeAlarm = iqDatasource.gainMaxSizeAlarm ();
         int limit = limitObj.getLimit ();
         if (limit > maxSize) {
             if (maxSizeAlarm) {
@@ -348,8 +348,8 @@ public class IqProviderService extends BaseService {
 
     private Page getPage(Page page, Datasource datasource) {
         IqDatasource iqDatasource = new IqDatasource (datasource);
-        int maxSize = iqDatasource.getMaxSize ();
-        boolean maxSizeAlarm = iqDatasource.getMaxSizeAlarm ();
+        int maxSize = iqDatasource.gainMaxSize ();
+        boolean maxSizeAlarm = iqDatasource.gainMaxSizeAlarm ();
         int pageSize = page.getPageSize ();
         if (pageSize > maxSize) {
             if (maxSizeAlarm) {

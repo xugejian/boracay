@@ -37,16 +37,17 @@ public class KafkaConverter extends KafkaWrapper {
     public List<MetadataCol> columnInfo(Model model) {
         List<MetadataCol> metadataCols = null;
         Datasource datasource = model.getSourceDatasource ();
-        KafkaModel kafkaModel = new KafkaModel (model.getProperties (), model.getSourceDatasource ());
-        String topic = kafkaModel.getTopic ();
+        KafkaModel kafkaModel = new KafkaModel (model);
+        String topic = kafkaModel.gainTopic ();
         Map<String, Property> propertyMap = datasource.getPropertyMap ();
-        propertyMap.put ("consumer.timeout.ms", new Property ("consumer.timeout.ms", Integer.toString (CONSUMER_TIMEOUT_MS)));
+        propertyMap.put ("consumer.timeout.ms", new Property ("consumer.timeout.ms",
+                Integer.toString (CONSUMER_TIMEOUT_MS)));
         propertyMap.put ("group.id", new Property ("group.id", DEFAULT_GROUP_ID));
         KafkaDatasource kafkaDatasource = new KafkaDatasource (propertyMap);
         ConsumerConnector consumer = null;
         try {
             consumer = KafkaUtil.getConsumer (kafkaDatasource);
-            int threadNum = kafkaDatasource.getThreadNum ();
+            int threadNum = kafkaDatasource.gainThreadNum ();
             List<KafkaStream<byte[], byte[]>> streams = KafkaUtil.receive (consumer, topic, threadNum);
             for (KafkaStream<byte[], byte[]> stream : streams) {
                 ConsumerIterator<byte[], byte[]> iterator = stream.iterator ();

@@ -13,78 +13,78 @@ public class SolrHBaseDatasource extends IqDatasource {
         super (datasource);
     }
 
-    public String getZkQuorum() {
-        String value = getProperty ("hbase.zk.quorum").getValue ();
+    public String gainZkQuorum() {
+        String value = gainProperty ("hbase.zk.quorum").getValue ();
         if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("hbase.zk.quorum不能为空");
         }
         return value;
     }
 
-    public String getZkPort() {
-        return getProperty ("hbase.zk.port").getValue ();
+    public String gainZkPort() {
+        return gainProperty ("hbase.zk.port").getValue ();
     }
 
-    public String getRpcTimeout() {
-        return getProperty ("hbase.rpc.timeout").getValue ();
+    public String gainRpcTimeout() {
+        return gainProperty ("hbase.rpc.timeout").getValue ();
     }
 
-    public String getClientRetriesNumber() {
-        return getProperty ("hbase.client.retries.number").getValue ();
+    public String gainClientRetriesNumber() {
+        return gainProperty ("hbase.client.retries.number").getValue ();
     }
 
-    public String getClientPause() {
-        return getProperty ("hbase.client.pause").getValue ();
+    public String gainClientPause() {
+        return gainProperty ("hbase.client.pause").getValue ();
     }
 
-    public String getZkRecoveryRetry() {
-        return getProperty ("zookeeper.recovery.retry").getValue ();
+    public String gainZkRecoveryRetry() {
+        return gainProperty ("zookeeper.recovery.retry").getValue ();
     }
 
-    public String getZkRecoveryRetryIntervalmill() {
-        return getProperty ("zookeeper.recovery.retry.intervalmill").getValue ();
+    public String gainZkRecoveryRetryIntervalmill() {
+        return gainProperty ("zookeeper.recovery.retry.intervalmill").getValue ();
     }
 
-    public String getClientOperationTimeout() {
-        return getProperty ("hbase.client.operation.timeout").getValue ();
+    public String gainClientOperationTimeout() {
+        return gainProperty ("hbase.client.operation.timeout").getValue ();
     }
 
     // 已被弃用
     @Deprecated
-    public String getRegionserverLeasePeriod() {
-        return getProperty ("hbase.regionserver.lease.period").getValue ();
+    public String gainRegionserverLeasePeriod() {
+        return gainProperty ("hbase.regionserver.lease.period").getValue ();
     }
 
-    public String getClientScannerTimeoutPeriod() {
-        return getProperty ("hbase.client.scanner.timeout.period").getValue ();
+    public String ggainClientScannerTimeoutPeriod() {
+        return gainProperty ("hbase.client.scanner.timeout.period").getValue ();
     }
 
-    public String getHbaseSecurityAuthentication() {
-        return getProperty ("hbase.security.authentication").getValue ();
+    public String gainHbaseSecurityAuthentication() {
+        return gainProperty ("hbase.security.authentication").getValue ();
     }
 
-    public String getHadoopSecurityAuthentication() {
-        return getProperty ("hadoop.security.authentication").getValue ();
+    public String gainHadoopSecurityAuthentication() {
+        return gainProperty ("hadoop.security.authentication").getValue ();
     }
 
-    public String getHbaseMasterKerberosPrincipal() {
-        return getProperty ("hbase.master.kerberos.principal").getValue ();
+    public String gainHbaseMasterKerberosPrincipal() {
+        return gainProperty ("hbase.master.kerberos.principal").getValue ();
     }
 
-    public String getHbaseRegionserverKerberosPrincipal() {
-        return getProperty ("hbase.regionserver.kerberos.principal").getValue ();
+    public String gainHbaseRegionserverKerberosPrincipal() {
+        return gainProperty ("hbase.regionserver.kerberos.principal").getValue ();
     }
 
-    public String getKerberosPrincipal() {
-        return getProperty ("kerberos.principal").getValue ();
+    public String gainKerberosPrincipal() {
+        return gainProperty ("kerberos.principal").getValue ();
     }
 
-    public String getKerberosKeytab() {
-        return getProperty ("kerberos.keytab").getValue ();
+    public String gainKerberosKeytab() {
+        return gainProperty ("kerberos.keytab").getValue ();
     }
 
-    public String getSolrServers() {
-        String value = getProperty ("solr.servers").getValue ();
+    public String gainSolrServers() {
+        String value = gainProperty ("solr.servers").getValue ();
         if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("solr.servers不能为空");
         }

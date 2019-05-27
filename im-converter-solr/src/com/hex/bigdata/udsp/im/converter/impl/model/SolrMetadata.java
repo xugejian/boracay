@@ -26,26 +26,29 @@ public class SolrMetadata extends Metadata {
         super(metadata);
     }
 
-    public int getShards() {
-        String value = getProperty("solr.shards").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumeric(value))
-            throw new IllegalArgumentException("solr.shards不能为空且必须是整数");
+    public int gainShards() {
+        String value = gainProperty("solr.shards").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumeric(value)) {
+            throw new IllegalArgumentException ("solr.shards不能为空且必须是整数");
+        }
         return Integer.valueOf(value);
     }
 
-    public int getReplicas() {
-        String value = getProperty("solr.replicas").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumeric(value))
+    public int gainReplicas() {
+        String value = gainProperty("solr.replicas").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumeric(value)) {
             //throw new IllegalArgumentException("solr.replicas不能为空且必须是整数");
             value = "2";
+        }
         return Integer.valueOf(value);
     }
 
-    public int getMaxShardsPerNode() {
-        String value = getProperty("solr.max.shards.per.node").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumeric(value))
+    public int gainMaxShardsPerNode() {
+        String value = gainProperty("solr.max.shards.per.node").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumeric(value)) {
             //throw new IllegalArgumentException("solr.max.shards.per.node不能为空且必须是整数");
             value = "2";
+        }
         return Integer.valueOf(value);
     }
 }

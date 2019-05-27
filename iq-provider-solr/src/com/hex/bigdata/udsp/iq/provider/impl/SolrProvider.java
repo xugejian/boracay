@@ -47,7 +47,7 @@ public class SolrProvider implements Provider {
             List<OrderColumn> orderColumns = application.getOrderColumns ();
             String tbName = metadata.getTbName ();
             SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
-            SolrQuery query = getSolrQuery (queryColumns, orderColumns, returnColumns, solrDatasource.getMaxSize ());
+            SolrQuery query = getSolrQuery (queryColumns, orderColumns, returnColumns, solrDatasource.gainMaxSize ());
             List<Map<String, Object>> resultList = search (tbName, query, solrDatasource);
             response.setRecords (getRecords (resultList, returnColumns));
             response.setStatus (Status.SUCCESS);
@@ -280,7 +280,7 @@ public class SolrProvider implements Provider {
         SolrServer solrServer = null;
         QueryResponse res = null;
         try {
-            solrServer = getSolrServer (datasource.getSolrServers (), collectionName);
+            solrServer = getSolrServer (datasource.gainSolrServers (), collectionName);
             res = solrServer.query (query);
         } catch (Exception e) {
             e.printStackTrace ();
@@ -294,7 +294,7 @@ public class SolrProvider implements Provider {
         URL url = null;
         try {
             SolrDatasource solrDatasource = new SolrDatasource (datasource);
-            String[] servers = solrDatasource.getSolrServers ().split (",");
+            String[] servers = solrDatasource.gainSolrServers ().split (",");
             for (String server : servers) {
                 try {
                     url = new URL ("http://" + server + "/solr");
@@ -323,7 +323,7 @@ public class SolrProvider implements Provider {
     @Override
     public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
         SolrDatasource solrDatasource = new SolrDatasource (datasource);
-        String solrServers = solrDatasource.getSolrServers ();
+        String solrServers = solrDatasource.gainSolrServers ();
         return getColumns (schemaName, solrServers);
     }
 

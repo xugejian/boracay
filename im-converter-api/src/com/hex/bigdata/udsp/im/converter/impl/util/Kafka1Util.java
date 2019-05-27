@@ -24,16 +24,16 @@ public class Kafka1Util {
     public static List<String> buildRealtime(Kafka1Model model) {
         Map<String, Property> propertyMap = model.getSourceDatasource ().getPropertyMap ();
         propertyMap.put (ConsumerConfig.GROUP_ID_CONFIG,
-                new Property (ConsumerConfig.GROUP_ID_CONFIG, model.getGroupId ()));
+                new Property (ConsumerConfig.GROUP_ID_CONFIG, model.gainGroupId ()));
         Kafka1Datasource kafka1Datasource = new Kafka1Datasource (propertyMap);
         KafkaConsumer<String, String> consumer = null;
         List<String> list = null;
         try {
             consumer = getConsumer (kafka1Datasource);
-            list = receive (consumer, model.getTopic (), Long.valueOf (model.getConsumerTimeoutMs ()));
+            list = receive (consumer, model.gainTopic (), Long.valueOf (model.gainConsumerTimeoutMs ()));
         } finally {
             // 非自动提交offset且获取的数据大于0
-            if ("false".equals (kafka1Datasource.getEnableAutoCommit ())
+            if ("false".equals (kafka1Datasource.gainEnableAutoCommit ())
                     && list != null && list.size () > 0) {
                 consumer.commitSync (); // 手动同步提交offset
             }

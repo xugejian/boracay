@@ -178,7 +178,7 @@ public class Kafka1Executor implements Executor {
             e.printStackTrace ();
         } finally {
             // 非自动提交offset且获取的数据大于0
-            if ("false".equals (consumerDatasource.getEnableAutoCommit ())
+            if ("false".equals (consumerDatasource.gainEnableAutoCommit ())
                     && records != null && records.size () > 0) {
                 consumer.commitSync (); // 手动同步提交offset
             }

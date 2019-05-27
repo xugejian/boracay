@@ -48,8 +48,8 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
         }
 
         List<TblProperty> tblProperties = new ArrayList<>();
-        tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl())); // zookeeper地址、端口和目录
-        if (StringUtils.isBlank(solrQuery)) solrQuery = "*:*";
+        tblProperties.add(new TblProperty("solr.url", datasource.gainSolrUrl())); // zookeeper地址、端口和目录
+        if (StringUtils.isBlank(solrQuery)) {solrQuery = "*:*";}
         tblProperties.add(new TblProperty("solr.query", solrQuery)); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1024")); // 批量大小
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名
@@ -75,7 +75,7 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
         }
 
         List<TblProperty> tblProperties = new ArrayList<>();
-        tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl())); // zookeeper地址、端口和目录
+        tblProperties.add(new TblProperty("solr.url", datasource.gainSolrUrl())); // zookeeper地址、端口和目录
         tblProperties.add(new TblProperty("solr.query", "*:*")); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1024")); // 批量大小
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名
@@ -122,8 +122,9 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
         // 获得更新字段信息
         Map<String, String> map = new HashMap<>();
         for (ValueColumn column : valueColumns) {
-            if (!idName.equals(column.getColName()))
-                map.put(column.getColName(), column.getValue());
+            if (!idName.equals(column.getColName())) {
+                map.put (column.getColName (), column.getValue ());
+            }
         }
         // 更新满足条件数据信息
         SolrUtil.updateDocument(solrDatasource, tableName, idName, ids, map);
@@ -230,16 +231,18 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
 
     @Override
     protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
-        if (modelMappings == null || modelMappings.size() == 0)
+        if (modelMappings == null || modelMappings.size() == 0) {
             return null;
+        }
         List<String> selectColumns = new ArrayList<>();
-        for (ModelMapping mapping : modelMappings)
-            selectColumns.add(mapping.getName());
+        for (ModelMapping mapping : modelMappings) {
+            selectColumns.add (mapping.getName ());
+        }
         return selectColumns;
     }
 
     @Override
-    protected void emptyDatas(Metadata metadata) throws Exception {
+    public void emptyDatas(Metadata metadata) throws Exception {
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
         String collectionName = metadata.getTbName();
         SolrUtil.deleteAll(solrDatasource, collectionName);

@@ -25,8 +25,8 @@ public class PgsqlDatasource extends JdbcDatasource {
     }
 
     @Override
-    public String getDriverClass() {
-        String value = getProperty ("driver.class").getValue ();
+    public String gainDriverClass() {
+        String value = gainProperty ("driver.class").getValue ();
         if (StringUtils.isBlank (value)) {
             value = "org.postgresql.Driver";
         }

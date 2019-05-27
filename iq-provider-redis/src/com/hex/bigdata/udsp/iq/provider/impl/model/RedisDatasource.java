@@ -13,8 +13,8 @@ public class RedisDatasource extends IqDatasource {
         super (datasource);
     }
 
-    public String getIp() {
-        String value = getProperty ("redis.connection.ip").getValue ();
+    public String gainIp() {
+        String value = gainProperty ("redis.connection.ip").getValue ();
         if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("redis.connection.ip不能为空");
         }
@@ -22,21 +22,21 @@ public class RedisDatasource extends IqDatasource {
     }
 
 
-    public int getPort() {
-        String value = getProperty ("redis.connection.port").getValue ();
+    public int gainPort() {
+        String value = gainProperty ("redis.connection.port").getValue ();
         if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("redis.connection.port不能为空");
         }
         return Integer.valueOf (value);
     }
 
-    public String getUserName() {
-        return getProperty ("redis.connection.user").getValue ();
+    public String gainUserName() {
+        return gainProperty ("redis.connection.user").getValue ();
 
     }
 
-    public int getMaxIdle() {
-        String value = getProperty ("redis.max.idle").getValue ();
+    public int gainMaxIdle() {
+        String value = gainProperty ("redis.max.idle").getValue ();
         if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("redis.max.idle不能为空");
         }
@@ -44,16 +44,16 @@ public class RedisDatasource extends IqDatasource {
     }
 
 
-    public int getMaxWait() {
-        String value = getProperty ("redis.max.wait").getValue ();
+    public int gainMaxWait() {
+        String value = gainProperty ("redis.max.wait").getValue ();
         if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("redis.max.wait不能为空");
         }
         return Integer.valueOf (value);
     }
 
-    public int getTimeOut() {
-        String value = getProperty ("redis.max.timeOut").getValue ();
+    public int gainTimeOut() {
+        String value = gainProperty ("redis.max.timeOut").getValue ();
         if (StringUtils.isBlank (value)) {
             return 600000;
         }
@@ -61,27 +61,27 @@ public class RedisDatasource extends IqDatasource {
     }
 
     public boolean isTestOnBrrow() {
-        String value = getProperty ("redis.test.on.brrow").getValue ();
+        String value = gainProperty ("redis.test.on.brrow").getValue ();
         if (StringUtils.isBlank (value)) {
             return false;
         }
         return Boolean.valueOf (value);
     }
 
-    public int getMaxTotal() {
-        String value = getProperty ("redis.max.total").getValue ();
+    public int gainMaxTotal() {
+        String value = gainProperty ("redis.max.total").getValue ();
         if (StringUtils.isBlank (value)) {
             return 10;
         }
         return Integer.valueOf (value);
     }
 
-    public String getPassword() {
-        return getProperty ("redis.connection.password").getValue ();
+    public String gainPassword() {
+        return gainProperty ("redis.connection.password").getValue ();
     }
 
-    public String getSeprator() {
-        String value = getProperty ("redis.seprator").getValue ();
+    public String gainSeprator() {
+        String value = gainProperty ("redis.seprator").getValue ();
         if (StringUtils.isBlank (value)) {
             value = "\\007";
         }

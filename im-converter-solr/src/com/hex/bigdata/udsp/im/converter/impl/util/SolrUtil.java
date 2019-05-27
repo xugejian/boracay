@@ -100,8 +100,8 @@ public class SolrUtil {
     public static boolean dropCollection(SolrMetadata metadata, boolean ifExists) throws Exception {
         String collectionName = metadata.getTbName();
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
-        String solrUrl = solrDatasource.getSolrUrl();
+        String solrServers = solrDatasource.gainSolrServers();
+        String solrUrl = solrDatasource.gainSolrUrl();
         // 判断是否已经存在该表
         if (checkCollection(solrServers, collectionName)) {
             logger.warn("Solr表" + collectionName + "存在，进行删除！");
@@ -130,7 +130,7 @@ public class SolrUtil {
     public static boolean deleteCollection(SolrMetadata metadata) {
         String collectionName = metadata.getTbName();
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
+        String solrServers = solrDatasource.gainSolrServers();
         for (String solrServer : getSolrServerStrings(solrServers)) {
             String url = getSolrAdminCollectionsUrl(solrServer);
             String param = "action=DELETE&name=" + collectionName;
@@ -174,8 +174,8 @@ public class SolrUtil {
         String collectionName = metadata.getTbName();
         List<MetadataCol> metadataCols = metadata.getMetadataCols();
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
-        String solrUrl = solrDatasource.getSolrUrl();
+        String solrServers = solrDatasource.gainSolrServers();
+        String solrUrl = solrDatasource.gainSolrUrl();
         // 判断是否已经存在该表
         if (checkCollection(solrServers, collectionName)) {
             logger.debug("Solr表" + collectionName + "存在，无需创建！");
@@ -208,11 +208,11 @@ public class SolrUtil {
      */
     public static boolean createCollection(SolrMetadata metadata) throws Exception {
         String collectionName = metadata.getTbName();
-        int replicas = metadata.getReplicas();
-        int shards = metadata.getShards();
-        int maxShardsPerNode = metadata.getMaxShardsPerNode();
+        int replicas = metadata.gainReplicas();
+        int shards = metadata.gainShards();
+        int maxShardsPerNode = metadata.gainMaxShardsPerNode();
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
+        String solrServers = solrDatasource.gainSolrServers();
         String response = "";
         String[] solrServerStrings = getSolrServerStrings(solrServers);
         int count = 0;
@@ -266,8 +266,8 @@ public class SolrUtil {
         List<MetadataCol> metadataCols = metadata.getMetadataCols();
         metadataCols.addAll(addMetadataCols); // 添加新的字段
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
-        String solrUrl = solrDatasource.getSolrUrl();
+        String solrServers = solrDatasource.gainSolrServers();
+        String solrUrl = solrDatasource.gainSolrUrl();
         if (checkCollection(solrServers, collectionName)) {
             logger.debug("Solr表" + collectionName + "存在，进行更新！");
             // 更新Config
@@ -295,7 +295,7 @@ public class SolrUtil {
     public static boolean reloadCollection(SolrMetadata metadata) {
         String collectionName = metadata.getTbName();
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
+        String solrServers = solrDatasource.gainSolrServers();
         String response = "";
         for (String solrServer : getSolrServerStrings(solrServers)) {
             String url = getSolrAdminCollectionsUrl(solrServer);
@@ -683,8 +683,9 @@ public class SolrUtil {
         //检查主键是否合法
         List<MetadataCol> cols = metadata.getMetadataCols();
         int count = 0;
-        for (MetadataCol col : cols)
-            if (col.isPrimary()) count++;
+        for (MetadataCol col : cols) {
+            if (col.isPrimary ()) {count++;}
+        }
         if (count != 1) {
             throw new Exception("必须要有且仅有一个主键字段！");
         }
@@ -712,7 +713,7 @@ public class SolrUtil {
         if (StringUtils.isBlank(collectionName)) {
             throw new IllegalArgumentException("collection name不能为空");
         }
-        String[] tempServers = datasource.getSolrServers().split(",");
+        String[] tempServers = datasource.gainSolrServers().split(",");
         String[] servers = new String[tempServers.length];
         for (int i = 0; i < tempServers.length; i++) {
             servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
@@ -1011,8 +1012,9 @@ public class SolrUtil {
                 String name = property.getName();
                 String value = property.getValue();
                 Operator operator = property.getOperator();
-                if (StringUtils.isBlank(name) || StringUtils.isBlank(value) || operator == null)
+                if (StringUtils.isBlank(name) || StringUtils.isBlank(value) || operator == null) {
                     continue;
+                }
                 queryConditons.append(" AND " + name + getCondition(value, operator));
             }
         }

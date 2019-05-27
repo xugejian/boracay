@@ -88,13 +88,13 @@ public class RedisProvider implements Provider {
             RedisDatasource redisDatasource = new RedisDatasource (metadata.getDatasource ());
             String tableName = metadata.getTbName ();
             String query = getRedisQuery (metadata.getQueryColumns (), queryColumns, tableName);
-            String fqSep = redisDatasource.getSeprator ();
+            String fqSep = redisDatasource.gainSeprator ();
             List<Map<String, String>> list = null;
             if (page != null) {
                 page.setTotalCount (getCountNum (query, redisDatasource));
                 list = search (fqSep, query, redisDatasource, metaReturnColumns, page);
             } else {
-                list = search (fqSep, query, redisDatasource, metaReturnColumns, redisDatasource.getMaxSize ());
+                list = search (fqSep, query, redisDatasource, metaReturnColumns, redisDatasource.gainMaxSize ());
             }
             list = orderBy (list, orderColumns); // 排序
             response.setPage (page);

@@ -26,22 +26,15 @@ public class Base implements Serializable {
         setPropertyMap(propertyMap);
     }
 
-    public Property getProperty(String key) {
-        Property property = propertyMap.get(key);
-        if (property == null) {
-            property = new Property();
-        }
-        return property;
-    }
-
     public Map<String, Property> getPropertyMap() {
         return propertyMap;
     }
 
     public void setPropertyMap(Map<String, Property> propertieMap) {
         this.propertyMap = propertieMap;
-        if (properties == null)
-            properties = new ArrayList<Property>();
+        if (properties == null) {
+            properties = new ArrayList<Property> ();
+        }
         for (Map.Entry<String, Property> entry : propertieMap.entrySet()) {
             properties.add(entry.getValue());
         }
@@ -53,11 +46,20 @@ public class Base implements Serializable {
 
     public void setProperties(List<Property> properties) {
         this.properties = properties;
-        if (propertyMap == null)
-            propertyMap = new HashMap<String, Property>();
+        if (propertyMap == null) {
+            propertyMap = new HashMap<String, Property> ();
+        }
         for (Property property : properties) {
             propertyMap.put(property.getName(), property);
         }
+    }
+
+    public Property gainProperty(String key) {
+        Property property = propertyMap.get(key);
+        if (property == null) {
+            property = new Property();
+        }
+        return property;
     }
 
 }

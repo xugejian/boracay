@@ -115,12 +115,13 @@ public class KuduUtil {
                     columns.add(schemaBuilder.build());
                 }
             }
-            if (count == 0)
-                throw new IllegalArgumentException("必须指定至少一个主键字段");
+            if (count == 0) {
+                throw new IllegalArgumentException ("必须指定至少一个主键字段");
+            }
             Schema schema = new Schema(columns);
             // Options信息
             CreateTableOptions options = null;
-            if (!metadata.getPrePartitioning()) { // 非预分区
+            if (!metadata.gainPrePartitioning()) { // 非预分区
                 List<String> rangeKeys = new ArrayList<>();
                 for (MetadataCol metadataCol : metadataCols) {
                     if (metadataCol.isPrimary()) { // 主键
@@ -136,7 +137,7 @@ public class KuduUtil {
                         hashKeys.add(metadataCol.getName());
                     }
                 }
-                int buckets = metadata.getHashPartitionsBuckets();
+                int buckets = metadata.gainHashPartitionsBuckets();
                 options = new CreateTableOptions()
                         .addHashPartitions(hashKeys, buckets);
             }

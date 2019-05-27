@@ -23,16 +23,16 @@ public class KafkaUtil {
     public static List<String> buildRealtime(KafkaModel model) {
         Map<String, Property> propertyMap = model.getSourceDatasource ().getPropertyMap ();
         propertyMap.put ("consumer.timeout.ms",
-                new Property ("consumer.timeout.ms", model.getConsumerTimeoutMs ()));
+                new Property ("consumer.timeout.ms", model.gainConsumerTimeoutMs ()));
         propertyMap.put ("group.id",
-                new Property ("group.id", model.getGroupId ()));
+                new Property ("group.id", model.gainGroupId ()));
         KafkaDatasource kafkaDatasource = new KafkaDatasource (propertyMap);
         ConsumerConnector consumer = null;
         List<String> list = new ArrayList<> ();
         try {
             consumer = getConsumer (kafkaDatasource);
-            int threadNum = kafkaDatasource.getThreadNum ();
-            List<KafkaStream<byte[], byte[]>> streams = receive (consumer, model.getTopic (), threadNum);
+            int threadNum = kafkaDatasource.gainThreadNum ();
+            List<KafkaStream<byte[], byte[]>> streams = receive (consumer, model.gainTopic (), threadNum);
             for (KafkaStream<byte[], byte[]> stream : streams) {
                 ConsumerIterator<byte[], byte[]> iterator = stream.iterator ();
                 while (iterator.hasNext ()) {

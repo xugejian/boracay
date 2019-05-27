@@ -14,7 +14,7 @@ public class ELSearchDatasource extends IqDatasource {
     }
 
     public String getElasticsearchServers() {
-        String value = getProperty ("elasticsearch.servers").getValue ();
+        String value = gainProperty ("elasticsearch.servers").getValue ();
         if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("elasticsearch.servers不能为空");
         }

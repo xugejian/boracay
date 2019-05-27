@@ -32,10 +32,11 @@ public class KuduMetadata extends Metadata {
      *
      * @return
      */
-    public boolean getPrePartitioning() {
-        String value = getProperty("pre.partitioning").getValue();
-        if (StringUtils.isBlank(value))
+    public boolean gainPrePartitioning() {
+        String value = gainProperty("pre.partitioning").getValue();
+        if (StringUtils.isBlank(value)) {
             return false;
+        }
         return Boolean.valueOf(value);
     }
 
@@ -44,14 +45,14 @@ public class KuduMetadata extends Metadata {
      *
      * @return
      */
-    public Integer getHashPartitionsBuckets() {
-        String value = getProperty("hash.partitions.buckets").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value))
+    public Integer gainHashPartitionsBuckets() {
+        String value = gainProperty("hash.partitions.buckets").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value)) {
             return 2;
-        if (Integer.valueOf(value) < 2)
-            throw new IllegalArgumentException("hash.partitions.buckets必须大于等于2");
+        }
+        if (Integer.valueOf(value) < 2) {
+            throw new IllegalArgumentException ("hash.partitions.buckets必须大于等于2");
+        }
         return Integer.valueOf(value);
     }
-
-
 }

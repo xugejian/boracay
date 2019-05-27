@@ -28,5 +28,7 @@
     <orderEntry type="module" module-name="im-converter-solr" />
     <orderEntry type="module" module-name="im-converter-solr_hbase" />
     <orderEntry type="module" module-name="im-converter-kafka1" />
+    <orderEntry type="module" module-name="im-converter-pair_hbase" />
+    <orderEntry type="module" module-name="im-converter-pair_solr" />
   </component>
 </module>

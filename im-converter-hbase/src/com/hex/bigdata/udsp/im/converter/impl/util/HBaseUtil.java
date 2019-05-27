@@ -82,24 +82,31 @@ public class HBaseUtil {
 
     public static HBaseAdmin getHBaseAdmin(HBaseDatasource datasource) {
         Configuration conf = HBaseConfiguration.create ();
-        conf.set ("hbase.zookeeper.quorum", datasource.getZkQuorum ());
-        conf.set ("hbase.zookeeper.property.clientPort", datasource.getZkPort ());
-        if (StringUtils.isNotBlank (datasource.getRpcTimeout ()))
-            conf.set ("hbase.rpc.timeout", datasource.getRpcTimeout ());
-        if (StringUtils.isNotBlank (datasource.getClientRetriesNumber ()))
-            conf.set ("hbase.client.retries.number", datasource.getClientRetriesNumber ());
-        if (StringUtils.isNotBlank (datasource.getClientPause ()))
-            conf.set ("hbase.client.pause", datasource.getClientPause ());
-        if (StringUtils.isNotBlank (datasource.getZkRecoveryRetry ()))
-            conf.set ("zookeeper.recovery.retry", datasource.getZkRecoveryRetry ());
-        if (StringUtils.isNotBlank (datasource.getZkRecoveryRetryIntervalmill ()))
-            conf.set ("zookeeper.recovery.retry.intervalmill", datasource.getZkRecoveryRetryIntervalmill ());
-        if (StringUtils.isNotBlank (datasource.getClientOperationTimeout ()))
-            conf.set ("hbase.client.operation.timeout", datasource.getClientOperationTimeout ());
-//        if (StringUtils.isNotBlank(datasource.getRegionserverLeasePeriod()))
-//            conf.set("hbase.regionserver.lease.period", datasource.getRegionserverLeasePeriod()); // 已被弃用
-        if (StringUtils.isNotBlank (datasource.getClientScannerTimeoutPeriod ()))
-            conf.set ("hbase.client.scanner.timeout.period", datasource.getClientScannerTimeoutPeriod ());
+        conf.set ("hbase.zookeeper.quorum", datasource.gainZkQuorum ());
+        conf.set ("hbase.zookeeper.property.clientPort", datasource.gainZkPort ());
+        if (StringUtils.isNotBlank (datasource.gainRpcTimeout ())) {
+            conf.set ("hbase.rpc.timeout", datasource.gainRpcTimeout ());
+        }
+        if (StringUtils.isNotBlank (datasource.gainClientRetriesNumber ())) {
+            conf.set ("hbase.client.retries.number", datasource.gainClientRetriesNumber ());
+        }
+        if (StringUtils.isNotBlank (datasource.gainClientPause ())) {
+            conf.set ("hbase.client.pause", datasource.gainClientPause ());
+        }
+        if (StringUtils.isNotBlank (datasource.gainZkRecoveryRetry ())) {
+            conf.set ("zookeeper.recovery.retry", datasource.gainZkRecoveryRetry ());
+        }
+        if (StringUtils.isNotBlank (datasource.gainZkRecoveryRetryIntervalmill ())) {
+            conf.set ("zookeeper.recovery.retry.intervalmill", datasource.gainZkRecoveryRetryIntervalmill ());
+        }
+        if (StringUtils.isNotBlank (datasource.gainClientOperationTimeout ())) {
+            conf.set ("hbase.client.operation.timeout", datasource.gainClientOperationTimeout ());
+        }
+//        if (StringUtils.isNotBlank(datasource.gainRegionserverLeasePeriod()))
+//            conf.set("hbase.regionserver.lease.period", datasource.gainRegionserverLeasePeriod()); // 已被弃用
+        if (StringUtils.isNotBlank (datasource.gainClientScannerTimeoutPeriod ())) {
+            conf.set ("hbase.client.scanner.timeout.period", datasource.gainClientScannerTimeoutPeriod ());
+        }
         HBaseAdmin admin = null;
         try {
             admin = new HBaseAdmin (conf);
@@ -225,10 +232,10 @@ public class HBaseUtil {
             TableName hbaseTableName = TableName.valueOf (tableName);
             HTableDescriptor htd = new HTableDescriptor (hbaseTableName);
             // 族设置参数
-            HColumnDescriptor hcd = new HColumnDescriptor (metadata.getFamily ());
+            HColumnDescriptor hcd = new HColumnDescriptor (metadata.gainFamily ());
             hcd.setBlocksize (65536); // 块大小
             // 压缩
-            String compression = metadata.getCompression ();
+            String compression = metadata.gainCompression ();
             if (Compression.Algorithm.SNAPPY.getName ().equals (compression)) {
                 hcd.setCompressionType (Compression.Algorithm.SNAPPY);
             } else if (Compression.Algorithm.GZ.getName ().equals (compression)) {
@@ -247,7 +254,7 @@ public class HBaseUtil {
             hcd.setDataBlockEncoding (DataBlockEncoding.PREFIX);
             hcd.setBlockCacheEnabled (true); // 块缓存
             hcd.setInMemory (false); // 是否保存在内存中以提高相应速度
-            String familyReplicationScope = metadata.getFamilyReplicationScope ();
+            String familyReplicationScope = metadata.gainFamilyReplicationScope ();
             if ("1".equals (familyReplicationScope)) {
                 hcd.setScope (HConstants.REPLICATION_SCOPE_GLOBAL);
             } else if ("0".equals (familyReplicationScope)) {
@@ -255,14 +262,14 @@ public class HBaseUtil {
             }
             htd.addFamily (hcd);
             // 表设置参数
-            String splitPolicy = metadata.getSplitPolicy ();
+            String splitPolicy = metadata.gainSplitPolicy ();
             if (StringUtils.isNotBlank (splitPolicy)) {
                 htd.setConfiguration (HTableDescriptor.SPLIT_POLICY, splitPolicy);
             }
             // 聚合的协处理器
             htd.addCoprocessor ("org.apache.hadoop.hbase.coprocessor.AggregateImplementation");
             // 创建表
-            byte[][] regionSplits = getHexSplits (HBASE_REGION_START_KEY, HBASE_REGION_STOP_KEY, metadata.getRegionNum ());
+            byte[][] regionSplits = getHexSplits (HBASE_REGION_START_KEY, HBASE_REGION_STOP_KEY, metadata.gainRegionNum ());
             HBaseAdmin admin = HBaseUtil.getHBaseAdmin (datasource);
             try {
                 admin.createTable (htd, regionSplits);

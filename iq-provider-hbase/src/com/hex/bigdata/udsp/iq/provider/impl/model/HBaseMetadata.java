@@ -24,32 +24,32 @@ public class HBaseMetadata extends Metadata {
         super(propertyMap);
     }
 
-    public String getFqDataType() {
-        String value = getProperty("hbase.fq.data.type").getValue();
+    public String gainFqDataType() {
+        String value = gainProperty("hbase.fq.data.type").getValue();
         if (StringUtils.isBlank(value)) {
             value = "dsv";
         }
         return value;
     }
 
-    public String getDsvSeparator() {
-        String value = getProperty("hbase.fq.dsv.separator").getValue();
+    public String gainDsvSeparator() {
+        String value = gainProperty("hbase.fq.dsv.separator").getValue();
         if (StringUtils.isBlank(value)) {
             value = "\\007";
         }
         return value;
     }
 
-    public byte[] getFamilyName() {
-        String value = getProperty("hbase.family.name").getValue();
+    public byte[] gainFamilyName() {
+        String value = gainProperty("hbase.family.name").getValue();
         if (StringUtils.isBlank(value)) {
             value = "f";
         }
         return Bytes.toBytes(value);
     }
 
-    public byte[] getQualifierName() {
-        String value = getProperty("hbase.qualifier.name").getValue();
+    public byte[] gainQualifierName() {
+        String value = gainProperty("hbase.qualifier.name").getValue();
         if (StringUtils.isBlank(value)) {
             value = "q";
         }

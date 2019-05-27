@@ -56,7 +56,7 @@ public abstract class SolrHBaseWrapper extends Wrapper implements BatchTargetCon
     }
 
     @Override
-    protected void emptyDatas(Metadata metadata) throws Exception {
+    public void emptyDatas(Metadata metadata) throws Exception {
         try {
             throw new Exception("不支持该方法");
         } catch (Exception e) {

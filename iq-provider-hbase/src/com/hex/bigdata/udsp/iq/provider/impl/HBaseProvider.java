@@ -500,8 +500,8 @@ public class HBaseProvider implements Provider {
         try {
             conn = getConnection (datasource);
             hTable = conn.getTable (tbName);
-            list = scan (hTable, startRow, stopRow, colMap, datasource.getMaxSize (), metadata.getFamilyName (),
-                    metadata.getQualifierName (), metadata.getDsvSeparator (), metadata.getFqDataType ());
+            list = scan (hTable, startRow, stopRow, colMap, datasource.gainMaxSize (), metadata.gainFamilyName (),
+                    metadata.gainQualifierName (), metadata.gainDsvSeparator (), metadata.gainFqDataType ());
         } finally {
             if (hTable != null) {
                 try {
@@ -551,8 +551,8 @@ public class HBaseProvider implements Provider {
             conn = getConnection (datasource);
             hTable = conn.getTable (tbName);
             client = getAggregationClient (datasource);
-            page = scanPage (hTable, client, page, colMap, metadata.getFamilyName (),
-                    metadata.getQualifierName (), metadata.getDsvSeparator (), metadata.getFqDataType ());
+            page = scanPage (hTable, client, page, colMap, metadata.gainFamilyName (),
+                    metadata.gainQualifierName (), metadata.gainDsvSeparator (), metadata.gainFqDataType ());
         } finally {
             if (hTable != null) {
                 try {

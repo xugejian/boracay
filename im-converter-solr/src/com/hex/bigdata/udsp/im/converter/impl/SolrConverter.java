@@ -65,7 +65,7 @@ public class SolrConverter extends SolrWrapper {
     public List<MetadataCol> columnInfo(Metadata metadata) {
         String collectionName = metadata.getTbName();
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
+        String solrServers = solrDatasource.gainSolrServers();
         return getColumns(collectionName, solrServers);
     }
 
@@ -85,7 +85,7 @@ public class SolrConverter extends SolrWrapper {
     public boolean checkSchema(Metadata metadata) throws Exception {
         String collectionName = metadata.getTbName();
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
+        String solrServers = solrDatasource.gainSolrServers();
         return SolrUtil.checkCollection(solrServers, collectionName);
     }
 
@@ -100,9 +100,9 @@ public class SolrConverter extends SolrWrapper {
     @Override
     public List<MetadataCol> columnInfo(Model model) {
         SolrDatasource solrDatasource = new SolrDatasource(model.getSourceDatasource());
-        String solrServers = solrDatasource.getSolrServers();
-        SolrModel solrModel = new SolrModel(model.getProperties(), model.getSourceDatasource());
-        String collectionName = solrModel.getCollectionName();
+        String solrServers = solrDatasource.gainSolrServers();
+        SolrModel solrModel = new SolrModel(model);
+        String collectionName = solrModel.gainCollectionName();
         return getColumns(collectionName, solrServers);
     }
 
@@ -117,7 +117,7 @@ public class SolrConverter extends SolrWrapper {
         HiveDatasource eHiveDs = new HiveDatasource(model.getEngineDatasource());
         String id = model.getId();
         SolrModel solrModel = new SolrModel(model);
-        String collectionName = solrModel.getCollectionName();
+        String collectionName = solrModel.gainCollectionName();
         String engineSchemaName = getSourceTableName(id);
         SolrDatasource solrDs = new SolrDatasource(model.getSourceDatasource());
         List<ModelMapping> modelMappings = model.getModelMappings();
@@ -141,7 +141,7 @@ public class SolrConverter extends SolrWrapper {
     public void createSourceEngineSchema(Model model, String engineSchemaName) throws Exception {
         HiveDatasource eHiveDs = new HiveDatasource(model.getEngineDatasource());
         SolrModel solrModel = new SolrModel(model);
-        String collectionName = solrModel.getCollectionName();
+        String collectionName = solrModel.gainCollectionName();
         SolrDatasource solrDs = new SolrDatasource(model.getSourceDatasource());
         List<ModelMapping> modelMappings = model.getModelMappings();
         String pkName = getSourcePrimaryKey(modelMappings);
@@ -180,7 +180,7 @@ public class SolrConverter extends SolrWrapper {
         URL url = null;
         try {
             SolrDatasource solrDatasource = new SolrDatasource(datasource);
-            String[] servers = solrDatasource.getSolrServers().split(",");
+            String[] servers = solrDatasource.gainSolrServers().split(",");
             for (String server : servers) {
                 try {
                     url = new URL("http://" + server + "/solr");

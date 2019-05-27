@@ -13,8 +13,8 @@ public class SolrDatasource extends IqDatasource {
         super (datasource);
     }
 
-    public String getSolrServers() {
-        String value = getProperty ("solr.servers").getValue ();
+    public String gainSolrServers() {
+        String value = gainProperty ("solr.servers").getValue ();
         if (StringUtils.isBlank (value)) {
             throw new IllegalArgumentException ("solr.servers不能为空");
         }

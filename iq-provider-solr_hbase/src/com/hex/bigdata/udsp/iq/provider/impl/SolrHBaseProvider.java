@@ -62,8 +62,8 @@ public class SolrHBaseProvider implements Provider {
             SolrHBaseMetadata solrHBaseMetadata = new SolrHBaseMetadata (metadata.getPropertyMap ());
             List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
             SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource (metadata.getDatasource ());
-            String primaryKey = solrHBaseMetadata.getSolrPrimaryKey ();
-            SolrQuery query = getSolrQuery (queryColumns, orderColumns, primaryKey, solrHBaseDatasource.getMaxSize ());
+            String primaryKey = solrHBaseMetadata.gainSolrPrimaryKey ();
+            SolrQuery query = getSolrQuery (queryColumns, orderColumns, primaryKey, solrHBaseDatasource.gainMaxSize ());
             Map<Integer, String> colMap = getColMap (metaReturnColumns);
             List<Map<String, String>> list = search (solrHBaseDatasource, tbName, query, colMap, solrHBaseMetadata);
             list = orderBy (list, queryColumns, orderColumns); // 排序处理
@@ -102,7 +102,7 @@ public class SolrHBaseProvider implements Provider {
             SolrHBaseMetadata solrHBaseMetadata = new SolrHBaseMetadata (metadata.getPropertyMap ());
             List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
             SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource (metadata.getDatasource ());
-            SolrQuery query = getSolrQuery (queryColumns, orderColumns, solrHBaseMetadata.getSolrPrimaryKey (), page.getPageIndex (), page.getPageSize ());
+            SolrQuery query = getSolrQuery (queryColumns, orderColumns, solrHBaseMetadata.gainSolrPrimaryKey (), page.getPageIndex (), page.getPageSize ());
             Map<Integer, String> colMap = getColMap (metaReturnColumns);
             HBasePage hbasePage = searchPage (solrHBaseDatasource, tbName, query, page.getPageIndex (), page.getPageSize (), colMap, solrHBaseMetadata);
             List<Map<String, String>> list = orderBy (hbasePage.getRecords (), queryColumns, orderColumns); // 排序处理
@@ -267,6 +267,7 @@ public class SolrHBaseProvider implements Provider {
         });
         // 多字段混合排序
         Collections.sort (records, new Comparator<Map<String, String>> () {
+            @Override
             public int compare(Map<String, String> obj1, Map<String, String> obj2) {
                 int flg = 0;
                 for (OrderColumn orderColumn : newOrderColumns) {
@@ -371,7 +372,7 @@ public class SolrHBaseProvider implements Provider {
     private HBasePage searchPage(SolrHBaseDatasource datasource, String tableName, SolrQuery query, int pageIndex, int pageSize,
                                  Map<Integer, String> colMap, SolrHBaseMetadata metadata) throws Exception {
         List<Map<String, String>> records = new ArrayList<> ();
-        SolrHBasePage solrHBasePage = searchPage (datasource, tableName, query, pageIndex, pageSize, metadata.getSolrPrimaryKey ());
+        SolrHBasePage solrHBasePage = searchPage (datasource, tableName, query, pageIndex, pageSize, metadata.gainSolrPrimaryKey ());
 
         // HBase单条查询
 //        for (String id : solrHBasePage.getRecords()) {
@@ -403,7 +404,7 @@ public class SolrHBaseProvider implements Provider {
 
     private List<Map<String, String>> search(SolrHBaseDatasource datasource, String tableName, SolrQuery query,
                                              Map<Integer, String> colMap, SolrHBaseMetadata metadata) throws Exception {
-        List<String> ids = search (datasource, tableName, query, metadata.getSolrPrimaryKey ());
+        List<String> ids = search (datasource, tableName, query, metadata.gainSolrPrimaryKey ());
         List<Map<String, String>> records = new ArrayList<> ();
 
         // HBase单条查询
@@ -475,7 +476,7 @@ public class SolrHBaseProvider implements Provider {
         if (StringUtils.isBlank (collectionName)) {
             throw new IllegalArgumentException ("collection name不能为空");
         }
-        String[] tempServers = datasource.getSolrServers ().split (",");
+        String[] tempServers = datasource.gainSolrServers ().split (",");
         String[] servers = new String[tempServers.length];
         for (int i = 0; i < tempServers.length; i++) {
             servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
@@ -492,8 +493,8 @@ public class SolrHBaseProvider implements Provider {
         try {
             conn = getConnection (datasource);
             table = conn.getTable (tableName);
-            map = get (table, rowkey, colMap, metadata.getFamilyName (),
-                    metadata.getQualifierName (), metadata.getDsvSeparator (), metadata.getFqDataType ());
+            map = get (table, rowkey, colMap, metadata.gainFamilyName (),
+                    metadata.gainQualifierName (), metadata.gainDsvSeparator (), metadata.gainFqDataType ());
         } finally {
             if (table != null) {
                 table.close ();
@@ -513,8 +514,8 @@ public class SolrHBaseProvider implements Provider {
         try {
             conn = getConnection (datasource);
             table = conn.getTable (tableName);
-            list = gets (table, rowkeys, colMap, metadata.getFamilyName (),
-                    metadata.getQualifierName (), metadata.getDsvSeparator (), metadata.getFqDataType ());
+            list = gets (table, rowkeys, colMap, metadata.gainFamilyName (),
+                    metadata.gainQualifierName (), metadata.gainDsvSeparator (), metadata.gainFqDataType ());
         } finally {
             if (table != null) {
                 table.close ();
@@ -609,8 +610,8 @@ public class SolrHBaseProvider implements Provider {
         URL url = null;
         try {
             Configuration conf = HBaseConfiguration.create ();
-            conf.set ("hbase.zookeeper.quorum", solrHBaseDatasource.getZkQuorum ());
-            conf.set ("hbase.zookeeper.property.clientPort", solrHBaseDatasource.getZkPort ());
+            conf.set ("hbase.zookeeper.quorum", solrHBaseDatasource.gainZkQuorum ());
+            conf.set ("hbase.zookeeper.property.clientPort", solrHBaseDatasource.gainZkPort ());
             conf.set ("hbase.rpc.timeout", "2");
             conf.set ("hbase.client.retries.number", "3");
             conf.set ("zookeeper.recovery.retry", "1");
@@ -621,7 +622,7 @@ public class SolrHBaseProvider implements Provider {
                 HbaseCanConnection = true;
             }
             //测试获取solr连接
-            String[] servers = solrHBaseDatasource.getSolrServers ().split (",");
+            String[] servers = solrHBaseDatasource.gainSolrServers ().split (",");
             for (String server : servers) {
                 try {
                     url = new URL ("http://" + server + "/solr");
@@ -659,7 +660,7 @@ public class SolrHBaseProvider implements Provider {
     @Override
     public List<MetadataCol> columnInfo(Datasource datasource, String schemaName) {
         SolrDatasource solrDatasource = new SolrDatasource (datasource);
-        String solrServers = solrDatasource.getSolrServers ();
+        String solrServers = solrDatasource.gainSolrServers ();
         return getColumns (schemaName, solrServers);
     }
 

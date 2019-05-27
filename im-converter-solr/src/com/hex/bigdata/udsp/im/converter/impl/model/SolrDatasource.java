@@ -12,17 +12,19 @@ public class SolrDatasource extends Datasource {
         super(datasource);
     }
 
-    public String getSolrServers() {
-        String value = getProperty("solr.servers").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("solr.servers不能为空");
+    public String gainSolrServers() {
+        String value = gainProperty("solr.servers").getValue();
+        if (StringUtils.isBlank(value)) {
+            throw new IllegalArgumentException ("solr.servers不能为空");
+        }
         return value;
     }
 
-    public String getSolrUrl() {
-        String value = getProperty("solr.url").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("solr.url不能为空");
+    public String gainSolrUrl() {
+        String value = gainProperty("solr.url").getValue();
+        if (StringUtils.isBlank(value)) {
+            throw new IllegalArgumentException ("solr.url不能为空");
+        }
         return value;
     }
 }

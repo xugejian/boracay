@@ -20,10 +20,11 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public String getMailSmtpHost() {
-        String value = getProperty("mail.smtp.host").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("mail.smtp.host不能为空");
+    public String gainMailSmtpHost() {
+        String value = gainProperty("mail.smtp.host").getValue();
+        if (StringUtils.isBlank(value)) {
+            throw new IllegalArgumentException ("mail.smtp.host不能为空");
+        }
         return value;
     }
 
@@ -32,10 +33,11 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public int getMailSmtpPort() {
-        String value = getProperty("mail.smtp.port").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumeric(value))
-            throw new IllegalArgumentException("mail.smtp.port不能为空且必须是整数");
+    public int gainMailSmtpPort() {
+        String value = gainProperty("mail.smtp.port").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumeric(value)) {
+            throw new IllegalArgumentException ("mail.smtp.port不能为空且必须是整数");
+        }
         return Integer.valueOf(value);
     }
 
@@ -44,10 +46,11 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public String getMailSmtpFrom() {
-        String value = getProperty("mail.smtp.from").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("mail.smtp.from不能为空");
+    public String gainMailSmtpFrom() {
+        String value = gainProperty("mail.smtp.from").getValue();
+        if (StringUtils.isBlank(value)) {
+            throw new IllegalArgumentException ("mail.smtp.from不能为空");
+        }
         return value;
     }
 
@@ -56,8 +59,8 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public String getMailSmtpUsername() {
-        return getProperty("mail.smtp.username").getValue();
+    public String gainMailSmtpUsername() {
+        return gainProperty("mail.smtp.username").getValue();
     }
 
     /**
@@ -65,8 +68,8 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public String getMailSmtpPassword() {
-        return getProperty("mail.smtp.password").getValue();
+    public String gainMailSmtpPassword() {
+        return gainProperty("mail.smtp.password").getValue();
     }
 
     /**
@@ -74,9 +77,9 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public boolean getMailSmtpSslCheckServerIdentity() {
-        String value = getProperty("mail.smtp.ssl.check.server.identity").getValue();
-        if (StringUtils.isBlank(value)) value = "false";
+    public boolean gainMailSmtpSslCheckServerIdentity() {
+        String value = gainProperty("mail.smtp.ssl.check.server.identity").getValue();
+        if (StringUtils.isBlank(value)) {value = "false";}
         return Boolean.valueOf(value);
     }
 
@@ -85,10 +88,11 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public String getMailSmtpTo() {
-        String value = getProperty("mail.smtp.to").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("mail.smtp.to不能为空");
+    public String gainMailSmtpTo() {
+        String value = gainProperty("mail.smtp.to").getValue();
+        if (StringUtils.isBlank(value)) {
+            throw new IllegalArgumentException ("mail.smtp.to不能为空");
+        }
         return value;
     }
 
@@ -97,8 +101,8 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public String getMailSmtpCc() {
-        return getProperty("mail.smtp.cc").getValue();
+    public String gainMailSmtpCc() {
+        return gainProperty("mail.smtp.cc").getValue();
     }
 
     /**
@@ -106,8 +110,8 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public String getMailSmtpBcc() {
-        return getProperty("mail.smtp.bcc").getValue();
+    public String gainMailSmtpBcc() {
+        return gainProperty("mail.smtp.bcc").getValue();
     }
 
     /**
@@ -115,8 +119,8 @@ public class MailConfig extends Config {
      *
      * @return
      */
-    public String getMailSmtpSubject() {
-        return getProperty("mail.smtp.subject").getValue();
+    public String gainMailSmtpSubject() {
+        return gainProperty("mail.smtp.subject").getValue();
     }
 
 }

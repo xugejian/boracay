@@ -14,12 +14,12 @@ public class RedisConnectionPoolFactory {
     //构造redis的连接池
     public RedisConnectionPoolFactory(RedisDatasource dataSource) {
         JedisPoolConfig config = new JedisPoolConfig ();
-        config.setMaxIdle (dataSource.getMaxIdle ());
-        config.setMaxTotal (dataSource.getMaxTotal ());
-        config.setMaxWaitMillis (dataSource.getMaxWait ());
+        config.setMaxIdle (dataSource.gainMaxIdle ());
+        config.setMaxTotal (dataSource.gainMaxTotal ());
+        config.setMaxWaitMillis (dataSource.gainMaxWait ());
         config.setTestOnBorrow (dataSource.isTestOnBrrow ());
-        this.jedisPool = new JedisPool (config, dataSource.getIp (), dataSource.getPort (),
-                dataSource.getTimeOut (), dataSource.getPassword ());
+        this.jedisPool = new JedisPool (config, dataSource.gainIp (), dataSource.gainPort (),
+                dataSource.gainTimeOut (), dataSource.gainPassword ());
     }
 
     //获取连接

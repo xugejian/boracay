@@ -12,7 +12,9 @@ public enum DatasourceType {
     KAFKA("KAFKA", "KAFKA"),
     HBASE("HBASE", "HBASE"),
     SOLR_HBASE("SOLR_HBASE", "SOLR_HBASE"),
-    KAFKA1("KAFKA1", "KAFKA1");
+    KAFKA1("KAFKA1", "KAFKA1"),
+    PAIR_HBASE("PAIR_HBASE", "PAIR_HBASE"),
+    PAIR_SOLR("PAIR_SOLR", "PAIR_SOLR");
 
     private String value;
     private String name;

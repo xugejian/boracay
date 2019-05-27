@@ -43,8 +43,8 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
 
     protected List<SerDeProperty> getSerDeProperties(List<ModelMapping> modelMappings, HBaseMetadata hbaseMetadata) {
         List<SerDeProperty> serDeProperties = new ArrayList<>();
-        String family = hbaseMetadata.getFamily();
-        String qualifier = hbaseMetadata.getQualifier();
+        String family = hbaseMetadata.gainFamily();
+        String qualifier = hbaseMetadata.gainQualifier();
         String hbaseColumnsMapping = ":key," + family + ":" + qualifier;
         serDeProperties.add(new SerDeProperty("hbase.columns.mapping", hbaseColumnsMapping));
         return serDeProperties;
@@ -52,12 +52,13 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
 
     @Override
     protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
-        if (modelMappings == null || modelMappings.size() == 0)
+        if (modelMappings == null || modelMappings.size() == 0) {
             return null;
+        }
         List<String> selectColumns = new ArrayList<>();
         HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata);
-        String fqDataType = hBaseMetadata.getFqDataType();
-        String fqDsvSeparator = hBaseMetadata.getFqDsvSeparator();
+        String fqDataType = hBaseMetadata.gainFqDataType();
+        String fqDsvSeparator = hBaseMetadata.gainFqDsvSeparator();
         // 按照目标元数据字段升序
         List<ModelMapping> newModelMappings = new ArrayList<>();
         newModelMappings.addAll(modelMappings);
@@ -78,7 +79,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
             String tName = mdCol.getName();
             mdCol.setNote(tName);
             mdCol.setName(sName);
-            if (mdCol.isStored()) vals.add(mdCol);
+            if (mdCol.isStored()) {vals.add(mdCol);}
         }
         if ("json".equalsIgnoreCase(fqDataType)) {
             val = getJsonValueSql(vals);
@@ -91,7 +92,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
          */
         int count = 0;
         for (ModelMapping mapping : newModelMappings) {
-            if (mapping.getMetadataCol().isPrimary()) count++;
+            if (mapping.getMetadataCol().isPrimary()) {count++;}
         }
         String key = null;
         if (count == 0) { // 没有主键
@@ -273,10 +274,10 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         String tableName = metadata.getTbName();
         HBaseDatasource hBaseDatasource = new HBaseDatasource(metadata.getDatasource());
         HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata);
-        String fqDataType = hBaseMetadata.getFqDataType();
-        String fqDsvSeparator = hBaseMetadata.getFqDsvSeparator();
-        String family = hBaseMetadata.getFamily();
-        String qualifier = hBaseMetadata.getQualifier();
+        String fqDataType = hBaseMetadata.gainFqDataType();
+        String fqDsvSeparator = hBaseMetadata.gainFqDsvSeparator();
+        String family = hBaseMetadata.gainFamily();
+        String qualifier = hBaseMetadata.gainQualifier();
         // 按照目标元数据字段升序
         Collections.sort(modelMappings, new Comparator<ModelMapping>() {
             @Override
@@ -296,7 +297,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         List<MetadataCol> vals = new ArrayList<>();
         for (ModelMapping mapping : modelMappings) {
             MetadataCol mdCol = mapping.getMetadataCol();
-            if (mdCol.isStored()) vals.add(mdCol);
+            if (mdCol.isStored()) {vals.add(mdCol);}
         }
         if ("json".equalsIgnoreCase(fqDataType)) {
             value = getJsonValue(vals, valueMap);
@@ -309,7 +310,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
          */
         int count = 0;
         for (ModelMapping mapping : modelMappings) {
-            if (mapping.getMetadataCol().isPrimary()) count++;
+            if (mapping.getMetadataCol().isPrimary()) {count++;}
         }
         String key = "";
         if (count == 0) { // 没有主键
@@ -373,7 +374,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         String str = null;
         // 哈希头
         str = getHashStr(keys, valueMap);
-        if (StringUtils.isNotBlank(str)) list.add(str);
+        if (StringUtils.isNotBlank(str)) {list.add(str);}
         // 普通字段
         if (keys != null && keys.size() > 0) {
             str = "";
@@ -381,7 +382,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
                 MetadataCol mdCol = keys.get(i);
                 String name = mdCol.getName();
                 String value = valueMap.get(name);
-                if (value == null) value = "";
+                if (value == null) {value = "";}
                 int len = getLen(mdCol.getLength());
                 str += (i == 0 ? "" : "|");
                 str += (len <= 0 ? value : realValue(value, len));
@@ -395,7 +396,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
                 MetadataCol mdCol = dts.get(i);
                 String name = mdCol.getName();
                 String value = valueMap.get(name);
-                if (value == null) value = "";
+                if (value == null) {value = "";}
                 int len = getLen(mdCol.getLength());
                 str += (i == 0 ? "" : "|");
                 if (len == 10 && value.length() > 10) {
@@ -410,7 +411,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
         list.add(str);
         // 哈希尾
         str = getHashStr(vals, valueMap);
-        if (StringUtils.isNotBlank(str)) list.add(str);
+        if (StringUtils.isNotBlank(str)) {list.add(str);}
         return StringUtils.join(list, "|");
     }
 
@@ -516,7 +517,7 @@ public abstract class HBaseWrapper extends Wrapper implements BatchTargetConvert
     }
 
     @Override
-    protected void emptyDatas(Metadata metadata) throws Exception {
+    public void emptyDatas(Metadata metadata) throws Exception {
         HBaseMetadata hBaseMetadata = new HBaseMetadata(metadata);
         HBaseUtil.emptyHTable(hBaseMetadata);
     }

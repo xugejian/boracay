@@ -36,12 +36,12 @@ public class Datasource extends Base implements Serializable {
     }
 
     public Datasource(Datasource datasource) {
-        super(datasource.getPropertyMap());
-        this.type = datasource.getType();
-        this.name = datasource.getName();
-        this.describe = datasource.getDescribe();
-        this.note = datasource.getNote();
-        this.implClass = datasource.getImplClass();
+        super(datasource.propertyMap);
+        this.type = datasource.type;
+        this.name = datasource.name;
+        this.describe = datasource.describe;
+        this.note = datasource.note;
+        this.implClass = datasource.implClass;
     }
 
     public String getId() {
