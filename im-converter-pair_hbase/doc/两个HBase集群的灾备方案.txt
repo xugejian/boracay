@@ -30,4 +30,3 @@ hbase> show_peer_tableCFs '<peer_id>' #显示peer下表、列族复制关系
 
 四、最后结论
 需要改造UDSP来支持HBASE数据实时备份且服务双活。
-注：UDSP对外提供HBASE数据查询也需要能支持主备自动切换。
