@@ -13,6 +13,7 @@ import com.hex.bigdata.udsp.im.converter.model.RealtimeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -77,6 +78,18 @@ public class PairHBaseConverter extends PairHBaseWrapper {
 //            hbaseConverter.dropTargetEngineSchema (activeModel);
 //            throw new Exception (e);
 //        }
+    }
+
+    /**
+     * 重构dropTargetEngineSchema
+     *
+     * @param model
+     * @throws SQLException
+     */
+    @Override
+    public void dropTargetEngineSchema(Model model) throws SQLException {
+//        hbaseConverter.dropTargetEngineSchema (getStandbyModel (model));
+        hbaseConverter.dropTargetEngineSchema (getActiveModel (model));
     }
 
     /**

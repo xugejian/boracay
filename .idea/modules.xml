@@ -23,6 +23,7 @@
       <module fileurl="file://$PROJECT_DIR$/im-converter-oracle/im-converter-oracle.iml" filepath="$PROJECT_DIR$/im-converter-oracle/im-converter-oracle.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-pair_hbase/im-converter-pair_hbase.iml" filepath="$PROJECT_DIR$/im-converter-pair_hbase/im-converter-pair_hbase.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-pair_solr/im-converter-pair_solr.iml" filepath="$PROJECT_DIR$/im-converter-pair_solr/im-converter-pair_solr.iml" group="im" />
+      <module fileurl="file://$PROJECT_DIR$/im-converter-pair_solr_hbase/im-converter-pair_solr_hbase.iml" filepath="$PROJECT_DIR$/im-converter-pair_solr_hbase/im-converter-pair_solr_hbase.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-solr/im-converter-solr.iml" filepath="$PROJECT_DIR$/im-converter-solr/im-converter-solr.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/im-converter-solr_hbase/im-converter-solr_hbase.iml" filepath="$PROJECT_DIR$/im-converter-solr_hbase/im-converter-solr_hbase.iml" group="im" />
       <module fileurl="file://$PROJECT_DIR$/iq/iq.iml" filepath="$PROJECT_DIR$/iq/iq.iml" group="iq" />

@@ -10,6 +10,7 @@
     <orderEntry type="library" name="common" level="project" />
     <orderEntry type="module" module-name="common-api" />
     <orderEntry type="module" module-name="im-converter-api" />
-    <orderEntry type="module" module-name="im-converter-hbase" />
+    <orderEntry type="module" module-name="im-converter-pair_solr" />
+    <orderEntry type="module" module-name="im-converter-pair_hbase" />
   </component>
 </module>

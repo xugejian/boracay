@@ -10,10 +10,9 @@ import com.hex.bigdata.udsp.im.converter.model.WhereProperty;
 import java.util.List;
 
 /**
- * Created by JunjieM on 2017-9-7.
+ * Created by JunjieM on 2019-5-28.
  */
-public abstract class SolrHBaseWrapper extends Wrapper implements BatchTargetConverter, RealtimeTargetConverter {
-
+public abstract class PairSolrHBaseWrapper extends Wrapper implements BatchTargetConverter, RealtimeTargetConverter {
     @Override
     protected void insertInto(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns) throws Exception {
         try {

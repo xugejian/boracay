@@ -3,8 +3,7 @@ package com.hex.bigdata.udsp.im.converter.impl;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
-import com.hex.bigdata.udsp.im.converter.impl.model.SolrMetadata;
-import com.hex.bigdata.udsp.im.converter.impl.wrapper.SolrHBaseWrapper;
+import com.hex.bigdata.udsp.im.converter.impl.wrapper.PairSolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.converter.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,65 +13,64 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by JunjieM on 2017-9-5.
+ * Created by JunjieM on 2019-5-28.
  */
-//@Component("com.hex.bigdata.udsp.im.converter.impl.SolrHBaseConverter")
-public class SolrHBaseConverter extends SolrHBaseWrapper {
-    private static Logger logger = LoggerFactory.getLogger (SolrHBaseConverter.class);
+public class PairSolrHBaseConverter extends PairSolrHBaseWrapper {
+    private static Logger logger = LoggerFactory.getLogger (PairSolrHBaseConverter.class);
 
-    private SolrConverter solrConverter = (SolrConverter) ObjectUtil.newInstance ("com.hex.bigdata.udsp.im.converter.impl.SolrConverter");
-    private HBaseConverter hbaseConverter = (HBaseConverter) ObjectUtil.newInstance ("com.hex.bigdata.udsp.im.converter.impl.HBaseConverter");
+    private PairSolrConverter pairSolrConverter = (PairSolrConverter) ObjectUtil.newInstance ("com.hex.bigdata.udsp.im.converter.impl.PairSolrConverter");
+    private PairHBaseConverter pairHBaseConverter = (PairHBaseConverter) ObjectUtil.newInstance ("com.hex.bigdata.udsp.im.converter.impl.PairHBaseConverter");
 
     @Override
     public boolean testDatasource(Datasource datasource) {
-        return hbaseConverter.testDatasource (datasource)
-                && solrConverter.testDatasource (datasource);
+        return pairHBaseConverter.testDatasource (datasource)
+                && pairSolrConverter.testDatasource (datasource);
     }
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
-        return solrConverter.columnInfo (metadata);
+        return pairSolrConverter.columnInfo (metadata);
     }
 
     @Override
     public void createSchema(Metadata metadata) throws Exception {
-        hbaseConverter.createSchema (metadata);
+        pairHBaseConverter.createSchema (metadata);
         try {
-            solrConverter.createSchema (getSolrMetadata (metadata));
+            pairSolrConverter.createSchema (getSolrMetadata (metadata));
         } catch (Exception e) {
             // 回滚删除hbase对应的表 删除失败怎么办？暂时不考虑
-            hbaseConverter.dropSchema (metadata);
+            pairHBaseConverter.dropSchema (metadata);
             throw new Exception (e);
         }
     }
 
     @Override
     public void dropSchema(Metadata metadata) throws Exception {
-        solrConverter.dropSchema (metadata);
-        hbaseConverter.dropSchema (metadata);
+        pairSolrConverter.dropSchema (metadata);
+        pairHBaseConverter.dropSchema (metadata);
     }
 
     @Override
     public boolean checkSchema(Metadata metadata) throws Exception {
-        return solrConverter.checkSchema (metadata)
-                && hbaseConverter.checkSchema (metadata);
+        return pairSolrConverter.checkSchema (metadata)
+                && pairHBaseConverter.checkSchema (metadata);
     }
 
     @Override
     public void addColumns(Metadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
-        hbaseConverter.addColumns (metadata, addMetadataCols);
-        solrConverter.addColumns (getSolrMetadata (metadata), getSolrMetadataCols (addMetadataCols));
+        pairHBaseConverter.addColumns (metadata, addMetadataCols);
+        pairSolrConverter.addColumns (getSolrMetadata (metadata), getSolrMetadataCols (addMetadataCols));
     }
 
     @Override
     public void createTargetEngineSchema(Model model) throws Exception {
         Model hBaseModel = getHBaseModel (model);
-        hbaseConverter.createTargetEngineSchema (hBaseModel);
+        pairHBaseConverter.createTargetEngineSchema (hBaseModel);
         try {
-            solrConverter.createTargetEngineSchema (getSolrModel (model));
+            pairSolrConverter.createTargetEngineSchema (getSolrModel (model));
         } catch (Exception e) {
             // 删除回滚hbase对应的目标引擎表 删除失败怎么办？暂时不考虑
-            hbaseConverter.dropTargetEngineSchema (hBaseModel);
+            pairHBaseConverter.dropTargetEngineSchema (hBaseModel);
             throw new Exception (e);
         }
     }
@@ -85,8 +83,8 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
      */
     @Override
     public void dropTargetEngineSchema(Model model) throws SQLException {
-        hbaseConverter.dropTargetEngineSchema (getHBaseModel (model));
-        solrConverter.dropTargetEngineSchema (getSolrModel (model));
+        pairHBaseConverter.dropTargetEngineSchema (getHBaseModel (model));
+        pairSolrConverter.dropTargetEngineSchema (getSolrModel (model));
     }
 
     /**
@@ -98,8 +96,8 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
      */
     @Override
     public void buildBatch(String key, Model model) throws Exception {
-        hbaseConverter.buildBatch (getHBaseKey (key), getHBaseModel (model));
-        solrConverter.buildBatch (getSolrKey (key), getSolrModel (model));
+        pairHBaseConverter.buildBatch (getHBaseKey (key), getHBaseModel (model));
+        pairSolrConverter.buildBatch (getSolrKey (key), getSolrModel (model));
     }
 
     /**
@@ -111,8 +109,8 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
      */
     @Override
     public RealtimeResponse buildRealtime(String key, Model model) {
-        RealtimeResponse hbaseRealtimeResponse = hbaseConverter.buildRealtime (key, getHBaseModel (model));
-        RealtimeResponse solrRealtimeResponse = solrConverter.buildRealtime (key, getSolrModel (model));
+        RealtimeResponse hbaseRealtimeResponse = pairHBaseConverter.buildRealtime (key, getHBaseModel (model));
+        RealtimeResponse solrRealtimeResponse = pairSolrConverter.buildRealtime (key, getSolrModel (model));
         RealtimeResponse realtimeResponse = new RealtimeResponse ();
         realtimeResponse.setCountNum (hbaseRealtimeResponse.getCountNum () + solrRealtimeResponse.getCountNum ());
         realtimeResponse.setMessage ("HBASE:" + hbaseRealtimeResponse.getMessage () + ", SOLR:" + solrRealtimeResponse.getMessage ());

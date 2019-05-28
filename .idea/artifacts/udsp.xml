@@ -77,6 +77,9 @@
           <element id="library" level="project" name="sdk" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-kafka1" />
           <element id="library" level="project" name="netty" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-pair_hbase" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-pair_solr" />
+          <element id="artifact" artifact-name="hex-udsp-im-converter-pair_solr_hbase" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="console/web/Web" />
