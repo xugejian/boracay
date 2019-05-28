@@ -170,10 +170,8 @@ public abstract class Wrapper {
 
             List<String> selectColumns = getSelectColumns (modelMappings, metadata);
 
-            // 目标表是HBase类型，或者目标是SOLR+HBASE类型且key是以HBASE开头
-            if (DatasourceType.HBASE.getValue ().equals (tDsType)
-                    || (DatasourceType.SOLR_HBASE.getValue ().equals (tDsType) && key.startsWith (DatasourceType.HBASE.getValue ()))
-                    ) {
+            // 目标表是HBase类型
+            if (DatasourceType.HBASE.getValue ().equals (tDsType)) {
                 // 新的select sql
                 if (StringUtils.isNotBlank (selectSql)) {
                     selectSql = HiveSqlUtil.selectByHBase (selectColumns, selectSql, whereProperties);

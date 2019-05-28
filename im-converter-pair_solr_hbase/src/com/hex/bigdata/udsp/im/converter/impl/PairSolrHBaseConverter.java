@@ -3,6 +3,7 @@ package com.hex.bigdata.udsp.im.converter.impl;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
+import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.PairSolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.converter.model.*;
 import org.slf4j.Logger;
@@ -23,42 +24,43 @@ public class PairSolrHBaseConverter extends PairSolrHBaseWrapper {
 
     @Override
     public boolean testDatasource(Datasource datasource) {
-        return pairHBaseConverter.testDatasource (datasource)
-                && pairSolrConverter.testDatasource (datasource);
+        return pairHBaseConverter.testDatasource (getHBaseDatasource (datasource))
+                && pairSolrConverter.testDatasource (getSolrDatasource (datasource));
     }
 
     @Override
     public List<MetadataCol> columnInfo(Metadata metadata) {
-        return pairSolrConverter.columnInfo (metadata);
+        return pairSolrConverter.columnInfo (getSolrMetadata (metadata));
     }
 
     @Override
     public void createSchema(Metadata metadata) throws Exception {
-        pairHBaseConverter.createSchema (metadata);
+        Metadata hbaseMetadata = getHBaseMetadata (metadata);
+        pairHBaseConverter.createSchema (hbaseMetadata);
         try {
             pairSolrConverter.createSchema (getSolrMetadata (metadata));
         } catch (Exception e) {
             // 回滚删除hbase对应的表 删除失败怎么办？暂时不考虑
-            pairHBaseConverter.dropSchema (metadata);
+            pairHBaseConverter.dropSchema (hbaseMetadata);
             throw new Exception (e);
         }
     }
 
     @Override
     public void dropSchema(Metadata metadata) throws Exception {
-        pairSolrConverter.dropSchema (metadata);
-        pairHBaseConverter.dropSchema (metadata);
+        pairSolrConverter.dropSchema (getSolrMetadata (metadata));
+        pairHBaseConverter.dropSchema (getHBaseMetadata (metadata));
     }
 
     @Override
     public boolean checkSchema(Metadata metadata) throws Exception {
-        return pairSolrConverter.checkSchema (metadata)
-                && pairHBaseConverter.checkSchema (metadata);
+        return pairSolrConverter.checkSchema (getSolrMetadata (metadata))
+                && pairHBaseConverter.checkSchema (getHBaseMetadata (metadata));
     }
 
     @Override
     public void addColumns(Metadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
-        pairHBaseConverter.addColumns (metadata, addMetadataCols);
+        pairHBaseConverter.addColumns (getHBaseMetadata (metadata), addMetadataCols);
         pairSolrConverter.addColumns (getSolrMetadata (metadata), getSolrMetadataCols (addMetadataCols));
     }
 
@@ -121,9 +123,28 @@ public class PairSolrHBaseConverter extends PairSolrHBaseWrapper {
         return realtimeResponse;
     }
 
+    private Datasource getHBaseDatasource(Datasource datasource) {
+        Datasource ds = new Datasource (datasource);
+        ds.setType (DatasourceType.HBASE.getValue ());
+        return ds;
+    }
+
+    private Datasource getSolrDatasource(Datasource datasource) {
+        Datasource ds = new Datasource (datasource);
+        ds.setType (DatasourceType.SOLR.getValue ());
+        return ds;
+    }
+
+    private Metadata getHBaseMetadata(Metadata metadata) {
+        Metadata hbaseMetadata = new Metadata (metadata);
+        hbaseMetadata.setDatasource (getHBaseDatasource (metadata.getDatasource ()));
+        return hbaseMetadata;
+    }
+
     private Metadata getSolrMetadata(Metadata metadata) {
         Metadata solrMetadata = new Metadata (metadata);
         solrMetadata.setMetadataCols (getSolrMetadataCols (metadata.getMetadataCols ()));
+        solrMetadata.setDatasource (getSolrDatasource (metadata.getDatasource ()));
         return solrMetadata;
     }
 
@@ -156,6 +177,7 @@ public class PairSolrHBaseConverter extends PairSolrHBaseWrapper {
             }
         }
         hBaseModel.setModelMappings (modelMappings);
+        hBaseModel.setTargetMetadata (getHBaseMetadata (model.getTargetMetadata ()));
         return hBaseModel;
     }
 
@@ -175,6 +197,7 @@ public class PairSolrHBaseConverter extends PairSolrHBaseWrapper {
             }
         }
         solrModel.setModelMappings (modelMappings);
+        solrModel.setTargetMetadata (getSolrMetadata (model.getTargetMetadata ()));
         return solrModel;
     }
 

@@ -64,7 +64,6 @@ public class HiveJdbcUtil {
                 logger.debug("SUB SQL: " + sql);
                 rs = hiveStmt.executeUpdate(sql);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException(e);
@@ -74,6 +73,6 @@ public class HiveJdbcUtil {
             removeHiveStatement(key);
             logger.info("HIVE EXECUTE UPDATE SQL [END]");
         }
-        return rs == 0 ? true : false;
+        return rs == 0;
     }
 }

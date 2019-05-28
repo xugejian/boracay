@@ -3,6 +3,7 @@ package com.hex.bigdata.udsp.im.converter.impl;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
+import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.PairSolrWrapper;
 import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
@@ -125,6 +126,7 @@ public class PairSolrConverter extends PairSolrWrapper {
 
     private Datasource getActiveDatasource(Datasource datasource) {
         Datasource ds = new Datasource (datasource);
+        ds.setType (DatasourceType.SOLR.getValue ());
         Property solrServers = datasource.getPropertyMap ().get ("active.solr.servers");
         ds.getPropertyMap ().put ("solr.servers", solrServers);
         Property solrUrl = datasource.getPropertyMap ().get ("active.solr.url");
@@ -134,6 +136,7 @@ public class PairSolrConverter extends PairSolrWrapper {
 
     private Datasource getStandbyDatasource(Datasource datasource) {
         Datasource ds = new Datasource (datasource);
+        ds.setType (DatasourceType.SOLR.getValue ());
         Property zkQuorum = datasource.getPropertyMap ().get ("standby.solr.servers");
         ds.getPropertyMap ().put ("solr.servers", zkQuorum);
         Property solrUrl = datasource.getPropertyMap ().get ("standby.solr.url");
@@ -143,15 +146,13 @@ public class PairSolrConverter extends PairSolrWrapper {
 
     private Metadata getActiveMetadata(Metadata metadata) {
         Metadata md = new Metadata (metadata);
-        Datasource datasource = getActiveDatasource (metadata.getDatasource ());
-        md.setDatasource (datasource);
+        md.setDatasource (getActiveDatasource (metadata.getDatasource ()));
         return md;
     }
 
     private Metadata getStandbyMetadata(Metadata metadata) {
         Metadata md = new Metadata (metadata);
-        Datasource datasource = getStandbyDatasource (metadata.getDatasource ());
-        md.setDatasource (datasource);
+        md.setDatasource (getStandbyDatasource (metadata.getDatasource ()));
         return md;
     }
 
@@ -163,8 +164,7 @@ public class PairSolrConverter extends PairSolrWrapper {
         if (groupId != null) {
             groupId.setValue ("ACTIVE" + HIVE_ENGINE_TABLE_SEP + groupId.getValue ());
         }
-        Metadata metadata = getActiveMetadata (model.getTargetMetadata ());
-        activeModel.setTargetMetadata (metadata);
+        activeModel.setTargetMetadata (getActiveMetadata (model.getTargetMetadata ()));
         return activeModel;
     }
 
@@ -176,8 +176,7 @@ public class PairSolrConverter extends PairSolrWrapper {
         if (groupId != null) {
             groupId.setValue ("STANDBY" + HIVE_ENGINE_TABLE_SEP + groupId.getValue ());
         }
-        Metadata metadata = getStandbyMetadata (model.getTargetMetadata ());
-        standbyModel.setTargetMetadata (metadata);
+        standbyModel.setTargetMetadata (getStandbyMetadata (model.getTargetMetadata ()));
         return standbyModel;
     }
 

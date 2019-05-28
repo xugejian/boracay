@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.im.converter.impl.util;
 
+import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.im.converter.impl.model.JdbcDatasource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
@@ -7,13 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.Closeable;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 
 /**
  * Created by JunjieM on 2017-9-11.
@@ -179,6 +175,42 @@ public class JdbcUtil {
         for (String updateSql : updateSqls) {
             executeUpdate(datasource, updateSql);
         }
+    }
+
+    public static List<Map<String, String>> executeQuery(JdbcDatasource datasource, String querySql) throws SQLException {
+        logger.info("JDBC EXECUTE QUERY SQL [START]");
+        logger.info("QUERY SQL: \n" + querySql);
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = JdbcUtil.getConnection(datasource);
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery (querySql);
+            return getRecords(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException(e);
+        } finally {
+            close (rs);
+            close(stmt);
+            close(conn);
+            logger.info("JDBC EXECUTE QUERY SQL [END]");
+        }
+    }
+
+    private static List<Map<String, String>> getRecords(ResultSet rs) throws SQLException {
+        ResultSetMetaData rsmd = rs.getMetaData ();
+        List<Map<String, String>> list = new ArrayList<> ();
+        LinkedHashMap<String, String> map = null;
+        while (rs.next ()) {
+            map = new LinkedHashMap<> ();
+            for (int i = 1; i <= rsmd.getColumnCount (); i++) {
+                map.put (rsmd.getColumnLabel (i), rs.getString (i) == null ? "" : JSONUtil.encode (rs.getString (i)));
+            }
+            list.add (map);
+        }
+        return list;
     }
 
     public static void close(Object obj) {
