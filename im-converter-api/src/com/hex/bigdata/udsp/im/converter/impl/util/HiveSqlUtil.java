@@ -38,6 +38,46 @@ public class HiveSqlUtil {
     }
 
     /**
+     * 创建表并复制SQL的字段和数据
+     *
+     * @param ifNotExists
+     * @param tableName
+     * @param tableComment
+     * @param rowFormat
+     * @param fileFormat
+     * @param selectColumns
+     * @param selectSql
+     * @param whereProperties
+     * @return
+     */
+    public static String createTableAsSelect2(boolean ifNotExists, String tableName, String tableComment,
+                                             RowFormat rowFormat, String fileFormat, List<String> selectColumns,
+                                             String selectSql, List<WhereProperty> whereProperties) {
+        return createTable (false, ifNotExists, tableName, null, tableComment, null, rowFormat, fileFormat)
+                + "\n AS \n" + select2(selectColumns, selectSql, whereProperties);
+    }
+
+    /**
+     * 创建表并复制表的字段和数据
+     *
+     * @param ifNotExists
+     * @param tableName
+     * @param tableComment
+     * @param rowFormat
+     * @param fileFormat
+     * @param selectColumns
+     * @param selectTableName
+     * @param whereProperties
+     * @return
+     */
+    public static String createTableAsSelect(boolean ifNotExists, String tableName, String tableComment,
+                                     RowFormat rowFormat, String fileFormat, List<String> selectColumns,
+                                             String selectTableName, List<WhereProperty> whereProperties) {
+        return createTable (false, ifNotExists, tableName, null, tableComment, null, rowFormat, fileFormat)
+                + "\n AS \n" + select (selectColumns, selectTableName, whereProperties);
+    }
+
+    /**
      * 删除表
      *
      * @param ifExists
@@ -87,6 +127,20 @@ public class HiveSqlUtil {
                                 String selectTableName, List<WhereProperty> whereProperties) {
         return "SELECT " + getSelectColumns(selectColumns) + "\n FROM "
                 + selectTableName + getWhere(whereProperties);
+    }
+
+    /**
+     * 查询SQL
+     *
+     * @param selectColumns
+     * @param selectSql
+     * @param whereProperties
+     * @return
+     */
+    public static String select2(List<String> selectColumns,
+                                 String selectSql, List<WhereProperty> whereProperties) {
+        return "SELECT " + getSelectColumns(UDSP_VIEW, selectColumns) + "\n FROM (\n"
+                + selectSql + "\n) " + UDSP_VIEW + " " + getWhere(UDSP_VIEW, whereProperties);
     }
 
     /**
@@ -150,20 +204,6 @@ public class HiveSqlUtil {
      */
     public static String addColumns(String tableName, List<TableColumn> columns) {
         return "ALTER TABLE " + tableName + " ADD COLUMNS " + getColumns(columns);
-    }
-
-    /**
-     * 查询SQL
-     *
-     * @param selectColumns
-     * @param selectSql
-     * @param whereProperties
-     * @return
-     */
-    public static String select2(List<String> selectColumns,
-                                 String selectSql, List<WhereProperty> whereProperties) {
-        return "SELECT " + getSelectColumns(UDSP_VIEW, selectColumns) + "\n FROM (\n"
-                + selectSql + "\n) " + UDSP_VIEW + " " + getWhere(UDSP_VIEW, whereProperties);
     }
 
     public static String createDatabase(boolean ifNotExists, String databaseName) {

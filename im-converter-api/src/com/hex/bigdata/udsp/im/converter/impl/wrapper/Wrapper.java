@@ -50,16 +50,22 @@ public abstract class Wrapper {
             + DATABASE_AND_TABLE_SEP + "E" + HIVE_ENGINE_TABLE_SEP + "T" + HIVE_ENGINE_TABLE_SEP;
     protected static final String HIVE_DYNAMIC_ENGINE_SOURCE_TABLE_PREFIX = HIVE_ENGINE_DATABASE_NAME
             + DATABASE_AND_TABLE_SEP + "E" + HIVE_ENGINE_TABLE_SEP + "S" + HIVE_ENGINE_TABLE_SEP + "D" + HIVE_ENGINE_TABLE_SEP;
+    protected static final String HIVE_TEMP_SOURCE_TABLE_PREFIX = HIVE_ENGINE_DATABASE_NAME
+            + DATABASE_AND_TABLE_SEP + "TMP" + HIVE_ENGINE_TABLE_SEP + "S" + HIVE_ENGINE_TABLE_SEP;
 
     private GFDictMapper gfDictMapper = (GFDictMapper) WebApplicationContextUtil.getBean (GFDictMapper.class);
 
     protected String getSourceTableName(String id) {
-        id = id.replace ("HBASE" + HIVE_ENGINE_TABLE_SEP, "").replace ("SOLR" + HIVE_ENGINE_TABLE_SEP, "");
+        //id = id.replace ("HBASE" + HIVE_ENGINE_TABLE_SEP, "").replace ("SOLR" + HIVE_ENGINE_TABLE_SEP, "");
         return HIVE_ENGINE_SOURCE_TABLE_PREFIX + id;
     }
 
     protected String getTargetTableName(String id) {
         return HIVE_ENGINE_TARGET_TABLE_PREFIX + id;
+    }
+
+    protected String getTmpSourceTableName(String id) {
+        return HIVE_TEMP_SOURCE_TABLE_PREFIX + id;
     }
 
     private String getDynamicSourceTableName() {
@@ -103,6 +109,7 @@ public abstract class Wrapper {
      * @throws SQLException
      */
     public void buildBatch(String key, Model model) throws Exception {
+        boolean enableTmpTable = false;
         String id = model.getId ();
         String name = model.getName ();
         String describe = model.getDescribe ();
@@ -128,8 +135,8 @@ public abstract class Wrapper {
 
         // 判断是否要覆盖数据，则先清空数据
         if (BuildMode.INSERT_OVERWRITE == model.getBuildMode ()) {
-            if(MetadataType.EXTERNAL == metadata.getType ()){ // 外表
-                throw new IllegalArgumentException("目标元数据中的表是外表，不支持全量构建策略！");
+            if (MetadataType.EXTERNAL == metadata.getType ()) { // 外表
+                throw new IllegalArgumentException ("目标元数据中的表是外表，不支持全量构建策略！");
             }
             logger.debug ("清空Schema数据【START】");
             emptyDatas (metadata); // 清空数据
@@ -143,23 +150,8 @@ public abstract class Wrapper {
         String insertTableName = null;
         String insertSql = null;
         try {
-            List<WhereProperty> whereProperties = getWhereProperties (modelFilterCols);
 
-            if (sDsId.equals (eDsId)) { // 源、引擎的数据源相同
-                HiveModel hiveModel = new HiveModel (model);
-                selectSql = hiveModel.gainSelectSql ();
-                selectTableName = hiveModel.gainDatabaseName () + DATABASE_AND_TABLE_SEP + hiveModel.gainTableName ();
-            } else { // 源、引擎的数据源不同
-                if (violenceQuery) { // 暴力查询
-                    selectTableName = getSourceTableName (id);
-                } else { // 非暴力查询
-                    selectTableName = getDynamicSourceTableName ();
-                    // 创建动态的源引擎Schema
-                    getBatchSourceConverterImpl (model.getSourceDatasource ()).createSourceEngineSchema (model, selectTableName);
-                    // 过滤条件清空
-                    whereProperties = null;
-                }
-            }
+            List<WhereProperty> whereProperties = getWhereProperties (modelFilterCols);
 
             if (tDsId.equals (eDsId)) {// 目标、引擎的数据源相同
                 insertTableName = metadata.getTbName ();
@@ -169,6 +161,47 @@ public abstract class Wrapper {
             }
 
             List<String> selectColumns = getSelectColumns (modelMappings, metadata);
+
+            if (sDsId.equals (eDsId)) { // 源、引擎的数据源相同
+                HiveModel hiveModel = new HiveModel (model);
+                selectSql = hiveModel.gainSelectSql ();
+                selectTableName = hiveModel.gainDatabaseName () + DATABASE_AND_TABLE_SEP + hiveModel.gainTableName ();
+
+                /*
+                当源和引擎的数据源相同、存储格式是parquet、源表是分区表、只查询部分字段且目标是Solr或ES等时插入报错。
+                这个是Hive Parquet SerDe的问题导致的，这里我们可以通过建立非parquet格式的临时表来暂时解决这个问题。
+                 */
+                if (DatasourceType.SOLR.getValue ().equals (tDsType)) { // 目标表是Solr类型
+                    enableTmpTable = true;
+                    String tmpTableName = getTmpSourceTableName (id);
+                    String dropTmpTableSql = HiveSqlUtil.dropTable (true, tmpTableName);
+                    JdbcUtil.executeUpdate (eHiveDs, dropTmpTableSql);
+                    String createTmpTableSql = null;
+                    if (StringUtils.isNotBlank (selectSql)) {
+                        createTmpTableSql = HiveSqlUtil.createTableAsSelect2 (true, tmpTableName, null,
+                                null, null, selectColumns, selectSql, whereProperties);
+                    } else {
+                        createTmpTableSql = HiveSqlUtil.createTableAsSelect (true, tmpTableName, null,
+                                null, null, selectColumns, selectTableName, whereProperties);
+                    }
+                    JdbcUtil.executeUpdate (eHiveDs, createTmpTableSql);
+                    selectSql = null; // 自定义SQL清空
+                    selectTableName = tmpTableName; // 查询表改为临时表
+                    whereProperties = null; // 过滤条件清空
+                }
+
+            } else { // 源、引擎的数据源不同
+                if (violenceQuery) { // 暴力查询
+                    selectTableName = getSourceTableName (id);
+                } else { // 非暴力查询
+                    selectTableName = getDynamicSourceTableName ();
+                    // 创建动态的源引擎Schema
+                    BatchSourceConverter converter = getBatchSourceConverterImpl (model.getSourceDatasource ());
+                    converter.createSourceEngineSchema (model, selectTableName);
+                    // 过滤条件清空
+                    whereProperties = null;
+                }
+            }
 
             // 目标表是HBase类型
             if (DatasourceType.HBASE.getValue ().equals (tDsType)) {
@@ -208,6 +241,12 @@ public abstract class Wrapper {
             // 源、引擎的数据源不同且非暴力查询
             if (!sDsId.equals (eDsId) && !violenceQuery) {
                 dropSourceEngineSchema (model, selectTableName); // 删除动态源引擎Schema
+            }
+            // 删除临时表
+            if (enableTmpTable) {
+                String tmpTableName = getTmpSourceTableName (id);
+                String dropTmpTableSql = HiveSqlUtil.dropTable (true, tmpTableName);
+                JdbcUtil.executeUpdate (eHiveDs, dropTmpTableSql);
             }
         }
         logger.debug ("增量插入数据【END】");
