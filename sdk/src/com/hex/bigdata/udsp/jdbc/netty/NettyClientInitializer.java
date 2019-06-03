@@ -16,14 +16,6 @@ public class NettyClientInitializer extends ChannelInitializer<NioSocketChannel>
     @Override
     protected void initChannel(NioSocketChannel ch) throws Exception {
         handler = new NettyClientHandler ();
-
-//        ch.pipeline().addLast(handler);
-
-//        ch.pipeline () //
-//                .addLast (new StringDecoder ()) //
-//                .addLast (new StringEncoder ()) //
-//                .addLast (handler);
-
         ch.pipeline () //
                 .addLast (new JsonObjectDecoder (Integer.MAX_VALUE)) //
                 .addLast (handler);
