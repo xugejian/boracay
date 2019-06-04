@@ -135,9 +135,9 @@ public abstract class Wrapper {
 
         // 判断是否要覆盖数据，则先清空数据
         if (BuildMode.INSERT_OVERWRITE == model.getBuildMode ()) {
-            if (MetadataType.EXTERNAL == metadata.getType ()) { // 外表
-                throw new IllegalArgumentException ("目标元数据中的表是外表，不支持全量构建策略！");
-            }
+//            if (MetadataType.EXTERNAL == metadata.getType ()) { // 外表
+//                throw new IllegalArgumentException ("目标元数据中的表是外表，不支持全量构建策略！");
+//            }
             logger.debug ("清空Schema数据【START】");
             emptyDatas (metadata); // 清空数据
             logger.debug ("清空Schema数据【END】");
