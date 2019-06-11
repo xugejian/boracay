@@ -132,7 +132,7 @@ public class IqProviderService extends BaseService {
         List<QueryColumn> queryColumns = new ArrayList<> ();
         for (QueryColumn queryColumn : application.getQueryColumns ()) {
             // 值为${maxValue}时，即最大值表达式
-            if (MAX_VALUE_EXPRESSION.equalsIgnoreCase (queryColumn.getValue ().trim ())) {
+            if (MAX_VALUE_EXPRESSION.equalsIgnoreCase (queryColumn.getValue ())) {
                 maxValueQueryColumns.put (queryColumn.getName (), queryColumn);
             } else {
                 queryColumns.add (queryColumn);
