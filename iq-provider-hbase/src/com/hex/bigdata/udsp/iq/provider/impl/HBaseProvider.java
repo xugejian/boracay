@@ -658,7 +658,8 @@ public class HBaseProvider implements Provider {
             Map<String, Object> result = JSONUtil.parseJSON2Map (fqVal);
             Set<Integer> keys = colMap.keySet ();
             for (Integer key : keys) {
-                map.put (colMap.get (key), result.get (key).toString ());
+                String colName = colMap.get (key);
+                map.put (colName, result.get (colName).toString ());
             }
         }
         return map;
