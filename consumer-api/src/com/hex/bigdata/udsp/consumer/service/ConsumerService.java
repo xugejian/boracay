@@ -325,7 +325,9 @@ public class ConsumerService {
                     responseMapper.insertTimeout (cacheId, response, cacheTime * 1000);
                 }
                 // -------------------把获取的数据插入缓存【END】---------------------
-                loggingService.writeResponseLog (request, response, bef, runBef, false); // 写消费信息到数据库
+                if (!ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)) {
+                    loggingService.writeResponseLog (request, response, bef, runBef, false); // 写消费信息到数据库
+                }
             }
             return response;
         } finally {
