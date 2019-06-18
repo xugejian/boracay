@@ -287,8 +287,7 @@ public class FTPHelper {
      * @param remotePath
      * @return
      */
-    public List<FTPFile> getFtpServerFileList(String remotePath)
-            throws Exception {
+    public List<FTPFile> getFtpServerFileList(String remotePath) throws Exception {
         FTPListParseEngine engine = ftp.initiateListParsing(remotePath);
         List<FTPFile> ftpfiles = Arrays.asList(engine.getNext(25));
         return ftpfiles;
@@ -302,8 +301,7 @@ public class FTPHelper {
      * @throws Exception
      */
     public List<FTPFile> getFileList(String remotePath) throws Exception {
-        List<FTPFile> ftpfiles = Arrays.asList(ftp.listFiles(remotePath));
-        return ftpfiles;
+        return Arrays.asList(ftp.listFiles(remotePath));
     }
 
     /**
@@ -313,13 +311,11 @@ public class FTPHelper {
      * @throws Exception
      */
     public List<FTPFile> getFileList() throws Exception {
-        List<FTPFile> ftpfiles = Arrays.asList(ftp.listFiles());
-        return ftpfiles;
+        return Arrays.asList(ftp.listFiles());
     }
 
     public List<String> getListFileName(String remotePath) throws Exception {
-        List<String> ftpfiles = Arrays.asList(ftp.listNames(remotePath));
-        return ftpfiles;
+        return Arrays.asList(ftp.listNames(remotePath));
     }
 
 

@@ -284,8 +284,7 @@ public class SdkFtpUtil {
     public List<FTPFile> getFtpServerFileList(String remotePath)
             throws Exception {
         FTPListParseEngine engine = ftp.initiateListParsing(remotePath);
-        List<FTPFile> ftpfiles = Arrays.asList(engine.getNext(25));
-        return ftpfiles;
+        return Arrays.asList(engine.getNext(25));
     }
 
     /**
@@ -296,13 +295,11 @@ public class SdkFtpUtil {
      * @throws Exception
      */
     public List<FTPFile> getFileList(String remotePath) throws Exception {
-        List<FTPFile> ftpfiles = Arrays.asList(ftp.listFiles(remotePath));
-        return ftpfiles;
+        return Arrays.asList(ftp.listFiles(remotePath));
     }
 
     public List<String> getListFileName(String remotePath) throws Exception {
-        List<String> ftpfiles = Arrays.asList(ftp.listNames(remotePath));
-        return ftpfiles;
+        return Arrays.asList(ftp.listNames(remotePath));
     }
 
     /**
@@ -312,8 +309,7 @@ public class SdkFtpUtil {
      * @throws Exception
      */
     public List<FTPFile> getFileList() throws Exception {
-        List<FTPFile> ftpfiles = Arrays.asList(ftp.listFiles());
-        return ftpfiles;
+        return Arrays.asList(ftp.listFiles());
     }
 
     /**
@@ -487,16 +483,4 @@ public class SdkFtpUtil {
         this.hostname = hostname;
     }
 
-    /**
-     * 主方法(测试)
-     *
-     * @param args
-     */
-    public static void main(String[] args) throws Exception {
-        SdkFtpUtil helper = new SdkFtpUtil("10.1.97.1", 21, "UDSP", "UDSP");
-        helper.connectFTPServer();
-        //boolean flg=helper.downloadFile("/home/ftp/UDSP/20170512/","d708507e14f547b6b7d38098428a932c_20170512145953465.dat","C:\\Users\\PC\\Desktop");
-        List<FTPFile> files = helper.getFileList("/home/ftp/UDSP/20170512/");
-        System.out.println(files.size());
-    }
 }
