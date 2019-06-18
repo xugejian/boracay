@@ -3,15 +3,21 @@ package com.hex.bigdata.udsp.client;
 import com.hex.bigdata.udsp.config.SdkFtpClientConfig;
 import com.hex.bigdata.udsp.util.SdkFtpUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPListParseEngine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 public class FtpFileClient {
 
-    private static Logger logger = LogManager.getLogger(FtpFileClient.class);
+    private static Logger logger = LogManager.getLogger (FtpFileClient.class);
 
     private SdkFtpUtil sdkFtpUtil;
 
@@ -20,9 +26,9 @@ public class FtpFileClient {
 
     private FtpFileClient(String hostName, int port, String ftpUserName, String ftpPassword) {
         try {
-            this.sdkFtpUtil = new SdkFtpUtil(hostName, port, ftpUserName, ftpPassword);
+            this.sdkFtpUtil = new SdkFtpUtil (hostName, port, ftpUserName, ftpPassword);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -48,7 +54,7 @@ public class FtpFileClient {
      * @return
      */
     public static FtpFileClient createFtpClient(String hostName, int port, String ftpUserName, String ftpPassword) {
-        return new FtpFileClient(hostName, port, ftpUserName, ftpPassword);
+        return new FtpFileClient (hostName, port, ftpUserName, ftpPassword);
     }
 
     /**
@@ -57,7 +63,7 @@ public class FtpFileClient {
      * @return
      */
     public static FtpFileClient createFtpClient() {
-        return new FtpFileClient(new SdkFtpUtil());
+        return new FtpFileClient (new SdkFtpUtil ());
     }
 
     /**
@@ -68,13 +74,13 @@ public class FtpFileClient {
      * @return
      */
     public boolean checkFileArrived(String filePath) throws Exception {
-        if (StringUtils.isBlank(filePath)) {
-            throw new IllegalArgumentException("传入参数为空！");
+        if (StringUtils.isBlank (filePath)) {
+            throw new IllegalArgumentException ("传入参数为空！");
         }
-        int index = filePath.lastIndexOf(".");
-        filePath = filePath.substring(0, index);
-        filePath = filePath + SdkFtpClientConfig.getLogFilePostfix();
-        return checkFileExist(filePath);
+        int index = filePath.lastIndexOf (".");
+        filePath = filePath.substring (0, index);
+        filePath = filePath + SdkFtpClientConfig.getLogFilePostfix ();
+        return checkFileExist (filePath);
     }
 
     /**
@@ -86,21 +92,21 @@ public class FtpFileClient {
      * @throws Exception
      */
     public void downloadFile(String filePath, String targetFileName, String targetDirectory) throws Exception {
-        if (StringUtils.isBlank(filePath)) {
-            throw new IllegalArgumentException("参数filePath不能为空");
+        if (StringUtils.isBlank (filePath)) {
+            throw new IllegalArgumentException ("参数filePath不能为空");
         }
-        if (StringUtils.isBlank(targetDirectory)) {
-            throw new IllegalArgumentException("参数targetDirectory不能为空");
+        if (StringUtils.isBlank (targetDirectory)) {
+            throw new IllegalArgumentException ("参数targetDirectory不能为空");
         }
         try {
-            File downloadFile = new File(filePath);
-            String downloadFileName = downloadFile.getName();
-            String remotePath = downloadFile.getParent();
-            remotePath = remotePath.replaceAll("\\\\", "\\/");
-            this.sdkFtpUtil.connectFTPServer();
-            this.sdkFtpUtil.downloadFile(remotePath, downloadFileName, targetDirectory, targetFileName);
+            File downloadFile = new File (filePath);
+            String downloadFileName = downloadFile.getName ();
+            String remotePath = downloadFile.getParent ();
+            remotePath = remotePath.replaceAll ("\\\\", "\\/");
+            this.sdkFtpUtil.connectFTPServer ();
+            this.sdkFtpUtil.downloadFile (remotePath, downloadFileName, targetDirectory, targetFileName);
         } finally {
-            this.sdkFtpUtil.closeFTPClient();
+            this.sdkFtpUtil.closeFTPClient ();
         }
     }
 
@@ -111,29 +117,78 @@ public class FtpFileClient {
      * @param targetDirectory
      */
     public void downloadFile(String filePath, String targetDirectory) throws Exception {
-        this.downloadFile(filePath, null, targetDirectory);
+        this.downloadFile (filePath, null, targetDirectory);
     }
 
+    /**
+     * 从FTP服务器获取文件流
+     *
+     * @param filePath
+     * @return
+     * @throws Exception
+     */
+    public InputStream downloadFile(String filePath) throws Exception {
+        if (StringUtils.isBlank (filePath)) {
+            throw new IllegalArgumentException ("参数filePath不能为空");
+        }
+        try {
+            this.sdkFtpUtil.connectFTPServer ();
+            return this.sdkFtpUtil.downloadFile (filePath);
+        } finally {
+            this.sdkFtpUtil.closeFTPClient ();
+        }
+    }
+
+    /**
+     * 从FTP服务器获取文件流
+     *
+     * @param filePath
+     * @param output
+     * @return
+     * @throws IOException
+     */
+    public boolean downloadFile(String filePath, OutputStream output) throws Exception {
+        if (StringUtils.isBlank (filePath)) {
+            throw new IllegalArgumentException ("参数filePath不能为空");
+        }
+        if (output == null) {
+            throw new IllegalArgumentException ("参数output不能为空");
+        }
+        try {
+            this.sdkFtpUtil.connectFTPServer ();
+            return this.sdkFtpUtil.downloadFile (filePath, output);
+        } finally {
+            this.sdkFtpUtil.closeFTPClient ();
+        }
+    }
+
+    /**
+     * 检查文件是否存在
+     *
+     * @param filePath
+     * @return
+     * @throws Exception
+     */
     private boolean checkFileExist(String filePath) throws Exception {
         SdkFtpUtil sdkFtp = this.sdkFtpUtil;
         try {
-            sdkFtp.connectFTPServer();
-            File file = new File(filePath);
-            String fileName = file.getName();
-            String parentPath = file.getParent();
-            parentPath = parentPath.replaceAll("\\\\", "\\/");
-            List<String> nameList = sdkFtp.getListFileName(parentPath);
-            if (nameList == null || nameList.size() == 0) {
+            sdkFtp.connectFTPServer ();
+            File file = new File (filePath);
+            String fileName = file.getName ();
+            String parentPath = file.getParent ();
+            parentPath = parentPath.replaceAll ("\\\\", "\\/");
+            List<String> nameList = sdkFtp.getListFileName (parentPath);
+            if (nameList == null || nameList.size () == 0) {
                 return false;
             }
             for (String item : nameList) {
-                if (filePath.equals(item)) {
+                if (filePath.equals (item)) {
                     return true;
                 }
             }
             return false;
         } finally {
-            sdkFtp.closeFTPClient();
+            sdkFtp.closeFTPClient ();
         }
     }
 }

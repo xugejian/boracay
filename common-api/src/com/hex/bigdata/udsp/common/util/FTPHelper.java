@@ -13,11 +13,11 @@ import java.util.List;
 
 public class FTPHelper {
 
-    private FTPClient ftp = new FTPClient();
-    private String hostname = com.hex.bigdata.udsp.common.util.FTPClientConfig.getHostname();
-    private int port = com.hex.bigdata.udsp.common.util.FTPClientConfig.getPort();
-    private String username = com.hex.bigdata.udsp.common.util.FTPClientConfig.getUsername();
-    private String password = com.hex.bigdata.udsp.common.util.FTPClientConfig.getPassword();
+    private FTPClient ftp = new FTPClient ();
+    private String hostname = com.hex.bigdata.udsp.common.util.FTPClientConfig.getHostname ();
+    private int port = com.hex.bigdata.udsp.common.util.FTPClientConfig.getPort ();
+    private String username = com.hex.bigdata.udsp.common.util.FTPClientConfig.getUsername ();
+    private String password = com.hex.bigdata.udsp.common.util.FTPClientConfig.getPassword ();
 
     public FTPHelper() {
     }
@@ -39,34 +39,34 @@ public class FTPHelper {
      */
     public FTPClient connectFTPServer() throws Exception {
         try {
-            ftp.configure(getFTPClientConfig());
-            ftp.connect(this.hostname, this.port);
-            if (!ftp.login(this.username, this.password)) {
-                ftp.logout();
+            ftp.configure (getFTPClientConfig ());
+            ftp.connect (this.hostname, this.port);
+            if (!ftp.login (this.username, this.password)) {
+                ftp.logout ();
                 ftp = null;
                 return ftp;
             }
             // 文件类型,默认是ASCII
-            ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
-            ftp.setControlEncoding("GBK");
+            ftp.setFileType (FTPClient.BINARY_FILE_TYPE);
+            ftp.setControlEncoding ("GBK");
             // 设置被动模式
-            ftp.enterLocalPassiveMode();
-            ftp.setConnectTimeout(2000);
-            ftp.setBufferSize(1024);
+            ftp.enterLocalPassiveMode ();
+            ftp.setConnectTimeout (2000);
+            ftp.setBufferSize (1024);
             // 响应信息
-            int replyCode = ftp.getReplyCode();
-            if ((!FTPReply.isPositiveCompletion(replyCode))) {
+            int replyCode = ftp.getReplyCode ();
+            if ((!FTPReply.isPositiveCompletion (replyCode))) {
                 // 关闭Ftp连接
-                closeFTPClient();
+                closeFTPClient ();
                 // 释放空间
                 ftp = null;
-                throw new Exception("登录FTP服务器失败,请检查![hostname:" + hostname + "、"
+                throw new Exception ("登录FTP服务器失败,请检查![hostname:" + hostname + "、"
                         + "username:" + username + "、" + "password:" + password);
             } else {
                 return ftp;
             }
         } catch (Exception e) {
-            ftp.disconnect();
+            ftp.disconnect ();
             ftp = null;
             throw e;
         }
@@ -81,9 +81,9 @@ public class FTPHelper {
     public FTPClientConfig getFTPClientConfig() throws Exception {
         String systemKey = FTPClientConfig.SYST_NT;
         String serverLanguageCode = "zh";
-        FTPClientConfig conf = new FTPClientConfig(systemKey);
-        conf.setServerLanguageCode(serverLanguageCode);
-        conf.setDefaultDateFormatStr("yyyy-MM-dd");
+        FTPClientConfig conf = new FTPClientConfig (systemKey);
+        conf.setServerLanguageCode (serverLanguageCode);
+        conf.setDefaultDateFormatStr ("yyyy-MM-dd");
         return conf;
     }
 
@@ -100,19 +100,19 @@ public class FTPHelper {
         boolean success = false;
         try {
             File file = null;
-            if (checkFileExist(localFile)) {
-                file = new File(localFile);
+            if (checkFileExist (localFile)) {
+                file = new File (localFile);
             }
-            input = new FileInputStream(file);
-            success = ftp.storeFile(newName, input);
+            input = new FileInputStream (file);
+            success = ftp.storeFile (newName, input);
             if (!success) {
-                throw new Exception("文件上传失败!");
+                throw new Exception ("文件上传失败!");
             }
         } catch (Exception e) {
             throw e;
         } finally {
             if (input != null) {
-                input.close();
+                input.close ();
             }
         }
         return success;
@@ -129,15 +129,15 @@ public class FTPHelper {
             throws Exception {
         boolean success = false;
         try {
-            success = ftp.storeFile(newName, input);
+            success = ftp.storeFile (newName, input);
             if (!success) {
-                throw new Exception("文件上传失败!");
+                throw new Exception ("文件上传失败!");
             }
         } catch (Exception e) {
             throw e;
         } finally {
             if (input != null) {
-                input.close();
+                input.close ();
             }
         }
         return success;
@@ -157,24 +157,24 @@ public class FTPHelper {
         boolean success = false;
         try {
             File file = null;
-            if (checkFileExist(localFile)) {
-                file = new File(localFile);
+            if (checkFileExist (localFile)) {
+                file = new File (localFile);
             }
-            input = new FileInputStream(file);
+            input = new FileInputStream (file);
             // 改变当前路径到指定路径
-            if (!this.changeWorkingDirectory(remoteFoldPath)) {
-                System.out.println("服务器路径不存!");
+            if (!this.changeWorkingDirectory (remoteFoldPath)) {
+                System.out.println ("服务器路径不存!");
                 return false;
             }
-            success = ftp.storeFile(newName, input);
+            success = ftp.storeFile (newName, input);
             if (!success) {
-                throw new Exception("文件上传失败!");
+                throw new Exception ("文件上传失败!");
             }
         } catch (Exception e) {
             throw e;
         } finally {
             if (input != null) {
-                input.close();
+                input.close ();
             }
         }
         return success;
@@ -193,19 +193,19 @@ public class FTPHelper {
         boolean success = false;
         try {
             // 改变当前路径到指定路径
-            if (!this.changeWorkingDirectory(remoteFoldPath)) {
-                System.out.println("服务器路径不存!");
+            if (!this.changeWorkingDirectory (remoteFoldPath)) {
+                System.out.println ("服务器路径不存!");
                 return false;
             }
-            success = ftp.storeFile(newName, input);
+            success = ftp.storeFile (newName, input);
             if (!success) {
-                throw new Exception("文件上传失败!");
+                throw new Exception ("文件上传失败!");
             }
         } catch (Exception e) {
             throw e;
         } finally {
             if (input != null) {
-                input.close();
+                input.close ();
             }
         }
         return success;
@@ -224,35 +224,35 @@ public class FTPHelper {
         boolean success = false;
         try {
             // 检查本地路径
-            this.checkFileExist(localPath);
+            this.checkFileExist (localPath);
             // 改变工作路径
-            if (!this.changeWorkingDirectory(remotePath)) {
-                System.out.println("服务器路径不存在");
+            if (!this.changeWorkingDirectory (remotePath)) {
+                System.out.println ("服务器路径不存在");
                 return false;
             }
             // 列出当前工作路径下的文件列表
-            List<String> fileNameList = this.getListFileName(remotePath);
-            if (fileNameList == null || fileNameList.size() == 0) {
-                System.out.println("服务器当前路径下不存在文件！");
+            List<String> fileNameList = this.getListFileName (remotePath);
+            if (fileNameList == null || fileNameList.size () == 0) {
+                System.out.println ("服务器当前路径下不存在文件！");
                 return success;
             }
             for (String ftpfileName : fileNameList) {
-                if (ftpfileName.equals(fileName)) {
-                    File localFilePath = new File(localPath + File.separator
+                if (ftpfileName.equals (fileName)) {
+                    File localFilePath = new File (localPath + File.separator
                             + ftpfileName);
-                    output = new BufferedOutputStream(new FileOutputStream(
+                    output = new BufferedOutputStream (new FileOutputStream (
                             localFilePath));
-                    success = ftp.retrieveFile(ftpfileName, output);
+                    success = ftp.retrieveFile (ftpfileName, output);
                 }
             }
             if (!success) {
-                throw new Exception("文件下载失败!");
+                throw new Exception ("文件下载失败!");
             }
         } catch (Exception e) {
             throw e;
         } finally {
             if (output != null) {
-                output.close();
+                output.close ();
             }
         }
         return success;
@@ -266,7 +266,7 @@ public class FTPHelper {
      * @throws Exception
      */
     public InputStream downloadFile(String remoteFilePath) throws Exception {
-        return ftp.retrieveFileStream(remoteFilePath);
+        return ftp.retrieveFileStream (remoteFilePath);
     }
 
     /**
@@ -278,7 +278,7 @@ public class FTPHelper {
      * @throws IOException
      */
     public boolean downloadFile(String remoteFilePath, OutputStream output) throws IOException {
-        return ftp.retrieveFile(remoteFilePath, output);
+        return ftp.retrieveFile (remoteFilePath, output);
     }
 
     /**
@@ -288,8 +288,8 @@ public class FTPHelper {
      * @return
      */
     public List<FTPFile> getFtpServerFileList(String remotePath) throws Exception {
-        FTPListParseEngine engine = ftp.initiateListParsing(remotePath);
-        List<FTPFile> ftpfiles = Arrays.asList(engine.getNext(25));
+        FTPListParseEngine engine = ftp.initiateListParsing (remotePath);
+        List<FTPFile> ftpfiles = Arrays.asList (engine.getNext (25));
         return ftpfiles;
     }
 
@@ -301,7 +301,7 @@ public class FTPHelper {
      * @throws Exception
      */
     public List<FTPFile> getFileList(String remotePath) throws Exception {
-        return Arrays.asList(ftp.listFiles(remotePath));
+        return Arrays.asList (ftp.listFiles (remotePath));
     }
 
     /**
@@ -311,11 +311,11 @@ public class FTPHelper {
      * @throws Exception
      */
     public List<FTPFile> getFileList() throws Exception {
-        return Arrays.asList(ftp.listFiles());
+        return Arrays.asList (ftp.listFiles ());
     }
 
     public List<String> getListFileName(String remotePath) throws Exception {
-        return Arrays.asList(ftp.listNames(remotePath));
+        return Arrays.asList (ftp.listNames (remotePath));
     }
 
 
@@ -325,9 +325,9 @@ public class FTPHelper {
      * @param remoteDirPath
      */
     public Boolean changeWorkingDirectory(String remoteDirPath) throws Exception {
-        boolean flag = ftp.changeWorkingDirectory(remoteDirPath);
+        boolean flag = ftp.changeWorkingDirectory (remoteDirPath);
         if (!flag) {
-            throw new Exception("改变FTP服务器工作路径失败");
+            throw new Exception ("改变FTP服务器工作路径" + remoteDirPath + "失败");
         }
         return flag;
     }
@@ -340,9 +340,9 @@ public class FTPHelper {
      * @throws Exception
      */
     public Boolean removeFile(String remoteFilePath) throws Exception {
-        boolean flag = ftp.deleteFile(remoteFilePath);
+        boolean flag = ftp.deleteFile (remoteFilePath);
         if (!flag) {
-            throw new Exception("删除文件失败");
+            throw new Exception ("删除文件失败");
         }
         return flag;
     }
@@ -354,12 +354,12 @@ public class FTPHelper {
      * @return
      */
     public boolean makeDirectory(String remoteDirPath) throws Exception {
-        if (ftp.changeWorkingDirectory(remoteDirPath)) {
+        if (ftp.changeWorkingDirectory (remoteDirPath)) {
             return true;
         }
-        boolean flag = ftp.makeDirectory(remoteDirPath);
+        boolean flag = ftp.makeDirectory (remoteDirPath);
         if (!flag) {
-            throw new Exception("创建目录失败");
+            throw new Exception ("创建目录" + remoteDirPath + "失败");
         }
         return false;
     }
@@ -372,7 +372,7 @@ public class FTPHelper {
      * @throws Exception
      */
     public boolean removeDirectory(String remoteDirPath) throws Exception {
-        return ftp.removeDirectory(remoteDirPath);
+        return ftp.removeDirectory (remoteDirPath);
     }
 
     /**
@@ -384,26 +384,26 @@ public class FTPHelper {
     public boolean removeDirAndsubFiles(String remoteFoldPath)
             throws Exception {
         boolean success = false;
-        List<FTPFile> list = this.getFileList(remoteFoldPath);
-        if (list == null || list.size() == 0) {
-            return removeDirectory(remoteFoldPath);
+        List<FTPFile> list = this.getFileList (remoteFoldPath);
+        if (list == null || list.size () == 0) {
+            return removeDirectory (remoteFoldPath);
         }
         for (FTPFile ftpFile : list) {
 
-            String name = ftpFile.getName();
-            if (ftpFile.isDirectory()) {
-                success = removeDirAndsubFiles(remoteFoldPath + "/" + name);
+            String name = ftpFile.getName ();
+            if (ftpFile.isDirectory ()) {
+                success = removeDirAndsubFiles (remoteFoldPath + "/" + name);
                 if (!success)
                     break;
             } else {
-                success = removeFile(remoteFoldPath + "/" + name);
+                success = removeFile (remoteFoldPath + "/" + name);
                 if (!success)
                     break;
             }
         }
         if (!success)
             return false;
-        success = removeDirectory(remoteFoldPath);
+        success = removeDirectory (remoteFoldPath);
         return success;
     }
 
@@ -416,9 +416,9 @@ public class FTPHelper {
      */
     public boolean checkFileExist(String filePath) throws Exception {
         boolean flag = false;
-        File file = new File(filePath);
-        if (!file.exists()) {
-            throw new Exception("本地路径不存在,请检查!");
+        File file = new File (filePath);
+        if (!file.exists ()) {
+            throw new Exception ("本地路径不存在,请检查!");
         } else {
             flag = true;
         }
@@ -434,11 +434,11 @@ public class FTPHelper {
     public void closeFTPClient(FTPClient ftp) throws Exception {
         if (ftp != null) {
             try {
-                if (ftp.isConnected())
-                    ftp.logout();
-                ftp.disconnect();
+                if (ftp.isConnected ())
+                    ftp.logout ();
+                ftp.disconnect ();
             } catch (Exception e) {
-                throw new Exception("关闭FTP服务出错!");
+                throw new Exception ("关闭FTP服务出错!");
             }
         }
     }
@@ -449,7 +449,7 @@ public class FTPHelper {
      * @throws Exception
      */
     public void closeFTPClient() throws Exception {
-        this.closeFTPClient(this.ftp);
+        this.closeFTPClient (this.ftp);
     }
 
     public FTPClient getFtp() {
@@ -498,10 +498,10 @@ public class FTPHelper {
      * @param args
      */
     public static void main(String[] args) throws Exception {
-        FTPHelper helper = new FTPHelper("10.1.97.1", 21, "UDSP", "UDSP");
-        helper.connectFTPServer();
+        FTPHelper helper = new FTPHelper ("10.1.97.1", 21, "UDSP", "UDSP");
+        helper.connectFTPServer ();
         //boolean flg = helper.makeDirectory("/home/ftp/UDSP/20170427");
         //System.out.println(flg);
-        helper.downloadFile("/home/ftp/UDSP/20170531/d00b1ed0041e404ba17320a8574fd7f9_20170531142618931.dat");
+        helper.downloadFile ("/home/ftp/UDSP/20170531/d00b1ed0041e404ba17320a8574fd7f9_20170531142618931.dat");
     }
 }

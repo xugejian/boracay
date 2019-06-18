@@ -307,12 +307,7 @@ public class ConsumerService {
             if (ConsumerType.ASYNC.getValue ().equalsIgnoreCase (type)
                     && ConsumerEntity.START.getValue ().equalsIgnoreCase (entity)
                     && !ServiceType.MM.getValue ().equalsIgnoreCase (appType)) {
-                if ("admin".equals (udspUser)) { // 防止Linux系统有admin用户
-                    udspUser = "udspadmin";
-                }
-                String ftpFilePath = FTPClientConfig.getRootpath () + "/" + udspUser + "/" + FTPClientConfig.getUsername ()
-                        + "/" + com.hex.goframe.util.DateUtil.format (new Date (), "yyyyMMdd")
-                        + "/" + fileName + CreateFileUtil.DATA_FILE_SUFFIX;
+                String ftpFilePath = CreateFileUtil.getFtpFileDir (udspUser) + "/" + CreateFileUtil.getDataFileName (fileName);
                 response.setResponseContent (ftpFilePath);
                 response.setStatusCode (StatusCode.SUCCESS.getValue ());
                 response.setStatus (Status.SUCCESS.getValue ());
@@ -379,19 +374,21 @@ public class ConsumerService {
             // 查询消费日志
             McConsumeLog mcConsumeLog = mcConsumeLogService.select (consumeId);
             if (mcConsumeLog != null) { // 消费完成
-                status = Status.SUCCESS;
-                statusCode = StatusCode.SUCCESS;
                 if ("0".equals (mcConsumeLog.getStatus ())) {
+                    status = Status.SUCCESS;
+                    statusCode = StatusCode.SUCCESS;
                     message = "消费成功";
                     // 输出消费成功的文件位置信息
                     if (StringUtils.isNotBlank (mcConsumeLog.getRequestContent ())) {
                         response.setResponseContent (mcConsumeLog.getResponseContent ());
                     }
                 } else {
+                    status = Status.DEFEAT;
+                    statusCode = StatusCode.DEFEAT;
                     message = "消费失败";
                     //输出具体失败消息
                     if (StringUtils.isNotBlank (mcConsumeLog.getMessage ())) {
-                        response.setResponseContent ("消费id为‘" + consumeId + "’的异步任务失败原因：" + mcConsumeLog.getMessage ());
+                        message = "消费id为‘" + consumeId + "’的异步任务失败原因：" + mcConsumeLog.getMessage ();
                     }
                 }
             } else { // 正在消费

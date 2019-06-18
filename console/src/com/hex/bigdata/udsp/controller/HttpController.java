@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -90,7 +91,7 @@ public class HttpController extends BaseController {
             } else {
                 status = false;
                 message = response.getMessage();
-                pageListResult = new PageListResult(null);
+                pageListResult = new PageListResult(new ArrayList ());
                 pageListResult.setStatus(status);
                 pageListResult.setMessage(message);
             }
@@ -98,7 +99,7 @@ public class HttpController extends BaseController {
             e.printStackTrace();
             status = false;
             message = e.getMessage();
-            pageListResult = new PageListResult(null);
+            pageListResult = new PageListResult(new ArrayList ());
             pageListResult.setStatus(status);
             pageListResult.setMessage(message);
         }

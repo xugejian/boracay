@@ -19,13 +19,52 @@ public class SdkFtpUtil {
     public SdkFtpUtil() {
     }
 
-    public SdkFtpUtil(String hostname, int port, String username,
-                      String password) {
+    public SdkFtpUtil(String hostname, int port, String username, String password) {
         this.hostname = hostname;
         if (this.port > 0) {
             this.port = port;
         }
         this.username = username;
+        this.password = password;
+    }
+
+    public FTPClient getFtp() {
+        return ftp;
+    }
+
+    public void setFtp(FTPClient ftp) {
+        this.ftp = ftp;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -92,8 +131,7 @@ public class SdkFtpUtil {
      * @param newName   新文件名
      * @throws Exception
      */
-    public Boolean uploadFile(String localFile, String newName)
-            throws Exception {
+    public Boolean uploadFile(String localFile, String newName) throws Exception {
         InputStream input = null;
         boolean success = false;
         try {
@@ -123,8 +161,7 @@ public class SdkFtpUtil {
      * @param newName 新文件名
      * @throws Exception
      */
-    public Boolean uploadFile(InputStream input, String newName)
-            throws Exception {
+    public Boolean uploadFile(InputStream input, String newName) throws Exception {
         boolean success = false;
         try {
             success = ftp.storeFile(newName, input);
@@ -273,6 +310,18 @@ public class SdkFtpUtil {
      */
     public InputStream downloadFile(String remoteFilePath) throws Exception {
         return ftp.retrieveFileStream(remoteFilePath);
+    }
+
+    /**
+     * 从FTP服务器获取文件流
+     *
+     * @param remoteFilePath
+     * @param output
+     * @return
+     * @throws IOException
+     */
+    public boolean downloadFile(String remoteFilePath, OutputStream output) throws IOException {
+        return ftp.retrieveFile(remoteFilePath, output);
     }
 
     /**
@@ -441,46 +490,6 @@ public class SdkFtpUtil {
      */
     public void closeFTPClient() throws Exception {
         this.closeFTPClient(this.ftp);
-    }
-
-    public FTPClient getFtp() {
-        return ftp;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setFtp(FTPClient ftp) {
-        this.ftp = ftp;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public String getHostname() {
-        return hostname;
-    }
-
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
     }
 
 }

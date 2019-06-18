@@ -24,6 +24,7 @@ expect {
 expect \"#*\"
 send \"mkdir -p ${USERHOME}\r\"
 send \"mkdir -p ${FTP_ROOT}\r\"
+send \"chmod 777 ${FTP_ROOT}\r\"
 send \"if egrep '^CONSUMER' /etc/group >& /dev/null; then echo 'group CONSUMER already exists!'; else groupadd CONSUMER; fi\r\"
 send \"if egrep '^${FTP_USERNAME}' /etc/passwd >& /dev/null; then echo 'user ${FTP_USERNAME} already exists!'; else useradd -d ${USERHOME}/${FTP_USERNAME} -m ${FTP_USERNAME} -p `openssl passwd -crypt ${FTP_PASSWORD}`; usermod -a -G CONSUMER ${FTP_USERNAME}; fi\r\"
 send \"if egrep '^udspadmin' /etc/passwd >& /dev/null; then echo 'user udspadmin already exists!'; else useradd -d ${USERHOME}/udspadmin -m udspadmin -p `openssl passwd -crypt 000000`; mkdir -p ${FTP_ROOT}/udspadmin; chown udspadmin:CONSUMER ${FTP_ROOT}/udspadmin; chmod -R 770 ${FTP_ROOT}/udspadmin; fi\r\"

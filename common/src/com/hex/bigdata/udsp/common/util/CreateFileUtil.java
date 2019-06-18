@@ -20,33 +20,44 @@ import java.util.*;
  */
 public class CreateFileUtil {
     public static final String TEMP_DOWNLOAD = "TEMP_DOWNLOAD";
-    public static final String DATA_FILE_SUFFIX = ".dat";
-    public static final String FLG_FILE_SUFFIX = ".log";
-    public static final String DATA_FILE_DELIMITER = "\036";
-    public static final String FLG_FILE_DELIMITER = "|";
     public static final String FILE_ENCODING = "UTF-8";
 
     // 临时文件本地存储目录
     private static String tempfileLocalDir;
+    // 是否自动创建FTP用户
+    private static boolean autoCreateFtpUser;
+    // 数据文件后缀
+    public static  String dataFileSuffix;
+    // 标记文件后缀
+    public static  String flgFileSuffix;
+    // 数据文件分隔符
+    public static  String dataFileDelimiter;
+    // 标记文件分隔符
+    public static String flgFileDelimiter;
 
     static {
-        FTPClientConfig.loadConf("goframe/udsp/udsp.config.properties");
+        FTPClientConfig.loadConf ("goframe/udsp/udsp.config.properties");
 
         InputStream in = null;
         try {
-            in = FTPClientConfig.class.getClassLoader().getResourceAsStream(
+            in = FTPClientConfig.class.getClassLoader ().getResourceAsStream (
                     "goframe/udsp/udsp.config.properties");
-            Properties props = new Properties();
-            props.load(in);
-            tempfileLocalDir = props.getProperty("temp.file.local.dir");
+            Properties props = new Properties ();
+            props.load (in);
+            tempfileLocalDir = props.getProperty ("temp.file.local.dir");
+            autoCreateFtpUser = Boolean.valueOf (props.getProperty ("auto.create.ftp.user", "true"));
+            dataFileSuffix = props.getProperty ("data.file.suffix", ".dat");
+            flgFileSuffix = props.getProperty ("flg.file.suffix", ".log");
+            dataFileDelimiter = props.getProperty ("data.file.delimiter", "\036");
+            flgFileDelimiter = props.getProperty ("flg.file.delimiter", "|");
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (in != null) {
                 try {
-                    in.close();
+                    in.close ();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    e.printStackTrace ();
                 }
             }
         }
@@ -62,9 +73,9 @@ public class CreateFileUtil {
      */
     public static void createDelimiterFile(List<Map<String, String>> records, String delimiter, String encoding, boolean isPrintHeader, String fileName) {
         // 生成数据文件
-        String fileSizeAndNum = createDataFile(fileName, records, delimiter, encoding, isPrintHeader);
+        String fileSizeAndNum = createDataFile (fileName, records, delimiter, encoding, isPrintHeader);
         // 生成标记文件
-        createFlgFile(fileName, fileSizeAndNum);
+        createFlgFile (fileName, fileSizeAndNum);
     }
 
     /**
@@ -76,15 +87,15 @@ public class CreateFileUtil {
      * @return
      */
     public static void createDelimiterFile(ResultSet resultSet, String delimiter, String encoding, boolean isPrintHeader, String fileName) {
-        if (StringUtils.isBlank(encoding)) {
+        if (StringUtils.isBlank (encoding)) {
             encoding = FILE_ENCODING;
         }
         /*
         生成数据文件
          */
-        String fileSizeAndNum = createDataFile(fileName, resultSet, delimiter, encoding, isPrintHeader);
+        String fileSizeAndNum = createDataFile (fileName, resultSet, delimiter, encoding, isPrintHeader);
         // 生成标记文件
-        createFlgFile(fileName, fileSizeAndNum);
+        createFlgFile (fileName, fileSizeAndNum);
     }
 
     /**
@@ -95,20 +106,20 @@ public class CreateFileUtil {
      * @param fileNum
      */
     private static void createFlgFile(String fileName, long fileSize, long fileNum) {
-        String localFlgFilePath = getLocalFlgFilePath(fileName);
+        String localFlgFilePath = getLocalFlgFilePath (fileName);
         FileOutputStream localFlgFile = null;
         try {
-            localFlgFile = new FileOutputStream(new File(localFlgFilePath));
-            StringBuffer sb = new StringBuffer();
-            sb.append(getFlgData(getDataFileName(fileName), fileSize, fileNum)).append(Util.getLineSeparator());
-            IOUtils.write(sb.toString(), localFlgFile);
+            localFlgFile = new FileOutputStream (new File (localFlgFilePath));
+            StringBuffer sb = new StringBuffer ();
+            sb.append (getFlgData (getDataFileName (fileName), fileSize, fileNum)).append (Util.getLineSeparator ());
+            IOUtils.write (sb.toString (), localFlgFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             try {
-                localFlgFile.close();
+                localFlgFile.close ();
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace ();
             }
         }
     }
@@ -120,20 +131,20 @@ public class CreateFileUtil {
      * @param fileSizeAndNum
      */
     private static void createFlgFile(String fileName, String fileSizeAndNum) {
-        String localFlgFilePath = getLocalFlgFilePath(fileName);
+        String localFlgFilePath = getLocalFlgFilePath (fileName);
         FileOutputStream localFlgFile = null;
         try {
-            localFlgFile = new FileOutputStream(new File(localFlgFilePath));
-            StringBuffer sb = new StringBuffer();
-            sb.append(getFlgData(getDataFileName(fileName), fileSizeAndNum)).append(Util.getLineSeparator());
-            IOUtils.write(sb.toString(), localFlgFile);
+            localFlgFile = new FileOutputStream (new File (localFlgFilePath));
+            StringBuffer sb = new StringBuffer ();
+            sb.append (getFlgData (getDataFileName (fileName), fileSizeAndNum)).append (Util.getLineSeparator ());
+            IOUtils.write (sb.toString (), localFlgFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             try {
-                localFlgFile.close();
+                localFlgFile.close ();
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace ();
             }
         }
     }
@@ -149,46 +160,46 @@ public class CreateFileUtil {
      * @return
      */
     private static String createDataFile(String fileName, List<Map<String, String>> records, String delimiter, String encoding, boolean isPrintHeader) {
-        if (StringUtils.isBlank(encoding)) encoding = FILE_ENCODING;
-        String localDataFilePath = getLocalDataFilePath(fileName);
+        if (StringUtils.isBlank (encoding)) encoding = FILE_ENCODING;
+        String localDataFilePath = getLocalDataFilePath (fileName);
         FileOutputStream localDataFile = null;
         long fileSize = 0;
         long fileNum = 0;
         try {
-            localDataFile = new FileOutputStream(new File(localDataFilePath));
-            StringBuffer sb = new StringBuffer();
-            List<String> headerList = getHeaderList(records);
+            localDataFile = new FileOutputStream (new File (localDataFilePath));
+            StringBuffer sb = new StringBuffer ();
+            List<String> headerList = getHeaderList (records);
 
             // 文件头
             byte[] bytes;
             if (isPrintHeader) {
-                sb.append(getFileHead(headerList, delimiter)).append(Util.getLineSeparator());
-                bytes = sb.toString().getBytes(encoding);
+                sb.append (getFileHead (headerList, delimiter)).append (Util.getLineSeparator ());
+                bytes = sb.toString ().getBytes (encoding);
                 fileSize += bytes.length;
-                IOUtils.write(bytes, localDataFile);
+                IOUtils.write (bytes, localDataFile);
                 fileNum++;
             }
 
             // 文件体
             for (Map<String, String> record : records) {
-                sb = new StringBuffer();
-                sb.append(getFileData(record, headerList, delimiter)).append(Util.getLineSeparator());
-                bytes = sb.toString().getBytes(encoding);
+                sb = new StringBuffer ();
+                sb.append (getFileData (record, headerList, delimiter)).append (Util.getLineSeparator ());
+                bytes = sb.toString ().getBytes (encoding);
                 fileSize += bytes.length;
-                IOUtils.write(bytes, localDataFile);
+                IOUtils.write (bytes, localDataFile);
                 fileNum++;
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             try {
-                localDataFile.close();
+                localDataFile.close ();
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace ();
             }
         }
-        return fileSize + FLG_FILE_DELIMITER + fileNum;
+        return fileSize + flgFileDelimiter + fileNum;
     }
 
     /**
@@ -202,48 +213,48 @@ public class CreateFileUtil {
      * @return
      */
     private static String createDataFile(String fileName, ResultSet resultSet, String delimiter, String encoding, boolean isPrintHeader) {
-        String localDataFilePath = getLocalDataFilePath(fileName);
+        String localDataFilePath = getLocalDataFilePath (fileName);
         FileOutputStream localDataFile = null;
         long fileSize = 0;
         long fileNum = 0;
         try {
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
+            ResultSetMetaData metaData = resultSet.getMetaData ();
+            int columnCount = metaData.getColumnCount ();
 
-            localDataFile = new FileOutputStream(new File(localDataFilePath));
-            StringBuffer sb = new StringBuffer();
-            List<String> headerList = getHeaderList(metaData);
+            localDataFile = new FileOutputStream (new File (localDataFilePath));
+            StringBuffer sb = new StringBuffer ();
+            List<String> headerList = getHeaderList (metaData);
 
             // 文件头
             byte[] bytes;
             if (isPrintHeader) {
-                sb.append(getFileHead(headerList, delimiter)).append(Util.getLineSeparator());
-                bytes = sb.toString().getBytes(encoding);
+                sb.append (getFileHead (headerList, delimiter)).append (Util.getLineSeparator ());
+                bytes = sb.toString ().getBytes (encoding);
                 fileSize += bytes.length;
-                IOUtils.write(bytes, localDataFile);
+                IOUtils.write (bytes, localDataFile);
                 fileNum++;
             }
 
             // 文件体
-            while (resultSet.next()) {
-                sb = new StringBuffer();
-                sb.append(getFileData(resultSet, columnCount, delimiter)).append(Util.getLineSeparator());
-                bytes = sb.toString().getBytes(encoding);
+            while (resultSet.next ()) {
+                sb = new StringBuffer ();
+                sb.append (getFileData (resultSet, columnCount, delimiter)).append (Util.getLineSeparator ());
+                bytes = sb.toString ().getBytes (encoding);
                 fileSize += bytes.length;
-                IOUtils.write(bytes, localDataFile);
+                IOUtils.write (bytes, localDataFile);
                 fileNum++;
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             try {
-                localDataFile.close();
+                localDataFile.close ();
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace ();
             }
         }
-        return fileSize + FLG_FILE_DELIMITER + fileNum;
+        return fileSize + flgFileDelimiter + fileNum;
     }
 
     /**
@@ -252,7 +263,7 @@ public class CreateFileUtil {
      * @return
      */
     public static void createDelimiterFile(List<Map<String, String>> records, boolean isPrintHeader, String localFileName) {
-        createDelimiterFile(records, DATA_FILE_DELIMITER, FILE_ENCODING, isPrintHeader, localFileName);
+        createDelimiterFile (records, dataFileDelimiter, FILE_ENCODING, isPrintHeader, localFileName);
     }
 
     /**
@@ -261,7 +272,7 @@ public class CreateFileUtil {
      * @return
      */
     public static void createDelimiterFile(ResultSet resultSet, boolean isPrintHeader, String localFileName) {
-        createDelimiterFile(resultSet, DATA_FILE_DELIMITER, FILE_ENCODING, isPrintHeader, localFileName);
+        createDelimiterFile (resultSet, dataFileDelimiter, FILE_ENCODING, isPrintHeader, localFileName);
     }
 
     /**
@@ -272,10 +283,10 @@ public class CreateFileUtil {
      */
     private static List<String> getHeaderList(List<Map<String, String>> records) {
         List<String> headerList = null;
-        if (records.size() >= 1) {
-            headerList = new ArrayList<>();
-            for (Map.Entry<String, String> entry : records.get(0).entrySet()) {
-                headerList.add(entry.getKey());
+        if (records.size () >= 1) {
+            headerList = new ArrayList<> ();
+            for (Map.Entry<String, String> entry : records.get (0).entrySet ()) {
+                headerList.add (entry.getKey ());
             }
         }
         return headerList;
@@ -291,15 +302,15 @@ public class CreateFileUtil {
         List<String> headerList = null;
         int columnCount = 0;
         try {
-            columnCount = metaData.getColumnCount();
+            columnCount = metaData.getColumnCount ();
             if (columnCount >= 1) {
-                headerList = new ArrayList<>();
+                headerList = new ArrayList<> ();
                 for (int i = 1; i <= columnCount; i++) {
-                    headerList.add(metaData.getColumnLabel(i));
+                    headerList.add (metaData.getColumnLabel (i));
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         return headerList;
     }
@@ -312,15 +323,15 @@ public class CreateFileUtil {
      * @return
      */
     private static String getFileHead(List<String> headerList, String delimiter) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < headerList.size(); i++) {
+        StringBuffer sb = new StringBuffer ();
+        for (int i = 0; i < headerList.size (); i++) {
             if (i == 0) {
-                sb.append(headerList.get(i));
+                sb.append (headerList.get (i));
             } else {
-                sb.append(delimiter).append(headerList.get(i));
+                sb.append (delimiter).append (headerList.get (i));
             }
         }
-        return sb.toString();
+        return sb.toString ();
     }
 
     /**
@@ -332,15 +343,15 @@ public class CreateFileUtil {
      * @return
      */
     private static String getFileData(Map<String, String> record, List<String> headerList, String delimiter) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < headerList.size(); i++) {
+        StringBuffer sb = new StringBuffer ();
+        for (int i = 0; i < headerList.size (); i++) {
             if (i == 0) {
-                sb.append(record.get(headerList.get(i)));
+                sb.append (record.get (headerList.get (i)));
             } else {
-                sb.append(delimiter).append(record.get(headerList.get(i)));
+                sb.append (delimiter).append (record.get (headerList.get (i)));
             }
         }
-        return sb.toString();
+        return sb.toString ();
     }
 
     /**
@@ -352,19 +363,19 @@ public class CreateFileUtil {
      * @return
      */
     private static String getFileData(ResultSet resultSet, int columnCount, String delimiter) {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer ();
         try {
             for (int i = 1; i <= columnCount; i++) {
                 if (i == 1) {
-                    sb.append(resultSet.getString(i));
+                    sb.append (resultSet.getString (i));
                 } else {
-                    sb.append(delimiter).append(resultSet.getString(i));
+                    sb.append (delimiter).append (resultSet.getString (i));
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
-        return sb.toString();
+        return sb.toString ();
     }
 
     /**
@@ -376,12 +387,12 @@ public class CreateFileUtil {
      * @return
      */
     private static String getFlgData(String fileName, long fileSize, long fileNum) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(fileName).append(FLG_FILE_DELIMITER)//
-                .append(fileSize).append(FLG_FILE_DELIMITER)//
-                .append(fileNum).append(FLG_FILE_DELIMITER)//
-                .append(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
-        return sb.toString();
+        StringBuffer sb = new StringBuffer ();
+        sb.append (fileName).append (flgFileDelimiter)//
+                .append (fileSize).append (flgFileDelimiter)//
+                .append (fileNum).append (flgFileDelimiter)//
+                .append (DateUtil.format (new Date (), "yyyy-MM-dd HH:mm:ss.SSS"));
+        return sb.toString ();
     }
 
     /**
@@ -392,11 +403,11 @@ public class CreateFileUtil {
      * @return
      */
     private static String getFlgData(String fileName, String fileSizeAndNum) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(fileName).append(FLG_FILE_DELIMITER)//
-                .append(fileSizeAndNum).append(FLG_FILE_DELIMITER)//
-                .append(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS"));
-        return sb.toString();
+        StringBuffer sb = new StringBuffer ();
+        sb.append (fileName).append (flgFileDelimiter)//
+                .append (fileSizeAndNum).append (flgFileDelimiter)//
+                .append (DateUtil.format (new Date (), "yyyy-MM-dd HH:mm:ss.SSS"));
+        return sb.toString ();
     }
 
     /**
@@ -407,79 +418,86 @@ public class CreateFileUtil {
      */
     private static String getDirPath(String dirName) {
         // 根据不同系统替换文件分隔符
-        String seprator = FileUtil.getFileSeparator();
-        String dirPath = FileUtil.getWebPath("/");
+        String seprator = FileUtil.getFileSeparator ();
+        String dirPath = FileUtil.getWebPath ("/");
         // 判断是否以seprator结尾
-        if (!dirPath.endsWith(seprator)) {
+        if (!dirPath.endsWith (seprator)) {
             dirPath += seprator;
         }
         dirPath += dirName + seprator;
         // 判断是否存在，不存在则创建
-        File file = new File(dirPath);
+        File file = new File (dirPath);
         // 判断文件是否存在
-        if (!file.exists()) {
-            FileUtil.mkdir(dirPath);
+        if (!file.exists ()) {
+            FileUtil.mkdir (dirPath);
         }
         return dirPath;
     }
 
     public static String getLocalDirPath() {
-        if(StringUtils.isBlank(tempfileLocalDir)){
-            return getDirPath(TEMP_DOWNLOAD);
+        if (StringUtils.isBlank (tempfileLocalDir)) {
+            return getDirPath (TEMP_DOWNLOAD);
         }
-        File file = new File(tempfileLocalDir);
-        if (!file.exists()) {
-            FileUtil.mkdir(tempfileLocalDir);
+        File file = new File (tempfileLocalDir);
+        if (!file.exists ()) {
+            FileUtil.mkdir (tempfileLocalDir);
         }
         return tempfileLocalDir;
     }
 
     public static String getFileName() {
-        return Util.uuid() + "_" + DateUtil.format(new Date(), "yyyyMMddHHmmssSSS");
+        return Util.uuid () + "_" + DateUtil.format (new Date (), "yyyyMMddHHmmssSSS");
     }
 
     public static String getFtpFileDir(String userName) {
-        if ("admin".equals(userName)) userName = "udsp" + userName;
-        String ftpDirPath1 = FTPClientConfig.getRootpath() + "/" + userName + "/" + FTPClientConfig.getUsername();
-        String ftpDirPath2 = ftpDirPath1 + "/" + DateUtil.format(new Date(), "yyyyMMdd");
-        FTPHelper ftpHelper = new FTPHelper();
+        if ("admin".equals (userName)) { // 防止Linux系统有admin用户
+            userName = "udsp" + userName;
+        }
+        String ftpDirPath1 = null;
+        if (!autoCreateFtpUser) {
+            ftpDirPath1 = FTPClientConfig.getRootpath () + "/" + FTPClientConfig.getUsername ();
+        } else {
+            ftpDirPath1 = FTPClientConfig.getRootpath () + "/" + userName + "/" + FTPClientConfig.getUsername ();
+        }
+        String ftpDirPath2 = ftpDirPath1 + "/" + DateUtil.format (new Date (), "yyyyMMdd");
+        FTPHelper ftpHelper = new FTPHelper ();
         try {
-            ftpHelper.connectFTPServer();
-            ftpHelper.makeDirectory(ftpDirPath1);
-            ftpHelper.makeDirectory(ftpDirPath2);
+            ftpHelper.connectFTPServer ();
+            ftpHelper.makeDirectory (ftpDirPath1);
+            ftpHelper.makeDirectory (ftpDirPath2);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             try {
-                ftpHelper.closeFTPClient();
+                ftpHelper.closeFTPClient ();
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace ();
             }
         }
         return ftpDirPath2;
     }
 
     public static String getFtpDataFilePath(String fileName, String userName) {
-        return getFtpFileDir(userName) + getDataFileName(fileName);
+        return getFtpFileDir (userName) + getDataFileName (fileName);
     }
 
     public static String getFtpFlgFilePath(String fileName, String userName) {
-        return getFtpFileDir(userName) + getFlgFileName(fileName);
+        return getFtpFileDir (userName) + getFlgFileName (fileName);
     }
 
     public static String getLocalDataFilePath(String fileName) {
-        return getLocalDirPath() + getDataFileName(fileName);
+        return getLocalDirPath () + getDataFileName (fileName);
     }
 
     public static String getLocalFlgFilePath(String fileName) {
-        return getLocalDirPath() + getFlgFileName(fileName);
+        return getLocalDirPath () + getFlgFileName (fileName);
     }
 
     public static String getDataFileName(String fileName) {
-        return fileName + DATA_FILE_SUFFIX;
+        return fileName + dataFileSuffix;
     }
 
     public static String getFlgFileName(String fileName) {
-        return fileName + FLG_FILE_SUFFIX;
+        return fileName + flgFileSuffix;
     }
 }
