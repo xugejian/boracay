@@ -258,10 +258,10 @@ public class HBaseProvider implements Provider {
                     DataType dataType = orderColumn.getType ();
                     String val1 = obj1.get (colName);
                     String val2 = obj2.get (colName);
-                    if(val1 == null || val2 == null){
+                    if (val1 == null || val2 == null) {
                         throw new RuntimeException ("返回字段中不存在" + colName + "排序字段");
                     }
-                    if(val1 != null && val2 != null){
+                    if (val1 != null && val2 != null) {
                         flg = compareTo (val1, val2, order, dataType);
                         if (flg != 0) {
                             break;
@@ -312,31 +312,53 @@ public class HBaseProvider implements Provider {
     }
 
     private String getStartRow(List<QueryColumn> queryColumns) {
+        boolean optionalIsNull = false;
+        boolean nextOptionalIsNull = true;
+        boolean rangeIsNull = true;
         String startRow = getMd5Str (queryColumns);
         for (QueryColumn queryColumn : queryColumns) {
+            String label = queryColumn.getLabel ();
             Operator operator = queryColumn.getOperator ();
             boolean isNeed = queryColumn.isNeed ();
 //            DataType dataType = queryColumn.getType();
             String value = queryColumn.getValue ();
             int length = getLen (queryColumn.getLength ());
             if (isNeed && StringUtils.isBlank (value)) {
-                throw new IllegalArgumentException ("必输项值为空");
+                throw new IllegalArgumentException ("必输项" + label + "值不可为空");
             }
             if (!Operator.EQ.equals (operator) && !Operator.GE.equals (operator) && !Operator.LE.equals (operator)) {
                 throw new IllegalArgumentException ("只支持等于、大于等于和小于等于操作");
             }
-            if (StringUtils.isNotBlank (value)) { // 不能为空
-                // 只能是等于或大于等于操作
-                if (Operator.EQ.equals (operator) || Operator.GE.equals (operator)) {
-                    if (isNeed && Operator.EQ.equals (operator)) { // 必填且等于操作
+            // 只能是等于或大于等于操作
+            if (Operator.EQ.equals (operator) || Operator.GE.equals (operator)) {
+                if (isNeed && Operator.EQ.equals (operator)) { // 必填且等于操作
+                    value = realValue (value, length); // 右补齐空格
+                } else if (!isNeed && Operator.EQ.equals (operator)) { // 选填且等于操作
+                    if (StringUtils.isNotBlank (value)) { // 不为空
                         value = realValue (value, length); // 右补齐空格
-                    } else if (Operator.GE.equals (operator)) { // 大于等于操作
-                        value = tarnDateStr (length, value); // 日期格式转换
+                        if (optionalIsNull) {
+                            nextOptionalIsNull = false;
+                        }
+                    } else {
+                        optionalIsNull = true;
                     }
-                    if (StringUtils.isNotBlank (value)) {
-                        startRow += (StringUtils.isBlank (startRow) ? value : rkSep + value);
+                } else if (Operator.GE.equals (operator)) { // 大于等于操作
+                    if (StringUtils.isNotBlank (value)) { // 不为空
+                        value = tarnDateStr (length, value); // 日期格式转换
+                        if (optionalIsNull) {
+                            rangeIsNull = false;
+                        }
                     }
                 }
+                if (StringUtils.isNotBlank (value)) {
+                    startRow += (StringUtils.isBlank (startRow) ? value : rkSep + value);
+                }
+            }
+            if (!nextOptionalIsNull) {
+                throw new IllegalArgumentException ("选填项值不为空时，其前面的选填项值也不可为空");
+            }
+            if (!rangeIsNull) {
+                throw new IllegalArgumentException ("范围开始值不为空时，其前面的选填项值也不可为空");
             }
             if (Operator.GE.equals (operator)) break; // 退出
         }
@@ -344,31 +366,53 @@ public class HBaseProvider implements Provider {
     }
 
     private String getStopRow(List<QueryColumn> queryColumns) {
+        boolean optionalIsNull = false;
+        boolean nextOptionalIsNull = true;
+        boolean rangeIsNull = true;
         String stopRow = getMd5Str (queryColumns);
         for (QueryColumn queryColumn : queryColumns) {
+            String label = queryColumn.getLabel ();
             Operator operator = queryColumn.getOperator ();
             boolean isNeed = queryColumn.isNeed ();
 //            DataType dataType = queryColumn.getType();
             String value = queryColumn.getValue ();
             int length = getLen (queryColumn.getLength ());
             if (queryColumn.isNeed () && StringUtils.isBlank (value)) {
-                throw new IllegalArgumentException ("必输项值为空");
+                throw new IllegalArgumentException ("必输项" + label + "值不可为空");
             }
             if (!Operator.EQ.equals (operator) && !Operator.GE.equals (operator) && !Operator.LE.equals (operator)) {
                 throw new IllegalArgumentException ("只支持等于、大于等于和小于等于操作");
             }
-            if (StringUtils.isNotBlank (value)) { // 不能为空
-                // 只能是等于或小于等于操作
-                if (Operator.EQ.equals (operator) || Operator.LE.equals (operator)) {
-                    if (isNeed && Operator.EQ.equals (operator)) { // 必填且等于操作
+            // 只能是等于或小于等于操作
+            if (Operator.EQ.equals (operator) || Operator.LE.equals (operator)) {
+                if (isNeed && Operator.EQ.equals (operator)) { // 必填且等于操作
+                    value = realValue (value, length); // 右补齐空格
+                } else if (!isNeed && Operator.EQ.equals (operator)) { // 选填且等于操作
+                    if (StringUtils.isNotBlank (value)) { // 不为空
                         value = realValue (value, length); // 右补齐空格
-                    } else if (Operator.LE.equals (operator)) { // 小于等于操作
-                        value = tarnDateStr (length, value); // 日期格式转换
+                        if (optionalIsNull) {
+                            nextOptionalIsNull = false;
+                        }
+                    } else {
+                        optionalIsNull = true;
                     }
-                    if (StringUtils.isNotBlank (value)) {
-                        stopRow += (StringUtils.isBlank (stopRow) ? value : rkSep + value);
+                } else if (Operator.LE.equals (operator)) { // 小于等于操作
+                    if (StringUtils.isNotBlank (value)) { // 不为空
+                        value = tarnDateStr (length, value); // 日期格式转换
+                        if (optionalIsNull) {
+                            rangeIsNull = false;
+                        }
                     }
                 }
+                if (StringUtils.isNotBlank (value)) {
+                    stopRow += (StringUtils.isBlank (stopRow) ? value : rkSep + value);
+                }
+            }
+            if (!nextOptionalIsNull) {
+                throw new IllegalArgumentException ("选填项值不为空时，其前面的选填项值也不可为空");
+            }
+            if (!rangeIsNull) {
+                throw new IllegalArgumentException ("范围结束值不为空时，其前面的选填项值也不可为空");
             }
             if (Operator.LE.equals (operator)) break; // 退出
         }
