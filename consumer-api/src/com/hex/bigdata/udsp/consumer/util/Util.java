@@ -56,7 +56,7 @@ public class Util {
             Response response = new Response ();
             response.setStatus (Status.SUCCESS.getValue ());
             response.setStatusCode (StatusCode.SUCCESS.getValue ());
-            response.setMessage (localDataFilePath);
+            //response.setMessage (localDataFilePath);
             response.setResponseContent (filePath);
             return response;
         } catch (Exception e) {
