@@ -165,20 +165,15 @@ public class ConsumerService {
         // 并发判断
         Current mcCurrent = getCurrent (request, maxSyncNum, maxAsyncNum);
         consumeRequest.setMcCurrent (mcCurrent);
-        int maxCurrentNum = ConsumerType.SYNC.getValue ().equalsIgnoreCase (type) ? maxSyncNum : maxAsyncNum;
-        if (maxCurrentNum == -1) { // 运行队列(同步/异步)没有限制
-            currentService.insert (mcCurrent);
-        } else { // 运行队列(同步/异步)有限制
-            if (!runQueueService.addCurrent (mcCurrent)) { // 运行队列已满
-                QueueIsFullResult isFullResult = checkWaitQueueIsFull (mcCurrent, rcUserService);
-                consumeRequest.setQueueIsFullResult (isFullResult);
-                if (isFullResult == null) { // 未开启等待队列
-                    consumeRequest.setError (ErrorCode.ERROR_000018);
-                } else if (isFullResult.isWaitQueueIsFull ()) { // 等待队列已满
-                    consumeRequest.setError (ErrorCode.ERROR_000016);
-                } else { // 等待队列开启且未满
-                    waitingService.isWaiting (consumeRequest, bef);
-                }
+        if (!runQueueService.addCurrent (mcCurrent)) { // 运行队列已满
+            QueueIsFullResult isFullResult = checkWaitQueueIsFull (mcCurrent, rcUserService);
+            consumeRequest.setQueueIsFullResult (isFullResult);
+            if (isFullResult == null) { // 未开启等待队列
+                consumeRequest.setError (ErrorCode.ERROR_000018);
+            } else if (isFullResult.isWaitQueueIsFull ()) { // 等待队列已满
+                consumeRequest.setError (ErrorCode.ERROR_000016);
+            } else { // 等待队列开启且未满
+                waitingService.isWaiting (consumeRequest, bef);
             }
         }
         // 重新设置request
@@ -330,11 +325,7 @@ public class ConsumerService {
             if (ConsumerType.SYNC.getValue ().equalsIgnoreCase (type)
                     || !ConsumerEntity.START.getValue ().equalsIgnoreCase (entity)
                     || ServiceType.MM.getValue ().equalsIgnoreCase (appType)) {
-                if (mcCurrent.getMaxCurrentNum () == -1) { // 运行队列(同步/异步)没有限制
-                    currentService.delete (mcCurrent.getPkId ());
-                } else { // 运行队列(同步/异步)有限制
-                    runQueueService.reduceCurrent (mcCurrent);
-                }
+                runQueueService.reduceCurrent (mcCurrent);
             }
         }
     }
