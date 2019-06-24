@@ -1,10 +1,8 @@
 package com.hex.bigdata.udsp.common.dao.cache;
 
-import com.hex.bigdata.udsp.common.constant.RedisMode;
 import com.hex.bigdata.udsp.common.lock.RedisDistributedLock;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,21 +20,8 @@ import java.util.concurrent.TimeUnit;
 @Repository("redisCache")
 public class RedisCache<T> implements Cache<T> {
 
-    @Value("${redis.mode:single}")
-    private String redisMode;
-
     @Autowired
     private RedisTemplate redisTemplate;
-
-    @Autowired
-    private RedisTemplate redisClusterTemplate;
-
-    private RedisTemplate getRedisTemplate() {
-        if (RedisMode.CLUSTER.getValue ().equalsIgnoreCase (redisMode)) {
-            return redisClusterTemplate;
-        }
-        return redisTemplate;
-    }
 
     /**
      * Redis 分布式锁
@@ -49,7 +34,7 @@ public class RedisCache<T> implements Cache<T> {
         redisLock.lock (key);
         try {
             if (StringUtils.isNotBlank (key) && t != null) {
-                getRedisTemplate().opsForValue ().set (key, t);
+                redisTemplate.opsForValue ().set (key, t);
             }
             return true;
         } finally {
@@ -67,7 +52,7 @@ public class RedisCache<T> implements Cache<T> {
         redisLock.lock (key);
         try {
             if (StringUtils.isNotBlank (key)) {
-                ValueOperations<String, T> valueOperation = getRedisTemplate().opsForValue ();
+                ValueOperations<String, T> valueOperation = redisTemplate.opsForValue ();
                 RedisOperations<String, T> redisOperations = valueOperation.getOperations ();
                 redisOperations.delete (key);
             }
@@ -82,7 +67,7 @@ public class RedisCache<T> implements Cache<T> {
 //        redisLock.lock(key);
 //        try {
         if (StringUtils.isNotBlank (key)) {
-            return (T) getRedisTemplate().opsForValue ().get (key);
+            return (T) redisTemplate.opsForValue ().get (key);
         }
         return null;
 //        } finally {
@@ -96,7 +81,7 @@ public class RedisCache<T> implements Cache<T> {
         try {
             if (StringUtils.isNotBlank (key) && list != null && list.size () != 0) {
                 this.deleteCache (key);
-                ListOperations<String, T> listOperations = getRedisTemplate().opsForList ();
+                ListOperations<String, T> listOperations = redisTemplate.opsForList ();
                 //listOperations.leftPushAll(key, list); // 这样查询出来的和插入的正好颠倒
                 listOperations.rightPushAll (key, list); // Values must not be 'null' or empty.
             }
@@ -122,7 +107,7 @@ public class RedisCache<T> implements Cache<T> {
 //        try {
         List<T> list = null;
         if (StringUtils.isNotBlank (key)) {
-            ListOperations<String, T> listOperations = (ListOperations<String, T>) getRedisTemplate().opsForList ();
+            ListOperations<String, T> listOperations = (ListOperations<String, T>) redisTemplate.opsForList ();
             Long size = listOperations.size (key);
             if (size != null && size != 0) {
                 list = listOperations.range (key, 0, size - 1);
@@ -138,7 +123,7 @@ public class RedisCache<T> implements Cache<T> {
     public <T> List<T> selectCacheLike(String likeKey) {
 //        redisLock.lock(likeKey);
 //        try {
-        Set<String> keys = getRedisTemplate().keys (likeKey + "*");
+        Set<String> keys = redisTemplate.keys (likeKey + "*");
         List<T> list = new ArrayList<> ();
         Object obj = null;
         for (String key : keys) {
@@ -164,7 +149,7 @@ public class RedisCache<T> implements Cache<T> {
     public boolean deleteCacheLike(String likeKey) {
         redisLock.lock (likeKey);
         try {
-            Set<String> keys = getRedisTemplate().keys (likeKey + "*");
+            Set<String> keys = redisTemplate.keys (likeKey + "*");
             for (String key : keys) {
                 //剔除掉“lock:”开头的key
                 if (key.startsWith (RedisDistributedLock.LOCK_KEY_PREFIX)) {
@@ -182,8 +167,8 @@ public class RedisCache<T> implements Cache<T> {
     public boolean insertTimeoutCache(String key, T t, long timeout) {
         redisLock.lock (key);
         try {
-            getRedisTemplate().opsForValue ().set (key, t);
-            getRedisTemplate().expire (key, timeout, TimeUnit.MILLISECONDS);
+            redisTemplate.opsForValue ().set (key, t);
+            redisTemplate.expire (key, timeout, TimeUnit.MILLISECONDS);
             return true;
         } finally {
             redisLock.unlock (key);

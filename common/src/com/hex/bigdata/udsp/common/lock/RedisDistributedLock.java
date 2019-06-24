@@ -1,12 +1,9 @@
 package com.hex.bigdata.udsp.common.lock;
 
-import com.hex.bigdata.udsp.common.constant.RedisMode;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
-import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -20,21 +17,8 @@ import java.util.concurrent.TimeUnit;
 public class RedisDistributedLock {
     private static Logger logger = LogManager.getLogger(RedisDistributedLock.class);
 
-    @Value("${redis.mode:single}")
-    private String redisMode;
-
     @Autowired
     private RedisTemplate redisTemplate;
-
-    @Autowired
-    private RedisTemplate redisClusterTemplate;
-
-    private RedisTemplate getRedisTemplate() {
-        if (RedisMode.CLUSTER.getValue ().equalsIgnoreCase (redisMode)) {
-            return redisClusterTemplate;
-        }
-        return redisTemplate;
-    }
 
     /**
      * 存储到redis中的标志
@@ -61,7 +45,7 @@ public class RedisDistributedLock {
     public void lock(String key) {
         logger.debug(key + "准备上锁！");
         String lockKey = LOCK_KEY_PREFIX + key;
-        RedisConnection redisConnection = getRedisTemplate().getConnectionFactory().getConnection();
+        RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
         try {
             long count = 0;
             long num = (SLEEP == 0 ? 2000 : EXPIRE / SLEEP);
@@ -80,7 +64,7 @@ public class RedisDistributedLock {
                         if (redisConnection.setNX(lockKey.getBytes(), LOCKED.getBytes())) {
                             logger.debug(key + "上锁！");
                             // 上锁
-                            getRedisTemplate().expire(lockKey, EXPIRE, TimeUnit.MILLISECONDS);
+                            redisTemplate.expire(lockKey, EXPIRE, TimeUnit.MILLISECONDS);
                             break;
                         }
                         // 请求锁失败说明锁被其它线程保持，等待几毫秒后继续请求锁
@@ -115,7 +99,7 @@ public class RedisDistributedLock {
         logger.debug(key + "解锁！");
         String lockKey = LOCK_KEY_PREFIX + key;
         try {
-            getRedisTemplate().delete(lockKey);
+            redisTemplate.delete(lockKey);
         } catch (Exception e) {
             logger.error(ExceptionUtil.getMessage(e) + " key: " + key);
         }
