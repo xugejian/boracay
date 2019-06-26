@@ -92,6 +92,12 @@ public class FileClientDemo {
                 InputStream in = client.downloadFile(filePath);
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    client.closeFTPClient ();
+                } catch (Exception e) {
+                    e.printStackTrace ();
+                }
             }
             logger.info("文件下载成功");
         } else {

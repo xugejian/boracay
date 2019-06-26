@@ -1,14 +1,14 @@
 package com.hex.bigdata.udsp.util;
 
 import com.hex.bigdata.udsp.config.SdkFtpClientConfig;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.ftp.*;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
-public class SdkFtpUtil {
+public class SdkFtpHelper {
 
     private FTPClient ftp = new FTPClient();
     private String hostname = SdkFtpClientConfig.getHostname();
@@ -16,10 +16,10 @@ public class SdkFtpUtil {
     private String username = SdkFtpClientConfig.getUsername();
     private String password = SdkFtpClientConfig.getPassword();
 
-    public SdkFtpUtil() {
+    public SdkFtpHelper() {
     }
 
-    public SdkFtpUtil(String hostname, int port, String username, String password) {
+    public SdkFtpHelper(String hostname, int port, String username, String password) {
         this.hostname = hostname;
         if (this.port > 0) {
             this.port = port;
