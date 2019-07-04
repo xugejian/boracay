@@ -1,22 +1,212 @@
 package com.hex.bigdata.udsp.iq.provider.impl.util;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.common.constant.Operator;
+import com.hex.bigdata.udsp.iq.provider.impl.model.SolrDatasource;
+import com.hex.bigdata.udsp.iq.provider.model.MetadataCol;
+import com.hex.bigdata.udsp.iq.provider.model.OrderColumn;
+import com.hex.bigdata.udsp.iq.provider.model.QueryColumn;
+import com.hex.bigdata.udsp.iq.provider.model.ReturnColumn;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hj on 2017/9/11.
  */
 public class SolrUtil {
     private static Logger logger = LogManager.getLogger(SolrUtil.class);
+
+    public static List<MetadataCol> getColumns(String collectionName, String solrServers) {
+        if (StringUtils.isEmpty (collectionName) || StringUtils.isEmpty (solrServers)) {
+            return null;
+        }
+        String response = "";
+        String[] addresses = solrServers.split (",");
+        for (String solrServer : addresses) {
+            String url = "http://" + solrServer + "/solr/" + collectionName + "/schema/fields";
+            response = SolrUtil.sendGet (url, "");
+            if (StringUtils.isNotBlank (response)) {
+                break;
+            }
+        }
+        if (StringUtils.isBlank (response)) {
+            throw new RuntimeException (collectionName + "表名不存在");
+        }
+        JSONObject rs = JSONObject.parseObject (response);
+        JSONArray fields = (JSONArray) rs.get ("fields");
+        List<MetadataCol> metadataCols = new ArrayList<> ();
+        MetadataCol mdCol = null;
+        for (int i = 0; i < fields.size (); i++) {
+            mdCol = new MetadataCol ();
+            mdCol.setSeq ((short) i);
+            mdCol.setName ((String) fields.getJSONObject (i).get ("name"));
+            mdCol.setDescribe ((String) fields.getJSONObject (i).get ("name"));
+            mdCol.setType (SolrUtil.getColType ((String) fields.getJSONObject (i).get ("type")));
+            mdCol.setIndexed ((boolean) fields.getJSONObject (i).get ("indexed"));
+            mdCol.setStored ((boolean) fields.getJSONObject (i).get ("stored"));
+            mdCol.setPrimary (fields.getJSONObject (i).get ("uniqueKey") == null ? false : true);
+            metadataCols.add (mdCol);
+        }
+        return metadataCols;
+    }
+
+    public static QueryResponse getQueryResponse(SolrDatasource datasource, String collectionName, SolrQuery query) {
+        SolrServer solrServer = null;
+        QueryResponse res = null;
+        try {
+            solrServer = SolrUtil.getSolrServer (datasource.gainSolrServers (), collectionName);
+            res = solrServer.query (query);
+        } catch (Exception e) {
+            e.printStackTrace ();
+        }
+        return res;
+    }
+
+    public static boolean test(String solrServers) {
+        HttpURLConnection connection = null;
+        URL url = null;
+        try {
+            String[] servers = solrServers.split (",");
+            for (String server : servers) {
+                try {
+                    url = new URL ("http://" + server + "/solr");
+                    connection = (HttpURLConnection) url.openConnection ();
+                    connection.setDoInput (true);
+                    connection.setDoOutput (true);
+                    connection.setUseCaches (false);
+                    connection.setInstanceFollowRedirects (true);
+                    connection.connect ();
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace ();
+                    logger.warn ("获取solr连接失败的地址为：" + (url == null ? "" : url.toString ()));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace ();
+        } finally {
+            if (connection != null) {
+                connection.disconnect ();
+            }
+        }
+        return false;
+    }
+
+    public static SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<SolrQuery.SortClause> sorts,
+                                         String fields, int rows) {
+        return new SolrQuery () //
+                .setQuery (getQuery (queryColumns)) //
+                .setStart (0) //
+                .setRows (rows) //
+                .setSorts (sorts) //
+                .setFields (fields);
+    }
+
+    public static SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<SolrQuery.SortClause> sorts,
+                                         String fields, int pageIndex, int pageSize) {
+        return new SolrQuery () //
+                .setQuery (getQuery (queryColumns)) //
+                .setStart ((pageIndex - 1) * pageSize) //
+                .setRows (pageSize) //
+                .setSorts (sorts) //
+                .setFields (fields);
+    }
+
+    private static String getQuery(List<QueryColumn> queryColumns) {
+        Collections.sort (queryColumns, new Comparator<QueryColumn> () {
+            @Override
+            public int compare(QueryColumn obj1, QueryColumn obj2) {
+                return obj1.getSeq ().compareTo (obj2.getSeq ());
+            }
+        });
+        StringBuffer sb = new StringBuffer ("*:*");
+        for (QueryColumn queryColumn : queryColumns) {
+            String name = queryColumn.getName ();
+            String value = queryColumn.getValue ();
+            DataType type = queryColumn.getType ();
+            Operator operator = queryColumn.getOperator ();
+            if (org.apache.commons.lang3.StringUtils.isNotBlank (value)) {
+                if (Operator.EQ.equals (operator)) {
+                    sb.append (" AND " + name + ":" + getValue (type, value));
+                } else if (Operator.GT.equals (operator)) {
+                    sb.append (" AND " + name + ":[" + getValue (type, value) + " TO *] AND " + name + ":(* NOT " + getValue (type, value) + ")");
+                } else if (Operator.LT.equals (operator)) {
+                    sb.append (" AND " + name + ":[* TO " + getValue (type, value) + "] AND " + name + ":(* NOT " + getValue (type, value) + ")");
+                } else if (Operator.GE.equals (operator)) {
+                    sb.append (" AND " + name + ":[" + getValue (type, value) + " TO *]");
+                } else if (Operator.LE.equals (operator)) {
+                    sb.append (" AND " + name + ":[* TO " + getValue (type, value) + "]");
+                } else if (Operator.NE.equals (operator)) {
+                    sb.append (" AND " + name + ":(* NOT " + getValue (type, value) + ")"); // sb.append(" AND " + name + ":(-" + getValue(type, value) + ")");
+                } else if (Operator.LK.equals (operator)) {
+                    sb.append (" AND " + name + ":*" + getValue (value) + "*");
+                } else if (Operator.RLIKE.equals (operator)) {
+                    sb.append (" AND " + name + ":" + getValue (value) + "*");
+                } else if (Operator.IN.equals (operator)) {
+                    sb.append (" AND " + name + ":(");
+                    String[] values = value.split (",");
+                    for (int i = 0; i < values.length; i++) {
+                        if (org.apache.commons.lang3.StringUtils.isBlank (values[i])) {
+                            continue;
+                        }
+                        sb.append (getValue (type, values[i]));
+                        if (i < values.length - 1) {
+                            sb.append (" or ");
+                        }
+                        if (i == values.length - 1) {
+                            sb.append (")");
+                        }
+                    }
+                }
+            }
+        }
+        logger.debug ("q=" + sb.toString ());
+        return sb.toString ();
+    }
+
+    private static String getValue(DataType type, String value) {
+        if (DataType.STRING.equals (type) || DataType.VARCHAR.equals (type) || DataType.CHAR.equals (type)) {
+            value = "\"" + value + "\"";
+        } else {
+            value = getValue (value);
+        }
+        return value;
+    }
+
+    private static String getValue(String value) {
+        if (value.startsWith ("-")) {
+            value = "\\" + value;
+        }
+        return value;
+    }
+
+    public static SolrServer getSolrServer(String solrServices, String collectionName) throws MalformedURLException {
+        if (StringUtils.isBlank (collectionName)) {
+            throw new IllegalArgumentException ("collection name不能为空");
+        }
+        String[] tempServers = solrServices.split (",");
+        String[] servers = new String[tempServers.length];
+        for (int i = 0; i < tempServers.length; i++) {
+            servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
+        }
+        return new LBHttpSolrServer (servers);
+    }
 
     /**
      * 向指定URL发送GET方法的请求

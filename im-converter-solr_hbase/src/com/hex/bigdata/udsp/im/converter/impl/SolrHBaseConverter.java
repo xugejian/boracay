@@ -4,7 +4,6 @@ import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
-import com.hex.bigdata.udsp.im.converter.impl.model.SolrMetadata;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.SolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.converter.model.*;
 import org.slf4j.Logger;

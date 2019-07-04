@@ -14,6 +14,7 @@ import com.hex.bigdata.udsp.iq.provider.impl.model.*;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslRequest;
 import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslResponse;
+import com.hex.bigdata.udsp.iq.provider.util.Util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.http.HttpHost;
@@ -54,7 +55,7 @@ public class ElasticSearchProvider implements Provider {
             page.setPageSize(elSearchDatasource.gainMaxSize ());
             String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
             ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
-            response.setRecords(getRecords(elSearchPage.getRecords(), returnColumns));
+            response.setRecords(Util.tranRecordsObject(elSearchPage.getRecords(), returnColumns));
             response.setStatus(Status.SUCCESS);
             response.setStatusCode(StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -89,7 +90,7 @@ public class ElasticSearchProvider implements Provider {
             ELSearchDatasource elSearchDatasource = new ELSearchDatasource(metadata.getDatasource());
             String queryString = getQueryString(queryColumns, orderColumns, returnColumns, page);
             ELSearchPage elSearchPage = search(schemaName, elSearchDatasource, queryString, returnColumns);
-            response.setRecords(getRecords(elSearchPage.getRecords(), returnColumns));
+            response.setRecords(Util.tranRecordsObject(elSearchPage.getRecords(), returnColumns));
             response.setStatus(Status.SUCCESS);
             page.setTotalCount(elSearchPage.getTotalCount());
             response.setPage(page);
@@ -107,23 +108,6 @@ public class ElasticSearchProvider implements Provider {
 
         logger.debug("consumeTime=" + response.getConsumeTime());
         return response;
-    }
-
-    // 字段名改别名
-    private List<Map<String, String>> getRecords(List<Map<String, Object>> list, List<ReturnColumn> returnColumns) {
-        List<Map<String, String>> records = new ArrayList<>();
-        if (list == null || list.size() == 0) {
-            return records;
-        }
-        Map<String, String> result = null;
-        for (Map<String, Object> map : list) {
-            result = new HashMap<>();
-            for (ReturnColumn item : returnColumns) {
-                result.put(item.getLabel(), String.valueOf(map.get(item.getName())));
-            }
-            records.add(result);
-        }
-        return records;
     }
 
     private ELSearchPage search(String schemaName, ELSearchDatasource datasource, String queryString, List<ReturnColumn> returnColumns) throws Exception {

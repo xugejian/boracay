@@ -1,17 +1,16 @@
 package com.hex.bigdata.udsp.im.converter.impl.util;
 
-import com.hex.bigdata.udsp.im.converter.impl.factory.HBaseAdminPoolFactory;
-import com.hex.bigdata.udsp.im.converter.impl.factory.HBaseConnectionPoolFactory;
 import com.hex.bigdata.udsp.im.converter.impl.model.HBaseDatasource;
 import com.hex.bigdata.udsp.im.converter.impl.model.HBaseMetadata;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.pool.impl.GenericObjectPool;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.*;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HConnection;
-import org.apache.hadoop.hbase.client.HTableInterface;
+import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HConstants;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.io.compress.Compression;
 import org.apache.hadoop.hbase.io.encoding.DataBlockEncoding;
 import org.apache.hadoop.hbase.regionserver.BloomType;
@@ -19,163 +18,38 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by JunjieM on 2017-9-26.
+ * Created by JunjieM on 2019-7-1.
  */
 public class HBaseUtil {
-    static {
-        // 解决winutils.exe不存在的问题
-        try {
-            File workaround = new File (".");
-            System.getProperties ().put ("hadoop.home.dir",
-                    workaround.getAbsolutePath ());
-            new File ("./bin").mkdirs ();
-            new File ("./bin/winutils.exe").createNewFile ();
-        } catch (IOException e) {
-            e.printStackTrace ();
-        }
-    }
-
-    private static Logger logger = LogManager.getLogger (HBaseUtil.class);
-
-    private static Map<String, HBaseConnectionPoolFactory> dataSourcePool;
-    private static Map<String, HBaseAdminPoolFactory> hbaseAdminPool;
 
     private static final String HBASE_REGION_START_KEY = "0000000000000000";
     private static final String HBASE_REGION_STOP_KEY = "ffffffffffffffff";
 
-    /**
-     * 发现HBaseAdminPoolFactory获取的HBaseAdmin会有链接断开的情况
-     *
-     * @param datasource
-     * @return
-     */
-    @Deprecated
-    public static synchronized HBaseAdminPoolFactory getHBaseAdminFactory(HBaseDatasource datasource) {
-        String dsId = datasource.getId ();
-        if (hbaseAdminPool == null) {
-            hbaseAdminPool = new HashMap<> ();
-        }
-        HBaseAdminPoolFactory factory = hbaseAdminPool.remove (dsId);
-        if (factory == null) {
-            GenericObjectPool.Config config = new GenericObjectPool.Config ();
-            config.lifo = true;
-            config.minIdle = 1;
-            config.maxIdle = 10;
-            config.maxWait = 3000;
-            config.maxActive = 5;
-            config.timeBetweenEvictionRunsMillis = 30000;
-            config.testWhileIdle = true;
-            config.testOnBorrow = false;
-            config.testOnReturn = false;
-            factory = new HBaseAdminPoolFactory (config, datasource);
-        }
-        hbaseAdminPool.put (dsId, factory);
-        return factory;
-    }
+    private static Logger logger = LogManager.getLogger (HBaseUtil.class);
 
-    public static HBaseAdmin getHBaseAdmin(HBaseDatasource datasource) {
-        Configuration conf = HBaseConfiguration.create ();
-        conf.set ("hbase.zookeeper.quorum", datasource.gainZkQuorum ());
-        conf.set ("hbase.zookeeper.property.clientPort", datasource.gainZkPort ());
-        if (StringUtils.isNotBlank (datasource.gainRpcTimeout ())) {
-            conf.set ("hbase.rpc.timeout", datasource.gainRpcTimeout ());
-        }
-        if (StringUtils.isNotBlank (datasource.gainClientRetriesNumber ())) {
-            conf.set ("hbase.client.retries.number", datasource.gainClientRetriesNumber ());
-        }
-        if (StringUtils.isNotBlank (datasource.gainClientPause ())) {
-            conf.set ("hbase.client.pause", datasource.gainClientPause ());
-        }
-        if (StringUtils.isNotBlank (datasource.gainZkRecoveryRetry ())) {
-            conf.set ("zookeeper.recovery.retry", datasource.gainZkRecoveryRetry ());
-        }
-        if (StringUtils.isNotBlank (datasource.gainZkRecoveryRetryIntervalmill ())) {
-            conf.set ("zookeeper.recovery.retry.intervalmill", datasource.gainZkRecoveryRetryIntervalmill ());
-        }
-        if (StringUtils.isNotBlank (datasource.gainClientOperationTimeout ())) {
-            conf.set ("hbase.client.operation.timeout", datasource.gainClientOperationTimeout ());
-        }
-//        if (StringUtils.isNotBlank(datasource.gainRegionserverLeasePeriod()))
-//            conf.set("hbase.regionserver.lease.period", datasource.gainRegionserverLeasePeriod()); // 已被弃用
-        if (StringUtils.isNotBlank (datasource.gainClientScannerTimeoutPeriod ())) {
-            conf.set ("hbase.client.scanner.timeout.period", datasource.gainClientScannerTimeoutPeriod ());
-        }
-        HBaseAdmin admin = null;
-        try {
-            admin = new HBaseAdmin (conf);
-        } catch (IOException e) {
-            logger.warn (e.getMessage ());
-            e.printStackTrace ();
-        }
-        return admin;
-//        try {
-//            return getHBaseAdminFactory(datasource).getHBaseAdmin();
-//        } catch (Exception e) {
-//            logger.warn(e.getMessage());
-//            return null;
-//        }
-    }
-
-    public static void release(HBaseDatasource datasource, HBaseAdmin admin) {
-//        getHBaseAdminFactory(datasource).releaseHBaseAdmin(admin);
-        try {
-            admin.close ();
-        } catch (IOException e) {
-            logger.warn (e.getMessage ());
-            e.printStackTrace ();
+    private static void close(Admin admin) {
+        if (admin != null) {
+            try {
+                admin.close ();
+            } catch (IOException e) {
+                e.printStackTrace ();
+            }
         }
     }
 
-    public static void release(HBaseAdmin admin) {
-        try {
-            admin.close ();
-        } catch (IOException e) {
-            logger.warn (e.getMessage ());
-            e.printStackTrace ();
+    private static void close(Table table) {
+        if (table != null) {
+            try {
+                table.close ();
+            } catch (IOException e) {
+                e.printStackTrace ();
+            }
         }
-    }
-
-    public static synchronized HBaseConnectionPoolFactory getDataSource(HBaseDatasource datasource) {
-        String dsId = datasource.getId ();
-        if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<> ();
-        }
-        HBaseConnectionPoolFactory factory = dataSourcePool.get (dsId);
-        if (factory == null) {
-            GenericObjectPool.Config config = new GenericObjectPool.Config ();
-            config.lifo = true;
-            config.minIdle = 1;
-            config.maxIdle = 10;
-            config.maxWait = 3000;
-            config.maxActive = 5;
-            config.timeBetweenEvictionRunsMillis = 30000;
-            config.testWhileIdle = true;
-            config.testOnBorrow = false;
-            config.testOnReturn = false;
-            factory = new HBaseConnectionPoolFactory (config, datasource);
-        }
-        dataSourcePool.put (dsId, factory);
-        return factory;
-    }
-
-    public static HConnection getConnection(HBaseDatasource datasource) {
-        try {
-            return getDataSource (datasource).getConnection ();
-        } catch (Exception e) {
-            logger.warn (e.getMessage ());
-            return null;
-        }
-    }
-
-    public static void release(HBaseDatasource datasource, HConnection conn) {
-        getDataSource (datasource).releaseConnection (conn);
     }
 
     /**
@@ -270,8 +144,9 @@ public class HBaseUtil {
             htd.addCoprocessor ("org.apache.hadoop.hbase.coprocessor.AggregateImplementation");
             // 创建表
             byte[][] regionSplits = getHexSplits (HBASE_REGION_START_KEY, HBASE_REGION_STOP_KEY, metadata.gainRegionNum ());
-            HBaseAdmin admin = HBaseUtil.getHBaseAdmin (datasource);
+            Admin admin = null;
             try {
+                admin = HBaseConnectionPool.getConnection (datasource).getAdmin ();
                 admin.createTable (htd, regionSplits);
                 logger.debug ("HBase表" + tableName + "创建成功！");
             } catch (IOException e) {
@@ -279,7 +154,7 @@ public class HBaseUtil {
                 e.printStackTrace ();
                 throw new IOException ("HBase表" + tableName + "创建失败！" + e.getMessage ());
             } finally {
-                release (datasource, admin);
+                close (admin);
             }
         }
     }
@@ -295,8 +170,9 @@ public class HBaseUtil {
         if (isTableAvailable (datasource, tableName)) {
             logger.debug ("HBase表" + tableName + "存在，进行禁用！");
             TableName hbaseTableName = TableName.valueOf (tableName);
-            HBaseAdmin admin = getHBaseAdmin (datasource);
+            Admin admin = null;
             try {
+                admin = HBaseConnectionPool.getConnection (datasource).getAdmin ();
                 admin.disableTable (hbaseTableName);
                 logger.debug ("HBase表" + tableName + "禁用成功！");
             } catch (IOException e) {
@@ -304,7 +180,7 @@ public class HBaseUtil {
                 e.printStackTrace ();
                 throw new IOException ("HBase表" + tableName + "禁用失败！" + e.getMessage ());
             } finally {
-                release (datasource, admin);
+                close (admin);
             }
         } else {
             logger.debug ("HBase表" + tableName + "不存在，无需禁用！");
@@ -325,8 +201,9 @@ public class HBaseUtil {
         if (isTableAvailable (datasource, tableName)) {
             logger.debug ("HBase表" + tableName + "存在，进行删除！");
             TableName hbaseTableName = TableName.valueOf (tableName);
-            HBaseAdmin admin = getHBaseAdmin (datasource);
+            Admin admin = null;
             try {
+                admin = HBaseConnectionPool.getConnection (datasource).getAdmin ();
                 admin.deleteTable (hbaseTableName);
                 logger.debug ("HBase表" + tableName + "删除成功！");
             } catch (IOException e) {
@@ -334,7 +211,7 @@ public class HBaseUtil {
                 e.printStackTrace ();
                 throw new IOException ("HBase表" + tableName + "删除失败！" + e.getMessage ());
             } finally {
-                release (datasource, admin);
+                close (admin);
             }
         } else {
             logger.debug ("HBase表" + tableName + "不存在，无需删除！");
@@ -344,17 +221,18 @@ public class HBaseUtil {
         }
     }
 
-    public static boolean isTableAvailable(HBaseDatasource datasource, String tableName) throws IOException {
+    public static boolean isTableAvailable(HBaseDatasource datasource, String tableName) throws Exception {
         boolean status = false;
         TableName hbaseTableName = TableName.valueOf (tableName);
-        HBaseAdmin admin = getHBaseAdmin (datasource);
+        Admin admin = null;
         try {
+            admin = HBaseConnectionPool.getConnection (datasource).getAdmin ();
             status = admin.isTableAvailable (hbaseTableName);
         } catch (IOException e) {
             e.printStackTrace ();
             throw new IOException (e);
         } finally {
-            release (datasource, admin);
+            close (admin);
         }
         return status;
     }
@@ -370,8 +248,9 @@ public class HBaseUtil {
         if (isTableAvailable (datasource, tableName)) {
             logger.debug ("HBase表" + tableName + "存在，进行一步删除！");
             TableName hbaseTableName = TableName.valueOf (tableName);
-            HBaseAdmin admin = getHBaseAdmin (datasource);
+            Admin admin = null;
             try {
+                admin = HBaseConnectionPool.getConnection (datasource).getAdmin ();
                 admin.disableTable (hbaseTableName);
                 logger.debug ("HBase表" + tableName + "禁用成功！");
                 try {
@@ -382,14 +261,14 @@ public class HBaseUtil {
                     e.printStackTrace ();
                     throw new IOException ("HBase表" + tableName + "删除失败！" + e.getMessage ());
                 } finally {
-                    release (datasource, admin);
+                    close (admin);
                 }
             } catch (IOException e) {
                 logger.warn ("HBase表" + tableName + "禁用失败！");
                 e.printStackTrace ();
                 throw new IOException ("HBase表" + tableName + "禁用失败！" + e.getMessage ());
             } finally {
-                release (datasource, admin);
+                close (admin);
             }
         } else {
             logger.debug ("HBase表" + tableName + "不存在，无需一步删除！");
@@ -412,8 +291,9 @@ public class HBaseUtil {
         if (isTableAvailable (datasource, tableName)) {
             logger.debug ("HBase表" + tableName + "存在，进行一步清空！");
             TableName hbaseTableName = TableName.valueOf (tableName);
-            HBaseAdmin admin = getHBaseAdmin (datasource);
+            Admin admin = null;
             try {
+                admin = HBaseConnectionPool.getConnection (datasource).getAdmin ();
                 admin.disableTable (hbaseTableName);
                 logger.debug ("HBase表" + tableName + "禁用成功！");
                 try {
@@ -424,14 +304,14 @@ public class HBaseUtil {
                     e.printStackTrace ();
                     throw new IOException ("HBase表" + tableName + "清空失败！" + e.getMessage ());
                 } finally {
-                    release (datasource, admin);
+                    close (admin);
                 }
             } catch (IOException e) {
                 logger.warn ("HBase表" + tableName + "禁用失败！");
                 e.printStackTrace ();
                 throw new IOException ("HBase表" + tableName + "禁用失败！" + e.getMessage ());
             } finally {
-                release (datasource, admin);
+                close (admin);
             }
         } else {
             logger.debug ("HBase表" + tableName + "不存在，无需一步清空！");
@@ -450,7 +330,7 @@ public class HBaseUtil {
         String tableName = metadata.getTbName ();
 //        dropHTable (datasource, tableName, false);
 //        createHTable (metadata, false);
-        truncateHTable(datasource, tableName, false);
+        truncateHTable (datasource, tableName, false);
     }
 
     /**
@@ -459,12 +339,14 @@ public class HBaseUtil {
     public static boolean emptyHTable(HBaseDatasource datasource, String tableName, int numRegions, boolean ifExists) throws Exception {
         dropHTable (datasource, tableName, ifExists);
 
+        Connection conn = null;
+        Admin admin = null;
         TableName hbaseTableName = TableName.valueOf (tableName);
-        HConnection conn = getConnection (datasource);
-        HBaseAdmin admin = getHBaseAdmin (datasource);
         byte[][] regionSplits = getHexSplits (HBASE_REGION_START_KEY, HBASE_REGION_STOP_KEY, numRegions);
         try {
-            HTableDescriptor hbaseTable = conn.getHTableDescriptor (hbaseTableName);
+            conn = HBaseConnectionPool.getConnection (datasource);
+            admin = conn.getAdmin ();
+            HTableDescriptor hbaseTable = admin.getTableDescriptor (hbaseTableName);
             admin.createTable (hbaseTable, regionSplits);
             logger.debug ("HBase表" + tableName + "创建成功！");
             return true;
@@ -473,8 +355,7 @@ public class HBaseUtil {
             e.printStackTrace ();
             throw new IOException ("HBase表" + tableName + "创建失败！" + e.getMessage ());
         } finally {
-            release (datasource, admin);
-            release (datasource, conn);
+            close (admin);
         }
     }
 
@@ -489,12 +370,12 @@ public class HBaseUtil {
      * @return
      */
     public static void put(HBaseDatasource datasource, String tableName, String rowkey,
-                           String family, String qualifier, String value) throws IOException {
-        HConnection conn = null;
-        HTableInterface table = null;
+                           String family, String qualifier, String value) throws Exception {
+        Connection conn = null;
+        Table table = null;
         try {
-            conn = getConnection (datasource);
-            table = conn.getTable (tableName);
+            conn = HBaseConnectionPool.getConnection (datasource);
+            table = conn.getTable (TableName.valueOf (tableName));
             Put put = new Put (Bytes.toBytes (rowkey));
             put.add (Bytes.toBytes (family), Bytes.toBytes (qualifier), Bytes.toBytes (value));
             table.put (put);
@@ -504,10 +385,7 @@ public class HBaseUtil {
             e.printStackTrace ();
             throw new IOException (e);
         } finally {
-            if (table != null) {
-                table.close ();
-            }
-            release (datasource, conn);
+            close (table);
         }
     }
 
@@ -522,12 +400,12 @@ public class HBaseUtil {
      * @throws IOException
      */
     public static void put(HBaseDatasource datasource, String tableName, String rowkey,
-                           String family, Map<String, String> map) throws IOException {
-        HConnection conn = null;
-        HTableInterface table = null;
+                           String family, Map<String, String> map) throws Exception {
+        Connection conn = null;
+        Table table = null;
         try {
-            conn = getConnection (datasource);
-            table = conn.getTable (tableName);
+            conn = HBaseConnectionPool.getConnection (datasource);
+            table = conn.getTable (TableName.valueOf (tableName));
             Put put = new Put (Bytes.toBytes (rowkey));
             for (Map.Entry<String, String> entry : map.entrySet ()) {
                 byte[] qualifier = Bytes.toBytes (entry.getKey ());
@@ -541,10 +419,28 @@ public class HBaseUtil {
             e.printStackTrace ();
             throw new IOException (e);
         } finally {
-            if (table != null) {
-                table.close ();
-            }
-            release (datasource, conn);
+            close (table);
         }
+    }
+
+    /**
+     * 连接是否异常
+     *
+     * @param datasource
+     * @return
+     */
+    public static boolean isAborted(HBaseDatasource datasource) {
+        Connection conn = null;
+        try {
+            conn = HBaseConnectionPool.getConnection (datasource);
+            if (conn != null && !conn.isClosed () && !conn.isAborted ()) {
+//                // 尝试获取当中的表，如果获取抛异常则获取连接失败
+//                conn.getAdmin ().tableExists (TableName.valueOf ("TEST"));
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace ();
+        }
+        return true;
     }
 }

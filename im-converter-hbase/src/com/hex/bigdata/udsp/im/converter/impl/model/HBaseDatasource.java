@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.im.converter.impl.model;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created by JunjieM on 2017-9-5.
@@ -93,4 +93,5 @@ public class HBaseDatasource extends Datasource {
     public String gainZookeeperZnodeParent() {
         return gainProperty ("zookeeper.znode.parent").getValue ();
     }
+
 }

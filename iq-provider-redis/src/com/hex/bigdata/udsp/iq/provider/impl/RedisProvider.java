@@ -10,6 +10,7 @@ import com.hex.bigdata.udsp.iq.provider.impl.model.RedisDatasource;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslRequest;
 import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslResponse;
+import com.hex.bigdata.udsp.iq.provider.util.Util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -89,16 +90,17 @@ public class RedisProvider implements Provider {
             String tableName = metadata.getTbName ();
             String query = getRedisQuery (metadata.getQueryColumns (), queryColumns, tableName);
             String fqSep = redisDatasource.gainSeprator ();
-            List<Map<String, String>> list = null;
+            List<Map<String, String>> records = null;
             if (page != null) {
                 page.setTotalCount (getCountNum (query, redisDatasource));
-                list = search (fqSep, query, redisDatasource, metaReturnColumns, page);
+                records = search (fqSep, query, redisDatasource, metaReturnColumns, page);
             } else {
-                list = search (fqSep, query, redisDatasource, metaReturnColumns, redisDatasource.gainMaxSize ());
+                records = search (fqSep, query, redisDatasource, metaReturnColumns, redisDatasource.gainMaxSize ());
             }
-            list = orderBy (list, orderColumns); // 排序
+            records = Util.orderBy (records, orderColumns); // 排序
+            records = Util.tranRecords (records, returnColumns); // 字段过滤并字段名改别名
             response.setPage (page);
-            response.setRecords (getRecords (list, returnColumns));
+            response.setRecords (records);
             response.setStatus (Status.SUCCESS);
             response.setStatusCode (StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -131,23 +133,6 @@ public class RedisProvider implements Provider {
 
     private Jedis getConnection(RedisDatasource datasource) {
         return getDataSource (datasource).getConnection ();
-    }
-
-    // 字段过滤并字段名改别名
-    private List<Map<String, String>> getRecords(List<Map<String, String>> list, List<ReturnColumn> returnColumns) {
-        List<Map<String, String>> records = new ArrayList<> ();
-        if (list == null || list.size () == 0) {
-            return records;
-        }
-        Map<String, String> result = null;
-        for (Map<String, String> map : list) {
-            result = new HashMap<> ();
-            for (ReturnColumn item : returnColumns) {
-                result.put (item.getLabel (), map.get (item.getName ()));
-            }
-            records.add (result);
-        }
-        return records;
     }
 
     private List<Map<String, String>> search(String fqSep, String queryString, RedisDatasource datasource,
@@ -260,60 +245,5 @@ public class RedisProvider implements Provider {
     @Override
     public IqDslResponse select(IqDslRequest request) {
         throw new RuntimeException ("Redis目前暂时不支持DSL");
-    }
-
-
-    private List<Map<String, String>> orderBy(List<Map<String, String>> records, final List<OrderColumn> orderColumns) {
-        Collections.sort (orderColumns, new Comparator<OrderColumn> () {
-            @Override
-            public int compare(OrderColumn obj1, OrderColumn obj2) {
-                return obj1.getSeq ().compareTo (obj2.getSeq ());
-            }
-        });
-        // 多字段混合排序
-        Collections.sort (records, new Comparator<Map<String, String>> () {
-            @Override
-            public int compare(Map<String, String> obj1, Map<String, String> obj2) {
-                int flg = 0;
-                for (OrderColumn orderColumn : orderColumns) {
-                    String colName = orderColumn.getName ();
-                    Order order = orderColumn.getOrder ();
-                    DataType dataType = orderColumn.getType ();
-                    String val1 = obj1.get (colName);
-                    String val2 = obj2.get (colName);
-                    flg = compareTo (val1, val2, order, dataType);
-                    if (flg != 0) {
-                        break;
-                    }
-                }
-                return flg;
-            }
-        });
-        return records;
-    }
-
-    private int compareTo(String str1, String str2, Order order, DataType dataType) {
-        if (dataType == null || DataType.STRING.equals (dataType) || DataType.VARCHAR.equals (dataType)
-                || DataType.CHAR.equals (dataType) || DataType.TIMESTAMP.equals (dataType)) {
-            if (order != null && Order.DESC.equals (order)) {
-                return 0 - str1.compareTo (str2);
-            } else {
-                return str1.compareTo (str2);
-            }
-        } else {
-            if (order != null && Order.DESC.equals (order)) {
-                if (DataType.INT.equals (dataType) && DataType.BIGINT.equals (dataType) && DataType.TINYINT.equals (dataType)) {
-                    return 0 - Integer.valueOf (str1).compareTo (Integer.valueOf (str2));
-                } else {
-                    return 0 - Double.valueOf (str1).compareTo (Double.valueOf (str2));
-                }
-            } else {
-                if (DataType.INT.equals (dataType) && DataType.BIGINT.equals (dataType) && DataType.TINYINT.equals (dataType)) {
-                    return Integer.valueOf (str1).compareTo (Integer.valueOf (str2));
-                } else {
-                    return Double.valueOf (str1).compareTo (Double.valueOf (str2));
-                }
-            }
-        }
     }
 }

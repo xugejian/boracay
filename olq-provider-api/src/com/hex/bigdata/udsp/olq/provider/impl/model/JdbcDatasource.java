@@ -68,6 +68,7 @@ public class JdbcDatasource extends Datasource {
         return gainProperty ("max.active").getValue ();
     }
 
+    @Deprecated
     public String gainValidationQueryTimeout() {
         return gainProperty ("validation.query.timeout").getValue ();
     }
@@ -96,13 +97,13 @@ public class JdbcDatasource extends Datasource {
         return gainProperty ("test.on.return").getValue ();
     }
 
-    public String gainPoolPreparedStatements() {
-        return gainProperty ("pool.prepared.statements").getValue ();
-    }
+//    public String gainPoolPreparedStatements() {
+//        return gainProperty ("pool.prepared.statements").getValue ();
+//    }
 
-    public String gainMaxOpenPreparedStatements() {
-        return gainProperty ("max.open.prepared.statements").getValue ();
-    }
+//    public String gainMaxOpenPreparedStatements() {
+//        return gainProperty ("max.open.prepared.statements").getValue ();
+//    }
 
     public String gainRemoveAbandoned() {
         return gainProperty ("remove.abandoned").getValue ();
