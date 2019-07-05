@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by PC on 2018/1/11.
@@ -28,10 +29,10 @@ public abstract class JdbcProvider implements Provider {
     private static Logger logger = LogManager.getLogger (JdbcProvider.class);
     private static Map<String, BasicDataSource> dataSourcePool;
 
-    private synchronized BasicDataSource getDataSource(JdbcDatasource datasource) {
+    private BasicDataSource getDataSource(JdbcDatasource datasource) {
         String dsId = datasource.getId ();
         if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<> ();
+            dataSourcePool = new ConcurrentHashMap<>();
         }
         BasicDataSource dataSource = dataSourcePool.remove (dsId);
         if (dataSource == null || dataSource.isClosed ()) {

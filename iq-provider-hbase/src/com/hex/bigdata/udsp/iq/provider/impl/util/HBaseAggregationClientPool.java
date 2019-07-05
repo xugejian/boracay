@@ -10,8 +10,8 @@ import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by JunjieM on 2019-7-4.
@@ -35,7 +35,7 @@ public class HBaseAggregationClientPool {
     public static AggregationClient getAggregationClient(HBaseDatasource datasource) {
         String dsId = datasource.getId ();
         if (pool == null) {
-            pool = new HashMap<> ();
+            pool = new ConcurrentHashMap<> ();
         }
         AggregationClient client = pool.remove (dsId);
         if (client == null) {

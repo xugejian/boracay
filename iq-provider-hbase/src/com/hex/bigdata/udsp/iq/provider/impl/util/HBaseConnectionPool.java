@@ -11,8 +11,8 @@ import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by JunjieM on 2019-7-4.
@@ -36,7 +36,7 @@ public class HBaseConnectionPool {
     public static Connection getConnection(HBaseDatasource datasource) {
         String dsId = datasource.getId ();
         if (pool == null) {
-            pool = new HashMap<> ();
+            pool = new ConcurrentHashMap<> ();
         }
         Connection conn = pool.remove (dsId);
         if (conn == null) {
