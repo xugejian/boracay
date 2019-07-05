@@ -11,8 +11,8 @@ import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by JunjieM on 2019-7-4.
@@ -36,7 +36,10 @@ public class HBaseConnectionPool {
     public static Connection getConnection(HBaseDatasource datasource) {
         String dsId = datasource.getId ();
         if (pool == null) {
-            pool = new ConcurrentHashMap<> ();
+            /**
+             * 测试发现这里使用ConcurrentHashMap线程安全Map高并发时反而会导致HBase连接线程无限上涨，而使用HashMap却不会有这个问题。
+             */
+            pool = new HashMap<> ();
         }
         Connection conn = pool.remove (dsId);
         if (conn == null) {
