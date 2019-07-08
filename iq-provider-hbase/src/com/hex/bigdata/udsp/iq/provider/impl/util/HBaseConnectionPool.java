@@ -21,19 +21,19 @@ public class HBaseConnectionPool {
     static {
         // 解决winutils.exe不存在的问题
         try {
-            File workaround = new File(".");
-            System.getProperties().put("hadoop.home.dir",
-                    workaround.getAbsolutePath());
-            new File("./bin").mkdirs();
-            new File("./bin/winutils.exe").createNewFile();
+            File workaround = new File (".");
+            System.getProperties ().put ("hadoop.home.dir",
+                    workaround.getAbsolutePath ());
+            new File ("./bin").mkdirs ();
+            new File ("./bin/winutils.exe").createNewFile ();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
     private static Map<String, Connection> pool;
 
-    public static Connection getConnection(HBaseDatasource datasource) {
+    public static synchronized Connection getConnection(HBaseDatasource datasource) {
         String dsId = datasource.getId ();
         if (pool == null) {
             /**
@@ -42,7 +42,7 @@ public class HBaseConnectionPool {
             pool = new HashMap<> ();
         }
         Connection conn = pool.remove (dsId);
-        if (conn == null) {
+        if (conn == null || conn.isClosed () || conn.isAborted ()) {
             Configuration conf = HBaseConfiguration.create ();
             for (Property property : datasource.getProperties ()) {
                 conf.set (property.getName (), property.getValue ());

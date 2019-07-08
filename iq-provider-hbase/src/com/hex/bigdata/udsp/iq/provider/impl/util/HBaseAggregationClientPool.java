@@ -32,7 +32,7 @@ public class HBaseAggregationClientPool {
 
     private static Map<String, AggregationClient> pool;
 
-    public static AggregationClient getAggregationClient(HBaseDatasource datasource) {
+    public static synchronized AggregationClient getAggregationClient(HBaseDatasource datasource) {
         String dsId = datasource.getId ();
         if (pool == null) {
             /**

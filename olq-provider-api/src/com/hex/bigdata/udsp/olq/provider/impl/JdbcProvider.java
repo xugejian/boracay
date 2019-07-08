@@ -29,7 +29,7 @@ public abstract class JdbcProvider implements Provider {
     private static Logger logger = LogManager.getLogger (JdbcProvider.class);
     private static Map<String, BasicDataSource> dataSourcePool;
 
-    private BasicDataSource getDataSource(JdbcDatasource datasource) {
+    private synchronized BasicDataSource getDataSource(JdbcDatasource datasource) {
         String dsId = datasource.getId ();
         if (dataSourcePool == null) {
             dataSourcePool = new ConcurrentHashMap<>();
