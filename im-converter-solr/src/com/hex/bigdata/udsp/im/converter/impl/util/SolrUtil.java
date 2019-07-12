@@ -7,6 +7,7 @@ import com.hex.bigdata.udsp.im.converter.impl.model.SolrMetadata;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import com.hex.bigdata.udsp.im.converter.model.Page;
 import com.hex.bigdata.udsp.im.converter.model.WhereProperty;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -607,8 +608,10 @@ public class SolrUtil {
             // 设置通用的请求属性
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent",
-                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+//            String encoding = new String(Base64.encode (new String("udsp:123456").getBytes ()));
+//            connection.setRequestProperty ("Authorization", "Basic " + encoding);
+
             // 建立实际的连接
             connection.connect();
             // 获取所有响应头字段
@@ -618,8 +621,7 @@ public class SolrUtil {
                 logger.debug(key + "--->" + map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
             while ((line = in.readLine()) != null) {
                 result += line;

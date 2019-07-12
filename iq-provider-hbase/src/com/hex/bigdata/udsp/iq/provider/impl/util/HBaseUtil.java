@@ -317,8 +317,8 @@ public class HBaseUtil {
         try {
             conn = HBaseConnectionPool.getConnection (datasource);
             if (conn != null && !conn.isClosed () && !conn.isAborted ()) {
-//                // 尝试获取当中的表，如果获取抛异常则获取连接失败
-//                conn.getAdmin ().tableExists (TableName.valueOf ("TEST"));
+                // 尝试获取当中的表，如果获取抛异常则获取连接失败
+                conn.getAdmin ().tableExists (TableName.valueOf ("TEST"));
                 return false;
             }
         } catch (Exception e) {

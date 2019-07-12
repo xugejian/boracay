@@ -230,6 +230,9 @@ public abstract class Wrapper {
 
             // 使用set语法在Hive中设置参数，如：set mapred.map.tasks=50;
             String hiveSetSql = model.gainHiveSetSql ();
+            if (StringUtils.isNotBlank (hiveSetSql) && !hiveSetSql.trim ().endsWith (";")) {
+                hiveSetSql += ";";
+            }
 
             // 设置MapReduce的job名称
             hiveSetSql += "set mapred.job.name=" + name + "(" + describe + ");";
