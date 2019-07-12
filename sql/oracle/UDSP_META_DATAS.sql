@@ -1,4 +1,4 @@
-﻿prompt PL/SQL Developer import file
+﻿﻿prompt PL/SQL Developer import file
 prompt Created on 2018年11月29日 by JunjieM
 set feedback off
 set define off
@@ -800,14 +800,6 @@ values ('IQ_DS_PROPS_ELASTICSEARCH', 'max.data.size', '最大返回数', null, 2
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_IMPL_CLASS', 'KUDU', 'com.hex.bigdata.udsp.im.converter.impl.KuduConverter', null, 8, null, null, 'default', '交互建模的Kudu接口实现类');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hadoop.security.authentication', 'Hadoop安全认证方式', null, 12, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.master.kerberos.principal', 'HBase Master 的 Kerberos Principal，如：hbase/node1@BIGDATA.HEX.COM', null, 13, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.regionserver.kerberos.principal', 'HBase RegionServer 的 Kerberos Principal，如：hbase/_HOST@BIGDATA.HEX.COM', null, 14, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'kerberos.principal', 'Kerberos Principal，如：test@BIGDATA.HEX.COM', null, 15, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TARGET_REALTIME_TYPE', 'KUDU', 'KUDU', null, 6, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_TYPE', 'KUDU', 'KUDU', null, 8, null, null, 'default', null);
@@ -817,12 +809,9 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_DS_TARGET_BATCH_TYPE', 'KUDU', 'KUDU', null, 7, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_SOURCE_BATCH_TYPE', 'KUDU', 'KUDU', null, 5, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
 commit;
 prompt 400 records committed...
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/kerberos/test.keytab 或 /root/test.keytab', null, 16, null, null, 'default', null);
+
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('YES_OR_NO', '0', '是', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1280,18 +1269,6 @@ values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.fq.dsv.separator', '结果数据分隔�
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_CONSUMER_PROPS_KAFKA', 'group.id', '组ID', null, 2, null, null, 'default', 'group1');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hadoop.security.authentication', 'Hadoop安全认证方式', null, 12, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.master.kerberos.principal', 'HBase Master 的 Kerberos Principal，如：hbase/node1@BIGDATA.HEX.COM', null, 13, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'hbase.regionserver.kerberos.principal', 'HBase RegionServer 的 Kerberos Principal，如：hbase/_HOST@BIGDATA.HEX.COM', null, 14, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'kerberos.principal', 'Kerberos Principal，如：test@BIGDATA.HEX.COM', null, 15, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/kerberos/test.keytab 或 /root/test.keytab', null, 16, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_PGSQL', 'test.while.idle', '是否被无效链接销毁器进行检验', null, 14, null, null, 'default', 'true');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('OLQ_DS_PROPS_PGSQL', 'time.between.eviction.runs.millis', 'N毫秒检测一次是否有死掉的线程', null, 12, null, null, 'default', '30000');
@@ -1327,18 +1304,6 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.client.retries.number', '客户端重试最大次数', null, 4, null, null, 'default', '3');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('UDSP_CONSUME_ERROR_CODE', '200005', '模型不支持该类型', null, 200005, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hadoop.security.authentication', 'Hadoop安全认证方式', null, 12, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.master.kerberos.principal', 'HBase Master 的 Kerberos Principal，如：hbase/node1@BIGDATA.HEX.COM', null, 13, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'hbase.regionserver.kerberos.principal', 'HBase RegionServer 的 Kerberos Principal，如：hbase/_HOST@BIGDATA.HEX.COM', null, 14, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'kerberos.principal', 'Kerberos Principal，如：test@BIGDATA.HEX.COM', null, 15, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/kerberos/test.keytab 或 /root/test.keytab', null, 16, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('RTS_DS_PROPS_KAFKA1', 'security.protocol', '安全协议', null, 2, null, null, 'default', 'SASL_PLAINTEXT');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -2273,18 +2238,6 @@ values ('IM_DS_PROPS_PAIR_HBASE', 'hbase.regionserver.lease.period', 'scan操作
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_HBASE', 'hbase.client.scanner.timeout.period', 'scan操作超时时间（毫秒）', null, 10, null, null, 'default', '60000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_HBASE', 'hadoop.security.authentication', 'Hadoop安全认证方式', null, 12, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_HBASE', 'hbase.master.kerberos.principal', 'HBase Master 的 Kerberos Principal，如：hbase/node1@BIGDATA.HEX.COM', null, 13, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_HBASE', 'hbase.regionserver.kerberos.principal', 'HBase RegionServer 的 Kerberos Principal，如：hbase/_HOST@BIGDATA.HEX.COM', null, 14, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_HBASE', 'kerberos.principal', 'Kerberos Principal，如：test@BIGDATA.HEX.COM', null, 15, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/kerberos/test.keytab 或 /root/test.keytab', null, 16, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_HBASE', 'hbase.rootdir', 'HDFS根目录', null, 10, null, null, 'default', '/hbase');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_HBASE', 'zookeeper.znode.parent', 'ZooKeeper Znode 父级', null, 10, null, null, 'default', '/hbase');
@@ -2442,40 +2395,6 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_DS_PROPS_HBASE', 'hbase.rootdir', 'HDFS根目录', null, 10, null, null, 'default', '/hbase');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_HBASE', 'zookeeper.znode.parent', 'ZooKeeper Znode 父级', null, 10, null, null, 'default', '/hbase');
-
-commit;
-
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hadoop.security.authentication', 'Hadoop安全认证方式', null, 12, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.master.kerberos.principal', 'HBase Master 的 Kerberos Principal，如：hbase/node1@BIGDATA.HEX.COM', null, 13, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.regionserver.kerberos.principal', 'HBase RegionServer 的 Kerberos Principal，如：hbase/_HOST@BIGDATA.HEX.COM', null, 14, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'kerberos.principal', 'Kerberos Principal，如：test@BIGDATA.HEX.COM', null, 15, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/kerberos/test.keytab 或 /root/test.keytab', null, 16, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.rootdir', 'HDFS根目录', null, 10, null, null, 'default', '/hbase');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.znode.parent', 'ZooKeeper Znode 父级', null, 10, null, null, 'default', '/hbase');
-
-commit;
-
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'hadoop.security.authentication', 'Hadoop安全认证方式', null, 12, null, null, 'default', 'kerberos');
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'hbase.master.kerberos.principal', 'HBase Master 的 Kerberos Principal，如：hbase/node1@BIGDATA.HEX.COM', null, 13, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'hbase.regionserver.kerberos.principal', 'HBase RegionServer 的 Kerberos Principal，如：hbase/_HOST@BIGDATA.HEX.COM', null, 14, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'kerberos.principal', 'Kerberos Principal，如：test@BIGDATA.HEX.COM', null, 15, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/kerberos/test.keytab 或 /root/test.keytab', null, 16, null, null, 'default', null);
 
 commit;
 

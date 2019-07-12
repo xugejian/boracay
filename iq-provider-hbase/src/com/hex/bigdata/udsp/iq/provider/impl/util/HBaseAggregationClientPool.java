@@ -77,30 +77,30 @@ public class HBaseAggregationClientPool {
             if (StringUtils.isNotBlank (datasource.gainZookeeperZnodeParent ())) {
                 conf.set ("zookeeper.znode.parent", datasource.gainZookeeperZnodeParent ());
             }
-            /*
-            以下是HBase开启Kerberos认证后需要的配置
-             */
-            if (StringUtils.isNotBlank (datasource.gainHbaseSecurityAuthentication ())) {
-                conf.set ("hbase.security.authentication", datasource.gainHbaseSecurityAuthentication ());
-            }
-            if (StringUtils.isNotBlank (datasource.gainHadoopSecurityAuthentication ())) {
-                conf.set ("hadoop.security.authentication", datasource.gainHadoopSecurityAuthentication ());
-            }
-            if (StringUtils.isNotBlank (datasource.gainHbaseMasterKerberosPrincipal ())) {
-                conf.set ("hbase.master.kerberos.principal", datasource.gainHbaseMasterKerberosPrincipal ());
-            }
-            if (StringUtils.isNotBlank (datasource.gainHbaseRegionserverKerberosPrincipal ())) {
-                conf.set ("hbase.regionserver.kerberos.principal", datasource.gainHbaseRegionserverKerberosPrincipal ());
-            }
-            if (StringUtils.isNotBlank (datasource.gainKerberosPrincipal ())
-                    && StringUtils.isNotBlank (datasource.gainKerberosKeytab ())) {
-                UserGroupInformation.setConfiguration (conf);
-                try {
-                    UserGroupInformation.loginUserFromKeytab (datasource.gainKerberosPrincipal (), datasource.gainKerberosKeytab ());
-                } catch (IOException e) {
-                    throw new RuntimeException (e);
-                }
-            }
+//            /*
+//            以下是HBase开启Kerberos认证后需要的配置
+//             */
+//            if (StringUtils.isNotBlank (datasource.gainHbaseSecurityAuthentication ())) {
+//                conf.set ("hbase.security.authentication", datasource.gainHbaseSecurityAuthentication ());
+//            }
+//            if (StringUtils.isNotBlank (datasource.gainHadoopSecurityAuthentication ())) {
+//                conf.set ("hadoop.security.authentication", datasource.gainHadoopSecurityAuthentication ());
+//            }
+//            if (StringUtils.isNotBlank (datasource.gainHbaseMasterKerberosPrincipal ())) {
+//                conf.set ("hbase.master.kerberos.principal", datasource.gainHbaseMasterKerberosPrincipal ());
+//            }
+//            if (StringUtils.isNotBlank (datasource.gainHbaseRegionserverKerberosPrincipal ())) {
+//                conf.set ("hbase.regionserver.kerberos.principal", datasource.gainHbaseRegionserverKerberosPrincipal ());
+//            }
+//            if (StringUtils.isNotBlank (datasource.gainKerberosPrincipal ())
+//                    && StringUtils.isNotBlank (datasource.gainKerberosKeytab ())) {
+//                UserGroupInformation.setConfiguration (conf);
+//                try {
+//                    UserGroupInformation.loginUserFromKeytab (datasource.gainKerberosPrincipal (), datasource.gainKerberosKeytab ());
+//                } catch (IOException e) {
+//                    throw new RuntimeException (e);
+//                }
+//            }
             client = new AggregationClient (conf);
         }
         if (client != null) {
