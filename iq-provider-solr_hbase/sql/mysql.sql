@@ -6,7 +6,7 @@ values ('IQ_DS_TYPE', 'SOLR_HBASE', 'SOLR_HBASE', null, 3, null, null, 'default'
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IQ_DS_PROPS_SOLR_HBASE', '交互查询-数据源配置-SOLR_HBASE', 'default');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'solr.servers', 'Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 0, null, null, 'default', null);
+values ('IQ_DS_PROPS_SOLR_HBASE', 'solr.servers', 'Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983（注：开启Kerberos后必须使用主机名）', null, 0, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.zk.quorum', 'HBase的Zookeeper的集群IP，多个IP用逗号分隔，如：10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -25,7 +25,6 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.client.operation.timeout', 'HBase客户端发起一次数据操作直至得到响应之间总的超时时间，数据操作类型包括get、append、increment、delete、put等（毫秒）', null, 8, null, null, 'default', '30000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.client.scanner.timeout.period', 'scan操作超时时间（毫秒）', null, 9, null, null, 'default', '60000');
-/*
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -35,10 +34,9 @@ values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.master.kerberos.principal', 'HBase Mast
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.regionserver.kerberos.principal', 'HBase RegionServer 的 Kerberos Principal，如：hbase/_HOST@BIGDATA.HEX.COM', null, 14, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'kerberos.principal', 'Kerberos Principal，如：udsp@BIGDATA.HEX.COM', null, 15, null, null, 'default', null);
+values ('IQ_DS_PROPS_SOLR_HBASE', 'kerberos.principal', 'Kerberos Principal，如：test@BIGDATA.HEX.COM', null, 15, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_DS_PROPS_SOLR_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/keytabs/udsp.keytab 或 /root/udsp.keytab', null, 16, null, null, 'default', null);
-*/
+values ('IQ_DS_PROPS_SOLR_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/kerberos/test.keytab 或 /root/test.keytab', null, 16, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'max.data.size', '最大返回数', null, 99, null, null, 'default', '4000');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)

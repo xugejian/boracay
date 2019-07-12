@@ -62,29 +62,29 @@ public class HBaseDatasource extends Datasource {
         return gainProperty("hbase.client.scanner.timeout.period").getValue();
     }
 
-//    public String gainHbaseSecurityAuthentication() {
-//        return gainProperty("hbase.security.authentication").getValue();
-//    }
-//
-//    public String gainHadoopSecurityAuthentication() {
-//        return gainProperty("hadoop.security.authentication").getValue();
-//    }
-//
-//    public String gainHbaseMasterKerberosPrincipal() {
-//        return gainProperty("hbase.master.kerberos.principal").getValue();
-//    }
-//
-//    public String gainHbaseRegionserverKerberosPrincipal() {
-//        return gainProperty("hbase.regionserver.kerberos.principal").getValue();
-//    }
-//
-//    public String gainKerberosPrincipal() {
-//        return gainProperty("kerberos.principal").getValue();
-//    }
-//
-//    public String gainKerberosKeytab() {
-//        return gainProperty("kerberos.keytab").getValue();
-//    }
+    public String gainHbaseSecurityAuthentication() {
+        return gainProperty("hbase.security.authentication").getValue();
+    }
+
+    public String gainHadoopSecurityAuthentication() {
+        return gainProperty("hadoop.security.authentication").getValue();
+    }
+
+    public String gainHbaseMasterKerberosPrincipal() {
+        return gainProperty("hbase.master.kerberos.principal").getValue();
+    }
+
+    public String gainHbaseRegionserverKerberosPrincipal() {
+        return gainProperty("hbase.regionserver.kerberos.principal").getValue();
+    }
+
+    public String gainKerberosPrincipal() {
+        return gainProperty("kerberos.principal").getValue();
+    }
+
+    public String gainKerberosKeytab() {
+        return gainProperty("kerberos.keytab").getValue();
+    }
 
     public String gainHBaseRootdir() {
         return gainProperty ("hbase.rootdir").getValue ();
