@@ -197,6 +197,7 @@ public class RtsExecutorService extends BaseService {
             column.setDescribe (col.getDescribe ());
             column.setSeq (col.getSeq ());
             column.setType (col.getType ());
+            columns.add (column);
         }
         return columns;
     }

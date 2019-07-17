@@ -193,8 +193,6 @@ public class KafkaExecutor implements Executor {
                     records.add (result);
                 }
             }
-            consumerResponse.setRecords (records);
-            consumerResponse.setTotalCount (records.size ());
             consumerResponse.setStatus (Status.SUCCESS);
             consumerResponse.setStatusCode (StatusCode.SUCCESS);
         } catch (ConsumerTimeoutException e) {
@@ -213,6 +211,10 @@ public class KafkaExecutor implements Executor {
         }
         long now = System.currentTimeMillis ();
         long consumeTime = now - bef;
+        consumerResponse.setRecords (records);
+        if (records != null) {
+            consumerResponse.setTotalCount (records.size ());
+        }
         consumerResponse.setConsumeTime (consumeTime);
         return consumerResponse;
     }

@@ -167,8 +167,6 @@ public class Kafka1Executor implements Executor {
         try {
             consumer = new KafkaConsumer<> (getCnsumerConfig (consumerDatasource));
             records = receive (consumer, topic, consumerRequest.getTimeout ());
-            consumerResponse.setRecords (records);
-            consumerResponse.setTotalCount (records.size ());
             consumerResponse.setStatus (Status.SUCCESS);
             consumerResponse.setStatusCode (StatusCode.SUCCESS);
         } catch (Exception e) {
@@ -188,6 +186,10 @@ public class Kafka1Executor implements Executor {
         }
         long now = System.currentTimeMillis ();
         long consumeTime = now - bef;
+        consumerResponse.setRecords (records);
+        if (records != null) {
+            consumerResponse.setTotalCount (records.size ());
+        }
         consumerResponse.setConsumeTime (consumeTime);
         return consumerResponse;
     }
