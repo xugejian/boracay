@@ -175,11 +175,7 @@ public abstract class JdbcProvider implements Provider {
                 rs = stmt.executeQuery (olqQuerySql.getPageSql ());
             }
 
-            try {
-                rs.setFetchSize (1000);
-            } catch (Exception e) {
-                //
-            }
+            rs.setFetchSize (1000);
 
             LinkedHashMap<String, String> columns = getColumns (rs);
             response.setColumns (columns);
@@ -191,7 +187,7 @@ public abstract class JdbcProvider implements Provider {
 
             response.setStatus (Status.SUCCESS);
             response.setStatusCode (StatusCode.SUCCESS);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace ();
             response.setStatus (Status.DEFEAT);
             response.setStatusCode (StatusCode.DEFEAT);

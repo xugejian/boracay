@@ -27,7 +27,7 @@ public class HBaseKerberosTest {
     }
 
     public static void main(String[] args) {
-        System.setProperty("java.security.krb5.conf", "A:/kerberos/krb5.conf");
+        System.setProperty("java.security.krb5.conf", "A:\\kerberos\\krb5.conf");
 
         Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.zookeeper.quorum", "172.18.21.61");
@@ -46,7 +46,7 @@ public class HBaseKerberosTest {
 
         try {
             UserGroupInformation.setConfiguration(conf);
-            UserGroupInformation.loginUserFromKeytab("test@BIGDATA.HEX.COM", "A:/kerberos/test.keytab");
+            UserGroupInformation.loginUserFromKeytab("test@BIGDATA.HEX.COM", "A:\\kerberos\\test.keytab");
 
             HBaseAdmin admin = new HBaseAdmin(conf);
             TableName[] tableNames = admin.listTableNames();
