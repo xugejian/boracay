@@ -93,17 +93,6 @@ public class RcServiceMapper extends SyncMapper<RcService> {
     }
 
     /**
-     * 根据服务类型查询服务名称
-     *
-     * @param serviceType 服务类型
-     * @return
-     */
-    public RcService selectAuthInfo(String serviceType) {
-        return sqlSessionTemplate.selectOne (
-                "com.hex.bigdata.udsp.rc.dao.RcServiceMapper.selectAuthInfo", serviceType);
-    }
-
-    /**
      * 根据应用名称和应用类型查找对应的服务注册信息
      *
      * @param type

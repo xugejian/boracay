@@ -96,13 +96,6 @@
     and NAME = #{name,jdbcType=VARCHAR}
   </select>
 
-  <select id="selectAuthInfo" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select PK_ID, name SERVICE_NAME,TYPE SERVICE_TYPE, DESCRIPTION, TYPE,DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
-    from RC_SERVICE
-    where PK_ID = #{pkId,jdbcType=VARCHAR}
-  </select>
-
   <select id="selectByType" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
     UPT_TIME, STATUS, IS_CACHE, TIME_OUT

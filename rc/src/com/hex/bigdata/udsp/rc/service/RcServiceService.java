@@ -100,8 +100,9 @@ public class RcServiceService {
     public String insert(RcService rcService) {
         String pkId = Util.uuid ();
         rcService.setPkId (pkId);
-        if (StringUtils.isBlank (rcService.getStatus ()))
+        if (StringUtils.isBlank (rcService.getStatus ())) {
             rcService.setStatus (ServiceStatus.START.getValue ());
+        }
         if (rcServiceMapper.insert (pkId, rcService)) {
             /*
             同时按照不同ID保存到内存中
@@ -322,15 +323,6 @@ public class RcServiceService {
      */
     public List<RcService> selectStartByTypeAndName(String type, String name) {
         return this.rcServiceMapper.selectStartByTypeAndName (type, name);
-    }
-
-    /**
-     * 根据服务类型查询服务名称
-     *
-     * @return
-     */
-    public RcService selectAuthInfo(String pkId) {
-        return rcServiceMapper.selectAuthInfo (pkId);
     }
 
     /**
