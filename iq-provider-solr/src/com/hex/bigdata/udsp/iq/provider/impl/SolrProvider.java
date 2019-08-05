@@ -1,7 +1,5 @@
 package com.hex.bigdata.udsp.iq.provider.impl;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.Order;
@@ -20,14 +18,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -188,8 +181,7 @@ public class SolrProvider implements Provider {
 
     @Override
     public boolean testDatasource(Datasource datasource) {
-        SolrDatasource solrDatasource = new SolrDatasource (datasource);
-        return SolrUtil.test(solrDatasource.gainSolrServers ());
+        return SolrUtil.test (new SolrDatasource (datasource));
     }
 
     @Override

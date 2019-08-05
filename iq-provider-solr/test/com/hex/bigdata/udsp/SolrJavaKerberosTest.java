@@ -2,14 +2,15 @@ package com.hex.bigdata.udsp;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.*;
+import org.apache.solr.client.solrj.impl.CloudSolrServer;
+import org.apache.solr.client.solrj.impl.HttpClientUtil;
+import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class SolrJavaKerberosTest {
         System.setProperty ("javax.security.auth.useSubjectCredsOnly", "false");
         System.setProperty ("sun.security.krb5.debug", "false");
 
-        HttpClientUtil.setConfigurer (new Krb5HttpClientConfigurer ());
+//        HttpClientUtil.setConfigurer (new Krb5HttpClientConfigurer ());
         // ----------------Kerberos必须参数【END】--------------------
 
         /*

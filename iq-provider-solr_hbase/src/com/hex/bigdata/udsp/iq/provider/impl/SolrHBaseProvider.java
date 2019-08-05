@@ -310,10 +310,8 @@ public class SolrHBaseProvider implements Provider {
 
     @Override
     public boolean testDatasource(Datasource datasource) {
-        SolrHBaseDatasource solrHBaseDatasource = new SolrHBaseDatasource (datasource);
-        HBaseDatasource hBaseDatasource = new HBaseDatasource (solrHBaseDatasource);
-        return !HBaseUtil.isAborted (hBaseDatasource)
-                && SolrUtil.test (solrHBaseDatasource.gainSolrServers ());
+        return !HBaseUtil.isAborted (new HBaseDatasource (datasource))
+                && SolrUtil.test (new SolrDatasource (datasource));
     }
 
     @Override
