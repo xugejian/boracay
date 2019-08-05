@@ -54,7 +54,7 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_BATCH_JOB_STATUS','BUILD_FAIL','构建失败',NULL,'4.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_BATCH_JOB_STATUS','BUILD_SUCCESS','构建成功',NULL,'3.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_BATCH_JOB_STATUS','READY_BUILD','准备构建',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_HBASE','hadoop.security.authentication','Hadoop安全认证方式',NULL,'12.000000000000000000000000000000',NULL,NULL,'default','kerberos');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_HBASE','hadoop.security.authentication','Hadoop的安全认证方式',NULL,'12.000000000000000000000000000000',NULL,NULL,'default','kerberos');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_HBASE','hbase.client.operation.timeout','HBase客户端发起一次数据操作直至得到响应之间总的超时时间，数据操作类型包括get、append、increment、delete、put等（毫秒）',NULL,'8.000000000000000000000000000000',NULL,NULL,'default','30000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_HBASE','hbase.client.pause','重试的休眠时间（毫秒）',NULL,'5.000000000000000000000000000000',NULL,NULL,'default','100');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_HBASE','hbase.client.retries.number','客户端重试最大次数',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','3');
@@ -172,7 +172,7 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_ORACLE','validation.query','验证链接的SQL语句，必须能返回一行及以上数据',NULL,'10.000000000000000000000000000000',NULL,NULL,'default','select 1 from dual');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_ORACLE','validation.query.timeout','自动验证连接的时间',NULL,'11.000000000000000000000000000000',NULL,NULL,'default','0');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_SOLR','solr.servers','Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_SOLR','solr.url','zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_SOLR','solr.url','Solr的zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr',NULL,'2.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_SOLR_HBASE','hbase.client.operation.timeout','HBase客户端发起一次数据操作直至得到响应之间总的超时时间，数据操作类型包括get、append、increment、delete、put等（毫秒）',NULL,'8.000000000000000000000000000000',NULL,NULL,'default','30000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_SOLR_HBASE','hbase.client.pause','重试的休眠时间（毫秒）',NULL,'5.000000000000000000000000000000',NULL,NULL,'default','100');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IM_DS_PROPS_SOLR_HBASE','hbase.client.retries.number','客户端重试最大次数',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','3');
@@ -336,7 +336,7 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_APP_RETURN_COL_STATS','sum','sum',NULL,'3.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_ELASTICSEARCH','elasticsearch.servers','elasticsearch集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:9200,10.1.97.2:9200,10.1.97.3:9200',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_ELASTICSEARCH','max.data.size','最大返回数',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','65535');
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_HBASE','hadoop.security.authentication','Hadoop安全认证方式',NULL,'12.000000000000000000000000000000',NULL,NULL,'default','kerberos');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_HBASE','hadoop.security.authentication','Hadoop的安全认证方式',NULL,'12.000000000000000000000000000000',NULL,NULL,'default','kerberos');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_HBASE','hbase.client.operation.timeout','HBase客户端发起一次数据操作直至得到响应之间总的超时时间，数据操作类型包括get、append、increment、delete、put等（毫秒）',NULL,'8.000000000000000000000000000000',NULL,NULL,'default','30000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_HBASE','hbase.client.pause','重试的休眠时间（毫秒）',NULL,'5.000000000000000000000000000000',NULL,NULL,'default','100');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_HBASE','hbase.client.retries.number','客户端重试最大次数',NULL,'4.000000000000000000000000000000','IQ_DS_PROPS_HBASE',NULL,'default','3');
@@ -365,7 +365,7 @@ insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_REDIS','redis.test.on.brrow','redis连接是否检查连通性',NULL,'9.000000000000000000000000000000',NULL,NULL,'default','true');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_SOLR','max.data.size','最大返回数',NULL,'2.000000000000000000000000000000',NULL,NULL,'default','65535');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_SOLR','solr.servers','Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983',NULL,'1.000000000000000000000000000000',NULL,NULL,'default',NULL);
-insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_SOLR_HBASE','hadoop.security.authentication','Hadoop安全认证方式',NULL,'12.000000000000000000000000000000',NULL,NULL,'default','kerberos');
+insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_SOLR_HBASE','hadoop.security.authentication','Hadoop的安全认证方式',NULL,'12.000000000000000000000000000000',NULL,NULL,'default','kerberos');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_SOLR_HBASE','hbase.client.operation.timeout','HBase客户端发起一次数据操作直至得到响应之间总的超时时间，数据操作类型包括get、append、increment、delete、put等（毫秒）',NULL,'8.000000000000000000000000000000',NULL,NULL,'default','30000');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_SOLR_HBASE','hbase.client.pause','重试的休眠时间（毫秒）',NULL,'5.000000000000000000000000000000',NULL,NULL,'default','100');
 insert  into `t_gf_dict`(`DICT_TYPE_ID`,`DICT_ID`,`DICT_NAME`,`STATUS`,`SORT_NO`,`PARENT_ID`,`SEQNO`,`APPID`,`FILTER`) values ('IQ_DS_PROPS_SOLR_HBASE','hbase.client.retries.number','客户端重试最大次数',NULL,'4.000000000000000000000000000000',NULL,NULL,'default','3');
@@ -1219,7 +1219,7 @@ values ('IM_DS_PROPS_PAIR_HBASE', 'hbase.client.scanner.timeout.period', 'scan�
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_HBASE', 'hadoop.security.authentication', 'Hadoop安全认证方式', null, 12, null, null, 'default', 'kerberos');
+values ('IM_DS_PROPS_PAIR_HBASE', 'hadoop.security.authentication', 'Hadoop的安全认证方式', null, 12, null, null, 'default', 'kerberos');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_HBASE', 'hbase.master.kerberos.principal', 'HBase Master 的 Kerberos Principal，如：hbase/node1@BIGDATA.HEX.COM', null, 13, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1275,11 +1275,11 @@ values ('IM_DS_PROPS_PAIR_SOLR', '交互建模-数据源配置-PAIR_SOLR', 'defa
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_SOLR', 'active.solr.servers', '【主】Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR', 'active.solr.url', '【主】zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 2, null, null, 'default', null);
+values ('IM_DS_PROPS_PAIR_SOLR', 'active.solr.url', '【主】Solr的zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 2, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_SOLR', 'standby.solr.servers', '【备】Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 3, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR', 'standby.solr.url', '【备】zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 4, null, null, 'default', null);
+values ('IM_DS_PROPS_PAIR_SOLR', 'standby.solr.url', '【备】Solr的zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 4, null, null, 'default', null);
 
 -- 添加IM的（目标）元数据配置
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
@@ -1385,7 +1385,7 @@ values ('IM_DS_PROPS_HBASE', 'zookeeper.znode.parent', 'ZooKeeper Znode 父级',
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_SOLR_HBASE', 'hadoop.security.authentication', 'Hadoop安全认证方式', null, 12, null, null, 'default', 'kerberos');
+values ('IM_DS_PROPS_SOLR_HBASE', 'hadoop.security.authentication', 'Hadoop的安全认证方式', null, 12, null, null, 'default', 'kerberos');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_SOLR_HBASE', 'hbase.master.kerberos.principal', 'HBase Master 的 Kerberos Principal，如：hbase/node1@BIGDATA.HEX.COM', null, 13, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1403,7 +1403,7 @@ values ('IM_DS_PROPS_SOLR_HBASE', 'zookeeper.znode.parent', 'ZooKeeper Znode 父
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'hbase.security.authentication', 'HBase的安全认证方式', null, 11, null, null, 'default', 'kerberos');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'hadoop.security.authentication', 'Hadoop安全认证方式', null, 12, null, null, 'default', 'kerberos');
+values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'hadoop.security.authentication', 'Hadoop的安全认证方式', null, 12, null, null, 'default', 'kerberos');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'hbase.master.kerberos.principal', 'HBase Master 的 Kerberos Principal，如：hbase/node1@BIGDATA.HEX.COM', null, 13, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -1444,5 +1444,12 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'solr.java.security.krb5.conf', 'Kerberos的krb5.conf配置文件路径，如：/etc/krb5.conf（注：引擎所属集群的YARN NodeManager所在节点都需要有该路径文件）', null, 56, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'solr.java.security.auth.login.config', 'Java验证和授权服务的配置文件路径，如：/root/jaas.conf（注：引擎所属集群的YARN NodeManager所在节点都需要有该路径文件）', null, 56, null, null, 'default', null);
+
+update T_GF_DICT set dict_id='solr.zkHost' where dict_type_id='IM_DS_PROPS_SOLR' and dict_id='solr.url';
+update T_GF_DICT set dict_id='solr.zkHost' where dict_type_id='IM_DS_PROPS_SOLR_HBASE' and dict_id='solr.url';
+update T_GF_DICT set dict_id='active.solr.zkHost' where dict_type_id='IM_DS_PROPS_PAIR_SOLR' and dict_id='active.solr.url';
+update T_GF_DICT set dict_id='standby.solr.zkHost' where dict_type_id='IM_DS_PROPS_PAIR_SOLR' and dict_id='standby.solr.url';
+update T_GF_DICT set dict_id='active.solr.zkHost' where dict_type_id='IM_DS_PROPS_PAIR_SOLR_HBASE' and dict_id='active.solr.url';
+update T_GF_DICT set dict_id='standby.solr.zkHost' where dict_type_id='IM_DS_PROPS_PAIR_SOLR_HBASE' and dict_id='standby.solr.url';
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

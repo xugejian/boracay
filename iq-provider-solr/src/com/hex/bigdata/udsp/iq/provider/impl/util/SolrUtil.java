@@ -210,7 +210,7 @@ public class SolrUtil {
      */
     public static SolrServer getSolrServer(SolrDatasource datasource, String collectionName) {
         return getLBHttpSolrServer (datasource.gainSolrServers (), collectionName);
-//        return getCloudSolrServer (datasource.gainSolrUrl (), collectionName);
+//        return getCloudSolrServer (datasource.gainSolrZkHost (), collectionName);
     }
 
     /**

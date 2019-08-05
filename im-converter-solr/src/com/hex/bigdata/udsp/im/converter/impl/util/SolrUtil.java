@@ -7,7 +7,7 @@ import com.hex.bigdata.udsp.im.converter.impl.model.SolrMetadata;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import com.hex.bigdata.udsp.im.converter.model.Page;
 import com.hex.bigdata.udsp.im.converter.model.WhereProperty;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -134,7 +134,7 @@ public class SolrUtil {
         String collectionName = metadata.getTbName ();
         SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
         String solrServers = solrDatasource.gainSolrServers ();
-        String solrUrl = solrDatasource.gainSolrUrl ();
+        String solrZkHost = solrDatasource.gainSolrZkHost ();
         // 判断是否已经存在该表
         if (checkCollection (solrServers, collectionName)) {
             logger.warn ("Solr表" + collectionName + "存在，进行删除！");
@@ -143,7 +143,7 @@ public class SolrUtil {
                 throw new RuntimeException ("删除SOLR表失败，请检查SOLR配置！");
             }
             // 删除Config
-            deleteZnode (solrUrl, collectionName);
+            deleteZnode (solrZkHost, collectionName);
         } else {
             logger.debug ("Solr表" + collectionName + "不存在，无需删除！");
             if (!ifExists) {
@@ -216,7 +216,7 @@ public class SolrUtil {
         List<MetadataCol> metadataCols = metadata.getMetadataCols ();
         SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
         String solrServers = solrDatasource.gainSolrServers ();
-        String solrUrl = solrDatasource.gainSolrUrl ();
+        String solrZkHost = solrDatasource.gainSolrZkHost ();
         // 判断是否已经存在该表
         if (checkCollection (solrServers, collectionName)) {
             logger.debug ("Solr表" + collectionName + "存在，无需创建！");
@@ -226,14 +226,14 @@ public class SolrUtil {
         } else {
             logger.debug ("Solr表" + collectionName + "不存在，进行创建！");
             // 添加Config
-            uploadSolrConfig (solrUrl, collectionName, metadataCols);
+            uploadSolrConfig (solrZkHost, collectionName, metadataCols);
             // 创建Collection
             try {
                 if (!createCollection (metadata)) {
                     throw new RuntimeException ("创建SOLR表失败，请检查SOLR配置！");
                 }
             } catch (Exception e) {
-                deleteZnode (solrUrl, collectionName); // 删除Config
+                deleteZnode (solrZkHost, collectionName); // 删除Config
                 throw new RuntimeException (e);
             }
         }
@@ -309,17 +309,17 @@ public class SolrUtil {
         metadataCols.addAll (addMetadataCols); // 添加新的字段
         SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
         String solrServers = solrDatasource.gainSolrServers ();
-        String solrUrl = solrDatasource.gainSolrUrl ();
+        String solrZkHost = solrDatasource.gainSolrZkHost ();
         if (checkCollection (solrServers, collectionName)) {
             logger.debug ("Solr表" + collectionName + "存在，进行更新！");
             // 更新Config
-            updateSolrConfig (solrUrl, collectionName, metadataCols);
+            updateSolrConfig (solrZkHost, collectionName, metadataCols);
             // 重载Collection
             if (!reloadCollection (metadata)) {
                 /*
                 还原回原来的配置并且重载
                  */
-                updateSolrConfig (solrUrl, collectionName, metadata.getMetadataCols ()); // 更新配置
+                updateSolrConfig (solrZkHost, collectionName, metadata.getMetadataCols ()); // 更新配置
                 reloadCollection (metadata); // 重载Collection
                 throw new RuntimeException ("重载SOLR表失败，请检查SOLR配置！");
             }
@@ -388,40 +388,40 @@ public class SolrUtil {
     /**
      * 上传配置文件
      *
-     * @param solrUrl
+     * @param solrZkHost
      * @param collectionName
      * @param metadataCols
      * @throws Exception
      */
-    public static void uploadSolrConfig(String solrUrl, String collectionName, List<MetadataCol> metadataCols) throws Exception {
-        upload (getZkClient (solrUrl), solrConfigPath, SOLR_CONFIG_ZOOKEEPER_DIR, collectionName, metadataCols);
+    public static void uploadSolrConfig(String solrZkHost, String collectionName, List<MetadataCol> metadataCols) throws Exception {
+        upload (getZkClient (solrZkHost), solrConfigPath, SOLR_CONFIG_ZOOKEEPER_DIR, collectionName, metadataCols);
     }
 
     /**
      * 更新配置文件
      *
-     * @param solrUrl
+     * @param solrZkHost
      * @param collectionName
      * @param metadataCols
      */
-    public static void updateSolrConfig(String solrUrl, String collectionName, List<MetadataCol> metadataCols) throws Exception {
-        deleteZnode (solrUrl, collectionName);
-        uploadSolrConfig (solrUrl, collectionName, metadataCols);
+    public static void updateSolrConfig(String solrZkHost, String collectionName, List<MetadataCol> metadataCols) throws Exception {
+        deleteZnode (solrZkHost, collectionName);
+        uploadSolrConfig (solrZkHost, collectionName, metadataCols);
     }
 
     /**
      * 获取zookeeper链接
      *
-     * @param zkConnectString
+     * @param solrZkHost
      * @return
      * @throws IOException
      */
-    public static ZooKeeper getZkClient(String zkConnectString) throws IOException {
+    public static ZooKeeper getZkClient(String solrZkHost) throws IOException {
         ZooKeeper zkClient = null;
         try {
             CountDownLatch connectedLatch = new CountDownLatch (1);
             Watcher watcher = new ConnectedWatcher (connectedLatch);
-            zkClient = new ZooKeeper (zkConnectString, 20000, watcher);
+            zkClient = new ZooKeeper (solrZkHost, 20000, watcher);
             waitUntilConnected (zkClient, connectedLatch);
         } catch (IOException e) {
             e.printStackTrace ();
@@ -708,7 +708,7 @@ public class SolrUtil {
         String result = "";
         BufferedReader in = null;
         try {
-            if (org.apache.commons.lang.StringUtils.isNotEmpty (param)) {
+            if (StringUtils.isNotEmpty (param)) {
                 url += "?" + param;
             }
             logger.info ("url: " + url);
@@ -749,12 +749,12 @@ public class SolrUtil {
     /**
      * 删除solr配置
      *
-     * @param solrUrl
+     * @param solrZkHost
      * @param collectionName
      * @throws Exception
      */
-    public static void deleteZnode(String solrUrl, String collectionName) throws Exception {
-        ZooKeeper zkClient = getZkClient (solrUrl);
+    public static void deleteZnode(String solrZkHost, String collectionName) throws Exception {
+        ZooKeeper zkClient = getZkClient (solrZkHost);
         String path = SOLR_CONFIG_ZOOKEEPER_DIR + "/" + collectionName;
         delPath (zkClient, path);
         zkClient.delete (path, -1);
@@ -806,7 +806,7 @@ public class SolrUtil {
      */
     public static SolrServer getSolrServer(SolrDatasource datasource, String collectionName) {
         return getLBHttpSolrServer (datasource.gainSolrServers (), collectionName);
-//        return getCloudSolrServer (datasource.gainSolrUrl (), collectionName);
+//        return getCloudSolrServer (datasource.gainSolrZkHost (), collectionName);
     }
 
     /**
@@ -817,7 +817,7 @@ public class SolrUtil {
      * @return
      */
     public static LBHttpSolrServer getLBHttpSolrServer(String solrServices, String collectionName) {
-        if (org.apache.commons.lang.StringUtils.isBlank (collectionName)) {
+        if (StringUtils.isBlank (collectionName)) {
             throw new IllegalArgumentException ("collection name不能为空");
         }
         String[] tempServers = solrServices.split (",");
@@ -842,7 +842,7 @@ public class SolrUtil {
      * @return
      */
     public static CloudSolrServer getCloudSolrServer(String zkHost, String collectionName) {
-        if (org.apache.commons.lang.StringUtils.isBlank (collectionName)) {
+        if (StringUtils.isBlank (collectionName)) {
             throw new IllegalArgumentException ("collection name不能为空");
         }
         CloudSolrServer solrServer = new CloudSolrServer (zkHost);

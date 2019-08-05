@@ -129,18 +129,18 @@ public class PairSolrConverter extends PairSolrWrapper {
         ds.setType (DatasourceType.SOLR.getValue ());
         Property solrServers = datasource.getPropertyMap ().get ("active.solr.servers");
         ds.getPropertyMap ().put ("solr.servers", solrServers);
-        Property solrUrl = datasource.getPropertyMap ().get ("active.solr.url");
-        ds.getPropertyMap ().put ("solr.url", solrUrl);
+        Property solrZkHost = datasource.getPropertyMap ().get ("active.solr.zkHost");
+        ds.getPropertyMap ().put ("solr.zkHost", solrZkHost);
         return ds;
     }
 
     private Datasource getStandbyDatasource(Datasource datasource) {
         Datasource ds = new Datasource (datasource);
         ds.setType (DatasourceType.SOLR.getValue ());
-        Property zkQuorum = datasource.getPropertyMap ().get ("standby.solr.servers");
-        ds.getPropertyMap ().put ("solr.servers", zkQuorum);
-        Property solrUrl = datasource.getPropertyMap ().get ("standby.solr.url");
-        ds.getPropertyMap ().put ("solr.url", solrUrl);
+        Property solrServers = datasource.getPropertyMap ().get ("standby.solr.servers");
+        ds.getPropertyMap ().put ("solr.servers", solrServers);
+        Property solrZkHost = datasource.getPropertyMap ().get ("standby.solr.zkHost");
+        ds.getPropertyMap ().put ("solr.zkHost", solrZkHost);
         return ds;
     }
 
