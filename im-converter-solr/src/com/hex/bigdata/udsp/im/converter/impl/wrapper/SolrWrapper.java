@@ -48,13 +48,22 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
         }
 
         List<TblProperty> tblProperties = new ArrayList<>();
-        tblProperties.add(new TblProperty("solr.url", datasource.gainSolrUrl())); // zookeeper地址、端口和目录
+        tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式
+        // 单机模式时solr.url为solrUrl，集群模式时solr.url为zkHost
+        tblProperties.add(new TblProperty("solr.url", datasource.gainSolrUrl()));
         if (StringUtils.isBlank(solrQuery)) {solrQuery = "*:*";}
         tblProperties.add(new TblProperty("solr.query", solrQuery)); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1024")); // 批量大小
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名
-        tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式，Default：0
         tblProperties.add(new TblProperty("collection.name", collectionName)); // Solr Collection Name
+
+        if("kerberos".equals (datasource.gainSolrSecurityAuthentication ())){
+            tblProperties.add(new TblProperty("solr.security.authentication", "kerberos"));
+            tblProperties.add(new TblProperty("java.security.krb5.conf", datasource.gainSolrJavaSecurityKrb5Conf ()));
+            tblProperties.add(new TblProperty("java.security.auth.login.config", datasource.gainSolrJavaSecurityAuthLoginConfig ()));
+            tblProperties.add(new TblProperty("javax.security.auth.useSubjectCredsOnly", "false"));
+            tblProperties.add(new TblProperty("sun.security.krb5.debug", "false"));
+        }
 
         if (modelMappings == null || modelMappings.size() == 0) {
             throw new IllegalArgumentException("映射字段不能为空");
@@ -75,12 +84,21 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
         }
 
         List<TblProperty> tblProperties = new ArrayList<>();
+        tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式
+        // 单机模式时solr.url为solrUrl，集群模式时solr.url为zkHost
         tblProperties.add(new TblProperty("solr.url", datasource.gainSolrUrl())); // zookeeper地址、端口和目录
         tblProperties.add(new TblProperty("solr.query", "*:*")); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1024")); // 批量大小
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名
-        tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式，Default：0
         tblProperties.add(new TblProperty("collection.name", collectionName)); // Solr Collection Name
+
+        if("kerberos".equals (datasource.gainSolrSecurityAuthentication ())){
+            tblProperties.add(new TblProperty("solr.security.authentication", "kerberos"));
+            tblProperties.add(new TblProperty("java.security.krb5.conf", datasource.gainSolrJavaSecurityKrb5Conf ()));
+            tblProperties.add(new TblProperty("java.security.auth.login.config", datasource.gainSolrJavaSecurityAuthLoginConfig ()));
+            tblProperties.add(new TblProperty("javax.security.auth.useSubjectCredsOnly", "false"));
+            tblProperties.add(new TblProperty("sun.security.krb5.debug", "false"));
+        }
 
         if (modelMappings == null || modelMappings.size() == 0) {
             throw new IllegalArgumentException("映射字段不能为空");

@@ -27,4 +27,16 @@ public class SolrDatasource extends Datasource {
         }
         return value;
     }
+
+    public String gainSolrSecurityAuthentication(){
+        return gainProperty ("solr.security.authentication").getValue ();
+    }
+
+    public String gainSolrJavaSecurityKrb5Conf(){
+        return gainProperty ("solr.java.security.krb5.conf").getValue ();
+    }
+
+    public String gainSolrJavaSecurityAuthLoginConfig(){
+        return gainProperty ("solr.java.security.auth.login.config").getValue ();
+    }
 }

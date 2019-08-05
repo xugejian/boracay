@@ -46,17 +46,24 @@ values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'kerberos.principal', 'Kerberos Principal
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'kerberos.keytab', 'Kerberos Keytab 文件路径，如：C:/kerberos/test.keytab 或 /root/test.keytab', null, 16, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'active.solr.servers', '【主】Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 11, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'active.solr.url', '【主】Solr的zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 12, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'standby.solr.servers', '【备】Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 13, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'standby.solr.url', '【备】Solr的zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 14, null, null, 'default', null);
-insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'hbase.rootdir', 'HDFS根目录', null, 10, null, null, 'default', '/hbase');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'zookeeper.znode.parent', 'ZooKeeper Znode 父级', null, 10, null, null, 'default', '/hbase');
+
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'active.solr.servers', '【主】Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 51, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'active.solr.url', '【主】Solr的zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 52, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'standby.solr.servers', '【备】Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983', null, 53, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'standby.solr.url', '【备】Solr的zookeeper地址、端口和目录，多个地址用逗号分隔，如：10.1.97.1:2181,10.1.97.2:2181,10.1.97.3:2181/solr', null, 54, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'solr.security.authentication', 'Solr的安全认证方式', null, 55, null, null, 'default', 'kerberos');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'solr.java.security.krb5.conf', 'Kerberos的krb5.conf配置文件路径，如：/etc/krb5.conf（注：引擎所属集群的YARN NodeManager所在节点都需要有该路径文件）', null, 56, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_DS_PROPS_PAIR_SOLR_HBASE', 'solr.java.security.auth.login.config', 'Java验证和授权服务的配置文件路径，如：/root/jaas.conf（注：引擎所属集群的YARN NodeManager所在节点都需要有该路径文件）', null, 56, null, null, 'default', null);
 
 -- 添加IM的（目标）元数据配置
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
