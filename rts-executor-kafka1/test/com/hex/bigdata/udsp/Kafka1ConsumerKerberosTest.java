@@ -17,10 +17,13 @@ public class Kafka1ConsumerKerberosTest {
     private static String TOPIC_NAME = "test1";
 
     public static void main(String[] args) {
-        System.setProperty ("java.security.krb5.conf", "A:/kerberos/krb5.conf");
-        System.setProperty ("java.security.auth.login.config", "A:/kerberos/jaas-keytab.conf");
+
+        // ----------------Kerberos必须参数【START】--------------------
+        System.setProperty ("java.security.krb5.conf", "A:\\kerberos\\krb5.conf");
+        System.setProperty ("java.security.auth.login.config", "A:\\kerberos\\jaas.conf");
         System.setProperty ("javax.security.auth.useSubjectCredsOnly", "false");
-//       System.setProperty("sun.security.krb5.debug","true");
+        System.setProperty ("sun.security.krb5.debug","false");
+        // ----------------Kerberos必须参数【END】--------------------
 
         Properties props = new Properties ();
         props.put ("bootstrap.servers", "172.18.21.62:9092,172.18.21.63:9020");
@@ -29,8 +32,11 @@ public class Kafka1ConsumerKerberosTest {
         props.put ("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put ("enable.auto.commit", "true");
         props.put ("auto.commit.interval.ms", "1000");
+
+        // ----------------Kerberos必须参数【START】--------------------
         props.put ("security.protocol", "SASL_PLAINTEXT");
         props.put ("sasl.kerberos.service.name", "kafka");
+        // ----------------Kerberos必须参数【END】--------------------
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<> (props);
         TopicPartition partition0 = new TopicPartition (TOPIC_NAME, 0);
