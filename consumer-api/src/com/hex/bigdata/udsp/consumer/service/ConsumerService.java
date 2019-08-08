@@ -19,7 +19,9 @@ import com.hex.bigdata.udsp.mc.service.RunQueueService;
 import com.hex.bigdata.udsp.mc.service.WaitQueueService;
 import com.hex.bigdata.udsp.mm.service.MmApplicationService;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
+import com.hex.bigdata.udsp.olq.model.OlqApplicationParam;
 import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
+import com.hex.bigdata.udsp.olq.utils.SqlExpressionEvaluator;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,8 +91,6 @@ public class ConsumerService {
     @Autowired
     private RcServiceService rcServiceService;
     @Autowired
-    private CurrentService currentService;
-    @Autowired
     private IqDslSyncService iqDslSyncService;
 
     /**
@@ -102,7 +103,6 @@ public class ConsumerService {
      */
     public ConsumeRequest checkConsume(Request request, String udspUser, RcService rcService, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest ();
-        consumeRequest.setRequest (request); // 必须先设置request
         // 没有注册服务
         if (rcService == null) {
             consumeRequest.setError (ErrorCode.ERROR_000004);
@@ -149,18 +149,13 @@ public class ConsumerService {
         // OLQ_APP
         if (ServiceType.OLQ_APP.getValue ().equals (appType)
                 && ConsumerEntity.START.getValue ().equalsIgnoreCase (entity)) {
-            OlqApplicationDto olqApplicationDto = olqApplicationService.selectFullAppInfo (appId);
             try {
-                olqApplicationService.checkParam (olqApplicationDto.getParams (), paraMap);
+                request = olqApplicationRequet (request);
             } catch (Exception e) {
                 consumeRequest.setError (ErrorCode.ERROR_000009);
                 consumeRequest.setMessage (e.toString ());
                 return consumeRequest;
             }
-            String dsId = olqApplicationDto.getOlqApplication ().getOlqDsId ();
-            String sql = olqApplicationService.getExecuteSQL (olqApplicationDto, paraMap);
-            consumeRequest.getRequest ().setAppId (dsId);
-            consumeRequest.getRequest ().setSql (sql);
         }
         // 并发判断
         Current mcCurrent = getCurrent (request, maxSyncNum, maxAsyncNum);
@@ -443,5 +438,32 @@ public class ConsumerService {
         } else {
             return mcWaitQueueService.checkWaitQueueIsFull (mcCurrent, maxAsyncWaitNum);
         }
+    }
+
+    /**
+     * OLQ应用获取Request
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    public Request olqApplicationRequet(Request request) throws Exception {
+        Map<String, String> paraMap = request.getData ();
+        String appId = request.getAppId ();
+        OlqApplicationDto olqApplicationDto = olqApplicationService.selectFullAppInfo (appId);
+        List<OlqApplicationParam> params = olqApplicationDto.getParams ();
+        olqApplicationService.checkParam (params, paraMap);
+        String dsId = olqApplicationDto.getOlqApplication ().getOlqDsId ();
+        String olqSql = olqApplicationDto.getOlqApplication ().getOlqSql ();
+        String sql = SqlExpressionEvaluator.parseSql (olqSql, paraMap);
+        request.setAppId (dsId);
+        request.setSql (sql);
+        Page page = request.getPage ();
+        if (page != null) {
+            String orderBy = SqlExpressionEvaluator.parseOrderBy (olqSql);
+            page.setOrderBy (orderBy);
+            request.setPage (page);
+        }
+        return request;
     }
 }

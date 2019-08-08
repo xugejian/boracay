@@ -275,8 +275,8 @@ public class DslSqlAdaptor {
     /**
      * select SQL 解析成 DslRequest对象
      *
-     * @param sql
-     * @return
+     * @param sql SQL语法
+     * @return DslRequest
      */
     public static DslRequest selectSqlToDslRequest(String sql) {
         DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
@@ -315,7 +315,7 @@ public class DslSqlAdaptor {
         if (limitClauseContext != null) {
             limit = DslSqlAdaptor.limitClauseContextToLimit (limitClauseContext);
         }
-
+        // 封装
         DslRequest dslRequest = new DslRequest ();
         dslRequest.setName (serviceName);
         dslRequest.setSelect (select);
@@ -323,7 +323,6 @@ public class DslSqlAdaptor {
         dslRequest.setGroupBy (groupBy);
         dslRequest.setOrderBy (orderBy);
         dslRequest.setLimit (limit);
-
         return dslRequest;
     }
 }

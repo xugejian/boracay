@@ -4,7 +4,7 @@ package com.hex.bigdata.udsp.dsl.model;
  * 限制类
  */
 public class Limit {
-    private int limit;
+    private int limit = 100;
     private int offset = 0;
 
     public Limit() {

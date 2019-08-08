@@ -103,9 +103,9 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     request.setServiceName (serviceName); // 设置serviceName
                     String serviceType = consumerService.getServiceType (serviceName);
                     if (ServiceType.IQ_DSL.getValue ().equals (serviceType)) {
-                        response = sdlSqlSelect (request); // 交互查询的自定义select SQL
+                        response = sdlSqlSelect (request); // 交互查询模块的元数据的自定义select SQL
                     } else if (ServiceType.IQ.getValue ().equals (serviceType)) {
-                        response = appSdlSelect (request); // 交互查询应用的自定义select SQL
+                        response = appSdlSelect (request); // 交互查询模块的应用的自定义select SQL
                     } else {
                         throw new Exception ("该服务：" + serviceName + "不是交互查询类型");
                     }

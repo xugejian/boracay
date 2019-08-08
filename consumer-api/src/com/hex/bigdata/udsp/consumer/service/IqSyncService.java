@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.consumer.service;
 
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.constant.EnumTrans;
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
@@ -10,12 +9,9 @@ import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.consumer.util.Util;
-import com.hex.bigdata.udsp.iq.model.IqAppQueryCol;
 import com.hex.bigdata.udsp.iq.provider.model.IqResponse;
-import com.hex.bigdata.udsp.iq.service.IqAppQueryColService;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +46,6 @@ public class IqSyncService {
 
     @Autowired
     private IqProviderService iqProviderService;
-    @Autowired
-    private IqAppQueryColService iqAppQueryColService;
     @Autowired
     private LoggingService loggingService;
 
@@ -88,6 +82,13 @@ public class IqSyncService {
         return response;
     }
 
+    /**
+     * 异步运行（添加了超时机制）
+     *
+     * @param consumeRequest
+     * @param fileName
+     * @param bef
+     */
     public void asyncStartForTimeout(ConsumeRequest consumeRequest, final String fileName, long bef) {
         long runBef = System.currentTimeMillis ();
         Response response = null;
@@ -117,9 +118,9 @@ public class IqSyncService {
     /**
      * 同步运行
      *
-     * @param appId
-     * @param paraMap
-     * @param page
+     * @param appId 交互查询的应用ID
+     * @param paraMap 查询参数集
+     * @param page 分页信息
      * @return
      */
     public Response syncStart(String appId, Map<String, String> paraMap, Page page) {
@@ -129,10 +130,10 @@ public class IqSyncService {
     /**
      * 异步运行
      *
-     * @param appId
-     * @param paraMap
-     * @param page
-     * @return
+     * @param appId 交互查询的应用ID
+     * @param paraMap 查询参数集
+     * @param page 分页信息
+     * @return Response
      */
     public Response asyncStart(String appId, Map<String, String> paraMap, Page page, String fileName, String userName) {
         Response response = run (appId, paraMap, page);
@@ -151,10 +152,10 @@ public class IqSyncService {
     /**
      * 运行
      *
-     * @param appId
-     * @param paraMap
-     * @param page
-     * @return
+     * @param appId 交互查询的应用ID
+     * @param paraMap 查询参数集
+     * @param page 分页信息
+     * @return Response
      */
     private Response run(String appId, Map<String, String> paraMap, Page page) {
         try {

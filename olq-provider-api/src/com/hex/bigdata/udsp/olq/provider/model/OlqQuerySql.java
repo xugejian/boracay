@@ -10,7 +10,6 @@ public class OlqQuerySql {
     private OlqQuerySql() {
     }
 
-
     /**
      * 联机查询适用
      *

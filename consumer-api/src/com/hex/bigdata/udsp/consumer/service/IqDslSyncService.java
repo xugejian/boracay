@@ -45,6 +45,8 @@ public class IqDslSyncService {
     /**
      * 运行（添加了超时机制）
      *
+     * @param consumeRequest
+     * @param bef
      * @return
      */
     public Response startForTimeout(ConsumeRequest consumeRequest, long bef) {
@@ -76,9 +78,9 @@ public class IqDslSyncService {
     /**
      * 运行
      *
-     * @param mdId
-     * @param sql
-     * @return
+     * @param mdId 交互查询的元数据ID
+     * @param sql SQL语句
+     * @return Response
      */
     public Response run(String mdId, String sql) {
         try {

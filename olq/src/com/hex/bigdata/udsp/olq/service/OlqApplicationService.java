@@ -1,9 +1,6 @@
 package com.hex.bigdata.udsp.olq.service;
 
-import com.hex.bigdata.udsp.common.constant.ComExcelEnums;
-import com.hex.bigdata.udsp.common.constant.DatasourceMode;
-import com.hex.bigdata.udsp.common.constant.EnumTrans;
-import com.hex.bigdata.udsp.common.constant.YesOrNo;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.dto.ComDatasourceView;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComExcelParam;
@@ -19,6 +16,7 @@ import com.hex.bigdata.udsp.olq.dto.OlqApplicationView;
 import com.hex.bigdata.udsp.olq.dto.OlqIndexDto;
 import com.hex.bigdata.udsp.olq.model.OlqApplication;
 import com.hex.bigdata.udsp.olq.model.OlqApplicationParam;
+import com.hex.bigdata.udsp.olq.provider.model.Request;
 import com.hex.bigdata.udsp.olq.utils.SqlExpressionEvaluator;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.model.Page;
@@ -286,7 +284,9 @@ public class OlqApplicationService extends BaseService {
                 olqApplicationDto.setOlqApplication (olqApplication);
                 olqApplicationDto.setParams (olqApplicationParams);
                 MessageResult messageResult = this.uploadCheck (olqApplicationDto);
-                if (!messageResult.isStatus ()) return messageResult;
+                if (!messageResult.isStatus ()) {
+                    return messageResult;
+                }
                 olqApplicationDto = (OlqApplicationDto) messageResult.getData ();
                 String olqPkId = this.insert (olqApplicationDto);
                 if (StringUtils.isBlank (olqPkId)) {
@@ -348,7 +348,7 @@ public class OlqApplicationService extends BaseService {
         }
         List<String> paramNames = null;
         try {
-            paramNames = SqlExpressionEvaluator.parseParams2 (olqSql);
+            paramNames = SqlExpressionEvaluator.parseParams (olqSql);
         } catch (Exception e) {
             return new MessageResult (false, e.getMessage ());
         }
@@ -405,23 +405,6 @@ public class OlqApplicationService extends BaseService {
             return new MessageResult (false, "联机查询应用SQL占位符参数个数和参数列表中参数个数不一致，请检查");
         }
         return new MessageResult (true, "检查完成，数据正确！", olqApplicationDto);
-    }
-
-    /**
-     * 根据应用配置信息、参数值获取sql语句
-     *
-     * @param olqApplicationDto
-     * @param paraMap
-     * @return
-     */
-    public String getExecuteSQL(OlqApplicationDto olqApplicationDto, Map<String, String> paraMap) {
-        String sql = olqApplicationDto.getOlqApplication ().getOlqSql ();
-        List<OlqApplicationParam> appParams = olqApplicationDto.getParams ();
-        if (appParams != null && appParams.size () != 0) {
-            sql = SqlExpressionEvaluator.parseSql (sql, paraMap); // 解析字符串并批量替换表达式
-        }
-        logger.info ("SQL:" + sql);
-        return sql;
     }
 
     /**

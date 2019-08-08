@@ -46,24 +46,24 @@ public class OlqApplicationTest {
         NoSqlRequest request = new NoSqlRequest();
 
         //基础参数
-        request.setServiceName("olq_d56_cust_contact");
+        request.setServiceName("impala_test1");
         //基础参数设置-设置调用start接口
         request.setEntity(ConsumerEntity.START.getValue());
         //基础参数设置-设置同步调用，同步调用为sync，异步调用为async
         request.setType(ConsumerType.SYNC.getValue());
         //基础参数设置-设置UDSP校验用户信息，用户名及token，用户校验信息需UDSP下发
-        request.setUdspUser("BOS");
-        request.setToken("000000");
+        request.setUdspUser("test1");
+        request.setToken("123456");
 
         //设置业务参数-查询参数设置
         Map<String, String> data = new HashMap<>();
-        data.put("custId", "1301943896");
+        //data.put("custId", "1301943896");
         request.setData(data);
 
         //设置业务参数-分页参数设置
         Page page = new Page();
+        page.setPageIndex(1);
         page.setPageSize(10);
-        page.setPageIndex(2);
         request.setPage(page);
 
         //调用并获取结果
