@@ -1,10 +1,8 @@
 package com.hex.bigdata.udsp.util;
 
 import com.alibaba.fastjson.JSON;
-import com.hex.bigdata.udsp.jdbc.netty.NettyClientHandler;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -543,9 +541,10 @@ public class HttpUtils {
      */
     public static String analysisJsonContent(HttpResponse response, Charset charset) {
         String content = analysisContent(response, charset);
-        if (StringUtils.isNotBlank(content)) {
-            content = StringEscapeUtils.unescapeJava(content);
-        }
+        // JSON字符串中转义字符保留原样不需要做处理
+//        if (StringUtils.isNotBlank(content)) {
+//            content = StringEscapeUtils.unescapeJava(content);
+//        }
         return content;
     }
 
