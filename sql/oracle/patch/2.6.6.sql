@@ -43,3 +43,12 @@ update T_GF_DICT set dict_id='active.solr.zkHost' where dict_type_id='IM_DS_PROP
 update T_GF_DICT set dict_id='standby.solr.zkHost' where dict_type_id='IM_DS_PROPS_PAIR_SOLR_HBASE' and dict_id='standby.solr.url';
 
 commit;
+
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MD_PROPS_SOLR_HBASE', 'hbase.namespace', 'HBase 命名空间', null, 12, null, null, 'default', 'default');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MD_PROPS_PAIR_SOLR_HBASE', 'hbase.namespace', 'HBase 命名空间', null, 12, null, null, 'default', 'default');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.namespace', 'HBase 命名空间', null, 6, null, null, 'default', 'default');
+
+commit;

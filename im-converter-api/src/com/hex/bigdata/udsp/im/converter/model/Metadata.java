@@ -121,8 +121,6 @@ public class Metadata extends Base implements Serializable {
     }
 
     public List<MetadataCol> getMetadataCols() {
-        if (metadataCols == null || metadataCols.size() == 0)
-            throw new IllegalArgumentException("metadataCols不能为空");
         return metadataCols;
     }
 

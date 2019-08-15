@@ -6,6 +6,7 @@ import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.PairSolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.converter.model.*;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,6 +139,11 @@ public class PairSolrHBaseConverter extends PairSolrHBaseWrapper {
     private Metadata getHBaseMetadata(Metadata metadata) {
         Metadata hbaseMetadata = new Metadata (metadata);
         hbaseMetadata.setDatasource (getHBaseDatasource (metadata.getDatasource ()));
+        // HBase真实表名称
+        String hbaseNamespace = metadata.gainProperty ("hbase.namespace").getValue ();
+        if (StringUtils.isNotBlank (hbaseNamespace) && !"default".equalsIgnoreCase (hbaseNamespace)) {
+            hbaseMetadata.setTbName (hbaseNamespace + ":" + metadata.getTbName ());
+        }
         return hbaseMetadata;
     }
 
@@ -149,6 +155,9 @@ public class PairSolrHBaseConverter extends PairSolrHBaseWrapper {
     }
 
     private List<MetadataCol> getSolrMetadataCols(List<MetadataCol> metadataCols) {
+        if (metadataCols == null) {
+            return null;
+        }
         List<MetadataCol> newMetadataCols = new ArrayList<> ();
         for (MetadataCol metadataCol : metadataCols) {
             if (metadataCol.isPrimary () || metadataCol.isIndexed ()) { // 是主键或索引字段

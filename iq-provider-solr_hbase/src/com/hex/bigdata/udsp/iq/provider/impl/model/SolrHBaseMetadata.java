@@ -11,55 +11,49 @@ import java.util.Map;
 /**
  * Created by PC on 2018/8/20.
  */
-public class SolrHBaseMetadata extends Metadata {
+public class SolrHBaseMetadata extends HBaseMetadata {
     public SolrHBaseMetadata() {
     }
 
     public SolrHBaseMetadata(List<Property> properties) {
-        super(properties);
+        super (properties);
     }
 
     public SolrHBaseMetadata(Map<String, Property> propertyMap) {
-        super(propertyMap);
+        super (propertyMap);
     }
 
+    public SolrHBaseMetadata(Metadata metadata) {
+        super (metadata);
+    }
+
+    /**
+     * Solr主键字段
+     *
+     * @return
+     */
     public String gainSolrPrimaryKey() {
-        String value = gainProperty("solr.primary.key").getValue();
-        if (StringUtils.isBlank(value)) {
+        String value = gainProperty ("solr.primary.key").getValue ();
+        if (StringUtils.isBlank (value)) {
             value = "id";
         }
         return value;
     }
 
-    public String gainFqDataType() {
-        String value = gainProperty("hbase.fq.data.type").getValue();
-        if (org.apache.commons.lang3.StringUtils.isBlank(value)) {
-            value = "dsv";
-        }
-        return value;
+    public String gainHBaseNamespace() {
+        return gainProperty ("hbase.namespace").getValue ();
     }
 
-    public String gainDsvSeparator() {
-        String value = gainProperty("hbase.fq.dsv.separator").getValue();
-        if (org.apache.commons.lang3.StringUtils.isBlank(value)) {
-            value = "\\007";
+    /**
+     * HBase真实表名称
+     *
+     * @return
+     */
+    public String gainHBaseTableName() {
+        String hbaseNamespace = gainHBaseNamespace ();
+        if (StringUtils.isNotBlank (hbaseNamespace) && !"default".equalsIgnoreCase (hbaseNamespace)) {
+            return hbaseNamespace + ":" + getTbName ();
         }
-        return value;
-    }
-
-    public byte[] gainFamilyName() {
-        String value = gainProperty("hbase.family.name").getValue();
-        if (org.apache.commons.lang3.StringUtils.isBlank(value)) {
-            value = "f";
-        }
-        return Bytes.toBytes(value);
-    }
-
-    public byte[] gainQualifierName() {
-        String value = gainProperty("hbase.qualifier.name").getValue();
-        if (org.apache.commons.lang3.StringUtils.isBlank(value)) {
-            value = "q";
-        }
-        return Bytes.toBytes(value);
+        return getTbName ();
     }
 }

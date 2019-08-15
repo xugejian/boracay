@@ -24,6 +24,10 @@ public class HBaseMetadata extends Metadata {
         super(propertyMap);
     }
 
+    public HBaseMetadata(Metadata metadata) {
+        super(metadata);
+    }
+
     public String gainFqDataType() {
         String value = gainProperty("hbase.fq.data.type").getValue();
         if (StringUtils.isBlank(value)) {

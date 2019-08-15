@@ -228,12 +228,13 @@ public class HBaseUtil {
         return map;
     }
 
-    public static Map<String, String> get(HBaseDatasource datasource, String tableName, String rowkey,
+    public static Map<String, String> get(String tableName, String rowkey,
                                           Map<Integer, String> colMap, HBaseMetadata metadata) throws Exception {
         Connection conn = null;
         Table table = null;
         Map<String, String> map = null;
         try {
+            HBaseDatasource datasource = new HBaseDatasource (metadata.getDatasource ());
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
             map = get (table, rowkey, colMap, metadata.gainFamilyName (),
@@ -244,12 +245,13 @@ public class HBaseUtil {
         return map;
     }
 
-    public static List<Map<String, String>> gets(HBaseDatasource datasource, String tableName, List<String> rowkeys,
+    public static List<Map<String, String>> gets( String tableName, List<String> rowkeys,
                                                  Map<Integer, String> colMap, HBaseMetadata metadata) throws Exception {
         Connection conn = null;
         Table table = null;
         List<Map<String, String>> list = null;
         try {
+            HBaseDatasource datasource = new HBaseDatasource (metadata.getDatasource ());
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
             list = gets (table, rowkeys, colMap, metadata.gainFamilyName (),

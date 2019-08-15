@@ -6,6 +6,7 @@ import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.im.constant.DatasourceType;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.SolrHBaseWrapper;
 import com.hex.bigdata.udsp.im.converter.model.*;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +26,8 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
 
     @Override
     public boolean testDatasource(Datasource datasource) {
-        return hbaseConverter.testDatasource (getHBaseDatasource(datasource))
-                && solrConverter.testDatasource (getSolrDatasource(datasource));
+        return hbaseConverter.testDatasource (getHBaseDatasource (datasource))
+                && solrConverter.testDatasource (getSolrDatasource (datasource));
     }
 
     @Override
@@ -49,14 +50,14 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
 
     @Override
     public void dropSchema(Metadata metadata) throws Exception {
-        solrConverter.dropSchema (getSolrMetadata(metadata));
-        hbaseConverter.dropSchema (getHBaseMetadata(metadata));
+        solrConverter.dropSchema (getSolrMetadata (metadata));
+        hbaseConverter.dropSchema (getHBaseMetadata (metadata));
     }
 
     @Override
     public boolean checkSchema(Metadata metadata) throws Exception {
-        return solrConverter.checkSchema (getSolrMetadata(metadata))
-                && hbaseConverter.checkSchema (getHBaseMetadata(metadata));
+        return solrConverter.checkSchema (getSolrMetadata (metadata))
+                && hbaseConverter.checkSchema (getHBaseMetadata (metadata));
     }
 
     @Override
@@ -139,6 +140,11 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
     private Metadata getHBaseMetadata(Metadata metadata) {
         Metadata hbaseMetadata = new Metadata (metadata);
         hbaseMetadata.setDatasource (getHBaseDatasource (metadata.getDatasource ()));
+        // HBase真实表名称
+        String hbaseNamespace = metadata.gainProperty ("hbase.namespace").getValue ();
+        if (StringUtils.isNotBlank (hbaseNamespace) && !"default".equalsIgnoreCase (hbaseNamespace)) {
+            hbaseMetadata.setTbName (hbaseNamespace + ":" + metadata.getTbName ());
+        }
         return hbaseMetadata;
     }
 
@@ -150,6 +156,9 @@ public class SolrHBaseConverter extends SolrHBaseWrapper {
     }
 
     private List<MetadataCol> getSolrMetadataCols(List<MetadataCol> metadataCols) {
+        if (metadataCols == null) {
+            return null;
+        }
         List<MetadataCol> newMetadataCols = new ArrayList<> ();
         for (MetadataCol metadataCol : metadataCols) {
             if (metadataCol.isPrimary () || metadataCol.isIndexed ()) { // 是主键或索引字段

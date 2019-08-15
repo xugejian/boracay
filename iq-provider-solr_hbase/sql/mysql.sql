@@ -7,6 +7,7 @@ insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IQ_DS_PROPS_SOLR_HBASE', '交互查询-数据源配置-SOLR_HBASE', 'default');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'solr.servers', 'Solr集群的IP和端口地址，多个地址用逗号分隔，如：10.1.97.1:8983,10.1.97.2:8983,10.1.97.3:8983（注：开启Kerberos后必须使用主机名）', null, 0, null, null, 'default', null);
+
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_DS_PROPS_SOLR_HBASE', 'hbase.zk.quorum', 'HBase的Zookeeper的集群IP，多个IP用逗号分隔，如：10.1.97.1,10.1.97.2,10.1.97.3', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
@@ -51,14 +52,17 @@ insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IQ_MD_PROPS_SOLR_HBASE', '交互查询-元数据配置-SOLR+HBASE', 'default');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_MD_PROPS_SOLR_HBASE', 'solr.primary.key', 'solr主键字段名', null, 1, null, null, 'default', 'id');
+
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.family.name', 'hbase族名', null, 2, null, null, 'default', 'f');
+values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.family.name', 'HBase 族名', null, 2, null, null, 'default', 'f');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
-values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.qualifier.name', 'hbase列名', null, 3, null, null, 'default', 'q');
+values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.qualifier.name', 'HBase 列名', null, 3, null, null, 'default', 'q');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.fq.data.type', '结果数据类型，可选dsv、json，如果为dsv时hbase.fq.dsv.separator生效', null, 4, null, null, 'default', 'dsv');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.fq.dsv.separator', '结果数据分隔符，如：|、||、\007、\t、\036', null, 5, null, null, 'default', '\007');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.namespace', 'HBase 命名空间', null, 6, null, null, 'default', 'default');
 
 -- 添加IQ的接口实现类
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
