@@ -27,12 +27,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class JdbcProvider implements Provider {
     private static Logger logger = LogManager.getLogger (JdbcProvider.class);
+    private static final int FETCH_SIZE = 1024;
     private static Map<String, BasicDataSource> dataSourcePool;
 
     private synchronized BasicDataSource getDataSource(JdbcDatasource datasource) {
         String dsId = datasource.getId ();
         if (dataSourcePool == null) {
-            dataSourcePool = new ConcurrentHashMap<>();
+            dataSourcePool = new ConcurrentHashMap<> ();
         }
         BasicDataSource dataSource = dataSourcePool.remove (dsId);
         if (dataSource == null || dataSource.isClosed ()) {
@@ -174,8 +175,7 @@ public abstract class JdbcProvider implements Provider {
             } else {
                 rs = stmt.executeQuery (olqQuerySql.getPageSql ());
             }
-
-            rs.setFetchSize (1000);
+            rs.setFetchSize (FETCH_SIZE);
 
             LinkedHashMap<String, String> columns = getColumns (rs);
             response.setColumns (columns);
@@ -340,7 +340,7 @@ public abstract class JdbcProvider implements Provider {
             } else {
                 rs = stmt.executeQuery (olqQuerySql.getPageSql ());
             }
-            rs.setFetchSize (1000);
+            rs.setFetchSize (FETCH_SIZE);
 
             response.setConnection (conn);
             response.setStatement (stmt);
