@@ -12,7 +12,7 @@ public class Page {
     private long totalPage; // 总页数
     private long totalCount; // 总记录数
 
-    private String orderBy = ""; // 排序
+    private String orderBy = ""; // 排序SQL
 
     public int getPageIndex() {
         return pageIndex;
