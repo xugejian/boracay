@@ -3,7 +3,10 @@ package com.hex.bigdata.udsp.iq.service;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.api.model.Property;
-import com.hex.bigdata.udsp.common.constant.*;
+import com.hex.bigdata.udsp.common.constant.DataType;
+import com.hex.bigdata.udsp.common.constant.EnumTrans;
+import com.hex.bigdata.udsp.common.constant.Stats;
+import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
@@ -11,8 +14,8 @@ import com.hex.bigdata.udsp.common.service.ComPropertiesService;
 import com.hex.bigdata.udsp.common.util.DatasourceUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
+import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
 import com.hex.bigdata.udsp.dsl.model.*;
-import com.hex.bigdata.udsp.dsl.model.Order;
 import com.hex.bigdata.udsp.iq.model.*;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.model.*;
@@ -114,7 +117,7 @@ public class IqProviderService extends BaseService {
     }
 
     private Map<String, String> getMaxValuesParaMap(String appId, Map<String, String> paraMap) {
-        Map<String, String> maxValues = getMaxValues (appId, paraMap);
+        Map<String, String> maxValues = getMaxValues (appId);
         if (maxValues != null && maxValues.size () != 0) {
             for (Map.Entry<String, String> entry : maxValues.entrySet ()) {
                 paraMap.put (entry.getKey (), entry.getValue ());
@@ -124,7 +127,7 @@ public class IqProviderService extends BaseService {
         return paraMap;
     }
 
-    private Map<String, String> getMaxValues(String appId, Map<String, String> paraMap) {
+    private Map<String, String> getMaxValues(String appId) {
         Map<String, String> maxValues = new HashMap<> ();
         Application application = getApplication (appId);
         // 重新组织查询字段
@@ -194,10 +197,11 @@ public class IqProviderService extends BaseService {
      * 自定义SQL查询
      *
      * @param mdId
-     * @param dslRequest
+     * @param sql
      * @return
      */
-    public IqDslResponse select(String mdId, DslRequest dslRequest) {
+    public IqDslResponse select(String mdId, String sql) {
+        DslRequest dslRequest = DslSqlAdaptor.selectSqlToDslRequest (sql);
         Metadata metadata = getMetadata (mdId);
         checkDslRequest (dslRequest, metadata); // 检查和重构DslRequest
         IqDslRequest request = new IqDslRequest (dslRequest, metadata);
@@ -219,14 +223,14 @@ public class IqProviderService extends BaseService {
     private void checkDslRequest(DslRequest dslRequest, Metadata metadata) {
         Datasource datasource = metadata.getDatasource ();
         List<DataColumn> returnColumns = metadata.getReturnColumns ();
-        Map<String, DataType> returnMap = new HashMap<> ();
-        for (DataColumn col : returnColumns) {
-            returnMap.put (col.getName (), col.getType ());
-        }
         List<DataColumn> queryColumns = metadata.getQueryColumns ();
         Map<String, DataType> queryMap = new HashMap<> ();
         for (DataColumn col : queryColumns) {
             queryMap.put (col.getName (), col.getType ());
+        }
+        Map<String, DataType> returnMap = new HashMap<> ();
+        for (DataColumn col : returnColumns) {
+            returnMap.put (col.getName (), col.getType ());
         }
         // 表名
         // 注：可能有多个表名比如HBase+Solr，所以这里还是使用服务名
@@ -245,7 +249,7 @@ public class IqProviderService extends BaseService {
         // 查询字段
         Component where = dslRequest.getWhere ();
         if (where != null) {
-            checkWhere (where, queryMap);
+            checkWhere (where, queryMap, returnMap);
         }
         // 分组字段
         List<String> groupBy = dslRequest.getGroupBy ();
@@ -305,25 +309,29 @@ public class IqProviderService extends BaseService {
         }
     }
 
-    private void checkWhere(Component where, Map<String, DataType> queryMap) {
+    private void checkWhere(Component where, Map<String, DataType> queryMap, Map<String, DataType> returnMap) {
         // TODO 严格模式：判断是否有不存在的字段并抛异常
-        String message = checkWhere (queryMap, where, "");
+        String message = checkWhere (queryMap, returnMap, where, "");
         if (StringUtils.isNotBlank (message)) {
             throw new IllegalArgumentException ("Invalid where fields " + message + ".");
         }
     }
 
-    private String checkWhere(Map<String, DataType> queryMap, Component component, String message) {
+    private String checkWhere(Map<String, DataType> queryMap, Map<String, DataType> returnMap,
+                              Component component, String message) {
         if (component instanceof Composite) {
             Composite composite = (Composite) component;
             List<Component> components = composite.getComponents ();
             for (Component c : components) {
-                message = checkWhere (queryMap, c, message);
+                message = checkWhere (queryMap, returnMap, c, message);
             }
         } else if (component instanceof Dimension) {
             Dimension dimension = (Dimension) component;
             String name = dimension.getColumnName ();
-            if (queryMap.get (name) == null) {
+            if (queryMap.get (name) == null && returnMap.get (name) != null) {
+                logger.warn ("The `" + name + "` field is not recommended as a filtering condition.");
+            }
+            if (queryMap.get (name) == null && returnMap.get (name) == null) {
                 message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
             }
         }
@@ -515,7 +523,7 @@ public class IqProviderService extends BaseService {
         return metadata;
     }
 
-    public Datasource getDatasource(String dsId) {
+    private Datasource getDatasource(String dsId) {
         ComDatasource comDatasource = comDatasourceService.select (dsId);
         List<ComProperties> comPropertiesList = comPropertiesService.selectList (dsId);
         return DatasourceUtil.getDatasource (comDatasource, comPropertiesList);

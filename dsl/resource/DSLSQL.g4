@@ -108,6 +108,7 @@ logicExpression
     : fullColumnName comparisonOperator value
     | fullColumnName BETWEEN value AND value
     | fullColumnName NOT? IN '(' value (',' value)*  ')'
+    | fullColumnName IS NOT? NULL
     | '(' logicExpressions ')'
     ;
 
@@ -146,7 +147,8 @@ comparisonOperator
     | '<' '='
     | '>' '='
     | '!' '='
-    | LIKE
+    | '<' '>'
+    | NOT? LIKE
     ;
 
 value

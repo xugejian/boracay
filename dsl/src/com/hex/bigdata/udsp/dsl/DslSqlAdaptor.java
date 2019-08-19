@@ -1,15 +1,12 @@
 package com.hex.bigdata.udsp.dsl;
 
-
-import com.hex.bigdata.udsp.dsl.constant.AggregateFunction;
-import com.hex.bigdata.udsp.dsl.constant.ComparisonOperator;
-import com.hex.bigdata.udsp.dsl.constant.LogicalOperator;
-import com.hex.bigdata.udsp.dsl.constant.OrderExpression;
+import com.hex.bigdata.udsp.dsl.constant.*;
 import com.hex.bigdata.udsp.dsl.model.*;
 import com.hex.bigdata.udsp.dsl.parser.DSLSQLLexer;
 import com.hex.bigdata.udsp.dsl.parser.DSLSQLParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +52,15 @@ public class DslSqlAdaptor {
         return value;
     }
 
+    private static ColumnType valueContextToColumnType(DSLSQLParser.ValueContext valueContext) {
+        DSLSQLParser.TextLiteralContext textLiteralContext = valueContext.textLiteral ();
+        if (textLiteralContext != null) {
+            return ColumnType.STRING;
+        } else {
+            return ColumnType.NUMBER;
+        }
+    }
+
     private static ComparisonOperator transComparisonOperator(String operator) {
         operator = operator.toUpperCase ();
         ComparisonOperator comparison = ComparisonOperator.EQ;
@@ -62,6 +68,8 @@ public class DslSqlAdaptor {
             comparison = ComparisonOperator.EQ;
         } else if (ComparisonOperator.NE.getValue ().equals (operator)) {
             comparison = ComparisonOperator.NE;
+        } else if (ComparisonOperator.NE2.getValue ().equals (operator)) {
+            comparison = ComparisonOperator.NE2;
         } else if (ComparisonOperator.GE.getValue ().equals (operator)) {
             comparison = ComparisonOperator.GE;
         } else if (ComparisonOperator.LE.getValue ().equals (operator)) {
@@ -70,14 +78,20 @@ public class DslSqlAdaptor {
             comparison = ComparisonOperator.GT;
         } else if (ComparisonOperator.LT.getValue ().equals (operator)) {
             comparison = ComparisonOperator.LT;
-        } else if (ComparisonOperator.LIKE.getValue ().equals (operator)) {
-            comparison = ComparisonOperator.LIKE;
         } else if (ComparisonOperator.IN.getValue ().equals (operator)) {
             comparison = ComparisonOperator.IN;
         } else if (ComparisonOperator.NOT_IN.getValue ().equals (operator)) {
             comparison = ComparisonOperator.NOT_IN;
+        } else if (ComparisonOperator.LIKE.getValue ().equals (operator)) {
+            comparison = ComparisonOperator.LIKE;
+        } else if (ComparisonOperator.NOT_LIKE.getValue ().equals (operator)) {
+            comparison = ComparisonOperator.NOT_LIKE;
         } else if (ComparisonOperator.BETWEEN_AND.getValue ().equals (operator)) {
             comparison = ComparisonOperator.BETWEEN_AND;
+        } else if (ComparisonOperator.IS_NULL.getValue ().equals (operator)) {
+            comparison = ComparisonOperator.IS_NULL;
+        } else if (ComparisonOperator.IS_NOT_NULL.getValue ().equals (operator)) {
+            comparison = ComparisonOperator.IS_NOT_NULL;
         }
         return comparison;
     }
@@ -96,7 +110,7 @@ public class DslSqlAdaptor {
      * @param logicExpressionsContext
      * @return
      */
-    public static Component logicExpressionsContextToComponent(DSLSQLParser.LogicExpressionsContext logicExpressionsContext) {
+    private static Component logicExpressionsContextToComponent(DSLSQLParser.LogicExpressionsContext logicExpressionsContext) {
         int count = logicExpressionsContext.getChildCount ();
         // 拆分OR逻辑操作
         Map<Integer, Integer> map = new HashMap<> ();
@@ -163,29 +177,39 @@ public class DslSqlAdaptor {
                 comparison = transComparisonOperator (operator);
                 DSLSQLParser.ValueContext valueContext = valueContexts.get (0);
                 values.add (valueContextToValue (valueContext));
-                dimension = new Dimension (name, comparison, values);
+                ColumnType columnType = valueContextToColumnType (valueContext);
+                dimension = new Dimension (name, comparison, columnType, values);
             } else if (logicExpressionContext.BETWEEN () != null && logicExpressionContext.AND () != null) { // fullColumnName BETWEEN value AND value
                 DSLSQLParser.ValueContext startValueContext = valueContexts.get (0);
                 DSLSQLParser.ValueContext endValueContext = valueContexts.get (1);
                 values.add (valueContextToValue (startValueContext));
                 values.add (valueContextToValue (endValueContext));
-                dimension = new Dimension (name, ComparisonOperator.BETWEEN_AND, values);
+                ColumnType columnType = valueContextToColumnType (startValueContext);
+                dimension = new Dimension (name, ComparisonOperator.BETWEEN_AND, columnType, values);
             } else if (logicExpressionContext.IN () != null) { // fullColumnName NOT? IN '(' value (',' value)*  ')'
-                for (DSLSQLParser.ValueContext valueContext : valueContexts) {
-                    values.add (valueContextToValue (valueContext));
-                }
                 if (logicExpressionContext.NOT () != null) { // NOT IN
                     comparison = ComparisonOperator.NOT_IN;
                 } else { // IN
                     comparison = ComparisonOperator.IN;
                 }
-                dimension = new Dimension (name, comparison, values);
+                for (DSLSQLParser.ValueContext valueContext : valueContexts) {
+                    values.add (valueContextToValue (valueContext));
+                }
+                ColumnType columnType = valueContextToColumnType (valueContexts.get (0));
+                dimension = new Dimension (name, comparison, columnType, values);
+            } else if (logicExpressionContext.IS () != null && logicExpressionContext.NULL () != null) { // fullColumnName IS NOT? NULL
+                if (logicExpressionContext.NOT () != null) { // IS NOT NULL
+                    comparison = ComparisonOperator.IS_NOT_NULL;
+                } else { // IS NULL
+                    comparison = ComparisonOperator.IS_NULL;
+                }
+                dimension = new Dimension (name, comparison);
             }
         }
         return dimension;
     }
 
-    public static Limit limitClauseContextToLimit(DSLSQLParser.LimitClauseContext limitClauseContext) {
+    private static Limit limitClauseContextToLimit(DSLSQLParser.LimitClauseContext limitClauseContext) {
         int offset = 0;
         int limit = 1;
         DSLSQLParser.DecimalLiteralContext limitContext = limitClauseContext.limit;
@@ -199,7 +223,7 @@ public class DslSqlAdaptor {
         return new Limit (limit, offset);
     }
 
-    public static List<String> groupByCaluseContextToGroupBy(DSLSQLParser.GroupByCaluseContext groupByCaluseContext) {
+    private static List<String> groupByCaluseContextToGroupBy(DSLSQLParser.GroupByCaluseContext groupByCaluseContext) {
         List<String> list = new ArrayList<> ();
         List<DSLSQLParser.GroupByItemContext> groupByItemContexts = groupByCaluseContext.groupByItem ();
         for (DSLSQLParser.GroupByItemContext groupByItemContext : groupByItemContexts) {
@@ -208,7 +232,7 @@ public class DslSqlAdaptor {
         return list;
     }
 
-    public static List<Order> orderByClauseContextToOrderBy(DSLSQLParser.OrderByClauseContext orderByClauseContext) {
+    private static List<Order> orderByClauseContextToOrderBy(DSLSQLParser.OrderByClauseContext orderByClauseContext) {
         List<Order> list = new ArrayList<> ();
         List<DSLSQLParser.OrderByExpressionContext> orderByExpressionContexts = orderByClauseContext.orderByExpression ();
         for (DSLSQLParser.OrderByExpressionContext orderByExpressionContext : orderByExpressionContexts) {
@@ -222,7 +246,7 @@ public class DslSqlAdaptor {
         return list;
     }
 
-    public static List<Column> selectElementsContextToSelect(DSLSQLParser.SelectElementsContext selectElementsContext) {
+    private static List<Column> selectElementsContextToSelect(DSLSQLParser.SelectElementsContext selectElementsContext) {
         List<Column> list = new ArrayList<> ();
         if (selectElementsContext.star != null) {
             list.add (new Column ("*"));
@@ -325,4 +349,158 @@ public class DslSqlAdaptor {
         dslRequest.setLimit (limit);
         return dslRequest;
     }
+
+    private String getSelectStatement(List<Column> columns) {
+        if (columns == null || columns.size () == 0) {
+            return "";
+        }
+        String str = "";
+        for (int i = 0, l = columns.size (); i < l; i++) {
+            str += (i == 0 ? "\n" : "\n, ") + getSelectStatement (columns.get (i));
+        }
+        return str;
+    }
+
+    private static String getSelectStatement(Column column) {
+        String alias = column.getAlias ();
+        Aggregate aggregate = column.getAggregate ();
+        String str = aggregate.getName ();
+        AggregateFunction aggFun = aggregate.getAggFun ();
+        if (aggFun != null) {
+            str = getAggExp (aggFun, str);
+        }
+        if (StringUtils.isNotBlank (alias)) {
+            str += " AS " + alias;
+        }
+        return str;
+    }
+
+    private static String getAggExp(AggregateFunction aggFun, String name) {
+        switch (aggFun.getValue ()) {
+            case "SUM":
+                return "SUM(" + name + ")";
+            case "AVG":
+                return "AVG(" + name + ")";
+            case "MAX":
+                return "MAX(" + name + ")";
+            case "MIN":
+                return "MIN(" + name + ")";
+            case "COUNT":
+                return "COUNT(" + name + ")";
+            case "COUNT DISTINCT":
+                return "COUNT(DISTINCT " + name + ")";
+        }
+        return name;
+    }
+
+    private static String getOrderByStatement(List<Order> orderBy) {
+        if (orderBy == null || orderBy.size () == 0) {
+            return "";
+        }
+        String str = "ORDER BY";
+        for (int i = 0, l = orderBy.size (); i < l; i++) {
+            str += (i == 0 ? " " : ", ") + getOrderStatement (orderBy.get (i));
+        }
+        return str;
+    }
+
+    private static String getOrderStatement(Order order) {
+        String str = order.getName ();
+        OrderExpression orderExp = order.getOrderExp ();
+        if (orderExp != null) {
+            str = getOrderExp (orderExp, str);
+        }
+        return str;
+    }
+
+    private static String getOrderExp(OrderExpression orderExp, String column) {
+        switch (orderExp.getValue ()) {
+            case "DESC":
+                return column + " DESC";
+            default:
+                return column + " ASC";
+        }
+    }
+
+    private static String getGroupByStatement(List<String> groupBy) {
+        if (groupBy == null || groupBy.size () == 0) {
+            return "";
+        }
+        String str = "GROUP BY";
+        for (int i = 0, l = groupBy.size (); i < l; i++) {
+            str += (i == 0 ? " " : ", ") + groupBy.get (i);
+        }
+        return str;
+    }
+
+    private static String getWhereStatement(Component where) {
+        if (where == null) {
+            return "";
+        }
+        return "WHERE " + getComponentStatement (where);
+    }
+
+    private static String getComponentStatement(Component component) {
+        if (component instanceof Dimension) {
+            return getDimensionStatement ((Dimension) component);
+        } else if (component instanceof Composite) {
+            Composite composite = (Composite) component;
+            LogicalOperator logiOper = composite.getLogiOper ();
+            List<Component> components = composite.getComponents ();
+            String str = "";
+            for (int i = 0, l = components.size (); i < l; i++) {
+                str += (i == 0 ? " " : " " + logiOper.getValue () + " ") + getComponentStatement (components.get (i));
+            }
+            return str;
+        }
+        return null;
+    }
+
+    private static String getDimensionStatement(Dimension dimension) {
+        String columnName = dimension.getColumnName ();
+        ComparisonOperator compOper = dimension.getCompOper ();
+        List<String> values = getValues (dimension.getColumnType (), dimension.getValues ());
+        switch (compOper.getValue ()) {
+            case "=":
+            case "!=":
+            case "<>":
+            case ">":
+            case "<":
+            case ">=":
+            case "<=":
+            case "LIKE":
+            case "NOT LIKE":
+                return (values == null || values.size () == 0) ? "1 = 1" :
+                        columnName + " " + compOper.getValue () + " " + values.get (0);
+            case "BETWEEN AND":
+                return (values == null || values.size () < 2) ? "1 = 1" :
+                        "(" + columnName + " >= " + values.get (0) + " AND " + columnName + " <= " + values.get (1) + ")";
+            case "IN":
+            case "NOT IN":
+                return (values == null || values.size () == 0) ? "1 = 1" :
+                        columnName + " " + compOper.getValue () + " (" + StringUtils.join (values, ",") + ")";
+            case "IS NULL":
+            case "IS NOT NULL":
+                return columnName + " " + compOper.getValue ();
+        }
+        return null;
+    }
+
+    private static List<String> getValues(ColumnType columnType, List<String> values) {
+        List<String> newValues = new ArrayList<> ();
+        for (String value : values) {
+            newValues.add (getValue (columnType, value));
+        }
+        return newValues;
+    }
+
+    private static String getValue(ColumnType columnType, String value) {
+        switch (columnType.getValue ()) {
+            case "STRING":
+                return "'" + value + "'";
+            default:
+                return value;
+        }
+    }
+
 }

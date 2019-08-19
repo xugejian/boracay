@@ -84,8 +84,7 @@ public class IqDslSyncService {
      */
     public Response run(String mdId, String sql) {
         try {
-            DslRequest dslRequest = DslSqlAdaptor.selectSqlToDslRequest (sql);
-            IqDslResponse iqDslResponse = iqProviderService.select (mdId, dslRequest);
+            IqDslResponse iqDslResponse = iqProviderService.select (mdId, sql);
             Response response = new Response ();
             response.setStatus (iqDslResponse.getStatus ().getValue ());
             response.setStatusCode (iqDslResponse.getStatusCode ().getValue ());

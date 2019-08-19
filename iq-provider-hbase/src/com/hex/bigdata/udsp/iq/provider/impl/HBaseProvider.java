@@ -5,6 +5,8 @@ import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.dsl.model.Component;
+import com.hex.bigdata.udsp.dsl.model.DslRequest;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseMetadata;
@@ -112,6 +114,7 @@ public class HBaseProvider implements Provider {
             HBasePage hbasePage = new HBasePage (page.getPageSize (), page.getPageIndex (), startRow, stopRow);
             hbasePage = HBaseUtil.scanPage (hbaseDatasource, tbName, hbasePage, colMap, hbaseMetadata);
             List<Map<String, String>> records = hbasePage.getRecords ();
+            // TODO 这里是分页后再排序的，实际上没有满足排序分页的要求
             records = Util.orderBy (records, orderColumns); // 排序处理
             records = Util.tranRecords (records, returnColumns); // 字段过滤并字段名改别名
             response.setRecords (records);
@@ -364,101 +367,14 @@ public class HBaseProvider implements Provider {
     }
 
     @Override
-    public IqDslResponse select(IqDslRequest request) { throw new RuntimeException ("HBase目前暂时不支持自定义DSL");
-    }
+    public IqDslResponse select(IqDslRequest request) {
+        logger.debug ("request=" + JSONUtil.parseObj2JSON (request));
+        Metadata metadata = request.getMetadata ();
+        DslRequest dslRequest = request.getRequest ();
+        Component where = dslRequest.getWhere ();
 
-//    @Override
-//    public IqDslResponse select(IqDslRequest request) {
-//        logger.debug ("select=" + JSONUtil.parseObj2JSON (request));
-//        Metadata metadata = request.getMetadata ();
-//        String tbName = metadata.getTbName ();
-//        Map<String, DataColumn> queryMap = new HashMap<> ();
-//        List<DataColumn> metaQueryColumns = metadata.getQueryColumns ();
-//        for (DataColumn column : metaQueryColumns) {
-//            queryMap.put (column.getName (), column);
-//        }
-//        List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
-//        HBaseMetadata hbaseMetadata = new HBaseMetadata (metadata.getPropertyMap ());
-//        HBaseDatasource hbaseDatasource = new HBaseDatasource (metadata.getDatasource ());
-//
-//        DslRequest dslRequest = request.getRequest ();
-//        Component where = dslRequest.getWhere ();
-//        dslRequest.getLimit ();
-//        List<QueryColumn> queryColumns = checkWhere (queryMap, where, new ArrayList<QueryColumn> ());
-//        String startRow = getStartRow (queryColumns);
-//        String stopRow = getStopRow (queryColumns);
-//        logger.debug ("startRow:" + startRow + ", startRow:" + startRow);
-//        Map<Integer, String> colMap = getColMap (metaReturnColumns);
-//        HBasePage hbasePage = new HBasePage (page.getPageSize (), page.getPageIndex (), startRow, stopRow);
-//        hbasePage = scanPage (hbaseDatasource, tbName, hbasePage, colMap, hbaseMetadata);
-//        List<Map<String, String>> list = hbasePage.getRecords ();
-//        response.setRecords (getRecords (list, returnColumns)); // 字段过滤并字段名改别名
-//        page.setTotalCount (hbasePage.getTotalCount ());
-//        response.setPage (page);
-//        response.setStatus (Status.SUCCESS);
-//        response.setStatusCode (StatusCode.SUCCESS);
-//        return null;
-//    }
-//
-//    private List<QueryColumn> checkWhere(Map<String, DataColumn> queryMap, Component component,
-//                                         List<QueryColumn> queryColumns) {
-//        if (component instanceof Composite) {
-//            Composite composite = (Composite) component;
-//            List<Component> components = composite.getComponents ();
-//            for (Component c : components) {
-//                queryColumns = checkWhere (queryMap, c, queryColumns);
-//            }
-//        } else if (component instanceof Dimension) {
-//            Dimension dimension = (Dimension) component;
-//            String name = dimension.getColumnName ();
-//            DataColumn column = queryMap.get (name);
-//            QueryColumn queryColumn = new QueryColumn ();
-//            queryColumn.setName (name);
-//            queryColumn.setSeq (column.getSeq ());
-//            queryColumn.setDescribe (column.getDescribe ());
-//            queryColumn.setType (column.getType ());
-//            queryColumn.setLabel (name);
-//            queryColumn.setLength (column.getLength ());
-//            queryColumn.setOperator (tranOperator (dimension.getCompOper ()));
-//            queryColumn.setValue (tranValue (dimension.getValues ()));
-//            if (DataType.TIMESTAMP == column.getType ()) {
-//                queryColumn.setNeed (false);
-//            } else {
-//                queryColumn.setNeed (true);
-//            }
-//            queryColumns.add (queryColumn);
-//        }
-//        return queryColumns;
-//    }
-//
-//    private String tranValue(List<String> values) {
-//        String value = "";
-//        for (String val : values) {
-//            value += (StringUtils.isBlank (value) ? "" : ",") + val;
-//        }
-//        return value;
-//    }
-//
-//    private Operator tranOperator(ComparisonOperator compOper) {
-//        if (ComparisonOperator.EQ == compOper) {
-//            return Operator.EQ;
-//        } else if (ComparisonOperator.NE == compOper) {
-//            return Operator.NE;
-//        } else if (ComparisonOperator.GT == compOper) {
-//            return Operator.GT;
-//        } else if (ComparisonOperator.LT == compOper) {
-//            return Operator.LT;
-//        } else if (ComparisonOperator.GE == compOper) {
-//            return Operator.GE;
-//        } else if (ComparisonOperator.LE == compOper) {
-//            return Operator.LE;
-//        } else if (ComparisonOperator.IN == compOper) {
-//            return Operator.IN;
-//        } else if (ComparisonOperator.LIKE == compOper) {
-//            return Operator.LK;
-//        } else {
-//            throw new IllegalArgumentException ("不支持" + compOper.getValue () + "操作类型");
-//        }
-//    }
+
+        throw new RuntimeException ("HBase目前暂时不支持自定义DSL");
+    }
 
 }
