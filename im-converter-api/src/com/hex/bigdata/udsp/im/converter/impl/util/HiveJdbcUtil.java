@@ -22,14 +22,17 @@ public class HiveJdbcUtil {
     private static Logger logger = LogManager.getLogger(HiveJdbcUtil.class);
     private static Map<String, HiveStatement> hiveStatementPool = new HashMap<>();
 
+    // 这里的锁是类锁
     public static synchronized HiveStatement getHiveStatement(String key) {
         return hiveStatementPool.get(key);
     }
 
+    // 这里的锁是类锁
     public static synchronized void removeHiveStatement(String key) {
         hiveStatementPool.remove(key);
     }
 
+    // 这里的锁是类锁
     public static synchronized void putHiveStatement(String key, HiveStatement statement) {
         hiveStatementPool.put(key, statement);
     }

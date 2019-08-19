@@ -56,7 +56,6 @@ public class JdbcDatasource extends Datasource {
         return gainProperty("max.active").getValue();
     }
 
-    @Deprecated
     public String gainValidationQueryTimeout() {
         return gainProperty("validation.query.timeout").getValue();
     }

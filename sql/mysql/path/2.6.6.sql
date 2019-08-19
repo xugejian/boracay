@@ -43,3 +43,22 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_MD_PROPS_PAIR_SOLR_HBASE', 'hbase.namespace', 'HBase 命名空间', null, 12, null, null, 'default', 'default');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.namespace', 'HBase 命名空间', null, 6, null, null, 'default', 'default');
+
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_DB2' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_DSL' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_HIVE' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_IMPALA' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_INCEPTOR' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_KYLIN' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_MYSQL' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_ORACLE' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_PGSQL' and dict_id='remove.abandoned.timeout';

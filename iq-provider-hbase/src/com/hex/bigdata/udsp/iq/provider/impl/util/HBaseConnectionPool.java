@@ -31,16 +31,14 @@ public class HBaseConnectionPool {
         }
     }
 
-    private static Map<String, Connection> pool;
+    /**
+     * 测试发现这里使用ConcurrentHashMap线程安全Map高并发时反而会导致HBase连接线程无限上涨，而使用HashMap却不会有这个问题。
+     */
+    private static Map<String, Connection> pool = new HashMap<> ();
 
+    // 这里的锁是类锁
     public static synchronized Connection getConnection(HBaseDatasource datasource) {
         String dsId = datasource.getId ();
-        if (pool == null) {
-            /**
-             * 测试发现这里使用ConcurrentHashMap线程安全Map高并发时反而会导致HBase连接线程无限上涨，而使用HashMap却不会有这个问题。
-             */
-            pool = new HashMap<> ();
-        }
         Connection conn = pool.remove (dsId);
         if (conn == null || conn.isClosed () || conn.isAborted ()) {
             Configuration conf = HBaseConfiguration.create ();

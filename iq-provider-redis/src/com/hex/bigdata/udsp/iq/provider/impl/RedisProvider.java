@@ -2,11 +2,13 @@ package com.hex.bigdata.udsp.iq.provider.impl;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.constant.*;
+import com.hex.bigdata.udsp.common.constant.Operator;
+import com.hex.bigdata.udsp.common.constant.Status;
+import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.iq.provider.Provider;
-import com.hex.bigdata.udsp.iq.provider.impl.factory.RedisConnectionPoolFactory;
 import com.hex.bigdata.udsp.iq.provider.impl.model.RedisDatasource;
+import com.hex.bigdata.udsp.iq.provider.impl.util.RedisUtil;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslRequest;
 import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslResponse;
@@ -23,7 +25,6 @@ import java.util.*;
  */
 public class RedisProvider implements Provider {
     private static Logger logger = LogManager.getLogger (RedisProvider.class);
-    private static Map<String, RedisConnectionPoolFactory> dataSourcePool;
     private static final String rkSep = "|";
     private static final String tableColumnSeq = ":";
 
@@ -118,23 +119,6 @@ public class RedisProvider implements Provider {
         return response;
     }
 
-    private synchronized RedisConnectionPoolFactory getDataSource(RedisDatasource datasource) {
-        String dsId = datasource.getId ();
-        if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<String, RedisConnectionPoolFactory> ();
-        }
-        RedisConnectionPoolFactory factory = dataSourcePool.remove (dsId);
-        if (factory == null) {
-            factory = new RedisConnectionPoolFactory (datasource);
-        }
-        dataSourcePool.put (dsId, factory);
-        return factory;
-    }
-
-    private Jedis getConnection(RedisDatasource datasource) {
-        return getDataSource (datasource).getConnection ();
-    }
-
     private List<Map<String, String>> search(String fqSep, String queryString, RedisDatasource datasource,
                                              List<DataColumn> returnColumns, Page page) {
         int pageIndex = page.getPageIndex ();
@@ -146,9 +130,7 @@ public class RedisProvider implements Provider {
 
     private List<Map<String, String>> search(String fqSep, String queryString, RedisDatasource datasource,
                                              List<DataColumn> returnColumns, int startRow, int endRow) {
-        RedisConnectionPoolFactory redisConnectionPoolFactory = getDataSource (datasource);
-        Jedis jedis = redisConnectionPoolFactory.getConnection ();
-
+        Jedis jedis = RedisUtil.getConnection (datasource);
         List<Map<String, String>> records = new ArrayList<> ();
         String[] returnResults;
         Map<String, String> record;
@@ -166,31 +148,25 @@ public class RedisProvider implements Provider {
                 records.add (record);
             }
         } finally {
-            if (jedis != null) {
-                redisConnectionPoolFactory.release (jedis);
-            }
+            RedisUtil.release (datasource, jedis);
         }
         return records;
     }
 
 
     private int getCountNum(String queryString, RedisDatasource datasource) {
-        RedisConnectionPoolFactory redisConnectionPoolFactory = getDataSource (datasource);
-        Jedis jedis = redisConnectionPoolFactory.getConnection ();
+        Jedis jedis = RedisUtil.getConnection (datasource);
         //获取模糊匹配的key
         try {
             Set<String> keys = jedis.keys (queryString);
             return keys.size ();
         } finally {
-            if (jedis != null) {
-                redisConnectionPoolFactory.release (jedis);
-            }
+            RedisUtil.release (datasource, jedis);
         }
     }
 
     private List<Map<String, String>> search(String fqSep, String queryString, RedisDatasource datasource, List<DataColumn> returnColumns, int maxNum) {
-        RedisConnectionPoolFactory redisConnectionPoolFactory = getDataSource (datasource);
-        Jedis jedis = redisConnectionPoolFactory.getConnection ();
+        Jedis jedis = RedisUtil.getConnection (datasource);
 
         List<Map<String, String>> records = new ArrayList<> ();
         String[] returnResults;
@@ -213,9 +189,7 @@ public class RedisProvider implements Provider {
                 }
             }
         } finally {
-            if (jedis != null) {
-                redisConnectionPoolFactory.release (jedis);
-            }
+            RedisUtil.release (datasource, jedis);
         }
         return records;
     }
@@ -225,14 +199,12 @@ public class RedisProvider implements Provider {
         Jedis jedis = null;
         RedisDatasource redisDatasource = new RedisDatasource (datasource);
         try {
-            jedis = getConnection (redisDatasource);
+            jedis = RedisUtil.getConnection (redisDatasource);
             return jedis.isConnected ();
         } catch (Exception e) {
             e.printStackTrace ();
         } finally {
-            if (jedis != null) {
-                getDataSource (redisDatasource).release (jedis);
-            }
+            RedisUtil.release (redisDatasource, jedis);
         }
         return false;
     }
