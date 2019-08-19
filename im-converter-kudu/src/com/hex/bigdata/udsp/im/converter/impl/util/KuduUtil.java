@@ -24,13 +24,11 @@ import java.util.Map;
  */
 public class KuduUtil {
     private static Logger logger = LogManager.getLogger(KuduUtil.class);
-    private static Map<String, KuduClientPoolFactory> dataSourcePool;
+    private static Map<String, KuduClientPoolFactory> dataSourcePool = new HashMap<>();
 
+    // 这里的锁是类锁
     public static synchronized KuduClientPoolFactory getDataSource(KuduDatasource datasource) {
         String dsId = datasource.getId();
-        if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<>();
-        }
         KuduClientPoolFactory factory = dataSourcePool.remove(dsId);
         if (factory == null) {
             GenericObjectPool.Config config = new GenericObjectPool.Config();

@@ -30,16 +30,14 @@ public class HBaseAggregationClientPool {
         }
     }
 
-    private static Map<String, AggregationClient> pool;
+    /**
+     * 测试发现这里使用ConcurrentHashMap线程安全Map高并发时反而会导致HBase连接线程无限上涨，而使用HashMap却不会有这个问题。
+     */
+    private static Map<String, AggregationClient> pool = new HashMap<> ();;
 
+    // 这里的锁是类锁
     public static synchronized AggregationClient getAggregationClient(HBaseDatasource datasource) {
         String dsId = datasource.getId ();
-        if (pool == null) {
-            /**
-             * 测试发现这里使用ConcurrentHashMap线程安全Map高并发时反而会导致HBase连接线程无限上涨，而使用HashMap却不会有这个问题。
-             */
-            pool = new HashMap<> ();
-        }
         AggregationClient client = pool.remove (dsId);
         if (client == null) {
             Configuration conf = HBaseConfiguration.create ();

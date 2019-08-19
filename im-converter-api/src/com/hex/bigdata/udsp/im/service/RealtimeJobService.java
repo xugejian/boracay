@@ -94,8 +94,9 @@ public class RealtimeJobService {
     public void checkRealtimeStatus() {
         String key = "CHECK_REALTIME_STATUS";
         synchronized (key.intern ()) { // 单节点上锁（主要防止多线程并发资源不同步问题）
-            if (initParamService.isUseClusterRedisLock ())
+            if (initParamService.isUseClusterRedisLock ()) {
                 redisLock.lock (key); // 分布式上锁 （主要防止多节点并发资源不同步问题）
+            }
             try {
                 logger.debug (new Date () + ": Check Realtime Status Job doing something...");
                 List<RealtimeTotalInfo> realtimeTotalInfos = realtimeTotalService.selectList ();

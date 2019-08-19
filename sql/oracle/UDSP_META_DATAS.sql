@@ -2533,6 +2533,27 @@ values ('IQ_MD_PROPS_SOLR_HBASE', 'hbase.namespace', 'HBase 命名空间', null,
 
 commit;
 
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_DB2' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_DSL' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_HIVE' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_IMPALA' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_INCEPTOR' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_KYLIN' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_MYSQL' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_ORACLE' and dict_id='remove.abandoned.timeout';
+update T_GF_DICT set dict_name='回收没用的连接超时时间，单位秒', filter='180'
+where dict_type_id='OLQ_DS_PROPS_PGSQL' and dict_id='remove.abandoned.timeout';
+
+commit;
+
 set feedback on
 set define on
 prompt Done.
