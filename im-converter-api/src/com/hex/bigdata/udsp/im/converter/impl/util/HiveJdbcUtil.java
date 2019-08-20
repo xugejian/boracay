@@ -12,15 +12,15 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by JunjieM on 2017-9-22.
  */
 public class HiveJdbcUtil {
     private static Logger logger = LogManager.getLogger(HiveJdbcUtil.class);
-    private static Map<String, HiveStatement> hiveStatementPool = new HashMap<>();
+    private static Map<String, HiveStatement> hiveStatementPool = new ConcurrentHashMap<> ();
 
     // 这里的锁是类锁
     public static synchronized HiveStatement getHiveStatement(String key) {
