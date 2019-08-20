@@ -560,7 +560,7 @@ public class ImModelService {
         }
         //修改数据库中建模的状态
         imModel.setStatus(status);
-        synchronized (imModel.getPkId()) {
+        synchronized (imModel.getPkId().intern ()) {
             result = imModelMapper.update(imModel.getPkId(), imModel);
         }
         return result;
