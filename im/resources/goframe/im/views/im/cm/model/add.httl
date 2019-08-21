@@ -509,7 +509,7 @@ ${extends("/goframe/function_layout.httl")}
                         filterCols.push({
                             "colId": "",
                             "name": data[i].name,
-                            "type": data[i].type ? "STRING" : data[i].type,
+                            "type": data[i].type ? data[i].type : "STRING",
                             "length": data[i].type == "STRING" ? "" : data[i].length,
                             "describe": data[i].describe ? data[i].describe : data[i].name,
                             "indexed": data[i].indexed ? 0 : 1,

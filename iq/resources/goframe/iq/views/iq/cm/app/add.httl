@@ -445,10 +445,10 @@ ${extends("/goframe/function_layout.httl")}
                     cols.push({
                         "name": data[i].name,
                         "describe": data[i].describe,
-                        "length": data[i].length,
+                        "length": data[i].length == "STRING" ? "" : data[i].length,
                         "note": data[i].note,
                         "label": data[i].name,
-                        "type": data[i].colType,
+                        "type": data[i].colType ? data[i].colType : "STRING",
                         "operator": "==",
                         "isNeed": "0",
                         "isOfferOut": "0"
@@ -475,10 +475,10 @@ ${extends("/goframe/function_layout.httl")}
                     cols.push({
                         "name": data[i].name,
                         "describe": data[i].describe,
-                        "length": data[i].length,
+                        "length": data[i].length == "STRING" ? "" : data[i].length,
                         "note": data[i].note,
                         "label": data[i].name,
-                        "type": data[i].colType,
+                        "type": data[i].colType ? data[i].colType : "STRING",
                         "stats": "none"
                     });
                 }

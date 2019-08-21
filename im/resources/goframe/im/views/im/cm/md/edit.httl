@@ -853,7 +853,7 @@ ${extends("/goframe/function_layout.httl")}
         $.each(data, function (i, val) {
             cols.push({
                 "name": val.name,
-                "type": val.type ? "STRING" : val.type,
+                "type": val.type ? val.type : "STRING",
                 "length": val.type == "STRING" ? "" : val.length,
                 "describe": val.describe ? val.describe : val.name,
                 "indexed": val.indexed ? 0 : 1,

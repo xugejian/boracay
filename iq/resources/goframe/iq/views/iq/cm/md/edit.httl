@@ -890,7 +890,7 @@ ${extends("/goframe/function_layout.httl")}
                 cols.push({
                     "name": val.name,
                     "describe": val.describe ? val.describe : val.name,
-                    "colType": val.type ? val.type : 'STRING',
+                    "colType": val.type ? val.type : "STRING",
                     "length": val.length,
                     "note": val.note
                 });

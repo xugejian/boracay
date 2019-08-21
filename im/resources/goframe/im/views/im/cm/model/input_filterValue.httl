@@ -64,25 +64,8 @@ ${extends("/goframe/function_layout.httl")}
 
     function save(){
         var result = true;
-        var message;
         var modelfilterValue = [];
-        /*if($(".nui-textbox").length > 0){
 
-            $.each($(".nui-textbox"), function (_index, record) {
-                //校验是否是必输
-                var isNeed = record.required;
-                var value = $(record).val().trim();
-                var name = $(record).attr("name");
-                var describe = $(record).attr("describe");
-                //比输入项为空
-                if(isNeed && (value == null || value == undefined || value == "")){
-                    result = false;
-                    message = describe + "不能为空";
-                }else{
-                    modelfilterValue.push({"label":name,"value":value});
-                }
-            });
-        }else{*/
         var filterForm = new nui.Form("#filterForm");
         filterForm.validate();
         if (filterForm.isValid() == false) {
@@ -93,10 +76,8 @@ ${extends("/goframe/function_layout.httl")}
                 modelfilterValue.push({"label":_index,"value":record});
             });
         }
-        /*}*/
 
         //基础信息栏数据校验
-
         if (result == false) {
             returnData.status = false;
         }else{
