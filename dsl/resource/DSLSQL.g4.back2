@@ -88,12 +88,7 @@ showServicesStatement
     ;
 
 selectStatement
-    : SELECT selectElements FROM subSelectStatement (whereClause)? (groupByCaluse)? (orderByClause)? (limitClause)?
-    ;
-
-subSelectStatement
-    : serviceName
-    | '(' selectStatement ')' AS? serviceName
+    : SELECT selectElements FROM serviceName (whereClause)? (groupByCaluse)? (orderByClause)? (limitClause)?
     ;
 
 selectElements

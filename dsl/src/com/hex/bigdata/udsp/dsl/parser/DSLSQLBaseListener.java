@@ -66,6 +66,18 @@ public class DSLSQLBaseListener implements DSLSQLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSubSelectStatement(DSLSQLParser.SubSelectStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSubSelectStatement(DSLSQLParser.SubSelectStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSelectElements(DSLSQLParser.SelectElementsContext ctx) { }
 	/**
 	 * {@inheritDoc}

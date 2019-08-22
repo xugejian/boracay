@@ -47,6 +47,13 @@ public class DSLSQLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitSubSelectStatement(DSLSQLParser.SubSelectStatementContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitSelectElements(DSLSQLParser.SelectElementsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

@@ -1,18 +1,12 @@
 package com.hex.bigdata.udsp.dsl;
 
-import com.hex.bigdata.udsp.dsl.constant.ColumnType;
-import com.hex.bigdata.udsp.dsl.constant.ComparisonOperator;
-import com.hex.bigdata.udsp.dsl.constant.LogicalOperator;
-import com.hex.bigdata.udsp.dsl.constant.OrderExpression;
+import com.hex.bigdata.udsp.dsl.constant.*;
 import com.hex.bigdata.udsp.dsl.model.*;
 import com.hex.bigdata.udsp.dsl.parser.DSLSQLLexer;
 import com.hex.bigdata.udsp.dsl.parser.DSLSQLParser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,17 +17,7 @@ import java.util.Map;
  * DSLSQL的适配器
  */
 public class DslSqlAdaptor {
-    private static Logger logger = LogManager.getLogger (DslSqlAdaptor.class);
 
-    private static final String ALTERNATIVE_OPERATOR = "${subSelectSql}";
-
-    /**
-     * 获取DSLSQLParser
-     *
-     * @param sql
-     * @return
-     * @throws RuntimeException
-     */
     public static DSLSQLParser getDSLSQLParser(String sql) throws RuntimeException {
         // 新建一个输入流，从标准输入读取数据
         ANTLRInputStream input = new ANTLRInputStream (sql);
@@ -47,105 +31,6 @@ public class DslSqlAdaptor {
 //        parser.setErrorHandler(new BailErrorStrategy ()); // 设置错误处理的策略类
         parser.addErrorListener (DescriptiveErrorListener.INSTANCE); // 设置错误处理的监听类
         return parser;
-    }
-
-    /**
-     * 获取真实的文本，包含空格、指标符和换行符
-     *
-     * @param sql
-     * @param context
-     * @return
-     */
-    public static String getText(String sql, ParserRuleContext context) {
-        int startIndex = context.getStart ().getStartIndex ();
-        int stopIndex = context.getStop ().getStopIndex ();
-        return sql.substring (startIndex, stopIndex + 1);
-    }
-
-    /**
-     * SQL字符串解析成对象
-     *
-     * @param sql SQL语法
-     * @return
-     */
-    public static DslSelectSql sqlToObject(String sql) {
-        DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
-        DSLSQLParser.SelectStatementContext selectStatementContext = parser.selectStatement ();
-        // lowest SelectStatementContext
-        DSLSQLParser.SelectStatementContext lowestSelectStatementContext = lowestSelectStatementContext (selectStatementContext);
-        // serviceName
-        DSLSQLParser.ServiceNameContext serviceNameContext = lowestSelectStatementContext.subSelectStatement ().serviceName ();
-        String serviceName = serviceNameContext.getText ();
-        // select
-        String select = null;
-        DSLSQLParser.SelectElementsContext selectElementsContext = lowestSelectStatementContext.selectElements ();
-        if (selectElementsContext != null) {
-            select = getText (sql, selectElementsContext);
-        }
-        // where
-        Component where = null;
-        DSLSQLParser.WhereClauseContext whereClauseContext = lowestSelectStatementContext.whereClause ();
-        if (whereClauseContext != null) {
-            DSLSQLParser.LogicExpressionsContext logicExpressionsContext = whereClauseContext.logicExpressions ();
-            where = DslSqlAdaptor.logicExpressionsContextToComponent (logicExpressionsContext);
-        }
-        // group by
-        List<String> groupBy = null;
-        DSLSQLParser.GroupByCaluseContext groupByCaluseContext = lowestSelectStatementContext.groupByCaluse ();
-        if (groupByCaluseContext != null) {
-            groupBy = DslSqlAdaptor.groupByCaluseContextToGroupBy (groupByCaluseContext);
-        }
-        // order by
-        List<Order> orderBy = null;
-        DSLSQLParser.OrderByClauseContext orderByClauseContext = lowestSelectStatementContext.orderByClause ();
-        if (orderByClauseContext != null) {
-            orderBy = DslSqlAdaptor.orderByClauseContextToOrderBy (orderByClauseContext);
-        }
-        // limit
-        Limit limit = null;
-        DSLSQLParser.LimitClauseContext limitClauseContext = lowestSelectStatementContext.limitClause ();
-        if (limitClauseContext != null) {
-            limit = DslSqlAdaptor.limitClauseContextToLimit (limitClauseContext);
-        }
-        // 封装DslSql
-        DslSql dslSql = new DslSql ();
-        dslSql.setName (serviceName);
-        dslSql.setSelect (select);
-        dslSql.setWhere (where);
-        dslSql.setGroupBy (groupBy);
-        dslSql.setOrderBy (orderBy);
-        dslSql.setLimit (limit);
-        // 封装DslSelectSql
-        DslSelectSql dslSelectSql = new DslSelectSql ();
-        dslSelectSql.setDslSql (dslSql);
-        logger.info ("sql: " + sql);
-        dslSelectSql.setSourceSql (sql);
-        String fakeSql = getFakeSql (sql, lowestSelectStatementContext);
-        logger.info ("fakeSql: " + fakeSql);
-        dslSelectSql.setFakeSql (fakeSql);
-        return dslSelectSql;
-    }
-
-    private static String getFakeSql(String sql, ParserRuleContext context) {
-        int startIndex = context.getStart ().getStartIndex ();
-        int stopIndex = context.getStop ().getStopIndex ();
-        String fakeSqlPrefix = sql.substring (0, startIndex);
-        String fakeSqlSuffix = sql.substring (stopIndex + 1);
-        return fakeSqlPrefix + ALTERNATIVE_OPERATOR + fakeSqlSuffix;
-    }
-
-    /**
-     * 递归获取最底层的子Select SQL对象
-     *
-     * @param selectStatementContext
-     * @return
-     */
-    public static DSLSQLParser.SelectStatementContext lowestSelectStatementContext(DSLSQLParser.SelectStatementContext selectStatementContext) {
-        DSLSQLParser.SubSelectStatementContext subSelectStatementContext = selectStatementContext.subSelectStatement ();
-        if (subSelectStatementContext.getChildCount () == 1) {
-            return selectStatementContext;
-        }
-        return lowestSelectStatementContext (subSelectStatementContext.selectStatement ());
     }
 
     private static String textLiteralToValue(String textLiteral) {
@@ -366,53 +251,115 @@ public class DslSqlAdaptor {
     }
 
     /**
-     * 对象解析成SQL字符串
+     * SQL字符串解析成DslSql对象
      *
-     * @param dslSelectSql
+     * @param sql SQL语法
      * @return
      */
-    public static String objectToSql(DslSelectSql dslSelectSql) {
-        String fakeSql = dslSelectSql.getFakeSql ();
-        logger.info ("fakeSql: " + fakeSql);
-        String subSql = dslSqlToSql (dslSelectSql.getDslSql ());
-        logger.info ("subSql: " + subSql);
-        String sql = fakeSql.replace (ALTERNATIVE_OPERATOR, subSql);
-        logger.info ("sql: " + sql);
-        return sql;
+    public static DslSql sqlStrToDslSql(String sql) {
+        DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
+        DSLSQLParser.SelectStatementContext selectStatementContext = parser.selectStatement ();
+        // serviceName
+        DSLSQLParser.ServiceNameContext serviceNameContext = selectStatementContext.serviceName ();
+        String serviceName = serviceNameContext.getText ();
+        // select
+        String select = null;
+        DSLSQLParser.SelectElementsContext selectElementsContext = selectStatementContext.selectElements ();
+        if (selectElementsContext != null) {
+            select = DslSqlAdaptor.selectElementsContextToSelect (selectElementsContext);
+        }
+        // where
+        Component where = null;
+        DSLSQLParser.WhereClauseContext whereClauseContext = selectStatementContext.whereClause ();
+        if (whereClauseContext != null) {
+            DSLSQLParser.LogicExpressionsContext logicExpressionsContext = whereClauseContext.logicExpressions ();
+            where = DslSqlAdaptor.logicExpressionsContextToComponent (logicExpressionsContext);
+        }
+        // group by
+        List<String> groupBy = null;
+        DSLSQLParser.GroupByCaluseContext groupByCaluseContext = selectStatementContext.groupByCaluse ();
+        if (groupByCaluseContext != null) {
+            groupBy = DslSqlAdaptor.groupByCaluseContextToGroupBy (groupByCaluseContext);
+        }
+        // order by
+        List<Order> orderBy = null;
+        DSLSQLParser.OrderByClauseContext orderByClauseContext = selectStatementContext.orderByClause ();
+        if (orderByClauseContext != null) {
+            orderBy = DslSqlAdaptor.orderByClauseContextToOrderBy (orderByClauseContext);
+        }
+        // limit
+        Limit limit = null;
+        DSLSQLParser.LimitClauseContext limitClauseContext = selectStatementContext.limitClause ();
+        if (limitClauseContext != null) {
+            limit = DslSqlAdaptor.limitClauseContextToLimit (limitClauseContext);
+        }
+        // 封装
+        DslSql dslSql = new DslSql ();
+        dslSql.setName (serviceName);
+        dslSql.setSelect (select);
+        dslSql.setWhere (where);
+        dslSql.setGroupBy (groupBy);
+        dslSql.setOrderBy (orderBy);
+        dslSql.setLimit (limit);
+        return dslSql;
     }
 
-    private static String dslSqlToSql(DslSql dslSql) {
-        return selectToStatement (dslSql.getSelect ())
-                + fromToStatement (dslSql.getName ())
-                + whereToStatement (dslSql.getWhere ())
-                + groupByToStatement (dslSql.getGroupBy ())
-                + orderByToStatement (dslSql.getOrderBy ())
-                + limitToStatement (dslSql.getLimit ());
+    /**
+     * DslSql对象解析成SQL字符串
+     *
+     * @param dslSql
+     * @return
+     */
+    public static String dslSqlToSqlStr(DslSql dslSql) {
+        return getSelectStatement (dslSql.getSelect ())
+                + getFromStatement (dslSql.getName ())
+                + getWhereStatement (dslSql.getWhere ())
+                + getGroupByStatement (dslSql.getGroupBy ())
+                + getOrderByStatement (dslSql.getOrderBy ())
+                + getLimitStatement (dslSql.getLimit ());
     }
 
-    private static String fromToStatement(String tableName) {
+    private static String getFromStatement(String tableName) {
         return " FROM " + tableName;
     }
 
-    private static String selectToStatement(String select) {
+    private static String getSelectStatement(String select) {
         if (StringUtils.isBlank (select)) {
             return "";
         }
         return "SELECT " + select;
     }
 
-    private static String orderByToStatement(List<Order> orderBy) {
+    private static String getAggExp(AggregateFunction aggFun, String name) {
+        switch (aggFun.getValue ()) {
+            case "SUM":
+                return "SUM(" + name + ")";
+            case "AVG":
+                return "AVG(" + name + ")";
+            case "MAX":
+                return "MAX(" + name + ")";
+            case "MIN":
+                return "MIN(" + name + ")";
+            case "COUNT":
+                return "COUNT(" + name + ")";
+            case "COUNT DISTINCT":
+                return "COUNT(DISTINCT " + name + ")";
+        }
+        return name;
+    }
+
+    private static String getOrderByStatement(List<Order> orderBy) {
         if (orderBy == null || orderBy.size () == 0) {
             return "";
         }
         String str = " ORDER BY ";
         for (int i = 0, l = orderBy.size (); i < l; i++) {
-            str += (i == 0 ? "" : ", ") + orderToStatement (orderBy.get (i));
+            str += (i == 0 ? "" : ", ") + getOrderStatement (orderBy.get (i));
         }
         return str;
     }
 
-    private static String orderToStatement(Order order) {
+    private static String getOrderStatement(Order order) {
         String str = order.getName ();
         OrderExpression orderExp = order.getOrderExp ();
         if (orderExp != null) {
@@ -430,7 +377,7 @@ public class DslSqlAdaptor {
         }
     }
 
-    private static String groupByToStatement(List<String> groupBy) {
+    private static String getGroupByStatement(List<String> groupBy) {
         if (groupBy == null || groupBy.size () == 0) {
             return "";
         }
@@ -441,36 +388,31 @@ public class DslSqlAdaptor {
         return str;
     }
 
-    private static String whereToStatement(Component where) {
+    private static String getWhereStatement(Component where) {
         if (where == null) {
             return "";
         }
-        return " WHERE " + componentToStatement (where);
+        return " WHERE " + getComponentStatement (where);
     }
 
-    /**
-     * 递归解析Component
-     *
-     * @param component
-     * @return
-     */
-    public static String componentToStatement(Component component) {
+    // 递归
+    public static String getComponentStatement(Component component) {
         if (component instanceof Dimension) {
-            return dimensionToStatement ((Dimension) component);
+            return getDimensionStatement ((Dimension) component);
         } else if (component instanceof Composite) {
             Composite composite = (Composite) component;
             LogicalOperator logiOper = composite.getLogiOper ();
             List<Component> components = composite.getComponents ();
             String str = "";
             for (int i = 0, l = components.size (); i < l; i++) {
-                str += (i == 0 ? " " : " " + logiOper.getValue () + " ") + componentToStatement (components.get (i));
+                str += (i == 0 ? " " : " " + logiOper.getValue () + " ") + getComponentStatement (components.get (i));
             }
             return str;
         }
         return null;
     }
 
-    private static String dimensionToStatement(Dimension dimension) {
+    private static String getDimensionStatement(Dimension dimension) {
         String columnName = dimension.getColumnName ();
         ComparisonOperator compOper = dimension.getCompOper ();
         List<String> values = getValues (dimension.getColumnType (), dimension.getValues ());
@@ -517,7 +459,7 @@ public class DslSqlAdaptor {
         }
     }
 
-    private static String limitToStatement(Limit limit) {
+    private static String getLimitStatement(Limit limit) {
         if (limit == null || limit.getLimit () == 0) {
             return "";
         }

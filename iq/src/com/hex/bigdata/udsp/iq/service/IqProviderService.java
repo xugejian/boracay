@@ -208,17 +208,18 @@ public class IqProviderService extends BaseService {
      */
     public IqDslResponse select(String mdId, String sql) {
         IqDslResponse response = new IqDslResponse ();
-        DslSql dslSql = DslSqlAdaptor.sqlStrToDslSql (sql);
+        DslSelectSql dslSelectSql = DslSqlAdaptor.sqlToObject (sql);
+        DslSql dslSql = dslSelectSql.getDslSql ();
         Metadata metadata = getMetadata (mdId);
 
         checkDslSql (dslSql, metadata); // 检查和重构DslSql
 
         Component where = dslSql.getWhere ();
-        String h2TableName = TBL_PREFIX + DigestUtils.md5Hex (dslSql.getName () + " "
-                + DslSqlAdaptor.getComponentStatement (dslSql.getWhere ()));
+        String h2TableName = TBL_PREFIX + DigestUtils.md5Hex (dslSql.getName () + " " + DslSqlAdaptor.componentToStatement (where));
         logger.info ("h2TableName: " + h2TableName);
         dslSql.setName (h2TableName);
         dslSql.setWhere (null);
+        dslSelectSql.setDslSql (dslSql);
 
         synchronized (h2TableName.intern ()) {
             if (h2Aggregator.isReload (h2TableName)) {
@@ -234,7 +235,7 @@ public class IqProviderService extends BaseService {
                 h2Aggregator.load (h2TableName, getH2DataColumns (metadata.getReturnColumns ()), response.getRecords ());
             }
             // query from h2 database
-            H2Response h2Response = h2Aggregator.query (DslSqlAdaptor.dslSqlToSqlStr (dslSql));
+            H2Response h2Response = h2Aggregator.query (DslSqlAdaptor.objectToSql (dslSelectSql));
             response.setStatus (Status.SUCCESS);
             response.setStatusCode (StatusCode.SUCCESS);
             response.setColumns (h2Response.getColumns ());

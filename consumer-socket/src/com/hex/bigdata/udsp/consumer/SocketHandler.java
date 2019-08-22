@@ -98,7 +98,9 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 ParseTree parse = context.getChild (0);
                 if (parse instanceof DSLSQLParser.SelectStatementContext) { // select ...
                     logger.debug ("select ...");
-                    String serviceName = ((DSLSQLParser.SelectStatementContext) parse).serviceName ().getText ();
+                    DSLSQLParser.SelectStatementContext selectStatementContext = (DSLSQLParser.SelectStatementContext) parse;
+                    String serviceName = DslSqlAdaptor.lowestSelectStatementContext (selectStatementContext)
+                            .subSelectStatement ().serviceName ().getText ();
                     logger.debug ("serviceName:" + serviceName);
                     request.setServiceName (serviceName); // 设置serviceName
                     String serviceType = consumerService.getServiceType (serviceName);
