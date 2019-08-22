@@ -2,25 +2,36 @@ package com.hex.bigdata.udsp.iq.provider.model.dsl;
 
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
-import com.hex.bigdata.udsp.dsl.model.DslResponse;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 自定义SQL响应类
  */
 public class IqDslResponse {
 
-    private DslResponse dslResponse; // 响应信息
+    private List<Map<String, String>> records; // 返回结果集
+    private LinkedHashMap<String, String> columns; // 返回字段信息
     private long consumeTime; // 持续时间(毫秒)
     private Status status; // 状态
     private StatusCode statusCode; // 状态码
     private String message; // 信息
 
-    public DslResponse getDslResponse() {
-        return dslResponse;
+    public List<Map<String, String>> getRecords() {
+        return records;
     }
 
-    public void setDslResponse(DslResponse dslResponse) {
-        this.dslResponse = dslResponse;
+    public void setRecords(List<Map<String, String>> records) {
+        this.records = records;
+    }
+
+    public LinkedHashMap<String, String> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(LinkedHashMap<String, String> columns) {
+        this.columns = columns;
     }
 
     public long getConsumeTime() {

@@ -14,7 +14,6 @@ public class UdspDriver implements Driver {
         try {
             DriverManager.registerDriver(new UdspDriver());
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

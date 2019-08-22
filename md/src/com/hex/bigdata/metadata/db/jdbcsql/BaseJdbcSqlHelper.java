@@ -34,7 +34,6 @@ public abstract class BaseJdbcSqlHelper extends BaseHelper implements JdbcSqlHel
         if (StringUtils.isEmpty(sql)) {
             return null;
         }
-        // TODO ...
         return null;
     }
 

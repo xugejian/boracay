@@ -2,11 +2,16 @@ package com.hex.bigdata.udsp.iq.provider.impl;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.constant.*;
+import com.hex.bigdata.udsp.common.constant.Operator;
+import com.hex.bigdata.udsp.common.constant.Status;
+import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.dsl.constant.ComparisonOperator;
+import com.hex.bigdata.udsp.dsl.constant.LogicalOperator;
 import com.hex.bigdata.udsp.dsl.model.Component;
-import com.hex.bigdata.udsp.dsl.model.DslRequest;
+import com.hex.bigdata.udsp.dsl.model.Composite;
+import com.hex.bigdata.udsp.dsl.model.Dimension;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseDatasource;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseMetadata;
@@ -53,18 +58,10 @@ public class HBaseProvider implements Provider {
                     return obj1.getSeq ().compareTo (obj2.getSeq ());
                 }
             });
-            List<ReturnColumn> returnColumns = application.getReturnColumns ();
+            List<Map<String, String>> records = getRecords (metadata, queryColumns);
             List<OrderColumn> orderColumns = application.getOrderColumns ();
-            List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
-            String tbName = metadata.getTbName ();
-            HBaseMetadata hbaseMetadata = new HBaseMetadata (metadata.getPropertyMap ());
-            HBaseDatasource hbaseDatasource = new HBaseDatasource (metadata.getDatasource ());
-            String startRow = getStartRow (queryColumns);
-            String stopRow = getStopRow (queryColumns);
-            logger.debug ("startRow:" + startRow + ", startRow:" + startRow);
-            Map<Integer, String> colMap = getColMap (metaReturnColumns);
-            List<Map<String, String>> records = HBaseUtil.scan (hbaseDatasource, tbName, startRow, stopRow, colMap, hbaseMetadata);
             records = Util.orderBy (records, orderColumns); // 排序处理
+            List<ReturnColumn> returnColumns = application.getReturnColumns ();
             response.setRecords (Util.tranRecords (records, returnColumns)); // 字段过滤并字段名改别名
             response.setStatus (Status.SUCCESS);
             response.setStatusCode (StatusCode.SUCCESS);
@@ -101,21 +98,12 @@ public class HBaseProvider implements Provider {
                     return obj1.getSeq ().compareTo (obj2.getSeq ());
                 }
             });
-            List<ReturnColumn> returnColumns = application.getReturnColumns ();
-            List<OrderColumn> orderColumns = application.getOrderColumns ();
-            List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
-            String tbName = metadata.getTbName ();
-            HBaseMetadata hbaseMetadata = new HBaseMetadata (metadata.getPropertyMap ());
-            HBaseDatasource hbaseDatasource = new HBaseDatasource (metadata.getDatasource ());
-            String startRow = getStartRow (queryColumns);
-            String stopRow = getStopRow (queryColumns);
-            logger.debug ("startRow:" + startRow + ", startRow:" + startRow);
-            Map<Integer, String> colMap = getColMap (metaReturnColumns);
-            HBasePage hbasePage = new HBasePage (page.getPageSize (), page.getPageIndex (), startRow, stopRow);
-            hbasePage = HBaseUtil.scanPage (hbaseDatasource, tbName, hbasePage, colMap, hbaseMetadata);
+            HBasePage hbasePage = getHBasePage (metadata, queryColumns, page);
             List<Map<String, String>> records = hbasePage.getRecords ();
             // TODO 这里是分页后再排序的，实际上没有满足排序分页的要求
+            List<OrderColumn> orderColumns = application.getOrderColumns ();
             records = Util.orderBy (records, orderColumns); // 排序处理
+            List<ReturnColumn> returnColumns = application.getReturnColumns ();
             records = Util.tranRecords (records, returnColumns); // 字段过滤并字段名改别名
             response.setRecords (records);
             page.setTotalCount (hbasePage.getTotalCount ());
@@ -136,6 +124,34 @@ public class HBaseProvider implements Provider {
 
         logger.debug ("consumeTime=" + response.getConsumeTime ());
         return response;
+    }
+
+    private HBasePage getHBasePage(Metadata metadata, List<QueryColumn> queryColumns, Page page) throws Exception {
+        List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
+        String tbName = metadata.getTbName ();
+        HBaseMetadata hbaseMetadata = new HBaseMetadata (metadata.getPropertyMap ());
+        HBaseDatasource hbaseDatasource = new HBaseDatasource (metadata.getDatasource ());
+        String startRow = getStartRow (queryColumns);
+        String stopRow = getStopRow (queryColumns);
+        logger.debug ("startRow:" + startRow + ", startRow:" + startRow);
+        Map<Integer, String> colMap = getColMap (metaReturnColumns);
+        HBasePage hbasePage = new HBasePage (page.getPageSize (), page.getPageIndex (), startRow, stopRow);
+        return HBaseUtil.scanPage (hbaseDatasource, tbName, hbasePage, colMap, hbaseMetadata);
+    }
+
+    private List<Map<String, String>> getRecords(Metadata metadata, List<QueryColumn> queryColumns) throws Exception {
+        if (queryColumns == null || queryColumns.size () == 0) {
+            throw new IllegalArgumentException ("HBase需要一至多个查询字段进行查询");
+        }
+        List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
+        String tbName = metadata.getTbName ();
+        HBaseMetadata hbaseMetadata = new HBaseMetadata (metadata.getPropertyMap ());
+        HBaseDatasource hbaseDatasource = new HBaseDatasource (metadata.getDatasource ());
+        String startRow = getStartRow (queryColumns);
+        String stopRow = getStopRow (queryColumns);
+        logger.debug ("startRow:" + startRow + ", startRow:" + startRow);
+        Map<Integer, String> colMap = getColMap (metaReturnColumns);
+        return HBaseUtil.scan (hbaseDatasource, tbName, startRow, stopRow, colMap, hbaseMetadata);
     }
 
     private String getStartRow(List<QueryColumn> queryColumns) {
@@ -187,7 +203,9 @@ public class HBaseProvider implements Provider {
             if (!rangeIsNull) {
                 throw new IllegalArgumentException ("范围开始值不为空时，其前面的选填项值也不可为空");
             }
-            if (Operator.GE.equals (operator)) break; // 退出
+            if (Operator.GE.equals (operator)) {
+                break; // 退出
+            }
         }
         return startRow;
     }
@@ -208,7 +226,7 @@ public class HBaseProvider implements Provider {
                 throw new IllegalArgumentException ("必输项" + label + "值不可为空");
             }
             if (!Operator.EQ.equals (operator) && !Operator.GE.equals (operator) && !Operator.LE.equals (operator)) {
-                throw new IllegalArgumentException ("只支持等于、大于等于和小于等于操作");
+                throw new IllegalArgumentException ("HBase只支持等于、大于等于和小于等于操作");
             }
             // 只能是等于或小于等于操作
             if (Operator.EQ.equals (operator) || Operator.LE.equals (operator)) {
@@ -241,7 +259,9 @@ public class HBaseProvider implements Provider {
             if (!rangeIsNull) {
                 throw new IllegalArgumentException ("范围结束值不为空时，其前面的选填项值也不可为空");
             }
-            if (Operator.LE.equals (operator)) break; // 退出
+            if (Operator.LE.equals (operator)) {
+                break; // 退出
+            }
         }
         return stopRow;
     }
@@ -369,12 +389,99 @@ public class HBaseProvider implements Provider {
     @Override
     public IqDslResponse select(IqDslRequest request) {
         logger.debug ("request=" + JSONUtil.parseObj2JSON (request));
-        Metadata metadata = request.getMetadata ();
-        DslRequest dslRequest = request.getRequest ();
-        Component where = dslRequest.getWhere ();
+        long bef = System.currentTimeMillis ();
+        IqDslResponse response = new IqDslResponse ();
 
+        try {
+            Metadata metadata = request.getMetadata ();
+            Map<String, DataColumn> columns = new HashMap<> ();
+            for (DataColumn column : metadata.getQueryColumns ()) {
+                columns.put (column.getName (), column);
+            }
+            Component component = request.getComponent ();
+            List<QueryColumn> queryColumns = component (component, columns); // Component递归解析成List<QueryColumn>
 
-        throw new RuntimeException ("HBase目前暂时不支持自定义DSL");
+            List<Map<String, String>> records = getRecords (metadata, queryColumns);
+            response.setRecords (records);
+            response.setStatus (Status.SUCCESS);
+            response.setStatusCode (StatusCode.SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace ();
+            response.setStatus (Status.DEFEAT);
+            response.setStatusCode (StatusCode.DEFEAT);
+            response.setMessage (e.getMessage ());
+            logger.warn (e.toString ());
+        }
+
+        long now = System.currentTimeMillis ();
+        long consumeTime = now - bef;
+        response.setConsumeTime (consumeTime);
+
+        logger.debug ("consumeTime=" + response.getConsumeTime ());
+        return response;
+    }
+
+    private List<QueryColumn> component(Component component, Map<String, DataColumn> columns) {
+        List<QueryColumn> queryColumns = new ArrayList<> ();
+        if (component instanceof Composite) {
+            Composite composite = (Composite) component;
+            LogicalOperator logiOper = composite.getLogiOper ();
+            if (LogicalOperator.OR == logiOper) {
+                throw new IllegalArgumentException ("HBase只支持AND查询");
+            }
+            List<Component> components = composite.getComponents ();
+            for (Component c : components) {
+                queryColumns.addAll (component (c, columns));
+            }
+        } else if (component instanceof Dimension) {
+            Dimension dimension = (Dimension) component;
+            DataColumn column = columns.get (dimension.getColumnName ());
+            queryColumns.add (getQueryColumn (dimension, column));
+        }
+        return queryColumns;
+    }
+
+    private QueryColumn getQueryColumn(Dimension dimension, DataColumn column) {
+        String columnName = dimension.getColumnName ();
+        ComparisonOperator compOper = dimension.getCompOper ();
+        List<String> values = dimension.getValues ();
+        QueryColumn queryColumn = new QueryColumn ();
+        queryColumn.setName (columnName);
+        queryColumn.setLabel (columnName);
+        Operator operator = null;
+        switch (compOper) {
+            case EQ:
+                operator = Operator.EQ;
+                break;
+            case GE:
+                operator = Operator.GE;
+                break;
+            case LE:
+                operator = Operator.LE;
+                break;
+            case NE:
+            case NE2:
+            case GT:
+            case LT:
+            case IN:
+            case LIKE:
+            case NOT_LIKE:
+            case NOT_IN:
+            case IS_NOT_NULL:
+            case IS_NULL:
+            case BETWEEN_AND:
+            default:
+                throw new IllegalArgumentException ("HBase只支持等于、大于等于和小于等于操作");
+        }
+        queryColumn.setOperator (operator);
+        if (values != null && values.size () != 0 && ComparisonOperator.EQ == compOper) {
+            queryColumn.setNeed (true);
+        }
+        if (values != null && values.size () != 0) {
+            queryColumn.setValue (values.get (0));
+        }
+        queryColumn.setLength (column.getLength ());
+        return queryColumn;
     }
 
 }

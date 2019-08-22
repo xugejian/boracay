@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.task;
+package com.hex.bigdata.udsp.common.task;
 
 import com.hex.bigdata.udsp.common.util.CreateFileUtil;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +35,6 @@ public class TempFileCleanTask {
          * 检查路径
          */
         String checkPath = CreateFileUtil.getLocalDirPath();
-        System.err.println(checkPath);
         File fileDir = new File(checkPath);
         //判断临时文件文件夹是否存在
         if (!fileDir.exists()) {

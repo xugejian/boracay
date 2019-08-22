@@ -1,12 +1,13 @@
 package com.hex.bigdata.udsp.iq.service;
 
+import com.hex.bigdata.udsp.common.aggregator.H2Aggregator;
+import com.hex.bigdata.udsp.common.aggregator.constant.H2DataType;
+import com.hex.bigdata.udsp.common.aggregator.model.H2DataColumn;
+import com.hex.bigdata.udsp.common.aggregator.model.H2Response;
 import com.hex.bigdata.udsp.common.api.model.Datasource;
 import com.hex.bigdata.udsp.common.api.model.Page;
 import com.hex.bigdata.udsp.common.api.model.Property;
-import com.hex.bigdata.udsp.common.constant.DataType;
-import com.hex.bigdata.udsp.common.constant.EnumTrans;
-import com.hex.bigdata.udsp.common.constant.Stats;
-import com.hex.bigdata.udsp.common.constant.Status;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.model.ComDatasource;
 import com.hex.bigdata.udsp.common.model.ComProperties;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
@@ -16,6 +17,7 @@ import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
 import com.hex.bigdata.udsp.dsl.model.*;
+import com.hex.bigdata.udsp.dsl.model.Order;
 import com.hex.bigdata.udsp.iq.model.*;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.model.*;
@@ -24,6 +26,7 @@ import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslResponse;
 import com.hex.goframe.dao.GFDictMapper;
 import com.hex.goframe.model.GFDict;
 import com.hex.goframe.service.BaseService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
@@ -42,6 +45,7 @@ public class IqProviderService extends BaseService {
     private static Logger logger = LogManager.getLogger (IqProviderService.class);
     private static final String IQ_IMPL_CLASS = "IQ_IMPL_CLASS";
     private static final String MAX_VALUE_EXPRESSION = "${maxValue}";
+    private static final String TBL_PREFIX = "TMP_";
 
     private static final FastDateFormat format8 = FastDateFormat.getInstance ("yyyyMMdd");
     private static final FastDateFormat format10 = FastDateFormat.getInstance ("yyyy-MM-dd");
@@ -66,6 +70,8 @@ public class IqProviderService extends BaseService {
     private IqAppOrderColService iqAppOrderColService;
     @Autowired
     private GFDictMapper gfDictMapper;
+    @Autowired
+    private H2Aggregator h2Aggregator;
 
     /**
      * 获取字段信息
@@ -201,26 +207,80 @@ public class IqProviderService extends BaseService {
      * @return
      */
     public IqDslResponse select(String mdId, String sql) {
-        DslRequest dslRequest = DslSqlAdaptor.selectSqlToDslRequest (sql);
+        IqDslResponse response = new IqDslResponse ();
+        DslSql dslSql = DslSqlAdaptor.sqlStrToDslSql (sql);
         Metadata metadata = getMetadata (mdId);
-        checkDslRequest (dslRequest, metadata); // 检查和重构DslRequest
-        IqDslRequest request = new IqDslRequest (dslRequest, metadata);
-        Datasource datasource = metadata.getDatasource ();
-        IqDslResponse response = getProviderImpl (datasource).select (request);
-        response.getDslResponse ().setColumns (returnColumns (dslRequest)); // 设置返回字段信息
+
+        checkDslSql (dslSql, metadata); // 检查和重构DslSql
+
+        Component where = dslSql.getWhere ();
+        String h2TableName = TBL_PREFIX + DigestUtils.md5Hex (dslSql.getName () + " "
+                + DslSqlAdaptor.getComponentStatement (dslSql.getWhere ()));
+        logger.info ("h2TableName: " + h2TableName);
+        dslSql.setName (h2TableName);
+        dslSql.setWhere (null);
+
+        synchronized (h2TableName.intern ()) {
+            if (h2Aggregator.isReload (h2TableName)) {
+                // query from iq datasource
+                IqDslRequest request = new IqDslRequest (metadata, where);
+                Datasource datasource = metadata.getDatasource ();
+                response = getProviderImpl (datasource).select (request);
+                if (StatusCode.SUCCESS != response.getStatusCode ()
+                        || response.getRecords () == null || response.getRecords ().size () == 0) {
+                    return response;
+                }
+                // load to h2 database
+                h2Aggregator.load (h2TableName, getH2DataColumns (metadata.getReturnColumns ()), response.getRecords ());
+            }
+            // query from h2 database
+            H2Response h2Response = h2Aggregator.query (DslSqlAdaptor.dslSqlToSqlStr (dslSql));
+            response.setStatus (Status.SUCCESS);
+            response.setStatusCode (StatusCode.SUCCESS);
+            response.setColumns (h2Response.getColumns ());
+            response.setRecords (h2Response.getRecords ());
+        }
+
         return response;
     }
 
-    private LinkedHashMap<String, String> returnColumns(DslRequest dslRequest) {
-        List<Column> select = dslRequest.getSelect ();
-        LinkedHashMap<String, String> columnMap = new LinkedHashMap<> ();
-        for (Column column : select) {
-            columnMap.put (column.getAggregate ().getName (), column.getAggregate ().getDataType ().getName ());
+    private List<H2DataColumn> getH2DataColumns(List<DataColumn> columns) {
+        List<H2DataColumn> h2Columns = new ArrayList<> ();
+        for (DataColumn column : columns) {
+            h2Columns.add (getH2DataColumn (column));
         }
-        return columnMap;
+        return h2Columns;
     }
 
-    private void checkDslRequest(DslRequest dslRequest, Metadata metadata) {
+    private H2DataColumn getH2DataColumn(DataColumn column) {
+        switch (column.getType ()) {
+            case VARCHAR:
+                return new H2DataColumn (column.getName (), H2DataType.VARCHAR, column.getLength ());
+            case CHAR:
+                return new H2DataColumn (column.getName (), H2DataType.CHAR, column.getLength ());
+            case DECIMAL:
+                return new H2DataColumn (column.getName (), H2DataType.DECIMAL, column.getLength ());
+            case BIGINT:
+                return new H2DataColumn (column.getName (), H2DataType.BIGINT);
+            case DOUBLE:
+                return new H2DataColumn (column.getName (), H2DataType.DOUBLE);
+            case INT:
+                return new H2DataColumn (column.getName (), H2DataType.INT);
+            case SMALLINT:
+                return new H2DataColumn (column.getName (), H2DataType.SMALLINT);
+            case TIMESTAMP:
+                return new H2DataColumn (column.getName (), H2DataType.TIMESTAMP);
+            case BOOLEAN:
+                return new H2DataColumn (column.getName (), H2DataType.BOOLEAN);
+            case TINYINT:
+                return new H2DataColumn (column.getName (), H2DataType.TINYINT);
+            case STRING:
+            default:
+                return new H2DataColumn (column.getName (), H2DataType.VARCHAR, "" + Integer.MAX_VALUE);
+        }
+    }
+
+    private void checkDslSql(DslSql dslSql, Metadata metadata) {
         Datasource datasource = metadata.getDatasource ();
         List<DataColumn> returnColumns = metadata.getReturnColumns ();
         List<DataColumn> queryColumns = metadata.getQueryColumns ();
@@ -232,37 +292,23 @@ public class IqProviderService extends BaseService {
         for (DataColumn col : returnColumns) {
             returnMap.put (col.getName (), col.getType ());
         }
-        // 表名
-        // 注：可能有多个表名比如HBase+Solr，所以这里还是使用服务名
-        //dslRequest.setName (metadata.getTbName ());
-        // 返回字段
-        List<Column> select = dslRequest.getSelect ();
-        if (select.size () == 1 && "*".equals (select.get (0).getAlias ())) {
-            select = new ArrayList<> ();
-            for (DataColumn col : returnColumns) {
-                select.add (new Column (null, new Aggregate (col.getName (), col.getType ())));
-            }
-            dslRequest.setSelect (select);
-        } else {
-            checkSelect (select, returnMap);
-        }
         // 查询字段
-        Component where = dslRequest.getWhere ();
+        Component where = dslSql.getWhere ();
         if (where != null) {
-            checkWhere (where, queryMap, returnMap);
+            checkWhere (where, queryMap);
         }
         // 分组字段
-        List<String> groupBy = dslRequest.getGroupBy ();
+        List<String> groupBy = dslSql.getGroupBy ();
         if (groupBy != null && groupBy.size () != 0) {
             checkGroupBy (groupBy, returnMap);
         }
         // 排序字段
-        List<Order> orderBy = dslRequest.getOrderBy ();
+        List<Order> orderBy = dslSql.getOrderBy ();
         if (orderBy != null && orderBy.size () != 0) {
             checkOrderBy (orderBy, returnMap);
         }
         // 限制
-        Limit limit = dslRequest.getLimit ();
+        Limit limit = dslSql.getLimit ();
         if (limit != null) {
             checkLimit (limit, datasource);
         }
@@ -283,7 +329,7 @@ public class IqProviderService extends BaseService {
     }
 
     private void checkOrderBy(List<Order> orderBy, Map<String, DataType> returnMap) {
-        // TODO 严格模式：判断是否有不存在的字段并抛异常
+        // 严格模式：判断是否有不存在的字段并抛异常
         String message = "";
         for (Order order : orderBy) {
             String name = order.getName ();
@@ -297,7 +343,7 @@ public class IqProviderService extends BaseService {
     }
 
     private void checkGroupBy(List<String> groupBy, Map<String, DataType> returnMap) {
-        // TODO 严格模式：判断是否有不存在的字段并抛异常
+        // 严格模式：判断是否有不存在的字段并抛异常
         String message = "";
         for (String name : groupBy) {
             if (returnMap.get (name) == null) {
@@ -309,29 +355,25 @@ public class IqProviderService extends BaseService {
         }
     }
 
-    private void checkWhere(Component where, Map<String, DataType> queryMap, Map<String, DataType> returnMap) {
-        // TODO 严格模式：判断是否有不存在的字段并抛异常
-        String message = checkWhere (queryMap, returnMap, where, "");
+    private void checkWhere(Component where, Map<String, DataType> queryMap) {
+        // 严格模式：判断是否有不存在的字段并抛异常
+        String message = checkWhere (where, queryMap, "");
         if (StringUtils.isNotBlank (message)) {
             throw new IllegalArgumentException ("Invalid where fields " + message + ".");
         }
     }
 
-    private String checkWhere(Map<String, DataType> queryMap, Map<String, DataType> returnMap,
-                              Component component, String message) {
+    private String checkWhere(Component component, Map<String, DataType> queryMap, String message) {
         if (component instanceof Composite) {
             Composite composite = (Composite) component;
             List<Component> components = composite.getComponents ();
             for (Component c : components) {
-                message = checkWhere (queryMap, returnMap, c, message);
+                message = checkWhere (c, queryMap, message);
             }
         } else if (component instanceof Dimension) {
             Dimension dimension = (Dimension) component;
             String name = dimension.getColumnName ();
-            if (queryMap.get (name) == null && returnMap.get (name) != null) {
-                logger.warn ("The `" + name + "` field is not recommended as a filtering condition.");
-            }
-            if (queryMap.get (name) == null && returnMap.get (name) == null) {
+            if (queryMap.get (name) == null) {
                 message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
             }
         }
@@ -339,7 +381,7 @@ public class IqProviderService extends BaseService {
     }
 
     private void checkSelect(List<Column> select, Map<String, DataType> returnMap) {
-        // TODO 严格模式：判断是否有不存在的字段并抛异常
+        // 严格模式：判断是否有不存在的字段并抛异常
         String message = "";
         for (Column col : select) {
             String name = col.getAggregate ().getName ();
@@ -379,7 +421,7 @@ public class IqProviderService extends BaseService {
 
     private Application getApplication(String appId, Map<String, String> paraMap) {
         Application application = getApplication (appId);
-        // TODO 宽松模式：只保留存在字段的值，不判断是否有不存在的字段并抛异常
+        // 宽松模式：只保留存在字段的值，不判断是否有不存在的字段并抛异常
         String message = "";
         for (QueryColumn queryColumn : application.getQueryColumns ()) {
             boolean isNeed = queryColumn.isNeed ();

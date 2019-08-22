@@ -50,7 +50,6 @@ public class NettyClientFactory extends AbstractClientFactory {
                 .option (ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator (NettyClientConfig.getBufferSize ()))
                 .channel (NioSocketChannel.class) //
                 .handler (initializer); //
-        System.out.println ("========>" + NettyClientConfig.getBufferSize ());
         int connectTimeout = url.getConnectionTimeout ();
         if (connectTimeout < 1000) {
             bootstrap.option (ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000);

@@ -5,8 +5,6 @@ import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.consumer.util.Util;
-import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
-import com.hex.bigdata.udsp.dsl.model.DslRequest;
 import com.hex.bigdata.udsp.iq.provider.model.dsl.IqDslResponse;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
@@ -79,7 +77,7 @@ public class IqDslSyncService {
      * 运行
      *
      * @param mdId 交互查询的元数据ID
-     * @param sql SQL语句
+     * @param sql  SQL语句
      * @return Response
      */
     public Response run(String mdId, String sql) {
@@ -88,8 +86,8 @@ public class IqDslSyncService {
             Response response = new Response ();
             response.setStatus (iqDslResponse.getStatus ().getValue ());
             response.setStatusCode (iqDslResponse.getStatusCode ().getValue ());
-            response.setRecords (iqDslResponse.getDslResponse ().getRecords ());
-            response.setReturnColumns (iqDslResponse.getDslResponse ().getColumns ());
+            response.setRecords (iqDslResponse.getRecords ());
+            response.setReturnColumns (iqDslResponse.getColumns ());
             response.setMessage (iqDslResponse.getMessage ());
             response.setConsumeTime (iqDslResponse.getConsumeTime ());
             return response;

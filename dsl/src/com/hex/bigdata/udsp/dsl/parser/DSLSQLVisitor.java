@@ -127,11 +127,35 @@ public interface DSLSQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelectElement(DSLSQLParser.SelectElementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#selectElementCal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelectElementCal(DSLSQLParser.SelectElementCalContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#fullColumnName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFullColumnName(DSLSQLParser.FullColumnNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#arithmeticCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArithmeticCall(DSLSQLParser.ArithmeticCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#stringAndNumber}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringAndNumber(DSLSQLParser.StringAndNumberContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#arithmetic}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArithmetic(DSLSQLParser.ArithmeticContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#functionCall}.
 	 * @param ctx the parse tree
@@ -139,11 +163,11 @@ public interface DSLSQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionCall(DSLSQLParser.FunctionCallContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DSLSQLParser#aggregateWindowedFunction}.
+	 * Visit a parse tree produced by {@link DSLSQLParser#aggregateFunction}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAggregateWindowedFunction(DSLSQLParser.AggregateWindowedFunctionContext ctx);
+	T visitAggregateFunction(DSLSQLParser.AggregateFunctionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#functionArg}.
 	 * @param ctx the parse tree
@@ -156,6 +180,24 @@ public interface DSLSQLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunctionArgs(DSLSQLParser.FunctionArgsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#otherFunction}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOtherFunction(DSLSQLParser.OtherFunctionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#otherFunctionArgs}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOtherFunctionArgs(DSLSQLParser.OtherFunctionArgsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#otherFunctionName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOtherFunctionName(DSLSQLParser.OtherFunctionNameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#serviceName}.
 	 * @param ctx the parse tree

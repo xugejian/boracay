@@ -25,89 +25,79 @@ import java.util.List;
  */
 //@Component("com.hex.bigdata.udsp.im.converter.impl.OracleConverter")
 public class OracleConverter extends JdbcWrapper implements RealtimeTargetConverter {
-    private static Logger logger = LogManager.getLogger(OracleConverter.class);
+    private static Logger logger = LogManager.getLogger (OracleConverter.class);
 
     @Override
     protected List<String> createSchemaSqls(String tableName, List<TableColumn> columns, String tableComment) {
-        List<String> sqls = new ArrayList<>();
-        String createTableSql = OracleSqlUtil.createTable(tableName, columns);
-        if (StringUtils.isNotBlank(createTableSql)) sqls.add(createTableSql);
-        String commentTableSql = OracleSqlUtil.commentTable(tableName, tableComment);
-        if (StringUtils.isNotBlank(commentTableSql)) sqls.add(commentTableSql);
-        List<String> commentColumnsSqls = OracleSqlUtil.commentColumns(tableName, columns);
-        if (commentColumnsSqls != null && commentColumnsSqls.size() != 0) sqls.addAll(commentColumnsSqls);
+        List<String> sqls = new ArrayList<> ();
+        String createTableSql = OracleSqlUtil.createTable (tableName, columns);
+        if (StringUtils.isNotBlank (createTableSql)) sqls.add (createTableSql);
+        String commentTableSql = OracleSqlUtil.commentTable (tableName, tableComment);
+        if (StringUtils.isNotBlank (commentTableSql)) sqls.add (commentTableSql);
+        List<String> commentColumnsSqls = OracleSqlUtil.commentColumns (tableName, columns);
+        if (commentColumnsSqls != null && commentColumnsSqls.size () != 0) sqls.addAll (commentColumnsSqls);
         return sqls;
     }
 
     @Override
     protected String dropSchemaSql(String tableName) {
-        return OracleSqlUtil.dropTable(tableName);
+        return OracleSqlUtil.dropTable (tableName);
     }
 
     @Override
     protected List<String> addColumnSqls(String tableName, List<TableColumn> addColumns) {
-        List<String> sqls = new ArrayList<>();
-        List<String> addColumnSqls = OracleSqlUtil.addColumns(tableName, addColumns);
-        if (addColumnSqls != null && addColumnSqls.size() != 0) sqls.addAll(addColumnSqls);
-        List<String> commentColumnsSqls = OracleSqlUtil.commentColumns(tableName, addColumns);
-        if (commentColumnsSqls != null && commentColumnsSqls.size() != 0) sqls.addAll(commentColumnsSqls);
+        List<String> sqls = new ArrayList<> ();
+        List<String> addColumnSqls = OracleSqlUtil.addColumns (tableName, addColumns);
+        if (addColumnSqls != null && addColumnSqls.size () != 0) sqls.addAll (addColumnSqls);
+        List<String> commentColumnsSqls = OracleSqlUtil.commentColumns (tableName, addColumns);
+        if (commentColumnsSqls != null && commentColumnsSqls.size () != 0) sqls.addAll (commentColumnsSqls);
         return sqls;
     }
 
     @Override
     protected DataType getColType(String type) {
-        type = type.toUpperCase();
-        DataType dataType = null;
-        switch (type) {
+        switch (type.toUpperCase ()) {
             case "VARCHAR":
             case "VARCHAR2":
             case "NVARCHAR2":
-                dataType = DataType.VARCHAR;
-                break;
+                return DataType.VARCHAR;
             case "CLOB":
             case "LONG":
             case "BLOB":
-                dataType = DataType.STRING;
-                break;
+                return DataType.STRING;
             case "NUMBER":
-                dataType = DataType.DECIMAL;
-                break;
+                return DataType.DECIMAL;
             case "CHAR":
             case "NCHAR":
-                dataType = DataType.CHAR;
-                break;
+                return DataType.CHAR;
             case "BINARY_FLOAT":
-                dataType = DataType.FLOAT;
-                break;
+                return DataType.FLOAT;
             case "BINARY_DOUBLE":
-                dataType = DataType.DOUBLE;
-                break;
+                return DataType.DOUBLE;
             case "TIMESTAMP":
             case "TIMESTAMP(6)":
             case "DATE":
-                dataType = DataType.TIMESTAMP;
-                break;
+                return DataType.TIMESTAMP;
             default:
-                dataType = DataType.STRING;
+                return DataType.STRING;
         }
-        return dataType;
     }
 
     @Override
     protected List<Column> getColumns(Connection conn, String dbName, String tbName) throws SQLException {
         // Oracle通过JDBCAPI方式获取字段集合时库名和表名大小写敏感
-        return ClientFactory.createMetaClient(AcquireType.JDBCAPI, DBType.ORACLE, conn)
-                .getColumns(StringUtils.isBlank(dbName) ? dbName : dbName.toUpperCase(),
-                        StringUtils.isBlank(tbName) ? tbName : tbName.toUpperCase());
+        return ClientFactory.createMetaClient (AcquireType.JDBCAPI, DBType.ORACLE, conn)
+                .getColumns (StringUtils.isBlank (dbName) ? dbName : dbName.toUpperCase (),
+                        StringUtils.isBlank (tbName) ? tbName : tbName.toUpperCase ());
     }
 
     @Override
     protected String insertSql(String tableName, List<ValueColumn> valueColumns) {
-        return OracleSqlUtil.insert(tableName, valueColumns);
+        return OracleSqlUtil.insert (tableName, valueColumns);
     }
 
     @Override
     protected String updateSql(String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
-        return OracleSqlUtil.update(tableName, valueColumns, whereProperties);
+        return OracleSqlUtil.update (tableName, valueColumns, whereProperties);
     }
 }

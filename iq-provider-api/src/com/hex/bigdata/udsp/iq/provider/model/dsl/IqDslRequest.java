@@ -1,31 +1,28 @@
 package com.hex.bigdata.udsp.iq.provider.model.dsl;
 
-import com.hex.bigdata.udsp.dsl.model.DslRequest;
+import com.hex.bigdata.udsp.dsl.model.Component;
+import com.hex.bigdata.udsp.dsl.model.DslSql;
 import com.hex.bigdata.udsp.iq.provider.model.Metadata;
 
-/**
- * 自定义SQL请求类
- */
 public class IqDslRequest {
 
-    private DslRequest request; // 请求信息
-
-    private Metadata metadata; // 元数据
+    private Metadata metadata;
+    private Component component;
 
     public IqDslRequest() {
     }
 
-    public IqDslRequest(DslRequest request, Metadata metadata) {
-        this.request = request;
+    public IqDslRequest(Metadata metadata, Component component) {
+        this.component = component;
         this.metadata = metadata;
     }
 
-    public DslRequest getRequest() {
-        return request;
+    public Component getComponent() {
+        return component;
     }
 
-    public void setRequest(DslRequest request) {
-        this.request = request;
+    public void setComponent(Component component) {
+        this.component = component;
     }
 
     public Metadata getMetadata() {

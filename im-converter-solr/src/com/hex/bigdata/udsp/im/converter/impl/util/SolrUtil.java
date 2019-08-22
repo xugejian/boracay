@@ -567,31 +567,22 @@ public class SolrUtil {
      * @return
      */
     public static DataType getColType(String type) {
-        type = type.toUpperCase ();
-        DataType dataType = null;
-        switch (type) {
+        switch (type.toUpperCase ()) {
             case "STRING":
-                dataType = DataType.STRING;
-                break;
+                return DataType.STRING;
             case "INT":
-                dataType = DataType.INT;
-                break;
+                return DataType.INT;
             case "FLOAT":
-                dataType = DataType.FLOAT;
-                break;
+                return DataType.FLOAT;
             case "DOUBLE":
-                dataType = DataType.DOUBLE;
-                break;
+                return DataType.DOUBLE;
             case "DATE":
-                dataType = DataType.TIMESTAMP;
-                break;
+                return DataType.TIMESTAMP;
             case "BOOLEAN":
-                dataType = DataType.BOOLEAN;
-                break;
+                return DataType.BOOLEAN;
             default:
-                dataType = DataType.STRING;
+                return DataType.STRING;
         }
-        return dataType;
     }
 
     /**

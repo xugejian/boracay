@@ -165,66 +165,38 @@ textLiteral
     ;
 
 selectElement
-    : selectElementCal (AS? uid)?
-    ;
-
-selectElementCal
-    : fullColumnName
-    | arithmeticCall
-    | functionCall
-    | value
+    : fullColumnName (AS? uid)?
+    | functionCall (AS? uid)?
     ;
 
 fullColumnName
     : columnName
     ;
 
-arithmeticCall
-    : stringAndNumber (arithmetic stringAndNumber)+
-    ;
-
-stringAndNumber
-    : fullColumnName
-    | decimalLiteral
-    ;
-
-arithmetic
-    : ('+' | '-' | '*' | '/')
-    ;
-
 functionCall
-    : aggregateFunction
-    | otherFunction
+    :  aggregateWindowedFunction
     ;
 
-aggregateFunction
-    : (AVG | MAX | MIN | SUM) '(' stringAndNumber ')'
+aggregateWindowedFunction
+    : (AVG | MAX | MIN | SUM) '(' functionArg ')'
     | COUNT '(' (starArg='*' |  functionArg?) ')'
     | COUNT '(' aggregator=DISTINCT functionArgs ')'
     ;
 
 functionArg
-    :  stringAndNumber
+    :  columnName
     ;
 
 functionArgs
-    : stringAndNumber (',' stringAndNumber)*
+    : columnName (',' columnName)*
     ;
-
-otherFunction
-    : otherFunctionName '(' otherFunctionArgs ')'
-    ;
-
-otherFunctionArgs
-    : selectElementCal (',' selectElementCal)*
-    ;
-
-otherFunctionName: ID;
 
 serviceName: tmpName=ID;
 
 columnName: ID;
 
-uid: ID;
+uid
+    : ID
+    ;
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines

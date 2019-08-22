@@ -1,10 +1,9 @@
 package com.hex.bigdata.udsp.common.aggregator;
 
-import com.google.common.base.Stopwatch;
+import com.hex.bigdata.udsp.common.aggregator.constant.H2DataType;
+import com.hex.bigdata.udsp.common.aggregator.model.H2DataColumn;
+import com.hex.bigdata.udsp.common.aggregator.model.H2Response;
 import com.hex.bigdata.udsp.common.aggregator.util.H2SqlUtil;
-import com.hex.bigdata.udsp.common.constant.DataType;
-import com.hex.bigdata.udsp.common.dao.base.AsyncDeleteMapper;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,15 +12,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by JunjieM on 2019-1-29.
  */
 @Repository
 public class H2Aggregator {
-
     private static Logger logger = LogManager.getLogger (H2Aggregator.class);
 
     @Autowired
@@ -31,185 +31,181 @@ public class H2Aggregator {
     @Value("${aggregator.h2.data.timeout:43200}")
     private int aggregatorH2DataTimeout;
 
-    private static final String TBL_PREFIX = "TMP_";
-
-    private static Map<String, Long> h2AggMetaCacher = new HashMap<> ();
-
     private static final int BATCH_SIZE = 20000;
 
-    /**
-     * 加载数据前操作
-     */
-    public void beforeLoad(String[] header) {
-        try (Connection conn = h2DataSource.getConnection ();
-             Statement stmt = conn.createStatement ();) {
-            String tableName = getTmpTblName ();
-            String dropTableSql = H2SqlUtil.dropTable (tableName);
-            logger.info ("Execute: {}", dropTableSql);
-            stmt.execute (dropTableSql);
-            String createTableSql = H2SqlUtil.createTable (tableName);
-            logger.info ("Execute: {}", createTableSql);
-            stmt.execute (createTableSql);
-        } catch (SQLException e) {
-            logger.error ("", e);
-        }
-    }
+    // Map<String tableName, Long timestamp>
+    private static Map<String, Long> h2AggMetaCacher = new ConcurrentHashMap<> ();
 
     /**
      * 加载数据操作
      *
-     * @param header
-     * @param data
+     * @param tableName
+     * @param columns
+     * @param records
      */
-    public void loadBatch(String[] header, String[][] data) {
+    public void load(String tableName, List<H2DataColumn> columns, List<Map<String, String>> records) {
         long bef = System.currentTimeMillis ();
-        int count = 0;
-        if (data != null && data.length > 0) {
+        if (records != null && records.size () != 0) {
+            // before Load
+            beforeLoad (tableName, columns);
+            // Load data
             try (Connection conn = h2DataSource.getConnection ();
-                 PreparedStatement ps = conn.prepareStatement (buildPreparedInsertSql (header));) {
-                for (int i = 0; i < data.length; i++) {
-                    for (int j = 1; j <= header.length; j++) {
-                        ps.setString (j, data[i][j - 1]);
+                 PreparedStatement ps = conn.prepareStatement (H2SqlUtil.insertInto (tableName, columns.size ()));
+            ) {
+                H2DataColumn column = null;
+                String colName = "";
+                H2DataType dataType = null;
+                String value = "";
+                int count = 0;
+                for (Map<String, String> record : records) {
+                    for (int i = 1; i <= columns.size (); i++) {
+                        column = columns.get (i - 1);
+                        colName = column.getColName ();
+                        dataType = column.getDataType ();
+                        value = record.get (colName);
+                        try {
+                            switch (dataType) {
+                                case VARCHAR:
+                                case CHAR:
+                                    ps.setString (i, value);
+                                    break;
+                                case DECIMAL:
+                                    ps.setBigDecimal (i, new BigDecimal (value));
+                                    break;
+                                case DOUBLE:
+                                    ps.setDouble (i, Double.parseDouble (value));
+                                    break;
+                                case INT:
+                                    ps.setInt (i, Integer.parseInt (value));
+                                    break;
+                                case TINYINT:
+                                    ps.setByte (i, Byte.parseByte (value));
+                                    break;
+                                case SMALLINT:
+                                    ps.setShort (i, Short.parseShort (value));
+                                    break;
+                                case FLOAT:
+                                    ps.setFloat (i, Float.parseFloat (value));
+                                    break;
+                                case BIGINT:
+                                    ps.setLong (i, Long.parseLong (value));
+                                    break;
+                                case TIMESTAMP:
+                                    ps.setTimestamp (i, Timestamp.valueOf (value));
+                                    break;
+                                case BOOLEAN:
+                                    ps.setBoolean (i, Boolean.parseBoolean (value));
+                                    break;
+                                default:
+                                    ps.setString (i, value);
+                            }
+                        } catch (Exception e) {
+                            logger.warn (e.getMessage ());
+                            ps.setObject (i, null);
+                        }
                     }
                     ps.addBatch ();
                     if (++count % BATCH_SIZE == 0) {
                         ps.executeBatch ();
-                        logger.info ("Thread id: {}, H2 load batch {}", Thread.currentThread ().getName (), count);
+                        logger.info ("H2 load batch {}", count);
                     }
                 }
                 ps.executeBatch ();
             } catch (SQLException e) {
+                e.printStackTrace ();
                 logger.error ("", e);
+                throw new RuntimeException ("ERROR:" + e.getMessage (), e);
             }
+            // after Load
+            afterLoad (tableName);
+            logger.info ("H2 Database loadBatch using time: {} ms", System.currentTimeMillis () - bef);
         }
-        logger.info ("H2 Database loadBatch using time: {} ms", System.currentTimeMillis () - bef);
+    }
+
+    // 加载数据前操作
+    private void beforeLoad(String tableName, List<H2DataColumn> columns) {
+        try (Connection conn = h2DataSource.getConnection ();
+             Statement stmt = conn.createStatement ();) {
+            String dropTableSql = H2SqlUtil.dropTable (tableName);
+            logger.info ("Execute: {}", dropTableSql);
+            stmt.execute (dropTableSql);
+            String createTableSql = H2SqlUtil.createTable (tableName, columns);
+            logger.info ("Execute: {}", createTableSql);
+            stmt.execute (createTableSql);
+        } catch (SQLException e) {
+            e.printStackTrace ();
+            logger.error ("", e);
+            throw new RuntimeException ("ERROR:" + e.getMessage (), e);
+        }
+    }
+
+    // 加载数据后操作
+    private void afterLoad(String tableName) {
+        h2AggMetaCacher.put (tableName, System.currentTimeMillis ());
     }
 
     /**
-     * 加载数据后操作
-     */
-    public void afterLoad() {
-        h2AggMetaCacher.put (getTmpTblName (), System.currentTimeMillis ());
-    }
-
-    /**
-     * 加载数据操作
+     * 查询H2数据库
      *
-     * @param data
+     * @param sql
+     * @return
+     * @throws Exception
      */
-    public void loadData(String[][] data) {
+    public H2Response query(String sql) {
+        logger.info ("Execute: {}", sql);
         long bef = System.currentTimeMillis ();
-        int count = 0;
-        if (data != null && data.length > 1) {
-            String[] header = data[0];
-            String tableName = getTmpTblName ();
-            beforeLoad (header); // 加载数据前操作
-            synchronized (tableName.intern ()) {
-                try (Connection conn = h2DataSource.getConnection ();
-                     PreparedStatement ps = conn.prepareStatement (buildPreparedInsertSql (header));) {
-                    for (int i = 1; i < data.length; i++) {
-                        for (int j = 1; j <= data[i].length; j++) {
-                            ps.setString (j, data[i][j - 1]);
-                        }
-                        ps.addBatch ();
-                        if (++count % BATCH_SIZE == 0) {
-                            ps.executeBatch ();
-                            logger.info ("H2 load batch {}", count);
-                        }
-                    }
-                    ps.executeBatch ();
-                } catch (SQLException e) {
-                    logger.error ("", e);
-                }
-            }
-        }
-        afterLoad (); // 加载数据后操作
-        logger.info ("H2 Database loading using time: {} ms", System.currentTimeMillis () - bef);
-    }
-
-//    public AggregateResult queryAggData(AggConfig config) throws Exception {
-//        long bef = System.currentTimeMillis ();
-//        List<String[]> list = new LinkedList<> ();
-//        ResultSet rs = null;
-//        try (Connection conn = h2DataSource.getConnection ();
-//             Statement stat = conn.createStatement ();) {
-//            stat.execute (H2SqlUtil.createStringToDoubleFunction ());
-//            String sql = H2SqlUtil.queryAggData (getTmpTblName ());
-//            logger.info (sql);
-//            rs = stat.executeQuery (sql);
-//            ResultSetMetaData metaData = rs.getMetaData ();
-//            int columnCount = metaData.getColumnCount ();
-//            while (rs.next ()) {
-//                String[] row = new String[columnCount];
-//                for (int j = 0; j < columnCount; j++) {
-//                    row[j] = rs.getString (j + 1);
-//                }
-//                list.add (row);
-//            }
-//        } catch (Exception e) {
-//            logger.error ("ERROR:" + e.getMessage ());
-//            throw new Exception ("ERROR:" + e.getMessage (), e);
-//        } finally {
-//            if (rs != null) {
-//                rs.close ();
-//            }
-//        }
-//        logger.info ("H2 Database queryAggData using time: {} ms", System.currentTimeMillis () - bef);
-//        return null;
-//    }
-
-    private String buildPreparedInsertSql(String[] header) {
-        String tableName = getTmpTblName ();
-//        StringJoiner insertJoiner = new StringJoiner (", ", "INSERT INTO " + tableName + " VALUES (", ");");
-//        IntStream.range (0, header.length).forEach (i -> insertJoiner.add ("?"));
-//        return insertJoiner.toString ();
-        return "";
-    }
-
-    public Map<String, DataType> getColumnType() throws Exception {
-        Map<String, DataType> map = new HashedMap ();
-        String template = "SELECT column_name, type_name FROM INFORMATION_SCHEMA.columns WHERE table_name = upper('%s')";
-        String sql = String.format (template, getTmpTblName ());
+        H2Response response = new H2Response ();
+        List<Map<String, String>> records = new ArrayList<> ();
+        LinkedHashMap<String, String> columns = new LinkedHashMap<> ();
+        Map<String, String> record = null;
+        String columnLabel = "";
         try (Connection conn = h2DataSource.getConnection ();
              Statement stat = conn.createStatement ();
              ResultSet rs = stat.executeQuery (sql)) {
-            while (rs.next ()) {
-                String columnName = rs.getString ("column_name");
-                String typeName = rs.getString ("type_name");
-                // TODO ...
-                map.put (columnName, DataType.VARCHAR);
+            ResultSetMetaData metadata = rs.getMetaData ();
+            int count = metadata.getColumnCount ();
+            for (int i = 1; i <= count; i++) {
+                columns.put (metadata.getColumnLabel (i), metadata.getColumnTypeName (i));
             }
+            while (rs.next ()) {
+                record = new HashMap<> ();
+                for (int i = 1; i <= count; i++) {
+                    columnLabel = metadata.getColumnLabel (i);
+                    record.put (columnLabel, rs.getString (columnLabel));
+                }
+                records.add (record);
+            }
+        } catch (Exception e) {
+            e.printStackTrace ();
+            logger.error ("ERROR:" + e.getMessage ());
+            throw new RuntimeException ("ERROR:" + e.getMessage (), e);
         }
-        return map;
+        response.setColumns (columns);
+        response.setRecords (records);
+        logger.info ("H2 Database query using time: {} ms", System.currentTimeMillis () - bef);
+        return response;
     }
 
     /**
      * 是否可以重新加载
      *
+     * @param tableName
      * @return
      */
-    public boolean isReload() {
-        return isTimeout () || !isTableExists ();
+    public boolean isReload(String tableName) {
+        return isTimeout (tableName) || !isTableExists (tableName);
     }
 
-    /**
-     * 判断h2数据是否超时
-     *
-     * @return
-     */
-    private boolean isTimeout() {
-        Long createTimeStamp = h2AggMetaCacher.get (getTmpTblName ());
+    // 判断h2数据是否超时
+    private boolean isTimeout(String tableName) {
+        Long createTimeStamp = h2AggMetaCacher.get (tableName);
         return createTimeStamp == null || System.currentTimeMillis () - createTimeStamp > (aggregatorH2DataTimeout * 1000);
     }
 
-    /**
-     * 检查临时表是否存在于h2数据库中
-     *
-     * @return
-     */
-    private boolean isTableExists() {
+    // 检查临时表是否存在于h2数据库中
+    private boolean isTableExists(String tableName) {
         boolean exists = false;
-        String sql = H2SqlUtil.tablesInfo (getTmpTblName ());
+        String sql = H2SqlUtil.tablesInfo (tableName);
         try (Connection conn = h2DataSource.getConnection ();
              Statement stat = conn.createStatement ();
              ResultSet rs = stat.executeQuery (sql)) {
@@ -221,17 +217,10 @@ public class H2Aggregator {
                 exists = true;
             }
         } catch (Exception e) {
+            e.printStackTrace ();
             logger.error ("ERROR:" + e.getMessage ());
+            throw new RuntimeException ("ERROR:" + e.getMessage (), e);
         }
         return exists;
-    }
-
-    private String getTmpTblName() {
-        return TBL_PREFIX + getCacheKey ();
-    }
-
-    private String getCacheKey() {
-        // TODO ...
-        return "";
     }
 }

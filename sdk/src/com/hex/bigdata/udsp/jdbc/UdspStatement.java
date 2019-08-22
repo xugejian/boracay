@@ -176,6 +176,7 @@ public class UdspStatement implements Statement {
                     .setRecords (records) //
                     .build ();
         } catch (Exception e) {
+            e.printStackTrace ();
             throw new SQLException (e);
         }
 

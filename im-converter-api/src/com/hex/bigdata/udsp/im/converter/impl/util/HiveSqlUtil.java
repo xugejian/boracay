@@ -385,8 +385,9 @@ public class HiveSqlUtil {
                 dataType = column.getDataType();
                 colComment = column.getColComment();
                 length = column.getLength();
-                if (StringUtils.isBlank(colName) || StringUtils.isBlank(dataType))
+                if (StringUtils.isBlank(colName) || StringUtils.isBlank(dataType)) {
                     continue;
+                }
                 sql += (count == 0 ? "\n" : "\n,");
                 sql += colName + " " + getColType(dataType, length);
                 if (StringUtils.isNotBlank(colComment)) {

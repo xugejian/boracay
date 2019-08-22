@@ -62,7 +62,13 @@ public abstract class JdbcProvider implements Provider {
             } else {
                 rs = stmt.executeQuery (olqQuerySql.getPageSql ());
             }
-            rs.setFetchSize (FETCH_SIZE);
+
+            // 防止部分数据库驱动不支持setFetchSize方法而抛异常
+            try {
+                rs.setFetchSize (FETCH_SIZE);
+            } catch (Exception e) {
+                //
+            }
 
             LinkedHashMap<String, String> columns = getColumns (rs);
             response.setColumns (columns);
@@ -186,7 +192,7 @@ public abstract class JdbcProvider implements Provider {
             Datasource datasource = request.getDatasource ();
             JdbcDatasource jdbcDatasource = new JdbcDatasource (datasource.getPropertyMap ());
 
-            conn =  JdbcUtil.getConnection (jdbcDatasource);
+            conn = JdbcUtil.getConnection (jdbcDatasource);
             stmt = conn.createStatement ();
 
             StatementUtil.putStatement (consumeId, stmt);

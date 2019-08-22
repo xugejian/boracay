@@ -246,6 +246,18 @@ public class DSLSQLBaseListener implements DSLSQLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSelectElementCal(DSLSQLParser.SelectElementCalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSelectElementCal(DSLSQLParser.SelectElementCalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFullColumnName(DSLSQLParser.FullColumnNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -253,6 +265,42 @@ public class DSLSQLBaseListener implements DSLSQLListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFullColumnName(DSLSQLParser.FullColumnNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArithmeticCall(DSLSQLParser.ArithmeticCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArithmeticCall(DSLSQLParser.ArithmeticCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringAndNumber(DSLSQLParser.StringAndNumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringAndNumber(DSLSQLParser.StringAndNumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArithmetic(DSLSQLParser.ArithmeticContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArithmetic(DSLSQLParser.ArithmeticContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -270,13 +318,13 @@ public class DSLSQLBaseListener implements DSLSQLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAggregateWindowedFunction(DSLSQLParser.AggregateWindowedFunctionContext ctx) { }
+	@Override public void enterAggregateFunction(DSLSQLParser.AggregateFunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAggregateWindowedFunction(DSLSQLParser.AggregateWindowedFunctionContext ctx) { }
+	@Override public void exitAggregateFunction(DSLSQLParser.AggregateFunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -301,6 +349,42 @@ public class DSLSQLBaseListener implements DSLSQLListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunctionArgs(DSLSQLParser.FunctionArgsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOtherFunction(DSLSQLParser.OtherFunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOtherFunction(DSLSQLParser.OtherFunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOtherFunctionArgs(DSLSQLParser.OtherFunctionArgsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOtherFunctionArgs(DSLSQLParser.OtherFunctionArgsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOtherFunctionName(DSLSQLParser.OtherFunctionNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOtherFunctionName(DSLSQLParser.OtherFunctionNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

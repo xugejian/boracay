@@ -5,10 +5,10 @@ import java.util.List;
 /**
  * Created by JunjieM on 2019-1-8.
  */
-public class DslRequest {
+public class DslSql {
 
     private String name; // 名称
-    private List<Column> select; // 查询
+    private String select; // 查询
     private Component where; // 过滤
     private List<String> groupBy; // 分组
     private List<Order> orderBy; // 排序
@@ -22,11 +22,11 @@ public class DslRequest {
         this.name = name;
     }
 
-    public List<Column> getSelect() {
+    public String getSelect() {
         return select;
     }
 
-    public void setSelect(List<Column> select) {
+    public void setSelect(String select) {
         this.select = select;
     }
 

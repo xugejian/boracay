@@ -25,77 +25,65 @@ import java.util.List;
  */
 //@Component("com.hex.bigdata.udsp.im.converter.impl.MysqlConverter")
 public class MysqlConverter extends JdbcWrapper implements RealtimeTargetConverter {
-    private static Logger logger = LogManager.getLogger(MysqlConverter.class);
+    private static Logger logger = LogManager.getLogger (MysqlConverter.class);
 
     @Override
     protected List<String> createSchemaSqls(String tableName, List<TableColumn> columns, String tableComment) {
-        String[] sqls = {MysqlSqlUtil.createTable(false, tableName, columns, tableComment)};
-        return Arrays.asList(sqls);
+        String[] sqls = {MysqlSqlUtil.createTable (false, tableName, columns, tableComment)};
+        return Arrays.asList (sqls);
     }
 
     @Override
     protected String dropSchemaSql(String tableName) {
-        return MysqlSqlUtil.dropTable(true, tableName);
+        return MysqlSqlUtil.dropTable (true, tableName);
     }
 
     @Override
     protected List<String> addColumnSqls(String tableName, List<TableColumn> addColumns) {
-        String[] sqls = {MysqlSqlUtil.addColumns(tableName, addColumns)};
-        return Arrays.asList(sqls);
+        String[] sqls = {MysqlSqlUtil.addColumns (tableName, addColumns)};
+        return Arrays.asList (sqls);
     }
 
     @Override
     protected DataType getColType(String type) {
-        type = type.toUpperCase();
-        DataType dataType = null;
-        switch (type) {
+        switch (type.toUpperCase ()) {
             case "VARCHAR":
-                dataType = DataType.VARCHAR;
-                break;
+                return DataType.VARCHAR;
             case "BLOB":
             case "TEXT":
-                dataType = DataType.STRING;
-                break;
+                return DataType.STRING;
             case "DECIMAL":
-                dataType = DataType.DECIMAL;
-                break;
+                return DataType.DECIMAL;
             case "CHAR":
-                dataType = DataType.CHAR;
-                break;
+                return DataType.CHAR;
             case "INT":
-                dataType = DataType.INT;
-                break;
+                return DataType.INT;
             case "BIGINT":
-                dataType = DataType.BIGINT;
-                break;
+                return DataType.BIGINT;
             case "TINYINT":
-                dataType = DataType.TINYINT;
-                break;
+                return DataType.TINYINT;
             case "DOUBLE":
-                dataType = DataType.DOUBLE;
-                break;
+                return DataType.DOUBLE;
             case "TIMESTAMP":
-                dataType = DataType.TIMESTAMP;
-                break;
+                return DataType.TIMESTAMP;
             default:
-                dataType = DataType.STRING;
+                return DataType.STRING;
         }
-        return dataType;
     }
 
     @Override
     protected List<Column> getColumns(Connection conn, String dbName, String tbName) throws SQLException {
-        return ClientFactory.createMetaClient(AcquireType.JDBCAPI, DBType.MYSQL, conn)
-                .getColumns(dbName, tbName);
+        return ClientFactory.createMetaClient (AcquireType.JDBCAPI, DBType.MYSQL, conn)
+                .getColumns (dbName, tbName);
     }
 
     @Override
     protected String insertSql(String tableName, List<ValueColumn> valueColumns) {
-        return MysqlSqlUtil.insert(tableName, valueColumns);
+        return MysqlSqlUtil.insert (tableName, valueColumns);
     }
 
     @Override
     protected String updateSql(String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
-        return MysqlSqlUtil.update(tableName, valueColumns, whereProperties);
+        return MysqlSqlUtil.update (tableName, valueColumns, whereProperties);
     }
 }

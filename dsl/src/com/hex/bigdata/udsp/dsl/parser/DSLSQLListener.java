@@ -200,6 +200,16 @@ public interface DSLSQLListener extends ParseTreeListener {
 	 */
 	void exitSelectElement(DSLSQLParser.SelectElementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#selectElementCal}.
+	 * @param ctx the parse tree
+	 */
+	void enterSelectElementCal(DSLSQLParser.SelectElementCalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#selectElementCal}.
+	 * @param ctx the parse tree
+	 */
+	void exitSelectElementCal(DSLSQLParser.SelectElementCalContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DSLSQLParser#fullColumnName}.
 	 * @param ctx the parse tree
 	 */
@@ -209,6 +219,36 @@ public interface DSLSQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFullColumnName(DSLSQLParser.FullColumnNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#arithmeticCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterArithmeticCall(DSLSQLParser.ArithmeticCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#arithmeticCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitArithmeticCall(DSLSQLParser.ArithmeticCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#stringAndNumber}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringAndNumber(DSLSQLParser.StringAndNumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#stringAndNumber}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringAndNumber(DSLSQLParser.StringAndNumberContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#arithmetic}.
+	 * @param ctx the parse tree
+	 */
+	void enterArithmetic(DSLSQLParser.ArithmeticContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#arithmetic}.
+	 * @param ctx the parse tree
+	 */
+	void exitArithmetic(DSLSQLParser.ArithmeticContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DSLSQLParser#functionCall}.
 	 * @param ctx the parse tree
@@ -220,15 +260,15 @@ public interface DSLSQLListener extends ParseTreeListener {
 	 */
 	void exitFunctionCall(DSLSQLParser.FunctionCallContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DSLSQLParser#aggregateWindowedFunction}.
+	 * Enter a parse tree produced by {@link DSLSQLParser#aggregateFunction}.
 	 * @param ctx the parse tree
 	 */
-	void enterAggregateWindowedFunction(DSLSQLParser.AggregateWindowedFunctionContext ctx);
+	void enterAggregateFunction(DSLSQLParser.AggregateFunctionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DSLSQLParser#aggregateWindowedFunction}.
+	 * Exit a parse tree produced by {@link DSLSQLParser#aggregateFunction}.
 	 * @param ctx the parse tree
 	 */
-	void exitAggregateWindowedFunction(DSLSQLParser.AggregateWindowedFunctionContext ctx);
+	void exitAggregateFunction(DSLSQLParser.AggregateFunctionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DSLSQLParser#functionArg}.
 	 * @param ctx the parse tree
@@ -249,6 +289,36 @@ public interface DSLSQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionArgs(DSLSQLParser.FunctionArgsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#otherFunction}.
+	 * @param ctx the parse tree
+	 */
+	void enterOtherFunction(DSLSQLParser.OtherFunctionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#otherFunction}.
+	 * @param ctx the parse tree
+	 */
+	void exitOtherFunction(DSLSQLParser.OtherFunctionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#otherFunctionArgs}.
+	 * @param ctx the parse tree
+	 */
+	void enterOtherFunctionArgs(DSLSQLParser.OtherFunctionArgsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#otherFunctionArgs}.
+	 * @param ctx the parse tree
+	 */
+	void exitOtherFunctionArgs(DSLSQLParser.OtherFunctionArgsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#otherFunctionName}.
+	 * @param ctx the parse tree
+	 */
+	void enterOtherFunctionName(DSLSQLParser.OtherFunctionNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#otherFunctionName}.
+	 * @param ctx the parse tree
+	 */
+	void exitOtherFunctionName(DSLSQLParser.OtherFunctionNameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DSLSQLParser#serviceName}.
 	 * @param ctx the parse tree

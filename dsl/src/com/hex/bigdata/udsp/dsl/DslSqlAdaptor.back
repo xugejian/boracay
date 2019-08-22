@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * DSLSQL的适配器
  */
-public class DslSqlAdaptor {
+public class DslSqlAdaptorBack {
 
     public static DSLSQLParser getDSLSQLParser(String sql) throws RuntimeException {
         // 新建一个输入流，从标准输入读取数据
@@ -246,8 +246,54 @@ public class DslSqlAdaptor {
         return list;
     }
 
-    private static String selectElementsContextToSelect(DSLSQLParser.SelectElementsContext selectElementsContext) {
-        return selectElementsContext.getText ();
+    private static List<Column> selectElementsContextToSelect(DSLSQLParser.SelectElementsContext selectElementsContext) {
+        List<Column> list = new ArrayList<> ();
+        if (selectElementsContext.star != null) {
+            list.add (new Column ("*"));
+        } else {
+            List<DSLSQLParser.SelectElementContext> selectElementContexts = selectElementsContext.selectElement ();
+            for (DSLSQLParser.SelectElementContext selectElementContext : selectElementContexts) {
+                String alias = null;
+                if (selectElementContext.AS () != null || selectElementContext.uid () != null) {
+                    alias = selectElementContext.uid ().getText ();
+                }
+                DSLSQLParser.FullColumnNameContext fullColumnNameContext = selectElementContext.fullColumnName ();
+                Aggregate aggregate = null;
+                if (fullColumnNameContext != null) {
+                    String name = fullColumnNameContext.columnName ().getText ();
+                    aggregate = new Aggregate (name);
+                } else {
+                    DSLSQLParser.AggregateWindowedFunctionContext aggregateWindowedFunctionContext =
+                            selectElementContext.functionCall ().aggregateWindowedFunction ();
+                    String name = null;
+                    AggregateFunction function = null;
+                    if (aggregateWindowedFunctionContext.functionArg () != null) {
+                        name = aggregateWindowedFunctionContext.functionArg ().columnName ().getText ();
+                    }
+                    if (aggregateWindowedFunctionContext.AVG () != null) { // AVG
+                        function = AggregateFunction.AVG;
+                    } else if (aggregateWindowedFunctionContext.MAX () != null) { // MAX
+                        function = AggregateFunction.MAX;
+                    } else if (aggregateWindowedFunctionContext.MIN () != null) { // MIN
+                        function = AggregateFunction.MIN;
+                    } else if (aggregateWindowedFunctionContext.SUM () != null) { // SUM
+                        function = AggregateFunction.SUM;
+                    } else if (aggregateWindowedFunctionContext.COUNT () != null) {
+                        if (aggregateWindowedFunctionContext.DISTINCT () != null) { // COUNT_DISTINCT
+                            function = AggregateFunction.COUNT_DISTINCT;
+                        } else { // COUNT
+                            if (aggregateWindowedFunctionContext.starArg != null) {
+                                name = "*";
+                            }
+                            function = AggregateFunction.COUNT;
+                        }
+                    }
+                    aggregate = new Aggregate (name, function);
+                }
+                list.add (new Column (alias, aggregate));
+            }
+        }
+        return list;
     }
 
     /**
@@ -257,41 +303,41 @@ public class DslSqlAdaptor {
      * @return
      */
     public static DslSql sqlStrToDslSql(String sql) {
-        DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
+        DSLSQLParser parser = DslSqlAdaptorBack.getDSLSQLParser (sql);
         DSLSQLParser.SelectStatementContext selectStatementContext = parser.selectStatement ();
         // serviceName
         DSLSQLParser.ServiceNameContext serviceNameContext = selectStatementContext.serviceName ();
         String serviceName = serviceNameContext.getText ();
         // select
-        String select = null;
+        List<Column> select = null;
         DSLSQLParser.SelectElementsContext selectElementsContext = selectStatementContext.selectElements ();
         if (selectElementsContext != null) {
-            select = DslSqlAdaptor.selectElementsContextToSelect (selectElementsContext);
+            select = DslSqlAdaptorBack.selectElementsContextToSelect (selectElementsContext);
         }
         // where
         Component where = null;
         DSLSQLParser.WhereClauseContext whereClauseContext = selectStatementContext.whereClause ();
         if (whereClauseContext != null) {
             DSLSQLParser.LogicExpressionsContext logicExpressionsContext = whereClauseContext.logicExpressions ();
-            where = DslSqlAdaptor.logicExpressionsContextToComponent (logicExpressionsContext);
+            where = DslSqlAdaptorBack.logicExpressionsContextToComponent (logicExpressionsContext);
         }
         // group by
         List<String> groupBy = null;
         DSLSQLParser.GroupByCaluseContext groupByCaluseContext = selectStatementContext.groupByCaluse ();
         if (groupByCaluseContext != null) {
-            groupBy = DslSqlAdaptor.groupByCaluseContextToGroupBy (groupByCaluseContext);
+            groupBy = DslSqlAdaptorBack.groupByCaluseContextToGroupBy (groupByCaluseContext);
         }
         // order by
         List<Order> orderBy = null;
         DSLSQLParser.OrderByClauseContext orderByClauseContext = selectStatementContext.orderByClause ();
         if (orderByClauseContext != null) {
-            orderBy = DslSqlAdaptor.orderByClauseContextToOrderBy (orderByClauseContext);
+            orderBy = DslSqlAdaptorBack.orderByClauseContextToOrderBy (orderByClauseContext);
         }
         // limit
         Limit limit = null;
         DSLSQLParser.LimitClauseContext limitClauseContext = selectStatementContext.limitClause ();
         if (limitClauseContext != null) {
-            limit = DslSqlAdaptor.limitClauseContextToLimit (limitClauseContext);
+            limit = DslSqlAdaptorBack.limitClauseContextToLimit (limitClauseContext);
         }
         // 封装
         DslSql dslSql = new DslSql ();
@@ -323,11 +369,29 @@ public class DslSqlAdaptor {
         return " FROM " + tableName;
     }
 
-    private static String getSelectStatement(String select) {
-        if (StringUtils.isBlank (select)) {
+    private static String getSelectStatement(List<Column> columns) {
+        if (columns == null || columns.size () == 0) {
             return "";
         }
-        return "SELECT " + select;
+        String str = "SELECT ";
+        for (int i = 0, l = columns.size (); i < l; i++) {
+            str += (i == 0 ? "" : ", ") + getSelectStatement (columns.get (i));
+        }
+        return str;
+    }
+
+    private static String getSelectStatement(Column column) {
+        String alias = column.getAlias ();
+        Aggregate aggregate = column.getAggregate ();
+        String str = aggregate.getName ();
+        AggregateFunction aggFun = aggregate.getAggFun ();
+        if (aggFun != null) {
+            str = getAggExp (aggFun, str);
+        }
+        if (StringUtils.isNotBlank (alias)) {
+            str += " AS " + alias;
+        }
+        return str;
     }
 
     private static String getAggExp(AggregateFunction aggFun, String name) {
