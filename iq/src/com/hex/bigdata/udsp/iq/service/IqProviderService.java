@@ -17,7 +17,6 @@ import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.common.util.ObjectUtil;
 import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
 import com.hex.bigdata.udsp.dsl.model.*;
-import com.hex.bigdata.udsp.dsl.model.Order;
 import com.hex.bigdata.udsp.iq.model.*;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.model.*;
@@ -215,7 +214,8 @@ public class IqProviderService extends BaseService {
         checkDslSql (dslSql, metadata); // 检查和重构DslSql
 
         Component where = dslSql.getWhere ();
-        String h2TableName = TBL_PREFIX + DigestUtils.md5Hex (dslSql.getName () + " " + DslSqlAdaptor.componentToStatement (where));
+        String h2TableName = TBL_PREFIX + DigestUtils.md5Hex (dslSql.getName ()
+                + " " + DslSqlAdaptor.componentToStatement (where));
         logger.info ("h2TableName: " + h2TableName);
         dslSql.setName (h2TableName);
         dslSql.setWhere (null);
@@ -282,94 +282,38 @@ public class IqProviderService extends BaseService {
     }
 
     private void checkDslSql(DslSql dslSql, Metadata metadata) {
-        Datasource datasource = metadata.getDatasource ();
-        List<DataColumn> returnColumns = metadata.getReturnColumns ();
         List<DataColumn> queryColumns = metadata.getQueryColumns ();
         Map<String, DataType> queryMap = new HashMap<> ();
         for (DataColumn col : queryColumns) {
             queryMap.put (col.getName (), col.getType ());
-        }
-        Map<String, DataType> returnMap = new HashMap<> ();
-        for (DataColumn col : returnColumns) {
-            returnMap.put (col.getName (), col.getType ());
         }
         // 查询字段
         Component where = dslSql.getWhere ();
         if (where != null) {
             checkWhere (where, queryMap);
         }
-        // 分组字段
-        List<String> groupBy = dslSql.getGroupBy ();
-        if (groupBy != null && groupBy.size () != 0) {
-            checkGroupBy (groupBy, returnMap);
-        }
-        // 排序字段
-        List<Order> orderBy = dslSql.getOrderBy ();
-        if (orderBy != null && orderBy.size () != 0) {
-            checkOrderBy (orderBy, returnMap);
-        }
-        // 限制
-        Limit limit = dslSql.getLimit ();
-        if (limit != null) {
-            checkLimit (limit, datasource);
-        }
-    }
-
-    private void checkLimit(Limit limitObj, Datasource datasource) {
-        IqDatasource iqDatasource = new IqDatasource (datasource);
-        int maxSize = iqDatasource.gainMaxSize ();
-        boolean maxSizeAlarm = iqDatasource.gainMaxSizeAlarm ();
-        int limit = limitObj.getLimit ();
-        if (limit > maxSize) {
-            if (maxSizeAlarm) {
-                throw new IllegalArgumentException ("Invalid limit value: the value exceeds the maximum number of data returned.");
-            }
-            limit = maxSize;
-        }
-        limitObj.setLimit (limit);
-    }
-
-    private void checkOrderBy(List<Order> orderBy, Map<String, DataType> returnMap) {
-        // 严格模式：判断是否有不存在的字段并抛异常
-        String message = "";
-        for (Order order : orderBy) {
-            String name = order.getName ();
-            if (returnMap.get (name) == null) {
-                message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
-            }
-        }
-        if (StringUtils.isNotBlank (message)) {
-            throw new IllegalArgumentException ("Invalid order by fields " + message + ".");
-        }
-    }
-
-    private void checkGroupBy(List<String> groupBy, Map<String, DataType> returnMap) {
-        // 严格模式：判断是否有不存在的字段并抛异常
-        String message = "";
-        for (String name : groupBy) {
-            if (returnMap.get (name) == null) {
-                message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
-            }
-        }
-        if (StringUtils.isNotBlank (message)) {
-            throw new IllegalArgumentException ("Invalid group by fields " + message + ".");
-        }
     }
 
     private void checkWhere(Component where, Map<String, DataType> queryMap) {
         // 严格模式：判断是否有不存在的字段并抛异常
-        String message = checkWhere (where, queryMap, "");
+        String message = "";
+        message = checkWhereIsQueryFields (where, queryMap, "");
         if (StringUtils.isNotBlank (message)) {
             throw new IllegalArgumentException ("Invalid where fields " + message + ".");
         }
+        // 严格模式：判断是否有值是空的字段并抛异常
+        message = checkWhereIsNullValue (where, "");
+        if (StringUtils.isNotBlank (message)) {
+            throw new IllegalArgumentException ("Null value where fields " + message + ".");
+        }
     }
 
-    private String checkWhere(Component component, Map<String, DataType> queryMap, String message) {
+    private String checkWhereIsQueryFields(Component component, Map<String, DataType> queryMap, String message) {
         if (component instanceof Composite) {
             Composite composite = (Composite) component;
             List<Component> components = composite.getComponents ();
             for (Component c : components) {
-                message = checkWhere (c, queryMap, message);
+                message = checkWhereIsQueryFields (c, queryMap, message);
             }
         } else if (component instanceof Dimension) {
             Dimension dimension = (Dimension) component;
@@ -381,20 +325,29 @@ public class IqProviderService extends BaseService {
         return message;
     }
 
-    private void checkSelect(List<Column> select, Map<String, DataType> returnMap) {
-        // 严格模式：判断是否有不存在的字段并抛异常
-        String message = "";
-        for (Column col : select) {
-            String name = col.getAggregate ().getName ();
-            if (returnMap.get (name) == null) {
+    private String checkWhereIsNullValue(Component component, String message) {
+        if (component instanceof Composite) {
+            Composite composite = (Composite) component;
+            List<Component> components = composite.getComponents ();
+            for (Component c : components) {
+                message = checkWhereIsNullValue (c, message);
+            }
+        } else if (component instanceof Dimension) {
+            Dimension dimension = (Dimension) component;
+            String name = dimension.getColumnName ();
+            List<String> values = dimension.getValues ();
+            if (values == null || values.size () == 0) {
                 message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
             } else {
-                col.getAggregate ().setDataType (returnMap.get (name));
+                for (String value : values) {
+                    if (StringUtils.isBlank (value)) {
+                        message += (StringUtils.isBlank (message) ? "" : ", ") + "`" + name + "`";
+                        break;
+                    }
+                }
             }
         }
-        if (StringUtils.isNotBlank (message)) {
-            throw new IllegalArgumentException ("Invalid select fields " + message + ".");
-        }
+        return message;
     }
 
     private Page getPage(Page page, Datasource datasource) {

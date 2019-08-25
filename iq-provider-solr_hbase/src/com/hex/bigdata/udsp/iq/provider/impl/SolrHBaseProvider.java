@@ -7,6 +7,7 @@ import com.hex.bigdata.udsp.common.constant.Order;
 import com.hex.bigdata.udsp.common.constant.Status;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
+import com.hex.bigdata.udsp.dsl.model.Component;
 import com.hex.bigdata.udsp.iq.provider.Provider;
 import com.hex.bigdata.udsp.iq.provider.impl.model.*;
 import com.hex.bigdata.udsp.iq.provider.impl.util.HBaseUtil;
@@ -46,12 +47,10 @@ public class SolrHBaseProvider implements Provider {
             List<ReturnColumn> returnColumns = application.getReturnColumns ();
             List<OrderColumn> orderColumns = application.getOrderColumns ();
             SolrHBaseMetadata solrHBaseMetadata = new SolrHBaseMetadata (metadata);
-            List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
             IqDatasource iqDatasource = new IqDatasource (metadata.getDatasource ());
-            SolrQuery query = SolrUtil.getSolrQuery (queryColumns, getSort (queryColumns, orderColumns),
+            SolrQuery query = SolrUtil.getSolrQuery (queryColumns, orderColumns,
                     solrHBaseMetadata.gainSolrPrimaryKey (), iqDatasource.gainMaxSize ());
-            Map<Integer, String> colMap = getColMap (metaReturnColumns);
-            List<Map<String, String>> records = search (query, colMap, solrHBaseMetadata);
+            List<Map<String, String>> records = search (query, solrHBaseMetadata);
             records = orderBy (records, queryColumns, orderColumns); // 排序处理
             records = Util.tranRecords (records, returnColumns); // 字段过滤并字段名改别名
             response.setRecords (records);
@@ -86,13 +85,18 @@ public class SolrHBaseProvider implements Provider {
             List<ReturnColumn> returnColumns = application.getReturnColumns ();
             List<OrderColumn> orderColumns = application.getOrderColumns ();
             SolrHBaseMetadata solrHBaseMetadata = new SolrHBaseMetadata (metadata);
-            List<DataColumn> metaReturnColumns = metadata.getReturnColumns ();
-            SolrQuery query = SolrUtil.getSolrQuery (queryColumns, getSort (queryColumns, orderColumns),
+            SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
+            if (page.getPageSize () > solrDatasource.gainMaxSize ()) {
+                page.setPageSize (solrDatasource.gainMaxSize ());
+                if (solrDatasource.gainMaxSizeAlarm ()) {
+                    throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
+                }
+            }
+            SolrQuery query = SolrUtil.getSolrQuery (queryColumns, orderColumns,
                     solrHBaseMetadata.gainSolrPrimaryKey (), page.getPageIndex (), page.getPageSize ());
-            Map<Integer, String> colMap = getColMap (metaReturnColumns);
-            HBasePage hbasePage = searchPage (query, page.getPageIndex (), page.getPageSize (), colMap, solrHBaseMetadata);
+            HBasePage hbasePage = searchPage (query, page.getPageIndex (), page.getPageSize (), solrHBaseMetadata);
             List<Map<String, String>> records = hbasePage.getRecords ();
-            records = orderBy (records, queryColumns, orderColumns); // 排序
+            records = orderBy (records, queryColumns, orderColumns); // 排序处理
             records = Util.tranRecords (records, returnColumns); // 字段过滤并字段名改别名
             response.setRecords (records);
             page.setTotalCount (hbasePage.getTotalCount ());
@@ -112,35 +116,6 @@ public class SolrHBaseProvider implements Provider {
 
         logger.debug ("consumeTime=" + response.getConsumeTime ());
         return response;
-    }
-
-    private List<SolrQuery.SortClause> getSort(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns) {
-        Map<String, QueryColumn> map = new HashMap<> ();
-        for (QueryColumn queryColumn : queryColumns) {
-            map.put (queryColumn.getName (), queryColumn);
-        }
-        // 排序字段按照序号排序
-        Collections.sort (orderColumns, new Comparator<OrderColumn> () {
-            @Override
-            public int compare(OrderColumn obj1, OrderColumn obj2) {
-                return obj1.getSeq ().compareTo (obj2.getSeq ());
-            }
-        });
-        // 排序字段集合
-        List<SolrQuery.SortClause> list = new ArrayList<> ();
-        for (OrderColumn orderColumn : orderColumns) {
-            String colName = orderColumn.getName ();
-            // 排序字段在查询字段中，可以使用solr自带的排序方式
-            if (map.get (colName) != null) {
-                Order order = orderColumn.getOrder ();
-                if (order != null && Order.DESC.equals (order)) {
-                    list.add (new SolrQuery.SortClause (colName, SolrQuery.ORDER.desc));
-                } else {
-                    list.add (new SolrQuery.SortClause (colName, SolrQuery.ORDER.asc));
-                }
-            }
-        }
-        return list;
     }
 
     private List<Map<String, String>> orderBy(List<Map<String, String>> records, List<QueryColumn> queryColumns,
@@ -201,6 +176,11 @@ public class SolrHBaseProvider implements Provider {
         return colMap;
     }
 
+    private HBasePage searchPage(SolrQuery query, int pageIndex, int pageSize, SolrHBaseMetadata metadata) throws Exception {
+        Map<Integer, String> colMap = getColMap (metadata.getReturnColumns ());
+        return searchPage (query, pageIndex, pageSize, colMap, metadata);
+    }
+
     private HBasePage searchPage(SolrQuery query, int pageIndex, int pageSize,
                                  Map<Integer, String> colMap, SolrHBaseMetadata metadata) throws Exception {
         List<Map<String, String>> records = new ArrayList<> ();
@@ -239,6 +219,11 @@ public class SolrHBaseProvider implements Provider {
         }
 
         return new HBasePage (records, solrHBasePage.getPageIndex (), solrHBasePage.getPageSize (), solrHBasePage.getTotalCount ());
+    }
+
+    private List<Map<String, String>> search(SolrQuery query, SolrHBaseMetadata metadata) throws Exception {
+        Map<Integer, String> colMap = getColMap (metadata.getReturnColumns ());
+        return search (query, colMap, metadata);
     }
 
     private List<Map<String, String>> search(SolrQuery query, Map<Integer, String> colMap, SolrHBaseMetadata metadata) throws Exception {
@@ -303,6 +288,9 @@ public class SolrHBaseProvider implements Provider {
         QueryResponse rsp = SolrUtil.getQueryResponse (datasource, collectionName, query);
         // ID集合
         SolrDocumentList results = rsp.getResults ();
+        if (datasource.gainMaxSizeAlarm () && results.getNumFound () > datasource.gainMaxSize ()) {
+            throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
+        }
         List<String> records = new ArrayList<> ();
         for (SolrDocument result : results) {
             String id = (String) result.get (solrPrimaryKey);
@@ -328,6 +316,33 @@ public class SolrHBaseProvider implements Provider {
 
     @Override
     public IqDslResponse select(IqDslRequest request) {
-        throw new RuntimeException ("Solr+HBase目前暂时不支持自定义DSL");
+        logger.debug ("request=" + JSONUtil.parseObj2JSON (request));
+        long bef = System.currentTimeMillis ();
+        IqDslResponse response = new IqDslResponse ();
+
+        try {
+            Metadata metadata = request.getMetadata ();
+            Component component = request.getComponent ();
+            SolrHBaseMetadata solrHBaseMetadata = new SolrHBaseMetadata (metadata);
+            IqDatasource iqDatasource = new IqDatasource (metadata.getDatasource ());
+            SolrQuery query = SolrUtil.getSolrQuery (component,
+                    solrHBaseMetadata.gainSolrPrimaryKey (), iqDatasource.gainMaxSize ());
+            List<Map<String, String>> records = search (query, solrHBaseMetadata);
+            response.setRecords (records);
+            response.setStatus (Status.SUCCESS);
+            response.setStatusCode (StatusCode.SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace ();
+            response.setStatus (Status.DEFEAT);
+            response.setStatusCode (StatusCode.DEFEAT);
+            response.setMessage (e.toString ());
+        }
+
+        long now = System.currentTimeMillis ();
+        long consumeTime = now - bef;
+        response.setConsumeTime (consumeTime);
+
+        logger.debug ("consumeTime=" + response.getConsumeTime ());
+        return response;
     }
 }

@@ -135,14 +135,14 @@ public class ElasticSearchProvider implements Provider {
             ELOuterHits elOuterHits = eLsearchResponse.getHits ();
             List<ELInnerHits> elInnerHits = elOuterHits.getHits ();
             Map<String, String> colMap = getColMap (returnColumns);
-            List<Map<String, Object>> recordes = new ArrayList<Map<String, Object>> ();
-            Map<String, Object> recorde = null;
-            Map<String, Object> source = null;
+            List<Map<String, String>> recordes = new ArrayList<Map<String, String>> ();
+            Map<String, String> recorde = null;
+            Map<String, String> source = null;
             String label = null;
             for (ELInnerHits item : elInnerHits) {
                 source = item.get_source ();
                 recorde = new HashMap<> ();
-                for (Map.Entry<String, Object> entity : source.entrySet ()) {
+                for (Map.Entry<String, String> entity : source.entrySet ()) {
                     label = colMap.get (entity.getKey ());
                     if (StringUtils.isNotBlank (label)) {
                         recorde.put (label, entity.getValue ());

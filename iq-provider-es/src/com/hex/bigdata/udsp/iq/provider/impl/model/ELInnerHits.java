@@ -25,7 +25,7 @@ public class ELInnerHits {
     /**
      * 查询记录
      */
-    private Map<String, Object> _source;
+    private Map<String, String> _source;
 
     @JSONField(name="_index")
     public String get_index() {
@@ -68,12 +68,12 @@ public class ELInnerHits {
     }
 
     @JSONField(name="_source")
-    public Map<String, Object> get_source() {
+    public Map<String, String> get_source() {
         return _source;
     }
 
     @JSONField(name="_source")
-    public void set_source(Map<String, Object> _source) {
+    public void set_source(Map<String, String> _source) {
         this._source = _source;
     }
 }

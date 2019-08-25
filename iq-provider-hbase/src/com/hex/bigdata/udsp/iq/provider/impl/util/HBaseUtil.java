@@ -81,11 +81,14 @@ public class HBaseUtil {
         List<Map<String, String>> list = null;
         Connection conn = null;
         Table table = null;
+        AggregationClient client = null;
         try {
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
-            list = scan (table, startRow, stopRow, colMap, datasource.gainMaxSize (), metadata.gainFamilyName (),
-                    metadata.gainQualifierName (), metadata.gainDsvSeparator (), metadata.gainFqDataType ());
+            client = HBaseAggregationClientPool.getAggregationClient (datasource);
+            list = scan (table, client, startRow, stopRow, colMap, metadata.gainFamilyName (),
+                    metadata.gainQualifierName (), metadata.gainDsvSeparator (), metadata.gainFqDataType (),
+                    datasource.gainMaxSize (), datasource.gainMaxSizeAlarm ());
         } finally {
             close (table);
         }
@@ -93,12 +96,26 @@ public class HBaseUtil {
     }
 
     public static List<Map<String, String>> scan(Table table, String startRow, String stopRow, Map<Integer, String> colMap,
-                                                 long maxSize, byte[] family, byte[] qualifier, String separator, String dataType) throws Exception {
+                                                 byte[] family, byte[] qualifier, String separator, String dataType,
+                                                 long maxSize) throws Exception {
         Scan scan = new Scan ();
         addColumn (scan, family, qualifier);
         setRowScan (scan, startRow, stopRow);
         scan.setFilter (new PageFilter (maxSize));
         return scan (table, scan, colMap, family, qualifier, separator, dataType);
+    }
+
+    public static List<Map<String, String>> scan(Table table, AggregationClient client,
+                                                 String startRow, String stopRow, Map<Integer, String> colMap,
+                                                 byte[] family, byte[] qualifier, String separator, String dataType,
+                                                 long maxSize, boolean maxSizeAlarm) throws Exception {
+        if (maxSizeAlarm) {
+            long totalCount = count (table, client, startRow, stopRow);
+            if (totalCount > maxSize) {
+                throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
+            }
+        }
+        return scan (table, startRow, stopRow, colMap, family, qualifier, separator, dataType, maxSize);
     }
 
     public static List<Map<String, String>> scanPage(Table table, HBasePage page,
@@ -123,6 +140,12 @@ public class HBaseUtil {
         Table table = null;
         AggregationClient client = null;
         try {
+            if (page.getPageSize () > datasource.gainMaxSize ()) {
+                page.setPageSize (datasource.gainMaxSize ());
+                if (datasource.gainMaxSizeAlarm ()) {
+                    throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
+                }
+            }
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
             client = HBaseAggregationClientPool.getAggregationClient (datasource);
@@ -245,7 +268,7 @@ public class HBaseUtil {
         return map;
     }
 
-    public static List<Map<String, String>> gets( String tableName, List<String> rowkeys,
+    public static List<Map<String, String>> gets(String tableName, List<String> rowkeys,
                                                  Map<Integer, String> colMap, HBaseMetadata metadata) throws Exception {
         Connection conn = null;
         Table table = null;

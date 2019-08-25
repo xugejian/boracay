@@ -129,7 +129,7 @@ public abstract class JdbcProvider implements Provider {
             }
             list.add (map);
             count++;
-            if (count >= maxSize) {
+            if (count > maxSize) {
                 if (maxSizeAlarm) {
                     throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
                 }

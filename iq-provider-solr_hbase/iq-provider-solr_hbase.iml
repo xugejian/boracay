@@ -14,5 +14,6 @@
     <orderEntry type="module" module-name="iq-provider-api" />
     <orderEntry type="module" module-name="iq-provider-solr" />
     <orderEntry type="module" module-name="iq-provider-hbase" />
+    <orderEntry type="module" module-name="dsl" />
   </component>
 </module>

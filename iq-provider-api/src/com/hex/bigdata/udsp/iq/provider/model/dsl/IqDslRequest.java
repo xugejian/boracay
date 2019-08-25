@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.iq.provider.model.dsl;
 
 import com.hex.bigdata.udsp.dsl.model.Component;
-import com.hex.bigdata.udsp.dsl.model.DslSql;
 import com.hex.bigdata.udsp.iq.provider.model.Metadata;
 
 public class IqDslRequest {

@@ -19,16 +19,16 @@ public class Util {
      * @param returnColumns
      * @return
      */
-    public static List<Map<String, String>> tranRecordsObject(List<Map<String, Object>> list, List<ReturnColumn> returnColumns) {
+    public static List<Map<String, String>> tranRecordsObject(List<Map<String, String>> list, List<ReturnColumn> returnColumns) {
         List<Map<String, String>> records = new ArrayList<> ();
         if (list == null || list.size () == 0) {
             return records;
         }
         Map<String, String> result = null;
-        for (Map<String, Object> map : list) {
+        for (Map<String, String> map : list) {
             result = new HashMap<> ();
             for (ReturnColumn item : returnColumns) {
-                result.put (item.getLabel (), String.valueOf (map.get (item.getName ())));
+                result.put (item.getLabel (), map.get (item.getName ()));
             }
             records.add (result);
         }

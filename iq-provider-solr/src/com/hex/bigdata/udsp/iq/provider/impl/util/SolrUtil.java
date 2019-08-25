@@ -4,9 +4,16 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
+import com.hex.bigdata.udsp.common.constant.Order;
+import com.hex.bigdata.udsp.dsl.constant.ColumnType;
+import com.hex.bigdata.udsp.dsl.constant.ComparisonOperator;
+import com.hex.bigdata.udsp.dsl.constant.LogicalOperator;
+import com.hex.bigdata.udsp.dsl.model.Component;
+import com.hex.bigdata.udsp.dsl.model.Composite;
+import com.hex.bigdata.udsp.dsl.model.Dimension;
 import com.hex.bigdata.udsp.iq.provider.impl.model.SolrDatasource;
-import com.hex.bigdata.udsp.iq.provider.model.MetadataCol;
-import com.hex.bigdata.udsp.iq.provider.model.QueryColumn;
+import com.hex.bigdata.udsp.iq.provider.impl.model.SolrPage;
+import com.hex.bigdata.udsp.iq.provider.model.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,16 +29,12 @@ import org.apache.solr.client.solrj.impl.CloudSolrServer;
 import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
 import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocumentList;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by hj on 2017/9/11.
@@ -69,7 +72,7 @@ public class SolrUtil {
             mdCol.setSeq ((short) i);
             mdCol.setName ((String) fields.getJSONObject (i).get ("name"));
             mdCol.setDescribe ((String) fields.getJSONObject (i).get ("name"));
-            mdCol.setType (SolrUtil.getColType ((String) fields.getJSONObject (i).get ("type")));
+            mdCol.setType (getColType ((String) fields.getJSONObject (i).get ("type")));
             mdCol.setIndexed ((boolean) fields.getJSONObject (i).get ("indexed"));
             mdCol.setStored ((boolean) fields.getJSONObject (i).get ("stored"));
             mdCol.setPrimary (fields.getJSONObject (i).get ("uniqueKey") == null ? false : true);
@@ -85,7 +88,7 @@ public class SolrUtil {
     public static QueryResponse getQueryResponse(SolrDatasource datasource, String collectionName, SolrQuery query) {
         QueryResponse res = null;
         try {
-            SolrServer solrServer = SolrUtil.getSolrServer (datasource, collectionName);
+            SolrServer solrServer = getSolrServer (datasource, collectionName);
             res = solrServer.query (query);
         } catch (Exception e) {
             e.printStackTrace ();
@@ -113,76 +116,364 @@ public class SolrUtil {
         return true;
     }
 
-    public static SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<SolrQuery.SortClause> sorts,
-                                         String fields, int rows) {
-        return new SolrQuery () //
-                .setQuery (getQuery (queryColumns)) //
-                .setStart (0) //
-                .setRows (rows) //
-                .setSorts (sorts) //
-                .setFields (fields);
+    public static SolrQuery getSolrQuery(String query, List<SolrQuery.SortClause> sorts,
+                                         String fields, int start, int rows) {
+        logger.info ("q=" + query);
+        if (sorts != null) {
+            return new SolrQuery () //
+                    .setQuery (query) //
+                    .setSorts (sorts) //
+                    .setFields (fields) //
+                    .setStart (start) //
+                    .setRows (rows);
+        } else {
+            return new SolrQuery () //
+                    .setQuery (query) //
+                    .setFields (fields) //
+                    .setStart (start) //
+                    .setRows (rows);
+        }
     }
 
-    public static SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<SolrQuery.SortClause> sorts,
-                                         String fields, int pageIndex, int pageSize) {
-        return new SolrQuery () //
-                .setQuery (getQuery (queryColumns)) //
-                .setStart ((pageIndex - 1) * pageSize) //
-                .setRows (pageSize) //
-                .setSorts (sorts) //
-                .setFields (fields);
+    public static SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns,
+                                         String primaryKey, int maxSize) {
+        return getSolrQuery (queryColumnsToQuery (queryColumns), columnsToSort (queryColumns, orderColumns),
+                primaryKey, 0, maxSize);
     }
 
-    private static String getQuery(List<QueryColumn> queryColumns) {
+    public static SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns,
+                                         String primaryKey, int pageIndex, int pageSize) {
+        return getSolrQuery (queryColumnsToQuery (queryColumns), columnsToSort (queryColumns, orderColumns),
+                primaryKey, (pageIndex - 1) * pageSize, pageSize);
+    }
+
+    public static SolrQuery getSolrQuery(Component component, String primaryKey, int maxSize) {
+        return getSolrQuery (componentToQuery (component), null,
+                primaryKey, 0, maxSize);
+    }
+
+    public static SolrQuery getSolrQuery(Component component, String primaryKey, int pageIndex, int pageSize) {
+        return getSolrQuery (componentToQuery (component), null,
+                primaryKey, (pageIndex - 1) * pageSize, pageSize);
+    }
+
+    public static SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns,
+                                         List<ReturnColumn> returnColumns, int maxSize) {
+        return getSolrQuery (queryColumnsToQuery (queryColumns), orderColumnsToSort (orderColumns),
+                returnColumnsToFields (returnColumns), 0, maxSize);
+    }
+
+    public static SolrQuery getSolrQuery(Component component, List<DataColumn> returnColumns, int maxSize) {
+        return getSolrQuery (componentToQuery (component), null,
+                dataColumnsToFields (returnColumns), 0, maxSize);
+    }
+
+    public static SolrQuery getSolrQuery(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns,
+                                         List<ReturnColumn> returnColumns, int pageIndex, int pageSize) {
+        return getSolrQuery (queryColumnsToQuery (queryColumns), orderColumnsToSort (orderColumns),
+                returnColumnsToFields (returnColumns), (pageIndex - 1) * pageSize, pageSize);
+    }
+
+    public static SolrPage searchPage(String collectionName, SolrQuery query, int pageIndex, int pageSize, SolrDatasource datasource) {
+        QueryResponse rsp = getQueryResponse (datasource, collectionName, query);
+        if (rsp == null) {
+            return null;
+        }
+        SolrDocumentList results = rsp.getResults ();
+        long totalCount = results.getNumFound ();
+        List<Map<String, String>> records = getRecords (results);
+        return new SolrPage (records, pageIndex, pageSize, totalCount);
+    }
+
+    public static List<Map<String, String>> search(String collectionName, SolrQuery query, SolrDatasource datasource) {
+        QueryResponse rsp = getQueryResponse (datasource, collectionName, query);
+        if (rsp == null) {
+            return null;
+        }
+        SolrDocumentList results = rsp.getResults ();
+        if (datasource.gainMaxSizeAlarm () && results.getNumFound () > datasource.gainMaxSize ()) {
+            throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
+        }
+        return getRecords (results);
+    }
+
+    private static List<Map<String, String>> getRecords(SolrDocumentList results) {
+        List<Map<String, String>> records = new ArrayList<Map<String, String>> ();
+        Map<String, String> map = null;
+        String value = null;
+        for (int i = 0; i < results.size (); i++) {
+            map = new HashMap<> ();
+            for (Map.Entry<String, Object> entry : results.get (i).entrySet ()) {
+                Object obj = entry.getValue ();
+                if (obj != null) {
+                    value = String.valueOf (obj);
+                }
+                map.put (entry.getKey (), value);
+            }
+            records.add (map);
+        }
+        return records;
+    }
+
+    private static List<SolrQuery.SortClause> columnsToSort(List<QueryColumn> queryColumns, List<OrderColumn> orderColumns) {
+        Map<String, QueryColumn> map = new HashMap<> ();
+        for (QueryColumn queryColumn : queryColumns) {
+            map.put (queryColumn.getName (), queryColumn);
+        }
+        // 排序字段按照序号排序
+        Collections.sort (orderColumns, new Comparator<OrderColumn> () {
+            @Override
+            public int compare(OrderColumn obj1, OrderColumn obj2) {
+                return obj1.getSeq ().compareTo (obj2.getSeq ());
+            }
+        });
+        // 排序字段集合
+        List<SolrQuery.SortClause> list = new ArrayList<> ();
+        for (OrderColumn orderColumn : orderColumns) {
+            String colName = orderColumn.getName ();
+            // 排序字段在查询字段中，可以使用solr自带的排序方式
+            if (map.get (colName) != null) {
+                Order order = orderColumn.getOrder ();
+                if (order != null && Order.DESC.equals (order)) {
+                    list.add (new SolrQuery.SortClause (colName, SolrQuery.ORDER.desc));
+                } else {
+                    list.add (new SolrQuery.SortClause (colName, SolrQuery.ORDER.asc));
+                }
+            }
+        }
+        return list;
+    }
+
+    private static String returnColumnsToFields(List<ReturnColumn> returnColumns) {
+        Collections.sort (returnColumns, new Comparator<ReturnColumn> () {
+            @Override
+            public int compare(ReturnColumn obj1, ReturnColumn obj2) {
+                return obj1.getSeq ().compareTo (obj2.getSeq ());
+            }
+        });
+        String str = "";
+        int count = 0;
+        for (ReturnColumn column : returnColumns) {
+            if (column != null && StringUtils.isNotBlank (column.getName ())) {
+                if (count == 0) {
+                    str += column.getName ();
+                } else {
+                    str += "," + column.getName ();
+                }
+                count++;
+            }
+        }
+        return str;
+    }
+
+    private static String dataColumnsToFields(List<DataColumn> returnColumns) {
+        Collections.sort (returnColumns, new Comparator<DataColumn> () {
+            @Override
+            public int compare(DataColumn obj1, DataColumn obj2) {
+                return obj1.getSeq ().compareTo (obj2.getSeq ());
+            }
+        });
+        String str = "";
+        int count = 0;
+        for (DataColumn column : returnColumns) {
+            if (column != null && StringUtils.isNotBlank (column.getName ())) {
+                if (count == 0) {
+                    str += column.getName ();
+                } else {
+                    str += "," + column.getName ();
+                }
+                count++;
+            }
+        }
+        return str;
+    }
+
+    private static List<SolrQuery.SortClause> orderColumnsToSort(List<OrderColumn> orderColumns) {
+        // 排序字段按照序号排序
+        Collections.sort (orderColumns, new Comparator<OrderColumn> () {
+            @Override
+            public int compare(OrderColumn obj1, OrderColumn obj2) {
+                return obj1.getSeq ().compareTo (obj2.getSeq ());
+            }
+        });
+        // 排序字段集合
+        List<SolrQuery.SortClause> list = new ArrayList<SolrQuery.SortClause> ();
+        for (OrderColumn orderColumn : orderColumns) {
+            String colName = orderColumn.getName ();
+            Order order = orderColumn.getOrder ();
+            if (order != null && Order.DESC.equals (order)) {
+                list.add (new SolrQuery.SortClause (colName, SolrQuery.ORDER.desc));
+            } else {
+                list.add (new SolrQuery.SortClause (colName, SolrQuery.ORDER.asc));
+            }
+        }
+        return list;
+    }
+
+    private static String componentToQuery(Component component) {
+        if (component == null) {
+            return "*:*";
+        }
+        if (component instanceof Dimension) {
+            return dimensionToQuery ((Dimension) component);
+        } else if (component instanceof Composite) {
+            Composite composite = (Composite) component;
+            LogicalOperator logiOper = composite.getLogiOper ();
+            String str = "(";
+            List<Component> components = composite.getComponents ();
+            for (int i = 0, l = components.size (); i < l; i++) {
+                str += (i == 0 ? "" : " " + logiOper.getValue () + " ");
+                str += componentToQuery (components.get (i));
+            }
+            str += ")";
+            return str;
+        }
+        return null;
+    }
+
+    private static String dimensionToQuery(Dimension dimension) {
+        String name = dimension.getColumnName ();
+        ComparisonOperator compOper = dimension.getCompOper ();
+        List<String> values = getValues (dimension.getColumnType (), dimension.getValues ());
+        switch (compOper.getValue ()) {
+            case "=":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        name + ":" + values.get (0);
+            case "!=":
+            case "<>":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        name + ":(* NOT " + values.get (0) + ")";
+            case ">":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        name + ":[" + values.get (0) + " TO *] AND " + name + ":(* NOT " + values.get (0) + ")";
+            case "<":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        name + ":[* TO " + values.get (0) + "] AND " + name + ":(* NOT " + values.get (0) + ")";
+            case ">=":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        name + ":[" + values.get (0) + " TO *]";
+            case "<=":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        name + ":[* TO " + values.get (0) + "]";
+            case "LIKE":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        name + ":" + dimension.getValues ().get (0);
+            case "NOT LIKE":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        "-" + name + ":" + dimension.getValues ().get (0);
+            case "BETWEEN AND":
+                return (values == null || values.size () < 2) ? "*:*" :
+                        name + ":[" + values.get (0) + " TO " + values.get (1) + "]";
+            case "IN":
+                if (values == null || values.size () == 0) {
+                    return "*:*";
+                } else {
+                    String str = name + ":(";
+                    int count = 0;
+                    for (int i = 0; i < values.size (); i++) {
+                        str += (count == 0 ? "" : " or ");
+                        str += values.get (i);
+                        count++;
+                    }
+                    str += ")";
+                    return str;
+                }
+            case "NOT IN":
+                if (values == null || values.size () == 0) {
+                    return "*:*";
+                } else {
+                    String str = "-" + name + ":(";
+                    int count = 0;
+                    for (int i = 0; i < values.size (); i++) {
+                        str += (count == 0 ? "" : " or ");
+                        str += values.get (i);
+                        count++;
+                    }
+                    str += ")";
+                    return str;
+                }
+            case "IS NULL":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        "-" + name + ":*";
+            case "IS NOT NULL":
+                return (values == null || values.size () == 0) ? "*:*" :
+                        name + ":*";
+            default:
+                return "*:*";
+        }
+    }
+
+    private static List<String> getValues(ColumnType columnType, List<String> values) {
+        List<String> newValues = new ArrayList<> ();
+        for (String value : values) {
+            newValues.add (getValue (columnType, value));
+        }
+        return newValues;
+    }
+
+    private static String getValue(ColumnType columnType, String value) {
+        switch (columnType.getValue ()) {
+            case "STRING":
+                return "\"" + value + "\"";
+            default:
+                return value;
+        }
+    }
+
+    private static String queryColumnsToQuery(List<QueryColumn> queryColumns) {
         Collections.sort (queryColumns, new Comparator<QueryColumn> () {
             @Override
             public int compare(QueryColumn obj1, QueryColumn obj2) {
                 return obj1.getSeq ().compareTo (obj2.getSeq ());
             }
         });
-        StringBuffer sb = new StringBuffer ("*:*");
+        String str = "*:*";
         for (QueryColumn queryColumn : queryColumns) {
-            String name = queryColumn.getName ();
-            String value = queryColumn.getValue ();
-            DataType type = queryColumn.getType ();
-            Operator operator = queryColumn.getOperator ();
-            if (org.apache.commons.lang3.StringUtils.isNotBlank (value)) {
-                if (Operator.EQ.equals (operator)) {
-                    sb.append (" AND " + name + ":" + getValue (type, value));
-                } else if (Operator.GT.equals (operator)) {
-                    sb.append (" AND " + name + ":[" + getValue (type, value) + " TO *] AND " + name + ":(* NOT " + getValue (type, value) + ")");
-                } else if (Operator.LT.equals (operator)) {
-                    sb.append (" AND " + name + ":[* TO " + getValue (type, value) + "] AND " + name + ":(* NOT " + getValue (type, value) + ")");
-                } else if (Operator.GE.equals (operator)) {
-                    sb.append (" AND " + name + ":[" + getValue (type, value) + " TO *]");
-                } else if (Operator.LE.equals (operator)) {
-                    sb.append (" AND " + name + ":[* TO " + getValue (type, value) + "]");
-                } else if (Operator.NE.equals (operator)) {
-                    sb.append (" AND " + name + ":(* NOT " + getValue (type, value) + ")"); // sb.append(" AND " + name + ":(-" + getValue(type, value) + ")");
-                } else if (Operator.LK.equals (operator)) {
-                    sb.append (" AND " + name + ":*" + getValue (value) + "*");
-                } else if (Operator.RLIKE.equals (operator)) {
-                    sb.append (" AND " + name + ":" + getValue (value) + "*");
-                } else if (Operator.IN.equals (operator)) {
-                    sb.append (" AND " + name + ":(");
-                    String[] values = value.split (",");
-                    for (int i = 0; i < values.length; i++) {
-                        if (org.apache.commons.lang3.StringUtils.isBlank (values[i])) {
-                            continue;
-                        }
-                        sb.append (getValue (type, values[i]));
-                        if (i < values.length - 1) {
-                            sb.append (" or ");
-                        }
-                        if (i == values.length - 1) {
-                            sb.append (")");
-                        }
-                    }
-                }
-            }
+            str += " AND " + getQuery (queryColumn);
         }
-        logger.debug ("q=" + sb.toString ());
-        return sb.toString ();
+        logger.debug ("q=" + str);
+        return str;
+    }
+
+    private static String getQuery(QueryColumn queryColumn) {
+        String name = queryColumn.getName ();
+        String value = queryColumn.getValue ();
+        DataType type = queryColumn.getType ();
+        Operator operator = queryColumn.getOperator ();
+        if (StringUtils.isBlank (value)) {
+            return "*:*";
+        }
+        switch (operator) {
+            case EQ:
+                return name + ":" + getValue (type, value);
+            case NE:
+                return name + ":(* NOT " + getValue (type, value) + ")";
+            case GT:
+                return name + ":[" + getValue (type, value) + " TO *] AND " + name + ":(* NOT " + getValue (type, value) + ")";
+            case LT:
+                return name + ":[* TO " + getValue (type, value) + "] AND " + name + ":(* NOT " + getValue (type, value) + ")";
+            case GE:
+                return name + ":[" + getValue (type, value) + " TO *]";
+            case LE:
+                return name + ":[* TO " + getValue (type, value) + "]";
+            case LK:
+                return name + ":*" + getValue (value) + "*";
+            case RLIKE:
+                return name + ":" + getValue (value) + "*";
+            case IN:
+                String str = name + ":(";
+                String[] values = value.split (",");
+                int count = 0;
+                for (int i = 0; i < values.length; i++) {
+                    str += (count == 0 ? "" : " or ");
+                    str += getValue (type, values[i]);
+                    count++;
+                }
+                str += ")";
+                return str;
+            default:
+                return "*:*";
+        }
     }
 
     private static String getValue(DataType type, String value) {
