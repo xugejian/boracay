@@ -93,7 +93,7 @@ selectStatement
 
 subSelectStatement
     : serviceName
-    | '(' selectStatement ')' AS? serviceName
+    | '(' selectStatement ')' AS? uid
     ;
 
 selectElements
@@ -110,7 +110,8 @@ logicExpressions
      ;
 
 logicExpression
-    : fullColumnName comparisonOperator value
+    : fullColumnName comparisonOperator fullColumnName
+    | fullColumnName comparisonOperator value
     | fullColumnName BETWEEN value AND value
     | fullColumnName NOT? IN '(' value (',' value)*  ')'
     | fullColumnName IS NOT? NULL
@@ -181,7 +182,7 @@ selectElementCal
     ;
 
 fullColumnName
-    : columnName
+    : (uid '.')? columnName
     ;
 
 arithmeticCall
@@ -230,6 +231,6 @@ serviceName: tmpName=ID;
 
 columnName: ID;
 
-uid: ID;
+uid: aliasName=ID;
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines

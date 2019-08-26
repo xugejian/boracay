@@ -106,11 +106,13 @@ public class ConsumerService {
         // 没有注册服务
         if (rcService == null) {
             consumeRequest.setError (ErrorCode.ERROR_000004);
+            consumeRequest.setMessage (request.getServiceName () + "服务没有注册");
             return consumeRequest;
         }
         // 服务停用
         if (ServiceStatus.STOP.getValue ().equals (rcService.getStatus ())) {
             consumeRequest.setError (ErrorCode.ERROR_000017);
+            consumeRequest.setMessage (request.getServiceName () + "服务已经停用");
             return consumeRequest;
         }
         String type = request.getType ();
@@ -129,6 +131,7 @@ public class ConsumerService {
         // 没有授权服务
         if (rcUserService == null) {
             consumeRequest.setError (ErrorCode.ERROR_000008);
+            consumeRequest.setMessage (request.getServiceName () + "服务没有授权");
             return consumeRequest;
         }
         consumeRequest.setRcUserService (rcUserService);

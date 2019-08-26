@@ -27,7 +27,7 @@ public class H2DataCleanTask {
     /**
      * 清空H2数据库数据
      */
-    @Scheduled(cron = "${aggregator.h2.clean.expression:0 0 0 * * ?}")
+    @Scheduled(cron = "${aggregator.h2.clean.expression:0 1 0 * * ?}")
     public void cleanH2Database() {
         try (Connection conn = h2DataSource.getConnection ();
              Statement stmt = conn.createStatement ();) {

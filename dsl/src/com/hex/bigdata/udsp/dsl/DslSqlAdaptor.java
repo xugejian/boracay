@@ -71,6 +71,7 @@ public class DslSqlAdaptor {
     public static DslSelectSql sqlToObject(String sql) {
         DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
         DSLSQLParser.SelectStatementContext selectStatementContext = parser.selectStatement ();
+        logger.debug (getText (sql, selectStatementContext));
         // lowest SelectStatementContext
         DSLSQLParser.SelectStatementContext lowestSelectStatementContext = lowestSelectStatementContext (selectStatementContext);
         // serviceName
@@ -285,40 +286,49 @@ public class DslSqlAdaptor {
         if (logicExpressionsContext != null) { // '(' logicExpressions ')'
             return logicExpressionsContextToComponent (logicExpressionsContext);
         } else { // 非'(' logicExpressions ')'
-            String name = logicExpressionContext.fullColumnName ().getText ();
-            List<DSLSQLParser.ValueContext> valueContexts = logicExpressionContext.value ();
-            if (logicExpressionContext.comparisonOperator () != null) { // fullColumnName comparisonOperator value
+            List<DSLSQLParser.FullColumnNameContext> fullColumnNameContexts = logicExpressionContext.fullColumnName ();
+            if (fullColumnNameContexts.size () == 2) { // fullColumnName comparisonOperator fullColumnName
+                String leftName = fullColumnNameContexts.get (0).columnName ().getText (); // left columnName
+                String rightName = fullColumnNameContexts.get (1).columnName ().getText (); // right columnName
                 String operator = logicExpressionContext.comparisonOperator ().getText ();
                 comparison = transComparisonOperator (operator);
-                DSLSQLParser.ValueContext valueContext = valueContexts.get (0);
-                values.add (valueContextToValue (valueContext));
-                ColumnType columnType = valueContextToColumnType (valueContext);
-                dimension = new Dimension (name, comparison, columnType, values);
-            } else if (logicExpressionContext.BETWEEN () != null && logicExpressionContext.AND () != null) { // fullColumnName BETWEEN value AND value
-                DSLSQLParser.ValueContext startValueContext = valueContexts.get (0);
-                DSLSQLParser.ValueContext endValueContext = valueContexts.get (1);
-                values.add (valueContextToValue (startValueContext));
-                values.add (valueContextToValue (endValueContext));
-                ColumnType columnType = valueContextToColumnType (startValueContext);
-                dimension = new Dimension (name, ComparisonOperator.BETWEEN_AND, columnType, values);
-            } else if (logicExpressionContext.IN () != null) { // fullColumnName NOT? IN '(' value (',' value)*  ')'
-                if (logicExpressionContext.NOT () != null) { // NOT IN
-                    comparison = ComparisonOperator.NOT_IN;
-                } else { // IN
-                    comparison = ComparisonOperator.IN;
-                }
-                for (DSLSQLParser.ValueContext valueContext : valueContexts) {
+                dimension = new Dimension (leftName, comparison);
+            } else { // other
+                String name = fullColumnNameContexts.get (0).columnName ().getText (); // columnName
+                List<DSLSQLParser.ValueContext> valueContexts = logicExpressionContext.value (); // values
+                if (logicExpressionContext.comparisonOperator () != null) { // fullColumnName comparisonOperator value
+                    String operator = logicExpressionContext.comparisonOperator ().getText ();
+                    comparison = transComparisonOperator (operator);
+                    DSLSQLParser.ValueContext valueContext = valueContexts.get (0);
                     values.add (valueContextToValue (valueContext));
+                    ColumnType columnType = valueContextToColumnType (valueContext);
+                    dimension = new Dimension (name, comparison, columnType, values);
+                } else if (logicExpressionContext.BETWEEN () != null && logicExpressionContext.AND () != null) { // fullColumnName BETWEEN value AND value
+                    DSLSQLParser.ValueContext startValueContext = valueContexts.get (0);
+                    DSLSQLParser.ValueContext endValueContext = valueContexts.get (1);
+                    values.add (valueContextToValue (startValueContext));
+                    values.add (valueContextToValue (endValueContext));
+                    ColumnType columnType = valueContextToColumnType (startValueContext);
+                    dimension = new Dimension (name, ComparisonOperator.BETWEEN_AND, columnType, values);
+                } else if (logicExpressionContext.IN () != null) { // fullColumnName NOT? IN '(' value (',' value)*  ')'
+                    if (logicExpressionContext.NOT () != null) { // NOT IN
+                        comparison = ComparisonOperator.NOT_IN;
+                    } else { // IN
+                        comparison = ComparisonOperator.IN;
+                    }
+                    for (DSLSQLParser.ValueContext valueContext : valueContexts) {
+                        values.add (valueContextToValue (valueContext));
+                    }
+                    ColumnType columnType = valueContextToColumnType (valueContexts.get (0));
+                    dimension = new Dimension (name, comparison, columnType, values);
+                } else if (logicExpressionContext.IS () != null && logicExpressionContext.NULL () != null) { // fullColumnName IS NOT? NULL
+                    if (logicExpressionContext.NOT () != null) { // IS NOT NULL
+                        comparison = ComparisonOperator.IS_NOT_NULL;
+                    } else { // IS NULL
+                        comparison = ComparisonOperator.IS_NULL;
+                    }
+                    dimension = new Dimension (name, comparison);
                 }
-                ColumnType columnType = valueContextToColumnType (valueContexts.get (0));
-                dimension = new Dimension (name, comparison, columnType, values);
-            } else if (logicExpressionContext.IS () != null && logicExpressionContext.NULL () != null) { // fullColumnName IS NOT? NULL
-                if (logicExpressionContext.NOT () != null) { // IS NOT NULL
-                    comparison = ComparisonOperator.IS_NOT_NULL;
-                } else { // IS NULL
-                    comparison = ComparisonOperator.IS_NULL;
-                }
-                dimension = new Dimension (name, comparison);
             }
         }
         return dimension;
@@ -359,10 +369,6 @@ public class DslSqlAdaptor {
             list.add (new Order (name, expression));
         }
         return list;
-    }
-
-    private static String selectElementsContextToSelect(DSLSQLParser.SelectElementsContext selectElementsContext) {
-        return selectElementsContext.getText ();
     }
 
     /**
@@ -460,11 +466,13 @@ public class DslSqlAdaptor {
         } else if (component instanceof Composite) {
             Composite composite = (Composite) component;
             LogicalOperator logiOper = composite.getLogiOper ();
+            String str = "(";
             List<Component> components = composite.getComponents ();
-            String str = "";
             for (int i = 0, l = components.size (); i < l; i++) {
-                str += (i == 0 ? " " : " " + logiOper.getValue () + " ") + componentToStatement (components.get (i));
+                str += (i == 0 ? "" : " " + logiOper.getValue () + " ");
+                str += componentToStatement (components.get (i));
             }
+            str += ")";
             return str;
         }
         return null;
