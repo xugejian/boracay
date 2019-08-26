@@ -119,7 +119,7 @@ logicExpression
     ;
 
 groupByCaluse
-    :   GROUP BY groupByItem (',' groupByItem)*
+    : GROUP BY groupByItem (',' groupByItem)*
     ;
 
 orderByClause
