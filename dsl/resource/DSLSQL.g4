@@ -36,6 +36,11 @@ LIKE: L I K E;
 DESCRIBE: D E S C R I B E;
 SHOW: S H O W;
 SERVICES: S E R V I C E S;
+ON: O N;
+JOIN: J O I N;
+LEFT: L E F T;
+RIGHT: R I G H T;
+INNER: I N N E R;
 
 fragment A: [aA];
 fragment B: [bB];
@@ -88,11 +93,33 @@ showServicesStatement
     ;
 
 selectStatement
-    : SELECT selectElements FROM subSelectStatement (whereClause)? (groupByCaluse)? (orderByClause)? (limitClause)?
+    : SELECT selectElements FROM subSelectStatement (joinCaluse)? (whereClause)? (groupByCaluse)? (orderByClause)? (limitClause)?
+    ;
+
+joinCaluse
+    : joinElement (joinElement)*
+    ;
+
+joinElement
+    : joinStatement subSelectStatement onStatement
+    ;
+
+joinStatement
+    : joinOperator JOIN
+    ;
+
+joinOperator
+    : LEFT
+    | RIGHT
+    | INNER
+    ;
+
+onStatement
+    : ON logicExpressions
     ;
 
 subSelectStatement
-    : serviceName
+    : serviceName (AS? uid)?
     | '(' selectStatement ')' AS? uid
     ;
 
@@ -110,12 +137,18 @@ logicExpressions
      ;
 
 logicExpression
-    : fullColumnName comparisonOperator fullColumnName
-    | fullColumnName comparisonOperator value
+    : logicExpressionCal comparisonOperator logicExpressionCal
     | fullColumnName BETWEEN value AND value
     | fullColumnName NOT? IN '(' value (',' value)*  ')'
     | fullColumnName IS NOT? NULL
     | '(' logicExpressions ')'
+    ;
+
+logicExpressionCal
+    : fullColumnName
+    | arithmeticCall
+    | functionCall
+    | value
     ;
 
 groupByCaluse
@@ -187,15 +220,20 @@ fullColumnName
 
 arithmeticCall
     : stringAndNumber (arithmetic stringAndNumber)+
+    | '(' arithmeticCall ')'
     ;
 
 stringAndNumber
     : fullColumnName
     | decimalLiteral
+    | '(' arithmeticCall ')'
     ;
 
 arithmetic
-    : ('+' | '-' | '*' | '/')
+    : '+'
+    | '-'
+    | '*'
+    | '/'
     ;
 
 functionCall

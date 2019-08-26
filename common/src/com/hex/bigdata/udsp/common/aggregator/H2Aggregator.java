@@ -4,6 +4,9 @@ import com.hex.bigdata.udsp.common.aggregator.constant.H2DataType;
 import com.hex.bigdata.udsp.common.aggregator.model.H2DataColumn;
 import com.hex.bigdata.udsp.common.aggregator.model.H2Response;
 import com.hex.bigdata.udsp.common.aggregator.util.H2SqlUtil;
+import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
+import com.hex.bigdata.udsp.dsl.model.Component;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class H2Aggregator {
     private static Logger logger = LogManager.getLogger (H2Aggregator.class);
 
+    private static final String TBL_PREFIX = "TMP_";
+
     @Autowired
     @Qualifier("h2DataSource")
     private BasicDataSource h2DataSource;
@@ -35,6 +40,10 @@ public class H2Aggregator {
 
     // Map<String tableName, Long timestamp>
     private static Map<String, Long> h2AggMetaCacher = new ConcurrentHashMap<> ();
+
+    public String getH2TableName(String serviceName, Component component){
+        return TBL_PREFIX + DigestUtils.md5Hex (serviceName + " " + DslSqlAdaptor.componentToStatement (component));
+    }
 
     /**
      * 加载数据操作

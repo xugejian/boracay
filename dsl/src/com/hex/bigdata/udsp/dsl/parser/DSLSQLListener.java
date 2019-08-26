@@ -50,6 +50,56 @@ public interface DSLSQLListener extends ParseTreeListener {
 	 */
 	void exitSelectStatement(DSLSQLParser.SelectStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#joinCaluse}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoinCaluse(DSLSQLParser.JoinCaluseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#joinCaluse}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoinCaluse(DSLSQLParser.JoinCaluseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#joinElement}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoinElement(DSLSQLParser.JoinElementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#joinElement}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoinElement(DSLSQLParser.JoinElementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#joinStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoinStatement(DSLSQLParser.JoinStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#joinStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoinStatement(DSLSQLParser.JoinStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#joinOperator}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoinOperator(DSLSQLParser.JoinOperatorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#joinOperator}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoinOperator(DSLSQLParser.JoinOperatorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#onStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterOnStatement(DSLSQLParser.OnStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#onStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitOnStatement(DSLSQLParser.OnStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DSLSQLParser#subSelectStatement}.
 	 * @param ctx the parse tree
 	 */
@@ -99,6 +149,16 @@ public interface DSLSQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLogicExpression(DSLSQLParser.LogicExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#logicExpressionCal}.
+	 * @param ctx the parse tree
+	 */
+	void enterLogicExpressionCal(DSLSQLParser.LogicExpressionCalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#logicExpressionCal}.
+	 * @param ctx the parse tree
+	 */
+	void exitLogicExpressionCal(DSLSQLParser.LogicExpressionCalContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DSLSQLParser#groupByCaluse}.
 	 * @param ctx the parse tree

@@ -9,7 +9,9 @@ import com.hex.bigdata.udsp.consumer.util.Util;
 import com.hex.bigdata.udsp.iq.provider.model.*;
 import com.hex.bigdata.udsp.iq.service.IqProviderService;
 import com.hex.bigdata.udsp.rc.model.RcService;
+import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.service.RcServiceService;
+import com.hex.bigdata.udsp.rc.service.RcUserServiceService;
 import com.hex.goframe.model.MessageResult;
 import com.hex.goframe.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +37,8 @@ public class ExternalConsumerService {
     private UserService userService;
     @Autowired
     private RcServiceService rcServiceService;
+    @Autowired
+    private RcUserServiceService rcUserServiceService;
     @Autowired
     private ConsumerService consumerService;
     @Autowired
@@ -132,7 +136,7 @@ public class ExternalConsumerService {
      *
      * @return
      */
-    public Response showServices(String likeName) {
+    public Response showServices(String udspUser, String likeName) {
         Response response = new Response ();
         List<Map<String, String>> records = new ArrayList<> ();
         Map<String, String> record = null;
@@ -143,12 +147,15 @@ public class ExternalConsumerService {
         }
         iqServices.addAll (iqDslServices);
         if (iqServices.size () != 0) {
-            for (RcService service : iqServices) {
-                record = new HashMap<> ();
-                record.put ("name", service.getName ());
-                record.put ("type", service.getType ());
-                record.put ("comment", service.getDescribe ());
-                records.add (record);
+            for (RcService rcService : iqServices) {
+                RcUserService rcUserService = rcUserServiceService.selectByUserIdAndServiceId (udspUser, rcService.getPkId ());
+                if (rcUserService != null) {
+                    record = new HashMap<> ();
+                    record.put ("name", rcService.getName ());
+                    record.put ("type", rcService.getType ());
+                    record.put ("comment", rcService.getDescribe ());
+                    records.add (record);
+                }
             }
         }
         response.setRecords (records);
@@ -163,17 +170,28 @@ public class ExternalConsumerService {
      * @param serviceName
      * @return
      */
-    public Response describeService(String serviceName) {
+    public Response describeService(String udspUser, String serviceName) {
         Response response = new Response ();
         List<Map<String, String>> records = new ArrayList<> ();
         Map<String, String> record = null;
-        RcService service = rcServiceService.selectByName (serviceName);
-        if (service == null) {
-            return Util.errorResponse (ErrorCode.ERROR_000099, "服务名错误或不存在!");
+        RcService rcService = rcServiceService.selectByName (serviceName);
+        if (rcService == null) {
+            return Util.errorResponse (ErrorCode.ERROR_000004, serviceName + "服务没有注册，无法查看描述信息!");
+        }
+        if (ServiceStatus.STOP.getValue ().equals (rcService.getStatus ())) {
+            return Util.errorResponse (ErrorCode.ERROR_000017, serviceName + "服务已经停用，无法查看描述信息!");
+        }
+        String appType = rcService.getType ();
+        if (!ServiceType.IQ.getValue ().equals (appType)
+                && !ServiceType.IQ_DSL.getValue ().equals (appType)) {
+            return Util.errorResponse (ErrorCode.ERROR_000019, serviceName + "服务不支持自定义SQL，无法查看描述信息!");
+        }
+        RcUserService rcUserService = rcUserServiceService.selectByUserIdAndServiceId (udspUser, rcService.getPkId ());
+        if (rcUserService == null) {
+            return Util.errorResponse (ErrorCode.ERROR_000008, serviceName + "服务没有授权给" + udspUser + "用户，无法查看描述信息!");
         }
         try {
-            String appType = service.getType ();
-            String appId = service.getAppId ();
+            String appId = rcService.getAppId ();
             if (ServiceType.IQ.getValue ().equals (appType)) { // 交互查询应用的自定义SQL
                 Application application = iqProviderService.getApplication (appId);
                 List<QueryColumn> queryColumns = application.getQueryColumns ();

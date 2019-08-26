@@ -37,6 +37,36 @@ public interface DSLSQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelectStatement(DSLSQLParser.SelectStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#joinCaluse}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinCaluse(DSLSQLParser.JoinCaluseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#joinElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinElement(DSLSQLParser.JoinElementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#joinStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinStatement(DSLSQLParser.JoinStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#joinOperator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinOperator(DSLSQLParser.JoinOperatorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#onStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOnStatement(DSLSQLParser.OnStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#subSelectStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -66,6 +96,12 @@ public interface DSLSQLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLogicExpression(DSLSQLParser.LogicExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#logicExpressionCal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogicExpressionCal(DSLSQLParser.LogicExpressionCalContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#groupByCaluse}.
 	 * @param ctx the parse tree
