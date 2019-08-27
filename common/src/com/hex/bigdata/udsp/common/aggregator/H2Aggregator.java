@@ -21,13 +21,14 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by JunjieM on 2019-1-29.
+ * H2聚合器
  */
 @Repository
 public class H2Aggregator {
     private static Logger logger = LogManager.getLogger (H2Aggregator.class);
 
     private static final String TBL_PREFIX = "TMP_";
+    private static final int BATCH_SIZE = 20000;
 
     @Autowired
     @Qualifier("h2DataSource")
@@ -36,12 +37,10 @@ public class H2Aggregator {
     @Value("${aggregator.h2.data.timeout:43200}")
     private int aggregatorH2DataTimeout;
 
-    private static final int BATCH_SIZE = 20000;
-
     // Map<String tableName, Long timestamp>
     private static Map<String, Long> h2AggMetaCacher = new ConcurrentHashMap<> ();
 
-    public String getH2TableName(String serviceName, Component component){
+    public String getH2TableName(String serviceName, Component component) {
         return TBL_PREFIX + DigestUtils.md5Hex (serviceName + " " + DslSqlAdaptor.componentToStatement (component));
     }
 
@@ -122,8 +121,7 @@ public class H2Aggregator {
                 ps.executeBatch ();
             } catch (SQLException e) {
                 e.printStackTrace ();
-                logger.error ("", e);
-                throw new RuntimeException ("ERROR:" + e.getMessage (), e);
+                throw new RuntimeException (e.getMessage ());
             }
             // after Load
             afterLoad (tableName);
@@ -143,8 +141,7 @@ public class H2Aggregator {
             stmt.execute (createTableSql);
         } catch (SQLException e) {
             e.printStackTrace ();
-            logger.error ("", e);
-            throw new RuntimeException ("ERROR:" + e.getMessage (), e);
+            throw new RuntimeException (e.getMessage ());
         }
     }
 
@@ -186,8 +183,7 @@ public class H2Aggregator {
             }
         } catch (Exception e) {
             e.printStackTrace ();
-            logger.error ("ERROR:" + e.getMessage ());
-            throw new RuntimeException ("ERROR:" + e.getMessage (), e);
+            throw new RuntimeException (e.getMessage ());
         }
         response.setColumns (columns);
         response.setRecords (records);
@@ -227,8 +223,7 @@ public class H2Aggregator {
             }
         } catch (Exception e) {
             e.printStackTrace ();
-            logger.error ("ERROR:" + e.getMessage ());
-            throw new RuntimeException ("ERROR:" + e.getMessage (), e);
+            throw new RuntimeException (e.getMessage ());
         }
         return exists;
     }

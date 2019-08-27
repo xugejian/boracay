@@ -72,11 +72,9 @@ fragment HEX_DIGIT: [0-9A-F];
 fragment DEC_DIGIT: [0-9];
 fragment LETTER: [a-zA-Z];
 
-
 ID: ('A'..'Z' | 'a'..'z') ('A'..'Z' | 'a'..'z' | '_' | '0'..'9')*;
 TEXT_STRING: ( '\'' ( ('\\' '\\') | ('\'' '\'') | ('\\' '\'') | ~('\'') )* '\'');
 DECIMAL_LITERAL: DEC_DIGIT+;
-
 
 statement
     : selectStatement
@@ -124,8 +122,12 @@ subSelectStatement
     ;
 
 selectElements
-    : star='*'
+    : star (',' star)*
     | selectElement (',' selectElement)*
+    ;
+
+star
+    : (uid '.')? '*'
     ;
 
 whereClause

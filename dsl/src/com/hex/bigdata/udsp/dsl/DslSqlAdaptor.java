@@ -70,6 +70,7 @@ public class DslSqlAdaptor {
         DSLSQLParser.SelectStatementContext selectStatementContext = parser.selectStatement ();
         logger.info ("dsl: " + getText (sql, selectStatementContext));
         List<ParserRuleContext> contexts = lowestParserRuleContexts (selectStatementContext);
+        // 升序排序
         Collections.sort (contexts, new Comparator<ParserRuleContext> () {
             @Override
             public int compare(ParserRuleContext obj1, ParserRuleContext obj2) {
@@ -93,14 +94,13 @@ public class DslSqlAdaptor {
         if (parserRuleContexts == null || parserRuleContexts.size () == 0) {
             return null;
         }
-        List<DslSql> joinDslSqls = new ArrayList<> ();
-        // 这里需要做倒序处理
-        for (int i = parserRuleContexts.size () - 1; i >= 0; i--) {
+        List<DslSql> dslSqls = new ArrayList<> ();
+        for (int i = 0; i < parserRuleContexts.size (); i++) {
             ParserRuleContext parserRuleContext = parserRuleContexts.get (i);
             DslSql dslSql = parserRuleContextToDslSql (sql, parserRuleContext);
-            joinDslSqls.add (dslSql);
+            dslSqls.add (dslSql);
         }
-        return joinDslSqls;
+        return dslSqls;
     }
 
     /**
@@ -190,7 +190,7 @@ public class DslSqlAdaptor {
             fakeSqlPrefix = sql.substring (index, startIndex);
             fakeSqlSuffix = sql.substring (stopIndex + 1);
             str += fakeSqlPrefix + "${" + ALTERNATIVE + i + "}";
-            index = stopIndex;
+            index = stopIndex + 1;
         }
         str += fakeSqlSuffix;
         return str;

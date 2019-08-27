@@ -79,6 +79,12 @@ public interface DSLSQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelectElements(DSLSQLParser.SelectElementsContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#star}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStar(DSLSQLParser.StarContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#whereClause}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

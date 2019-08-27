@@ -120,6 +120,16 @@ public interface DSLSQLListener extends ParseTreeListener {
 	 */
 	void exitSelectElements(DSLSQLParser.SelectElementsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DSLSQLParser#star}.
+	 * @param ctx the parse tree
+	 */
+	void enterStar(DSLSQLParser.StarContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DSLSQLParser#star}.
+	 * @param ctx the parse tree
+	 */
+	void exitStar(DSLSQLParser.StarContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DSLSQLParser#whereClause}.
 	 * @param ctx the parse tree
 	 */

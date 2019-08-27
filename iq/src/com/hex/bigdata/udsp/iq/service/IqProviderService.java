@@ -206,6 +206,7 @@ public class IqProviderService extends BaseService {
     public IqDslResponse select(Map<String, String> mdIds, DslSelectSql dslSelectSql) {
         IqDslResponse response = new IqDslResponse ();
         // 查询IQ
+        long consumeTime = 0;
         List<DslSql> dslSqls = dslSelectSql.getDslSqls ();
         if (dslSqls != null && dslSqls.size () != 0) {
             for (DslSql dslSql : dslSqls) {
@@ -216,6 +217,8 @@ public class IqProviderService extends BaseService {
                     response.setMessage (serviceName + "服务错误信息：" + response.getMessage ());
                     return response;
                 }
+                response.setConsumeTime (consumeTime + response.getConsumeTime ());
+                consumeTime = response.getConsumeTime ();
             }
         }
         // 查询H2
