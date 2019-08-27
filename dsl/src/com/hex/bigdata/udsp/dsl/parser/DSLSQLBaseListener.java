@@ -30,13 +30,37 @@ public class DSLSQLBaseListener implements DSLSQLListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDescribeServiceStatement(DSLSQLParser.DescribeServiceStatementContext ctx) { }
+	@Override public void enterTestConnectionStatement(DSLSQLParser.TestConnectionStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDescribeServiceStatement(DSLSQLParser.DescribeServiceStatementContext ctx) { }
+	@Override public void exitTestConnectionStatement(DSLSQLParser.TestConnectionStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterShowCachesStatement(DSLSQLParser.ShowCachesStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitShowCachesStatement(DSLSQLParser.ShowCachesStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCleanCachesStatement(DSLSQLParser.CleanCachesStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCleanCachesStatement(DSLSQLParser.CleanCachesStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -49,6 +73,18 @@ public class DSLSQLBaseListener implements DSLSQLListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitShowServicesStatement(DSLSQLParser.ShowServicesStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDescribeServiceStatement(DSLSQLParser.DescribeServiceStatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDescribeServiceStatement(DSLSQLParser.DescribeServiceStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

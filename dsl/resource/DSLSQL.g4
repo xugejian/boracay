@@ -41,6 +41,10 @@ JOIN: J O I N;
 LEFT: L E F T;
 RIGHT: R I G H T;
 INNER: I N N E R;
+CLEAN: C L E A N;
+CACHES: C A C H E S;
+TEST: T E S T;
+CONNECTION: C O N N E C T I O N;
 
 fragment A: [aA];
 fragment B: [bB];
@@ -80,14 +84,29 @@ statement
     : selectStatement
     | describeServiceStatement
     | showServicesStatement
+    | cleanCachesStatement
+    | showCachesStatement
+    | testConnectionStatement
     ;
 
-describeServiceStatement
-    : DESCRIBE serviceName
+testConnectionStatement
+    : TEST CONNECTION
+    ;
+
+showCachesStatement
+    : SHOW CACHES serviceName?
+    ;
+
+cleanCachesStatement
+    : CLEAN CACHES serviceName?
     ;
 
 showServicesStatement
     : SHOW SERVICES (LIKE textLiteral)?
+    ;
+
+describeServiceStatement
+    : DESCRIBE serviceName
     ;
 
 selectStatement

@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class H2Aggregator {
     private static Logger logger = LogManager.getLogger (H2Aggregator.class);
 
-    private static final String TBL_PREFIX = "TMP_";
+    private static final String TBL_PREFIX = "CACHE_";
     private static final int BATCH_SIZE = 20000;
 
     @Autowired
@@ -40,8 +40,23 @@ public class H2Aggregator {
     // Map<String tableName, Long timestamp>
     private static Map<String, Long> h2AggMetaCacher = new ConcurrentHashMap<> ();
 
+    /**
+     * 获取表名称
+     *
+     * @param serviceName
+     * @param component
+     * @return
+     */
     public String getH2TableName(String serviceName, Component component) {
-        return TBL_PREFIX + DigestUtils.md5Hex (serviceName + " " + DslSqlAdaptor.componentToStatement (component));
+        return getH2TableNamePrefix (serviceName) + getH2TableNameSuffix (component);
+    }
+
+    private String getH2TableNamePrefix(String serviceName) {
+        return TBL_PREFIX + DigestUtils.md5Hex (serviceName).substring (8, 24) + "_";
+    }
+
+    private String getH2TableNameSuffix(Component component) {
+        return DigestUtils.md5Hex (DslSqlAdaptor.componentToStatement (component)).substring (8, 24);
     }
 
     /**
@@ -207,8 +222,13 @@ public class H2Aggregator {
         return createTimeStamp == null || System.currentTimeMillis () - createTimeStamp > (aggregatorH2DataTimeout * 1000);
     }
 
-    // 检查临时表是否存在于h2数据库中
-    private boolean isTableExists(String tableName) {
+    /**
+     * 检查表是否存在于h2数据库中
+     *
+     * @param tableName
+     * @return
+     */
+    public boolean isTableExists(String tableName) {
         boolean exists = false;
         String sql = H2SqlUtil.tablesInfo (tableName);
         try (Connection conn = h2DataSource.getConnection ();
@@ -226,5 +246,84 @@ public class H2Aggregator {
             throw new RuntimeException (e.getMessage ());
         }
         return exists;
+    }
+
+    /**
+     * 获取服务的缓存名称
+     *
+     * @param serviceName
+     * @return
+     */
+    public List<String> getCaches(String serviceName) {
+        return getTableNames (getH2TableNamePrefix (serviceName));
+    }
+
+    /**
+     * 获取所有的缓存名称
+     *
+     * @return
+     */
+    public List<String> getCaches() {
+        return getTableNames (TBL_PREFIX);
+    }
+
+    /**
+     * 获取表名称列表
+     *
+     * @param tableNamePrefix
+     * @return
+     */
+    public List<String> getTableNames(String tableNamePrefix) {
+        List<String> list = new ArrayList<> ();
+        String sql = H2SqlUtil.tableList (tableNamePrefix);
+        logger.info ("Execute: {}", sql);
+        try (Connection conn = h2DataSource.getConnection ();
+             Statement stat = conn.createStatement ();
+             ResultSet rs = stat.executeQuery (sql)) {
+            while (rs.next ()) {
+                list.add (rs.getString (1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace ();
+            throw new RuntimeException (e.getMessage ());
+        }
+        return list;
+    }
+
+    /**
+     * 删除表
+     *
+     * @param tableName
+     * @return
+     */
+    public boolean dropTable(String tableName) {
+        String sql = H2SqlUtil.dropTable (tableName);
+        logger.info ("Execute: {}", sql);
+        try (Connection conn = h2DataSource.getConnection ();
+             Statement stat = conn.createStatement ();) {
+            stat.execute (sql);
+        } catch (Exception e) {
+            e.printStackTrace ();
+            throw new RuntimeException (e.getMessage ());
+        }
+        return true;
+    }
+
+    /**
+     * 清空数据库
+     *
+     * @return
+     */
+    public boolean cleanDatabase() {
+        String sql = H2SqlUtil.resetDB ();
+        logger.info ("Execute: {}", sql);
+        try (Connection conn = h2DataSource.getConnection ();
+             Statement stmt = conn.createStatement ();) {
+            stmt.execute (sql);
+        } catch (SQLException e) {
+            e.printStackTrace ();
+            throw new RuntimeException (e.getMessage ());
+        }
+        return true;
     }
 }

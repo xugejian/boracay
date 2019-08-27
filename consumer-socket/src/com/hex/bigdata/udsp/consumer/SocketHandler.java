@@ -1,10 +1,7 @@
 package com.hex.bigdata.udsp.consumer;
 
 import com.hex.bigdata.udsp.common.api.model.Page;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.constant.RequestType;
-import com.hex.bigdata.udsp.common.constant.ServiceType;
-import com.hex.bigdata.udsp.common.constant.StatusCode;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
@@ -101,10 +98,18 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                 DSLSQLParser parser = DslSqlAdaptor.getDSLSQLParser (sql);
                 DSLSQLParser.StatementContext context = parser.statement ();
                 ParseTree parse = context.getChild (0);
-                if (parse instanceof DSLSQLParser.SelectStatementContext) { // select ...
+                if (parse instanceof DSLSQLParser.TestConnectionStatementContext) { // test connection
+                    List<Map<String, String>> records = new ArrayList<> ();
+                    Map<String, String> record = new HashMap<> ();
+                    record.put ("name", "test connection");
+                    records.add (record);
+                    response.setRecords (records);
+                    response.setStatusCode (StatusCode.SUCCESS.getValue ());
+                    response.setStatus (Status.SUCCESS.getValue ());
+                } else if (parse instanceof DSLSQLParser.SelectStatementContext) { // select ...
                     logger.debug ("select ...");
                     DSLSQLParser.SelectStatementContext selectStatementContext = (DSLSQLParser.SelectStatementContext) parse;
-                    String serviceName = DslSqlAdaptor.selectStatementContextToFirstServiceName(selectStatementContext);
+                    String serviceName = DslSqlAdaptor.selectStatementContextToFirstServiceName (selectStatementContext);
                     logger.debug ("serviceName:" + serviceName);
                     request.setServiceName (serviceName); // 设置serviceName
                     String serviceType = consumerService.getServiceType (serviceName);
@@ -113,7 +118,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     } else if (ServiceType.IQ.getValue ().equals (serviceType)) {
                         response = appSdlSelect (request); // 交互查询模块的应用的自定义select SQL
                     } else {
-                        throw new Exception (serviceName + "服务类型不支持自定义SQL");
+                        throw new Exception (serviceName + "服务不存在或不支持自定义SQL");
                     }
                 } else if (parse instanceof DSLSQLParser.ShowServicesStatementContext) { // show services
                     logger.debug ("show services");
@@ -127,6 +132,26 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     String serviceName = ((DSLSQLParser.DescribeServiceStatementContext) parse).serviceName ().getText ();
                     logger.debug ("describe " + serviceName);
                     response = consumerService.describeService (request.getUdspUser (), serviceName);
+                } else if (parse instanceof DSLSQLParser.CleanCachesStatementContext) { // clean caches
+                    DSLSQLParser.CleanCachesStatementContext cleanCachesStatementContext = (DSLSQLParser.CleanCachesStatementContext) parse;
+                    if (cleanCachesStatementContext.serviceName () != null) { // clean caches <service_name>
+                        String serviceName = cleanCachesStatementContext.serviceName ().getText ();
+                        logger.debug ("clean caches " + serviceName);
+                        response = consumerService.cleanCachesService (request.getUdspUser (), serviceName);
+                    } else { // clean caches
+                        logger.debug ("clean caches");
+                        response = consumerService.cleanCaches (request.getUdspUser ());
+                    }
+                } else if (parse instanceof DSLSQLParser.ShowCachesStatementContext) { // show caches
+                    DSLSQLParser.ShowCachesStatementContext showCachesStatementContext = (DSLSQLParser.ShowCachesStatementContext) parse;
+                    if (showCachesStatementContext.serviceName () != null) { // show caches <service_name>
+                        String serviceName = showCachesStatementContext.serviceName ().getText ();
+                        logger.debug ("show caches "+serviceName);
+                        response = consumerService.showCachesService (serviceName);
+                    }else { // show caches
+                        logger.debug ("show caches");
+                        response = consumerService.showCaches ();
+                    }
                 } else {
                     throw new Exception ("不支持该SQL语句：" + sql);
                 }
@@ -135,7 +160,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
             }
         } catch (Exception e) {
             e.printStackTrace ();
-            loggingService.writeResponseLog (response, new ConsumeRequest(request), bef, 0, ErrorCode.ERROR_000005, e.toString ());
+            loggingService.writeResponseLog (response, new ConsumeRequest (request), bef, 0, ErrorCode.ERROR_000005, e.toString ());
         }
         return JSONUtil.parseObj2JSON (response);
     }

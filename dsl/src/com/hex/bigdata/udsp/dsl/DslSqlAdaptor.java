@@ -597,6 +597,9 @@ public class DslSqlAdaptor {
      * @return
      */
     public static String componentToStatement(Component component) {
+        if (component == null) {
+            return "";
+        }
         if (component instanceof Dimension) {
             return dimensionToStatement ((Dimension) component);
         } else if (component instanceof Composite) {

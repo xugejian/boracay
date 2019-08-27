@@ -19,17 +19,35 @@ public interface DSLSQLVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(DSLSQLParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link DSLSQLParser#describeServiceStatement}.
+	 * Visit a parse tree produced by {@link DSLSQLParser#testConnectionStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDescribeServiceStatement(DSLSQLParser.DescribeServiceStatementContext ctx);
+	T visitTestConnectionStatement(DSLSQLParser.TestConnectionStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#showCachesStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitShowCachesStatement(DSLSQLParser.ShowCachesStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#cleanCachesStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCleanCachesStatement(DSLSQLParser.CleanCachesStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#showServicesStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitShowServicesStatement(DSLSQLParser.ShowServicesStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link DSLSQLParser#describeServiceStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDescribeServiceStatement(DSLSQLParser.DescribeServiceStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link DSLSQLParser#selectStatement}.
 	 * @param ctx the parse tree
