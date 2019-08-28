@@ -72,7 +72,7 @@ ${extends("/goframe/function_layout.httl")}
             <div field="requestTotalCount" headerAlign="center" allowSort="true" >请求次数</div>
             <div field="requestSuccessCount" headerAlign="center" allowSort="true">请求成功次数</div>
             <div field="requestFailedCount" headerAlign="center" allowSort="true">请求失败次数</div>
-            <div name="invoke" headerAlign="center" align="center" allowSort="true" renderer="invokeRenderer">调用情况</div>
+            <div name="operate" headerAlign="center" align="center" allowSort="true" renderer="setOperation">操作</div>
         </div>
     </div>
 </div>
@@ -158,7 +158,7 @@ ${extends("/goframe/function_layout.httl")}
      * @param e
      * @returns {string}
      */
-    function invokeRenderer(e){
+    function setOperation(e){
         return "<a href='#' class='underline' onclick='openCharts(\"${basePath}/goframe/p/mc.stats.service.charts?serviceName="+e.row.name+"\",\""+e.row.name+"\",\""+e.row.name+"服务图表统计\","+true+")'>图表统计</a>";
     }
 
