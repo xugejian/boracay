@@ -316,6 +316,7 @@ ${extends("/goframe/function_layout.httl")}
                 var rtsConsumerList = data["RTS_CONSUMER"];
                 var olqAppList = data["OLQ_APP"];
                 var imList = data["IM"];
+                var iqDslList = data["IQ_DSL"];
                 var option = {
                     title: {
                         text: '时间维度-分应用类型的消费统计'
@@ -327,7 +328,7 @@ ${extends("/goframe/function_layout.httl")}
                         x: 'left',
                         y: 'center',
                         orient: 'vertical',
-                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者', '联机查询应用', '交互建模']
+                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者', '联机查询应用', '交互建模', '交互查询DSL']
                     },
                     toolbox: {
                         show: true,
@@ -456,6 +457,19 @@ ${extends("/goframe/function_layout.httl")}
                                 }
                             },
                             data: imList
+                        },
+                        {
+                            name: '交互查询DSL',
+                            type: 'line',
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: iqDslList
                         }
                     ]
                 };
@@ -599,6 +613,7 @@ ${extends("/goframe/function_layout.httl")}
                 var rtsConsumerList = data["RTS_CONSUMER"];
                 var olqAppList = data["OLQ_APP"];
                 var imList = data["IM"];
+                var iqDslList = data["IQ_DSL"];
                 var option = {
                     title: {
                         text: '用户维度-分应用类型的消费统计'
@@ -610,7 +625,7 @@ ${extends("/goframe/function_layout.httl")}
                         x: 'left',
                         y: 'center',
                         orient: 'vertical',
-                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者', '联机查询应用', '交互建模']
+                        data: ['交互查询', '联机查询', '模型管理', '实时流-生产者', '实时流-消费者', '联机查询应用', '交互建模', '交互查询DSL']
                     },
                     toolbox: {
                         show: true,
@@ -738,6 +753,20 @@ ${extends("/goframe/function_layout.httl")}
                                 }
                             },
                             data: imList
+                        },
+                        {
+                            name: '交互查询DSL',
+                            type: 'bar',
+                            barMaxWidth: 20,
+                            stack: '总量',
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        type: 'default'
+                                    }
+                                }
+                            },
+                            data: iqDslList
                         }
                     ]
                 };

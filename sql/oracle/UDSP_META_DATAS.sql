@@ -1883,9 +1883,9 @@ values ('115041', '运行队列', null, 'mc.queue.run', '1', null, 1, 'default',
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
 values ('115051', '等待队列', null, 'mc.queue.wait', '1', null, 2, 'default', 'mc.queue.wait.list', '115031', 'fa fa-align-center');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('114001', '用户维度统计', null, 'mc.stats.user.userChart', '1', null, 2, 'default', 'mc.stats.user.userChart', '100251', 'fa fa-bar-chart-o');
+values ('114001', '用户维度统计', null, 'mc.stats.user.list', '1', null, 2, 'default', 'mc.stats.user.list', '100251', 'fa fa-bar-chart-o');
 insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
-values ('114011', '服务维度统计', null, 'mc.stats.service.serviceChart', '1', null, 3, 'default', 'mc.stats.service.serviceChart', '100251', 'fa fa-bar-chart-o');
+values ('114011', '服务维度统计', null, 'mc.stats.service.list', '1', null, 3, 'default', 'mc.stats.service.list', '100251', 'fa fa-bar-chart-o');
 commit;
 prompt 59 records loaded
 prompt Loading T_GF_NEXTID...

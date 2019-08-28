@@ -81,9 +81,6 @@ ${extends("/goframe/function_layout.httl")}
     var grid1;
     var appId_nuiObject;
 
-    var updateForm ;
-    var uploadFileStatus;
-    var fileIndex = 0;
     /**
      * 按需加载资源文件
      */
@@ -93,9 +90,6 @@ ${extends("/goframe/function_layout.httl")}
         grid1.load();
         appId_nuiObject=nui.get("appId");
         $("#pull").hide();
-
-        updateForm =  new nui.Form("updateForm");
-        uploadFileStatus = false ;
     });
 
     /**
@@ -165,11 +159,11 @@ ${extends("/goframe/function_layout.httl")}
      * @returns {string}
      */
     function invokeRenderer(e){
-        return "<a href='#' class='underline' onclick='openServiceStatis(\"${basePath}/goframe/p/mc.stats.service.charts?serviceName="+e.row.name+"\",\""+e.row.name+"\",\""+e.row.name+"服务调用统计\","+true+")'><img src='${basePath}/s/img/collapse.gif' title='服务名称对应服务调用信息' alt=''></a>";
+        return "<a href='#' class='underline' onclick='openCharts(\"${basePath}/goframe/p/mc.stats.service.charts?serviceName="+e.row.name+"\",\""+e.row.name+"\",\""+e.row.name+"服务图表统计\","+true+")'>图表统计</a>";
     }
 
-    function openServiceStatis(url, code, name, closeable){
-        window.parent.showTab(url, code, name, closeable,null,null,null,null);
+    function openCharts(url, code, name, closeable){
+        window.parent.showTab(url, code, name, closeable, null, null, null, null);
     }
 
 </script>

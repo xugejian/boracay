@@ -94,21 +94,17 @@ ${extends("/goframe/function_layout.httl")}
 		grid.load(data);
 	}
 
-	function reset(){
-		var form = new nui.Form("#form1");
-		form.reset();
-	}
 	/**
 	 * 服务调用渲染
 	 * @param e
 	 * @returns {string}
 	 */
 	function invokeRenderer(e){
-		return "<a href='#' class='underline' onclick='openServiceStatis(\"${basePath}/goframe/p/mc.stats.user.charts?userName="+e.row.userId+"\",\""+e.row.userId+"\",\""+e.row.userName+"用户调用统计\","+true+")'><img src='${basePath}/s/img/collapse.gif' title='服务名称对应服务调用信息' alt=''></a>";
+		return "<a href='#' class='underline' onclick='openCharts(\"${basePath}/goframe/p/mc.stats.user.charts?userName="+e.row.userId+"\",\""+e.row.userId+"\",\""+e.row.userName+"用户图表统计\","+true+")'>图表统计</a>";
 	}
 
-	function openServiceStatis(url, code, name, closeable){
-		window.parent.showTab(url, code, name, closeable,null,null,null,null);
+	function openCharts(url, code, name, closeable){
+		window.parent.showTab(url, code, name, closeable, null, null, null, null);
 	}
 
 </script>

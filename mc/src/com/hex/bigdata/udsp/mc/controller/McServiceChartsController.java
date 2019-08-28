@@ -170,13 +170,11 @@ public class McServiceChartsController {
     }
 
     private Date getDate(String datetime) throws ParseException {
-        Date dtEnd = null;
         if (StringUtils.isNotBlank(datetime)) {
-            dtEnd = ymdhmFormat.parse(datetime);
+            return ymdhmFormat.parse(datetime);
         } else {
-            dtEnd = new Date();
+            return new Date();
         }
-        return dtEnd;
     }
 
 }
