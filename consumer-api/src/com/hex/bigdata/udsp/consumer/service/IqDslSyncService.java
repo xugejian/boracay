@@ -66,22 +66,19 @@ public class IqDslSyncService {
         long runBef = System.currentTimeMillis ();
         Response response = new Response ();
         try {
-            Request request = consumeRequest.getRequest ();
-
+            final long cacheTimeout = Util.getCacheTimeout (consumeRequest.getRcService ());
             // 通过SQL解析成DslSelectSql
-            final DslSelectSql dslSelectSql = DslSqlAdaptor.sqlToObject (request.getSql ());
-
+            final DslSelectSql dslSelectSql = DslSqlAdaptor.sqlToObject (consumeRequest.getRequest ().getSql ());
             // 获取所有服务的元数据ID
-            final Map<String, String> mdIds = getMdIds (dslSelectSql, request.getUdspUser ());
-
+            final Map<String, String> mdIds = getMdIds (dslSelectSql, consumeRequest.getRequest ().getUdspUser ());
             RcUserService rcUserService = consumeRequest.getRcUserService ();
             if (rcUserService == null || rcUserService.getMaxSyncExecuteTimeout () == 0) { // 不开启超时
-                response = run (mdIds, dslSelectSql);
+                response = run (mdIds, dslSelectSql, cacheTimeout);
             } else { // 开启一个新的线程，其内部执行交互查询任务，执行成功时或者执行超时时向下走
                 Future<Response> futureTask = executorService.submit (new Callable () {
                     @Override
                     public Response call() throws Exception {
-                        return run (mdIds, dslSelectSql);
+                        return run (mdIds, dslSelectSql, cacheTimeout);
                     }
                 });
                 response = futureTask.get (rcUserService.getMaxSyncExecuteTimeout (), TimeUnit.SECONDS);
@@ -102,9 +99,9 @@ public class IqDslSyncService {
      * @param dslSelectSql
      * @return Response
      */
-    public Response run(Map<String, String> mdIds, DslSelectSql dslSelectSql) {
+    public Response run(Map<String, String> mdIds, DslSelectSql dslSelectSql, long timeout) {
         try {
-            IqDslResponse iqDslResponse = iqProviderService.select (mdIds, dslSelectSql);
+            IqDslResponse iqDslResponse = iqProviderService.select (mdIds, dslSelectSql, timeout);
             Response response = new Response ();
             response.setStatus (iqDslResponse.getStatus ().getValue ());
             response.setStatusCode (iqDslResponse.getStatusCode ().getValue ());

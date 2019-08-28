@@ -5,7 +5,6 @@ import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.model.QueueIsFullResult;
 import com.hex.bigdata.udsp.common.service.ComDatasourceService;
 import com.hex.bigdata.udsp.common.util.*;
-import com.hex.bigdata.udsp.consumer.dao.ResponseMapper;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
@@ -24,7 +23,6 @@ import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
 import com.hex.bigdata.udsp.olq.utils.SqlExpressionEvaluator;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
-import com.hex.bigdata.udsp.rc.service.RcServiceService;
 import com.hex.bigdata.udsp.rc.service.RcUserServiceService;
 import com.hex.bigdata.udsp.rts.service.RtsConsumerService;
 import com.hex.bigdata.udsp.rts.service.RtsProducerService;
@@ -36,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +84,7 @@ public class ConsumerService {
     @Autowired
     private WaitingService waitingService;
     @Autowired
-    private ResponseMapper responseMapper;
+    private CacheService cacheService;
     @Autowired
     private IqDslSyncService iqDslSyncService;
 
@@ -211,32 +208,22 @@ public class ConsumerService {
         String appId = request.getAppId ();
         String type = request.getType ();
         String entity = request.getEntity ();
-        Page page = request.getPage ();
-        String sql = request.getSql ();
         Map<String, String> paraMap = request.getData ();
         String udspUser = request.getUdspUser ();
+        RcService rcService = consumeRequest.getRcService ();
+        boolean isCache = false; // 是否从缓存中获取到结果
+        long cacheTimeout = Util.getCacheTimeout (rcService);
         response.setConsumeId (consumeId); // 必须先设置consumeId
         try {
             // 获取缓存数据
-            // ------------------------数据缓存处理【START】-----------------------------
-            String isCache = "1";
-            String cacheId = null;
-            long cacheTime = 60;
-            RcService rcService = consumeRequest.getRcService ();
-            if (rcService != null) {
-                isCache = rcService.getIsCache ();
-                cacheTime = rcService.getTimeout ();
-                if ("0".equals (isCache) && ConsumerType.SYNC.getValue ().equalsIgnoreCase (type)
-                        && !ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)) {
-                    cacheId = Util.getCacheId (request);
-                    response = responseMapper.select (cacheId);
-                    if (response != null) {
-                        loggingService.writeResponseLog (request, response, bef, runBef, true); // 写消费信息到数据库
-                        return response;
-                    }
+            if (cacheTimeout > 0 && ConsumerType.SYNC.getValue ().equalsIgnoreCase (type)
+                    && !ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)) {
+                response = cacheService.select (request);
+                if (response != null) { // 从缓存中获取到了数据
+                    isCache = true;
+                    return response;
                 }
             }
-            // ------------------------数据缓存处理【END】-----------------------------
             // 生成随机的文件名
             String fileName = CreateFileUtil.getFileName ();
             // 根据类型进入不同的处理逻辑
@@ -292,32 +279,15 @@ public class ConsumerService {
                 logger.debug ("execute IQ_DSL SYNC START");
                 response = iqDslSyncService.startForTimeout (consumeRequest, bef);
             }
-            // Response后续处理
+            // 异步请求处理
             if (ConsumerType.ASYNC.getValue ().equalsIgnoreCase (type)
                     && ConsumerEntity.START.getValue ().equalsIgnoreCase (entity)
                     && !ServiceType.MM.getValue ().equalsIgnoreCase (appType)) {
-                // -----------------异步任务做如下处理-----------------
                 // 异步任务调起就直接返回成功和文件路径
                 String ftpFilePath = CreateFileUtil.getFtpFileDir (udspUser) + "/" + CreateFileUtil.getDataFileName (fileName);
                 response.setResponseContent (ftpFilePath);
                 response.setStatusCode (StatusCode.SUCCESS.getValue ());
                 response.setStatus (Status.SUCCESS.getValue ());
-            } else {
-                // -----------------同步任务做如下处理-----------------
-                // 把获取的数据插入缓存
-                // ------------------------数据缓存处理【START】-----------------------------
-                if ("0".equals (isCache)
-                        && ConsumerType.SYNC.getValue ().equalsIgnoreCase (type)
-                        && !ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)
-                        && Status.SUCCESS.getValue ().equals (response.getStatus ())) {
-                    responseMapper.insertTimeout (cacheId, response, cacheTime * 1000);
-                }
-                // ------------------------数据缓存处理【END】-----------------------------
-                // 成功且不是查看状态时写日志
-                if (StatusCode.SUCCESS.getValue ().equals (response.getStatusCode ())
-                        && !ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)) {
-                    loggingService.writeResponseLog (request, response, bef, runBef, false);
-                }
             }
             return response;
         } finally {
@@ -326,6 +296,17 @@ public class ConsumerService {
                     || !ConsumerEntity.START.getValue ().equalsIgnoreCase (entity)
                     || ServiceType.MM.getValue ().equalsIgnoreCase (appType)) {
                 runQueueService.reduceCurrent (mcCurrent);
+            }
+            // 数据插入缓存
+            if (cacheTimeout > 0 && ConsumerType.SYNC.getValue ().equalsIgnoreCase (type)
+                    && !ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)
+                    && Status.SUCCESS.getValue ().equals (response.getStatus ())) {
+                cacheService.insert (request, response, cacheTimeout);
+            }
+            // 成功且不是查看状态时写日志
+            if (StatusCode.SUCCESS.getValue ().equals (response.getStatusCode ())
+                    && !ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)) {
+                loggingService.writeResponseLog (request, response, bef, runBef, isCache);
             }
         }
     }

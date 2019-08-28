@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 消费的服务
+ * 外部消费的服务
  */
 @Service
 public class ExternalConsumerService {

@@ -203,7 +203,7 @@ public class IqProviderService extends BaseService {
      * @param dslSelectSql
      * @return
      */
-    public IqDslResponse select(Map<String, String> mdIds, DslSelectSql dslSelectSql) {
+    public IqDslResponse select(Map<String, String> mdIds, DslSelectSql dslSelectSql, long timeout) {
         IqDslResponse response = new IqDslResponse ();
         // 查询IQ
         long consumeTime = 0;
@@ -212,7 +212,7 @@ public class IqProviderService extends BaseService {
             for (DslSql dslSql : dslSqls) {
                 String serviceName = dslSql.getName ();
                 String mdId = mdIds.get (serviceName);
-                response = selectAndLoad (mdId, dslSql);
+                response = selectAndLoad (mdId, dslSql, timeout);
                 if (StatusCode.SUCCESS != response.getStatusCode ()) {
                     response.setMessage (serviceName + "服务错误信息：" + response.getMessage ());
                     return response;
@@ -231,7 +231,7 @@ public class IqProviderService extends BaseService {
     }
 
     // 查询并加载到H2
-    private IqDslResponse selectAndLoad(String mdId, DslSql dslSql) {
+    private IqDslResponse selectAndLoad(String mdId, DslSql dslSql, long timeout) {
         IqDslResponse response = new IqDslResponse ();
         response.setStatus (Status.SUCCESS);
         response.setStatusCode (StatusCode.SUCCESS);
@@ -251,7 +251,8 @@ public class IqProviderService extends BaseService {
                     return response;
                 }
                 // load to h2 database
-                h2Aggregator.load (h2TableName, getH2DataColumns (metadata.getReturnColumns ()), response.getRecords ());
+                List<H2DataColumn> h2DataColumns = getH2DataColumns (metadata.getReturnColumns ());
+                h2Aggregator.load (h2TableName, h2DataColumns, response.getRecords (), timeout);
             }
         }
         return response;

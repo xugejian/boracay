@@ -84,6 +84,6 @@ public class H2SqlUtil {
     }
 
     public static String tableList(String tableNamePrefix) {
-        return "SELECT table_name FROM INFORMATION_SCHEMA.tables WHERE table_name like '" + tableNamePrefix.toUpperCase () + "%'";
+        return "SELECT * FROM INFORMATION_SCHEMA.tables WHERE table_name like '" + tableNamePrefix.toUpperCase () + "%'";
     }
 }

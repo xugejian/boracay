@@ -11,5 +11,5 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class ResponseMapper extends SyncCacheMapper<Response> {
+public class CacheMapper extends SyncCacheMapper<Response> {
 }

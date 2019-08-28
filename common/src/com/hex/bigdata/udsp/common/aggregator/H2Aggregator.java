@@ -4,15 +4,14 @@ import com.hex.bigdata.udsp.common.aggregator.constant.H2DataType;
 import com.hex.bigdata.udsp.common.aggregator.model.H2DataColumn;
 import com.hex.bigdata.udsp.common.aggregator.model.H2Response;
 import com.hex.bigdata.udsp.common.aggregator.util.H2SqlUtil;
+import com.hex.bigdata.udsp.common.util.MD5Util;
 import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
 import com.hex.bigdata.udsp.dsl.model.Component;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -34,10 +33,7 @@ public class H2Aggregator {
     @Qualifier("h2DataSource")
     private BasicDataSource h2DataSource;
 
-    @Value("${aggregator.h2.data.timeout:43200}")
-    private int aggregatorH2DataTimeout;
-
-    // Map<String tableName, Long timestamp>
+    // Map<String table_name, Long end_timestamp>
     private static Map<String, Long> h2AggMetaCacher = new ConcurrentHashMap<> ();
 
     /**
@@ -52,11 +48,11 @@ public class H2Aggregator {
     }
 
     private String getH2TableNamePrefix(String serviceName) {
-        return TBL_PREFIX + DigestUtils.md5Hex (serviceName).substring (8, 24) + "_";
+        return TBL_PREFIX + MD5Util.MD5_16 (serviceName) + "_";
     }
 
     private String getH2TableNameSuffix(Component component) {
-        return DigestUtils.md5Hex (DslSqlAdaptor.componentToStatement (component)).substring (8, 24);
+        return MD5Util.MD5_16 (DslSqlAdaptor.componentToStatement (component));
     }
 
     /**
@@ -66,7 +62,7 @@ public class H2Aggregator {
      * @param columns
      * @param records
      */
-    public void load(String tableName, List<H2DataColumn> columns, List<Map<String, String>> records) {
+    public void load(String tableName, List<H2DataColumn> columns, List<Map<String, String>> records, long timeout) {
         long bef = System.currentTimeMillis ();
         if (records != null && records.size () != 0) {
             // before Load
@@ -123,6 +119,7 @@ public class H2Aggregator {
                                     ps.setString (i, value);
                             }
                         } catch (Exception e) {
+                            //e.printStackTrace ();
                             logger.warn (e.getMessage ());
                             ps.setObject (i, null);
                         }
@@ -139,7 +136,7 @@ public class H2Aggregator {
                 throw new RuntimeException (e.getMessage ());
             }
             // after Load
-            afterLoad (tableName);
+            afterLoad (tableName, timeout);
             logger.info ("H2 Database loadBatch using time: {} ms", System.currentTimeMillis () - bef);
         }
     }
@@ -161,8 +158,10 @@ public class H2Aggregator {
     }
 
     // 加载数据后操作
-    private void afterLoad(String tableName) {
-        h2AggMetaCacher.put (tableName, System.currentTimeMillis ());
+    private void afterLoad(String tableName, long timeout) {
+        if (timeout != 0) {
+            h2AggMetaCacher.put (tableName, System.currentTimeMillis () + (timeout * 1000));
+        }
     }
 
     /**
@@ -218,8 +217,8 @@ public class H2Aggregator {
 
     // 判断h2数据是否超时
     private boolean isTimeout(String tableName) {
-        Long createTimeStamp = h2AggMetaCacher.get (tableName);
-        return createTimeStamp == null || System.currentTimeMillis () - createTimeStamp > (aggregatorH2DataTimeout * 1000);
+        Long endTimestamp = h2AggMetaCacher.get (tableName);
+        return endTimestamp == null || System.currentTimeMillis () > endTimestamp;
     }
 
     /**
@@ -280,8 +279,19 @@ public class H2Aggregator {
         try (Connection conn = h2DataSource.getConnection ();
              Statement stat = conn.createStatement ();
              ResultSet rs = stat.executeQuery (sql)) {
+            ResultSetMetaData md = rs.getMetaData ();
+            String str = "";
+            for(int i=1; i<=md.getColumnCount ();i++){
+                str+=","+md.getColumnLabel (i);
+            }
+            list.add (str);
             while (rs.next ()) {
-                list.add (rs.getString (1));
+                str = "";
+                for(int i=1; i<=md.getColumnCount ();i++){
+                    str+=","+rs.getString (md.getColumnLabel (i));
+                }
+                list.add (str);
+//                list.add (rs.getString (1));
             }
         } catch (Exception e) {
             e.printStackTrace ();
