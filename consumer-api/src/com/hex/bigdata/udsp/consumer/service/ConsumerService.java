@@ -216,7 +216,9 @@ public class ConsumerService {
         response.setConsumeId (consumeId); // 必须先设置consumeId
         try {
             // 获取缓存数据
-            if (cacheTimeout > 0 && ConsumerType.SYNC.getValue ().equalsIgnoreCase (type)
+            if (request.getReadCache () // 客户端配置是否读取缓存
+                    && cacheTimeout > 0 // 服务端配置是否开启缓存
+                    && ConsumerType.SYNC.getValue ().equalsIgnoreCase (type)
                     && !ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)) {
                 response = cacheService.select (request);
                 if (response != null) { // 从缓存中获取到了数据
@@ -298,7 +300,8 @@ public class ConsumerService {
                 runQueueService.reduceCurrent (mcCurrent);
             }
             // 数据插入缓存
-            if (cacheTimeout > 0 && ConsumerType.SYNC.getValue ().equalsIgnoreCase (type)
+            if (cacheTimeout > 0 // 服务端配置是否开启缓存
+                    && ConsumerType.SYNC.getValue ().equalsIgnoreCase (type)
                     && !ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)
                     && Status.SUCCESS.getValue ().equals (response.getStatus ())) {
                 cacheService.insert (request, response, cacheTimeout);

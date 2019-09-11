@@ -16,11 +16,12 @@ public class Request extends BaseRequest implements Serializable {
      */
     // --------------------------------------------
     private String serviceName; // 服务名
-    private String type; // sync、async
-    private String entity; // start、status、stop
+    private String type = "SYNC"; // sync、async
+    private String entity = "START"; // start、status、stop
     private String udspUser; // UDSP用户
     private String token; // UDSP密码
     private String appUser; // 外部的用户
+    private Boolean readCache = true; // 是否读取缓存数据
     // --------------------------------------------
 
     private String appType; // 应用类型
@@ -181,6 +182,14 @@ public class Request extends BaseRequest implements Serializable {
     @Override
     public void setAppUser(String appUser) {
         this.appUser = appUser;
+    }
+
+    public Boolean getReadCache() {
+        return readCache;
+    }
+
+    public void setReadCache(Boolean readCache) {
+        this.readCache = readCache;
     }
 }
 
