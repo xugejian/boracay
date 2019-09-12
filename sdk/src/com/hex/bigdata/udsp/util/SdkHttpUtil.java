@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.util;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import com.hex.bigdata.udsp.common.api.model.BaseRequest;
@@ -26,8 +25,7 @@ public class SdkHttpUtil {
      * @param url
      */
     public static <T> T requestUdsp(BaseRequest request, String url, Class<T> clazz, Charset charset) {
-        JSONObject jsonObject = (JSONObject) JSON.toJSON(request);
-        String json = jsonObject.toJSONString();
+        String json = JSONObject.toJSONString (request);
         return HttpUtils.requestPost(url, json, null, clazz, charset, null, null);
     }
 }

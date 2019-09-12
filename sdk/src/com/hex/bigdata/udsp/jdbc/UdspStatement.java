@@ -1,6 +1,5 @@
 package com.hex.bigdata.udsp.jdbc;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
@@ -136,13 +135,12 @@ public class UdspStatement implements Statement {
         request.setUdspUser (url.getUsername ());
         request.setToken (url.getPassword ());
         request.setSql (sql);
-        JSONObject jsonObject = (JSONObject) JSON.toJSON (request);
-        String reqJson = jsonObject.toJSONString ();
+        String reqJson = JSONObject.toJSONString (request);
         try {
             String rspJson = client.send (reqJson);
             SyncResponse response = null;
             try {
-                response = JSON.parseObject (rspJson, SyncResponse.class);
+                response = JSONObject.parseObject (rspJson, SyncResponse.class);
             } catch (Exception e) {
                 if (e.toString ().contains ("unclosed")) {
                     throw new RuntimeException ("The returned result data is too large for the client to parse");

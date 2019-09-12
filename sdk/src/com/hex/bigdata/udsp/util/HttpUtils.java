@@ -1,6 +1,7 @@
 package com.hex.bigdata.udsp.util;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -38,6 +39,7 @@ import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -387,7 +389,7 @@ public class HttpUtils {
             httpClient = getConnection ();
             HttpResponse response = httpClient.execute (httpPut);
             String content = analysisJsonContent (response);
-            responseObject = JSON.parseObject (content, clazz);
+            responseObject = JSONObject.parseObject (content, clazz);
         } catch (IOException e) {
             e.printStackTrace ();
         } finally {
@@ -438,7 +440,7 @@ public class HttpUtils {
             HttpResponse response = httpClient.execute (httpGet);
             //System.out.println("response:" + response.toString());
             String content = analysisJsonContent (response);
-            responseObject = JSON.parseObject (content, clazz);
+            responseObject = JSONObject.parseObject (content, clazz);
         } catch (IOException e) {
             e.printStackTrace ();
         } finally {
@@ -513,7 +515,7 @@ public class HttpUtils {
             httpClient = getConnection ();
             HttpResponse response = httpClient.execute (httpPost);
             String content = analysisJsonContent (response);
-            responseObject = JSON.parseObject (content, clazz);
+            responseObject = JSONObject.parseObject (content, clazz);
         } catch (IOException e) {
             e.printStackTrace ();
         } finally {
@@ -546,9 +548,9 @@ public class HttpUtils {
         TODO 如不反转义，可能会发生包含双引号的值显示错误，如：test"测试"会变成test\"测试\"；
         如反转义，可能会发生windows路径的值显示错误，如：C:\test\test.txt会变成C: est est.txt。
         */
-        if (StringUtils.isNotBlank(content)) {
-            content = StringEscapeUtils.unescapeJava(content);
-        }
+//        if (StringUtils.isNotBlank(content)) {
+//            content = StringEscapeUtils.unescapeJava(content);
+//        }
         return content;
     }
 
@@ -611,6 +613,31 @@ public class HttpUtils {
                 }
             }
             return content;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Map<String, String> map = new HashMap<> ();
+        map.put ("key1", "C:\\tadsda\\tadsad.txt");
+//        map.put ("key2", "adsafdfsd\\\"asdasfdsf\\\"dsafdsfdsfsdfsd");
+        map.put ("key2", "adsafdfsd\"asdasfdsf\"dsafdsfdsfsdfsd");
+        String json = JSONObject.toJSONString (map);
+
+        System.out.println ("-----------------------------------------------------");
+        System.out.println ("json: " + json);
+        Map<String, String> map1 = JSONObject.parseObject (json, Map.class);
+        for (Map.Entry<String, String> entry : map1.entrySet ()) {
+            System.out.println ("key: " + entry.getKey () + ", value: " + entry.getValue ());
+        }
+
+        System.out.println ("-----------------------------------------------------");
+        String json2 = StringEscapeUtils.unescapeJava (json);
+        System.out.println ("unescape json: " + json2);
+        Map<String, String> map2 = JSONObject.parseObject (json2, Map.class);
+//        Map<String, String> map2 =JSONUtil.parseJSON2Map (json2, String.class);
+        for (Map.Entry<String, String> entry : map2.entrySet ()) {
+            System.out.println ("key: " + entry.getKey () + ", unescape value: " + entry.getValue ());
         }
     }
 
