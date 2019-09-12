@@ -209,7 +209,7 @@ public class JdbcUtil {
         while (rs.next ()) {
             map = new LinkedHashMap<> ();
             for (int i = 1; i <= rsmd.getColumnCount (); i++) {
-                map.put (rsmd.getColumnLabel (i), rs.getString (i) == null ? "" : JSONUtil.encode (rs.getString (i)));
+                map.put (rsmd.getColumnLabel (i), rs.getString (i) == null ? "" : rs.getString (i));
             }
             list.add (map);
         }

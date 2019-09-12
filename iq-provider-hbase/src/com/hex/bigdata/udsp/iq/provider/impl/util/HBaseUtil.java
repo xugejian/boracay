@@ -237,7 +237,7 @@ public class HBaseUtil {
             for (int i = 0; i < fqVals.length; i++) {
                 String colName = colMap.get (i + 1);
                 if (colName != null) {
-                    map.put (colName, JSONUtil.encode (fqVals[i]));
+                    map.put (colName, fqVals[i]);
                 }
             }
         } else if (dataType.equalsIgnoreCase ("json")) { // JSON MAP格式数据

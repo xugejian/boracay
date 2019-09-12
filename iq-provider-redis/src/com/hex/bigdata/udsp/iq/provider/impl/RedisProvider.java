@@ -143,7 +143,7 @@ public class RedisProvider implements Provider {
                 record = new HashMap<String, String> ();
                 returnResults = jedis.get (results[i]).split (fqSep);
                 for (DataColumn returnColumn : returnColumns) {
-                    record.put (returnColumn.getName (), JSONUtil.encode (returnResults[returnColumn.getSeq () - 1]));
+                    record.put (returnColumn.getName (), returnResults[returnColumn.getSeq () - 1]);
                 }
                 records.add (record);
             }

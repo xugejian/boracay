@@ -123,8 +123,4 @@ public class JSONUtil {
         JSONObject jsonObj = JSONObject.fromObject(jsonStr);
         return (T) JSONObject.toBean(jsonObj, clazz, classMap);
     }
-
-    public static String encode(String str){
-        return str.replace("\"", "\\\"");
-    }
 }

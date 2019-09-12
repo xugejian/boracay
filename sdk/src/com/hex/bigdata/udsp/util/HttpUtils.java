@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -544,10 +543,7 @@ public class HttpUtils {
      */
     public static String analysisJsonContent(HttpResponse response, Charset charset) {
         String content = analysisContent (response, charset);
-        /*
-        TODO 如不反转义，可能会发生包含双引号的值显示错误，如：test"测试"会变成test\"测试\"；
-        如反转义，可能会发生windows路径的值显示错误，如：C:\test\test.txt会变成C: est est.txt。
-        */
+        // 反转义
 //        if (StringUtils.isNotBlank(content)) {
 //            content = StringEscapeUtils.unescapeJava(content);
 //        }
