@@ -122,16 +122,16 @@ public class ElasticSearchProvider implements Provider {
             }
             Response response = restClient.performRequest ("GET", "/" + schemaUrl + "/_search", Collections.<String, String>emptyMap (), stringEntity);
             String returnString = EntityUtils.toString (response.getEntity ());
-            JSONObject returnJsonObject = JSONUtil.parseJSON2Obj (returnString, JSONObject.class);
-            JSONObject errorObject = (JSONObject) returnJsonObject.get ("error");
+            JSONObject returnJsonObject = JSONObject.parseObject (returnString);
+            JSONObject errorObject = returnJsonObject.getJSONObject ("error");
             logger.debug ("search_result:" + returnString);
             if (null != errorObject) {
                 //查询报错抛出异常
-                String errortype = (String) errorObject.get ("type");
-                String errorReason = (String) errorObject.get ("reason");
+                String errortype = errorObject.getString ("type");
+                String errorReason = errorObject.getString ("reason");
                 throw new RuntimeException (errortype + ":" + errorReason);
             }
-            ELSearchResponse eLsearchResponse = JSONObject.parseObject (returnString, ELSearchResponse.class);
+            ELSearchResponse eLsearchResponse = JSONUtil.parseJSON2Obj (returnString, ELSearchResponse.class);
             ELOuterHits elOuterHits = eLsearchResponse.getHits ();
             List<ELInnerHits> elInnerHits = elOuterHits.getHits ();
             Map<String, String> colMap = getColMap (returnColumns);
@@ -181,8 +181,9 @@ public class ElasticSearchProvider implements Provider {
         Response response = null;
         try {
             response = restClient.performRequest ("GET", "/", Collections.singletonMap ("pretty", "true"));
-            JSONObject responseObject = JSONObject.parseObject (EntityUtils.toString (response.getEntity ()));
-            String tagline = (String) responseObject.get ("tagline");
+            String returnString = EntityUtils.toString (response.getEntity ());
+            JSONObject responseObject = JSONObject.parseObject (returnString);
+            String tagline = responseObject.getString ("tagline");
             if (StringUtils.isNotBlank (tagline)) {
                 return true;
             }
@@ -216,24 +217,23 @@ public class ElasticSearchProvider implements Provider {
             }
             response = restClient.performRequest ("GET", "/" + schemaUrl, Collections.<String, String>emptyMap (), stringEntity);
             String returnStr = EntityUtils.toString (response.getEntity ());
-            JSONObject returnJsonObject = JSONUtil.parseJSON2Obj (returnStr, JSONObject.class);
-            JSONObject errorObject = (JSONObject) returnJsonObject.get ("error");
             logger.debug ("search_result:" + returnStr);
+            JSONObject returnJsonObject = JSONObject.parseObject (returnStr);
+            JSONObject errorObject = returnJsonObject.getJSONObject ("error");
             if (null != errorObject) {
                 throw new RuntimeException (returnStr);
             }
-
             JSONObject defaultObj = null;
             if (schemaArray.length == 2) {
-                JSONObject schemaObj = (JSONObject) returnJsonObject.get (schemaArray[0]);
-                JSONObject mappingsObj = (JSONObject) schemaObj.get ("mappings");
-                defaultObj = (JSONObject) mappingsObj.get (schemaArray[1]);
+                JSONObject schemaObj = returnJsonObject.getJSONObject (schemaArray[0]);
+                JSONObject mappingsObj = schemaObj.getJSONObject ("mappings");
+                defaultObj = mappingsObj.getJSONObject (schemaArray[1]);
             } else {
-                JSONObject schemaObj = (JSONObject) returnJsonObject.get (schemaName);
-                JSONObject mappingsObj = (JSONObject) schemaObj.get ("mappings");
-                defaultObj = (JSONObject) mappingsObj.get ("default");
+                JSONObject schemaObj = returnJsonObject.getJSONObject (schemaName);
+                JSONObject mappingsObj = schemaObj.getJSONObject ("mappings");
+                defaultObj = mappingsObj.getJSONObject ("default");
             }
-            JSONObject propertiesObj = (JSONObject) defaultObj.get ("properties");
+            JSONObject propertiesObj = defaultObj.getJSONObject ("properties");
             String propertiesStr = JSONUtil.parseObj2JSON (propertiesObj);
             Map<String, ELSearchProperty> properties = JSONUtil.parseJSON2Map (propertiesStr, ELSearchProperty.class);
             list = new ArrayList<> ();
@@ -391,7 +391,6 @@ public class ElasticSearchProvider implements Provider {
                 }
             }
         }
-
         List<JSONObject> orderObjects = new ArrayList<JSONObject> ();
         JSONObject orderObject = null;
         //排序
@@ -406,9 +405,7 @@ public class ElasticSearchProvider implements Provider {
         boolObject.put ("must", mustObjects);
         boolObject.put ("must_not", mustNotObjects);
         queryObject.put ("bool", boolObject);
-
         topObject.put ("query", queryObject);
-
         //Elasticsearch深度分页应该被禁止，推荐使用scroll 的方式遍历数据。
         if (null != page) {
             int pageIndex = page.getPageIndex () == 0 ? 0 : page.getPageIndex () - 1;
@@ -423,8 +420,6 @@ public class ElasticSearchProvider implements Provider {
             }
             topObject.put ("_source", rColumns);
         }
-
-        //System.out.println(JSONObject.toJSONString(topObject));
         return JSONObject.toJSONString (topObject);
     }
 }

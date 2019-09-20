@@ -1,10 +1,9 @@
 package com.hex.bigdata.udsp.iq.provider.impl.util;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.common.constant.Order;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.dsl.constant.ColumnType;
 import com.hex.bigdata.udsp.dsl.constant.ComparisonOperator;
 import com.hex.bigdata.udsp.dsl.constant.LogicalOperator;
@@ -63,19 +62,32 @@ public class SolrUtil {
             }
             break;
         }
-        JSONObject rs = JSONObject.parseObject (response);
-        JSONArray fields = (JSONArray) rs.get ("fields");
         List<MetadataCol> metadataCols = new ArrayList<> ();
         MetadataCol mdCol = null;
+//        JSONObject jsonObject = JSONObject.parseObject (response);
+//        JSONArray fields = jsonObject.getJSONArray ("fields");
+//        for (int i = 0; i < fields.size (); i++) {
+//            mdCol = new MetadataCol ();
+//            mdCol.setSeq ((short) i);
+//            mdCol.setName (fields.getJSONObject (i).getString ("name"));
+//            mdCol.setDescribe (fields.getJSONObject (i).getString ("name"));
+//            mdCol.setType (getColType (fields.getJSONObject (i).getString ("type")));
+//            mdCol.setIndexed (fields.getJSONObject (i).getBoolean ("indexed"));
+//            mdCol.setStored (fields.getJSONObject (i).getBoolean ("stored"));
+//            mdCol.setPrimary (fields.getJSONObject (i).get ("uniqueKey") == null ? false : true);
+//            metadataCols.add (mdCol);
+//        }
+        List<Map<String, Object>> fields = JSONUtil.parseJSON2SubList (response, "fields");
         for (int i = 0; i < fields.size (); i++) {
+            Map<String, Object> field = fields.get (i);
             mdCol = new MetadataCol ();
             mdCol.setSeq ((short) i);
-            mdCol.setName ((String) fields.getJSONObject (i).get ("name"));
-            mdCol.setDescribe ((String) fields.getJSONObject (i).get ("name"));
-            mdCol.setType (getColType ((String) fields.getJSONObject (i).get ("type")));
-            mdCol.setIndexed ((boolean) fields.getJSONObject (i).get ("indexed"));
-            mdCol.setStored ((boolean) fields.getJSONObject (i).get ("stored"));
-            mdCol.setPrimary (fields.getJSONObject (i).get ("uniqueKey") == null ? false : true);
+            mdCol.setName ((String) field.get ("name"));
+            mdCol.setDescribe ((String) field.get ("name"));
+            mdCol.setType (SolrUtil.getColType ((String) field.get ("type")));
+            mdCol.setIndexed ((Boolean) field.get ("indexed"));
+            mdCol.setStored ((Boolean) field.get ("stored"));
+            mdCol.setPrimary (field.get ("uniqueKey") == null ? false : true);
             metadataCols.add (mdCol);
         }
         return metadataCols;

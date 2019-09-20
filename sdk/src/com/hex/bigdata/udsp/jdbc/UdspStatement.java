@@ -5,6 +5,7 @@ import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
 import com.hex.bigdata.udsp.common.constant.ConsumerType;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.StatusCode;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.jdbc.netty.Client;
 import com.hex.bigdata.udsp.jdbc.netty.ClientFactory;
 import com.hex.bigdata.udsp.jdbc.netty.RemotingUrl;
@@ -135,12 +136,12 @@ public class UdspStatement implements Statement {
         request.setUdspUser (url.getUsername ());
         request.setToken (url.getPassword ());
         request.setSql (sql);
-        String reqJson = JSONObject.toJSONString (request);
+        String reqJson = JSONUtil.parseObj2JSON (request);
         try {
             String rspJson = client.send (reqJson);
             SyncResponse response = null;
             try {
-                response = JSONObject.parseObject (rspJson, SyncResponse.class);
+                response = JSONUtil.parseJSON2Obj (rspJson, SyncResponse.class);
             } catch (Exception e) {
                 if (e.toString ().contains ("unclosed")) {
                     throw new RuntimeException ("The returned result data is too large for the client to parse");

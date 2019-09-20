@@ -1,6 +1,6 @@
 package com.hex.bigdata.udsp.util;
 
-import com.alibaba.fastjson.JSONObject;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -388,7 +388,7 @@ public class HttpUtils {
             httpClient = getConnection ();
             HttpResponse response = httpClient.execute (httpPut);
             String content = analysisJsonContent (response);
-            responseObject = JSONObject.parseObject (content, clazz);
+            responseObject = JSONUtil.parseJSON2Obj (content, clazz);
         } catch (IOException e) {
             e.printStackTrace ();
         } finally {
@@ -439,7 +439,7 @@ public class HttpUtils {
             HttpResponse response = httpClient.execute (httpGet);
             //System.out.println("response:" + response.toString());
             String content = analysisJsonContent (response);
-            responseObject = JSONObject.parseObject (content, clazz);
+            responseObject = JSONUtil.parseJSON2Obj (content, clazz);
         } catch (IOException e) {
             e.printStackTrace ();
         } finally {
@@ -514,7 +514,7 @@ public class HttpUtils {
             httpClient = getConnection ();
             HttpResponse response = httpClient.execute (httpPost);
             String content = analysisJsonContent (response);
-            responseObject = JSONObject.parseObject (content, clazz);
+            responseObject = JSONUtil.parseJSON2Obj (content, clazz);
         } catch (IOException e) {
             e.printStackTrace ();
         } finally {
@@ -618,11 +618,11 @@ public class HttpUtils {
         map.put ("key1", "C:\\tadsda\\tadsad.txt");
 //        map.put ("key2", "adsafdfsd\\\"asdasfdsf\\\"dsafdsfdsfsdfsd");
         map.put ("key2", "adsafdfsd\"asdasfdsf\"dsafdsfdsfsdfsd");
-        String json = JSONObject.toJSONString (map);
+        String json = JSONUtil.parseMap2JSON (map);
 
         System.out.println ("-----------------------------------------------------");
         System.out.println ("json: " + json);
-        Map<String, String> map1 = JSONObject.parseObject (json, Map.class);
+        Map<String, String> map1 = JSONUtil.parseJSON2Map (json, String.class);
         for (Map.Entry<String, String> entry : map1.entrySet ()) {
             System.out.println ("key: " + entry.getKey () + ", value: " + entry.getValue ());
         }
@@ -630,8 +630,7 @@ public class HttpUtils {
         System.out.println ("-----------------------------------------------------");
         String json2 = StringEscapeUtils.unescapeJava (json);
         System.out.println ("unescape json: " + json2);
-        Map<String, String> map2 = JSONObject.parseObject (json2, Map.class);
-//        Map<String, String> map2 =JSONUtil.parseJSON2Map (json2, String.class);
+        Map<String, String> map2 = JSONUtil.parseJSON2Map (json2, String.class);
         for (Map.Entry<String, String> entry : map2.entrySet ()) {
             System.out.println ("key: " + entry.getKey () + ", unescape value: " + entry.getValue ());
         }

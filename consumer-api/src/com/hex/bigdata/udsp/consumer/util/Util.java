@@ -20,8 +20,6 @@ import java.util.Map;
  */
 public class Util {
 
-    private static final String CONSUME_RTS_DATASTREAM = "dataStream";
-
     /**
      * JSON字符串转Request对象
      *
@@ -30,7 +28,7 @@ public class Util {
      */
     public static Request jsonToRequest(String json) {
         Map<String, Class> classMap = new HashMap<> ();
-        classMap.put (CONSUME_RTS_DATASTREAM, Map.class);
+        classMap.put ("dataStream", Map.class);
         return JSONUtil.parseJSON2Obj (json, Request.class, classMap);
     }
 

@@ -7,7 +7,6 @@ import com.hex.bigdata.udsp.mm.provider.model.MmRequest;
 import com.hex.bigdata.udsp.mm.provider.model.MmResponse;
 import com.hex.bigdata.udsp.mm.provider.model.MmResponseData;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -23,6 +22,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -48,26 +49,22 @@ public class MmProviderService {
      * @param url
      */
     public MmResponse request(MmRequest mmRequest, String url) throws Exception {
-        JSONObject jsonObject = (JSONObject) JSON.toJSON (mmRequest);
+        String param = JSONUtil.parseObj2JSON (mmRequest);
         logger.info ("请求地址：" + url);
-        logger.info ("请求参数：" + jsonObject.toJSONString ());
+        logger.info ("请求参数：" + param);
         DefaultHttpClient httpClient = new DefaultHttpClient ();
         HttpPost httpPost = new HttpPost (url);
         httpPost.addHeader (HTTP.CONTENT_TYPE, APPLICATION_JSON);
-        StringEntity entity = new StringEntity (jsonObject.toJSONString ());
+        StringEntity entity = new StringEntity (param);
         entity.setContentType (CONTEXT_TYPE_TEXT_JSON);
         entity.setContentEncoding (new BasicHeader (HTTP.CONTENT_TYPE, APPLICATION_JSON));
         httpPost.setEntity (entity);
         HttpResponse response = httpClient.execute (httpPost);
         String returnString = analysis (response);
         logger.info ("模型返回信息：" + returnString);
-        MmResponse mmResponse = JSONUtil.parseJSON2Obj (returnString, MmResponse.class);
-        JSONObject dataObject = JSON.parseObject (returnString).getJSONObject ("data");
-        if (dataObject != null) {
-            MmResponseData mmResponseData = JSONUtil.parseJSON2Obj (dataObject.toJSONString (), MmResponseData.class);
-            mmResponse.setData (mmResponseData);
-        }
-        return mmResponse;
+        Map<String, Class> classMap = new HashMap<> ();
+        classMap.put ("data", MmResponseData.class);
+        return JSONUtil.parseJSON2Obj (returnString, MmResponse.class, classMap);
     }
 
     /**
@@ -97,7 +94,6 @@ public class MmProviderService {
                 buffer.append (line);
             }
             returnString = buffer.toString ();
-            returnString = StringEscapeUtils.unescapeJava (returnString);
         } catch (Exception e) {
             throw new Exception ("解析返回结果失败!" + e.toString ());
         } finally {
