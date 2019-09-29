@@ -253,20 +253,12 @@ public class HBaseUtil {
                 admin = HBaseConnectionPool.getConnection (datasource).getAdmin ();
                 admin.disableTable (hbaseTableName);
                 logger.debug ("HBase表" + tableName + "禁用成功！");
-                try {
-                    admin.deleteTable (hbaseTableName);
-                    logger.debug ("HBase表" + tableName + "删除成功！");
-                } catch (IOException e) {
-                    logger.warn ("HBase表" + tableName + "删除失败！");
-                    e.printStackTrace ();
-                    throw new IOException ("HBase表" + tableName + "删除失败！" + e.getMessage ());
-                } finally {
-                    close (admin);
-                }
+                admin.deleteTable (hbaseTableName);
+                logger.debug ("HBase表" + tableName + "删除成功！");
             } catch (IOException e) {
-                logger.warn ("HBase表" + tableName + "禁用失败！");
+                logger.warn ("HBase表" + tableName + "禁用或删除失败！");
                 e.printStackTrace ();
-                throw new IOException ("HBase表" + tableName + "禁用失败！" + e.getMessage ());
+                throw new IOException ("HBase表" + tableName + "禁用或删除失败！" + e.getMessage ());
             } finally {
                 close (admin);
             }
@@ -296,20 +288,12 @@ public class HBaseUtil {
                 admin = HBaseConnectionPool.getConnection (datasource).getAdmin ();
                 admin.disableTable (hbaseTableName);
                 logger.debug ("HBase表" + tableName + "禁用成功！");
-                try {
-                    admin.truncateTable (hbaseTableName, true);
-                    logger.debug ("HBase表" + tableName + "清空成功！");
-                } catch (IOException e) {
-                    logger.warn ("HBase表" + tableName + "清空失败！");
-                    e.printStackTrace ();
-                    throw new IOException ("HBase表" + tableName + "清空失败！" + e.getMessage ());
-                } finally {
-                    close (admin);
-                }
+                admin.truncateTable (hbaseTableName, true);
+                logger.debug ("HBase表" + tableName + "清空成功！");
             } catch (IOException e) {
-                logger.warn ("HBase表" + tableName + "禁用失败！");
+                logger.warn ("HBase表" + tableName + "禁用或删除失败！");
                 e.printStackTrace ();
-                throw new IOException ("HBase表" + tableName + "禁用失败！" + e.getMessage ());
+                throw new IOException ("HBase表" + tableName + "禁用或删除失败！" + e.getMessage ());
             } finally {
                 close (admin);
             }
@@ -430,16 +414,19 @@ public class HBaseUtil {
      * @return
      */
     public static boolean isAborted(HBaseDatasource datasource) {
-        Connection conn = null;
-        try {
-            conn = HBaseConnectionPool.getConnection (datasource);
-            if (conn != null && !conn.isClosed () && !conn.isAborted ()) {
-                // 尝试获取当中的表，如果获取抛异常则获取连接失败
-                conn.getAdmin ().tableExists (TableName.valueOf ("TEST"));
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace ();
+        Connection conn = HBaseConnectionPool.getConnection (datasource);
+//        if (conn != null && !conn.isClosed () && !conn.isAborted ()) {
+//            try {
+//                // 尝试获取当中的表，如果获取抛异常则获取连接失败
+//                conn.getAdmin ().tableExists (TableName.valueOf ("TEST"));
+//                return false;
+//            } catch (Exception e) {
+//                logger.warn ("连接失败！" + e.getMessage ());
+//                e.printStackTrace ();
+//            }
+//        }
+        if (conn == null) {
+            return false;
         }
         return true;
     }

@@ -136,16 +136,16 @@ public class HBaseUtil {
 
     public static HBasePage scanPage(HBaseDatasource datasource, String tableName, HBasePage page,
                                      Map<Integer, String> colMap, HBaseMetadata metadata) throws Exception {
+        if (page.getPageSize () > datasource.gainMaxSize ()) {
+            page.setPageSize (datasource.gainMaxSize ());
+            if (datasource.gainMaxSizeAlarm ()) {
+                throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
+            }
+        }
         Connection conn = null;
         Table table = null;
         AggregationClient client = null;
         try {
-            if (page.getPageSize () > datasource.gainMaxSize ()) {
-                page.setPageSize (datasource.gainMaxSize ());
-                if (datasource.gainMaxSizeAlarm ()) {
-                    throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
-                }
-            }
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
             client = HBaseAggregationClientPool.getAggregationClient (datasource);
@@ -256,8 +256,8 @@ public class HBaseUtil {
         Connection conn = null;
         Table table = null;
         Map<String, String> map = null;
+        HBaseDatasource datasource = new HBaseDatasource (metadata.getDatasource ());
         try {
-            HBaseDatasource datasource = new HBaseDatasource (metadata.getDatasource ());
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
             map = get (table, rowkey, colMap, metadata.gainFamilyName (),
@@ -273,8 +273,8 @@ public class HBaseUtil {
         Connection conn = null;
         Table table = null;
         List<Map<String, String>> list = null;
+        HBaseDatasource datasource = new HBaseDatasource (metadata.getDatasource ());
         try {
-            HBaseDatasource datasource = new HBaseDatasource (metadata.getDatasource ());
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
             list = gets (table, rowkeys, colMap, metadata.gainFamilyName (),
@@ -338,16 +338,19 @@ public class HBaseUtil {
      * @return
      */
     public static boolean isAborted(HBaseDatasource datasource) {
-        Connection conn = null;
-        try {
-            conn = HBaseConnectionPool.getConnection (datasource);
-            if (conn != null && !conn.isClosed () && !conn.isAborted ()) {
-                // 尝试获取当中的表，如果获取抛异常则获取连接失败
-                conn.getAdmin ().tableExists (TableName.valueOf ("TEST"));
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace ();
+        Connection conn = HBaseConnectionPool.getConnection (datasource);
+//        if (conn != null && !conn.isClosed () && !conn.isAborted ()) {
+//            try {
+//                // 尝试获取当中的表，如果获取抛异常则获取连接失败
+//                conn.getAdmin ().tableExists (TableName.valueOf ("TEST"));
+//                return false;
+//            } catch (Exception e) {
+//                logger.warn ("连接失败！" + e.getMessage ());
+//                e.printStackTrace ();
+//            }
+//        }
+        if (conn == null) {
+            return false;
         }
         return true;
     }
