@@ -7,11 +7,11 @@ ${extends("../function_layout.httl")}
 <div id="queryForm">
     <table>
         <tr>
-            <td class="title">员工姓名2</td>
+            <td class="title">员工姓名</td>
             <td>
                 <input name="userName" class="nui-textbox nui-form-input" style="width: 100%;">
             </td>
-            <td class="title">员工工号2</td>
+            <td class="title">员工工号</td>
             <td>
                 <input name="jobId" class="nui-textbox nui-form-input" style="width: 100%;">
             </td>
@@ -36,7 +36,6 @@ ${extends("../function_layout.httl")}
             <td></td>
             <td></td>
             <td></td>
-
         </tr>
     </table>
 </div>
