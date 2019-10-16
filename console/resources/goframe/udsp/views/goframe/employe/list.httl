@@ -1,29 +1,23 @@
 ${extends("../function_layout.httl")}
 <!--#macro(content)-->
 <style type="text/css">
-    .title {
-        width: 80px;
-        padding-left: 10px;
-    }
-
-    #queryForm input {
-        width: 175px;
-    }
+    .title{width: 80px;padding-left: 10px;}
+    #queryForm input{width: 175px;}
 </style>
 <div id="queryForm">
     <table>
         <tr>
-            <td class="title">员工姓名</td>
+            <td class="title">员工姓名2</td>
             <td>
                 <input name="userName" class="nui-textbox nui-form-input" style="width: 100%;">
             </td>
-            <td class="title">员工工号</td>
+            <td class="title">员工工号2</td>
             <td>
                 <input name="jobId" class="nui-textbox nui-form-input" style="width: 100%;">
             </td>
             <td id="td_searchOrgTitle" class="title">所属机构</td>
             <td id="td_searchOrgInput">
-                <input id="orgName" name="orgName" class="nui-textbox nui-form-input" style="width: 100%;">
+                <input id="orgName"  name="orgName" class="nui-textbox nui-form-input" style="width: 100%;">
             </td>
             <td>
                 <a class="nui-button" iconCls="icon-search" onclick="search">查询</a>
@@ -65,13 +59,13 @@ ${extends("../function_layout.httl")}
         <div property="columns">
             <div type="checkcolumn"></div>
 
-            <div field="userName" width="120" headerAlign="center">人员姓名</div>
-            <div field="jobId" width="120" headerAlign="center">人员工号</div>
-            <div field="sex" width="120" headerAlign="center" renderer="renderGender">性别</div>
+            <div field="userName" width="120" headerAlign="center" >人员姓名</div>
+            <div field="jobId" width="120" headerAlign="center" >人员工号</div>
+            <div field="sex" width="120" headerAlign="center" renderer="renderGender" >性别</div>
             <div field="mobileNo" width="120" headerAlign="center">手机</div>
-            <div field="otel" width="120" headerAlign="center">办公电话</div>
+            <div field="otel" width="120" headerAlign="center" >办公电话</div>
             <div field="orgName" headerAlign="center">所属机构</div>
-            <div field="status" width="120" headerAlign="center" renderer="renderStatus">用户状态</div>
+            <div field="status" width="120" headerAlign="center" renderer="renderStatus" >用户状态</div>
         </div>
     </div>
 </div>
@@ -98,7 +92,7 @@ ${extends("../function_layout.httl")}
     var grid;
     require(['jquery', 'nui'], function ($, nui) {
         nui.parse();
-        if (window.parent.getCurrentNode) {
+        if(window.parent.getCurrentNode){
             var node = window.parent.getCurrentNode();
             var parentNode = node;
             window['parentNode'] = parentNode;
@@ -107,29 +101,29 @@ ${extends("../function_layout.httl")}
         grid.load();
     });
     var isAllUsers = '${request.getParameter("allUsers")}';
-    if (isAllUsers != null && isAllUsers != "" && isAllUsers == '0') {
+    if(isAllUsers!=null && isAllUsers!="" && isAllUsers=='0'){
         document.getElementById("td_searchOrgTitle").hidden = true;
         document.getElementById("td_searchOrgInput").hidden = true;
         document.getElementById("td_searchOrgInput").hidden = true;
-        //nui.get("orgName").setValue("");
-    } else {
+        nui.get("orgName").setValue("");
+    }else {
         document.getElementById("td_searchOrgTitle").hidden = false;
         document.getElementById("td_searchOrgInput").hidden = false;
         document.getElementById("td_searchOrgInput").hidden = false;
     }
-    function add() {
+    function add(){
         nui.open({
             url: "${basePath}/goframe/func/goframe.employee.add",
             title: "添加下级人员", width: 600, height: 430,
-            onload: function () {
+            onload:function(){
                 var iframe = this.getIFrameEl();
-                var data = {parentNode: window.parentNode || {}};
+                var data = {parentNode:window.parentNode||{}};
                 iframe.contentWindow.SetData(data);
             },
             ondestroy: function (action) {
                 grid.reload();
-                if (action == "ok") {
-                    if (window.parent) {
+                if(action=="ok"){
+                    if(window.parent){
                         window.parent.refreshCurrentNode();
                     }
                 }
@@ -137,7 +131,7 @@ ${extends("../function_layout.httl")}
         });
     }
 
-    function edit() {
+    function edit(){
         var row = grid.getSelected();
         if (row) {
             nui.open({
@@ -145,54 +139,54 @@ ${extends("../function_layout.httl")}
                 title: "修改下级人员", width: 600, height: 415,
                 onload: function () {
                     var iframe = this.getIFrameEl();
-                    var data = nui.clone(row);
-                    data.action = "update";
+                    var data =  nui.clone(row);
+                    data.action="update";
                     iframe.contentWindow.setData(data);
                 },
                 ondestroy: function (action) {
-                    if (action == "ok") {
+                    if(action=="ok"){
                         grid.reload();
-                        if (window.parent) {
+                        if(window.parent){
 
                             window.parent.refreshCurrentNode();
                         }
                     }
                 }
             });
-        } else {
+        }else{
             nui.alert("请选中一条记录");
         }
     }
 
-    function remove() {
+    function remove(){
         var rows = grid.getSelecteds();
         if (rows && rows.length > 0) {
             removePrompt(rows);
-        } else {
+        }else{
             nui.alert("请选中一条记录");
         }
     }
 
     var prompt = document.getElementById("removePrompt");
-    function removePrompt(rows) {
-        prompt.style.display = "";
+    function removePrompt(rows){
+        $('#removePrompt').css('display','none');
         nui.showMessageBox({
-            width: 300,
-            title: '系统提示',
-            buttons: ["ok", "cancel"],
-            html: prompt,
+            width:300,
+            title:'系统提示',
+            buttons:["ok","cancel"],
+            html:prompt,
             showModal: false,
             callback: function (action) {
                 var isDeleteCascade = document.getElementById("isDeleteCascade").checked;
-                if (action == "ok") {
-                    window['result'] = {
-                        isDeleteCascade: isDeleteCascade,
-                        action: true
+                if(action=="ok"){
+                    window['result']={
+                        isDeleteCascade:isDeleteCascade,
+                        action:true
                     };
-                } else {
-                    window['result'] = {
-                        isDeleteCascade: isDeleteCascade,
-                        action: false
+                }else{
+                    window['result']={
+                        isDeleteCascade:isDeleteCascade,
+                        action:false
                     };
                 }
                 executeRemove(rows);
@@ -200,9 +194,9 @@ ${extends("../function_layout.httl")}
         });
     }
 
-    function executeRemove(rows) {
+    function executeRemove(rows){
         var result = window.result;
-        if (result.action) {
+        if(result.action){
             var removeData = getRemoveData(rows, "emp");
             var json = nui.encode(removeData.childs);
             grid.loading("操作中，请稍后......");
@@ -211,16 +205,16 @@ ${extends("../function_layout.httl")}
                 type: 'POST',
                 data: json,
                 cache: false,
-                contentType: 'application/json',
+                contentType:'application/json',
                 success: function (text) {
-                    if (!text) {
+                    if(!text){
                         nui.alert('删除失败');
                         return;
                     }
 
                     grid.reload();
-                    if (!text.exception) {
-                        if (window.parent) {
+                    if(!text.exception){
+                        if(window.parent){
                             //window.parent.__flash__removeCallback();
                         }
                     }
@@ -247,10 +241,10 @@ ${extends("../function_layout.httl")}
     }
 
     //组合删除的数据；需要固定的格式
-    function getRemoveData(rows, nodeType) {
+    function getRemoveData(rows, nodeType){
         var childs = [];
-        for (var i = 0, len = rows.length; i < len; i++) {
-            var child = {};
+        for(var i=0,len=rows.length;i<len;i++){
+            var child ={} ;
             child.nodeId = rows[i].empId;
             child.nodeType = nodeType;
             child.deleteCascade = window.result.isDeleteCascade;
@@ -258,54 +252,54 @@ ${extends("../function_layout.httl")}
         }
         var parentId = "";
         var parentType = "";
-        if (window.parentNode) {
+        if(window.parentNode){
             parentId = window.parentNode.nodeId;
             parentType = window.parentNode.nodeType;
         }
         var data = {
-            childs: childs,
-            parentType: parentType,
-            parentId: parentId,
-            isDeleteCascade: window.result.isDeleteCascade
+            childs:childs,
+            parentType:parentType,
+            parentId:parentId,
+            isDeleteCascade:window.result.isDeleteCascade
         }
         return data;
     }
 
-    function getAjaxData() {
+    function getAjaxData(){
         var form = new nui.Form('queryForm');
         var formData = form.getData(true, true);
-        if (window.parentNode) {
+        if(window.parentNode){
             formData.orgid = window.parentNode.orgid || "";
         }
 
         return formData;
     }
 
-    function search() {
+    function search(){
         nui.get("datagrid1").reload();
     }
 
-    function reset() {
+    function reset(){
         var form = new nui.Form('queryForm');
         form.reset();
     }
 
-    function selectionChanged() {
+    function selectionChanged(){
         var rows = grid.getSelecteds();
-        if (rows.length > 1) {
+        if(rows.length>1){
             //disable edit button
             nui.get("edit_btn").disable();
-        } else {
+        }else{
             nui.get("edit_btn").enable();
         }
     }
 
-    function renderGender(e) {
-        return nui.getDictText("COF_GENDER", e.row.sex);
+    function renderGender(e){
+        return nui.getDictText("COF_GENDER",e.row.sex);
     }
 
-    function renderStatus(e) {
-        return nui.getDictText("COF_EMPSTATUS", e.row.status);
+    function renderStatus(e){
+        return nui.getDictText("COF_EMPSTATUS",e.row.status);
     }
 </script>
 <!--#end-->

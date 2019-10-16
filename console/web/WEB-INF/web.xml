@@ -15,4 +15,13 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+    <filter>
+        <filter-name>employe</filter-name>
+        <filter-class>com.hex.bigdata.udsp.filter.EmployeFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>employe</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+
 </web-app>
