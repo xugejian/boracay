@@ -1,4 +1,4 @@
-package com.hex.bigdata.udsp.olq.utils;
+package com.hex.bigdata.udsp.olq.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;

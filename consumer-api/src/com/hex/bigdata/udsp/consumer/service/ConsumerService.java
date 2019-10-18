@@ -20,7 +20,7 @@ import com.hex.bigdata.udsp.mm.service.MmApplicationService;
 import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
 import com.hex.bigdata.udsp.olq.model.OlqApplicationParam;
 import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
-import com.hex.bigdata.udsp.olq.utils.SqlExpressionEvaluator;
+import com.hex.bigdata.udsp.olq.util.SqlExpressionEvaluator;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.service.RcUserServiceService;
