@@ -1,7 +1,7 @@
 package com.hex.bigdata.udsp.im.converter.impl.model;
 
 import com.hex.bigdata.udsp.common.api.model.Datasource;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created by JunjieM on 2017-9-5.
@@ -12,49 +12,86 @@ public class HBaseDatasource extends Datasource {
         super(datasource);
     }
 
-    public String getZkQuorum() {
-        String value = getProperty("hbase.zk.quorum").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("hbase.zk.quorum不能为空");
+    public String gainZkQuorum() {
+        String value = gainProperty("hbase.zk.quorum").getValue();
+        if (StringUtils.isBlank(value)) {
+            throw new IllegalArgumentException ("hbase.zk.quorum不能为空");
+        }
         return value;
     }
 
-    public String getZkPort() {
-        String value = getProperty("hbase.zk.port").getValue();
-        if (StringUtils.isBlank(value))
+    public String gainZkPort() {
+        String value = gainProperty("hbase.zk.port").getValue();
+        if (StringUtils.isBlank(value)) {
             value = "2181";
+        }
         return value;
     }
 
-    public String getRpcTimeout() {
-        return getProperty("hbase.rpc.timeout").getValue();
+    public String gainRpcTimeout() {
+        return gainProperty("hbase.rpc.timeout").getValue();
     }
 
-    public String getClientRetriesNumber() {
-        return getProperty("hbase.client.retries.number").getValue();
+    public String gainClientRetriesNumber() {
+        return gainProperty("hbase.client.retries.number").getValue();
     }
 
-    public String getClientPause() {
-        return getProperty("hbase.client.pause").getValue();
+    public String gainClientPause() {
+        return gainProperty("hbase.client.pause").getValue();
     }
 
-    public String getZkRecoveryRetry() {
-        return getProperty("zookeeper.recovery.retry").getValue();
+    public String gainZkRecoveryRetry() {
+        return gainProperty("zookeeper.recovery.retry").getValue();
     }
 
-    public String getZkRecoveryRetryIntervalmill() {
-        return getProperty("zookeeper.recovery.retry.intervalmill").getValue();
+    public String gainZkRecoveryRetryIntervalmill() {
+        return gainProperty("zookeeper.recovery.retry.intervalmill").getValue();
     }
 
-    public String getClientOperationTimeout() {
-        return getProperty("hbase.client.operation.timeout").getValue();
+    public String gainClientOperationTimeout() {
+        return gainProperty("hbase.client.operation.timeout").getValue();
     }
 
-    public String getRegionserverLeasePeriod() {
-        return getProperty("hbase.regionserver.lease.period").getValue();
+    // 已被弃用
+    @Deprecated
+    public String gainRegionserverLeasePeriod() {
+        return gainProperty("hbase.regionserver.lease.period").getValue();
     }
 
-    public String getClientScannerTimeoutPeriod() {
-        return getProperty("hbase.client.scanner.timeout.period").getValue();
+    public String gainClientScannerTimeoutPeriod() {
+        return gainProperty("hbase.client.scanner.timeout.period").getValue();
     }
+
+    public String gainHbaseSecurityAuthentication() {
+        return gainProperty("hbase.security.authentication").getValue();
+    }
+
+    public String gainHadoopSecurityAuthentication() {
+        return gainProperty("hadoop.security.authentication").getValue();
+    }
+
+    public String gainHbaseMasterKerberosPrincipal() {
+        return gainProperty("hbase.master.kerberos.principal").getValue();
+    }
+
+    public String gainHbaseRegionserverKerberosPrincipal() {
+        return gainProperty("hbase.regionserver.kerberos.principal").getValue();
+    }
+
+    public String gainKerberosPrincipal() {
+        return gainProperty("kerberos.principal").getValue();
+    }
+
+    public String gainKerberosKeytab() {
+        return gainProperty("kerberos.keytab").getValue();
+    }
+
+    public String gainHBaseRootdir() {
+        return gainProperty ("hbase.rootdir").getValue ();
+    }
+
+    public String gainZookeeperZnodeParent() {
+        return gainProperty ("zookeeper.znode.parent").getValue ();
+    }
+
 }

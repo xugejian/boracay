@@ -46,50 +46,34 @@ public class HiveConverter extends JdbcWrapper {
 
     @Override
     protected DataType getColType(String type) {
-        type = type.toUpperCase();
-        DataType dataType = null;
-        switch (type) {
+        switch (type.toUpperCase()) {
             case "VARCHAR":
-                dataType = DataType.VARCHAR;
-                break;
-            case "STRING":
-                dataType = DataType.STRING;
-                break;
+                return DataType.VARCHAR;
             case "DECIMAL":
-                dataType = DataType.DECIMAL;
-                break;
+                return DataType.DECIMAL;
             case "CHAR":
-                dataType = DataType.CHAR;
-                break;
+                return DataType.CHAR;
             case "FLOAT":
-                dataType = DataType.FLOAT;
-                break;
+                return DataType.FLOAT;
             case "DOUBLE":
-                dataType = DataType.DOUBLE;
-                break;
+                return DataType.DOUBLE;
+            case "INT":
+                return DataType.INT;
+            case "BIGINT":
+                return DataType.BIGINT;
+            case "TINYINT":
+                return DataType.TINYINT;
+            case "SMALLINT":
+                return DataType.SMALLINT;
+            case "BOOLEAN":
+                return DataType.BOOLEAN;
             case "TIMESTAMP":
             case "DATE":
-                dataType = DataType.TIMESTAMP;
-                break;
-            case "INT":
-                dataType = DataType.INT;
-                break;
-            case "BIGINT":
-                dataType = DataType.BIGINT;
-                break;
-            case "TINYINT":
-                dataType = DataType.TINYINT;
-                break;
-            case "SMALLINT":
-                dataType = DataType.SMALLINT;
-                break;
-            case "BOOLEAN":
-                dataType = DataType.BOOLEAN;
-                break;
+                return DataType.TIMESTAMP;
+            case "STRING":
             default:
-                dataType = DataType.STRING;
+                return DataType.STRING;
         }
-        return dataType;
     }
 
     @Override

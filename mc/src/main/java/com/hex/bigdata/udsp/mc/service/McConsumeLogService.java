@@ -32,7 +32,7 @@ public class McConsumeLogService extends BaseService {
     /**
      * 保留最近N天的消费日志
      */
-    @Value("${keep.consume.log.period:100}")
+    @Value("${keep.consume.log.period:30}")
     private int keepConsumeLogPeriod;
 
     @Transactional

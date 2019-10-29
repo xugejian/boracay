@@ -17,17 +17,17 @@ public class MailAlarm implements Alarm {
         MailConfig mailConfig = new MailConfig(config.getPropertyMap());
         HtmlEmail email = new HtmlEmail();
         email.setTextMsg(message);
-        email.setHostName(mailConfig.getMailSmtpHost());
-        email.setSmtpPort(mailConfig.getMailSmtpPort());
-        email.setSSLCheckServerIdentity(mailConfig.getMailSmtpSslCheckServerIdentity());
-        String username = mailConfig.getMailSmtpUsername();
-        String password = mailConfig.getMailSmtpPassword();
+        email.setHostName(mailConfig.gainMailSmtpHost());
+        email.setSmtpPort(mailConfig.gainMailSmtpPort());
+        email.setSSLCheckServerIdentity(mailConfig.gainMailSmtpSslCheckServerIdentity());
+        String username = mailConfig.gainMailSmtpUsername();
+        String password = mailConfig.gainMailSmtpPassword();
         if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
             email.setAuthentication(username, password);
         }
-        email.setFrom(mailConfig.getMailSmtpFrom());
-        email.setSubject(mailConfig.getMailSmtpSubject());
-        String to = mailConfig.getMailSmtpTo();
+        email.setFrom(mailConfig.gainMailSmtpFrom());
+        email.setSubject(mailConfig.gainMailSmtpSubject());
+        String to = mailConfig.gainMailSmtpTo();
         if (StringUtils.isNotBlank(to)) {
             if (to.contains(";")) {
                 email.addTo(to.split(";"));
@@ -35,7 +35,7 @@ public class MailAlarm implements Alarm {
                 email.addTo(to);
             }
         }
-        String cc = mailConfig.getMailSmtpCc();
+        String cc = mailConfig.gainMailSmtpCc();
         if (StringUtils.isNotBlank(cc)) {
             if (cc.contains(";")) {
                 email.addCc(cc.split(";"));
@@ -43,7 +43,7 @@ public class MailAlarm implements Alarm {
                 email.addCc(cc);
             }
         }
-        String bcc = mailConfig.getMailSmtpBcc();
+        String bcc = mailConfig.gainMailSmtpBcc();
         if (StringUtils.isNotBlank(bcc)) {
             if (bcc.contains(";")) {
                 email.addBcc(bcc.split(";"));

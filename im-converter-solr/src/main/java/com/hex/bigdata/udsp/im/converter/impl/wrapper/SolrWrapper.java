@@ -48,13 +48,22 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
         }
 
         List<TblProperty> tblProperties = new ArrayList<>();
-        tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl())); // zookeeper地址、端口和目录
-        if (StringUtils.isBlank(solrQuery)) solrQuery = "*:*";
+        tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式
+        // 单机模式时solr.url为solrUrl，集群模式时solr.url为zkHost
+        tblProperties.add(new TblProperty("solr.url", datasource.gainSolrZkHost()));
+        if (StringUtils.isBlank(solrQuery)) {solrQuery = "*:*";}
         tblProperties.add(new TblProperty("solr.query", solrQuery)); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1024")); // 批量大小
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名
-        tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式，Default：0
         tblProperties.add(new TblProperty("collection.name", collectionName)); // Solr Collection Name
+
+        if("kerberos".equals (datasource.gainSolrSecurityAuthentication ())){
+            tblProperties.add(new TblProperty("solr.security.authentication", "kerberos"));
+            tblProperties.add(new TblProperty("java.security.krb5.conf", datasource.gainSolrJavaSecurityKrb5Conf ()));
+            tblProperties.add(new TblProperty("java.security.auth.login.config", datasource.gainSolrJavaSecurityAuthLoginConfig ()));
+            tblProperties.add(new TblProperty("javax.security.auth.useSubjectCredsOnly", "false"));
+            tblProperties.add(new TblProperty("sun.security.krb5.debug", "false"));
+        }
 
         if (modelMappings == null || modelMappings.size() == 0) {
             throw new IllegalArgumentException("映射字段不能为空");
@@ -75,12 +84,21 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
         }
 
         List<TblProperty> tblProperties = new ArrayList<>();
-        tblProperties.add(new TblProperty("solr.url", datasource.getSolrUrl())); // zookeeper地址、端口和目录
+        tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式
+        // 单机模式时solr.url为solrUrl，集群模式时solr.url为zkHost
+        tblProperties.add(new TblProperty("solr.url", datasource.gainSolrZkHost())); // zookeeper地址、端口和目录
         tblProperties.add(new TblProperty("solr.query", "*:*")); // Solr查询语句
         tblProperties.add(new TblProperty("solr.cursor.batch.size", "1024")); // 批量大小
         tblProperties.add(new TblProperty("solr.primary.key", pkName)); // Solr Collection 主键字段名
-        tblProperties.add(new TblProperty("is.solrcloud", "1")); // 0：单机模式，1：集群模式，Default：0
         tblProperties.add(new TblProperty("collection.name", collectionName)); // Solr Collection Name
+
+        if("kerberos".equals (datasource.gainSolrSecurityAuthentication ())){
+            tblProperties.add(new TblProperty("solr.security.authentication", "kerberos"));
+            tblProperties.add(new TblProperty("java.security.krb5.conf", datasource.gainSolrJavaSecurityKrb5Conf ()));
+            tblProperties.add(new TblProperty("java.security.auth.login.config", datasource.gainSolrJavaSecurityAuthLoginConfig ()));
+            tblProperties.add(new TblProperty("javax.security.auth.useSubjectCredsOnly", "false"));
+            tblProperties.add(new TblProperty("sun.security.krb5.debug", "false"));
+        }
 
         if (modelMappings == null || modelMappings.size() == 0) {
             throw new IllegalArgumentException("映射字段不能为空");
@@ -122,14 +140,15 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
         // 获得更新字段信息
         Map<String, String> map = new HashMap<>();
         for (ValueColumn column : valueColumns) {
-            if (!idName.equals(column.getColName()))
-                map.put(column.getColName(), column.getValue());
+            if (!idName.equals(column.getColName())) {
+                map.put (column.getColName (), column.getValue ());
+            }
         }
         // 更新满足条件数据信息
         SolrUtil.updateDocument(solrDatasource, tableName, idName, ids, map);
     }
 
-    protected String getIdName(List<ModelMapping> modelMappings) {
+    private String getIdName(List<ModelMapping> modelMappings) {
         String idName = "";
         for (ModelMapping mapping : modelMappings) {
             MetadataCol col = mapping.getMetadataCol();
@@ -230,16 +249,18 @@ public abstract class SolrWrapper extends Wrapper implements BatchSourceConverte
 
     @Override
     protected List<String> getSelectColumns(List<ModelMapping> modelMappings, Metadata metadata) {
-        if (modelMappings == null || modelMappings.size() == 0)
+        if (modelMappings == null || modelMappings.size() == 0) {
             return null;
+        }
         List<String> selectColumns = new ArrayList<>();
-        for (ModelMapping mapping : modelMappings)
-            selectColumns.add(mapping.getName());
+        for (ModelMapping mapping : modelMappings) {
+            selectColumns.add (mapping.getName ());
+        }
         return selectColumns;
     }
 
     @Override
-    protected void emptyDatas(Metadata metadata) throws Exception {
+    public void emptyDatas(Metadata metadata) throws Exception {
         SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
         String collectionName = metadata.getTbName();
         SolrUtil.deleteAll(solrDatasource, collectionName);

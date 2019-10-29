@@ -185,7 +185,7 @@ ${extends("/goframe/function_layout.httl")}
         var milli = 60000;
         var format = "yyyy-MM-dd HH:mm";
         var len = 30;
-        debugger;
+        //debugger;
         var url = "${basePath}/mc/stats/user/charts/chart1Minute?userName="+userName+"&datetime=" + datetime + "&interval=" + interval;
         if (interval <= 360) { // 数据粒度：分钟
             //name = "时间（分）";
@@ -374,7 +374,7 @@ ${extends("/goframe/function_layout.httl")}
                 //用户信息遍历出来
                 serviceNameArray = new Array();
                 var serviceObjects = getServiceByUserName();
-                debugger;
+                //debugger;
                 console.log(serviceObjects);
                 $.each(serviceObjects, function (_index, record) {
                     var serviceName = record.serviceName;
@@ -401,7 +401,7 @@ ${extends("/goframe/function_layout.httl")}
                         if (!yDataArray) {
                             yDataArray = [];
                         }
-                        debugger;
+                        //debugger;
                         var dataMap = getDataMap(dataMaps, serviceName);
                         yDataArray[i] = getNum(dataMap, dt);
                         yDatas[j] = yDataArray;
@@ -475,7 +475,7 @@ ${extends("/goframe/function_layout.httl")}
                 }
                 for (var i = 0; i < serviceNameArray.length; i++) {
                     var serie = getSeries(serviceNameArray[i], yDatas[i]);
-                    debugger;
+                    //debugger;
                     series.push(serie);
                 }
                 console.log(series);

@@ -3,17 +3,17 @@ package com.hex.goframe.dao;
 import com.hex.bigdata.udsp.common.dao.base.SyncMapper;
 import com.hex.goframe.model.GFDict;
 import com.hex.goframe.model.Page;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.util.HashMap;
 import java.util.List;
-import org.springframework.stereotype.Repository;
 
 // ---------------------2018-09-13 by Junjie.M--------------------------
 // 添加了数据缓存功能
 // --------------------- END --------------------------
 @Repository
 public class GFDictMapper extends SyncMapper<GFDict> {
-    public GFDictMapper() {
-    }
 
     // ---------------------2018-09-13 by Junjie.M--------------------------
     public int deleteByPrimaryKey(String dictTypeId, String dictId) {
@@ -45,8 +45,7 @@ public class GFDictMapper extends SyncMapper<GFDict> {
     }
 
     public List<GFDict> getDictFilterData(GFDict dict) {
-        List list = this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFDictMapper.getDictFilterData", dict);
-        return list;
+        return this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFDictMapper.getDictFilterData", dict);
     }
 
     // ---------------------2018-09-13 by Junjie.M--------------------------
@@ -116,4 +115,5 @@ public class GFDictMapper extends SyncMapper<GFDict> {
         return null;
     }
     // --------------------- END --------------------------
+
 }

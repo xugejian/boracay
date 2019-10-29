@@ -91,32 +91,6 @@ public class CurrentController extends BaseController {
         return new MessageResult(status, message, mcCurrent);
     }
 
-    @RequestMapping("/kill/{pkId}")
-    @ResponseBody
-    public MessageResult kill(@PathVariable("pkId") String pkId) {
-        boolean status = true;
-        String message = "杀死成功";
-        if (StringUtils.isBlank(pkId)) {
-            status = false;
-            message = "请求参数为空";
-        } else {
-            try {
-                // TODO ......杀死消费任务
-            } catch (Exception e) {
-                e.printStackTrace();
-                status = false;
-                message = "系统异常：" + e;
-            }
-        }
-        if (status) {
-            logger.debug(message);
-        } else {
-            logger.error(message);
-        }
-        return new MessageResult(status, message);
-    }
-
-
     /**
      * 缓冲队列分页查询
      *

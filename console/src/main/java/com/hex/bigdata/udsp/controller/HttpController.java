@@ -10,7 +10,7 @@ import com.hex.bigdata.udsp.common.util.FTPHelper;
 import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
-import com.hex.bigdata.udsp.consumer.util.RequestUtil;
+import com.hex.bigdata.udsp.consumer.util.Util;
 import com.hex.bigdata.udsp.service.DatasourceTestService;
 import com.hex.bigdata.udsp.service.InnerConsumerService;
 import com.hex.goframe.controller.BaseController;
@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,10 +42,10 @@ import java.util.List;
 @RequestMapping("/http")
 @Controller
 public class HttpController extends BaseController {
-    private static Logger logger = LogManager.getLogger(HttpController.class);
+    private static Logger logger = LogManager.getLogger (HttpController.class);
 
     static {
-        FTPClientConfig.loadConf("goframe/udsp/udsp.config.properties");
+        FTPClientConfig.loadConf ("goframe/udsp/udsp.config.properties");
     }
 
     @Value("${download.timeout.ms:300000}")
@@ -69,38 +70,38 @@ public class HttpController extends BaseController {
     public PageListResult datagridConsume(Request request, Page page, HttpServletRequest httpServletRequest) {
         boolean status = true;
         String message = "执行成功";
-        com.hex.bigdata.udsp.common.api.model.Page p = new com.hex.bigdata.udsp.common.api.model.Page();
-        p.setPageIndex(page.getPageIndex());
-        p.setPageSize(page.getPageSize());
-        request.setPage(p);
+        com.hex.bigdata.udsp.common.api.model.Page p = new com.hex.bigdata.udsp.common.api.model.Page ();
+        p.setPageIndex (page.getPageIndex ());
+        p.setPageSize (page.getPageSize ());
+        request.setPage (p);
         //获取并设置客户端请求的IP
-        request.setRequestIp(HostUtil.getRealRequestIp(httpServletRequest));
+        request.setRequestIp (HostUtil.getRealRequestIp (httpServletRequest));
         PageListResult pageListResult = null;
         try {
-            Response response = getInnerConsume(request);
-            if ("SUCCESS".equals(response.getStatus())) {
-                if (response.getPage() != null) {
-                    pageListResult = new PageListResult(response.getRecords(), page);
-                    pageListResult.setTotal(response.getPage().getTotalCount());
+            Response response = getInnerConsume (request);
+            if ("SUCCESS".equals (response.getStatus ())) {
+                if (response.getPage () != null) {
+                    pageListResult = new PageListResult (response.getRecords (), page);
+                    pageListResult.setTotal (response.getPage ().getTotalCount ());
                 } else {
-                    pageListResult = new PageListResult(response.getRecords());
+                    pageListResult = new PageListResult (response.getRecords ());
                 }
-                pageListResult.setStatus(status);
-                pageListResult.setMessage(message);
+                pageListResult.setStatus (status);
+                pageListResult.setMessage (message);
             } else {
                 status = false;
-                message = response.getMessage();
-                pageListResult = new PageListResult(null);
-                pageListResult.setStatus(status);
-                pageListResult.setMessage(message);
+                message = response.getMessage ();
+                pageListResult = new PageListResult (new ArrayList ());
+                pageListResult.setStatus (status);
+                pageListResult.setMessage (message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
             status = false;
-            message = e.getMessage();
-            pageListResult = new PageListResult(null);
-            pageListResult.setStatus(status);
-            pageListResult.setMessage(message);
+            message = e.getMessage ();
+            pageListResult = new PageListResult (new ArrayList ());
+            pageListResult.setStatus (status);
+            pageListResult.setMessage (message);
         }
         return pageListResult;
     }
@@ -111,9 +112,9 @@ public class HttpController extends BaseController {
     @RequestMapping({"/inner/consume"})
     @ResponseBody
     public Response innerConsume(@RequestBody String json, HttpServletRequest httpServletRequest) {
-        Request request = RequestUtil.jsonToRequest(json);
-        request.setRequestIp(HostUtil.getRealRequestIp(httpServletRequest)); //获取并设置客户端请求的IP
-        return getInnerConsume(request);
+        Request request = Util.jsonToRequest (json);
+        request.setRequestIp (HostUtil.getRealRequestIp (httpServletRequest)); //获取并设置客户端请求的IP
+        return getInnerConsume (request);
     }
 
     /**
@@ -124,40 +125,40 @@ public class HttpController extends BaseController {
     @RequestMapping({"/inner/async/consume"})
     @ResponseBody
     public MessageResult innerAsyncConsume(@RequestBody String json, HttpServletRequest httpServletRequest) {
-        Request request = RequestUtil.jsonToRequest(json);
-        request.setRequestIp(HostUtil.getRealRequestIp(httpServletRequest)); //获取并设置客户端请求的IP
-        if (!ConsumerType.ASYNC.getValue().equalsIgnoreCase(request.getType())
-                || !ConsumerEntity.START.getValue().equalsIgnoreCase(request.getEntity())) {
-            return new MessageResult(false, "不为异步的start请求");
+        Request request = Util.jsonToRequest (json);
+        request.setRequestIp (HostUtil.getRealRequestIp (httpServletRequest)); //获取并设置客户端请求的IP
+        if (!ConsumerType.ASYNC.getValue ().equalsIgnoreCase (request.getType ())
+                || !ConsumerEntity.START.getValue ().equalsIgnoreCase (request.getEntity ())) {
+            return new MessageResult (false, "不为异步的start请求");
         }
-        Response response = getInnerConsume(request);
-        if (response == null || !Status.SUCCESS.getValue().equalsIgnoreCase(response.getStatus())) {
-            return new MessageResult(false, "异步的start请求失败");
+        Response response = getInnerConsume (request);
+        if (response == null || !Status.SUCCESS.getValue ().equalsIgnoreCase (response.getStatus ())) {
+            return new MessageResult (false, "异步的start请求失败");
         }
-        String responseContent = response.getResponseContent();
-        request.setType("async");
-        request.setEntity("status");
-        request.setConsumeId(response.getConsumeId());
+        String responseContent = response.getResponseContent ();
+        request.setType ("async");
+        request.setEntity ("status");
+        request.setConsumeId (response.getConsumeId ());
         int count = 0;
         int num = (int) (downloadTimeoutMs / downloadSleepTimeMs);
         while (true) {
             if (count >= num) {
-                return new MessageResult(false, "异步下载文件超时");
+                return new MessageResult (false, "异步下载文件超时");
             }
-            response = getInnerConsume(request);
+            response = getInnerConsume (request);
             if (response == null) {
-                return new MessageResult(false, "异步的status响应为空");
+                return new MessageResult (false, "异步的status响应为空");
             }
-            if (StatusCode.SUCCESS.getValue().equals(response.getStatusCode())) {
-                return new MessageResult(true, responseContent);
-            } else if (StatusCode.RUNNING.getValue().equals(response.getStatusCode())) {
+            if (StatusCode.SUCCESS.getValue ().equals (response.getStatusCode ())) {
+                return new MessageResult (true, responseContent);
+            } else if (StatusCode.RUNNING.getValue ().equals (response.getStatusCode ())) {
                 try {
-                    Thread.sleep(downloadSleepTimeMs);
+                    Thread.sleep (downloadSleepTimeMs);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    e.printStackTrace ();
                 }
             } else {
-                return new MessageResult(false, response.getMessage());
+                return new MessageResult (false, response.getMessage ());
             }
             count++;
         }
@@ -172,22 +173,22 @@ public class HttpController extends BaseController {
         OutputStream os = null;
         InputStream in = null;
         try {
-            os = rsp.getOutputStream();
-            rsp.reset();
-            String fileName = FileUtil.getFileName(filePath);
-            rsp.setHeader("Content-Disposition", "attachment;filename="
+            os = rsp.getOutputStream ();
+            rsp.reset ();
+            String fileName = FileUtil.getFileName (filePath);
+            rsp.setHeader ("Content-Disposition", "attachment;filename="
                     + fileName);
-            rsp.setContentType("application/octet-stream;charset=utf-8");
-            FTPHelper ftpHelper = new FTPHelper();
-            ftpHelper.connectFTPServer();
-            in = ftpHelper.downloadFile(filePath);
-            IOUtils.copy(in, os);
-            os.flush();
+            rsp.setContentType ("application/octet-stream;charset=utf-8");
+            FTPHelper ftpHelper = new FTPHelper ();
+            ftpHelper.connectFTPServer ();
+            in = ftpHelper.downloadFile (filePath);
+            IOUtils.copy (in, os);
+            os.flush ();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
-            IOUtils.closeQuietly(os);
-            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly (os);
+            IOUtils.closeQuietly (in);
         }
     }
 
@@ -198,37 +199,37 @@ public class HttpController extends BaseController {
     @ResponseBody
     public MessageResult dsTest(@RequestBody ComDatasourcePropsView comDatasourcePropsView) {
         boolean status = true;
-        String message = "测试数据源成功！";
+        String message = "测试数据源成功!";
         if (comDatasourcePropsView == null) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
-                status = datasourceTestService.testDatasource(comDatasourcePropsView);
+                status = datasourceTestService.testDatasource (comDatasourcePropsView);
                 if (status) {
-                    message = "测试数据源成功！";
+                    message = "测试数据源成功!";
                 } else {
-                    message = "测试数据源失败！";
+                    message = "测试数据源失败!";
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace ();
                 status = false;
-                message = "测试数据源失败!";
+                message = "测试数据源失败!" + e.getMessage ();
             }
         }
         if (status) {
-            logger.debug(message);
+            logger.debug (message);
         } else {
-            logger.warn(message);
+            logger.warn (message);
         }
-        return new MessageResult(status, message);
+        return new MessageResult (status, message);
     }
 
     private Response getInnerConsume(Request request) {
-        List<String> roles = getUserRoles();
-        boolean isAdmin = roles.contains("ADMIN");
-        GFLoginUser loginUser = getLoginUser();
-        request.setUdspUser(loginUser.getUserId());
-        return consumerService.consume(request, isAdmin);
+        List<String> roles = getUserRoles ();
+        boolean isAdmin = roles.contains ("ADMIN");
+        GFLoginUser loginUser = getLoginUser ();
+        request.setUdspUser (loginUser.getUserId ());
+        return consumerService.consume (request, isAdmin);
     }
 }

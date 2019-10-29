@@ -1,9 +1,7 @@
 package com.hex.bigdata.udsp.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 import com.hex.bigdata.udsp.common.api.model.BaseRequest;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
 
 import java.nio.charset.Charset;
 
@@ -16,7 +14,7 @@ public class SdkHttpUtil {
      * @param url
      */
     public static <T> T requestUdsp(BaseRequest request, String url, Class<T> clazz) {
-        return requestUdsp(request, url, clazz, Charset.forName("UTF-8"));
+        return requestUdsp (request, url, clazz, Charset.forName ("UTF-8"));
     }
 
     /**
@@ -26,8 +24,6 @@ public class SdkHttpUtil {
      * @param url
      */
     public static <T> T requestUdsp(BaseRequest request, String url, Class<T> clazz, Charset charset) {
-        JSONObject jsonObject = (JSONObject) JSON.toJSON(request);
-        String json = jsonObject.toJSONString();
-        return HttpUtils.requestPost(url, json, null, clazz, charset, null, null);
+        return HttpUtils.requestPost (url, JSONUtil.parseObj2JSON (request), null, clazz, charset, null, null);
     }
 }

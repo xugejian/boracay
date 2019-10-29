@@ -15,24 +15,26 @@ public class KuduDatasource extends Datasource {
         super(datasource);
     }
 
-    public String getKuduMasterHosts() {
-        String value = getProperty("kudu.master.hosts").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("kudu.master.hosts不能为空");
+    public String gainKuduMasterHosts() {
+        String value = gainProperty("kudu.master.hosts").getValue();
+        if (StringUtils.isBlank(value)) {
+            throw new IllegalArgumentException ("kudu.master.hosts不能为空");
+        }
         return value;
     }
 
-    public List<String> getMasterAddresses() {
-        return Arrays.asList(getKuduMasterHosts().split(","));
+    public List<String> gainMasterAddresses() {
+        return Arrays.asList(gainKuduMasterHosts().split(","));
     }
 
     /**
      * @return
      */
-    public Integer getBossCount() {
-        String value = getProperty("boss.count").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value))
+    public Integer gainBossCount() {
+        String value = gainProperty("boss.count").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value)) {
             return null;
+        }
         return Integer.valueOf(value);
     }
 
@@ -41,10 +43,11 @@ public class KuduDatasource extends Datasource {
      *
      * @return
      */
-    public Long getDefaultAdminOperationTimeoutMs() {
-        String value = getProperty("default.admin.operation.timeout.ms").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value))
+    public Long gainDefaultAdminOperationTimeoutMs() {
+        String value = gainProperty("default.admin.operation.timeout.ms").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value)) {
             return null;
+        }
         return Long.valueOf(value);
     }
 
@@ -53,10 +56,11 @@ public class KuduDatasource extends Datasource {
      *
      * @return
      */
-    public Long getDefaultOperationTimeoutMs() {
-        String value = getProperty("default.operation.timeout.ms").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value))
+    public Long gainDefaultOperationTimeoutMs() {
+        String value = gainProperty("default.operation.timeout.ms").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value)) {
             return null;
+        }
         return Long.valueOf(value);
     }
 
@@ -65,10 +69,11 @@ public class KuduDatasource extends Datasource {
      *
      * @return
      */
-    public Long getDefaultSocketReadTimeoutMs() {
-        String value = getProperty("default.socket.read.timeout.ms").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value))
+    public Long gainDefaultSocketReadTimeoutMs() {
+        String value = gainProperty("default.socket.read.timeout.ms").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value)) {
             return null;
+        }
         return Long.valueOf(value);
     }
 
@@ -77,10 +82,11 @@ public class KuduDatasource extends Datasource {
      *
      * @return
      */
-    public boolean getDisableStatistics() {
-        String value = getProperty("disable.statistics").getValue();
-        if (StringUtils.isBlank(value))
+    public boolean gainDisableStatistics() {
+        String value = gainProperty("disable.statistics").getValue();
+        if (StringUtils.isBlank(value)) {
             value = "false";
+        }
         return Boolean.valueOf(value);
     }
 
@@ -89,10 +95,11 @@ public class KuduDatasource extends Datasource {
      *
      * @return
      */
-    public Integer getWorkerCount() {
-        String value = getProperty("worker.count").getValue();
-        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value))
+    public Integer gainWorkerCount() {
+        String value = gainProperty("worker.count").getValue();
+        if (StringUtils.isBlank(value) || !StringUtils.isNumericSpace(value)) {
             return null;
+        }
         return Integer.valueOf(value);
     }
 

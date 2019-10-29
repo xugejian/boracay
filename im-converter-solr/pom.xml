@@ -23,6 +23,10 @@
             <id>goupwith</id>
             <url>http://nexus.goupwith.com:8000/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
     </repositories>
 
     <properties>
@@ -41,7 +45,7 @@
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>
-            <version>4.10.4</version>
+            <version>4.10.3-cdh5.14.0</version>
         </dependency>
     </dependencies>
 

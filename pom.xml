@@ -12,6 +12,7 @@
         <module>console</module>
 
         <module>md</module>
+        <module>dsl</module>
 
         <module>common</module>
         <module>common-api</module>
@@ -25,6 +26,7 @@
         <module>im</module>
         <module>im-converter-api</module>
         <module>im-converter-kafka</module>
+        <module>im-converter-kafka1</module>
         <module>im-converter-hbase</module>
         <module>im-converter-kudu</module>
         <module>im-converter-solr_hbase</module>
@@ -34,6 +36,9 @@
         <module>im-converter-mysql</module>
         <module>im-converter-hive</module>
         <module>im-converter-phoenix</module>
+        <module>im-converter-pair_hbase</module>
+        <module>im-converter-pair_solr</module>
+        <module>im-converter-pair_solr_hbase</module>
 
         <module>iq</module>
         <module>iq-provider-api</module>
@@ -54,18 +59,20 @@
         <module>olq-provider-hive</module>
         <module>olq-provider-mysql</module>
         <module>olq-provider-phoenix</module>
+        <module>olq-provider-dsl</module>
 
         <module>rts</module>
         <module>rts-executor-api</module>
         <module>rts-executor-kafka</module>
+        <module>rts-executor-kafka1</module>
 
         <module>consumer-api</module>
         <module>consumer-http</module>
         <module>consumer-restful</module>
         <module>consumer-socket</module>
-        <module>consumer-webservice</module>
 
         <module>sdk</module>
+
     </modules>
 
     <build>

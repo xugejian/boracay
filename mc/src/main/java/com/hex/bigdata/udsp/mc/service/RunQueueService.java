@@ -104,26 +104,31 @@ public class RunQueueService {
      * @return
      */
     public boolean addCurrent(Current mcCurrent) {
-        String key = this.getKey(mcCurrent);
-        synchronized (key.intern()) {
-            if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key);
-            try {
-                RunQueue runQueue = this.select(key);
-                if (runQueue == null) runQueue = this.initRunQueue(mcCurrent);
-                if (runQueue.getCurrentNum() < runQueue.getMaxNum()) {
-                    runQueue.setCurrentNum(runQueue.getCurrentNum() + 1);
-                    logger.debug("增加" + key + "并发后并发数==>" + runQueue.getCurrentNum());
-                    this.insert(key, runQueue);
-                    logger.debug("增加" + key + "并发！");
-                    currentService.insert(mcCurrent);
-                    return true;
+        if (mcCurrent.getMaxCurrentNum () == -1) { // 运行队列(同步/异步)没有限制
+            currentService.insert (mcCurrent);
+            return true;
+        } else { // 运行队列(同步/异步)有限制
+            String key = this.getKey (mcCurrent);
+            synchronized (key.intern ()) {
+                if (initParamService.isUseClusterRedisLock ())
+                    redisLock.lock (key);
+                try {
+                    RunQueue runQueue = this.select (key);
+                    if (runQueue == null) runQueue = this.initRunQueue (mcCurrent);
+                    if (runQueue.getCurrentNum () < runQueue.getMaxNum ()) {
+                        runQueue.setCurrentNum (runQueue.getCurrentNum () + 1);
+                        logger.debug ("增加" + key + "并发后并发数==>" + runQueue.getCurrentNum ());
+                        this.insert (key, runQueue);
+                        logger.debug ("增加" + key + "并发！");
+                        currentService.insert (mcCurrent);
+                        return true;
+                    }
+                    logger.info (key + "并发已满！");
+                    return false;
+                } finally {
+                    if (initParamService.isUseClusterRedisLock ())
+                        redisLock.unlock (key);
                 }
-                logger.info(key + "并发已满！");
-                return false;
-            } finally {
-                if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key);
             }
         }
     }
@@ -135,28 +140,32 @@ public class RunQueueService {
      * @return
      */
     public boolean reduceCurrent(Current mcCurrent) {
-        String key = this.getKey(mcCurrent);
-        synchronized (key.intern()) {
-            if (initParamService.isUseClusterRedisLock())
-                redisLock.lock(key);
-            try {
-                RunQueue runQueue = this.select(key);
-                if (runQueue != null && runQueue.getCurrentNum() >= 1) {
-                    runQueue.setCurrentNum(runQueue.getCurrentNum() - 1);
-                    logger.debug("减少" + key + "并发后并发数==>" + runQueue.getCurrentNum());
-                    if (runQueue.getCurrentNum() == 0) {
-                        this.delete(key);
-                    } else {
-                        this.insert(key, runQueue);
+        if (mcCurrent.getMaxCurrentNum () == -1) { // 运行队列(同步/异步)没有限制
+            return currentService.delete (mcCurrent.getPkId ());
+        } else { // 运行队列(同步/异步)有限制
+            String key = this.getKey (mcCurrent);
+            synchronized (key.intern ()) {
+                if (initParamService.isUseClusterRedisLock ())
+                    redisLock.lock (key);
+                try {
+                    RunQueue runQueue = this.select (key);
+                    if (runQueue != null && runQueue.getCurrentNum () >= 1) {
+                        runQueue.setCurrentNum (runQueue.getCurrentNum () - 1);
+                        logger.debug ("减少" + key + "并发后并发数==>" + runQueue.getCurrentNum ());
+                        if (runQueue.getCurrentNum () == 0) {
+                            this.delete (key);
+                        } else {
+                            this.insert (key, runQueue);
+                        }
+                        logger.debug ("减少" + key + "并发！");
+                        currentService.delete (mcCurrent.getPkId ());
+                        return true;
                     }
-                    logger.debug("减少" + key + "并发！");
-                    currentService.delete(mcCurrent.getPkId());
-                    return true;
+                    return false;
+                } finally {
+                    if (initParamService.isUseClusterRedisLock ())
+                        redisLock.unlock (key);
                 }
-                return false;
-            } finally {
-                if (initParamService.isUseClusterRedisLock())
-                    redisLock.unlock(key);
             }
         }
     }

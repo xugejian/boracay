@@ -20,28 +20,37 @@ public class KafkaProducerDatasource extends Datasource {
         super(propertyMap);
     }
 
-    public String getMetadataBrokerList() {
-        return getProperty("metadata.broker.list").getValue();
+    public KafkaProducerDatasource(Datasource datasource){super(datasource);}
+
+    // Kafka集群的IP和端口地址，多个地址用逗号分隔
+    public String gainMetadataBrokerList() {
+        return gainProperty("metadata.broker.list").getValue();
     }
 
-    public String getSerializerClass() {
-        String value = getProperty("serializer.class").getValue();
-        if (StringUtils.isBlank(value))
+    // Value的序列化类
+    public String gainSerializerClass() {
+        String value = gainProperty("serializer.class").getValue();
+        if (StringUtils.isBlank(value)) {
             value = "kafka.serializer.StringEncoder";
+        }
         return value;
     }
 
-    public String getKeySerializerClass() {
-        String value = getProperty("key.serializer.class").getValue();
-        if (StringUtils.isBlank(value))
+    // Key的序列化类
+    public String gainKeySerializerClass() {
+        String value = gainProperty("key.serializer.class").getValue();
+        if (StringUtils.isBlank(value)) {
             value = "kafka.serializer.StringEncoder";
+        }
         return value;
     }
 
-    public String getRequestRequiredAcks() {
-        String value = getProperty("request.required.acks").getValue();
-        if (StringUtils.isBlank(value))
+    // 请求确认模式
+    public String gainRequestRequiredAcks() {
+        String value = gainProperty("request.required.acks").getValue();
+        if (StringUtils.isBlank(value)) {
             value = "0";
+        }
         return value;
     }
 }

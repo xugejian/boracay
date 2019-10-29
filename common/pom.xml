@@ -11,6 +11,7 @@
 
     <groupId>com.hex.bigdata.udsp</groupId>
     <artifactId>common</artifactId>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <repositories>
@@ -35,15 +36,15 @@
             <groupId>com.hex.goframe</groupId>
             <artifactId>goframe.core</artifactId>
             <version>3.3.1.39</version>
-            <!-- 内部依赖的org.ow2.asm:asm和consumer-webservice模块依赖cxf中的asm:asm冲突了，所以这里排除 -->
-            <!-- START -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm</artifactId>
-                </exclusion>
-            </exclusions>
-            <!-- END -->
+            <!--&lt;!&ndash; 内部依赖的org.ow2.asm:asm和consumer-webservice模块依赖cxf中的asm:asm冲突了，所以这里排除 &ndash;&gt;-->
+            <!--&lt;!&ndash; START &ndash;&gt;-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.ow2.asm</groupId>-->
+                    <!--<artifactId>asm</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+            <!--&lt;!&ndash; END &ndash;&gt;-->
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -92,12 +93,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.4.4</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
-        <dependency>
-            <groupId>commons-net</groupId>
-            <artifactId>commons-net</artifactId>
-            <version>3.3</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
         <dependency>
             <groupId>net.sf.ehcache</groupId>
@@ -125,6 +120,11 @@
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>common-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hex.bigdata.udsp</groupId>
+            <artifactId>dsl</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

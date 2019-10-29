@@ -1,35 +1,13 @@
-
 package com.hex.goframe.controller;
 
-import com.hex.goframe.dto.UserSession;
-import com.hex.goframe.model.GFEmployee;
-import com.hex.goframe.model.GFLoginUser;
-import com.hex.goframe.model.GFUser;
-import com.hex.goframe.model.GFUserSession;
-import com.hex.goframe.model.MessageResult;
-import com.hex.goframe.model.OrgTreeNode;
-import com.hex.goframe.model.Page;
+import com.hex.goframe.model.*;
 import com.hex.goframe.service.AuthRightService;
 import com.hex.goframe.service.EmployeeService;
-import com.hex.goframe.service.FuncService;
 import com.hex.goframe.service.MenuService;
 import com.hex.goframe.service.UserService;
-import com.hex.goframe.util.DateUtil;
-import com.hex.goframe.util.GFStringUtil;
-import com.hex.goframe.util.ImgValidateCode;
 import com.hex.goframe.util.Util;
 import com.hex.goframe.util.WebUtil;
-import com.hex.goframe.vo.CheckLoginInfo;
-import com.hex.goframe.vo.LoginInfo;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.collections4.map.HashedMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // ---------------------2018-09-13 by Junjie.M--------------------------
 // 去除了同一个用户只能同时有一个登录的代码
@@ -57,19 +42,10 @@ public class UserController {
     private AuthRightService authRightService;
     @Autowired
     private EmployeeService employeeService;
-    @Autowired
-    private FuncService funcService;
     @Value("${sso.cookie.server:}")
     private String ssoServer;
     @Value("${app.cookie.remember}")
     private String cookieRemember;
-    private static Map<String, CheckLoginInfo> checkLogin = new HashedMap();
-    @Value("${app.login.intervalTime}")
-    private Long intervalTime;
-    @Value("${app.login.number}")
-    private Long number;
-    @Value("${app.login.useImgValidateCode}")
-    private String useImgValidateCode;
 
     public UserController() {
     }
@@ -77,25 +53,6 @@ public class UserController {
     @RequestMapping({"/user/queryUsers"})
     @ResponseBody
     public Map queryUsers(GFUser user, Page page, String authId) {
-        if(user == null) {
-            user = new GFUser();
-        }
-
-        List userList = this.userService.queryUsers(user, page, authId);
-        HashMap map = new HashMap();
-        map.put("data", userList);
-        map.put("total", Integer.valueOf(page.getTotalCount()));
-        return map;
-    }
-
-    @RequestMapping({"/user/queryValidUsers"})
-    @ResponseBody
-    public Map queryValidUsers(GFUser user, Page page, String authId) {
-        if(user == null) {
-            user = new GFUser();
-        }
-
-        user.setStatus("1");
         List userList = this.userService.queryUsers(user, page, authId);
         HashMap map = new HashMap();
         map.put("data", userList);
@@ -113,101 +70,65 @@ public class UserController {
         return map;
     }
 
-    private boolean isFrequentLogin(String clientIP) {
-        logger.info("clientIP:{}", new Object[]{clientIP});
-        Timestamp currentTime = DateUtil.getCurrentTimestamp();
-        CheckLoginInfo checkLoginInfo = (CheckLoginInfo)checkLogin.get(clientIP);
-        if(checkLoginInfo != null) {
-            int num = checkLoginInfo.getNum() + 1;
-            checkLoginInfo.setNum(num);
-            if(currentTime.getTime() < checkLoginInfo.getDate().getTime() + this.intervalTime.longValue()) {
-                if((long)num > this.number.longValue()) {
-                    checkLoginInfo.setDate(currentTime);
-                    return true;
-                }
-
-                return false;
-            }
-        } else {
-            checkLoginInfo = new CheckLoginInfo();
-        }
-
-        checkLoginInfo.setDate(currentTime);
-        checkLoginInfo.setNum(1);
-        checkLogin.put(clientIP, checkLoginInfo);
-        return false;
-    }
-
     @RequestMapping(
-            value = {"/user/login"},
-            method = {RequestMethod.POST}
+        value = {"/user/login"},
+        method = {RequestMethod.POST}
     )
     @ResponseBody
-    public MessageResult login(@RequestBody LoginInfo user, HttpServletRequest request, HttpServletResponse response) {
-        String clientIP = Util.getClientIP(request);
-        if(this.isFrequentLogin(clientIP)) {
-            return new MessageResult(false, "登录太频繁，请稍后再试！");
-        } else if(StringUtils.hasText(user.getUserId()) && StringUtils.hasText(user.getPassword())) {
-            String imgValidateCode = (String)request.getSession().getAttribute("IMG_VALIDATE_CODE_KEY");
-            if(!"1".equals(this.useImgValidateCode) || !StringUtils.isEmpty(user.getImgValidateCode()) && imgValidateCode.equalsIgnoreCase(user.getImgValidateCode())) {
-                GFUserSession userSession = this.userService.getUserSession(user.getUserId());
-                if(userSession != null) {
-                    // ---------------------2018-09-13 by Junjie.M--------------------------
-//                    if(!DateUtil.isAfterThirtyMinutes(userSession.getLoginTime())) {
-//                        String loginUser1 = "用户[" + user.getUserId() + "]已在" + userSession.getClientIp() + "登录";
-//                        return new MessageResult(false, loginUser1);
-//                    }
+    public MessageResult login(@RequestBody GFUser user, HttpServletRequest request, HttpServletResponse response) {
+        if(StringUtils.hasText(user.getUserId()) && StringUtils.hasText(user.getPassword())) {
+            GFUserSession userSession = this.userService.getUserSession(user.getUserId());
+            if(userSession != null) {
+                // ---------------------2018-09-13 by Junjie.M--------------------------
+//                if(!DateUtil.isAfterThirtyMinutes(userSession.getLoginTime())) {
+//                    String loginUser1 = "用户[" + user.getUserId() + "]已在" + userSession.getClientIp() + "登录";
+//                    return new MessageResult(false, loginUser1);
+//                }
 //
-//                    this.userService.deleteUserSessionByUserId(userSession.getUserId());
-                    // --------------------- END --------------------------
+//                this.userService.deleteUserSessionByUserId(userSession.getUserId());
+                // --------------------- END --------------------------
+            }
+
+            if(!StringUtils.hasLength(user.getAppId())) {
+                user.setAppId("default");
+            }
+
+            GFLoginUser loginUser = this.userService.login(user, request);
+            if(loginUser != null) {
+                this.userService.deleteUserSessionByUserId(user.getUserId());
+                this.userService.addUserSession(Util.getClientIP(request), user.getUserId());
+                HashMap map = new HashMap();
+                map.put("sid", request.getSession().getId());
+                map.put("userId", loginUser.getUserId());
+                map.put("userName", loginUser.getUserName());
+                if(StringUtils.hasText(this.ssoServer)) {
+                    String authRights = String.format("uid=%s", new Object[]{loginUser.getUserId()});
+                    String menuList = DigestUtils.md5Hex(loginUser.getUserId());
+                    authRights = authRights + "|" + menuList;
+                    Cookie buffer = new Cookie(this.ssoServer, authRights);
+                    buffer.setPath("/");
+                    response.addCookie(buffer);
                 }
 
-                if(!StringUtils.hasLength(user.getAppId())) {
-                    user.setAppId("default");
-                }
-
-                GFLoginUser loginUser = this.userService.login(user, request);
-                if(loginUser != null && "1".equals(loginUser.getStatus())) {
-                    this.userService.deleteUserSessionByUserId(user.getUserId());
-                    this.userService.addUserSession(clientIP, user.getUserId());
-                    HashMap map = new HashMap();
-                    map.put("sid", request.getSession().getId());
-                    map.put("userId", loginUser.getUserId());
-                    map.put("userName", loginUser.getUserName());
-                    if(StringUtils.hasText(this.ssoServer)) {
-                        String authRights = String.format("uid=%s", new Object[]{loginUser.getUserId()});
-                        String menuList = DigestUtils.md5Hex(loginUser.getUserId());
-                        authRights = authRights + "|" + menuList;
-                        Cookie sessionUser = new Cookie(this.ssoServer, authRights);
-                        sessionUser.setPath("/");
-                        response.addCookie(sessionUser);
-                    }
-
-                    List authRights1 = this.authRightService.queryAuths(user.getUserId(), (String)null, loginUser.getAppId());
-                    map.put("authRights", authRights1);
-                    List menuList1 = this.menuService.selectMenusByUserId(user.getUserId(), loginUser.getAppId());
-                    map.put("menuList", menuList1);
-                    UserSession sessionUser1 = new UserSession(loginUser);
-                    sessionUser1.setMenuList(menuList1);
-                    request.getSession().setAttribute("GF_USER_SESSION", sessionUser1);
-                    StringBuffer buffer = new StringBuffer();
-                    if("1".equals(user.getIsRemember())) {
-                        buffer.append(user.getUserId());
-                        buffer.append("|");
-                        buffer.append(user.getPassword());
-                    } else {
-                        buffer.append("");
-                    }
-
-                    Cookie cookie = new Cookie(this.cookieRemember, buffer.toString());
-                    cookie.setPath("/");
-                    response.addCookie(cookie);
-                    return new MessageResult(true, map);
+                List authRights1 = this.authRightService.queryAuths(user.getUserId(), (String)null, loginUser.getAppId());
+                map.put("authRights", authRights1);
+                List menuList1 = this.menuService.selectMenusByUserId(user.getUserId(), loginUser.getAppId());
+                map.put("menuList", menuList1);
+                StringBuffer buffer1 = new StringBuffer();
+                if("1".equals(user.getIsRemember())) {
+                    buffer1.append(user.getUserId());
+                    buffer1.append("|");
+                    buffer1.append(user.getPassword());
                 } else {
-                    return loginUser != null && "2".equals(loginUser.getStatus())?new MessageResult(false, "用户已锁定，请联系管理员!"):new MessageResult(false, "用户名或密码不正确!");
+                    buffer1.append("");
                 }
+
+                Cookie cookie = new Cookie(this.cookieRemember, buffer1.toString());
+                cookie.setPath("/");
+                response.addCookie(cookie);
+                return new MessageResult(true, map);
             } else {
-                return new MessageResult(false, "验证码不正确");
+                return new MessageResult(false, "用户名或密码不正确!");
             }
         } else {
             return new MessageResult(false, "用户名或密码不正确!");
@@ -263,7 +184,7 @@ public class UserController {
         try {
             return this.employeeService.addEmployee(employee);
         } catch (Exception var3) {
-            logger.error("addEmployee exception:{}", var3);
+            var3.printStackTrace();
             return false;
         }
     }
@@ -272,7 +193,7 @@ public class UserController {
         try {
             return bool?this.userService.addUserHasEmp(user):this.userService.addUser(user);
         } catch (Exception var4) {
-            logger.error("addUser exception:{}", var4);
+            var4.printStackTrace();
             return false;
         }
     }
@@ -286,7 +207,7 @@ public class UserController {
             boolean e = this.userService.updateUser(user);
             return e;
         } catch (Exception var3) {
-            logger.error("updateUser exception:{}", var3);
+            var3.printStackTrace();
             return false;
         }
     }
@@ -298,7 +219,6 @@ public class UserController {
             boolean e = this.userService.checkUser(user);
             return e;
         } catch (Exception var3) {
-            logger.error("checkUser exception:{}", var3);
             return false;
         }
     }
@@ -310,7 +230,6 @@ public class UserController {
             boolean e = this.userService.deleteUsers(users);
             return e;
         } catch (Exception var3) {
-            logger.error("deleteUsers exception:{}", var3);
             return false;
         }
     }
@@ -322,7 +241,6 @@ public class UserController {
             boolean e = this.userService.deleteUsersByEmpId(nodes);
             return e;
         } catch (Exception var3) {
-            logger.error("deleteUsersByEmpId exception:{}", var3);
             return false;
         }
     }
@@ -336,7 +254,7 @@ public class UserController {
             try {
                 return this.userService.getUserById(user.getId());
             } catch (Exception var4) {
-                logger.error("getUser exception:{}", var4);
+                var4.printStackTrace();
                 return null;
             }
         } else {
@@ -346,40 +264,20 @@ public class UserController {
 
     @RequestMapping({"/user/changePassword"})
     @ResponseBody
-    public MessageResult changePassword(@RequestBody Map paramMap) {
-        MessageResult result = new MessageResult();
-        result.setStatus(false);
-        String oldPassword = (String)paramMap.get("password");
+    public boolean changePassword(@RequestBody Map paramMap) throws Exception {
         Map user = (Map)paramMap.get("user");
-        String userId = (String)user.get("userId");
-        if(!WebUtil.getLoginUserId().equals(userId)) {
-            result.setMessage("用户只能修改自己的密码");
-            return result;
-        } else {
-            String id = (String)user.get("id");
-            String newPassword = (String)user.get("password");
-            newPassword = GFStringUtil.hexDecode(newPassword);
-            boolean succed = this.userService.checkPassword(id, oldPassword);
-            if(!succed) {
-                result.setStatus(false);
-                result.setMessage("原密码错误");
-                return result;
-            } else {
-                MessageResult messageResult = this.userService.checkNewPassword(id, newPassword);
-                if(!messageResult.isStatus()) {
-                    return messageResult;
-                } else {
-                    try {
-                        this.userService.changePassword(id, DigestUtils.md5Hex(newPassword));
-                        result.setStatus(true);
-                    } catch (Exception var11) {
-                        logger.error("failed to change pwd!", var11);
-                    }
+        String id = (String)user.get("id");
+        String newPassword = (String)user.get("password");
+        return this.userService.changePassword(id, newPassword);
+    }
 
-                    return result;
-                }
-            }
-        }
+    @RequestMapping({"/user/checkPassword"})
+    @ResponseBody
+    public boolean checkPassword(@RequestBody Map paramMap) {
+        Map user = (Map)paramMap.get("user");
+        String id = (String)user.get("id");
+        String oldPassword = (String)paramMap.get("password");
+        return this.userService.checkPassword(id, oldPassword);
     }
 
     @RequestMapping({"/user/resetPassword"})
@@ -389,7 +287,6 @@ public class UserController {
             boolean e = this.userService.resetPassword(users);
             return e;
         } catch (Exception var3) {
-            logger.error("resetPassword exception:{}", var3);
             return false;
         }
     }
@@ -397,55 +294,12 @@ public class UserController {
     @RequestMapping({"/user/unlock"})
     @ResponseBody
     public MessageResult unlock(String loginUserId) {
-        return this.userService.unlockUser(loginUserId);
-    }
-
-    @RequestMapping({"/user/stopUse"})
-    @ResponseBody
-    public MessageResult stopUse(String loginUserId) {
-        return this.userService.stopUse(loginUserId);
+        return this.userService.deleteUserSessionByUserId(loginUserId);
     }
 
     @RequestMapping({"/user/validateUser"})
     @ResponseBody
     public MessageResult validateUser(String userId, String password) {
         return this.userService.validateUser(userId, password);
-    }
-
-    @RequestMapping({"/user/replacePwd"})
-    @ResponseBody
-    public MessageResult replacePwd(@RequestBody GFLoginUser loginUser, HttpServletRequest request) {
-        GFLoginUser user = (GFLoginUser)request.getSession().getAttribute("SESSION_USER");
-        MessageResult messageResult = this.userService.checkNewPassword(user.getId(), loginUser.getPassword());
-        if(!messageResult.isStatus()) {
-            return messageResult;
-        } else {
-            try {
-                boolean e = this.userService.changePassword(user.getId(), loginUser.getPassword());
-                if(e) {
-                    request.getSession().setAttribute("SESSION_USER", user);
-                } else {
-                    messageResult.setMessage("重置密码失败");
-                }
-
-                messageResult.setStatus(e);
-            } catch (Exception var6) {
-                logger.error("replacePwd exception:{}", var6);
-                messageResult.setStatus(false);
-                messageResult.setMessage("重置密码失败");
-            }
-
-            return messageResult;
-        }
-    }
-
-    @RequestMapping({"/user/loginImgValidateCode"})
-    public void imgValidateCode(HttpServletRequest request, HttpServletResponse response) {
-        response.setContentType("image/jpeg");
-        response.setHeader("Pragma", "No-cache");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expire", 0L);
-        ImgValidateCode imgValidateCode = new ImgValidateCode();
-        imgValidateCode.getRandcode(request, response);
     }
 }

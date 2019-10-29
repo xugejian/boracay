@@ -13,108 +13,118 @@ import java.util.Map;
 public class JdbcDatasource extends Datasource {
 
     public JdbcDatasource(List<Property> properties) {
-        super(properties);
+        super (properties);
     }
 
     public JdbcDatasource(Map<String, Property> propertieMap) {
-        super(propertieMap);
+        super (propertieMap);
     }
 
     public JdbcDatasource(Datasource datasource) {
-        super(datasource);
+        super (datasource);
     }
 
-    public String getDriverClass() {
-        String value = getProperty("driver.class").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("driver.class不能为空");
+    public String gainDriverClass() {
+        String value = gainProperty ("driver.class").getValue ();
+        if (StringUtils.isBlank (value)) {
+            throw new IllegalArgumentException ("driver.class不能为空");
+        }
         return value;
     }
 
-    public String getJdbcUrl() {
-        String value = getProperty("jdbc.url").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("jdbc.url不能为空");
+    public String gainJdbcUrl() {
+        String value = gainProperty ("jdbc.url").getValue ();
+        if (StringUtils.isBlank (value)) {
+            throw new IllegalArgumentException ("jdbc.url不能为空");
+        }
         return value;
     }
 
-    public String getUsername() {
-        return getProperty("username").getValue();
+    public String gainUsername() {
+        return gainProperty ("username").getValue ();
     }
 
-    public String getPassword() {
-        return getProperty("password").getValue();
+    public String gainPassword() {
+        return gainProperty ("password").getValue ();
     }
 
-    public String getInitialSize() {
-        return getProperty("initial.size").getValue();
+    public String gainInitialSize() {
+        return gainProperty ("initial.size").getValue ();
     }
 
-    public String getMinIdle() {
-        return getProperty("min.idle").getValue();
+    public String gainMinIdle() {
+        return gainProperty ("min.idle").getValue ();
     }
 
-    public String getMaxIdle() {
-        return getProperty("max.idle").getValue();
+    public String gainMaxIdle() {
+        return gainProperty ("max.idle").getValue ();
     }
 
-    public String getMaxWait() {
-        return getProperty("max.wait").getValue();
+    public String gainMaxWait() {
+        return gainProperty ("max.wait").getValue ();
     }
 
-    public String getMaxActive() {
-        return getProperty("max.active").getValue();
+    public String gainMaxActive() {
+        return gainProperty ("max.active").getValue ();
     }
 
-    public String getValidationQueryTimeout() {
-        return getProperty("validation.query.timeout").getValue();
+    public String gainValidationQueryTimeout() {
+        return gainProperty ("validation.query.timeout").getValue ();
     }
 
-    public String getTimeBetweenEvictionRunsMillis() {
-        return getProperty("time.between.eviction.runs.millis").getValue();
+    public String gainTimeBetweenEvictionRunsMillis() {
+        return gainProperty ("time.between.eviction.runs.millis").getValue ();
     }
 
-    public String getMinEvictableIdleTimeMillis() {
-        return getProperty("min.evictable.idle.time.millis").getValue();
+    public String gainMinEvictableIdleTimeMillis() {
+        return gainProperty ("min.evictable.idle.time.millis").getValue ();
     }
 
-    public String getValidationQuery() {
-        return getProperty("validation.query").getValue();
+    public String gainValidationQuery() {
+        return gainProperty ("validation.query").getValue ();
     }
 
-    public String getTestWhileIdle() {
-        return getProperty("test.while.idle").getValue();
+    public String gainTestWhileIdle() {
+        return gainProperty ("test.while.idle").getValue ();
     }
 
-    public String getTestOnBorrow() {
-        return getProperty("test.on.borrow").getValue();
+    public String gainTestOnBorrow() {
+        return gainProperty ("test.on.borrow").getValue ();
     }
 
-    public String getTestOnReturn() {
-        return getProperty("test.on.return").getValue();
+    public String gainTestOnReturn() {
+        return gainProperty ("test.on.return").getValue ();
     }
 
-    public String getPoolPreparedStatements() {
-        return getProperty("pool.prepared.statements").getValue();
+//    public String gainPoolPreparedStatements() {
+//        return gainProperty ("pool.prepared.statements").getValue ();
+//    }
+
+//    public String gainMaxOpenPreparedStatements() {
+//        return gainProperty ("max.open.prepared.statements").getValue ();
+//    }
+
+    public String gainRemoveAbandoned() {
+        return gainProperty ("remove.abandoned").getValue ();
     }
 
-    public String getMaxOpenPreparedStatements() {
-        return getProperty("max.open.prepared.statements").getValue();
+    public String gainRemoveAbandonedTimeout() {
+        return gainProperty ("remove.abandoned.timeout").getValue ();
     }
 
-    public String getRemoveAbandoned() {
-        return getProperty("remove.abandoned").getValue();
-    }
-
-    public String getRemoveAbandonedTimeout() {
-        return getProperty("remove.abandoned.timeout").getValue();
-    }
-
-    public int getMaxNum() {
-        String value = getProperty("max.data.size").getValue();
-        if (StringUtils.isBlank(value)) {
+    public int gainMaxSize() {
+        String value = gainProperty ("max.data.size").getValue ();
+        if (StringUtils.isBlank (value)) {
             value = "65535";
         }
-        return Integer.valueOf(value);
+        return Integer.valueOf (value);
+    }
+
+    public boolean gainMaxSizeAlarm() {
+        String value = gainProperty ("max.data.size.alarm").getValue ();
+        if (StringUtils.isBlank (value)) {
+            return true;
+        }
+        return Boolean.valueOf (value);
     }
 }

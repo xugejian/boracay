@@ -55,7 +55,7 @@ public abstract class KafkaWrapper extends Wrapper implements RealtimeSourceConv
     }
 
     @Override
-    protected void emptyDatas(Metadata metadata) throws IOException, Exception {
+    public void emptyDatas(Metadata metadata) throws IOException, Exception {
         try {
             throw new Exception("不支持该方法");
         } catch (Exception e) {

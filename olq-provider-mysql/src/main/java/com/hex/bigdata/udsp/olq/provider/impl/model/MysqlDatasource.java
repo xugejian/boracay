@@ -13,22 +13,23 @@ import java.util.Map;
 public class MysqlDatasource extends JdbcDatasource {
 
     public MysqlDatasource(List<Property> properties) {
-        super(properties);
+        super (properties);
     }
 
     public MysqlDatasource(Map<String, Property> propertieMap) {
-        super(propertieMap);
+        super (propertieMap);
     }
 
     public MysqlDatasource(Datasource datasource) {
-        super(datasource);
+        super (datasource);
     }
 
-    public String getDriverClass() {
-        String value = getProperty("driver.class").getValue();
-        if (StringUtils.isBlank(value))
+    @Override
+    public String gainDriverClass() {
+        String value = gainProperty ("driver.class").getValue ();
+        if (StringUtils.isBlank (value)) {
             value = "com.mysql.jdbc.Driver";
-         return value;
+        }
+        return value;
     }
-
 }

@@ -1,13 +1,14 @@
 package com.hex.bigdata.udsp.consumer;
 
 import com.hex.bigdata.udsp.common.constant.ErrorCode;
+import com.hex.bigdata.udsp.common.constant.RequestType;
 import com.hex.bigdata.udsp.common.util.HostUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.consumer.service.ExternalConsumerService;
 import com.hex.bigdata.udsp.consumer.service.LoggingService;
-import com.hex.bigdata.udsp.consumer.util.RequestUtil;
+import com.hex.bigdata.udsp.consumer.util.Util;
 import com.hex.goframe.controller.BaseController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,14 +51,15 @@ public class RestfulConsumer extends BaseController {
     public Response consume(@RequestBody String json, HttpServletRequest httpServletRequest) {
         Response response = new Response();
         long bef = System.currentTimeMillis();
+        Request request = null;
         try {
-            Request request = RequestUtil.jsonToRequest(json);
+            request = Util.jsonToRequest(json);
+            request.setRequestType (RequestType.OUTER.getValue ());
             request.setRequestIp(HostUtil.getRealRequestIp(httpServletRequest)); // 获取并设置客户端请求的IP
             return consumerService.consume(request);
         } catch (Exception e) {
             e.printStackTrace();
-            loggingService.writeResponseLog(response, new ConsumeRequest(), bef, 0,
-                    ErrorCode.ERROR_000005.getValue(), e.getMessage());
+            loggingService.writeResponseLog(response, new ConsumeRequest(request), bef, 0, ErrorCode.ERROR_000005, e.toString ());
         }
         return response;
     }

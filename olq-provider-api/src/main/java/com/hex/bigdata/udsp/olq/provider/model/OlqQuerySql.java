@@ -4,16 +4,11 @@ import com.hex.bigdata.udsp.common.api.model.Page;
 
 /**
  * 联机查询SQL查询对象
- * Created with IntelliJ IDEA
- * Author: tomnic.wang
- * DATE:2017/7/14
- * TIME:14:17
  */
 public class OlqQuerySql {
 
     private OlqQuerySql() {
     }
-
 
     /**
      * 联机查询适用
@@ -21,8 +16,8 @@ public class OlqQuerySql {
      * @param originalSql
      */
     public OlqQuerySql(String originalSql) {
-        if (originalSql.lastIndexOf(";") == originalSql.length()) {
-            originalSql = originalSql.substring(0, originalSql.length() - 1);
+        if (originalSql.lastIndexOf (";") == originalSql.length ()) {
+            originalSql = originalSql.substring (0, originalSql.length () - 1);
         }
         this.originalSql = originalSql;
     }
@@ -34,8 +29,8 @@ public class OlqQuerySql {
      * @param page
      */
     public OlqQuerySql(String originalSql, Page page) {
-        if (originalSql.lastIndexOf(";") == originalSql.length()) {
-            originalSql = originalSql.substring(0, originalSql.length() - 1);
+        if (originalSql.lastIndexOf (";") == originalSql.length ()) {
+            originalSql = originalSql.substring (0, originalSql.length () - 1);
         }
         this.page = page;
         this.originalSql = originalSql;
@@ -105,10 +100,10 @@ public class OlqQuerySql {
 
     public static void main(String[] args) {
         String originalSql = "select \"ID\", \"BNYE\", \"BWYE\"   from \"EASYCORE\".\"A\"";
-        if (originalSql.lastIndexOf(";") == originalSql.length()) {
-            originalSql = originalSql.substring(0, originalSql.length() - 1);
+        if (originalSql.lastIndexOf (";") == originalSql.length ()) {
+            originalSql = originalSql.substring (0, originalSql.length () - 1);
         }
-        System.out.println(originalSql);
+        System.out.println (originalSql);
     }
 
 

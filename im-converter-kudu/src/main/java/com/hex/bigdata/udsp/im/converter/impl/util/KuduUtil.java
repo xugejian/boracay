@@ -15,38 +15,38 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by PC on 2018/2/26.
  */
 public class KuduUtil {
     private static Logger logger = LogManager.getLogger(KuduUtil.class);
-    private static Map<String, KuduClientPoolFactory> dataSourcePool;
+    private static Map<String, KuduClientPoolFactory> dataSourcePool = new ConcurrentHashMap<> ();
 
-    public static synchronized KuduClientPoolFactory getDataSource(KuduDatasource datasource) {
+    public static KuduClientPoolFactory getDataSource(KuduDatasource datasource) {
         String dsId = datasource.getId();
-        if (dataSourcePool == null) {
-            dataSourcePool = new HashMap<>();
+        String key = "im-kudu-" + dsId;
+        synchronized (key.intern ()) {
+            KuduClientPoolFactory factory = dataSourcePool.remove (dsId);
+            if (factory == null) {
+                GenericObjectPool.Config config = new GenericObjectPool.Config ();
+                config.lifo = true;
+                config.minIdle = 1;
+                config.maxIdle = 10;
+                config.maxWait = 3000;
+                config.maxActive = 5;
+                config.timeBetweenEvictionRunsMillis = 30000;
+                config.testWhileIdle = true;
+                config.testOnBorrow = false;
+                config.testOnReturn = false;
+                factory = new KuduClientPoolFactory (config, datasource);
+            }
+            dataSourcePool.put (dsId, factory);
+            return factory;
         }
-        KuduClientPoolFactory factory = dataSourcePool.remove(dsId);
-        if (factory == null) {
-            GenericObjectPool.Config config = new GenericObjectPool.Config();
-            config.lifo = true;
-            config.minIdle = 1;
-            config.maxIdle = 10;
-            config.maxWait = 3000;
-            config.maxActive = 5;
-            config.timeBetweenEvictionRunsMillis = 30000;
-            config.testWhileIdle = true;
-            config.testOnBorrow = false;
-            config.testOnReturn = false;
-            factory = new KuduClientPoolFactory(config, datasource);
-        }
-        dataSourcePool.put(dsId, factory);
-        return factory;
     }
 
     public static KuduClient getClient(KuduDatasource datasource) {
@@ -115,12 +115,13 @@ public class KuduUtil {
                     columns.add(schemaBuilder.build());
                 }
             }
-            if (count == 0)
-                throw new IllegalArgumentException("必须指定至少一个主键字段");
+            if (count == 0) {
+                throw new IllegalArgumentException ("必须指定至少一个主键字段");
+            }
             Schema schema = new Schema(columns);
             // Options信息
             CreateTableOptions options = null;
-            if (!metadata.getPrePartitioning()) { // 非预分区
+            if (!metadata.gainPrePartitioning()) { // 非预分区
                 List<String> rangeKeys = new ArrayList<>();
                 for (MetadataCol metadataCol : metadataCols) {
                     if (metadataCol.isPrimary()) { // 主键
@@ -136,7 +137,7 @@ public class KuduUtil {
                         hashKeys.add(metadataCol.getName());
                     }
                 }
-                int buckets = metadata.getHashPartitionsBuckets();
+                int buckets = metadata.gainHashPartitionsBuckets();
                 options = new CreateTableOptions()
                         .addHashPartitions(hashKeys, buckets);
             }

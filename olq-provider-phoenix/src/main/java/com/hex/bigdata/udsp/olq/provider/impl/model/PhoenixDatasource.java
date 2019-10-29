@@ -25,9 +25,10 @@ public class PhoenixDatasource extends JdbcDatasource {
     }
 
     public String getDriverClass() {
-        String value = getProperty("driver.class").getValue();
-        if (StringUtils.isBlank(value))
+        String value = gainProperty("driver.class").getValue();
+        if (StringUtils.isBlank(value)) {
             value = "org.apache.phoenix.jdbc.PhoenixDriver";
+        }
         return value;
     }
 }

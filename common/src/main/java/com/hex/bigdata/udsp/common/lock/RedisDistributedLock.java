@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.common.lock;
 
 import com.hex.bigdata.udsp.common.util.ExceptionUtil;
-import com.hex.goframe.util.WebApplicationContextUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +45,6 @@ public class RedisDistributedLock {
     public void lock(String key) {
         logger.debug(key + "准备上锁！");
         String lockKey = LOCK_KEY_PREFIX + key;
-        if (redisTemplate == null) {
-            redisTemplate = (RedisTemplate) WebApplicationContextUtil.getBean("redisLockTemplate");
-        }
         RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
         try {
             long count = 0;
@@ -57,7 +53,6 @@ public class RedisDistributedLock {
                 try {
                     logger.debug(key + "请求锁！");
                     /**
-                     * TODO
                      * 理论上这里也会出现同时进入的问题，也需要上锁，但是上什么锁呢？
                      * 如果只上单机锁则只能锁本机，对于分布式服务无效；
                      * 而如果上分布式锁，这个方法就是为了解决分布式锁的！

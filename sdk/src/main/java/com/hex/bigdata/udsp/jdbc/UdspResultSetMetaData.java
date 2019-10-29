@@ -72,9 +72,7 @@ public class UdspResultSetMetaData implements ResultSetMetaData {
 
     public boolean isCaseSensitive(int column) throws SQLException {
         // we need to convert the Hive type to the SQL type name
-        // TODO: this would be better handled in an enum
         String type = columnTypes.get(toZeroIndex(column));
-
         if ("string".equalsIgnoreCase(type)) {
             return true;
         } else {

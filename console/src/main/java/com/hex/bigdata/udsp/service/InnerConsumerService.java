@@ -1,9 +1,6 @@
 package com.hex.bigdata.udsp.service;
 
-import com.hex.bigdata.udsp.common.constant.ConsumerEntity;
-import com.hex.bigdata.udsp.common.constant.ConsumerType;
-import com.hex.bigdata.udsp.common.constant.ErrorCode;
-import com.hex.bigdata.udsp.common.constant.RequestType;
+import com.hex.bigdata.udsp.common.constant.*;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
@@ -21,7 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * 消费的服务
+ * 内部消费的服务
  */
 @Service
 public class InnerConsumerService {
@@ -79,7 +76,6 @@ public class InnerConsumerService {
      */
     private ConsumeRequest checkConsume(Request request, boolean isAdmin, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest();
-        consumeRequest.setRequest(request); // 必须先设置request
         request.setRequestType(RequestType.INNER.getValue());
         String udspUser = request.getUdspUser();
         String appType = request.getAppType();
@@ -106,17 +102,28 @@ public class InnerConsumerService {
             consumeRequest.setError(ErrorCode.ERROR_000010);
             return consumeRequest;
         }
+
         // 管理员用户，直接访问
         if (isAdmin) {
             // 管理员用户执行队列（同步/异步）没有限制
             Current mcCurrent = consumerService.getCurrent(request, -1, -1);
             consumeRequest.setMcCurrent(mcCurrent);
             currentService.insert(mcCurrent);
-            // 重新设置request
-            if (StringUtils.isBlank(request.getConsumeId())) {
-                request.setConsumeId(mcCurrent.getPkId());
-                consumeRequest.setRequest(request);
+            // OLQ_APP
+            if (ServiceType.OLQ_APP.getValue().equals(appType)
+                    && ConsumerEntity.START.getValue().equalsIgnoreCase(entity)) {
+                try {
+                    request = consumerService.olqApplicationRequet(request);
+                } catch (Exception e) {
+                    consumeRequest.setError(ErrorCode.ERROR_000009);
+                    consumeRequest.setMessage(e.toString());
+                    return consumeRequest;
+                }
             }
+            if (StringUtils.isBlank(request.getConsumeId())) {
+                request.setConsumeId (mcCurrent.getPkId());
+            }
+            consumeRequest.setRequest (request);
             return consumeRequest;
         }
 

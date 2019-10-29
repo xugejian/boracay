@@ -98,7 +98,7 @@ public class KuduConverter extends KuduWrapper {
         HiveDatasource eHiveDs = new HiveDatasource(model.getEngineDatasource());
         String id = model.getId();
         KuduModel kuduModel = new KuduModel(model);
-        String kuduTableName = kuduModel.getKuduTableName();
+        String kuduTableName = kuduModel.gainKuduTableName();
         String engineSchemaName = getSourceTableName(id);
         KuduDatasource kuduDs = new KuduDatasource(model.getSourceDatasource());
         List<ModelMapping> modelMappings = model.getModelMappings();
@@ -125,8 +125,8 @@ public class KuduConverter extends KuduWrapper {
     @Override
     public List<MetadataCol> columnInfo(Model model) {
         KuduDatasource kuduDatasource = new KuduDatasource(model.getSourceDatasource());
-        KuduModel kuduModel = new KuduModel(model.getProperties(), model.getSourceDatasource());
-        String kuduTableName = kuduModel.getKuduTableName();
+        KuduModel kuduModel = new KuduModel(model);
+        String kuduTableName = kuduModel.gainKuduTableName();
         return getColumns(kuduDatasource, kuduTableName);
     }
 }

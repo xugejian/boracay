@@ -15,14 +15,13 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-    <!-- CXF -->
-    <servlet>
-        <servlet-name>CXFServer</servlet-name>
-        <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>CXFServer</servlet-name>
-        <url-pattern>/cxf/*</url-pattern>
-    </servlet-mapping>
+    <filter>
+        <filter-name>employe</filter-name>
+        <filter-class>com.hex.bigdata.udsp.filter.EmployeFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>employe</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+	
 </web-app>

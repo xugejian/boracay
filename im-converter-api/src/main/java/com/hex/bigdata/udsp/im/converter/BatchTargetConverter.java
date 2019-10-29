@@ -9,6 +9,7 @@ public interface BatchTargetConverter extends TargetConverter, BatchConverter {
 
     /**
      * 批量构建
+     *
      * @param model
      * @throws Exception
      */

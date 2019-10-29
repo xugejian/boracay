@@ -43,7 +43,7 @@ ${extends("/goframe/function_layout.httl")}
                                vtype="maxLength:64"/>
                     </td>
                     <td colspan="2">
-                        <font color="red">提示：数据源支持SQL建议使用SQL建表然后选择外表！</font>
+                        <font color="red">提示：数据源支持SQL，建议使用SQL建表，然后选择外表！</font>
                     </td>
                 </tr>
                 <tr>

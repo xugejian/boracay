@@ -336,6 +336,13 @@ public class ImMetadataController {
         return new MessageResult(status, message);
     }
 
+    /**
+     * 使用/getCloumnInfo2而不是/getCloumnInfo2/{dsId}/{tbName}，
+     * 是因为tbName中有点“.”，而/getCloumnInfo2/{dsId}/{tbName}这种方式会自动去除点后面的内容。
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping({"/getCloumnInfo2"})
     @ResponseBody
     public MessageResult getCloumnInfo2(HttpServletRequest request) {
@@ -344,19 +351,50 @@ public class ImMetadataController {
         return getCloumnInfo(dsId, tbName);
     }
 
+    /**
+     * 使用/checkSchema2而不是/checkSchema2/{dsId}/{tbName}，
+     * 是因为tbName中有点“.”，而/checkSchema2/{dsId}/{tbName}这种方式会自动去除点后面的内容。
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping({"/checkSchema2"})
+    @ResponseBody
+    public MessageResult checkSchema2(HttpServletRequest request) {
+        String dsId = request.getParameter("dsId");
+        String tbName = request.getParameter("tbName");
+        return checkSchema(dsId, tbName);
+    }
+
+    /**
+     * 使用/checkSchema/{dsId}而不是/checkSchema/{dsId}/{tbName}，
+     * 是因为tbName中有点“.”，而/checkSchema/{dsId}/{tbName}这种方式会自动去除点后面的内容。
+     *
+     * @param dsId
+     * @param tbName
+     * @return
+     */
     @RequestMapping({"/checkSchema/{dsId}"})
     @ResponseBody
     public MessageResult checkSchema(@PathVariable("dsId") String dsId, String tbName) {
         try {
             if (imMetadataService.checkSchema(dsId, tbName)) {
-                return new MessageResult(false, "表已经存在，不可使用！");
+                return new MessageResult(false, "内表已存在，请检查后重新输入！");
             }
         } catch (Exception e) {
             return new MessageResult(false, e.getMessage());
         }
-        return new MessageResult(true, "表不存在，可以使用！");
+        return new MessageResult(true, "内表不存在，可以使用！");
     }
 
+    /**
+     * 使用/getCloumnInfo/{dsId}而不是/getCloumnInfo/{dsId}/{tbName}，
+     * 是因为tbName中有点“.”，而/getCloumnInfo/{dsId}/{tbName}这种方式会自动去除点后面的内容。
+     *
+     * @param dsId
+     * @param tbName
+     * @return
+     */
     @RequestMapping({"/getCloumnInfo/{dsId}"})
     @ResponseBody
     public MessageResult getCloumnInfo(@PathVariable("dsId") String dsId, String tbName) {
@@ -445,12 +483,12 @@ public class ImMetadataController {
      * @param type
      * @return
      */
-    @RequestMapping("getTargetMateData/{type}")
+    @RequestMapping("getTargetMetadata/{type}")
     @ResponseBody
-    public MessageResult getTargetMateData(@PathVariable String type) {
+    public MessageResult getTargetMetadata(@PathVariable String type) {
         List<ImMetadataView> imMetadatas = null;
         try {
-            imMetadatas = imMetadataService.selectTargetMateData(type);
+            imMetadatas = imMetadataService.selectTargetMetadata(type);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -465,10 +503,10 @@ public class ImMetadataController {
      */
     @RequestMapping("selectByCondition")
     @ResponseBody
-    public MessageResult selectMateDataByCondition(@RequestBody ImMetadataView imMetadataView) {
+    public MessageResult selectMetadataByCondition(@RequestBody ImMetadataView imMetadataView) {
         List<ImMetadataView> imMetadatas = null;
         try {
-            imMetadatas = imMetadataService.selectMateDataByCondition(imMetadataView);
+            imMetadatas = imMetadataService.selectMetadataByCondition(imMetadataView);
         } catch (Exception e) {
             e.printStackTrace();
         }

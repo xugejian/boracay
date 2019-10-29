@@ -25,87 +25,72 @@ import java.util.List;
  */
 //@Component("com.hex.bigdata.udsp.im.converter.impl.ImpalaConverter")
 public class ImpalaConverter extends JdbcWrapper implements RealtimeTargetConverter {
-    private static Logger logger = LogManager.getLogger(ImpalaConverter.class);
+    private static Logger logger = LogManager.getLogger (ImpalaConverter.class);
 
     @Override
     protected List<String> createSchemaSqls(String tableName, List<TableColumn> columns, String tableComment) {
-        String[] sqls = {ImpalaSqlUtil.createTable(false, tableName, columns, tableComment,
+        String[] sqls = {ImpalaSqlUtil.createTable (false, tableName, columns, tableComment,
                 FileFormat.HIVE_FILE_FORMAT_PARQUET)};
-        return Arrays.asList(sqls);
+        return Arrays.asList (sqls);
     }
 
     @Override
     protected String dropSchemaSql(String tableName) {
-        return ImpalaSqlUtil.dropTable(true, tableName);
+        return ImpalaSqlUtil.dropTable (true, tableName);
     }
 
     @Override
     protected List<String> addColumnSqls(String tableName, List<TableColumn> addColumns) {
-        String[] sqls = {ImpalaSqlUtil.addColumns(tableName, addColumns)};
-        return Arrays.asList(sqls);
+        String[] sqls = {ImpalaSqlUtil.addColumns (tableName, addColumns)};
+        return Arrays.asList (sqls);
     }
 
     @Override
     protected DataType getColType(String type) {
-        type = type.toUpperCase();
-        DataType dataType = null;
-        switch (type) {
+        switch (type.toUpperCase ()) {
             case "VARCHAR":
-                dataType = DataType.VARCHAR;
-                break;
+                return DataType.VARCHAR;
             case "STRING":
-                dataType = DataType.STRING;
-                break;
+                return DataType.STRING;
             case "DECIMAL":
-                dataType = DataType.DECIMAL;
-                break;
+                return DataType.DECIMAL;
             case "CHAR":
-                dataType = DataType.CHAR;
-                break;
+                return DataType.CHAR;
             case "FLOAT":
-                dataType = DataType.FLOAT;
-                break;
+                return DataType.FLOAT;
             case "DOUBLE":
-                dataType = DataType.DOUBLE;
-                break;
+                return DataType.DOUBLE;
             case "TIMESTAMP":
             case "DATE":
-                dataType = DataType.TIMESTAMP;
-                break;
+                return DataType.TIMESTAMP;
             case "INT":
-                dataType = DataType.INT;
-                break;
+                return DataType.INT;
             case "BIGINT":
-                dataType = DataType.BIGINT;
-                break;
+                return DataType.BIGINT;
             case "TINYINT":
-                dataType = DataType.TINYINT;
-                break;
+                return DataType.TINYINT;
             case "SMALLINT":
-                dataType = DataType.SMALLINT;
-                break;
+                return DataType.SMALLINT;
             case "BOOLEAN":
-                dataType = DataType.BOOLEAN;
-                break;
+                return DataType.BOOLEAN;
             default:
-                dataType = DataType.STRING;
+                return DataType.STRING;
         }
-        return dataType;
     }
 
     @Override
     protected List<Column> getColumns(Connection conn, String dbName, String tbName) throws SQLException {
-        return ClientFactory.createMetaClient(AcquireType.JDBCAPI, DBType.IMPALA, conn)
-                .getColumns(dbName, tbName);
+        return ClientFactory.createMetaClient (AcquireType.JDBCAPI, DBType.IMPALA, conn)
+                .getColumns (dbName, tbName);
     }
 
     @Override
     protected String insertSql(String tableName, List<ValueColumn> valueColumns) {
-        return ImpalaSqlUtil.insert(tableName, valueColumns);
+        return ImpalaSqlUtil.insert (tableName, valueColumns);
     }
 
     @Override
     protected String updateSql(String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
-        return ImpalaSqlUtil.update(tableName, valueColumns, whereProperties);
+        return ImpalaSqlUtil.update (tableName, valueColumns, whereProperties);
     }
 }

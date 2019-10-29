@@ -13,22 +13,24 @@ import java.util.Map;
 public class PgsqlDatasource extends JdbcDatasource {
 
     public PgsqlDatasource(List<Property> properties) {
-        super(properties);
+        super (properties);
     }
 
     public PgsqlDatasource(Map<String, Property> propertieMap) {
-        super(propertieMap);
+        super (propertieMap);
     }
 
     public PgsqlDatasource(Datasource datasource) {
-        super(datasource);
+        super (datasource);
     }
 
-    public String getDriverClass() {
-        String value = getProperty("driver.class").getValue();
-        if (StringUtils.isBlank(value))
+    @Override
+    public String gainDriverClass() {
+        String value = gainProperty ("driver.class").getValue ();
+        if (StringUtils.isBlank (value)) {
             value = "org.postgresql.Driver";
-         return value;
+        }
+        return value;
     }
 
 }

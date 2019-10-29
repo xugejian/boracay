@@ -62,9 +62,6 @@ public class OlqAppClientDemo {
         request.setData(data);
 
         //设置业务参数-分页参数设置
-        // 注：
-        // 联机查询应用中对于传统数据库（如：Oralce、Mysql、Pgsql等）分页获取的数据是正确的；
-        // 但是对于大数据数据库（如：Hive、Impala等）分页获取的数据是错误的，建议把分页的条件作为参数传入。
         Page page = new Page();
         page.setPageSize(300);
         page.setPageIndex(1);

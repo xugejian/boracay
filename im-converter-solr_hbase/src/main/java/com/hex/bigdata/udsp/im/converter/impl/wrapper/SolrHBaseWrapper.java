@@ -6,8 +6,6 @@ import com.hex.bigdata.udsp.im.converter.model.Metadata;
 import com.hex.bigdata.udsp.im.converter.model.ModelMapping;
 import com.hex.bigdata.udsp.im.converter.model.ValueColumn;
 import com.hex.bigdata.udsp.im.converter.model.WhereProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -15,8 +13,6 @@ import java.util.List;
  * Created by JunjieM on 2017-9-7.
  */
 public abstract class SolrHBaseWrapper extends Wrapper implements BatchTargetConverter, RealtimeTargetConverter {
-
-    private static Logger logger = LoggerFactory.getLogger(SolrHBaseWrapper.class);
 
     @Override
     protected void insertInto(Metadata metadata, List<ModelMapping> modelMappings, List<ValueColumn> valueColumns) throws Exception {
@@ -56,7 +52,7 @@ public abstract class SolrHBaseWrapper extends Wrapper implements BatchTargetCon
     }
 
     @Override
-    protected void emptyDatas(Metadata metadata) throws Exception {
+    public void emptyDatas(Metadata metadata) throws Exception {
         try {
             throw new Exception("不支持该方法");
         } catch (Exception e) {

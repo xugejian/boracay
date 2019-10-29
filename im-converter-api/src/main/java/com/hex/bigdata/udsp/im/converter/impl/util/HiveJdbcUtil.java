@@ -12,24 +12,27 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by JunjieM on 2017-9-22.
  */
 public class HiveJdbcUtil {
     private static Logger logger = LogManager.getLogger(HiveJdbcUtil.class);
-    private static Map<String, HiveStatement> hiveStatementPool = new HashMap<>();
+    private static Map<String, HiveStatement> hiveStatementPool = new ConcurrentHashMap<> ();
 
+    // 这里的锁是类锁
     public static synchronized HiveStatement getHiveStatement(String key) {
         return hiveStatementPool.get(key);
     }
 
+    // 这里的锁是类锁
     public static synchronized void removeHiveStatement(String key) {
         hiveStatementPool.remove(key);
     }
 
+    // 这里的锁是类锁
     public static synchronized void putHiveStatement(String key, HiveStatement statement) {
         hiveStatementPool.put(key, statement);
     }
@@ -64,7 +67,6 @@ public class HiveJdbcUtil {
                 logger.debug("SUB SQL: " + sql);
                 rs = hiveStmt.executeUpdate(sql);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException(e);
@@ -74,6 +76,6 @@ public class HiveJdbcUtil {
             removeHiveStatement(key);
             logger.info("HIVE EXECUTE UPDATE SQL [END]");
         }
-        return rs == 0 ? true : false;
+        return rs == 0;
     }
 }

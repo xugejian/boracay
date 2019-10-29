@@ -12,7 +12,7 @@ import com.hex.bigdata.udsp.im.converter.impl.util.JdbcUtil;
 import com.hex.bigdata.udsp.im.converter.impl.util.PhoenixSqlUtil;
 import com.hex.bigdata.udsp.im.converter.impl.wrapper.JdbcWrapper;
 import com.hex.bigdata.udsp.im.converter.model.*;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -118,6 +118,7 @@ public class PhoenixConverter extends JdbcWrapper implements RealtimeTargetConve
         JdbcUtil.executeUpdate(jdbcDatasource, PhoenixSqlUtil.upsert(metadata.getTbName(), valueColumns));
     }
 
+    @Override
     @Deprecated
     protected String insertSql(String tableName, List<ValueColumn> valueColumns) {
         return null;
@@ -132,6 +133,7 @@ public class PhoenixConverter extends JdbcWrapper implements RealtimeTargetConve
         insertInto(metadata, modelMappings, valueColumns);
     }
 
+    @Override
     @Deprecated
     protected String updateSql(String tableName, List<ValueColumn> valueColumns, List<WhereProperty> whereProperties) {
         return null;

@@ -11,9 +11,10 @@ import org.apache.logging.log4j.Logger;
 public class PhoenixProvider extends JdbcProvider {
     private static Logger logger = LogManager.getLogger(PhoenixProvider.class);
 
+    @Override
     protected OlqQuerySql getPageSql(String sql, Page page) {
         OlqQuerySql olqQuerySql = new OlqQuerySql(sql);
-        if (page == null || !sql.toUpperCase().trim().contains("SELECT")) {
+        if (page == null || !sql.toUpperCase().contains("SELECT")) {
             return olqQuerySql;
         }
         // 分页sql组装

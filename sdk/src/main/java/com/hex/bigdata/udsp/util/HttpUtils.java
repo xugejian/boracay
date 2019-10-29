@@ -1,10 +1,9 @@
 package com.hex.bigdata.udsp.util;
 
-import com.alibaba.fastjson.JSON;
-import com.hex.bigdata.udsp.jdbc.netty.NettyClientHandler;
+import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -39,12 +38,13 @@ import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class HttpUtils {
 
-    private static Logger logger = LogManager.getLogger(HttpUtils.class);
+    private static Logger logger = LogManager.getLogger (HttpUtils.class);
 
     public static final String APPLICATION_JSON = "application/json;charset=UTF-8";
     public static final String TEXT_JSON = "text/json;charset=UTF-8";
@@ -59,7 +59,7 @@ public class HttpUtils {
     public static int maxTotalpool = 400; // 总体的最大链接数
     public static int maxPerRoute = 100; // 单连接池的最大链接数
     public static PoolingHttpClientConnectionManager poolManager; // HTTP链接管理器
-    public static CookieStore cookieStore = new BasicCookieStore();
+    public static CookieStore cookieStore = new BasicCookieStore ();
 
     public static int getConnectionRequestTimeout() {
         return connectionRequestTimeout;
@@ -120,41 +120,41 @@ public class HttpUtils {
     static {
         try {
             // 信任对方所有证书
-            SSLContextBuilder builder = new SSLContextBuilder();
-            builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(builder.build());
+            SSLContextBuilder builder = new SSLContextBuilder ();
+            builder.loadTrustMaterial (null, new TrustSelfSignedStrategy ());
+            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory (builder.build ());
 
-            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-                    .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                    .register("https", sslConnectionSocketFactory).build();
+            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create ()
+                    .register ("http", PlainConnectionSocketFactory.getSocketFactory ())
+                    .register ("https", sslConnectionSocketFactory).build ();
 
-            poolManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-            poolManager.setMaxTotal(maxTotalpool);
-            poolManager.setDefaultMaxPerRoute(maxPerRoute);
+            poolManager = new PoolingHttpClientConnectionManager (socketFactoryRegistry);
+            poolManager.setMaxTotal (maxTotalpool);
+            poolManager.setDefaultMaxPerRoute (maxPerRoute);
 
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } catch (KeyStoreException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } catch (KeyManagementException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
     public static CloseableHttpClient getConnection() {
-        return getConnection(connectionRequestTimeout, connectTimeout, socketTimeout);
+        return getConnection (connectionRequestTimeout, connectTimeout, socketTimeout);
     }
 
     public static CloseableHttpClient getConnection(int connectionRequestTimeout,
                                                     int connectTimeout, int socketTimeout) {
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectionRequestTimeout(connectionRequestTimeout)
-                .setConnectTimeout(connectTimeout)
-                .setSocketTimeout(socketTimeout).build();
-        CloseableHttpClient httpClient = HttpClients.custom()
-                .setDefaultCookieStore(cookieStore)
-                .setConnectionManager(poolManager)
-                .setDefaultRequestConfig(requestConfig).build();
+        RequestConfig requestConfig = RequestConfig.custom ()
+                .setConnectionRequestTimeout (connectionRequestTimeout)
+                .setConnectTimeout (connectTimeout)
+                .setSocketTimeout (socketTimeout).build ();
+        CloseableHttpClient httpClient = HttpClients.custom ()
+                .setDefaultCookieStore (cookieStore)
+                .setConnectionManager (poolManager)
+                .setDefaultRequestConfig (requestConfig).build ();
         return httpClient;
     }
 
@@ -167,7 +167,7 @@ public class HttpUtils {
      */
     public static HttpResponse requestSpringSecurityLogin(String url, List<NameValuePair> params,
                                                           Map<String, String> headers) {
-        return requestSpringSecurityLogin(url, params, headers, Charset.forName("UTF-8"));
+        return requestSpringSecurityLogin (url, params, headers, Charset.forName ("UTF-8"));
     }
 
     /**
@@ -180,26 +180,26 @@ public class HttpUtils {
      */
     public static HttpResponse requestSpringSecurityLogin(String url, List<NameValuePair> params,
                                                           Map<String, String> headers, Charset charset) {
-        logger.info("url:" + url);
+        logger.info ("url:" + url);
         CloseableHttpClient httpClient = null;
         HttpPost httpPost = null;
         HttpResponse response = null;
         try {
-            httpPost = new HttpPost(url);
-            httpPost.addHeader(HTTP.CONTENT_TYPE, APPLICATION_X_WWW_FORM_URLENCODED);
-            if (headers != null && headers.size() >= 1) {
-                for (String key : headers.keySet()) {
-                    httpPost.setHeader(key, headers.get(key));
+            httpPost = new HttpPost (url);
+            httpPost.addHeader (HTTP.CONTENT_TYPE, APPLICATION_X_WWW_FORM_URLENCODED);
+            if (headers != null && headers.size () >= 1) {
+                for (String key : headers.keySet ()) {
+                    httpPost.setHeader (key, headers.get (key));
                 }
             }
-            String reqStr = URLEncodedUtils.format(params, charset);
-            StringEntity stringEntity = new StringEntity(reqStr, charset);
-            stringEntity.setContentType(APPLICATION_X_WWW_FORM_URLENCODED);
-            httpPost.setEntity(stringEntity);
-            httpClient = HttpUtils.getConnection();
-            response = httpClient.execute(httpPost);
+            String reqStr = URLEncodedUtils.format (params, charset);
+            StringEntity stringEntity = new StringEntity (reqStr, charset);
+            stringEntity.setContentType (APPLICATION_X_WWW_FORM_URLENCODED);
+            httpPost.setEntity (stringEntity);
+            httpClient = HttpUtils.getConnection ();
+            response = httpClient.execute (httpPost);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         // 这里不能关闭httpGet
 //        finally {
@@ -218,7 +218,7 @@ public class HttpUtils {
      * @return
      */
     public static String requestPageHtml(String url, List<NameValuePair> params, Map<String, String> headers) {
-        return requestPageHtml(url, params, headers, Charset.forName("UTF-8"));
+        return requestPageHtml (url, params, headers, Charset.forName ("UTF-8"));
     }
 
     /**
@@ -231,8 +231,8 @@ public class HttpUtils {
      */
     public static String requestPageHtml(String url, List<NameValuePair> params,
                                          Map<String, String> headers, Charset charset) {
-        HttpResponse response = requestPageResponse(url, params, headers, charset);
-        return analysisContent(response);
+        HttpResponse response = requestPageResponse (url, params, headers, charset);
+        return analysisContent (response);
     }
 
     /**
@@ -244,7 +244,7 @@ public class HttpUtils {
      */
     public static HttpResponse requestPageResponse(String url, List<NameValuePair> params,
                                                    Map<String, String> headers) {
-        return requestPageResponse(url, params, headers, Charset.forName("UTF-8"));
+        return requestPageResponse (url, params, headers, Charset.forName ("UTF-8"));
     }
 
     /**
@@ -257,28 +257,28 @@ public class HttpUtils {
      */
     public static HttpResponse requestPageResponse(String url, List<NameValuePair> params,
                                                    Map<String, String> headers, Charset charset) {
-        logger.info("url:" + url);
+        logger.info ("url:" + url);
         HttpGet httpGet = null;
         CloseableHttpClient httpClient = null;
         HttpResponse response = null;
         String uri = url;
-        if (params != null && params.size() >= 1) {
-            String reqStr = URLEncodedUtils.format(params, charset);
-            logger.info("params:" + reqStr);
+        if (params != null && params.size () >= 1) {
+            String reqStr = URLEncodedUtils.format (params, charset);
+            logger.info ("params:" + reqStr);
             uri += "?" + reqStr;
         }
         try {
-            httpGet = new HttpGet(uri);
-            httpGet.addHeader(HTTP.CONTENT_TYPE, TEXT_HTML);
-            if (headers != null && headers.size() >= 1) {
-                for (String key : headers.keySet()) {
-                    httpGet.setHeader(key, headers.get(key));
+            httpGet = new HttpGet (uri);
+            httpGet.addHeader (HTTP.CONTENT_TYPE, TEXT_HTML);
+            if (headers != null && headers.size () >= 1) {
+                for (String key : headers.keySet ()) {
+                    httpGet.setHeader (key, headers.get (key));
                 }
             }
-            httpClient = getConnection();
-            response = httpClient.execute(httpGet);
+            httpClient = getConnection ();
+            response = httpClient.execute (httpGet);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
         // 这里不能关闭httpGet
 //        finally {
@@ -302,7 +302,7 @@ public class HttpUtils {
      */
     public static <T> T requestGet(String url, List<NameValuePair> params, Map<String, String> headers,
                                    Class<T> clazz, String username, String password) {
-        return requestGet(url, params, headers, clazz, Charset.forName("UTF-8"), username, password);
+        return requestGet (url, params, headers, clazz, Charset.forName ("UTF-8"), username, password);
     }
 
     /**
@@ -315,7 +315,7 @@ public class HttpUtils {
      * @return
      */
     public static <T> T requestGet(String url, List<NameValuePair> params, Map<String, String> headers, Class<T> clazz) {
-        return requestGet(url, params, headers, clazz, Charset.forName("UTF-8"), null, null);
+        return requestGet (url, params, headers, clazz, Charset.forName ("UTF-8"), null, null);
     }
 
     /**
@@ -330,7 +330,7 @@ public class HttpUtils {
      */
     public static <T> T requestPut(String url, String json, Map<String, String> headers,
                                    Class<T> clazz) {
-        return requestPut(url, json, headers, clazz, Charset.forName("UTF-8"), null, null);
+        return requestPut (url, json, headers, clazz, Charset.forName ("UTF-8"), null, null);
     }
 
     /**
@@ -347,7 +347,7 @@ public class HttpUtils {
      */
     public static <T> T requestPut(String url, String json, Map<String, String> headers,
                                    Class<T> clazz, String username, String password) {
-        return requestPut(url, json, headers, clazz, Charset.forName("UTF-8"), username, password);
+        return requestPut (url, json, headers, clazz, Charset.forName ("UTF-8"), username, password);
     }
 
     /**
@@ -365,35 +365,35 @@ public class HttpUtils {
      */
     public static <T> T requestPut(String url, String json, Map<String, String> headers,
                                    Class<T> clazz, Charset charset, String username, String password) {
-        logger.info("url:" + url);
-        logger.info("request:" + json);
+        logger.info ("url:" + url);
+        logger.info ("request:" + json);
         HttpPut httpPut = null;
         CloseableHttpClient httpClient = null;
         T responseObject = null;
         try {
-            httpPut = new HttpPut(url);
-            httpPut.addHeader(HTTP.CONTENT_TYPE, APPLICATION_JSON);
-            if (headers != null && headers.size() >= 1) {
-                for (String key : headers.keySet()) {
-                    httpPut.setHeader(key, headers.get(key));
+            httpPut = new HttpPut (url);
+            httpPut.addHeader (HTTP.CONTENT_TYPE, APPLICATION_JSON);
+            if (headers != null && headers.size () >= 1) {
+                for (String key : headers.keySet ()) {
+                    httpPut.setHeader (key, headers.get (key));
                 }
             }
-            if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
-                String auth = "Basic " + Base64.encode((username + ":" + password).getBytes());
-                httpPut.addHeader("Authorization", auth);
+            if (StringUtils.isNotBlank (username) && StringUtils.isNotBlank (password)) {
+                String auth = "Basic " + Base64.encode ((username + ":" + password).getBytes ());
+                httpPut.addHeader ("Authorization", auth);
             }
-            StringEntity stringEntity = new StringEntity(json, charset);
-            stringEntity.setContentType(APPLICATION_JSON);
-            httpPut.setEntity(stringEntity);
-            httpClient = getConnection();
-            HttpResponse response = httpClient.execute(httpPut);
-            String content = analysisJsonContent(response);
-            responseObject = JSON.parseObject(content, clazz);
+            StringEntity stringEntity = new StringEntity (json, charset);
+            stringEntity.setContentType (APPLICATION_JSON);
+            httpPut.setEntity (stringEntity);
+            httpClient = getConnection ();
+            HttpResponse response = httpClient.execute (httpPut);
+            String content = analysisJsonContent (response);
+            responseObject = JSONUtil.parseJSON2Obj (content, clazz);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (httpPut != null) {
-                httpPut.releaseConnection();
+                httpPut.releaseConnection ();
             }
         }
         return responseObject;
@@ -413,38 +413,38 @@ public class HttpUtils {
      */
     public static <T> T requestGet(String url, List<NameValuePair> params, Map<String, String> headers,
                                    Class<T> clazz, Charset charset, String username, String password) {
-        logger.info("url:" + url);
+        logger.info ("url:" + url);
         HttpGet httpGet = null;
         CloseableHttpClient httpClient = null;
         T responseObject = null;
         String uri = url;
-        if (params != null && params.size() >= 1) {
-            String reqStr = URLEncodedUtils.format(params, charset);
-            logger.info("params:" + reqStr);
+        if (params != null && params.size () >= 1) {
+            String reqStr = URLEncodedUtils.format (params, charset);
+            logger.info ("params:" + reqStr);
             uri += "?" + reqStr;
         }
         //System.out.println("uri:" + uri);
         try {
-            httpGet = new HttpGet(uri);
-            if (headers != null && headers.size() >= 1) {
-                for (String key : headers.keySet()) {
-                    httpGet.setHeader(key, headers.get(key));
+            httpGet = new HttpGet (uri);
+            if (headers != null && headers.size () >= 1) {
+                for (String key : headers.keySet ()) {
+                    httpGet.setHeader (key, headers.get (key));
                 }
             }
-            if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
-                String auth = "Basic " + Base64.encode((username + ":" + password).getBytes());
-                httpGet.addHeader("Authorization", auth);
+            if (StringUtils.isNotBlank (username) && StringUtils.isNotBlank (password)) {
+                String auth = "Basic " + Base64.encode ((username + ":" + password).getBytes ());
+                httpGet.addHeader ("Authorization", auth);
             }
-            httpClient = getConnection();
-            HttpResponse response = httpClient.execute(httpGet);
+            httpClient = getConnection ();
+            HttpResponse response = httpClient.execute (httpGet);
             //System.out.println("response:" + response.toString());
-            String content = analysisJsonContent(response);
-            responseObject = JSON.parseObject(content, clazz);
+            String content = analysisJsonContent (response);
+            responseObject = JSONUtil.parseJSON2Obj (content, clazz);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (httpGet != null) {
-                httpGet.releaseConnection();
+                httpGet.releaseConnection ();
             }
         }
         return responseObject;
@@ -463,7 +463,7 @@ public class HttpUtils {
      */
     public static <T> T requestPost(String url, String json, Map<String, String> headers,
                                     Class<T> clazz, String username, String password) {
-        return requestPost(url, json, headers, clazz, Charset.forName("UTF-8"), username, password);
+        return requestPost (url, json, headers, clazz, Charset.forName ("UTF-8"), username, password);
     }
 
     /**
@@ -476,7 +476,7 @@ public class HttpUtils {
      * @return
      */
     public static <T> T requestPost(String url, String json, Map<String, String> headers, Class<T> clazz) {
-        return requestPost(url, json, headers, clazz, Charset.forName("UTF-8"), null, null);
+        return requestPost (url, json, headers, clazz, Charset.forName ("UTF-8"), null, null);
     }
 
     /**
@@ -491,35 +491,35 @@ public class HttpUtils {
      */
     public static <T> T requestPost(String url, String json, Map<String, String> headers,
                                     Class<T> clazz, Charset charset, String username, String password) {
-        logger.info("url:" + url);
-        logger.info("request:" + json);
+        logger.info ("url:" + url);
+        logger.info ("request:" + json);
         HttpPost httpPost = null;
         CloseableHttpClient httpClient = null;
         T responseObject = null;
         try {
-            httpPost = new HttpPost(url);
-            httpPost.addHeader(HTTP.CONTENT_TYPE, APPLICATION_JSON);
-            if (headers != null && headers.size() >= 1) {
-                for (String key : headers.keySet()) {
-                    httpPost.setHeader(key, headers.get(key));
+            httpPost = new HttpPost (url);
+            httpPost.addHeader (HTTP.CONTENT_TYPE, APPLICATION_JSON);
+            if (headers != null && headers.size () >= 1) {
+                for (String key : headers.keySet ()) {
+                    httpPost.setHeader (key, headers.get (key));
                 }
             }
-            if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
-                String auth = "Basic " + Base64.encode((username + ":" + password).getBytes());
-                httpPost.addHeader("Authorization", auth);
+            if (StringUtils.isNotBlank (username) && StringUtils.isNotBlank (password)) {
+                String auth = "Basic " + Base64.encode ((username + ":" + password).getBytes ());
+                httpPost.addHeader ("Authorization", auth);
             }
-            StringEntity stringEntity = new StringEntity(json, charset);
-            stringEntity.setContentType(APPLICATION_JSON);
-            httpPost.setEntity(stringEntity);
-            httpClient = getConnection();
-            HttpResponse response = httpClient.execute(httpPost);
-            String content = analysisJsonContent(response);
-            responseObject = JSON.parseObject(content, clazz);
+            StringEntity stringEntity = new StringEntity (json, charset);
+            stringEntity.setContentType (APPLICATION_JSON);
+            httpPost.setEntity (stringEntity);
+            httpClient = getConnection ();
+            HttpResponse response = httpClient.execute (httpPost);
+            String content = analysisJsonContent (response);
+            responseObject = JSONUtil.parseJSON2Obj (content, clazz);
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (httpPost != null) {
-                httpPost.releaseConnection();
+                httpPost.releaseConnection ();
             }
         }
         return responseObject;
@@ -532,7 +532,7 @@ public class HttpUtils {
      * @return
      */
     public static String analysisJsonContent(HttpResponse response) {
-        return analysisJsonContent(response, Charset.forName("UTF-8"));
+        return analysisJsonContent (response, Charset.forName ("UTF-8"));
     }
 
     /**
@@ -542,10 +542,11 @@ public class HttpUtils {
      * @return
      */
     public static String analysisJsonContent(HttpResponse response, Charset charset) {
-        String content = analysisContent(response, charset);
-        if (StringUtils.isNotBlank(content)) {
-            content = StringEscapeUtils.unescapeJava(content);
-        }
+        String content = analysisContent (response, charset);
+        // 反转义
+//        if (StringUtils.isNotBlank(content)) {
+//            content = StringEscapeUtils.unescapeJava(content);
+//        }
         return content;
     }
 
@@ -556,7 +557,7 @@ public class HttpUtils {
      * @return
      */
     public static String analysisContent(HttpResponse response) {
-        return analysisContent(response, Charset.forName("UTF-8"));
+        return analysisContent (response, Charset.forName ("UTF-8"));
     }
 
     /**
@@ -569,45 +570,69 @@ public class HttpUtils {
     public static String analysisContent(HttpResponse response, Charset charset) {
         if (response == null) return null;
         String content = "";
-        int statusCode = response.getStatusLine().getStatusCode();
+        int statusCode = response.getStatusLine ().getStatusCode ();
         if (statusCode == HttpStatus.SC_NOT_FOUND) {
-            throw new RuntimeException("[404]请检查URL!");
+            throw new RuntimeException ("[404]请检查URL!");
         } else if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            throw new RuntimeException("[500]GRMP内部错误!");
+            throw new RuntimeException ("[500]GRMP内部错误!");
         } else if (statusCode == HttpStatus.SC_BAD_REQUEST) {
-            throw new RuntimeException("[400]错误的请求!");
+            throw new RuntimeException ("[400]错误的请求!");
         } else {
             InputStream is = null;
             BufferedReader br = null;
-            StringBuffer sb = new StringBuffer();
-            HttpEntity entity = response.getEntity();
+            StringBuffer sb = new StringBuffer ();
+            HttpEntity entity = response.getEntity ();
             try {
-                is = entity.getContent();
-                br = new BufferedReader(new InputStreamReader(is, charset));
+                is = entity.getContent ();
+                br = new BufferedReader (new InputStreamReader (is, charset));
                 String line;
-                while ((line = br.readLine()) != null) {
-                    sb.append(line + "\n");
+                while ((line = br.readLine ()) != null) {
+                    sb.append (line + "\n");
                 }
-                content = sb.toString();
+                content = sb.toString ();
             } catch (Exception e) {
-                throw new RuntimeException("解析返回结果失败!" + e.toString());
+                throw new RuntimeException ("解析返回结果失败!" + e.toString ());
             } finally {
                 if (br != null) {
                     try {
-                        br.close();
+                        br.close ();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        e.printStackTrace ();
                     }
                 }
                 if (is != null) {
                     try {
-                        is.close();
+                        is.close ();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        e.printStackTrace ();
                     }
                 }
             }
             return content;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Map<String, String> map = new HashMap<> ();
+        map.put ("key1", "C:\\tadsda\\tadsad.txt");
+//        map.put ("key2", "adsafdfsd\\\"asdasfdsf\\\"dsafdsfdsfsdfsd");
+        map.put ("key2", "adsafdfsd\"asdasfdsf\"dsafdsfdsfsdfsd");
+        String json = JSONUtil.parseMap2JSON (map);
+
+        System.out.println ("-----------------------------------------------------");
+        System.out.println ("json: " + json);
+        Map<String, String> map1 = JSONUtil.parseJSON2Map (json, String.class);
+        for (Map.Entry<String, String> entry : map1.entrySet ()) {
+            System.out.println ("key: " + entry.getKey () + ", value: " + entry.getValue ());
+        }
+
+        System.out.println ("-----------------------------------------------------");
+        String json2 = StringEscapeUtils.unescapeJava (json);
+        System.out.println ("unescape json: " + json2);
+        Map<String, String> map2 = JSONUtil.parseJSON2Map (json2, String.class);
+        for (Map.Entry<String, String> entry : map2.entrySet ()) {
+            System.out.println ("key: " + entry.getKey () + ", unescape value: " + entry.getValue ());
         }
     }
 

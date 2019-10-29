@@ -9,20 +9,34 @@ import org.apache.commons.lang3.StringUtils;
 public class SolrDatasource extends Datasource {
 
     public SolrDatasource(Datasource datasource) {
-        super(datasource);
+        super (datasource);
     }
 
-    public String getSolrServers() {
-        String value = getProperty("solr.servers").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("solr.servers不能为空");
+    public String gainSolrServers() {
+        String value = gainProperty ("solr.servers").getValue ();
+        if (StringUtils.isBlank (value)) {
+            throw new IllegalArgumentException ("solr.servers不能为空");
+        }
         return value;
     }
 
-    public String getSolrUrl() {
-        String value = getProperty("solr.url").getValue();
-        if (StringUtils.isBlank(value))
-            throw new IllegalArgumentException("solr.url不能为空");
+    public String gainSolrZkHost() {
+        String value = gainProperty ("solr.zkHost").getValue ();
+        if (StringUtils.isBlank (value)) {
+            throw new IllegalArgumentException ("solr.zkHost不能为空");
+        }
         return value;
+    }
+
+    public String gainSolrSecurityAuthentication() {
+        return gainProperty ("solr.security.authentication").getValue ();
+    }
+
+    public String gainSolrJavaSecurityKrb5Conf() {
+        return gainProperty ("solr.java.security.krb5.conf").getValue ();
+    }
+
+    public String gainSolrJavaSecurityAuthLoginConfig() {
+        return gainProperty ("solr.java.security.auth.login.config").getValue ();
     }
 }

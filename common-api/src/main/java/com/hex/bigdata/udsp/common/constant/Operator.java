@@ -39,38 +39,27 @@ public enum Operator {
     }
 
     public static Operator getOperatorByValue(String value) {
-        Operator operator = null;
         switch (value){
             case "==":
-                operator = EQ;
-                break;
+                return EQ;
             case  ">" :
-                operator = GT;
-                break;
+                return GT;
             case "<" :
-                operator = LT;
-                break;
+                return LT;
             case ">=" :
-                operator = GE;
-                break;
+                return GE;
             case "<=" :
-                operator = LE;
-                break;
+                return LE;
             case "!=" :
-                operator = NE;
-                break;
+                return NE;
             case "like" :
-                operator = LK;
-                break;
+                return LK;
             case "in" :
-                operator = IN;
-                break;
+                return IN;
             case "right like" :
-                operator = RLIKE;
-                break;
+                return RLIKE;
             default:
-                operator = null;
+                return null;
         }
-        return operator;
     }
 }

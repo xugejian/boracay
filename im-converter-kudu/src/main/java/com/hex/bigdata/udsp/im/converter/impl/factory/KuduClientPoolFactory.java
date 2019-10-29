@@ -61,26 +61,32 @@ class KuduClientFactory extends BasePoolableObjectFactory {
     private Integer workerCount;
 
     public KuduClientFactory(KuduDatasource datasource) {
-        masterAddresses = datasource.getMasterAddresses();
-        bossCount = datasource.getBossCount();
+        masterAddresses = datasource.gainMasterAddresses();
+        bossCount = datasource.gainBossCount();
         clientBuilder = new KuduClient.KuduClientBuilder(masterAddresses);
-        if (bossCount != null)
-            clientBuilder = clientBuilder.bossCount(bossCount);
-        defaultAdminOperationTimeoutMs = datasource.getDefaultAdminOperationTimeoutMs();
-        if (defaultAdminOperationTimeoutMs != null)
-            clientBuilder = clientBuilder.defaultAdminOperationTimeoutMs(defaultAdminOperationTimeoutMs);
-        defaultOperationTimeoutMs = datasource.getDefaultOperationTimeoutMs();
-        if (defaultOperationTimeoutMs != null)
-            clientBuilder = clientBuilder.defaultOperationTimeoutMs(defaultOperationTimeoutMs);
-        defaultSocketReadTimeoutMs = datasource.getDefaultSocketReadTimeoutMs();
-        if (defaultSocketReadTimeoutMs != null)
-            clientBuilder = clientBuilder.defaultSocketReadTimeoutMs(defaultSocketReadTimeoutMs);
-        disableStatistics = datasource.getDisableStatistics();
-        if (disableStatistics)
-            clientBuilder = clientBuilder.disableStatistics();
-        workerCount = datasource.getWorkerCount();
-        if (workerCount != null)
-            clientBuilder = clientBuilder.workerCount(workerCount);
+        if (bossCount != null) {
+            clientBuilder = clientBuilder.bossCount (bossCount);
+        }
+        defaultAdminOperationTimeoutMs = datasource.gainDefaultAdminOperationTimeoutMs();
+        if (defaultAdminOperationTimeoutMs != null) {
+            clientBuilder = clientBuilder.defaultAdminOperationTimeoutMs (defaultAdminOperationTimeoutMs);
+        }
+        defaultOperationTimeoutMs = datasource.gainDefaultOperationTimeoutMs();
+        if (defaultOperationTimeoutMs != null) {
+            clientBuilder = clientBuilder.defaultOperationTimeoutMs (defaultOperationTimeoutMs);
+        }
+        defaultSocketReadTimeoutMs = datasource.gainDefaultSocketReadTimeoutMs();
+        if (defaultSocketReadTimeoutMs != null) {
+            clientBuilder = clientBuilder.defaultSocketReadTimeoutMs (defaultSocketReadTimeoutMs);
+        }
+        disableStatistics = datasource.gainDisableStatistics();
+        if (disableStatistics) {
+            clientBuilder = clientBuilder.disableStatistics ();
+        }
+        workerCount = datasource.gainWorkerCount();
+        if (workerCount != null) {
+            clientBuilder = clientBuilder.workerCount (workerCount);
+        }
     }
 
     @Override
@@ -88,12 +94,14 @@ class KuduClientFactory extends BasePoolableObjectFactory {
         return clientBuilder.build();
     }
 
+    @Override
     public void destroyObject(Object obj) throws Exception {
         if (obj instanceof KuduClient) {
             ((KuduClient) obj).shutdown();
         }
     }
 
+    @Override
     public boolean validateObject(Object obj) {
         if (obj == null) {
             return false;

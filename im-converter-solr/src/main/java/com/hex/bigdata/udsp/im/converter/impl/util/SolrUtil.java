@@ -7,12 +7,20 @@ import com.hex.bigdata.udsp.im.converter.impl.model.SolrMetadata;
 import com.hex.bigdata.udsp.im.converter.model.MetadataCol;
 import com.hex.bigdata.udsp.im.converter.model.Page;
 import com.hex.bigdata.udsp.im.converter.model.WhereProperty;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.CloudSolrServer;
+import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
 import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
@@ -28,8 +36,6 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,19 +46,39 @@ import java.util.concurrent.CountDownLatch;
  * Created by hj on 2017/9/11.
  */
 public class SolrUtil {
-    private static Logger logger = LogManager.getLogger(SolrUtil.class);
+    private static Logger logger = LogManager.getLogger (SolrUtil.class);
     private static final String SOLR_CONFIG_ZOOKEEPER_DIR = "/configs";
     private static String solrConfigPath;
     private static String solrConfigSchemaPath;
 
     static {
         try {
-            solrConfigPath = ResourceUtils.getFile("classpath:goframe/im/solr/template/conf")
-                    .getAbsolutePath();
+            solrConfigPath = ResourceUtils.getFile ("classpath:goframe/im/solr/template/conf")
+                    .getAbsolutePath ();
             solrConfigSchemaPath = solrConfigPath + "/schema.xml";
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
+    }
+
+    /**
+     * 测试数据源
+     *
+     * @param datasource
+     * @return
+     */
+    public static boolean test(SolrDatasource datasource) {
+        String[] solrServerStrings = getSolrServerStrings (datasource.gainSolrServers ());
+        for (String solrServer : solrServerStrings) {
+            String url = "http://" + solrServer + "/solr/";
+            try {
+                sendGet (url, "");
+            } catch (Exception e) {
+                e.printStackTrace ();
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -66,23 +92,30 @@ public class SolrUtil {
     public static boolean checkCollection(String solrServers, String collectionName) throws Exception {
         // 检查Collection
         String response = "";
-        for (String solrServer : getSolrServerStrings(solrServers)) {
-            String url = getSolrAdminCollectionsUrl(solrServer);
+        String[] solrServerStrings = getSolrServerStrings (solrServers);
+        int count = 0;
+        for (String solrServer : solrServerStrings) {
+            count++;
+            String url = getSolrAdminCollectionsUrl (solrServer);
             String param = "action=LIST";
             try {
-                response = sendGet(url, param);
+                response = sendGet (url, param);
             } catch (Exception e) {
+                e.printStackTrace ();
+                if (count == solrServerStrings.length) {
+                    throw new RuntimeException (e);
+                }
                 continue;
             }
             break;
         }
-        Document document = DocumentHelper.parseText(response);
-        Element root = document.getRootElement();
-        Element arr = root.element("arr");
-        List<Element> collections = arr.elements("str");
+        Document document = DocumentHelper.parseText (response);
+        Element root = document.getRootElement ();
+        Element arr = root.element ("arr");
+        List<Element> collections = arr.elements ("str");
         boolean exists = false;
         for (Element e : collections) {
-            if (e.getData().equals(collectionName)) {
+            if (e.getData ().equals (collectionName)) {
                 exists = true;
                 break;
             }
@@ -98,23 +131,23 @@ public class SolrUtil {
      * @throws Exception
      */
     public static boolean dropCollection(SolrMetadata metadata, boolean ifExists) throws Exception {
-        String collectionName = metadata.getTbName();
-        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
-        String solrUrl = solrDatasource.getSolrUrl();
+        String collectionName = metadata.getTbName ();
+        SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
+        String solrServers = solrDatasource.gainSolrServers ();
+        String solrZkHost = solrDatasource.gainSolrZkHost ();
         // 判断是否已经存在该表
-        if (checkCollection(solrServers, collectionName)) {
-            logger.warn("Solr表" + collectionName + "存在，进行删除！");
+        if (checkCollection (solrServers, collectionName)) {
+            logger.warn ("Solr表" + collectionName + "存在，进行删除！");
             // 删除Collection
-            if (!deleteCollection(metadata)) {
-                throw new RuntimeException("删除SOLR表失败，请检查SOLR配置！");
+            if (!deleteCollection (metadata)) {
+                throw new RuntimeException ("删除SOLR表失败，请检查SOLR配置！");
             }
             // 删除Config
-            deleteZnode(solrUrl, collectionName);
+            deleteZnode (solrZkHost, collectionName);
         } else {
-            logger.debug("Solr表" + collectionName + "不存在，无需删除！");
+            logger.debug ("Solr表" + collectionName + "不存在，无需删除！");
             if (!ifExists) {
-                throw new Exception("Solr表" + collectionName + "不存在！");
+                throw new Exception ("Solr表" + collectionName + "不存在！");
             }
 
         }
@@ -128,26 +161,29 @@ public class SolrUtil {
      * @return
      */
     public static boolean deleteCollection(SolrMetadata metadata) {
-        String collectionName = metadata.getTbName();
-        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
-        for (String solrServer : getSolrServerStrings(solrServers)) {
-            String url = getSolrAdminCollectionsUrl(solrServer);
+        String collectionName = metadata.getTbName ();
+        SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
+        String solrServers = solrDatasource.gainSolrServers ();
+        String[] solrServerStrings = getSolrServerStrings (solrServers);
+        int count = 0;
+        for (String solrServer : solrServerStrings) {
+            count++;
+            String url = getSolrAdminCollectionsUrl (solrServer);
             String param = "action=DELETE&name=" + collectionName;
             try {
-                String response = sendGet(url, param);
-                Document document = DocumentHelper.parseText(response);
-                Element root = document.getRootElement();
-                List<Element> lstElts = root.elements("lst");
+                String response = sendGet (url, param);
+                Document document = DocumentHelper.parseText (response);
+                Element root = document.getRootElement ();
+                List<Element> lstElts = root.elements ("lst");
                 Attribute att = null;
                 for (Element lstElt : lstElts) {
-                    att = lstElt.attribute("name");
-                    if ("responseHeader".equals(att.getValue())) {
-                        List<Element> intElts = lstElt.elements("int");
+                    att = lstElt.attribute ("name");
+                    if ("responseHeader".equals (att.getValue ())) {
+                        List<Element> intElts = lstElt.elements ("int");
                         for (Element intElt : intElts) {
-                            att = intElt.attribute("name");
-                            if ("status".equals(att.getValue())) {
-                                if ("0".equals(intElt.getText())) {
+                            att = intElt.attribute ("name");
+                            if ("status".equals (att.getValue ())) {
+                                if ("0".equals (intElt.getText ())) {
                                     return true;
                                 }
                             }
@@ -155,8 +191,13 @@ public class SolrUtil {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace ();
+                if (count == solrServerStrings.length) {
+                    throw new RuntimeException (e);
+                }
                 continue;
             }
+            break;
         }
         return false;
     }
@@ -170,30 +211,30 @@ public class SolrUtil {
      */
     public static boolean createCollection(SolrMetadata metadata, boolean ifNotExists) throws Exception {
         // 检查参数
-        checkSolrProperty(metadata);
-        String collectionName = metadata.getTbName();
-        List<MetadataCol> metadataCols = metadata.getMetadataCols();
-        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
-        String solrUrl = solrDatasource.getSolrUrl();
+        checkSolrProperty (metadata);
+        String collectionName = metadata.getTbName ();
+        List<MetadataCol> metadataCols = metadata.getMetadataCols ();
+        SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
+        String solrServers = solrDatasource.gainSolrServers ();
+        String solrZkHost = solrDatasource.gainSolrZkHost ();
         // 判断是否已经存在该表
-        if (checkCollection(solrServers, collectionName)) {
-            logger.debug("Solr表" + collectionName + "存在，无需创建！");
+        if (checkCollection (solrServers, collectionName)) {
+            logger.debug ("Solr表" + collectionName + "存在，无需创建！");
             if (!ifNotExists) {
-                throw new Exception("Solr表" + collectionName + "已经存在！");
+                throw new Exception ("Solr表" + collectionName + "已经存在！");
             }
         } else {
-            logger.debug("Solr表" + collectionName + "不存在，进行创建！");
+            logger.debug ("Solr表" + collectionName + "不存在，进行创建！");
             // 添加Config
-            uploadSolrConfig(solrUrl, collectionName, metadataCols);
+            uploadSolrConfig (solrZkHost, collectionName, metadataCols);
             // 创建Collection
             try {
-                if (!createCollection(metadata)) {
-                    throw new RuntimeException("创建SOLR表失败，请检查SOLR配置！");
+                if (!createCollection (metadata)) {
+                    throw new RuntimeException ("创建SOLR表失败，请检查SOLR配置！");
                 }
             } catch (Exception e) {
-                deleteZnode(solrUrl, collectionName); // 删除Config
-                throw new RuntimeException(e);
+                deleteZnode (solrZkHost, collectionName); // 删除Config
+                throw new RuntimeException (e);
             }
         }
         return true;
@@ -207,35 +248,35 @@ public class SolrUtil {
      * @throws Exception
      */
     public static boolean createCollection(SolrMetadata metadata) throws Exception {
-        String collectionName = metadata.getTbName();
-        int replicas = metadata.getReplicas();
-        int shards = metadata.getShards();
-        int maxShardsPerNode = metadata.getMaxShardsPerNode();
-        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
+        String collectionName = metadata.getTbName ();
+        int replicas = metadata.gainReplicas ();
+        int shards = metadata.gainShards ();
+        int maxShardsPerNode = metadata.gainMaxShardsPerNode ();
+        SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
+        String solrServers = solrDatasource.gainSolrServers ();
         String response = "";
-        String[] solrServerStrings = getSolrServerStrings(solrServers);
+        String[] solrServerStrings = getSolrServerStrings (solrServers);
         int count = 0;
         for (String solrServer : solrServerStrings) {
             count++;
-            String url = getSolrAdminCollectionsUrl(solrServer);
+            String url = getSolrAdminCollectionsUrl (solrServer);
             String param = "action=CREATE" + "&name=" + collectionName + "&replicationFactor=" + replicas +
                     "&numShards=" + shards + "&maxShardsPerNode=" + maxShardsPerNode +
                     "&collection.configName=" + collectionName;
             try {
-                response = sendGet(url, param);
-                Document document = DocumentHelper.parseText(response);
-                Element root = document.getRootElement();
-                List<Element> lstElts = root.elements("lst");
+                response = sendGet (url, param);
+                Document document = DocumentHelper.parseText (response);
+                Element root = document.getRootElement ();
+                List<Element> lstElts = root.elements ("lst");
                 Attribute att = null;
                 for (Element lstElt : lstElts) {
-                    att = lstElt.attribute("name");
-                    if ("responseHeader".equals(att.getValue())) {
-                        List<Element> intElts = lstElt.elements("int");
+                    att = lstElt.attribute ("name");
+                    if ("responseHeader".equals (att.getValue ())) {
+                        List<Element> intElts = lstElt.elements ("int");
                         for (Element intElt : intElts) {
-                            att = intElt.attribute("name");
-                            if ("status".equals(att.getValue())) {
-                                if ("0".equals(intElt.getText())) {
+                            att = intElt.attribute ("name");
+                            if ("status".equals (att.getValue ())) {
+                                if ("0".equals (intElt.getText ())) {
                                     return true;
                                 }
                             }
@@ -243,12 +284,13 @@ public class SolrUtil {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace ();
                 if (count == solrServerStrings.length) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException (e);
                 }
                 continue;
             }
+            break;
         }
         return false;
     }
@@ -262,27 +304,27 @@ public class SolrUtil {
      * @return
      */
     public static void updateCollection(SolrMetadata metadata, List<MetadataCol> addMetadataCols) throws Exception {
-        String collectionName = metadata.getTbName();
-        List<MetadataCol> metadataCols = metadata.getMetadataCols();
-        metadataCols.addAll(addMetadataCols); // 添加新的字段
-        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
-        String solrUrl = solrDatasource.getSolrUrl();
-        if (checkCollection(solrServers, collectionName)) {
-            logger.debug("Solr表" + collectionName + "存在，进行更新！");
+        String collectionName = metadata.getTbName ();
+        List<MetadataCol> metadataCols = metadata.getMetadataCols ();
+        metadataCols.addAll (addMetadataCols); // 添加新的字段
+        SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
+        String solrServers = solrDatasource.gainSolrServers ();
+        String solrZkHost = solrDatasource.gainSolrZkHost ();
+        if (checkCollection (solrServers, collectionName)) {
+            logger.debug ("Solr表" + collectionName + "存在，进行更新！");
             // 更新Config
-            updateSolrConfig(solrUrl, collectionName, metadataCols);
+            updateSolrConfig (solrZkHost, collectionName, metadataCols);
             // 重载Collection
-            if (!reloadCollection(metadata)) {
+            if (!reloadCollection (metadata)) {
                 /*
                 还原回原来的配置并且重载
                  */
-                updateSolrConfig(solrUrl, collectionName, metadata.getMetadataCols()); // 更新配置
-                reloadCollection(metadata); // 重载Collection
-                throw new RuntimeException("重载SOLR表失败，请检查SOLR配置！");
+                updateSolrConfig (solrZkHost, collectionName, metadata.getMetadataCols ()); // 更新配置
+                reloadCollection (metadata); // 重载Collection
+                throw new RuntimeException ("重载SOLR表失败，请检查SOLR配置！");
             }
         } else {
-            throw new Exception("Solr表" + collectionName + "不存在，无法更新！");
+            throw new Exception ("Solr表" + collectionName + "不存在，无法更新！");
         }
     }
 
@@ -293,27 +335,30 @@ public class SolrUtil {
      * @return
      */
     public static boolean reloadCollection(SolrMetadata metadata) {
-        String collectionName = metadata.getTbName();
-        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource());
-        String solrServers = solrDatasource.getSolrServers();
+        String collectionName = metadata.getTbName ();
+        SolrDatasource solrDatasource = new SolrDatasource (metadata.getDatasource ());
+        String solrServers = solrDatasource.gainSolrServers ();
         String response = "";
-        for (String solrServer : getSolrServerStrings(solrServers)) {
-            String url = getSolrAdminCollectionsUrl(solrServer);
+        String[] solrServerStrings = getSolrServerStrings (solrServers);
+        int count = 0;
+        for (String solrServer : solrServerStrings) {
+            count++;
+            String url = getSolrAdminCollectionsUrl (solrServer);
             String param = "action=RELOAD&name=" + collectionName;
             try {
-                response = sendGet(url, param);
-                Document document = DocumentHelper.parseText(response);
-                Element root = document.getRootElement();
-                List<Element> lstElts = root.elements("lst");
+                response = sendGet (url, param);
+                Document document = DocumentHelper.parseText (response);
+                Element root = document.getRootElement ();
+                List<Element> lstElts = root.elements ("lst");
                 Attribute att = null;
                 for (Element lstElt : lstElts) {
-                    att = lstElt.attribute("name");
-                    if ("responseHeader".equals(att.getValue())) {
-                        List<Element> intElts = lstElt.elements("int");
+                    att = lstElt.attribute ("name");
+                    if ("responseHeader".equals (att.getValue ())) {
+                        List<Element> intElts = lstElt.elements ("int");
                         for (Element intElt : intElts) {
-                            att = intElt.attribute("name");
-                            if ("status".equals(att.getValue())) {
-                                if ("0".equals(intElt.getText())) {
+                            att = intElt.attribute ("name");
+                            if ("status".equals (att.getValue ())) {
+                                if ("0".equals (intElt.getText ())) {
                                     return true;
                                 }
                             }
@@ -321,8 +366,13 @@ public class SolrUtil {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace ();
+                if (count == solrServerStrings.length) {
+                    throw new RuntimeException (e);
+                }
                 continue;
             }
+            break;
         }
         return false;
     }
@@ -332,61 +382,61 @@ public class SolrUtil {
     }
 
     public static String[] getSolrServerStrings(String solrServers) {
-        return solrServers.split(",");
+        return solrServers.split (",");
     }
 
     /**
      * 上传配置文件
      *
-     * @param solrUrl
+     * @param solrZkHost
      * @param collectionName
      * @param metadataCols
      * @throws Exception
      */
-    public static void uploadSolrConfig(String solrUrl, String collectionName, List<MetadataCol> metadataCols) throws Exception {
-        upload(getZkClient(solrUrl), solrConfigPath, SOLR_CONFIG_ZOOKEEPER_DIR, collectionName, metadataCols);
+    public static void uploadSolrConfig(String solrZkHost, String collectionName, List<MetadataCol> metadataCols) throws Exception {
+        upload (getZkClient (solrZkHost), solrConfigPath, SOLR_CONFIG_ZOOKEEPER_DIR, collectionName, metadataCols);
     }
 
     /**
      * 更新配置文件
      *
-     * @param solrUrl
+     * @param solrZkHost
      * @param collectionName
      * @param metadataCols
      */
-    public static void updateSolrConfig(String solrUrl, String collectionName, List<MetadataCol> metadataCols) throws Exception {
-        deleteZnode(solrUrl, collectionName);
-        uploadSolrConfig(solrUrl, collectionName, metadataCols);
+    public static void updateSolrConfig(String solrZkHost, String collectionName, List<MetadataCol> metadataCols) throws Exception {
+        deleteZnode (solrZkHost, collectionName);
+        uploadSolrConfig (solrZkHost, collectionName, metadataCols);
     }
 
     /**
      * 获取zookeeper链接
      *
-     * @param zkConnectString
+     * @param solrZkHost
      * @return
      * @throws IOException
      */
-    public static ZooKeeper getZkClient(String zkConnectString) throws IOException {
+    public static ZooKeeper getZkClient(String solrZkHost) throws IOException {
         ZooKeeper zkClient = null;
         try {
-            CountDownLatch connectedLatch = new CountDownLatch(1);
-            Watcher watcher = new ConnectedWatcher(connectedLatch);
-            zkClient = new ZooKeeper(zkConnectString, 20000, watcher);
-            waitUntilConnected(zkClient, connectedLatch);
+            CountDownLatch connectedLatch = new CountDownLatch (1);
+            Watcher watcher = new ConnectedWatcher (connectedLatch);
+            zkClient = new ZooKeeper (solrZkHost, 20000, watcher);
+            waitUntilConnected (zkClient, connectedLatch);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new IOException(e);
+            e.printStackTrace ();
+            throw new IOException (e);
         }
         return zkClient;
     }
 
     public static void waitUntilConnected(ZooKeeper zooKeeper, CountDownLatch connectedLatch) {
-        if (ZooKeeper.States.CONNECTING == zooKeeper.getState()) {
+        if (ZooKeeper.States.CONNECTING == zooKeeper.getState ()) {
             try {
-                connectedLatch.await();
+                connectedLatch.await ();
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                throw new IllegalStateException(e);
+                e.printStackTrace ();
+                throw new IllegalStateException (e);
             }
         }
     }
@@ -400,8 +450,8 @@ public class SolrUtil {
 
         @Override
         public void process(WatchedEvent event) {
-            if (event.getState() == Watcher.Event.KeeperState.SyncConnected) {
-                connectedLatch.countDown();
+            if (event.getState () == Watcher.Event.KeeperState.SyncConnected) {
+                connectedLatch.countDown ();
             }
         }
     }
@@ -417,28 +467,28 @@ public class SolrUtil {
      * @throws Exception
      */
     public static void upload(ZooKeeper zkClient, String filePath, String solrConfigPath, String configName, List<MetadataCol> metadataCols) throws Exception {
-        File file = new File(filePath);
-        if (file.isFile()) {
-            byte[] bytes = getSchemaXMLBytes(configName, metadataCols, file);
-            zkClient.create(solrConfigPath + "/" + file.getName(), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        File file = new File (filePath);
+        if (file.isFile ()) {
+            byte[] bytes = getSchemaXMLBytes (configName, metadataCols, file);
+            zkClient.create (solrConfigPath + "/" + file.getName (), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         } else {
-            solrConfigPath += "/" + (configName != null ? configName : file.getName());
+            solrConfigPath += "/" + (configName != null ? configName : file.getName ());
             // 配置文件目录已存在
-            if (zkClient.exists(solrConfigPath, false) != null) {
+            if (zkClient.exists (solrConfigPath, false) != null) {
 //                // 删除原配置目录及文件
-                delPath(zkClient, solrConfigPath);
-                zkClient.delete(solrConfigPath, -1);
+                delPath (zkClient, solrConfigPath);
+                zkClient.delete (solrConfigPath, -1);
 //                throw new Exception("该名称的配置文件已存在！");
             }
-            byte[] bytes = file.getName().getBytes();
-            zkClient.create(solrConfigPath, bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            File[] files = file.listFiles();
+            byte[] bytes = file.getName ().getBytes ();
+            zkClient.create (solrConfigPath, bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            File[] files = file.listFiles ();
             for (File e : files) {
-                if (e.isDirectory()) {
-                    upload(zkClient, e.getPath(), solrConfigPath, null, metadataCols);
+                if (e.isDirectory ()) {
+                    upload (zkClient, e.getPath (), solrConfigPath, null, metadataCols);
                 } else {
-                    bytes = getSchemaXMLBytes(configName, metadataCols, e);
-                    zkClient.create(solrConfigPath + "/" + e.getName(), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                    bytes = getSchemaXMLBytes (configName, metadataCols, e);
+                    zkClient.create (solrConfigPath + "/" + e.getName (), bytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                     continue;
                 }
             }
@@ -446,7 +496,7 @@ public class SolrUtil {
     }
 
     private static byte[] getSchemaXMLBytes(String configName, List<MetadataCol> metadataCols, File file) {
-        return "schema.xml".equals(file.getName()) ? setSchemaField(configName, metadataCols) : readFileByBytes(file.getPath());
+        return "schema.xml".equals (file.getName ()) ? setSchemaField (configName, metadataCols) : readFileByBytes (file.getPath ());
     }
 
     /**
@@ -456,34 +506,34 @@ public class SolrUtil {
      * @return
      */
     public static byte[] setSchemaField(String collectionName, List<MetadataCol> metadataCols) {
-        File file = new File(solrConfigSchemaPath);
-        Document document = File2Doc(file);
-        Element root = document.getRootElement();
-        root.addAttribute("name", collectionName);
-        Element fields = root.element("fields");
+        File file = new File (solrConfigSchemaPath);
+        Document document = File2Doc (file);
+        Element root = document.getRootElement ();
+        root.addAttribute ("name", collectionName);
+        Element fields = root.element ("fields");
         for (MetadataCol metadataCol : metadataCols) {
-            if (metadataCol.isPrimary()) { // 主键
-                Element field = DocumentHelper.createElement("field");
-                field.addAttribute("name", metadataCol.getName());
-                field.addAttribute("type", getSolrType(metadataCol.getType()));
-                field.addAttribute("indexed", "true"); // 主键必须indexed=true
-                field.addAttribute("stored", "true"); // 主键必须stored=true
-                field.addAttribute("required", "true"); // 主键必须required=true
-                field.addAttribute("multiValued", "false"); // 主键必须multiValued=false
-                fields.add(field);
-                Element uniqueKey = DocumentHelper.createElement("uniqueKey");
-                uniqueKey.setText(metadataCol.getName());
-                root.add(uniqueKey);
+            if (metadataCol.isPrimary ()) { // 主键
+                Element field = DocumentHelper.createElement ("field");
+                field.addAttribute ("name", metadataCol.getName ());
+                field.addAttribute ("type", getSolrType (metadataCol.getType ()));
+                field.addAttribute ("indexed", "true"); // 主键必须indexed=true
+                field.addAttribute ("stored", "true"); // 主键必须stored=true
+                field.addAttribute ("required", "true"); // 主键必须required=true
+                field.addAttribute ("multiValued", "false"); // 主键必须multiValued=false
+                fields.add (field);
+                Element uniqueKey = DocumentHelper.createElement ("uniqueKey");
+                uniqueKey.setText (metadataCol.getName ());
+                root.add (uniqueKey);
             } else { // 非主键
-                Element field = DocumentHelper.createElement("field");
-                field.addAttribute("name", metadataCol.getName());
-                field.addAttribute("type", getSolrType(metadataCol.getType()));
-                field.addAttribute("indexed", metadataCol.isIndexed() ? "true" : "false");
-                field.addAttribute("stored", metadataCol.isStored() ? "true" : "false");
-                fields.add(field);
+                Element field = DocumentHelper.createElement ("field");
+                field.addAttribute ("name", metadataCol.getName ());
+                field.addAttribute ("type", getSolrType (metadataCol.getType ()));
+                field.addAttribute ("indexed", metadataCol.isIndexed () ? "true" : "false");
+                field.addAttribute ("stored", metadataCol.isStored () ? "true" : "false");
+                fields.add (field);
             }
         }
-        return root.asXML().getBytes();
+        return root.asXML ().getBytes ();
     }
 
     /**
@@ -517,31 +567,22 @@ public class SolrUtil {
      * @return
      */
     public static DataType getColType(String type) {
-        type = type.toUpperCase();
-        DataType dataType = null;
-        switch (type) {
+        switch (type.toUpperCase ()) {
             case "STRING":
-                dataType = DataType.STRING;
-                break;
+                return DataType.STRING;
             case "INT":
-                dataType = DataType.INT;
-                break;
+                return DataType.INT;
             case "FLOAT":
-                dataType = DataType.FLOAT;
-                break;
+                return DataType.FLOAT;
             case "DOUBLE":
-                dataType = DataType.DOUBLE;
-                break;
+                return DataType.DOUBLE;
             case "DATE":
-                dataType = DataType.TIMESTAMP;
-                break;
+                return DataType.TIMESTAMP;
             case "BOOLEAN":
-                dataType = DataType.BOOLEAN;
-                break;
+                return DataType.BOOLEAN;
             default:
-                dataType = DataType.STRING;
+                return DataType.STRING;
         }
-        return dataType;
     }
 
     /**
@@ -554,8 +595,8 @@ public class SolrUtil {
     public static Document File2Doc(File file) {
         Document doc = null;
         try {
-            SAXReader reader = new SAXReader();
-            doc = reader.read(file);
+            SAXReader reader = new SAXReader ();
+            doc = reader.read (file);
             return doc;
         } catch (Exception e) {
             return null;
@@ -564,29 +605,91 @@ public class SolrUtil {
 
     public static byte[] readFileByBytes(String fileName) {
         InputStream in = null;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream ();
         try {
-            in = new FileInputStream(fileName);
+            in = new FileInputStream (fileName);
             byte[] buf = new byte[1024];
             int length = 0;
-            while ((length = in.read(buf)) != -1) {
-                out.write(buf, 0, length);
+            while ((length = in.read (buf)) != -1) {
+                out.write (buf, 0, length);
             }
         } catch (Exception e1) {
-            e1.printStackTrace();
+            e1.printStackTrace ();
         } finally {
             if (in != null) {
                 try {
-                    in.close();
+                    in.close ();
                 } catch (IOException e1) {
                 }
             }
         }
-        return out.toByteArray();
+        return out.toByteArray ();
     }
 
     /**
      * 向指定URL发送GET方法的请求
+     * （不支持Kerberos，但支持Kerberos+LDAP）
+     *
+     * @param url   发送请求的URL
+     * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+     * @return URL 所代表远程资源的响应结果
+     */
+//    public static String sendGet(String url, String param) {
+//        String result = "";
+//        BufferedReader in = null;
+//        try {
+//            if (StringUtils.isNotEmpty (param)) {
+//                url += "?" + param;
+//            }
+//            logger.info ("url: " + url);
+//            URL realUrl = new URL (url);
+//            // 打开和URL之间的连接
+//            URLConnection connection = realUrl.openConnection ();
+//            // 设置通用的请求属性
+//            connection.setRequestProperty ("accept", "*/*");
+//            connection.setRequestProperty ("connection", "Keep-Alive");
+//            connection.setRequestProperty ("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+//
+////            String encoding = new String(Base64.encode (new String(":").getBytes ()));
+////            connection.setRequestProperty ("Authorization", AuthSchemes.SPNEGO + " " + encoding);
+//
+////            String encoding = new String(Base64.encode (new String("udsp:123456").getBytes ()));
+////            connection.setRequestProperty ("Authorization", AuthSchemes.BASIC + " " + encoding);
+//
+//            // 建立实际的连接
+//            connection.connect ();
+////            // 获取所有响应头字段
+////            Map<String, List<String>> map = connection.getHeaderFields ();
+////            // 遍历所有的响应头字段
+////            for (String key : map.keySet ()) {
+////                logger.debug (key + "--->" + map.get (key));
+////            }
+//            // 定义 BufferedReader输入流来读取URL的响应
+//            in = new BufferedReader (new InputStreamReader (connection.getInputStream ()));
+//            String line;
+//            while ((line = in.readLine ()) != null) {
+//                result += line;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace ();
+//            throw new RuntimeException (e);
+//        }
+//        // 使用finally块来关闭输入流
+//        finally {
+//            try {
+//                if (in != null) {
+//                    in.close ();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace ();
+//            }
+//        }
+//        return result;
+//    }
+
+    /**
+     * 向指定URL发送GET方法的请求
+     * （支持Kerberos，但不支持Kerberos+LDAP）
      *
      * @param url   发送请求的URL
      * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
@@ -596,47 +699,39 @@ public class SolrUtil {
         String result = "";
         BufferedReader in = null;
         try {
-            String urlNameString = url;
-            if (StringUtils.isNotEmpty(param)) {
-                urlNameString += "?" + param;
+            if (StringUtils.isNotEmpty (param)) {
+                url += "?" + param;
             }
-            logger.info("solrUrlApi: " + urlNameString);
-            URL realUrl = new URL(urlNameString);
-            // 打开和URL之间的连接
-            URLConnection connection = realUrl.openConnection();
-            // 设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent",
-                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-            // 建立实际的连接
-            connection.connect();
-            // 获取所有响应头字段
-            Map<String, List<String>> map = connection.getHeaderFields();
-            // 遍历所有的响应头字段
-            for (String key : map.keySet()) {
-                logger.debug(key + "--->" + map.get(key));
-            }
-            // 定义 BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result += line;
+            logger.info ("url: " + url);
+            HttpUriRequest request = new HttpGet (url);
+            DefaultHttpClient client = new DefaultHttpClient ();
+
+            // ----------------------支持Kerberos需要如下设置---------------------------
+            Krb5HttpClientConfigurer.setSPNegoAuth (client);
+            // --------------------------------------------------------------------------
+
+            HttpResponse response = client.execute (request);
+            if (HttpStatus.SC_OK == response.getStatusLine ().getStatusCode ()) {
+                HttpEntity entity = response.getEntity ();
+                // 定义 BufferedReader输入流来读取URL的响应
+                in = new BufferedReader (new InputStreamReader (entity.getContent ()));
+                String line;
+                while ((line = in.readLine ()) != null) {
+                    result += line;
+                }
+            } else {
+                throw new RuntimeException (response.getStatusLine ().getStatusCode () + "发送GET请求出现异常");
             }
         } catch (Exception e) {
-            logger.error("发送GET请求出现异常！" + e);
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-        // 使用finally块来关闭输入流
-        finally {
+            e.printStackTrace ();
+            throw new RuntimeException (e);
+        } finally {
             try {
                 if (in != null) {
-                    in.close();
+                    in.close ();
                 }
-            } catch (Exception e2) {
-                e2.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace ();
             }
         }
         return result;
@@ -645,15 +740,15 @@ public class SolrUtil {
     /**
      * 删除solr配置
      *
-     * @param solrUrl
+     * @param solrZkHost
      * @param collectionName
      * @throws Exception
      */
-    public static void deleteZnode(String solrUrl, String collectionName) throws Exception {
-        ZooKeeper zkClient = getZkClient(solrUrl);
+    public static void deleteZnode(String solrZkHost, String collectionName) throws Exception {
+        ZooKeeper zkClient = getZkClient (solrZkHost);
         String path = SOLR_CONFIG_ZOOKEEPER_DIR + "/" + collectionName;
-        delPath(zkClient, path);
-        zkClient.delete(path, -1);
+        delPath (zkClient, path);
+        zkClient.delete (path, -1);
     }
 
     /**
@@ -664,12 +759,12 @@ public class SolrUtil {
      * @throws Exception
      */
     public static void delPath(ZooKeeper zk, String path) throws Exception {
-        List<String> files = zk.getChildren(path, false);
+        List<String> files = zk.getChildren (path, false);
         for (String file : files) {
-            delPath(zk, path + "/" + file);
+            delPath (zk, path + "/" + file);
         }
         for (String file : files) {
-            zk.delete(path + "/" + file, -1);
+            zk.delete (path + "/" + file, -1);
         }
     }
 
@@ -681,24 +776,16 @@ public class SolrUtil {
      */
     public static void checkSolrProperty(SolrMetadata metadata) throws Exception {
         //检查主键是否合法
-        List<MetadataCol> cols = metadata.getMetadataCols();
+        List<MetadataCol> cols = metadata.getMetadataCols ();
         int count = 0;
-        for (MetadataCol col : cols)
-            if (col.isPrimary()) count++;
-        if (count != 1) {
-            throw new Exception("必须要有且仅有一个主键字段！");
+        for (MetadataCol col : cols) {
+            if (col.isPrimary ()) {
+                count++;
+            }
         }
-
-//        //检查分片是否合法（使用代理地址时会有问题）
-//        int shards = metadata.getShards();
-//        int replicas = metadata.getReplicas();
-//        int maxShardsPerNode = metadata.getMaxShardsPerNode();
-//        SolrDatasource solrDatasource = new SolrDatasource(metadata.getDatasource().getPropertyMap());
-//        int nodesNum = solrDatasource.getSolrServers().split(",").length;
-//        if (shards * replicas >= maxShardsPerNode * nodesNum) {
-//            throw new Exception("【配置参数】中的参数必须需满足”分片数*副本数<=节点数*单节点最大分片数“，请修改后再提交！");
-//        }
-
+        if (count != 1) {
+            throw new Exception ("必须要有且仅有一个主键字段！");
+        }
     }
 
     /**
@@ -709,20 +796,49 @@ public class SolrUtil {
      * @return
      */
     public static SolrServer getSolrServer(SolrDatasource datasource, String collectionName) {
-        if (StringUtils.isBlank(collectionName)) {
-            throw new IllegalArgumentException("collection name不能为空");
+        return getLBHttpSolrServer (datasource.gainSolrServers (), collectionName);
+//        return getCloudSolrServer (datasource.gainSolrZkHost (), collectionName);
+    }
+
+    /**
+     * 获取LBHttpSolrServer
+     *
+     * @param solrServices
+     * @param collectionName
+     * @return
+     */
+    public static LBHttpSolrServer getLBHttpSolrServer(String solrServices, String collectionName) {
+        if (StringUtils.isBlank (collectionName)) {
+            throw new IllegalArgumentException ("collection name不能为空");
         }
-        String[] tempServers = datasource.getSolrServers().split(",");
+        String[] tempServers = solrServices.split (",");
         String[] servers = new String[tempServers.length];
         for (int i = 0; i < tempServers.length; i++) {
             servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
         }
-        SolrServer solrServer = null;
+        LBHttpSolrServer solrServer = null;
         try {
-            solrServer = new LBHttpSolrServer(servers);
+            solrServer = new LBHttpSolrServer (servers);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
+        return solrServer;
+    }
+
+    /**
+     * 获取CloudSolrServer
+     *
+     * @param zkHost
+     * @param collectionName
+     * @return
+     */
+    public static CloudSolrServer getCloudSolrServer(String zkHost, String collectionName) {
+        if (StringUtils.isBlank (collectionName)) {
+            throw new IllegalArgumentException ("collection name不能为空");
+        }
+        CloudSolrServer solrServer = new CloudSolrServer (zkHost);
+        solrServer.setDefaultCollection (collectionName);
+        solrServer.connect ();
         return solrServer;
     }
 
@@ -735,9 +851,9 @@ public class SolrUtil {
      * @throws SolrServerException
      */
     public static void deleteAll(SolrDatasource datasource, String collectionName) throws IOException, SolrServerException {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
-        solrServer.deleteByQuery("*:*");
-        solrServer.commit();
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        solrServer.deleteByQuery ("*:*");
+        solrServer.commit ();
     }
 
     /**
@@ -748,12 +864,12 @@ public class SolrUtil {
      * @param map
      */
     public static void addDocument(SolrDatasource datasource, String collectionName, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
-        SolrInputDocument doc = new SolrInputDocument();
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            doc.addField(entry.getKey(), entry.getValue());
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrInputDocument doc = new SolrInputDocument ();
+        for (Map.Entry<String, String> entry : map.entrySet ()) {
+            doc.addField (entry.getKey (), entry.getValue ());
         }
-        addDocument(solrServer, doc);
+        addDocument (solrServer, doc);
     }
 
     /**
@@ -766,13 +882,13 @@ public class SolrUtil {
      * @param map
      */
     public static void addDocument(SolrDatasource datasource, String collectionName, String idName, String idValue, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
-        SolrInputDocument doc = new SolrInputDocument();
-        doc.addField(idName, idValue);
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            doc.addField(entry.getKey(), entry.getValue());
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrInputDocument doc = new SolrInputDocument ();
+        doc.addField (idName, idValue);
+        for (Map.Entry<String, String> entry : map.entrySet ()) {
+            doc.addField (entry.getKey (), entry.getValue ());
         }
-        addDocument(solrServer, doc);
+        addDocument (solrServer, doc);
     }
 
     /**
@@ -785,18 +901,18 @@ public class SolrUtil {
      * @param map
      */
     public static void addDocument(SolrDatasource datasource, String collectionName, String idName, List<String> idValues, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
-        List<SolrInputDocument> docs = new ArrayList<>();
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        List<SolrInputDocument> docs = new ArrayList<> ();
         SolrInputDocument doc = null;
         for (String idValue : idValues) {
-            doc = new SolrInputDocument();
-            doc.addField(idName, idValue);
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                doc.addField(entry.getKey(), entry.getValue());
+            doc = new SolrInputDocument ();
+            doc.addField (idName, idValue);
+            for (Map.Entry<String, String> entry : map.entrySet ()) {
+                doc.addField (entry.getKey (), entry.getValue ());
             }
-            docs.add(doc);
+            docs.add (doc);
         }
-        addDocument(solrServer, docs);
+        addDocument (solrServer, docs);
     }
 
     /**
@@ -807,17 +923,17 @@ public class SolrUtil {
      * @param maps
      */
     public static void addDocument(SolrDatasource datasource, String collectionName, List<Map<String, String>> maps) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
-        List<SolrInputDocument> docs = new ArrayList<>();
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        List<SolrInputDocument> docs = new ArrayList<> ();
         SolrInputDocument doc = null;
         for (Map<String, String> map : maps) {
-            doc = new SolrInputDocument();
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                doc.addField(entry.getKey(), entry.getValue());
+            doc = new SolrInputDocument ();
+            for (Map.Entry<String, String> entry : map.entrySet ()) {
+                doc.addField (entry.getKey (), entry.getValue ());
             }
-            docs.add(doc);
+            docs.add (doc);
         }
-        addDocument(solrServer, docs);
+        addDocument (solrServer, docs);
     }
 
     /**
@@ -829,17 +945,17 @@ public class SolrUtil {
      * @param <T>
      */
     public static <T> void addDocumentBean(SolrDatasource datasource, String collectionName, T bean) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
         try {
-            solrServer.addBean(bean);
-            solrServer.commit();
+            solrServer.addBean (bean);
+            solrServer.commit ();
         } catch (SolrServerException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown();
+                solrServer.shutdown ();
             }
         }
     }
@@ -853,17 +969,17 @@ public class SolrUtil {
      * @param <T>
      */
     public static <T> void addDocumentBean(SolrDatasource datasource, String collectionName, List<T> beans) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
         try {
-            solrServer.addBeans(beans);
-            solrServer.commit();
+            solrServer.addBeans (beans);
+            solrServer.commit ();
         } catch (SolrServerException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown();
+                solrServer.shutdown ();
             }
         }
     }
@@ -878,16 +994,16 @@ public class SolrUtil {
      * @param map
      */
     public static void updateDocument(SolrDatasource datasource, String collectionName, String idName, String idValue, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
-        SolrInputDocument doc = new SolrInputDocument();
-        doc.addField(idName, idValue);
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrInputDocument doc = new SolrInputDocument ();
+        doc.addField (idName, idValue);
         Map<String, String> obj = null;
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            obj = new HashMap<>();
-            obj.put("set", entry.getValue());
-            doc.addField(entry.getKey(), obj);
+        for (Map.Entry<String, String> entry : map.entrySet ()) {
+            obj = new HashMap<> ();
+            obj.put ("set", entry.getValue ());
+            doc.addField (entry.getKey (), obj);
         }
-        addDocument(solrServer, doc);
+        addDocument (solrServer, doc);
     }
 
     /**
@@ -898,14 +1014,14 @@ public class SolrUtil {
      */
     public static void addDocument(SolrServer solrServer, SolrInputDocument doc) {
         try {
-            solrServer.add(doc);
+            solrServer.add (doc);
         } catch (SolrServerException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown();
+                solrServer.shutdown ();
             }
         }
     }
@@ -920,21 +1036,21 @@ public class SolrUtil {
      * @param map
      */
     public static void updateDocument(SolrDatasource datasource, String collectionName, String idName, List<String> idValues, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
-        List<SolrInputDocument> docs = new ArrayList<>();
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        List<SolrInputDocument> docs = new ArrayList<> ();
         SolrInputDocument doc = null;
         Map<String, String> obj = null;
         for (String idValue : idValues) {
-            doc = new SolrInputDocument();
-            doc.addField(idName, idValue);
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                obj = new HashMap<>();
-                obj.put("set", entry.getValue());
-                doc.addField(entry.getKey(), obj);
+            doc = new SolrInputDocument ();
+            doc.addField (idName, idValue);
+            for (Map.Entry<String, String> entry : map.entrySet ()) {
+                obj = new HashMap<> ();
+                obj.put ("set", entry.getValue ());
+                doc.addField (entry.getKey (), obj);
             }
-            docs.add(doc);
+            docs.add (doc);
         }
-        addDocument(solrServer, docs);
+        addDocument (solrServer, docs);
     }
 
     /**
@@ -945,15 +1061,15 @@ public class SolrUtil {
      */
     public static void addDocument(SolrServer solrServer, List<SolrInputDocument> docs) {
         try {
-            solrServer.add(docs);
-            solrServer.commit();
+            solrServer.add (docs);
+            solrServer.commit ();
         } catch (SolrServerException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown();
+                solrServer.shutdown ();
             }
         }
     }
@@ -966,17 +1082,17 @@ public class SolrUtil {
      * @param ids
      */
     public static void deleteDocument(SolrDatasource datasource, String collectionName, List<String> ids) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
         try {
-            solrServer.deleteById(ids);
-            solrServer.commit();
+            solrServer.deleteById (ids);
+            solrServer.commit ();
         } catch (SolrServerException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown();
+                solrServer.shutdown ();
             }
         }
     }
@@ -989,34 +1105,35 @@ public class SolrUtil {
      * @param id
      */
     public static void deleteDocument(SolrDatasource datasource, String collectionName, String id) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
         try {
-            solrServer.deleteById(id);
-            solrServer.commit();
+            solrServer.deleteById (id);
+            solrServer.commit ();
         } catch (SolrServerException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown();
+                solrServer.shutdown ();
             }
         }
     }
 
     public static String getQuery(List<WhereProperty> whereProperties) {
-        StringBuffer queryConditons = new StringBuffer("*:*");
-        if (whereProperties != null && whereProperties.size() != 0) {
+        StringBuffer queryConditons = new StringBuffer ("*:*");
+        if (whereProperties != null && whereProperties.size () != 0) {
             for (WhereProperty property : whereProperties) {
-                String name = property.getName();
-                String value = property.getValue();
-                Operator operator = property.getOperator();
-                if (StringUtils.isBlank(name) || StringUtils.isBlank(value) || operator == null)
+                String name = property.getName ();
+                String value = property.getValue ();
+                Operator operator = property.getOperator ();
+                if (StringUtils.isBlank (name) || StringUtils.isBlank (value) || operator == null) {
                     continue;
-                queryConditons.append(" AND " + name + getCondition(value, operator));
+                }
+                queryConditons.append (" AND " + name + getCondition (value, operator));
             }
         }
-        return queryConditons.toString();
+        return queryConditons.toString ();
     }
 
     /**
@@ -1031,16 +1148,16 @@ public class SolrUtil {
      */
     public static Page searchPage(SolrDatasource datasource, String collectionName, List<WhereProperty> whereProperties, int pageIndex, int pageSize) {
         Page page = null;
-        SolrQuery query = new SolrQuery();
-        query.setQuery(getQuery(whereProperties));
-        query.setStart((pageIndex - 1) * pageSize);
-        query.setRows(pageSize);
-        QueryResponse rsp = getQueryResponse(datasource, collectionName, query);
+        SolrQuery query = new SolrQuery ();
+        query.setQuery (getQuery (whereProperties));
+        query.setStart ((pageIndex - 1) * pageSize);
+        query.setRows (pageSize);
+        QueryResponse rsp = getQueryResponse (datasource, collectionName, query);
         if (rsp != null) {
-            SolrDocumentList sdl = rsp.getResults();
-            long totalCount = sdl.getNumFound();
-            List<Map<String, String>> list = getSolrReturnList(rsp);
-            return new Page(list, pageIndex, pageSize, totalCount);
+            SolrDocumentList sdl = rsp.getResults ();
+            long totalCount = sdl.getNumFound ();
+            List<Map<String, String>> list = getSolrReturnList (rsp);
+            return new Page (list, pageIndex, pageSize, totalCount);
         }
         return page;
     }
@@ -1054,22 +1171,22 @@ public class SolrUtil {
      * @return
      */
     public static List<Map<String, String>> search(SolrDatasource datasource, String collectionName, List<WhereProperty> whereProperties) {
-        SolrQuery query = new SolrQuery();
-        query.setQuery(getQuery(whereProperties));
-        QueryResponse rsp = getQueryResponse(datasource, collectionName, query);
-        return getSolrReturnList(rsp);
+        SolrQuery query = new SolrQuery ();
+        query.setQuery (getQuery (whereProperties));
+        QueryResponse rsp = getQueryResponse (datasource, collectionName, query);
+        return getSolrReturnList (rsp);
     }
 
     public static QueryResponse getQueryResponse(SolrDatasource datasource, String collectionName, SolrQuery query) {
-        SolrServer solrServer = getSolrServer(datasource, collectionName);
+        SolrServer solrServer = getSolrServer (datasource, collectionName);
         if (solrServer == null) {
             return null;
         }
         QueryResponse res = null;
         try {
-            res = solrServer.query(query);
+            res = solrServer.query (query);
         } catch (SolrServerException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
             res = null;
         }
         return res;
@@ -1077,33 +1194,33 @@ public class SolrUtil {
 
     public static List<Map<String, String>> getSolrReturnList(QueryResponse rsp) {
         if (rsp == null) return null;
-        List<Map<String, String>> list = new ArrayList<>();
+        List<Map<String, String>> list = new ArrayList<> ();
         Map<String, String> map = null;
-        SolrDocumentList docs = rsp.getResults();
-        for (int i = 0; i < docs.size(); i++) {
-            SolrDocument doc = docs.get(i);
-            map = new HashMap<>();
-            for (Map.Entry<String, Object> entry : doc.entrySet()) {
-                map.put(entry.getKey(), objectToString(entry.getValue()));
+        SolrDocumentList docs = rsp.getResults ();
+        for (int i = 0; i < docs.size (); i++) {
+            SolrDocument doc = docs.get (i);
+            map = new HashMap<> ();
+            for (Map.Entry<String, Object> entry : doc.entrySet ()) {
+                map.put (entry.getKey (), objectToString (entry.getValue ()));
             }
-            list.add(map);
+            list.add (map);
         }
         return list;
     }
 
     public static String objectToString(Object obj) {
         if (obj instanceof Integer) {
-            return ((Integer) obj).toString();
+            return ((Integer) obj).toString ();
         } else if (obj instanceof Long) {
-            return ((Long) obj).toString();
+            return ((Long) obj).toString ();
         } else if (obj instanceof Double) {
-            return ((Double) obj).toString();
+            return ((Double) obj).toString ();
         } else if (obj instanceof Float) {
-            return ((Float) obj).toString();
+            return ((Float) obj).toString ();
         } else if (obj instanceof Float) {
-            return ((Float) obj).toString();
+            return ((Float) obj).toString ();
         } else if (obj instanceof Boolean) {
-            return ((Boolean) obj).toString();
+            return ((Boolean) obj).toString ();
         } else {
             return (String) obj;
         }

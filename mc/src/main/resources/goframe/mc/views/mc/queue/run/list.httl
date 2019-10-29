@@ -163,7 +163,7 @@ ${extends("/goframe/function_layout.httl")}
             return;
         }
         nui.open({
-            url: "${basePath}/goframe/p/mc.current.info/?pkId=" + row.pkId,
+            url: "${basePath}/goframe/p/mc.queue.run.info/?pkId=" + row.pkId,
             title: "并发信息详情",
             width: 800,
             height: 400,

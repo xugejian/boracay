@@ -13,20 +13,21 @@ import java.util.Map;
 public class KylinDatasource extends JdbcDatasource {
 
     public KylinDatasource(List<Property> properties) {
-        super(properties);
+        super (properties);
     }
 
     public KylinDatasource(Map<String, Property> propertieMap) {
-        super(propertieMap);
+        super (propertieMap);
     }
 
     public KylinDatasource(Datasource datasource) {
-        super(datasource);
+        super (datasource);
     }
 
-    public String getDriverClass() {
-        String value = getProperty("driver.class").getValue();
-        if (StringUtils.isBlank(value)){
+    @Override
+    public String gainDriverClass() {
+        String value = gainProperty ("driver.class").getValue ();
+        if (StringUtils.isBlank (value)) {
             value = "org.apache.kylin.jdbc.Driver";
         }
         return value;

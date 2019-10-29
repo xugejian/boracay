@@ -43,15 +43,15 @@ public class Metadata extends Base implements Serializable {
     }
 
     public Metadata(Metadata metadata) {
-        super(metadata.getPropertyMap());
-        this.name = metadata.getName();
-        this.describe = metadata.getDescribe();
-        this.note = metadata.getNote();
+        super(metadata.propertyMap);
+        this.name = metadata.name;
+        this.describe = metadata.describe;
+        this.note = metadata.note;
         this.tbName = metadata.tbName;
-        this.status = metadata.getStatus();
-        this.type = metadata.getType();
-        this.datasource = metadata.getDatasource();
-        this.metadataCols = metadata.getMetadataCols();
+        this.status = metadata.status;
+        this.type = metadata.type;
+        this.datasource = metadata.datasource;
+        this.metadataCols = metadata.metadataCols;
     }
 
     public MetadataStatus getStatus() {
@@ -121,8 +121,6 @@ public class Metadata extends Base implements Serializable {
     }
 
     public List<MetadataCol> getMetadataCols() {
-        if (metadataCols == null || metadataCols.size() == 0)
-            throw new IllegalArgumentException("metadataCols不能为空");
         return metadataCols;
     }
 

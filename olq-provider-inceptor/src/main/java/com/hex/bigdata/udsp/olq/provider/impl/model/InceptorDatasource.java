@@ -13,22 +13,24 @@ import java.util.Map;
 public class InceptorDatasource extends JdbcDatasource {
 
     public InceptorDatasource(List<Property> properties) {
-        super(properties);
+        super (properties);
     }
 
     public InceptorDatasource(Map<String, Property> propertieMap) {
-        super(propertieMap);
+        super (propertieMap);
     }
 
     public InceptorDatasource(Datasource datasource) {
-        super(datasource);
+        super (datasource);
     }
 
-    public String getDriverClass() {
-        String value = getProperty("driver.class").getValue();
-        if (StringUtils.isBlank(value))
+    @Override
+    public String gainDriverClass() {
+        String value = gainProperty ("driver.class").getValue ();
+        if (StringUtils.isBlank (value)) {
             value = "org.apache.hive.jdbc.HiveDriver";
-         return value;
+        }
+        return value;
     }
 
 }
