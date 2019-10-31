@@ -1,9 +1,9 @@
 package com.hex.bigdata.udsp.util;
 
 import com.hex.bigdata.udsp.common.util.JSONUtil;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.net.util.Base64;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -379,7 +379,7 @@ public class HttpUtils {
                 }
             }
             if (StringUtils.isNotBlank (username) && StringUtils.isNotBlank (password)) {
-                String auth = "Basic " + Base64.encode ((username + ":" + password).getBytes ());
+                String auth = "Basic " + Base64.encodeBase64String ((username + ":" + password).getBytes ());
                 httpPut.addHeader ("Authorization", auth);
             }
             StringEntity stringEntity = new StringEntity (json, charset);
@@ -432,7 +432,7 @@ public class HttpUtils {
                 }
             }
             if (StringUtils.isNotBlank (username) && StringUtils.isNotBlank (password)) {
-                String auth = "Basic " + Base64.encode ((username + ":" + password).getBytes ());
+                String auth = "Basic " + Base64.encodeBase64String ((username + ":" + password).getBytes ());
                 httpGet.addHeader ("Authorization", auth);
             }
             httpClient = getConnection ();
@@ -505,7 +505,7 @@ public class HttpUtils {
                 }
             }
             if (StringUtils.isNotBlank (username) && StringUtils.isNotBlank (password)) {
-                String auth = "Basic " + Base64.encode ((username + ":" + password).getBytes ());
+                String auth = "Basic " + Base64.encodeBase64String ((username + ":" + password).getBytes ());
                 httpPost.addHeader ("Authorization", auth);
             }
             StringEntity stringEntity = new StringEntity (json, charset);
