@@ -10,7 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hex.bigdata.udsp</groupId>
-    <artifactId>rc</artifactId>
+    <artifactId>consumer-http</artifactId>
+    <packaging>jar</packaging>
     <version>${parent.version}</version>
 
     <repositories>
@@ -33,39 +34,8 @@
     <dependencies>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>consumer-api</artifactId>
             <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>im-console</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>iq-console</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>mm</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>olq-console</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>rts-console</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-email</artifactId>
-            <version>1.4</version>
         </dependency>
     </dependencies>
 

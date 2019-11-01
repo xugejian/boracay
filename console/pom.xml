@@ -12,7 +12,7 @@
     <groupId>com.hex.bigdata.udsp</groupId>
     <artifactId>console</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>${parent.version}</version>
 
     <repositories>
         <repository>
@@ -36,15 +36,6 @@
             <groupId>com.hex.goframe</groupId>
             <artifactId>goframe.core</artifactId>
             <version>3.3.1.39</version>
-            <!--&lt;!&ndash; 内部依赖的org.ow2.asm:asm和consumer-webservice模块依赖cxf中的asm:asm冲突了，所以这里排除 &ndash;&gt;-->
-            <!--&lt;!&ndash; START &ndash;&gt;-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>org.ow2.asm</groupId>-->
-                    <!--<artifactId>asm</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-            <!--&lt;!&ndash; END &ndash;&gt;-->
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -84,18 +75,23 @@
 
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
+            <artifactId>consumer-api</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>consumer-http</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>consumer-socket</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>consumer-restful</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${parent.version}</version>
         </dependency>
     </dependencies>
 

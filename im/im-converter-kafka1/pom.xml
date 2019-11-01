@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hex.bigdata.udsp</groupId>
-    <artifactId>rc</artifactId>
+    <artifactId>im-converter-kafka1</artifactId>
     <version>${parent.version}</version>
 
     <repositories>
@@ -33,40 +33,14 @@
     <dependencies>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>im-converter-api</artifactId>
             <version>${parent.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
         <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>im-console</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>iq-console</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>mm</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>olq-console</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>rts-console</artifactId>
-            <version>${parent.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-email</artifactId>
-            <version>1.4</version>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka_2.11</artifactId>
+        <version>0.9.0.0</version>
         </dependency>
     </dependencies>
-
 </project>

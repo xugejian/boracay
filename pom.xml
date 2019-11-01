@@ -7,15 +7,63 @@
     <groupId>com.hex.bigdata</groupId>
     <artifactId>udsp</artifactId>
     <packaging>pom</packaging>
+
     <version>1.0-SNAPSHOT</version>
+
     <modules>
         <module>console</module>
 
-        <module>md</module>
-        <module>dsl</module>
+        <module>consumer/consumer-api</module>
+        <module>consumer/consumer-http</module>
+        <module>consumer/consumer-restful</module>
+        <module>consumer/consumer-socket</module>
 
-        <module>common</module>
-        <module>common-api</module>
+        <module>im/im-console</module>
+        <module>im/im-converter-api</module>
+        <module>im/im-converter-kafka</module>
+        <module>im/im-converter-kafka1</module>
+        <module>im/im-converter-hbase</module>
+        <module>im/im-converter-kudu</module>
+        <module>im/im-converter-solr_hbase</module>
+        <module>im/im-converter-solr</module>
+        <module>im/im-converter-impala</module>
+        <module>im/im-converter-oracle</module>
+        <module>im/im-converter-mysql</module>
+        <module>im/im-converter-hive</module>
+        <module>im/im-converter-phoenix</module>
+        <module>im/im-converter-pair_hbase</module>
+        <module>im/im-converter-pair_solr</module>
+        <module>im/im-converter-pair_solr_hbase</module>
+
+        <module>iq/iq-console</module>
+        <module>iq/iq-provider-api</module>
+        <module>iq/iq-provider-es</module>
+        <module>iq/iq-provider-hbase</module>
+        <module>iq/iq-provider-redis</module>
+        <module>iq/iq-provider-solr</module>
+        <module>iq/iq-provider-solr_hbase</module>
+
+        <module>olq/olq-console</module>
+        <module>olq/olq-provider-api</module>
+        <module>olq/olq-provider-db2</module>
+        <module>olq/olq-provider-impala</module>
+        <module>olq/olq-provider-inceptor</module>
+        <module>olq/olq-provider-pgsql</module>
+        <module>olq/olq-provider-kylin</module>
+        <module>olq/olq-provider-oracle</module>
+        <module>olq/olq-provider-hive</module>
+        <module>olq/olq-provider-mysql</module>
+        <module>olq/olq-provider-phoenix</module>
+        <module>olq/olq-provider-dsl</module>
+
+        <module>rts/rts-console</module>
+        <module>rts/rts-executor-api</module>
+        <module>rts/rts-executor-kafka</module>
+        <module>rts/rts-executor-kafka1</module>
+
+        <module>md</module>
+
+        <module>dsl</module>
 
         <module>mc</module>
 
@@ -23,57 +71,19 @@
 
         <module>mm</module>
 
-        <module>im</module>
-        <module>im-converter-api</module>
-        <module>im-converter-kafka</module>
-        <module>im-converter-kafka1</module>
-        <module>im-converter-hbase</module>
-        <module>im-converter-kudu</module>
-        <module>im-converter-solr_hbase</module>
-        <module>im-converter-solr</module>
-        <module>im-converter-impala</module>
-        <module>im-converter-oracle</module>
-        <module>im-converter-mysql</module>
-        <module>im-converter-hive</module>
-        <module>im-converter-phoenix</module>
-        <module>im-converter-pair_hbase</module>
-        <module>im-converter-pair_solr</module>
-        <module>im-converter-pair_solr_hbase</module>
-
-        <module>iq</module>
-        <module>iq-provider-api</module>
-        <module>iq-provider-es</module>
-        <module>iq-provider-hbase</module>
-        <module>iq-provider-redis</module>
-        <module>iq-provider-solr</module>
-        <module>iq-provider-solr_hbase</module>
-
-        <module>olq</module>
-        <module>olq-provider-api</module>
-        <module>olq-provider-db2</module>
-        <module>olq-provider-impala</module>
-        <module>olq-provider-inceptor</module>
-        <module>olq-provider-pgsql</module>
-        <module>olq-provider-kylin</module>
-        <module>olq-provider-oracle</module>
-        <module>olq-provider-hive</module>
-        <module>olq-provider-mysql</module>
-        <module>olq-provider-phoenix</module>
-        <module>olq-provider-dsl</module>
-
-        <module>rts</module>
-        <module>rts-executor-api</module>
-        <module>rts-executor-kafka</module>
-        <module>rts-executor-kafka1</module>
-
-        <module>consumer-api</module>
-        <module>consumer-http</module>
-        <module>consumer-restful</module>
-        <module>consumer-socket</module>
-
         <module>sdk</module>
 
+        <module>common</module>
+
+        <module>common-api</module>
+
     </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
 
     <build>
         <plugins>
@@ -90,4 +100,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
