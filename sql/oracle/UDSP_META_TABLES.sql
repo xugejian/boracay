@@ -162,7 +162,8 @@ create table T_GF_LOGINUSER
   app_id          VARCHAR2(32),
   user_comment    VARCHAR2(256),
   valid_startdate VARCHAR2(10),
-  valid_enddate   VARCHAR2(10)
+  valid_enddate   VARCHAR2(10),
+  error_count     INTEGER default (0)
 )
 ;
 alter table T_GF_LOGINUSER
