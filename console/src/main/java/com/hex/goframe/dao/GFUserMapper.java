@@ -1,3 +1,8 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
 package com.hex.goframe.dao;
 
 import com.hex.bigdata.udsp.common.dao.base.SyncMapper;
@@ -24,172 +29,225 @@ public class GFUserMapper extends SyncMapper<GFUser> {
     private GFUserForAppIdAndUserIdMapper mapper;
     // --------------------- END --------------------------
 
-    // ---------------------2018-09-13 by Junjie.M--------------------------
-    public int deleteByPrimaryKey(String id) {
-        GFUser user = select(id);
+    public GFUserMapper() {
+    }
+
+    // ---------------------2019-11-04 by Junjie.M--------------------------
+    public int removeByPrimaryKey(String id, String status) {
+        GFUser user = select (id);
+        user.setStatus (status);
         try {
-            return delete(id) ? 1 : 0;
+            return update (user.getId (), user) ? 1 : 0;
         } finally {
-            String key = user.getAppId() + "|" + user.getUserId();
-            mapper.delete(key);
+            String key = user.getAppId () + "|" + user.getUserId ();
+            mapper.update (key, user);
         }
     }
     // --------------------- END --------------------------
 
     // ---------------------2018-09-13 by Junjie.M--------------------------
+    public int deleteByPrimaryKey(String id) {
+        GFUser user = select (id);
+        try {
+            return delete (id) ? 1 : 0;
+        } finally {
+            String key = user.getAppId () + "|" + user.getUserId ();
+            mapper.delete (key);
+        }
+    }
+    // --------------------- END --------------------------
+
+    public int deleteByUserId(String userId, String appId) {
+        HashMap map = new HashMap ();
+        map.put ("userId", userId);
+        map.put ("appId", appId);
+        return this.sqlSessionTemplate.delete ("com.hex.goframe.dao.GFUserMapper.deleteByUserId", map);
+    }
+
+    // ---------------------2018-09-13 by Junjie.M--------------------------
     public GFUser selectByUserId(String userId, String appId) {
         String key = appId + "|" + userId;
-        return mapper.select(key);
+        return mapper.select (key);
+    }
+    // --------------------- END --------------------------
+
+    // ---------------------2019-11-04 by Junjie.M--------------------------
+    public boolean existsUserId(String userId, String appId) {
+        String key = appId + "|" + userId;
+        GFUser user = mapper.select (key);
+        return user != null;
     }
     // --------------------- END --------------------------
 
     public GFLoginUser selectFullUserByUserId(String userId, String appId) {
-        HashMap map = new HashMap();
-        map.put("userId", userId);
-        map.put("appId", appId);
-        return (GFLoginUser) this.sqlSessionTemplate.selectOne("com.hex.goframe.dao.GFUserMapper.selectFullUserByUserId", map);
+        HashMap map = new HashMap ();
+        map.put ("userId", userId);
+        map.put ("appId", appId);
+        return (GFLoginUser) this.sqlSessionTemplate.selectOne ("com.hex.goframe.dao.GFUserMapper.selectFullUserByUserId", map);
     }
 
     // ---------------------2018-09-13 by Junjie.M--------------------------
     public int insert(GFUser user) {
         try {
-            return insert(user.getId(), user) ? 1 : 0;
+            return insert (user.getId (), user) ? 1 : 0;
         } finally {
-            String key = user.getAppId() + "|" + user.getUserId();
-            mapper.insert(key, user);
+            String key = user.getAppId () + "|" + user.getUserId ();
+            mapper.insert (key, user);
         }
     }
     // --------------------- END --------------------------
 
     // ---------------------2018-09-13 by Junjie.M--------------------------
     public GFUser selectByPrimaryKey(String id) {
-        return select(id);
+        return select (id);
     }
     // --------------------- END --------------------------
 
     public List<GFUser> selectAll() {
-        return this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFUserMapper.selectAll");
+        return this.sqlSessionTemplate.selectList ("com.hex.goframe.dao.GFUserMapper.selectAll");
     }
 
     // ---------------------2018-09-13 by Junjie.M--------------------------
     public int updateByPrimaryKey(GFUser user) {
         try {
-            return update(user.getId(), user) ? 1 : 0;
+            return update (user.getId (), user) ? 1 : 0;
         } finally {
-            String key = user.getAppId() + "|" + user.getUserId();
-            mapper.update(key, user);
+            String key = user.getAppId () + "|" + user.getUserId ();
+            mapper.update (key, user);
         }
     }
     // --------------------- END --------------------------
 
-    public int updateStatus(String id, int status) {
-        return this.sqlSessionTemplate.update("com.hex.goframe.dao.GFUserMapper.updateStatus", Integer.valueOf(status));
+    // ---------------------2019-11-04 by Junjie.M--------------------------
+    public int updateStatus(String userId, String status) {
+        GFUser user = select (userId);
+        user.setStatus (status);
+        try {
+            return update (user.getId (), user) ? 1 : 0;
+        } finally {
+            String key = user.getAppId () + "|" + user.getUserId ();
+            mapper.update (key, user);
+        }
     }
+    // --------------------- END --------------------------
 
     public List<GFUser> queryUsers(GFUser user, Page page, String authId) {
-        Map map = MapUtil.ConvertObjToMap(user);
-        if (authId != null && !"".equals(authId)) {
-            map.put("authId", authId);
+        Map map = MapUtil.ConvertObjToMap (user);
+        if (authId != null && !"".equals (authId)) {
+            map.put ("authId", authId);
         }
 
-        List list = this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFUserMapper.queryUsers", map, page.toPageBounds());
-        page.totalCount(list);
+        List list = this.sqlSessionTemplate.selectList ("com.hex.goframe.dao.GFUserMapper.queryUsers", map, page.toPageBounds ());
+        page.totalCount (list);
         return list;
     }
 
     public List<GFUser> queryUsersInOrg(GFUser user, Page page, String orgId) {
-        Map map = MapUtil.ConvertObjToMap(user);
-        if (orgId != null && !"".equals(orgId)) {
-            map.put("orgId", orgId);
+        Map map = MapUtil.ConvertObjToMap (user);
+        if (orgId != null && !"".equals (orgId)) {
+            map.put ("orgId", orgId);
         }
 
-        List list = this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFUserMapper.queryUsersInOrg", map, page.toPageBounds());
-        page.totalCount(list);
+        List list = this.sqlSessionTemplate.selectList ("com.hex.goframe.dao.GFUserMapper.queryUsersInOrg", map, page.toPageBounds ());
+        page.totalCount (list);
         return list;
     }
 
     // ---------------------2018-09-13 by Junjie.M--------------------------
     public int resetPassword(String id) {
-        String passWord = "000000";
-        GFUser user = select(id);
-        user.setPassword(DigestUtils.md5Hex(passWord));
+        GFUser user = select (id);
+        user.setPassword (DigestUtils.md5Hex ("000000"));
         try {
-            return update(id, user) ? 1 : 0;
+            return update (id, user) ? 1 : 0;
         } finally {
-            String key = user.getAppId() + "|" + user.getUserId();
-            mapper.update(key, user);
+            String key = user.getAppId () + "|" + user.getUserId ();
+            mapper.update (key, user);
         }
     }
     // --------------------- END --------------------------
 
     public boolean checkPassword(String id, String oldPassword) {
-        HashMap map = new HashMap();
-        map.put("id", id);
-        map.put("oldPassword", DigestUtils.md5Hex(oldPassword));
-        int result = ((Integer) this.sqlSessionTemplate.selectOne("com.hex.goframe.dao.GFUserMapper.checkPassword", map)).intValue();
-        return result == 1;
+        HashMap map = new HashMap ();
+        map.put ("id", id);
+        map.put ("oldPassword", oldPassword);
+        return ((Integer) this.sqlSessionTemplate.selectOne ("com.hex.goframe.dao.GFUserMapper.checkPassword", map)).intValue () == 1;
     }
 
     // ---------------------2018-09-13 by Junjie.M--------------------------
     public boolean changePassword(String id, String newPassword) {
-        GFUser user = select(id);
-        user.setPassword(DigestUtils.md5Hex(newPassword));
+        GFUser user = select (id);
+        user.setPassword (newPassword);
         try {
-            return update(id, user);
+            return update (id, user);
         } finally {
-            String key = user.getAppId() + "|" + user.getUserId();
-            mapper.update(key, user);
+            String key = user.getAppId () + "|" + user.getUserId ();
+            mapper.update (key, user);
         }
     }
     // --------------------- END --------------------------
 
     public List<GFUser> queryUsersByEmpId(String empId) {
-        HashMap map = new HashMap();
-        map.put("empId", empId);
-        return this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFUserMapper.queryUsersByEmpId", map);
+        HashMap map = new HashMap ();
+        map.put ("empId", empId);
+        return this.sqlSessionTemplate.selectList ("com.hex.goframe.dao.GFUserMapper.queryUsersByEmpId", map);
     }
 
     public List<String> queryUserRolesByUserId(String userId) {
-        return this.sqlSessionTemplate.selectList("com.hex.goframe.dao.GFUserMapper.getUserRolesByUserId", userId);
+        return this.sqlSessionTemplate.selectList ("com.hex.goframe.dao.GFUserMapper.getUserRolesByUserId", userId);
     }
 
     public int updateUserNameByEmpId(String empId, String userName) throws Exception {
-        HashMap params = new HashMap();
-        params.put("empId", empId);
-        params.put("userName", userName);
-        return this.sqlSessionTemplate.update("com.hex.goframe.dao.GFUserMapper.updateUserNameByEmpId", params);
+        HashMap params = new HashMap ();
+        params.put ("empId", empId);
+        params.put ("userName", userName);
+        return this.sqlSessionTemplate.update ("com.hex.goframe.dao.GFUserMapper.updateUserNameByEmpId", params);
     }
 
     public String getMasterOrgId(String appId, String userId) {
-        HashMap params = new HashMap();
-        params.put("userId", userId);
-        params.put("appId", appId);
-        return (String) this.sqlSessionTemplate.selectOne("com.hex.goframe.dao.GFUserMapper.getMasterOrgId", params);
+        HashMap params = new HashMap ();
+        params.put ("userId", userId);
+        params.put ("appId", appId);
+        return (String) this.sqlSessionTemplate.selectOne ("com.hex.goframe.dao.GFUserMapper.getMasterOrgId", params);
     }
 
     public Integer deleteLoginUserByEmpId(String empId) {
-        return Integer.valueOf(this.sqlSessionTemplate.delete("com.hex.goframe.dao.GFUserMapper.deleteLoginUserByEmpId", empId));
+        return Integer.valueOf (this.sqlSessionTemplate.delete ("com.hex.goframe.dao.GFUserMapper.deleteLoginUserByEmpId", empId));
+    }
+
+    public int setUserLoginNum(String userId, String appId, String num) {
+        HashMap params = new HashMap ();
+        params.put ("userId", userId);
+        params.put ("appId", appId);
+        params.put ("num", num);
+        return this.sqlSessionTemplate.update ("com.hex.goframe.dao.GFUserMapper.setUserLoginNum", params);
+    }
+
+    public int setUserLoginErrNum(String userId, String appId) {
+        HashMap params = new HashMap ();
+        params.put ("userId", userId);
+        params.put ("appId", appId);
+        return this.sqlSessionTemplate.update ("com.hex.goframe.dao.GFUserMapper.setUserLoginErrNum", params);
     }
 
     // ---------------------2018-09-13 by Junjie.M--------------------------
     @Override
     protected boolean insertExe(GFUser user) {
-        return this.sqlSessionTemplate.insert("com.hex.goframe.dao.GFUserMapper.insert", user) == 1;
+        return this.sqlSessionTemplate.insert ("com.hex.goframe.dao.GFUserMapper.insert", user) == 1;
     }
 
     @Override
     protected boolean updateExe(GFUser user) {
-        return this.sqlSessionTemplate.update("com.hex.goframe.dao.GFUserMapper.updateByPrimaryKey", user) == 1;
+        return this.sqlSessionTemplate.update ("com.hex.goframe.dao.GFUserMapper.updateByPrimaryKey", user) == 1;
     }
 
     @Override
     protected boolean deleteExe(String id) {
-        return this.sqlSessionTemplate.delete("com.hex.goframe.dao.GFUserMapper.deleteByPrimaryKey", id) == 1;
+        return this.sqlSessionTemplate.delete ("com.hex.goframe.dao.GFUserMapper.deleteByPrimaryKey", id) == 1;
     }
 
     @Override
     protected GFUser selectExe(String id) {
-        return (GFUser) this.sqlSessionTemplate.selectOne("com.hex.goframe.dao.GFUserMapper.selectByPrimaryKey", id);
+        return (GFUser) this.sqlSessionTemplate.selectOne ("com.hex.goframe.dao.GFUserMapper.selectByPrimaryKey", id);
     }
 
     @Override
@@ -202,5 +260,4 @@ public class GFUserMapper extends SyncMapper<GFUser> {
         return null;
     }
     // --------------------- END --------------------------
-
 }
