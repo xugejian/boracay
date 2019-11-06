@@ -50,6 +50,7 @@
       <module fileurl="file://$PROJECT_DIR$/rc/rc.iml" filepath="$PROJECT_DIR$/rc/rc.iml" group="rc" />
       <module fileurl="file://$PROJECT_DIR$/rc-alarm-api/rc-alarm-api.iml" filepath="$PROJECT_DIR$/rc-alarm-api/rc-alarm-api.iml" group="rc" />
       <module fileurl="file://$PROJECT_DIR$/rc-alarm-mail/rc-alarm-email.iml" filepath="$PROJECT_DIR$/rc-alarm-mail/rc-alarm-email.iml" group="rc" />
+      <module fileurl="file://$PROJECT_DIR$/rc-alarm-mail/rc-alarm-mail.iml" filepath="$PROJECT_DIR$/rc-alarm-mail/rc-alarm-mail.iml" group="rc" />
       <module fileurl="file://$PROJECT_DIR$/rts/rts.iml" filepath="$PROJECT_DIR$/rts/rts.iml" group="rts" />
       <module fileurl="file://$PROJECT_DIR$/rts-executor-api/rts-executor-api.iml" filepath="$PROJECT_DIR$/rts-executor-api/rts-executor-api.iml" group="rts" />
       <module fileurl="file://$PROJECT_DIR$/rts-executor-kafka/rts-executor-kafka.iml" filepath="$PROJECT_DIR$/rts-executor-kafka/rts-executor-kafka.iml" group="rts" />
