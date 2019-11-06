@@ -2,6 +2,9 @@ package com.hex.bigdata.udsp.mc.model;
 
 import java.io.Serializable;
 
+/**
+ * 消费日志
+ */
 public class McConsumeLog implements Serializable {
     private String pkId;
 

@@ -15,6 +15,8 @@
     <result column="STATUS" property="status" jdbcType="CHAR" />
     <result column="IS_CACHE" property="isCache" jdbcType="CHAR"/>
     <result column="TIME_OUT" property="timeout" jdbcType="DECIMAL"/>
+    <result column="IS_STORE" property="isStore" jdbcType="CHAR"/>
+    <result column="NOTE" property="note" jdbcType="VARCHAR"/>
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from RC_SERVICE
@@ -22,13 +24,13 @@
   </delete>
   <insert id="insert" parameterType="com.hex.bigdata.udsp.rc.model.RcService" >
     insert into RC_SERVICE (PK_ID, NAME, DESCRIPTION,
-      TYPE, APP_ID, DEL_FLG, CRT_USER, 
-      CRT_TIME, UPT_USER, UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+      TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
+      UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
       )
     values (#{pkId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, 
       #{type,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{delFlg,jdbcType=CHAR}, #{crtUser,jdbcType=VARCHAR}, 
       #{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR}, #{status,jdbcType=CHAR},
-      #{isCache,jdbcType=CHAR}, #{timeout,jdbcType=DECIMAL}
+      #{isCache,jdbcType=CHAR}, #{timeout,jdbcType=DECIMAL}, #{isStore,jdbcType=CHAR}, #{note,jdbcType=VARCHAR}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.rc.model.RcService" >
@@ -44,18 +46,20 @@
       UPT_TIME = #{uptTime,jdbcType=VARCHAR},
       STATUS = #{status,jdbcType=CHAR},
       IS_CACHE = #{isCache,jdbcType=CHAR},
-      TIME_OUT = #{timeout,jdbcType=DECIMAL}
+      TIME_OUT = #{timeout,jdbcType=DECIMAL},
+      IS_STORE = #{isStore,jdbcType=CHAR},
+      NOTE = #{note,jdbcType=VARCHAR}
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
     from RC_SERVICE
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
     from RC_SERVICE
     where DEL_FLG = '0'
     order by NAME ASC
@@ -70,7 +74,7 @@
 
   <select id="selectPage" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rc.dto.RcServiceView">
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
     from RC_SERVICE
     where DEL_FLG = '0'
     <if test="name!='' and name!=null ">and NAME like '%'||#{name}||'%'</if>
@@ -83,14 +87,16 @@
     <if test="uptTimeEnd!=null and uptTimeEnd!='' ">and #{uptTimeEnd} >= UPT_TIME</if>
     <if test="crtUser!='' and crtUser!=null ">and CRT_USER like '%'||#{crtUser}||'%'</if>
     <if test="uptUser!='' and uptUser!=null ">and UPT_USER like '%'||#{uptUser}||'%'</if>
-    <if test="status!='' and status!=null ">and STATUS =#{status}</if>
-    <if test="isCache!='' and isCache!=null ">and IS_CACHE =#{isCache}</if>
+    <if test="status!='' and status!=null ">and STATUS = #{status}</if>
+    <if test="isCache!='' and isCache!=null ">and IS_CACHE = #{isCache}</if>
+    <if test="isStore!='' and isStore!=null ">and IS_STORE = #{isStore}</if>
+    <if test="note!='' and note!=null ">and NOTE like '%'||#{note}||'%'</if>
     order by NAME asc
   </select>
 
   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
     from RC_SERVICE
     where DEL_FLG = '0'
     and NAME = #{name,jdbcType=VARCHAR}
@@ -98,7 +104,7 @@
 
   <select id="selectByType" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
     from RC_SERVICE
     where DEL_FLG = '0'
     and TYPE = #{serviceType,jdbcType=VARCHAR}
@@ -106,7 +112,7 @@
 
   <select id="selectStartByTypeAndName" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rc.model.RcService" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
     from RC_SERVICE
     where DEL_FLG = '0' AND STATUS = '0'
     and TYPE = #{type,jdbcType=VARCHAR}
@@ -115,7 +121,7 @@
 
   <select id="selectByServiceName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-   UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+   UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
     from RC_SERVICE
     where DEL_FLG = '0' AND STATUS = '0'
     and NAME = #{name,jdbcType=VARCHAR}
@@ -123,7 +129,7 @@
 
   <select id="selectByAppTypeAndAppId" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rc.model.RcService" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
     from RC_SERVICE
     where DEL_FLG = '0'
     and TYPE = #{type,jdbcType=VARCHAR}
@@ -132,7 +138,7 @@
 
   <select id="selectStartByAppTypeAndAppId" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rc.model.RcService" >
     select PK_ID, NAME, DESCRIPTION, TYPE, APP_ID, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER,
-    UPT_TIME, STATUS, IS_CACHE, TIME_OUT
+    UPT_TIME, STATUS, IS_CACHE, TIME_OUT, IS_STORE, NOTE
     from RC_SERVICE
     where DEL_FLG = '0' and STATUS = '0'
     and TYPE = #{type,jdbcType=VARCHAR}

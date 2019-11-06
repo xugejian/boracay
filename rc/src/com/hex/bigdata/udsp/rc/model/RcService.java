@@ -29,6 +29,10 @@ public class RcService implements Serializable {
 
     private long timeout; // 缓存时效（秒）
 
+    private String isStore; // 是否存储（0：是，1：否）
+
+    private String note; // 备注
+
     public String getPkId() {
         return pkId;
     }
@@ -131,5 +135,21 @@ public class RcService implements Serializable {
 
     public void setTimeout(long timeout) {
         this.timeout = timeout;
+    }
+
+    public String getIsStore() {
+        return isStore;
+    }
+
+    public void setIsStore(String isStore) {
+        this.isStore = isStore;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

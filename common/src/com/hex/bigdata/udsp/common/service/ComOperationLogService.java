@@ -22,13 +22,10 @@ public class ComOperationLogService extends BaseService {
     private ComOperationLogMapper comOperationLogMapper;
 
     @Transactional
-    public String insert(ComOperationLog comOperationLog) {
+    public boolean insert(ComOperationLog comOperationLog) {
         String pkId = Util.uuid();
         comOperationLog.setPkId(pkId);
-        if (comOperationLogMapper.insert(pkId, comOperationLog)) {
-            return pkId;
-        }
-        return "";
+        return comOperationLogMapper.insert(comOperationLog);
     }
 
     public ComOperationLog select(String pkId) {

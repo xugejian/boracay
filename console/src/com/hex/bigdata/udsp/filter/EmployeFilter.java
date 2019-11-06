@@ -17,7 +17,7 @@ public class EmployeFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-        System.out.println (httpRequest.getRequestURI ());
+        //System.out.println (httpRequest.getRequestURI ());
         if (httpRequest.getRequestURI ().indexOf ("/goframe.employee.list") > 0) {
             httpRequest.getRequestDispatcher ("/goframe/p/goframe.employe.list").forward (servletRequest, servletResponse);
         } else {

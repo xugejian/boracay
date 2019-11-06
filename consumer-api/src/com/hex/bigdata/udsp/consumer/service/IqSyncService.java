@@ -47,7 +47,7 @@ public class IqSyncService {
     @Autowired
     private IqProviderService iqProviderService;
     @Autowired
-    private LoggingService loggingService;
+    private ConsumeLogService consumeLogService;
 
     /**
      * 同步运行（添加了超时机制）
@@ -74,10 +74,10 @@ public class IqSyncService {
                 response = futureTask.get (rcUserService.getMaxSyncExecuteTimeout (), TimeUnit.SECONDS);
             }
         } catch (TimeoutException e) {
-            loggingService.writeResponseLog (response, consumeRequest, bef, runBef, ErrorCode.ERROR_000015, e.toString ());
+            consumeLogService.writeResponseLog (response, consumeRequest, bef, runBef, ErrorCode.ERROR_000015, e.toString ());
         } catch (Exception e) {
             e.printStackTrace ();
-            loggingService.writeResponseLog (response, consumeRequest, bef, runBef, ErrorCode.ERROR_000007, e.toString ());
+            consumeLogService.writeResponseLog (response, consumeRequest, bef, runBef, ErrorCode.ERROR_000007, e.toString ());
         }
         return response;
     }
@@ -106,12 +106,12 @@ public class IqSyncService {
                 });
                 response = futureTask.get (rcUserService.getMaxAsyncExecuteTimeout (), TimeUnit.SECONDS);
             }
-            loggingService.writeResponseLog (request, response, bef, runBef, false);
+            consumeLogService.writeResponseLog (request, response, bef, runBef, false);
         } catch (TimeoutException e) {
-            loggingService.writeResponseLog (null, consumeRequest, bef, runBef, ErrorCode.ERROR_000015, e.toString ());
+            consumeLogService.writeResponseLog (null, consumeRequest, bef, runBef, ErrorCode.ERROR_000015, e.toString ());
         } catch (Exception e) {
             e.printStackTrace ();
-            loggingService.writeResponseLog (null, consumeRequest, bef, runBef, ErrorCode.ERROR_000007, e.toString ());
+            consumeLogService.writeResponseLog (null, consumeRequest, bef, runBef, ErrorCode.ERROR_000007, e.toString ());
         }
     }
 

@@ -24,11 +24,8 @@ ${extends("/goframe/function_layout.httl")}
                                 <div header="说明" field="describe"></div>
                             </div>
                         </div>
-                        <!--<input id="serviceId" name="serviceId"class="nui-combobox" style="width: 97%;"  emptyText="请选择服务名称"
-                               valueField="pkId" textField="name" required="true" onvaluechanged="showSelectUsers"/>-->
                     </td>
                 </tr>
-
                 <tr>
                     <th class="nui-form-label"><label for="userId">用户：</label></th>
                     <td colspan="3">
@@ -63,7 +60,22 @@ ${extends("/goframe/function_layout.httl")}
                     <td colspan="3">
                         <input id="ipSection" class="nui-textarea" style="height:60px; width:99%;"
                                emptyText="默认不拦截,支持模式，1、固定IP，如196.1.26.3；2、*号代替，如196.1.26.*、*.*.*.*；3、IP段范围196.1.*.[8,9-26]、196.1.26.[1-5,9-26]"/>
-
+                    </td>
+                </tr>
+                <tr>
+                    <th class="nui-form-label"><label for="maxSyncWaitTimeout">日期窗口：</label></th>
+                    <td>
+                        <input id="dateType" name="dateType" class="nui-dictcombobox" valueField="dictId"
+                               textField="dictName" dictTypeId="RC_DATE_TYPE" style="width:97%" value="ALL"
+                               required="true" />
+                    </td>
+                    <th class="nui-form-label"><label for="maxAsyncWaitTimeout">时间窗口：</label></th>
+                    <td style="width: 25%">
+                        <input id="startTime" name="startTime" class="nui-textbox" style="width:44%"
+                               emptyText="格式HH:mm，如：8:00" onvalidation="checkTime"/>
+                        -
+                        <input id="endTime" name="endTime" class="nui-textbox" style="width:44%"
+                               emptyText="格式HH:mm，如：20:00" onvalidation="checkTime"/>
                     </td>
                 </tr>
                 <tr>
@@ -187,10 +199,10 @@ ${extends("/goframe/function_layout.httl")}
 <script type="text/javascript">
     var form1;
     var grid1;
-    var userId_nuiObject;
-    var serviceId_nuiObject;
+    var userIdObj;
+    var serviceIdObj;
     var serachGrid;
-    var serviceType_nuiObject;
+    var serviceTypeObj;
     var alarmTypeObj;
     /**
      * 按需加载资源文件
@@ -199,11 +211,34 @@ ${extends("/goframe/function_layout.httl")}
         nui.parse();
         form1 = new nui.Form("#form1");
         grid1 = nui.get("datagrid1");
-        userId_nuiObject = nui.get("userId");
-        serviceId_nuiObject = nui.get("serviceId");
+        userIdObj = nui.get("userId");
+        serviceIdObj = nui.get("serviceId");
         serachGrid = nui.get("serachGrid");
-        serviceType_nuiObject = nui.get("serviceType");
+        serviceTypeObj = nui.get("serviceType");
         alarmTypeObj = nui.get("alarmType");
+
+        var serviceId = '${serviceId}';
+        var serviceName = '${serviceName}';
+        var serviceType = '${serviceType}';
+        if (serviceId && serviceId.length > 0) {
+            serviceTypeObj.setValue(serviceType);
+            serviceTypeObj.setEnabled(false);
+            $.ajax({
+                url: "${basePath}/rc/service/selectServices/" + serviceType,
+                type: 'POST',
+                cache: false,
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.status) {
+                        serviceIdObj.setData(result.data);
+                        serviceIdObj.setValue(serviceId);
+                        serviceIdObj.setText(serviceName);
+                        serviceIdObj.setEnabled(false);
+                        showSelectUsers();
+                    }
+                }
+            });
+        }
     });
 
     /**
@@ -211,7 +246,7 @@ ${extends("/goframe/function_layout.httl")}
      */
     function onSearchClick() {
         debugger;
-        var serviceId = serviceId_nuiObject.getValue();
+        var serviceId = serviceIdObj.getValue();
         if (serviceId == null || serviceId == "") {
             nui.alert("请先选择服务！");
             return;
@@ -395,7 +430,7 @@ ${extends("/goframe/function_layout.httl")}
      * 选择用户
      */
     function selectUsers() {
-        userId_nuiObject.setValue("");
+        userIdObj.setValue("");
         $.ajax({
             url: "${basePath}/goframe/user/queryUsers?appId=default",
             type: 'POST',
@@ -403,7 +438,7 @@ ${extends("/goframe/function_layout.httl")}
             contentType: 'application/json',
             success: function (result) {
                 if (result.status) {
-                    userId_nuiObject.setData(result.data);
+                    userIdObj.setData(result.data);
                 }
             }
         });
@@ -413,7 +448,7 @@ ${extends("/goframe/function_layout.httl")}
      * 选择服务
      */
     function selectServices(e) {
-        serviceId_nuiObject.setValue("");
+        serviceIdObj.setValue("");
         $.ajax({
             url: "${basePath}/rc/service/selectServices/" + e.value,
             type: 'POST',
@@ -421,7 +456,7 @@ ${extends("/goframe/function_layout.httl")}
             contentType: 'application/json',
             success: function (result) {
                 if (result.status) {
-                    serviceId_nuiObject.setData(result.data);
+                    serviceIdObj.setData(result.data);
                 }
             }
         });
@@ -429,7 +464,7 @@ ${extends("/goframe/function_layout.httl")}
 
     function showSelectUsers() {
         debugger;
-        var serviceId = serviceId_nuiObject.getValue();
+        var serviceId = serviceIdObj.getValue();
         if (serviceId == null || serviceId == "") {
             nui.alert("请先选择服务！");
             return;
@@ -630,6 +665,26 @@ ${extends("/goframe/function_layout.httl")}
         //算法2、构造Map类型集合，以record.name为key，插入到map集合中，
         //集合中长度小于原来的长度,则存在重复
         return repetFlg;
+    }
+
+    function checkTime(e){
+        if (e.isValid && e.value.trim()!="") {
+            var re = /^([01]\d|2[0-3]):([0-5]\d)$/;
+            if(!re.test(e.value)) {
+                e.errorText = "只能输入HH:mm的时分格式";
+                e.isValid = false;
+            }
+            var startTime = nui.get("startTime").getValue();
+            var endTime = nui.get("endTime").getValue();
+            if(startTime.length>0 && endTime.length>0){
+                var start = startTime.replace(":",".");
+                var end = endTime.replace(":",".");
+                if(start > end){
+                    e.errorText = "开始时间不能晚于结束时间";
+                    e.isValid = false;
+                }
+            }
+        }
     }
 </script>
 <!--#end-->

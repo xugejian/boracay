@@ -29,6 +29,22 @@ ${extends("/goframe/function_layout.httl")}
                     </td>
                 </tr>
                 <tr>
+                    <th class="nui-form-label"><label for="maxSyncWaitTimeout">日期窗口：</label></th>
+                    <td>
+                        <input id="dateType" name="dateType" class="nui-dictcombobox" valueField="dictId"
+                               textField="dictName" dictTypeId="RC_DATE_TYPE" style="width:97%" value="ALL"
+                               required="true" />
+                    </td>
+                    <th class="nui-form-label"><label for="maxAsyncWaitTimeout">时间窗口：</label></th>
+                    <td style="width: 25%">
+                        <input id="startTime" name="startTime" class="nui-textbox" style="width:44%"
+                               emptyText="格式HH:mm，如：8:00" onvalidation="checkTime"/>
+                        -
+                        <input id="endTime" name="endTime" class="nui-textbox" style="width:44%"
+                               emptyText="格式HH:mm，如：20:00" onvalidation="checkTime"/>
+                    </td>
+                </tr>
+                <tr>
                     <th class="nui-form-label"><label for="maxSyncNum">运行队列大小（同步）：</label></th>
                     <td>
                         <input id="maxSyncNum" name="maxSyncNum" class="nui-textbox" style="width:97%" required="true"
@@ -149,7 +165,7 @@ ${extends("/goframe/function_layout.httl")}
 <script type="text/javascript">
     var form1;
     var grid1;
-    var serviceId_nuiObject;
+    var serviceIdObj;
     var alarmTypeObj;
     /**
      * 按需加载资源文件
@@ -158,15 +174,16 @@ ${extends("/goframe/function_layout.httl")}
         nui.parse();
         form1 = new nui.Form("#form1");
         grid1 = nui.get("datagrid1");
-        serviceId_nuiObject = nui.get("serviceIds");
-        var serviceGetName = '${serviceGetName}';
-        var pkGetId = '${pkGetId}';
-        if (pkGetId && pkGetId.length > 0) {
-            nui.get("serviceIds").setValue(pkGetId);
-            nui.get("serviceIds").setText(serviceGetName);
-            nui.get("serviceIds").setEnabled(false);
-        }
+        serviceIdObj = nui.get("serviceIds");
         alarmTypeObj = nui.get("alarmType");
+
+        var serviceId = '${serviceId}';
+        var serviceName = '${serviceName}';
+        if (serviceId && serviceId.length > 0) {
+            serviceIdObj.setValue(serviceId);
+            serviceIdObj.setText(serviceName);
+            serviceIdObj.setEnabled(false);
+        }
     });
 
     /**
@@ -593,6 +610,26 @@ ${extends("/goframe/function_layout.httl")}
         //算法2、构造Map类型集合，以record.name为key，插入到map集合中，
         //集合中长度小于原来的长度,则存在重复
         return repetFlg;
+    }
+
+    function checkTime(e){
+        if (e.isValid && e.value.trim()!="") {
+            var re = /^([01]\d|2[0-3]):([0-5]\d)$/;
+            if(!re.test(e.value)) {
+                e.errorText = "只能输入HH:mm的时分格式";
+                e.isValid = false;
+            }
+            var startTime = nui.get("startTime").getValue();
+            var endTime = nui.get("endTime").getValue();
+            if(startTime.length>0 && endTime.length>0){
+                var start = startTime.replace(":",".");
+                var end = endTime.replace(":",".");
+                if(start > end){
+                    e.errorText = "开始时间不能晚于结束时间";
+                    e.isValid = false;
+                }
+            }
+        }
     }
 </script>
 <!--#end-->

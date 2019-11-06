@@ -3,41 +3,27 @@ package com.hex.bigdata.udsp.rc.model;
 import java.io.Serializable;
 
 public class RcUserService implements Serializable {
-    private String pkId;
-
-    private String userId;
-
-    private String serviceId;
-
-    private String ipSection;
-
+    private String pkId; // 主键
+    private String userId; // 用户ID
+    private String serviceId; // 服务ID
+    private String ipSection; // IP段
     private int maxSyncNum; // 执行队列大小（同步）
-
     private int maxAsyncNum; // 执行队列大小（异步）
-
     private int maxSyncWaitNum; //等待队列大小（同步）
-
     private int maxAsyncWaitNum; // 等待队列大小（异步）
-
     private long maxSyncWaitTimeout = 0; // 最大等待时间（同步/毫秒）
-
     private long maxAsyncWaitTimeout = 0; // 最大等待时间（异步/毫秒）
-
     private long maxSyncExecuteTimeout = 0; // 最大运行时间（同步/毫秒）
-
     private long maxAsyncExecuteTimeout = 0; // 最大运行时间（异步/毫秒）
-
-    private String delFlg;
-
+    private String delFlg; // 逻辑删除标志
     private String crtUser;
-
     private String crtTime;
-
     private String uptUser;
-
     private String uptTime;
-
     private String alarmType; // 告警方式
+    private String dateType; // 时间窗口的日期类型
+    private String startTime; // 时间窗口的开始时间
+    private String endTime; // 时间窗口的结束时间
 
     public String getPkId() {
         return pkId;
@@ -181,5 +167,29 @@ public class RcUserService implements Serializable {
 
     public void setAlarmType(String alarmType) {
         this.alarmType = alarmType;
+    }
+
+    public String getDateType() {
+        return dateType;
+    }
+
+    public void setDateType(String dateType) {
+        this.dateType = dateType;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

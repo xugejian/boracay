@@ -14,22 +14,27 @@ public class RcServiceView extends RcService {
      * 创建时间查询时间范围-开始时间
      */
     private String crtTimeStart;
+
     /**
      * 创建时间查询时间范围-结束时间
      */
     private String crtTimeEnd;
+
     /**
      * 更新时间查询时间范围-开始时间
      */
     private String uptTimeStart;
+
     /**
      * 更新时间查询时间范围-结束时间
      */
     private String uptTimeEnd;
+
     /**
      * 服务类型
      */
     private String serviceType;
+
     /**
      * 服务名称
      */

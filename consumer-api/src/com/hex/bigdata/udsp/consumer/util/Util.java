@@ -11,7 +11,12 @@ import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.rc.model.RcService;
+import org.apache.commons.lang3.time.FastDateFormat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -102,4 +107,36 @@ public class Util {
         return timeout;
     }
 
+    /**
+     * 判断是否开启存储
+     *
+     * @param rcService
+     * @return
+     */
+    public static boolean isStore(RcService rcService) {
+        return rcService != null && "0".equals (rcService.getIsStore ());
+    }
+
+    /**
+     * 获取当前日期是星期几
+     * <p>
+     * 0：星期日
+     * 1：星期一
+     * 2：星期二
+     * 3：星期三
+     * 4：星期四
+     * 5：星期五
+     * 6：星期六
+     *
+     * @return
+     */
+    public static int nowWeek() {
+        Calendar cal = Calendar.getInstance ();
+        cal.setTime (new Date ());
+        int week = cal.get (Calendar.DAY_OF_WEEK) - 1;
+        if (week < 0) {
+            week = 0;
+        }
+        return week;
+    }
 }

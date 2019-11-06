@@ -14,14 +14,17 @@ public class RcUserServiceView extends RcUserService {
      * 创建时间查询时间范围-开始时间
      */
     private String crtTimeStart;
+
     /**
      * 创建时间查询时间范围-结束时间
      */
     private String crtTimeEnd;
+
     /**
      * 更新时间查询时间范围-开始时间
      */
     private String uptTimeStart;
+
     /**
      * 更新时间查询时间范围-结束时间
      */

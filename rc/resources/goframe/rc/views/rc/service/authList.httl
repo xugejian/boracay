@@ -101,6 +101,8 @@ ${extends("/goframe/function_layout.httl")}
             <div field="maxAsyncNum" headerAlign="center" allowSort="true">运行队列大小（异步）</div>
             <div field="maxSyncWaitNum" headerAlign="center" allowSort="true">等待队列大小（同步）</div>
             <div field="maxAsyncWaitNum" headerAlign="center" allowSort="true">等待队列大小（异步）</div>
+            <div headerAlign="center" allowSort="true" renderer="renderDateType">日期窗口</div>
+            <div headerAlign="center" allowSort="true" renderer="renderTimeWindow">时间窗口</div>
             <div field="alarmType" headerAlign="center" allowSort="true" renderer="renderAlarmType">告警方式</div>
             <!--<div name="operation" headerAlign="center" align="center" allowSort="true" renderer="operation">操作</div>-->
         </div>
@@ -109,9 +111,9 @@ ${extends("/goframe/function_layout.httl")}
 
 <script type="text/javascript">
     var grid1;
-    var serviceGetName ;
-    var serviceGetType;
-    var pkGetId ;
+    var serviceId ;
+    var serviceName ;
+    var serviceType;
 
     /**
      * 按需加载资源文件
@@ -119,9 +121,9 @@ ${extends("/goframe/function_layout.httl")}
     require(['jquery', 'nui'], function ($, nui) {
         nui.parse();
         grid1 = nui.get("datagrid1");
-        serviceGetName = '${serviceName}';
-        serviceGetType = '${serviceType}';
-        pkGetId = '${pkId}';
+        serviceId = '${pkId}';
+        serviceName = '${serviceName}';
+        serviceType = '${serviceType}';
     //    grid1.load();
         search();
         $("#pull").hide();
@@ -182,7 +184,7 @@ ${extends("/goframe/function_layout.httl")}
      */
     function add() {
         nui.open({
-            url: "${basePath}/goframe/p/rc.service.authAdd?serviceGetName="+serviceGetName+"&serviceGetType="+serviceGetType+'&pkGetId='+pkGetId,
+            url: "${basePath}/goframe/p/rc.auth.add?serviceId="+serviceId+"&serviceName="+serviceName+"&serviceType="+serviceType,
             title: "添加",
             width: 680,
             height: 380,
@@ -190,7 +192,7 @@ ${extends("/goframe/function_layout.httl")}
             },
             ondestroy: function (action) {
                 if (action == "success") {
-                  //  grid1.load(); //因为有默认的查询条件服务名称，所以这样刷新列表
+                    //  grid1.load(); //因为有默认的查询条件服务名称，所以这样刷新列表
                     search();
                 }
             }
@@ -198,11 +200,11 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     /**
-     *
+     * 批量添加
      */
     function addBatch() {
         nui.open({
-            url: "${basePath}/goframe/p/rc.auth.addBatch?pkGetId="+pkGetId+"&serviceGetName="+serviceGetName,
+            url: "${basePath}/goframe/p/rc.auth.addBatch?serviceId="+serviceId+"&serviceName="+serviceName,
             title: "添加",
             width: 680,
             height: 380,
@@ -350,6 +352,30 @@ ${extends("/goframe/function_layout.httl")}
      */
     function renderServiceType(e) {
         return nui.getDictText("UDSP_SERVICE_TYPE", e.row.serviceType);
+    }
+
+    /**
+     * 转换窗口日期类型
+     * @param e
+     * @returns {*}
+     */
+    function renderDateType(e) {
+        return nui.getDictText("RC_DATE_TYPE", e.row.dateType);
+    }
+
+    /**
+     * 时间窗口渲染
+     * @param e
+     * @returns {string}
+     */
+    function renderTimeWindow(e) {
+        if (e.row.startTime && !e.row.endTime) {
+            return e.row.startTime + "-24:00";
+        } else if (e.row.startTime && e.row.endTime) {
+            return e.row.startTime + "-" + e.row.endTime;
+        } else if (!e.row.startTime && e.row.endTime) {
+            return "00:00-" + e.row.endTime;
+        }
     }
 
     /**

@@ -151,6 +151,8 @@ ${extends("/goframe/function_layout.httl")}
             <div field="maxAsyncNum" headerAlign="center" allowSort="true">运行队列大小（异步）</div>
             <div field="maxSyncWaitNum" headerAlign="center" allowSort="true">等待队列大小（同步）</div>
             <div field="maxAsyncWaitNum" headerAlign="center" allowSort="true">等待队列大小（异步）</div>
+            <div headerAlign="center" allowSort="true" renderer="renderDateType">日期窗口</div>
+            <div headerAlign="center" allowSort="true" renderer="renderTimeWindow">时间窗口</div>
             <div field="alarmType" headerAlign="center" allowSort="true" renderer="renderAlarmType">告警方式</div>
             <!--<div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>-->
             <!--<div name="operation" headerAlign="center" align="center" allowSort="true" renderer="operation">操作</div>-->
@@ -415,6 +417,30 @@ ${extends("/goframe/function_layout.httl")}
         return nui.getDictText("UDSP_SERVICE_TYPE", e.row.serviceType);
     }
 
+    /**
+     * 转换窗口日期类型
+     * @param e
+     * @returns {*}
+     */
+    function renderDateType(e) {
+        return nui.getDictText("RC_DATE_TYPE", e.row.dateType);
+    }
+
+    /**
+     * 窗口时间区间渲染
+     * @param e
+     * @returns {string}
+     */
+    function renderTimeWindow(e) {
+        if (e.row.startTime && !e.row.endTime) {
+            return e.row.startTime + "-24:00";
+        } else if (e.row.startTime && e.row.endTime) {
+            return e.row.startTime + "-" + e.row.endTime;
+        } else if (!e.row.startTime && e.row.endTime) {
+            return "00:00-" + e.row.endTime;
+        }
+    }
+
     /** 转换应用名称
      * @param e
      * @returns {*}
@@ -429,7 +455,7 @@ ${extends("/goframe/function_layout.httl")}
             contentType: 'application/json',
             success: function (result) {
                 if (result.status) {
-                    if(result.data) {
+                    if (result.data) {
                         appName = result.data.name;
                     }
                 } else {

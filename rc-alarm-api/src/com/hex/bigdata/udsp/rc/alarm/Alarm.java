@@ -1,7 +1,6 @@
 package com.hex.bigdata.udsp.rc.alarm;
 
 import com.hex.bigdata.udsp.rc.alarm.model.Config;
-import org.apache.commons.mail.EmailException;
 
 /**
  * 警报接口类
