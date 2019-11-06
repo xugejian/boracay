@@ -56,15 +56,15 @@ ${extends("/goframe/function_layout.httl")}
                         <td class="roleText" style="width: 25%">
                             <input name="name" class="nui-textbox" style="width:98%;"/>
                         </td>
-                        <td class="tit roleLabel" style="width: 100px;text-align: right">应用类型：</td>
-                        <td class="roleText" style="width: 25%">
-                            <input id="type" name="type" class="nui-dictcombobox nui-form-input" emptyText="请选择应用类型"
-                                   valueField="dictId" emptyText="全部" showNullItem="true" nullItemText="全部"
-                                   textField="dictName" dictTypeId="UDSP_SERVICE_TYPE" style="width: 97%;"/>
-                        </td>
                         <td class="tit roleLabel" style="width: 100px;text-align: right">说明：</td>
                         <td class="roleText" style="width: 25%">
                             <input name="describe" class="nui-textbox" style="width:98%;"/>
+                        </td>
+                        <td class="tit roleLabel" style="width: 100px;text-align: right">应用类型：</td>
+                        <td class="roleText" style="width: 25%">
+                            <input name="type" class="nui-dictcombobox nui-form-input"
+                                   valueField="dictId" emptyText="全部" showNullItem="true" nullItemText="全部"
+                                   textField="dictName" dictTypeId="UDSP_SERVICE_TYPE" style="width: 97%;"/>
                         </td>
                     </tr>
                     <tr>
@@ -87,12 +87,29 @@ ${extends("/goframe/function_layout.httl")}
 
                         <td class="tit roleLabel" style="width: 100px;text-align: right">服务状态：</td>
                         <td class="roleText" style="width: 25%">
-                            <input id="status" name="status" class="nui-dictcombobox nui-form-input"
+                            <input name="status" class="nui-dictcombobox nui-form-input"
                                    valueField="dictId" emptyText="全部" showNullItem="true" nullItemText="全部"
                                    textField="dictName" dictTypeId="RC_SERVICE_STATUS" style="width: 97%;"/>
                         </td>
                     </tr>
-
+                    <tr>
+                        <td class="tit roleLabel" style="width: 100px;text-align: right">是否缓存：</td>
+                        <td class="roleText" style="width: 25%">
+                            <input name="isCache" class="nui-dictcombobox nui-form-input"
+                                   valueField="dictId" emptyText="全部" showNullItem="true" nullItemText="全部"
+                                   textField="dictName" dictTypeId="YES_OR_NO" style="width: 97%;"/>
+                        </td>
+                        <td class="tit roleLabel" style="width: 100px;text-align: right">是否落地：</td>
+                        <td class="roleText" style="width: 25%">
+                            <input name="isStore" class="nui-dictcombobox nui-form-input"
+                                   valueField="dictId" emptyText="全部" showNullItem="true" nullItemText="全部"
+                                   textField="dictName" dictTypeId="YES_OR_NO" style="width: 97%;"/>
+                        </td>
+                        <td class="tit roleLabel" style="width: 100px;text-align: right">备注：</td>
+                        <td class="roleText" style="width: 25%">
+                            <input name="note" class="nui-textbox" style="width:98%;"/>
+                        </td>
+                    </tr>
                     <tr>
                         <td colspan="6" align="center">
                             <input class="nui-button" iconCls="icon-search" text="查询" onclick="search"/>
@@ -149,6 +166,8 @@ ${extends("/goframe/function_layout.httl")}
             <div field="crtTime" headerAlign="center" allowSort="true" renderer="timeFormat">创建时间</div>
             <div field="uptTime" headerAlign="center" allowSort="true" renderer="timeFormat">更新时间</div>
             <div field="isCache" headerAlign="center" allowSort="true" renderer="renderIsCache">是否缓存</div>
+            <div field="isStore" headerAlign="center" allowSort="true" renderer="renderIsStore">是否落地</div>
+            <div field="note" headerAlign="center" allowSort="true">备注</div>
             <div name="operation" headerAlign="center" align="center" allowSort="true" renderer="operation">操作</div>
         </div>
     </div>
@@ -604,6 +623,10 @@ ${extends("/goframe/function_layout.httl")}
 
     function renderIsCache(e) {
         return nui.getDictText("YES_OR_NO", e.row.isCache);
+    }
+
+    function renderIsStore(e) {
+        return nui.getDictText("YES_OR_NO", e.row.isStore);
     }
 </script>
 

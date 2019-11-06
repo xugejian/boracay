@@ -13,9 +13,10 @@
     <orderEntry type="library" name="mybatis" level="project" />
     <orderEntry type="library" name="spring" level="project" />
     <orderEntry type="library" name="poi" level="project" />
-    <orderEntry type="library" name="mail" level="project" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="common-api" />
+    <orderEntry type="module" module-name="rc-alarm-api" />
+    <orderEntry type="module" module-name="rc-alarm-mail" />
     <orderEntry type="module" module-name="iq" />
     <orderEntry type="module" module-name="mm" />
     <orderEntry type="module" module-name="olq" />

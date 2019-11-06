@@ -3,14 +3,12 @@ package com.hex.bigdata.udsp.rc.alarm.impl;
 import com.hex.bigdata.udsp.rc.alarm.Alarm;
 import com.hex.bigdata.udsp.rc.alarm.impl.model.MailConfig;
 import com.hex.bigdata.udsp.rc.alarm.model.Config;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.HtmlEmail;
-import org.springframework.stereotype.Component;
 
 /**
  * 邮件警报类
  */
-@Component("com.hex.bigdata.udsp.rc.alarm.impl.MailAlarm")
 public class MailAlarm implements Alarm {
     @Override
     public void send(Config config, String message) throws Exception {

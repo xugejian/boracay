@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.rc.alarm.impl.model;
 
 import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.rc.alarm.model.Config;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Map;
 

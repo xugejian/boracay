@@ -50,7 +50,7 @@ public class WaitingService {
     private long asyncCycleTimeInterval;
 
     @Autowired
-    private LoggingService loggingService;
+    private ConsumeLogService consumeLogService;
     @Autowired
     private InitParamService initParamService;
     @Autowired
@@ -120,10 +120,10 @@ public class WaitingService {
                 });
                 passFlg = futureTask.get (maxWaitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
-                loggingService.writeResponseLog (null, consumeRequest, bef, 0, ErrorCode.ERROR_000014, e.toString ());
+                consumeLogService.writeResponseLog (null, consumeRequest, bef, 0, ErrorCode.ERROR_000014, e.toString ());
             } catch (Exception e) {
                 e.printStackTrace ();
-                loggingService.writeResponseLog (null, consumeRequest, bef, 0, ErrorCode.ERROR_000007, e.toString ());
+                consumeLogService.writeResponseLog (null, consumeRequest, bef, 0, ErrorCode.ERROR_000007, e.toString ());
             }
         }
         return passFlg;

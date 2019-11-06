@@ -35,10 +35,6 @@ public class ListenerContent implements ApplicationListener<ContextRefreshedEven
 
     @Autowired
     private FtpUserManagerService ftpUserManagerService;
-//    @Autowired
-//    private RunQueueService runQueueService;
-//    @Autowired
-//    private WaitQueueService waitQueueService;
 
     /**
      * Spring初始化完成时指定执行该方法
@@ -70,14 +66,6 @@ public class ListenerContent implements ApplicationListener<ContextRefreshedEven
 
         logger.info ("启动服务时初始化FTP服务器上UDSP用户和用户组");
         ftpUserManagerService.init ();
-
-        /*
-        这里无法初始化时清空队列信息，因为这里WebApplicationContext还没有初始化
-         */
-//        logger.info("启动服务时清空本机的运行队列信息");
-//        runQueueService.emptyLocalCache();
-//        logger.info("启动服务时清空本机的等待队列信息");
-//        waitQueueService.emptyLocalCache();
 
     }
 }

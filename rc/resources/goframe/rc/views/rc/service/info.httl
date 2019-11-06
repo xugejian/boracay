@@ -5,12 +5,15 @@ ${extends("/goframe/function_layout.httl")}
         <table style="width:100%;height:100%;" cellpadding="5px,0px,5px,0px" class="nui-form-table">
             <tr>
                 <th class="nui-form-label"><label for="name">名称：</label></th>
-                <td colspan="3">
-                    <input id="name" name="name" class="nui-textbox" style="width: 99%" readonly="true"
-                          />
+                <td>
+                    <input id="name" name="name" class="nui-textbox" style="width: 99%" readonly="true"/>
+                </td>
+                <th class="nui-form-label"><label for="describe">说明：</label></th>
+                <td>
+                    <input name="describe" id="describe" class="nui-textarea" style="width:99%;"
+                           readonly="true"/>
                 </td>
             </tr>
-
             <tr>
                 <th class="nui-form-label"><label for="type">应用类型：</label></th>
                 <td>
@@ -23,7 +26,6 @@ ${extends("/goframe/function_layout.httl")}
                            readonly="true" emptyText="请选择应用名称"/>
                 </td>
             </tr>
-
             <tr>
                 <th class="nui-form-label"><label for="isCache">是否缓存：</label></th>
                 <td>
@@ -37,11 +39,18 @@ ${extends("/goframe/function_layout.httl")}
                             required="true" vtype="range:1,9999999999" value="60" readonly="true"/>
                 </td>
             </tr>
-
             <tr>
-                <th class="nui-form-label"><label for="describe">说明：</label></th>
+                <th class="nui-form-label"><label for="isCache">是否落地：</label></th>
+                <td>
+                    <input id="isStore" name="isStore" class="nui-dictcombobox nui-form-input"
+                           valueField="dictId" textField="dictName" dictTypeId="YES_OR_NO"
+                           required="true" value="1" style="width: 90%;" readonly="true"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="nui-form-label"><label for="describe">备注：</label></th>
                 <td colspan="3">
-                    <input name="describe" id="describe" class="nui-textarea" style="height:60px; width:99%;"
+                    <input name="note" id="note" class="nui-textarea" style="height:60px; width:99%;"
                           readonly="true"/>
                 </td>
             </tr>

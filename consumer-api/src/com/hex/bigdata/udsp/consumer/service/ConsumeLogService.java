@@ -12,7 +12,7 @@ import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.mc.model.McConsumeLog;
 import com.hex.bigdata.udsp.mc.service.McConsumeLogService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
-import com.hex.bigdata.udsp.rc.service.AlarmService;
+import com.hex.bigdata.udsp.rc.service.RcAlarmService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,13 +26,13 @@ import java.sql.SQLException;
  * Created by JunjieM on 2018-5-26.
  */
 @Service
-public class LoggingService {
-    private static Logger logger = LogManager.getLogger (LoggingService.class);
+public class ConsumeLogService {
+    private static Logger logger = LogManager.getLogger (ConsumeLogService.class);
 
     @Autowired
     private McConsumeLogService mcConsumeLogService;
     @Autowired
-    private AlarmService alarmService;
+    private RcAlarmService rcAlarmService;
     @Autowired
     private InitParamService initParamService;
 
@@ -102,7 +102,7 @@ public class LoggingService {
                         + (runBef != 0 ? "，执行耗时：" + new BigDecimal ((float) (now - runBef) / 1000).setScale (2, BigDecimal.ROUND_HALF_UP).doubleValue () + "秒" : "")
                         + "，总耗时：" + new BigDecimal ((float) (now - bef) / 1000).setScale (2, BigDecimal.ROUND_HALF_UP).doubleValue () + "秒！";
                 try {
-                    alarmService.send (rcUserService, msg);
+                    rcAlarmService.send (rcUserService, msg);
                 } catch (Exception e) {
                     e.printStackTrace ();
                     message = "发送警报出错，错误信息：" + e.getMessage ();

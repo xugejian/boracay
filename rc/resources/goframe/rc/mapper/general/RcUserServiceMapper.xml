@@ -20,6 +20,9 @@
         <result column="UPT_USER" property="uptUser" jdbcType="VARCHAR"/>
         <result column="UPT_TIME" property="uptTime" jdbcType="VARCHAR"/>
         <result column="ALARM_TYPE" property="alarmType" jdbcType="VARCHAR"/>
+        <result column="DATE_TYPE" property="dateType" jdbcType="VARCHAR"/>
+        <result column="START_TIME" property="startTime" jdbcType="VARCHAR"/>
+        <result column="END_TIME" property="endTime" jdbcType="VARCHAR"/>
     </resultMap>
     <resultMap id="FullResultMap" type="com.hex.bigdata.udsp.rc.dto.RcUserServiceView" extends="BaseResultMap">
         <result column="SERVICE_NAME" property="serviceName" jdbcType="VARCHAR"/>
@@ -52,12 +55,12 @@
     insert into RC_USER_SERVICE (PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM,
     MAX_ASYNC_NUM,MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,MAX_SYNC_WAIT_TIMEOUT,MAX_ASYNC_WAIT_TIMEOUT,
     MAX_SYNC_EXECUTE_TIMEOUT,MAX_ASYNC_EXECUTE_TIMEOUT,DEL_FLG,CRT_USER, CRT_TIME, UPT_USER, UPT_TIME,
-    ALARM_TYPE)
+    ALARM_TYPE, DATE_TYPE, START_TIME, END_TIME)
     values (#{pkId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{serviceId,jdbcType=VARCHAR}, #{ipSection,jdbcType=VARCHAR},
      #{maxSyncNum,jdbcType=DECIMAL}, #{maxAsyncNum,jdbcType=DECIMAL},#{maxSyncWaitNum,jdbcType=DECIMAL},#{maxAsyncWaitNum,jdbcType=DECIMAL},
      #{maxSyncWaitTimeout,jdbcType=DECIMAL},#{maxAsyncWaitTimeout,jdbcType=DECIMAL},#{maxSyncExecuteTimeout,jdbcType=DECIMAL},#{maxAsyncExecuteTimeout,jdbcType=DECIMAL},
      #{delFlg,jdbcType=CHAR},#{crtUser,jdbcType=VARCHAR},#{crtTime,jdbcType=VARCHAR}, #{uptUser,jdbcType=VARCHAR}, #{uptTime,jdbcType=VARCHAR},
-     #{alarmType,jdbcType=VARCHAR})
+     #{alarmType,jdbcType=VARCHAR}, #{dateType,jdbcType=VARCHAR}, #{startTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR})
   </insert>
     <update id="updateByPrimaryKey" parameterType="com.hex.bigdata.udsp.rc.model.RcUserService">
     update RC_USER_SERVICE
@@ -77,20 +80,23 @@
       CRT_TIME = #{crtTime,jdbcType=VARCHAR},
       UPT_USER = #{uptUser,jdbcType=VARCHAR},
       UPT_TIME = #{uptTime,jdbcType=VARCHAR},
-      ALARM_TYPE = #{alarmType,jdbcType=VARCHAR}
+      ALARM_TYPE = #{alarmType,jdbcType=VARCHAR},
+      DATE_TYPE = #{dateType,jdbcType=VARCHAR},
+      START_TIME = #{startTime,jdbcType=VARCHAR},
+      END_TIME = #{endTime,jdbcType=VARCHAR}
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </update>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
     select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM, MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,
     MAX_SYNC_WAIT_TIMEOUT,MAX_ASYNC_WAIT_TIMEOUT,MAX_SYNC_EXECUTE_TIMEOUT,MAX_ASYNC_EXECUTE_TIMEOUT,DEL_FLG, CRT_USER,
-    CRT_TIME, UPT_USER, UPT_TIME, ALARM_TYPE
+    CRT_TIME, UPT_USER, UPT_TIME, ALARM_TYPE, DATE_TYPE, START_TIME, END_TIME
     from RC_USER_SERVICE
     where PK_ID = #{pkId,jdbcType=VARCHAR}
   </select>
     <select id="selectAll" resultMap="BaseResultMap">
     select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM, MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,
      MAX_SYNC_WAIT_TIMEOUT,MAX_ASYNC_WAIT_TIMEOUT,MAX_SYNC_EXECUTE_TIMEOUT,MAX_ASYNC_EXECUTE_TIMEOUT,DEL_FLG, CRT_USER,
-     CRT_TIME, UPT_USER, UPT_TIME, ALARM_TYPE
+     CRT_TIME, UPT_USER, UPT_TIME, ALARM_TYPE, DATE_TYPE, START_TIME, END_TIME
     from RC_USER_SERVICE
     where DEL_FLG = '0'
   </select>
@@ -106,8 +112,9 @@
         select rcus.PK_ID, rcus.USER_ID, rcus.SERVICE_ID, rcus.IP_SECTION, rcus.MAX_SYNC_NUM, rcus.MAX_ASYNC_NUM,
         rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM, rcus.MAX_SYNC_WAIT_TIMEOUT, rcus.MAX_ASYNC_WAIT_TIMEOUT,
         rcus.MAX_SYNC_EXECUTE_TIMEOUT, rcus.MAX_ASYNC_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER, rcus.CRT_TIME,
-        rcus.UPT_USER, rcus.UPT_TIME, rcus.ALARM_TYPE, rcs.NAME AS SERVICE_NAME, rcs.TYPE AS SERVICE_TYPE,
-        gfuser.user_name AS USER_NAME, rcs.DESCRIPTION as SERVICE_DESCRIBE, rcs.APP_ID AS SERVICE_APP_ID
+        rcus.UPT_USER, rcus.UPT_TIME, rcus.ALARM_TYPE, rcus.DATE_TYPE, rcus.START_TIME, rcus.END_TIME,
+        rcs.NAME AS SERVICE_NAME, rcs.TYPE AS SERVICE_TYPE, rcs.DESCRIPTION as SERVICE_DESCRIBE, rcs.APP_ID AS SERVICE_APP_ID,
+        gfuser.USER_NAME AS USER_NAME
         from RC_USER_SERVICE rcus
         left join T_GF_LOGINUSER gfuser
         on rcus.USER_ID=gfuser.USER_ID
@@ -132,7 +139,8 @@
     <select id="selectRelation" resultMap="BaseResultMap" parameterType="com.hex.bigdata.udsp.rc.model.RcUserService">
         select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM,
         MAX_SYNC_WAIT_NUM, MAX_ASYNC_WAIT_NUM, MAX_SYNC_WAIT_TIMEOUT, MAX_ASYNC_WAIT_TIMEOUT,
-        MAX_SYNC_EXECUTE_TIMEOUT, MAX_ASYNC_EXECUTE_TIMEOUT, DEL_FLG, CRT_USER, CRT_TIME,UPT_USER, UPT_TIME, ALARM_TYPE
+        MAX_SYNC_EXECUTE_TIMEOUT, MAX_ASYNC_EXECUTE_TIMEOUT, DEL_FLG, CRT_USER, CRT_TIME,
+        UPT_USER, UPT_TIME, ALARM_TYPE, DATE_TYPE, START_TIME, END_TIME
         from RC_USER_SERVICE
         where DEL_FLG = '0'
         <if test="serviceId!='' and serviceId!=null ">and SERVICE_ID =#{serviceId}</if>
@@ -143,8 +151,9 @@
     select rcus.PK_ID, rcus.USER_ID, rcus.SERVICE_ID, rcus.IP_SECTION, rcus.MAX_SYNC_NUM, rcus.MAX_ASYNC_NUM,
     rcus.MAX_SYNC_WAIT_NUM, rcus.MAX_ASYNC_WAIT_NUM, rcus.MAX_SYNC_WAIT_TIMEOUT, rcus.MAX_ASYNC_WAIT_TIMEOUT,
     rcus.MAX_SYNC_EXECUTE_TIMEOUT, rcus.MAX_ASYNC_EXECUTE_TIMEOUT, rcus.DEL_FLG, rcus.CRT_USER, rcus.CRT_TIME,
-    rcus.UPT_USER, rcus.UPT_TIME, rcus.ALARM_TYPE, rcs.NAME as SERVICE_NAME, rcs.TYPE as SERVICE_TYPE,
-    rcs.DESCRIPTION as SERVICE_DESCRIBE, rcs.APP_ID as SERVICE_APP_ID, gfuser.user_name as USER_NAME
+    rcus.UPT_USER, rcus.UPT_TIME, rcus.ALARM_TYPE, rcus.DATE_TYPE, rcus.START_TIME, rcus.END_TIME,
+    rcs.NAME as SERVICE_NAME, rcs.TYPE as SERVICE_TYPE, rcs.DESCRIPTION as SERVICE_DESCRIBE, rcs.APP_ID as SERVICE_APP_ID,
+    gfuser.user_name as USER_NAME
     from RC_USER_SERVICE rcus
     left join T_GF_LOGINUSER gfuser
     on rcus.USER_ID=gfuser.USER_ID
@@ -215,7 +224,8 @@
             parameterType="com.hex.bigdata.udsp.rc.model.RcUserService">
     select PK_ID, USER_ID, SERVICE_ID, IP_SECTION, MAX_SYNC_NUM, MAX_ASYNC_NUM,
     MAX_SYNC_WAIT_NUM,MAX_ASYNC_WAIT_NUM,MAX_SYNC_WAIT_TIMEOUT,MAX_ASYNC_WAIT_TIMEOUT,MAX_SYNC_EXECUTE_TIMEOUT,
-    MAX_ASYNC_EXECUTE_TIMEOUT, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME, ALARM_TYPE
+    MAX_ASYNC_EXECUTE_TIMEOUT, DEL_FLG, CRT_USER, CRT_TIME, UPT_USER, UPT_TIME, ALARM_TYPE,
+    DATE_TYPE, START_TIME, END_TIME
     from RC_USER_SERVICE
     where DEL_FLG = '0'
     and USER_ID = #{userId,jdbcType=VARCHAR}
@@ -235,7 +245,7 @@
         select rcus.PK_ID, rcus.USER_ID, rcus.SERVICE_ID, rcus.IP_SECTION, rcus.MAX_SYNC_NUM, rcus.MAX_ASYNC_NUM,
         rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_SYNC_WAIT_TIMEOUT,rcus.MAX_ASYNC_WAIT_TIMEOUT,rcus.MAX_SYNC_EXECUTE_TIMEOUT,
         rcus.MAX_ASYNC_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER,rcus.CRT_TIME, rcus.UPT_USER, rcus.UPT_TIME, rcus.ALARM_TYPE,
-        rcs.NAME AS SERVICE_NAME,rcs.DESCRIPTION as SERVICE_DESCRIBE
+        rcs.NAME AS SERVICE_NAME,rcs.DESCRIPTION as SERVICE_DESCRIBE, rcus.DATE_TYPE, rcus.START_TIME, rcus.END_TIME
         from RC_USER_SERVICE rcus
         LEFT JOIN RC_SERVICE rcs ON rcus.SERVICE_ID = rcs.PK_ID
         where rcus.SERVICE_ID = #{serviceId} and rcus.DEL_FLG = '0'
@@ -246,7 +256,7 @@
         select rcus.PK_ID, rcus.USER_ID, rcus.SERVICE_ID, rcus.IP_SECTION, rcus.MAX_SYNC_NUM, rcus.MAX_ASYNC_NUM,
         rcus.MAX_SYNC_WAIT_NUM,rcus.MAX_ASYNC_WAIT_NUM,rcus.MAX_SYNC_WAIT_TIMEOUT,rcus.MAX_ASYNC_WAIT_TIMEOUT,rcus.MAX_SYNC_EXECUTE_TIMEOUT,
         rcus.MAX_ASYNC_EXECUTE_TIMEOUT,rcus.DEL_FLG, rcus.CRT_USER,rcus.CRT_TIME, rcus.UPT_USER, rcus.UPT_TIME, rcus.ALARM_TYPE,
-        rcs.NAME AS SERVICE_NAME,rcs.DESCRIPTION as SERVICE_DESCRIBE
+        rcs.NAME AS SERVICE_NAME,rcs.DESCRIPTION as SERVICE_DESCRIBE, rcus.DATE_TYPE, rcus.START_TIME, rcus.END_TIME
         from RC_USER_SERVICE rcus
         LEFT JOIN RC_SERVICE rcs ON rcus.SERVICE_ID = rcs.PK_ID
         where rcus.USER_ID = #{userId} and rcus.DEL_FLG = '0'
