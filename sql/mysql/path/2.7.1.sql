@@ -3,31 +3,19 @@ ALTER TABLE RC_SERVICE ADD IS_STORE CHAR(1) default 1;
 COMMENT ON COLUMN RC_SERVICE.IS_STORE IS '是否存储结果数据（0：是，1：否）';
 
 -- 创建消费数据表
-create table MC_CONSUME_DATA
-(
-  user_name        VARCHAR2(32) not null,
-  service_name     VARCHAR2(64) not null,
-  save_time        VARCHAR2(32) not null,
-  request_content  CLOB not null,
-  response_content CLOB not null,
-  app_type         VARCHAR2(32) not null,
-  app_name         VARCHAR2(64) not null
+CREATE TABLE `mc_consume_data` (
+`USER_NAME`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户名' ,
+`SERVICE_NAME`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '服务名' ,
+`SAVE_TIME`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '保存时间' ,
+`REQUEST_CONTENT`  text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '请求内容' ,
+`RESPONSE_CONTENT`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '响应内容' ,
+`APP_TYPE`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '应用类型' ,
+`APP_NAME`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '应用名'
 )
+ENGINE=InnoDB
+DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
+COMMENT='消费数据表'
 ;
-comment on column MC_CONSUME_DATA.user_name
-  is '用户名';
-comment on column MC_CONSUME_DATA.service_name
-  is '服务名';
-comment on column MC_CONSUME_DATA.save_time
-  is '保存时间';
-comment on column MC_CONSUME_DATA.request_content
-  is '请求内容';
-comment on column MC_CONSUME_DATA.response_content
-  is '响应内容';
-comment on column MC_CONSUME_DATA.app_type
-  is '应用类型';
-comment on column MC_CONSUME_DATA.app_name
-  is '应用名';
 
 -- 往服务注册信息表中添加备注字段
 ALTER TABLE RC_SERVICE ADD NOTE VARCHAR2(4000);
