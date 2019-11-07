@@ -743,3 +743,46 @@ alter table MM_CONTRACTOR drop column EXTEND_FIELD2;
 
 -- 消费日志表中添加接口耗时字段
 ALTER TABLE MC_CONSUME_LOG ADD CONSUME_TIME DECIMAL(10,0) COMMENT '接口耗时（ms）';
+
+-- 往服务注册信息表中添加是否存储字段
+ALTER TABLE RC_SERVICE ADD IS_STORE CHAR(1) default 1;
+COMMENT ON COLUMN RC_SERVICE.IS_STORE IS '是否存储结果数据（0：是，1：否）';
+
+-- 创建消费数据表
+create table MC_CONSUME_DATA
+(
+  user_name        VARCHAR2(32) not null,
+  service_name     VARCHAR2(64) not null,
+  save_time        VARCHAR2(32) not null,
+  request_content  CLOB not null,
+  response_content CLOB not null,
+  app_type         VARCHAR2(32) not null,
+  app_name         VARCHAR2(64) not null
+)
+;
+comment on column MC_CONSUME_DATA.user_name
+  is '用户名';
+comment on column MC_CONSUME_DATA.service_name
+  is '服务名';
+comment on column MC_CONSUME_DATA.save_time
+  is '保存时间';
+comment on column MC_CONSUME_DATA.request_content
+  is '请求内容';
+comment on column MC_CONSUME_DATA.response_content
+  is '响应内容';
+comment on column MC_CONSUME_DATA.app_type
+  is '应用类型';
+comment on column MC_CONSUME_DATA.app_name
+  is '应用名';
+
+-- 往服务注册信息表中添加备注字段
+ALTER TABLE RC_SERVICE ADD NOTE VARCHAR2(4000);
+COMMENT ON COLUMN RC_SERVICE.NOTE IS '备注';
+
+-- 往服务授权信息表中添加日期类型、开始时间、结束时间字段
+ALTER TABLE RC_USER_SERVICE ADD DATE_TYPE VARCHAR2(32) default 'ALL';
+COMMENT ON COLUMN RC_USER_SERVICE.DATE_TYPE IS '日期窗口类型（ALL、MON-FRI、WEEKEND、...）';
+ALTER TABLE RC_USER_SERVICE ADD START_TIME VARCHAR2(32);
+COMMENT ON COLUMN RC_USER_SERVICE.START_TIME IS '时间窗口的开始时间';
+ALTER TABLE RC_USER_SERVICE ADD END_TIME VARCHAR2(32);
+COMMENT ON COLUMN RC_USER_SERVICE.END_TIME IS '时间窗口的结束时间';

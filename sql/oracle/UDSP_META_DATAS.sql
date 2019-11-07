@@ -2554,6 +2554,26 @@ where dict_type_id='OLQ_DS_PROPS_PGSQL' and dict_id='remove.abandoned.timeout';
 
 commit;
 
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('RC_DATE_TYPE', '注册中心-日期窗口类型', 'default');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('RC_DATE_TYPE', 'ALL', '全部日期', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('RC_DATE_TYPE', 'MON-FRI', '周一至周五', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('RC_DATE_TYPE', 'WEEKEND', '周末', null, 3, null, null, 'default', null);
+
+commit;
+
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000019', '服务类型不支持', null, 19, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000020', '请求日期不在允许的日期窗口内', null, 20, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000021', '请求时间不在允许的时间窗口内', null, 21, null, null, 'default', null);
+
+commit;
+
 set feedback on
 set define on
 prompt Done.
