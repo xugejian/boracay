@@ -34,7 +34,7 @@
     <!-- ==================================== EhCache =====================================-->
     <!-- cacheManager工厂类，指定ehcache.xml的位置 -->
     <bean id="cacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="${ehcache.path}"/>
+        <property name="configLocation" value="classpath:goframe/common/ehcache.xml"/>
     </bean>
     <!-- 声明cacheManager -->
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
