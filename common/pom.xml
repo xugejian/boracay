@@ -109,7 +109,7 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
-            <version>1.6.2.RELEASE</version>
+            <version>1.8.0.RELEASE</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
         <dependency>
