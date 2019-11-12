@@ -18,7 +18,7 @@
         <module>consumer/consumer-restful</module>
         <module>consumer/consumer-socket</module>
 
-        <module>im/im-console</module>
+        <module>im/im</module>
         <module>im/im-converter-api</module>
         <module>im/im-converter-kafka</module>
         <module>im/im-converter-kafka1</module>
@@ -35,7 +35,7 @@
         <module>im/im-converter-pair_solr</module>
         <module>im/im-converter-pair_solr_hbase</module>
 
-        <module>iq/iq-console</module>
+        <module>iq/iq</module>
         <module>iq/iq-provider-api</module>
         <module>iq/iq-provider-es</module>
         <module>iq/iq-provider-hbase</module>
@@ -43,7 +43,7 @@
         <module>iq/iq-provider-solr</module>
         <module>iq/iq-provider-solr_hbase</module>
 
-        <module>olq/olq-console</module>
+        <module>olq/olq</module>
         <module>olq/olq-provider-api</module>
         <module>olq/olq-provider-db2</module>
         <module>olq/olq-provider-impala</module>
@@ -56,7 +56,7 @@
         <module>olq/olq-provider-phoenix</module>
         <module>olq/olq-provider-dsl</module>
 
-        <module>rts/rts-console</module>
+        <module>rts/rts</module>
         <module>rts/rts-executor-api</module>
         <module>rts/rts-executor-kafka</module>
         <module>rts/rts-executor-kafka1</module>
@@ -71,18 +71,34 @@
 
         <module>mm</module>
 
-        <module>sdk</module>
-
         <module>common</module>
 
         <module>common-api</module>
 
+        <module>sdk</module>
+
     </modules>
+
+    <repositories>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+        <repository>
+            <id>aliyun</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>goupwith</id>
+            <url>http://nexus.goupwith.com:8000/repository/maven-public/</url>
+        </repository>
+    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+        <spring.version>4.3.25.RELEASE</spring.version>
     </properties>
 
     <build>
