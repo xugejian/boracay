@@ -892,7 +892,7 @@ insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPL
 insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('8031','RC.service.list.edit','注册中心>服务注册>编辑',NULL,NULL,NULL,NULL,'default');
 insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('9011','RC.userService.list.add','注册中心>用户注册>添加',NULL,NULL,NULL,NULL,'default');
 insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('9021','RC.userService.list.edit','注册中心>用户注册>编辑',NULL,NULL,NULL,NULL,'default');
-insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('9031','RC.userService.listremove','注册中心>用户注册>删除',NULL,NULL,NULL,NULL,'default');
+insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('9031','RC.userService.list.remove','注册中心>用户注册>删除',NULL,NULL,NULL,NULL,'default');
 
 /*Data for the table `t_gf_loginuser` */
 
@@ -1000,7 +1000,7 @@ insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_T
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149551','ADMIN','role','OLQ.qm.testapp.download','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149561','ADMIN','role','RC.userService.list.add','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149571','ADMIN','role','RC.userService.list.edit','default','func');
-insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149581','ADMIN','role','RC.userService.listremove','default','func');
+insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149581','ADMIN','role','RC.userService.list.remove','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149591','ADMIN','role','IQ.cm.md.list.add','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149601','ADMIN','role','IQ.cm.md.list.edit','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149611','ADMIN','role','IQ.cm.md.list.remove','default','func');

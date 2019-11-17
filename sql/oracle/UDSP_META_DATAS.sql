@@ -1661,7 +1661,7 @@ values ('9011', 'RC.userService.list.add', '注册中心>用户注册>添加', n
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
 values ('9021', 'RC.userService.list.edit', '注册中心>用户注册>编辑', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
-values ('9031', 'RC.userService.listremove', '注册中心>用户注册>删除', null, null, null, null, 'default');
+values ('9031', 'RC.userService.list.remove', '注册中心>用户注册>删除', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
 values ('13011', 'IQ.cm.md.list.add', '交互查询>配置管理>元数据配置>添加', null, null, null, null, 'default');
 insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
@@ -2012,7 +2012,7 @@ values ('149561', 'ADMIN', 'role', 'RC.userService.list.add', 'default', 'func')
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('149571', 'ADMIN', 'role', 'RC.userService.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('149581', 'ADMIN', 'role', 'RC.userService.listremove', 'default', 'func');
+values ('149581', 'ADMIN', 'role', 'RC.userService.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('149591', 'ADMIN', 'role', 'IQ.cm.md.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
