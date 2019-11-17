@@ -33,7 +33,7 @@ ${extends("/goframe/function_layout.httl")}
                     <a class="nui-button" iconCls="icon-edit" plain="true" onclick="edit" enabled="false"
                        id="edit">编辑</a>
                     #end
-                    #if(hasPermission("RC.userService.listremove"))
+                    #if(hasPermission("RC.userService.list.remove"))
                     <a class="nui-button" iconCls="icon-remove" plain="true" onclick="remove" enabled="false"
                        id="remove">删除</a>
                     #end

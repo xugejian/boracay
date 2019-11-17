@@ -892,7 +892,7 @@ insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPL
 insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('8031','RC.service.list.edit','注册中心>服务注册>编辑',NULL,NULL,NULL,NULL,'default');
 insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('9011','RC.userService.list.add','注册中心>用户注册>添加',NULL,NULL,NULL,NULL,'default');
 insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('9021','RC.userService.list.edit','注册中心>用户注册>编辑',NULL,NULL,NULL,NULL,'default');
-insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('9031','RC.userService.listremove','注册中心>用户注册>删除',NULL,NULL,NULL,NULL,'default');
+insert  into `t_gf_funcation`(`FUNC_ID`,`FUNC_CODE`,`FUNC_NAME`,`IS_FUNC`,`DISPLAYORDER`,`URL_ACCTION`,`PARENT_FUNC_ID`,`APPID`) values ('9031','RC.userService.list.remove','注册中心>用户注册>删除',NULL,NULL,NULL,NULL,'default');
 
 /*Data for the table `t_gf_loginuser` */
 
