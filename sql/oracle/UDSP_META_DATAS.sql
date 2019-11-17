@@ -2012,7 +2012,7 @@ values ('149561', 'ADMIN', 'role', 'RC.userService.list.add', 'default', 'func')
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('149571', 'ADMIN', 'role', 'RC.userService.list.edit', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
-values ('149581', 'ADMIN', 'role', 'RC.userService.listremove', 'default', 'func');
+values ('149581', 'ADMIN', 'role', 'RC.userService.list.remove', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)
 values ('149591', 'ADMIN', 'role', 'IQ.cm.md.list.add', 'default', 'func');
 insert into T_GF_RES_AUTH (id, auth_id, auth_type, res_id, app_id, res_type)

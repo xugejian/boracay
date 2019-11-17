@@ -1000,7 +1000,7 @@ insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_T
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149551','ADMIN','role','OLQ.qm.testapp.download','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149561','ADMIN','role','RC.userService.list.add','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149571','ADMIN','role','RC.userService.list.edit','default','func');
-insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149581','ADMIN','role','RC.userService.listremove','default','func');
+insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149581','ADMIN','role','RC.userService.list.remove','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149591','ADMIN','role','IQ.cm.md.list.add','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149601','ADMIN','role','IQ.cm.md.list.edit','default','func');
 insert  into `t_gf_res_auth`(`ID`,`AUTH_ID`,`AUTH_TYPE`,`RES_ID`,`APP_ID`,`RES_TYPE`) values ('149611','ADMIN','role','IQ.cm.md.list.remove','default','func');
