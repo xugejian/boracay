@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="hex-udsp-rc-alarm-mail">
+    <output-path>$PROJECT_DIR$/out/artifacts/hex_udsp_rc_alarm_mail</output-path>
+    <root id="archive" name="hex-udsp-rc-alarm-mail.jar">
+      <element id="module-output" name="rc-alarm-mail" />
+    </root>
+  </artifact>
+</component>

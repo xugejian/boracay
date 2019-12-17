@@ -426,8 +426,8 @@ public class HBaseUtil {
 //            }
 //        }
         if (conn == null) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }
