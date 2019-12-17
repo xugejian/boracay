@@ -2574,6 +2574,11 @@ values ('UDSP_CONSUME_ERROR_CODE', '000021', '请求时间不在允许的时间�
 
 commit;
 
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_SERVICE_TYPE', 'IQ_DSL', '交互查询DSL', null, 8, null, null, 'default', null);
+
+commit;
+
 set feedback on
 set define on
 prompt Done.

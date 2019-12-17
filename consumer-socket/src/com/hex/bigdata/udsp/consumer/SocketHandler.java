@@ -41,7 +41,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     public SocketHandler() {
         this.consumerService = (ExternalConsumerService) WebApplicationContextUtil.getBean ("externalConsumerService");
-        this.consumeLogService = (ConsumeLogService) WebApplicationContextUtil.getBean ("loggingService");
+        this.consumeLogService = (ConsumeLogService) WebApplicationContextUtil.getBean ("consumeLogService");
     }
 
     /**
