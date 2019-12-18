@@ -80,6 +80,9 @@
           <element id="artifact" artifact-name="hex-udsp-im-converter-pair_hbase" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-pair_solr" />
           <element id="artifact" artifact-name="hex-udsp-im-converter-pair_solr_hbase" />
+          <element id="artifact" artifact-name="hex-udsp-rc-alarm-api" />
+          <element id="artifact" artifact-name="hex-udsp-rc-alarm-mail" />
+          <element id="library" level="project" name="h2" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="console/web/Web" />

@@ -145,9 +145,9 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     DSLSQLParser.ShowCachesStatementContext showCachesStatementContext = (DSLSQLParser.ShowCachesStatementContext) parse;
                     if (showCachesStatementContext.serviceName () != null) { // show caches <service_name>
                         String serviceName = showCachesStatementContext.serviceName ().getText ();
-                        logger.debug ("show caches "+serviceName);
+                        logger.debug ("show caches " + serviceName);
                         response = consumerService.showCachesService (serviceName);
-                    }else { // show caches
+                    } else { // show caches
                         logger.debug ("show caches");
                         response = consumerService.showCaches ();
                     }
