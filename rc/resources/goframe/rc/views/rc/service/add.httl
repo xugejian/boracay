@@ -12,7 +12,7 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="describe">说明：</label></th>
                     <td >
                         <input name="describe" id="describe" class="nui-textarea" style="width: 99%"
-                               vtype="maxLength:256"/>
+                               required="true" vtype="maxLength:256"/>
                     </td>
                 </tr>
                 <tr>
@@ -73,7 +73,7 @@ ${extends("/goframe/function_layout.httl")}
 <script type="text/javascript">
     var form1;
     var grid1;
-    var appId_nuiObject;
+    var appIdObj;
     /**
      * 按需加载资源文件
      */
@@ -81,8 +81,25 @@ ${extends("/goframe/function_layout.httl")}
         nui.parse();
         form1 = new nui.Form("#form1");
         grid1 = nui.get("datagrid1");
-        appId_nuiObject=nui.get("appId");
-        appId_nuiObject.setRequired(true);
+        appIdObj = nui.get("appId");
+        serviceTypeObj = nui.get("type");
+
+        var serviceType = '${serviceType}';
+        if(serviceType && serviceType.length > 0){
+            serviceTypeObj.setValue(serviceType);
+            serviceTypeObj.setEnabled(false);
+            $.ajax({
+                url: "${basePath}/rc/service/selectApps/" + serviceType,
+                type: 'POST',
+                cache: false,
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.status) {
+                        appIdObj.setData(result.data);
+                    }
+                }
+            });
+        }
     });
 
     /**
@@ -127,7 +144,7 @@ ${extends("/goframe/function_layout.httl")}
     }
 
     function selectApps(e){
-        appId_nuiObject.setValue("");
+        appIdObj.setValue("");
         $.ajax({
             url: "${basePath}/rc/service/selectApps/"+e.value,
             type: 'POST',
@@ -135,7 +152,7 @@ ${extends("/goframe/function_layout.httl")}
             contentType: 'application/json',
             success: function (result) {
                 if (result.status ) {
-                    appId_nuiObject.setData(result.data);
+                    appIdObj.setData(result.data);
                 }
             }
         });

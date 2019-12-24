@@ -19,7 +19,7 @@ ${extends("/goframe/function_layout.httl")}
                 <th class="nui-form-label"><label for="describe">说明：</label></th>
                 <td>
                     <input name="describe" id="describe" class="nui-textarea" style="width:99%;"
-                           vtype="maxLength:256"/>
+                           required="true" vtype="maxLength:256"/>
                 </td>
             </tr>
             <tr>

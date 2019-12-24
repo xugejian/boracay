@@ -179,7 +179,8 @@ ${extends("/goframe/function_layout.httl")}
 
         var serviceId = '${serviceId}';
         var serviceName = '${serviceName}';
-        if (serviceId && serviceId.length > 0) {
+        if (serviceName && serviceName.length > 0
+            && serviceId && serviceId.length > 0) {
             serviceIdObj.setValue(serviceId);
             serviceIdObj.setText(serviceName);
             serviceIdObj.setEnabled(false);

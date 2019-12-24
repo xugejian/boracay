@@ -220,7 +220,7 @@ ${extends("/goframe/function_layout.httl")}
         var serviceId = '${serviceId}';
         var serviceName = '${serviceName}';
         var serviceType = '${serviceType}';
-        if (serviceId && serviceId.length > 0) {
+        if(serviceType && serviceType.length > 0){
             serviceTypeObj.setValue(serviceType);
             serviceTypeObj.setEnabled(false);
             $.ajax({
@@ -231,13 +231,15 @@ ${extends("/goframe/function_layout.httl")}
                 success: function (result) {
                     if (result.status) {
                         serviceIdObj.setData(result.data);
-                        serviceIdObj.setValue(serviceId);
-                        serviceIdObj.setText(serviceName);
-                        serviceIdObj.setEnabled(false);
-                        showSelectUsers();
                     }
                 }
             });
+        }
+        if (serviceName && serviceName.length > 0
+            && serviceId && serviceId.length > 0) {
+            serviceIdObj.setValue(serviceId);
+            serviceIdObj.setText(serviceName);
+            serviceIdObj.setEnabled(false);
         }
     });
 

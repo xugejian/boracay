@@ -1497,4 +1497,18 @@ values ('UDSP_CONSUME_ERROR_CODE', '000021', '请求时间不在允许的时间�
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('UDSP_SERVICE_TYPE', 'IQ_DSL', '交互查询DSL', null, 8, null, null, 'default', null);
 
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('22041', 'IM.flow', '操作导航>交互建模操作流程', null, null, null, null, 'default');
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('22051', 'IQ.flow', '操作导航>交互查询操作流程', null, null, null, null, 'default');
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('22061', 'OLQ.flow', '操作导航>联机查询操作流程', null, null, null, null, 'default');
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('22071', 'OLQ_APP.flow', '操作导航>联机查询应用操作流程', null, null, null, null, 'default');
+
+insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
+values ('118011', '操作导航', null, 'navigator', '1', null, 1, 'default', 'udsp.navigator', '118001', 'fa fa-arrow-right');
+insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
+values ('118001', '操作导航', null, 'navigator.core', '2', null, 0, 'default', null, 'root', null);
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
