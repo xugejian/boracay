@@ -17,7 +17,7 @@ public class FtpUserManagerService {
 
     private static Logger logger = LogManager.getLogger(FtpUserManagerService.class);
 
-    private static final String SHELL_DIR_PATH = "goframe/udsp/shell";
+    private static final String SHELL_DIR_PATH = "goframe/common/shell";
 
     @Value("${auto.create.ftp.user:true}")
     private boolean autoCreateFtpUser;

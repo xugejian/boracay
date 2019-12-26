@@ -7,33 +7,29 @@
     <groupId>com.hex.bigdata</groupId>
     <artifactId>udsp</artifactId>
     <packaging>pom</packaging>
-
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <projectVersion>3.0</projectVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <spring.version>4.3.25.RELEASE</spring.version>
+        <jedis.version>2.9.0</jedis.version>
+    </properties>
+
     <modules>
-        <module>console</module>
+        <module>common-api</module>
 
-        <module>consumer/consumer-api</module>
-        <module>consumer/consumer-http</module>
-        <module>consumer/consumer-restful</module>
-        <module>consumer/consumer-socket</module>
+        <module>common</module>
 
-        <module>im/im</module>
-        <module>im/im-converter-api</module>
-        <module>im/im-converter-kafka</module>
-        <module>im/im-converter-kafka1</module>
-        <module>im/im-converter-hbase</module>
-        <module>im/im-converter-kudu</module>
-        <module>im/im-converter-solr_hbase</module>
-        <module>im/im-converter-solr</module>
-        <module>im/im-converter-impala</module>
-        <module>im/im-converter-oracle</module>
-        <module>im/im-converter-mysql</module>
-        <module>im/im-converter-hive</module>
-        <module>im/im-converter-phoenix</module>
-        <module>im/im-converter-pair_hbase</module>
-        <module>im/im-converter-pair_solr</module>
-        <module>im/im-converter-pair_solr_hbase</module>
+        <module>md</module>
+
+        <module>dsl</module>
+
+        <module>mm</module>
+
+        <module>sdk</module>
 
         <module>iq/iq</module>
         <module>iq/iq-provider-api</module>
@@ -61,32 +57,45 @@
         <module>rts/rts-executor-kafka</module>
         <module>rts/rts-executor-kafka1</module>
 
-        <module>md</module>
-
-        <module>dsl</module>
+        <module>im/im</module>
+        <module>im/im-converter-api</module>
+        <module>im/im-converter-kafka</module>
+        <module>im/im-converter-kafka1</module>
+        <module>im/im-converter-hbase</module>
+        <module>im/im-converter-kudu</module>
+        <module>im/im-converter-solr_hbase</module>
+        <module>im/im-converter-solr</module>
+        <module>im/im-converter-impala</module>
+        <module>im/im-converter-oracle</module>
+        <module>im/im-converter-mysql</module>
+        <module>im/im-converter-hive</module>
+        <module>im/im-converter-phoenix</module>
+        <module>im/im-converter-pair_hbase</module>
+        <module>im/im-converter-pair_solr</module>
+        <module>im/im-converter-pair_solr_hbase</module>
 
         <module>mc</module>
 
-        <module>rc</module>
+        <module>rc/rc</module>
+        <module>rc/rc-alarm-api</module>
+        <module>rc/rc-alarm-mail</module>
 
-        <module>mm</module>
+        <module>consumer/consumer-api</module>
+        <module>consumer/consumer-http</module>
+        <module>consumer/consumer-restful</module>
+        <module>consumer/consumer-socket</module>
 
-        <module>common</module>
-
-        <module>common-api</module>
-
-        <module>sdk</module>
-
+        <module>console</module>
     </modules>
 
     <repositories>
         <repository>
-            <id>cloudera</id>
-            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
-        </repository>
-        <repository>
             <id>aliyun</id>
             <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
         </repository>
         <repository>
             <id>goupwith</id>
@@ -94,16 +103,8 @@
         </repository>
     </repositories>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <spring.version>4.3.25.RELEASE</spring.version>
-    </properties>
-
     <build>
         <plugins>
-            <!--JDK版本 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

@@ -2554,6 +2554,47 @@ where dict_type_id='OLQ_DS_PROPS_PGSQL' and dict_id='remove.abandoned.timeout';
 
 commit;
 
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('RC_DATE_TYPE', '注册中心-日期窗口类型', 'default');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('RC_DATE_TYPE', 'ALL', '全部日期', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('RC_DATE_TYPE', 'MON-FRI', '周一至周五', null, 2, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('RC_DATE_TYPE', 'WEEKEND', '周末', null, 3, null, null, 'default', null);
+
+commit;
+
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000019', '服务类型不支持', null, 19, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000020', '请求日期不在允许的日期窗口内', null, 20, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_CONSUME_ERROR_CODE', '000021', '请求时间不在允许的时间窗口内', null, 21, null, null, 'default', null);
+
+commit;
+
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('UDSP_SERVICE_TYPE', 'IQ_DSL', '交互查询DSL', null, 8, null, null, 'default', null);
+
+commit;
+
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('22041', 'IM.flow', '操作导航>交互建模操作流程', null, null, null, null, 'default');
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('22051', 'IQ.flow', '操作导航>交互查询操作流程', null, null, null, null, 'default');
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('22061', 'OLQ.flow', '操作导航>联机查询操作流程', null, null, null, null, 'default');
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('22071', 'OLQ_APP.flow', '操作导航>联机查询应用操作流程', null, null, null, null, 'default');
+
+insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
+values ('118011', '操作导航', null, 'navigator', '1', null, 1, 'default', 'udsp.navigator', '118001', 'fa fa-arrow-right');
+insert into T_GF_MENU (menuid, menuname, menulabel, menucode, isleaf, parameter, displayorder, app_id, menu_action, parentmenuid, menu_icon)
+values ('118001', '操作导航', null, 'navigator.core', '2', null, 0, 'default', null, 'root', null);
+
+commit;
+
 set feedback on
 set define on
 prompt Done.

@@ -8,6 +8,8 @@ import com.hex.bigdata.udsp.common.util.MD5Util;
 import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
 import com.hex.bigdata.udsp.dsl.model.Component;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,18 +29,43 @@ import java.util.concurrent.ConcurrentHashMap;
 public class H2Aggregator {
     private static Logger logger = LogManager.getLogger (H2Aggregator.class);
 
+    private static final FastDateFormat format = FastDateFormat.getInstance ("yyyy-MM-dd HH:mm:ss");
+
     private static final String TBL_PREFIX = "CACHE_";
     private static final int BATCH_SIZE = 20000;
+
+    public static final String CACHE_NAME = "CACHE_NAME";
 
     @Autowired
     @Qualifier("h2DataSource")
     private BasicDataSource h2DataSource;
 
-    // Map<String table_name, Long end_timestamp>
-    private static Map<String, Long> h2AggMetaCacher = new ConcurrentHashMap<> ();
+    /**
+     * H2表名和超时时间戳映射
+     * Map<String table_name, Long end_timestamp>
+     */
+    private static Map<String, Long> h2TableAndTimeMap = new ConcurrentHashMap<> ();
 
     /**
-     * 获取表名称
+     * H2表名和服务名映射
+     * Map<String table_name, String service_name>
+     */
+    private static Map<String, String> h2TableAndServiceMap = new ConcurrentHashMap<> ();
+
+    /**
+     * 添加H2表名和服务名映射关系
+     *
+     * @param tableName
+     * @param serviceName
+     */
+    public static void putH2TableAndService(String tableName, String serviceName) {
+        if (StringUtils.isNotBlank (tableName) && StringUtils.isNotBlank (serviceName)) {
+            h2TableAndServiceMap.put (tableName, serviceName);
+        }
+    }
+
+    /**
+     * 获取表名称（大写）
      *
      * @param serviceName
      * @param component
@@ -47,12 +75,24 @@ public class H2Aggregator {
         return getH2TableNamePrefix (serviceName) + getH2TableNameSuffix (component);
     }
 
+    /**
+     * 获取表名称前缀（大写）
+     *
+     * @param serviceName
+     * @return
+     */
     private String getH2TableNamePrefix(String serviceName) {
-        return TBL_PREFIX + MD5Util.MD5_16 (serviceName) + "_";
+        return TBL_PREFIX + MD5Util.MD5_16 (serviceName).toUpperCase () + "_";
     }
 
+    /**
+     * 获取表名称后缀（大写）
+     *
+     * @param component
+     * @return
+     */
     private String getH2TableNameSuffix(Component component) {
-        return MD5Util.MD5_16 (DslSqlAdaptor.componentToStatement (component));
+        return MD5Util.MD5_16 (DslSqlAdaptor.componentToStatement (component)).toUpperCase ();
     }
 
     /**
@@ -63,11 +103,16 @@ public class H2Aggregator {
      * @param records
      */
     public void load(String tableName, List<H2DataColumn> columns, List<Map<String, String>> records, long timeout) {
+        if (records == null) {
+            return;
+        }
         long bef = System.currentTimeMillis ();
-        if (records != null && records.size () != 0) {
-            // before Load
-            beforeLoad (tableName, columns);
-            // Load data
+        // before Load
+        logger.info (tableName + " before Load");
+        beforeLoad (tableName, columns);
+        // Load data
+        logger.info (tableName + " Load data");
+        if (records.size () != 0) {
             try (Connection conn = h2DataSource.getConnection ();
                  PreparedStatement ps = conn.prepareStatement (H2SqlUtil.insertInto (tableName, columns.size ()));
             ) {
@@ -135,32 +180,33 @@ public class H2Aggregator {
                 e.printStackTrace ();
                 throw new RuntimeException (e.getMessage ());
             }
-            // after Load
-            afterLoad (tableName, timeout);
-            logger.info ("H2 Database loadBatch using time: {} ms", System.currentTimeMillis () - bef);
         }
+        // after Load
+        logger.info (tableName + " after Load");
+        afterLoad (tableName, timeout);
+        logger.info ("H2 Database loadBatch using time: {} ms", System.currentTimeMillis () - bef);
     }
 
-    // 加载数据前操作
+    /**
+     * 加载数据前操作
+     *
+     * @param tableName
+     * @param columns
+     */
     private void beforeLoad(String tableName, List<H2DataColumn> columns) {
-        try (Connection conn = h2DataSource.getConnection ();
-             Statement stmt = conn.createStatement ();) {
-            String dropTableSql = H2SqlUtil.dropTable (tableName);
-            logger.info ("Execute: {}", dropTableSql);
-            stmt.execute (dropTableSql);
-            String createTableSql = H2SqlUtil.createTable (tableName, columns);
-            logger.info ("Execute: {}", createTableSql);
-            stmt.execute (createTableSql);
-        } catch (SQLException e) {
-            e.printStackTrace ();
-            throw new RuntimeException (e.getMessage ());
-        }
+        dropTable (tableName);
+        createTable (tableName, columns);
     }
 
-    // 加载数据后操作
+    /**
+     * 加载数据后操作
+     *
+     * @param tableName
+     * @param timeout
+     */
     private void afterLoad(String tableName, long timeout) {
         if (timeout != 0) {
-            h2AggMetaCacher.put (tableName, System.currentTimeMillis () + (timeout * 1000));
+            h2TableAndTimeMap.put (tableName, System.currentTimeMillis () + (timeout * 1000));
         }
     }
 
@@ -217,7 +263,7 @@ public class H2Aggregator {
 
     // 判断h2数据是否超时
     private boolean isTimeout(String tableName) {
-        Long endTimestamp = h2AggMetaCacher.get (tableName);
+        Long endTimestamp = h2TableAndTimeMap.get (tableName);
         return endTimestamp == null || System.currentTimeMillis () > endTimestamp;
     }
 
@@ -253,8 +299,8 @@ public class H2Aggregator {
      * @param serviceName
      * @return
      */
-    public List<String> getCaches(String serviceName) {
-        return getTableNames (getH2TableNamePrefix (serviceName));
+    public List<Map<String, String>> getServiceCaches(String serviceName) {
+        return getCaches (getH2TableNamePrefix (serviceName));
     }
 
     /**
@@ -262,36 +308,35 @@ public class H2Aggregator {
      *
      * @return
      */
-    public List<String> getCaches() {
-        return getTableNames (TBL_PREFIX);
+    public List<Map<String, String>> getAllCaches() {
+        return getCaches (TBL_PREFIX);
     }
 
     /**
-     * 获取表名称列表
+     * 获取表信息列表
      *
      * @param tableNamePrefix
      * @return
      */
-    public List<String> getTableNames(String tableNamePrefix) {
-        List<String> list = new ArrayList<> ();
+    public List<Map<String, String>> getTablesInfo(String tableNamePrefix) {
+        List<Map<String, String>> list = new ArrayList<> ();
         String sql = H2SqlUtil.tableList (tableNamePrefix);
         logger.info ("Execute: {}", sql);
+        Map<String, String> map = null;
+        String colName = null;
+        String colValue = null;
         try (Connection conn = h2DataSource.getConnection ();
              Statement stat = conn.createStatement ();
              ResultSet rs = stat.executeQuery (sql)) {
             ResultSetMetaData md = rs.getMetaData ();
-            String str = "";
-            for(int i=1; i<=md.getColumnCount ();i++){
-                str+=","+md.getColumnLabel (i);
-            }
-            list.add (str);
             while (rs.next ()) {
-                str = "";
-                for(int i=1; i<=md.getColumnCount ();i++){
-                    str+=","+rs.getString (md.getColumnLabel (i));
+                map = new HashMap<> ();
+                for (int i = 1; i <= md.getColumnCount (); i++) {
+                    colName = md.getColumnLabel (i);
+                    colValue = rs.getString (colName);
+                    map.put (colName, colValue);
                 }
-                list.add (str);
-//                list.add (rs.getString (1));
+                list.add (map);
             }
         } catch (Exception e) {
             e.printStackTrace ();
@@ -301,12 +346,72 @@ public class H2Aggregator {
     }
 
     /**
+     * 获取缓存信息列表
+     *
+     * @param tableNamePrefix
+     * @return
+     */
+    public List<Map<String, String>> getCaches(String tableNamePrefix) {
+        List<Map<String, String>> records = new ArrayList<> ();
+        List<Map<String, String>> list = getTablesInfo (tableNamePrefix);
+        if (list != null && list.size () != 0) {
+            Map<String, String> record = null;
+            String key = null;
+            String value = null;
+            for (Map<String, String> map : list) {
+                String tableName = map.get ("TABLE_NAME");
+                if (isTimeout (tableName)) { // 超时
+                    logger.info (tableName + " cache timeout");
+                    dropTable (tableName); // 删表
+                    continue;
+                }
+                record = new HashMap<> ();
+                String endTime = "";
+                String serviceName = "";
+                if (StringUtils.isNotBlank (tableName)) {
+                    Long endTimestamp = h2TableAndTimeMap.get (tableName);
+                    if (endTimestamp != null && endTimestamp > 0) {
+                        try {
+                            endTime = format.format (new Date (endTimestamp));
+                        } catch (Exception e) {
+                            //
+                        }
+                    }
+                    serviceName = h2TableAndServiceMap.get (tableName);
+                    if (serviceName == null) {
+                        serviceName = "";
+                    }
+                }
+                // 缓存的结束时间
+                record.put ("CACHE_END_TIME", endTime);
+                // 缓存的服务名称
+                record.put ("SERVICE_NAME", serviceName);
+                // 缓存的其他信息
+                for (Map.Entry<String, String> entry : map.entrySet ()) {
+                    key = entry.getKey ();
+                    value = entry.getValue ();
+                    if ("TABLE_NAME".equals (key)) {
+                        key = CACHE_NAME;
+                    } else if ("SQL".equals (key)) {
+                        key = "CACHE_CONTENT";
+                    } else {
+                        continue;
+                    }
+                    record.put (key, value);
+                }
+                records.add (record);
+            }
+        }
+        return records;
+    }
+
+    /**
      * 删除表
      *
      * @param tableName
      * @return
      */
-    public boolean dropTable(String tableName) {
+    public void dropTable(String tableName) {
         String sql = H2SqlUtil.dropTable (tableName);
         logger.info ("Execute: {}", sql);
         try (Connection conn = h2DataSource.getConnection ();
@@ -316,7 +421,24 @@ public class H2Aggregator {
             e.printStackTrace ();
             throw new RuntimeException (e.getMessage ());
         }
-        return true;
+    }
+
+    /**
+     * 创建表
+     *
+     * @param tableName
+     * @param columns
+     */
+    private void createTable(String tableName, List<H2DataColumn> columns) {
+        try (Connection conn = h2DataSource.getConnection ();
+             Statement stmt = conn.createStatement ();) {
+            String createTableSql = H2SqlUtil.createTable (tableName, columns);
+            logger.info ("Execute: {}", createTableSql);
+            stmt.execute (createTableSql);
+        } catch (SQLException e) {
+            e.printStackTrace ();
+            throw new RuntimeException (e.getMessage ());
+        }
     }
 
     /**

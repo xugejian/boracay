@@ -42,22 +42,6 @@ public abstract class AsyncInsertMapper<T> extends BaseMapper implements Runnabl
 
     private T t;
 
-    /**
-     * 默认为没有缓存
-     */
-    @Autowired
-    @Qualifier("noCache")
-    protected Cache<T> cache;
-
-    /**
-     * 这里必须是protected，如子类需要使用其他缓存时可以自行重载
-     *
-     * @return
-     */
-    protected Cache<T> getCache() {
-        return this.cache;
-    }
-
     @Override
     public void run() {
         insertExe(t);
@@ -65,8 +49,7 @@ public abstract class AsyncInsertMapper<T> extends BaseMapper implements Runnabl
     }
 
     // ----------------------------insert----------------------------------------
-    public boolean insert(String id, T t) {
-        String key = MD5Util.MD5_16(clazz) + ":" + id;
+    public boolean insert(T t) {
         AsyncInsertMapper<T> mapper = null;
         try {
             //多线程调用，如果不重新创建一个this类型的对象，就可能会出现以下情况：
@@ -75,34 +58,22 @@ public abstract class AsyncInsertMapper<T> extends BaseMapper implements Runnabl
             mapper = this.getClass().newInstance();
             // 将this中的sqlSessionTemplate对象赋值给新对象mapper
             mapper.sqlSessionTemplate = this.sqlSessionTemplate;
-            mapper.cache = this.cache;
             mapper.t = t;
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-//        Thread thread = new Thread(mapper);
-//        thread.start();
         executorService.execute(mapper);
-        return getCache().insertCache(key, t);
+        return true;
     }
 
     protected abstract boolean insertExe(T t);
 
     //------------------------------------select------------------------------------
     public T select(String id) {
-        String key = clazz + ":" + id;
-        Cache<T> cache = getCache();
-        T t = cache.selectCache(key);
-        if (t == null) {
-            t = selectExe(id);
-            if (t != null) {
-                cache.insertCache(key, t);
-            }
-        }
         logger.debug("查询 Class=" + clazz + " PkId=" + id);
-        return t;
+        return selectExe(id);
     }
 
     protected abstract T selectExe(String id);

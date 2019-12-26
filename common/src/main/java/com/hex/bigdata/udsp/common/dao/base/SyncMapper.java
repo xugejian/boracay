@@ -322,7 +322,7 @@ public abstract class SyncMapper<T> extends BaseMapper {
             comOperationLog.setActionUrl(WebUtil.getRequest().getRequestURL().toString());
             comOperationLog.setActionTime(format.format(new Date()));
             comOperationLog.setActionContent(log);
-            comOperationLogMapper.insert(pkId, comOperationLog);
+            comOperationLogMapper.insert(comOperationLog);
             logger.info(JSONUtil.parseObj2JSON(comOperationLog));
         } catch (Exception e) {
             e.printStackTrace();
