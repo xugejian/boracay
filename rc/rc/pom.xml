@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hex.bigdata.udsp</groupId>
-    <artifactId>udsp-rts</artifactId>
+    <artifactId>udsp-rc</artifactId>
     <packaging>jar</packaging>
     <version>${projectVersion}</version>
 
@@ -23,17 +23,32 @@
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>udsp-rts-executor-api</artifactId>
+            <artifactId>udsp-im</artifactId>
             <version>${projectVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>udsp-rts-executor-kafka</artifactId>
+            <artifactId>udsp-iq</artifactId>
             <version>${projectVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>udsp-rts-executor-kafka1</artifactId>
+            <artifactId>udsp-mm</artifactId>
+            <version>${projectVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hex.bigdata.udsp</groupId>
+            <artifactId>udsp-olq</artifactId>
+            <version>${projectVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hex.bigdata.udsp</groupId>
+            <artifactId>udsp-rts</artifactId>
+            <version>${projectVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hex.bigdata.udsp</groupId>
+            <artifactId>udsp-rc-alarm-mail</artifactId>
             <version>${projectVersion}</version>
         </dependency>
     </dependencies>

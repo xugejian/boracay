@@ -11,29 +11,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hex.bigdata.udsp</groupId>
-    <artifactId>udsp-rts</artifactId>
+    <artifactId>udsp-rc-alarm-api</artifactId>
     <packaging>jar</packaging>
     <version>${projectVersion}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>udsp-common</artifactId>
-            <version>${projectVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>udsp-rts-executor-api</artifactId>
-            <version>${projectVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>udsp-rts-executor-kafka</artifactId>
-            <version>${projectVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hex.bigdata.udsp</groupId>
-            <artifactId>udsp-rts-executor-kafka1</artifactId>
+            <artifactId>udsp-common-api</artifactId>
             <version>${projectVersion}</version>
         </dependency>
     </dependencies>

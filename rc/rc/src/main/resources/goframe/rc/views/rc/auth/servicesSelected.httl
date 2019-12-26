@@ -1,0 +1,234 @@
+${extends("/goframe/function_layout.httl")}
+<!--#macro(content)-->
+<div id="form1">
+		<input id="data" name="data" class="nui-hidden" />
+	</div>
+	<!-- 查询区 -->
+	<div style="text-align:center;line-height:23px;padding:5px;">
+		<div>
+			<span>服务名称:</span>
+			<input id="name" name="name" class="nui-textbox" style="width:160px;" />
+			<a class="nui-button" style="width:50px;height:20px;" onclick="onSearchClick">查找</a>
+		</div>
+		<div>
+			<span>应用类型:</span>
+			<input id="serviceType" name="serviceType"class="nui-dictcombobox nui-form-input" style="width:160px;"  emptyText="请选择服务类型"
+				   valueField="dictId" textField="dictName" dictTypeId="UDSP_SERVICE_TYPE" />
+			<a class="nui-button" style="width:50px;height:20px;" onclick="onClearClick">清除</a>
+		</div>
+	</div>
+	
+	<!-- 显示区 -->
+	<div style="padding-left:5px;padding-right:5px;">
+		<table cellpadding="0" cellspacing="0">
+			<tr>
+				<!-- 左边列表 -->
+				<td style="padding-left: 10px;">
+					<h4 style="margin:0;line-height:22px;font-size:12px;">服务列表：</h4>
+					<div id="serachGrid" class="nui-datagrid" style="width:250px;height:220px;" 
+					pageStyle="padding:2px;" multiSelect="true" idField="pkId" sortMode="client"
+					url="${basePath}/rc/service/page"
+					showPageSize="true" showPageIndex="true" sizeList="[10,20,40,80,160]" pageSize="20" >
+						<div property="columns">
+							<div type="checkcolumn"></div>
+							<div field="name" with="180" headerAlign="center" allowSort="true">服务名称</div>
+							<div field="type" headerAlign="center" allowSort="true" renderer="renderServiceType">应用类型</div>
+						</div>
+					</div>
+				</td>
+			    <td style="padding:5px;">
+				</td>
+				<td style="padding:5px;">
+					<input type="button" value="选择" style="width:50px;" onclick="addSelected()" />
+					<br />
+				</td>
+				<td style="padding:5px;">
+				</td>
+				<!-- 右边列表 -->
+				<td>
+				    <h4 style="margin:0;line-height:22px;font-size:12px;">已选服务：</h4>
+					<div id="selectedList" class="nui-listbox" style="width:250px;height:220px;" multiSelect="true" showCheckBox="true" showPager="false" idField="id" sortMode="client" >
+						<div property="columns">
+							<div field="name" with="180" headerAlign="center" allowSort="true">服务名称</div>
+						</div>
+                    </div>
+				</td>
+				 <td style="padding:5px;">
+				</td>
+				<td style="padding:5px;">
+					<input type="button" value="删除" style="width:50px;margin-bottom:2px;" onclick="removeSelecteds()" />
+					<br />
+					<input type="button" value="清空" style="width:50px;" onclick="removeAllSelecteds()" />
+					<br />		
+				</td>
+				 <td style="padding:5px;">
+				</td>
+			</tr>
+		</table>
+	</div>
+	<!-- 按钮区 -->
+	<div style="padding:15px;text-align:center;">
+		<a class="nui-button" style="width:60px;margin-right:20px;" onclick="onOk" >确定</a>
+		<a class="nui-button" style="width:60px;" onclick="onCancel" >取消</a>
+	</div>
+
+<script type="text/javascript">
+    var form;
+    var win;
+    var serachGrid;
+    var selectedList;
+    var searchServiceType;
+    var searchName;
+
+    require(['nui'], function (nui) {
+        form            = new nui.Form("#form1");
+        win             = nui.get("selectWindow");
+        serachGrid      = nui.get("serachGrid");
+        selectedList    = nui.get("selectedList");
+		searchServiceType    = nui.get("serviceType");
+		searchName  = nui.get("name");
+        serachGrid.load();
+    });
+
+	// 父页面调用：设置数据
+	function SetData(data){
+        require(['nui','jquery'], function (nui,jquery) {
+			serachGrid = nui.get("serachGrid");
+			serachGrid.load({},function(){
+				findRowsSelected(data);
+				addSelected();
+			});
+        });
+	}
+
+
+	function contain(array,object){
+		var flg=false;
+		$.each(array,function(index,item){
+			if(object==item){
+				flg=true;
+				return;
+			}
+		});
+		return flg;
+	}
+
+	function findRowsSelected(data){
+		var userIdArray=data.split(",");
+		var rows = serachGrid.findRows(function(row){
+			if(contain(userIdArray,row.pkId)){
+				return true;
+			}
+		});
+		serachGrid.selects(rows);
+	}
+
+	// 父页面调用：获取数据
+	function GetData(){
+		var rows = selectedList.getData();
+		var values = [];
+		var names=[];
+		var servicesObject={};
+		for(var i=0,l=rows.length; i<l; i++){
+			values.push(rows[i].pkId);
+			names.push(rows[i].name)
+		}
+		servicesObject.serviceIds = values.join(",");
+		servicesObject.serviceNames = names.join(",");
+		return servicesObject;
+	}
+	
+
+	
+	// 确定
+	function onOk(e){
+		CloseWindow("ok");
+	}
+	
+	function onCancel(e) {
+		CloseWindow("cancel");
+	}
+
+	// 关闭窗口
+	function CloseWindow(action){
+		if(action=="close" && form1.isChanged()){
+			if(confirm("数据已改变,是否先保存?")){
+				return false;
+			}
+		}else if(window.CloseOwnerWindow){
+			return window.CloseOwnerWindow(action);
+		}else{
+			return window.close();
+		}
+	}
+
+	// 查找
+	function onSearchClick(){
+		serachGrid.load({
+			type : searchServiceType.value,
+			name : searchName.value
+		});
+	}
+	
+	// 清除查找条件
+	function onClearClick(){
+		searchServiceType.setValue("");
+		searchName.setValue("");
+	}
+
+
+	function addSelected(){
+		var items = serachGrid.getSelecteds();
+		//把已选中的数据，用key-value缓存，以便进一步快速匹配
+		var maps = {};
+		var selecteds = selectedList.getData();
+		for(var i=0,l=selecteds.length; i<l; i++){
+			var selected = selecteds[i];
+			var key = selected.pkId;
+			var value = selected.pkId;
+			var name =selected.name;
+			maps[key] = value;
+		}
+		
+		//去重，并重新组织
+		var newItems = [];
+		for(var i=0,l=items.length; i<l; i++){
+			var item = items[i];
+			var key = item.pkId;
+			var value = item.pkId;
+			var name =item.name;
+			debugger;
+			if(maps[key] == null){
+				newItems.push({
+					id : key,
+					pkId : value,
+					name:name
+				});
+			}
+		}
+		//console.warn(newItems);
+		selectedList.addItems(newItems);
+	}
+
+	//删除已选项
+	function removeSelecteds(){
+		var items = selectedList.getSelecteds();
+		selectedList.removeItems(items);
+	}
+	
+	//清空已选项
+	function removeAllSelecteds(){
+		selectedList.removeAll();
+	}
+
+	/**
+	 * 转换数据源类型
+	 * @param e
+	 * @returns {*}
+	 */
+	function renderServiceType(e) {
+		return nui.getDictText("UDSP_SERVICE_TYPE", e.row.type);
+	}
+
+ </script>
+<!--#end-->
