@@ -2,7 +2,7 @@ package com.hex.bigdata.udsp.iq.provider.impl.model;
 
 import com.hex.bigdata.udsp.common.api.model.Property;
 import com.hex.bigdata.udsp.iq.provider.model.Metadata;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.util.List;

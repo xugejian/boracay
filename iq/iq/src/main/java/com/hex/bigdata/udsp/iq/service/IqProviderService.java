@@ -206,6 +206,7 @@ public class IqProviderService extends BaseService {
     public IqDslResponse select(Map<String, String> mdIds, DslSelectSql dslSelectSql, long timeout) {
         IqDslResponse response = new IqDslResponse ();
         // 查询IQ
+        logger.info ("select iq data");
         long consumeTime = 0;
         List<DslSql> dslSqls = dslSelectSql.getDslSqls ();
         if (dslSqls != null && dslSqls.size () != 0) {
@@ -222,6 +223,7 @@ public class IqProviderService extends BaseService {
             }
         }
         // 查询H2
+        logger.info ("select h2 data");
         H2Response h2Response = h2Aggregator.query (getH2Sql (dslSelectSql));
         response.setStatus (Status.SUCCESS);
         response.setStatusCode (StatusCode.SUCCESS);
@@ -237,27 +239,38 @@ public class IqProviderService extends BaseService {
         response.setStatusCode (StatusCode.SUCCESS);
         Metadata metadata = getMetadata (mdId);
         checkDslSql (dslSql, metadata); // 检查和重构DslSql
+        String serviceName = dslSql.getName ();
         Component where = dslSql.getWhere ();
-        String h2TableName = h2Aggregator.getH2TableName (dslSql.getName (), where);
+        String h2TableName = h2Aggregator.getH2TableName (serviceName, where); // 大写H2表名
         logger.info ("h2TableName: " + h2TableName);
         synchronized (h2TableName.intern ()) {
             if (h2Aggregator.isReload (h2TableName)) {
                 // query from iq datasource
+                logger.info (h2TableName + " query from iq datasource");
                 IqDslRequest request = new IqDslRequest (metadata, where);
                 Datasource datasource = metadata.getDatasource ();
                 response = getProviderImpl (datasource).select (request);
-                if (StatusCode.SUCCESS != response.getStatusCode ()
-                        || response.getRecords () == null || response.getRecords ().size () == 0) {
+                if (StatusCode.SUCCESS != response.getStatusCode ()) {
                     return response;
+                } else if (response.getRecords () == null) {
+                    response.setRecords (new ArrayList<Map<String, String>> ());
                 }
                 // load to h2 database
+                logger.info (h2TableName + " load to h2 database");
                 List<H2DataColumn> h2DataColumns = getH2DataColumns (metadata.getReturnColumns ());
                 h2Aggregator.load (h2TableName, h2DataColumns, response.getRecords (), timeout);
+                H2Aggregator.putH2TableAndService (h2TableName, serviceName);
             }
         }
         return response;
     }
 
+    /**
+     * 生成H2的SQL
+     *
+     * @param dslSelectSql
+     * @return
+     */
     private String getH2Sql(DslSelectSql dslSelectSql) {
         List<DslSql> dslSqls = dslSelectSql.getDslSqls ();
         if (dslSqls != null && dslSqls.size () != 0) {

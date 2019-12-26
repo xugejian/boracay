@@ -338,20 +338,6 @@ public class HBaseUtil {
      * @return
      */
     public static boolean isAborted(HBaseDatasource datasource) {
-        Connection conn = HBaseConnectionPool.getConnection (datasource);
-//        if (conn != null && !conn.isClosed () && !conn.isAborted ()) {
-//            try {
-//                // 尝试获取当中的表，如果获取抛异常则获取连接失败
-//                conn.getAdmin ().tableExists (TableName.valueOf ("TEST"));
-//                return false;
-//            } catch (Exception e) {
-//                logger.warn ("连接失败！" + e.getMessage ());
-//                e.printStackTrace ();
-//            }
-//        }
-        if (conn == null) {
-            return false;
-        }
-        return true;
+        return HBaseConnectionPool.getConnection (datasource) == null;
     }
 }
