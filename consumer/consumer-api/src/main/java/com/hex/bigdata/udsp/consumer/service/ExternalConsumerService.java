@@ -362,9 +362,10 @@ public class ExternalConsumerService {
         }
         try {
             Response response = new Response ();
-            List<String> list = h2Aggregator.getCaches (serviceName);
+            List<Map<String, String>> list = h2Aggregator.getServiceCaches (serviceName);
             if (list != null && list.size () != 0) {
-                for (String tableName : list) {
+                for (Map<String, String> map : list) {
+                    String tableName = map.get (H2Aggregator.CACHE_NAME);
                     h2Aggregator.dropTable (tableName);
                 }
             }
@@ -407,15 +408,8 @@ public class ExternalConsumerService {
     public Response showCachesService(String serviceName) {
         try {
             Response response = new Response ();
-            List<String> list = h2Aggregator.getCaches (serviceName);
-            if (list != null && list.size () != 0) {
-                List<Map<String, String>> records = new ArrayList<> ();
-                Map<String, String> record = null;
-                for (String tableName : list) {
-                    record = new HashMap<> ();
-                    record.put ("name", tableName);
-                    records.add (record);
-                }
+            List<Map<String, String>> records = h2Aggregator.getServiceCaches (serviceName);
+            if (records != null && records.size () != 0) {
                 response.setRecords (records);
             }
             response.setStatus (Status.SUCCESS.getValue ());
@@ -435,15 +429,8 @@ public class ExternalConsumerService {
     public Response showCaches() {
         try {
             Response response = new Response ();
-            List<String> list = h2Aggregator.getCaches ();
-            if (list != null && list.size () != 0) {
-                List<Map<String, String>> records = new ArrayList<> ();
-                Map<String, String> record = null;
-                for (String tableName : list) {
-                    record = new HashMap<> ();
-                    record.put ("name", tableName);
-                    records.add (record);
-                }
+            List<Map<String, String>> records = h2Aggregator.getAllCaches ();
+            if (records != null && records.size () != 0) {
                 response.setRecords (records);
             }
             response.setStatus (Status.SUCCESS.getValue ());

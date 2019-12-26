@@ -21,6 +21,7 @@ import com.hex.bigdata.udsp.olq.dto.OlqApplicationDto;
 import com.hex.bigdata.udsp.olq.model.OlqApplicationParam;
 import com.hex.bigdata.udsp.olq.service.OlqApplicationService;
 import com.hex.bigdata.udsp.olq.util.SqlExpressionEvaluator;
+import com.hex.bigdata.udsp.rc.constant.DateWindowType;
 import com.hex.bigdata.udsp.rc.model.RcService;
 import com.hex.bigdata.udsp.rc.model.RcUserService;
 import com.hex.bigdata.udsp.rc.service.RcUserServiceService;
@@ -33,6 +34,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +47,8 @@ public class ConsumerService {
 
     private static Logger logger = LogManager.getLogger (ConsumerService.class);
 
-    private static final FastDateFormat format = FastDateFormat.getInstance ("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final FastDateFormat dateFormat = FastDateFormat.getInstance ("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final FastDateFormat hhmmFormat = FastDateFormat.getInstance ("HH:mm");
 
     @Autowired
     private RcUserServiceService rcUserServiceService;
@@ -80,13 +83,15 @@ public class ConsumerService {
     @Autowired
     private ImSyncService imSyncService;
     @Autowired
-    private LoggingService loggingService;
+    private ConsumeLogService consumeLogService;
     @Autowired
     private WaitingService waitingService;
     @Autowired
     private CacheService cacheService;
     @Autowired
     private IqDslSyncService iqDslSyncService;
+    @Autowired
+    private ConsumeDataService consumeDataService;
 
     /**
      * 消费前检查
@@ -99,6 +104,7 @@ public class ConsumerService {
     public ConsumeRequest checkConsume(Request request, String udspUser, RcService rcService, long bef) {
         ConsumeRequest consumeRequest = new ConsumeRequest ();
         consumeRequest.setRcService (rcService);
+        consumeRequest.setRequest (request); // 这里必须先将request设置进去
 
         // 没有注册服务
         if (rcService == null) {
@@ -115,12 +121,14 @@ public class ConsumerService {
         }
 
         String entity = request.getEntity ();
+        String serviceName = rcService.getName ();
         String appType = rcService.getType ();
         String appId = rcService.getAppId ();
         String appName = getAppName (appType, appId);
         request.setAppName (appName);
         request.setAppId (appId);
         request.setAppType (appType);
+        request.setServiceName (serviceName);
 
         RcUserService rcUserService = rcUserServiceService.selectByUserIdAndServiceId (udspUser, rcService.getPkId ());
         // 没有授权服务
@@ -145,6 +153,43 @@ public class ConsumerService {
             }
         }
 
+        // 日期窗口控制
+        String dateType = rcUserService.getDateType ();
+        if (!DateWindowType.ALL.getValue ().equals (dateType)) {
+            int week = Util.nowWeek ();
+            if (DateWindowType.MON_FRI.getValue ().equals (dateType)) {
+                if (week == 0 || week == 6) {
+                    consumeRequest.setError (ErrorCode.ERROR_000020);
+                    return consumeRequest;
+                }
+            } else if (DateWindowType.WEEKEND.getValue ().equals (dateType)) {
+                if (week >= 1 && week <= 5) {
+                    consumeRequest.setError (ErrorCode.ERROR_000020);
+                    return consumeRequest;
+                }
+            }
+        }
+
+        // 时间窗口控制
+        String startTime = rcUserService.getStartTime ();
+        String endTime = rcUserService.getEndTime ();
+        try {
+            String nowTime = hhmmFormat.format (new Date ());
+            Date nowDate = hhmmFormat.parse (nowTime);
+            if (StringUtils.isNotBlank (startTime)
+                    && nowDate.before (hhmmFormat.parse (startTime))) {
+                consumeRequest.setError (ErrorCode.ERROR_000021);
+                return consumeRequest;
+            }
+            if (StringUtils.isNotBlank (endTime)
+                    && nowDate.after (hhmmFormat.parse (endTime))) {
+                consumeRequest.setError (ErrorCode.ERROR_000021);
+                return consumeRequest;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace ();
+        }
+
         // OLQ_APP
         if (ServiceType.OLQ_APP.getValue ().equals (appType)
                 && ConsumerEntity.START.getValue ().equalsIgnoreCase (entity)) {
@@ -162,7 +207,9 @@ public class ConsumerService {
         int maxAsyncNum = rcUserService.getMaxAsyncNum ();
         Current mcCurrent = getCurrent (request, maxSyncNum, maxAsyncNum);
         consumeRequest.setMcCurrent (mcCurrent);
-        if (!runQueueService.addCurrent (mcCurrent)) { // 运行队列已满
+        if (!runQueueService.addCurrent (mcCurrent))
+
+        { // 运行队列已满
             QueueIsFullResult isFullResult = checkWaitQueueIsFull (mcCurrent, rcUserService);
             consumeRequest.setQueueIsFullResult (isFullResult);
             if (isFullResult == null) { // 未开启等待队列
@@ -176,8 +223,8 @@ public class ConsumerService {
 
         // 重新设置request
         String consumeId = (StringUtils.isNotBlank (request.getConsumeId ()) ? request.getConsumeId () : mcCurrent.getPkId ());
-        request.setConsumeId (consumeId);
-        consumeRequest.setRequest (request);
+        consumeRequest.getRequest ().setConsumeId (consumeId);
+
         return consumeRequest;
     }
 
@@ -196,7 +243,7 @@ public class ConsumerService {
         // 错误处理
         // 这个里必须在try finally之前，因为这里处理的错误是运行队列已满的处理，是不需要finally中减去并发的
         if (errorCode != null) {
-            loggingService.writeResponseLog (response, consumeRequest, bef, 0,
+            consumeLogService.writeResponseLog (response, consumeRequest, bef, 0,
                     errorCode, (StringUtils.isBlank (message) ? errorCode.getName () : message));
             return response;
         }
@@ -309,7 +356,13 @@ public class ConsumerService {
             // 成功且不是查看状态时写日志
             if (StatusCode.SUCCESS.getValue ().equals (response.getStatusCode ())
                     && !ConsumerEntity.STATUS.getValue ().equalsIgnoreCase (entity)) {
-                loggingService.writeResponseLog (request, response, bef, runBef, isCache);
+                consumeLogService.writeResponseLog (request, response, bef, runBef, isCache);
+            }
+            // 成功且是同步查询且要求结果数据落地
+            if (StatusCode.SUCCESS.getValue ().equals (response.getStatusCode ())
+                    && ConsumerEntity.START.getValue ().equalsIgnoreCase (entity)
+                    && Util.isStore (rcService)) {
+                consumeDataService.writeDataToDb (request, response);
             }
         }
     }
@@ -390,7 +443,7 @@ public class ConsumerService {
         Current mcCurrent = new Current ();
         String requestContent = JSONUtil.parseObj2JSON (request);
         String consumeId = UUIDUtil.consumeId (requestContent);
-        mcCurrent.setStartTime (format.format (new Date ()));
+        mcCurrent.setStartTime (dateFormat.format (new Date ()));
         mcCurrent.setServiceName (request.getServiceName ());
         mcCurrent.setUserName (request.getUdspUser ());
         mcCurrent.setAppType (request.getAppType ());

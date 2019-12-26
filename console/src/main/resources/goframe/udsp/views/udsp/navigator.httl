@@ -1,0 +1,549 @@
+${extends("/goframe/function_layout.httl")}
+<script src="${basePath}/s/js/jquery/jquery-1.8.1.min.js" type="text/javascript"></script>
+<!--#macro(head)-->
+<link rel="stylesheet" href="${basePath}/s/css/udsp.css"/>
+<link rel="stylesheet" href="${basePath}/s/css/font-awesome.css"/>
+<!--#end-->
+
+<!--#macro(content)-->
+<style type="text/css">
+    #btnQuery > span {
+        width: 100px;
+    }
+</style>
+
+<div class="nui-toolbar">
+
+    #if(hasPermission("IM.flow"))
+    <fieldset style="border:dotted 1px #227EA0;">
+        <legend><span style="font-weight: bold">交互建模操作流程</span></legend>
+        <table style="width:100%">
+            <tr>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第一步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showIMDsList">数据源配置</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第二步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showIMMdList">元数据配置</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第三步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showIMModelList">模型配置</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第四步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showServiceList">服务注册</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    #if(hasPermission("IM.cm.ds.list.add"))
+                    <a href="#" onclick="showIMDsAdd()">添加数据源</a>
+                    #end
+                </td>
+                <td colspan="2" align="center">
+                    #if(hasPermission("IM.cm.md.list.add"))
+                    <a href="#" onclick="showIMMdAdd()">添加元数据</a>
+                    #end
+                </td>
+                <td colspan="2" align="center">
+                    #if(hasPermission("IM.cm.model.list.add"))
+                    <a href="#" onclick="showIMModelAdd()">添加模型</a>
+                    #end
+                </td>
+                <td colspan="2" align="center">
+                    #if(hasPermission("RC.service.list.add"))
+                    <a href="#" onclick="showServiceAdd('IM')">添加服务</a>
+                    #end
+                    #if(hasPermission("RC.userService.list.add"))
+                    <a href="#" onclick="showAuthAdd('IM')">服务授权</a>
+                    #end
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    #end
+
+    <br/>
+    #if(hasPermission("IQ.flow"))
+    <fieldset style="border:dotted 1px #227EA0;">
+        <legend><span style="font-weight: bold">交互查询操作流程</span></legend>
+        <table style="width:100%">
+            <tr>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第一步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showIQDsList">数据源配置</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第二步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showIQMdList">元数据配置</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第三步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showIQAppList">应用配置</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第四步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-ok" plain="true" onclick="showIQTest">应用测试</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第五步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showServiceList">服务注册</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    #if(hasPermission("IQ.cm.ds.list.add"))
+                    <a href="#" onclick="showIQDsAdd()">添加数据源</a>
+                    #end
+                </td>
+                <td colspan="2" align="center">
+                    #if(hasPermission("IQ.cm.md.list.add"))
+                    <a href="#" onclick="showIQMdAdd()">添加元数据</a>
+                    #end
+                </td>
+                <td colspan="2" align="center">
+                    #if(hasPermission("IQ.cm.app.list.add"))
+                    <a href="#" onclick="showIQAppAdd()">添加应用</a>
+                    #end
+                </td>
+                <td colspan="2" align="center">
+
+                </td>
+                <td colspan="2" align="center">
+                    #if(hasPermission("RC.service.list.add"))
+                    <a href="#" onclick="showServiceAdd('IQ')">添加服务</a>
+                    #end
+                    #if(hasPermission("RC.userService.list.add"))
+                    <a href="#" onclick="showAuthAdd('IQ')">服务授权</a>
+                    #end
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    #end
+
+    <br/>
+    #if(hasPermission("OLQ.flow"))
+    <fieldset style="border:dotted 1px #227EA0;">
+        <legend><span style="font-weight: bold">联机查询操作流程</span></legend>
+        <table style="width:100%">
+            <tr>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第一步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showOLQDsList">数据源配置</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第二步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-ok" plain="true" onclick="showOLQDsTest">数据源测试</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第三步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showServiceList">服务注册</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    #if(hasPermission("OLQ.cm.ds.list.add"))
+                    <a href="#" onclick="showOLQDsAdd()">添加数据源</a>
+                    #end
+                </td>
+                <td colspan="2" align="center">
+
+                </td>
+                <td colspan="2" align="center">
+                    #if(hasPermission("RC.service.list.add"))
+                    <a href="#" onclick="showServiceAdd('OLQ')">添加服务</a>
+                    #end
+                    #if(hasPermission("RC.userService.list.add"))
+                    <a href="#" onclick="showAuthAdd('OLQ')">服务授权</a>
+                    #end
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    #end
+
+    <br/>
+    #if(hasPermission("OLQ_APP.flow"))
+    <fieldset style="border:dotted 1px #227EA0;">
+        <legend><span style="font-weight: bold">联机查询应用操作流程</span></legend>
+        <table style="width:100%">
+            <tr>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第一步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showOLQDsList">数据源配置</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第二步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-ok" plain="true" onclick="showOLQDsTest">数据源测试</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第三步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showOLQAppList">应用配置</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第四步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-ok" plain="true" onclick="showOLQAppTest">应用测试</a>
+                </td>
+                <th class="tit roleLabel" style="width: 100px;text-align: right">第五步：</th>
+                <td class="roleText">
+                    <a class="nui-button" iconCls="icon-collapse" plain="true" onclick="showServiceList">服务注册</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    #if(hasPermission("OLQ.cm.ds.list.add"))
+                    <a href="#" onclick="showOLQDsAdd()">添加数据源</a>
+                    #end
+                </td>
+                <td colspan="2" align="center">
+
+                </td>
+                <td colspan="2" align="center">
+                    #if(hasPermission("OLQ.cm.app.list.add"))
+                    <a href="#" onclick="showOLQAppAdd()">添加应用</a>
+                    #end
+                </td>
+                <td colspan="2" align="center">
+
+                </td>
+                <td colspan="2" align="center">
+                    #if(hasPermission("RC.service.list.add"))
+                    <a href="#" onclick="showServiceAdd('OLQ_APP')">添加服务</a>
+                    #end
+                    #if(hasPermission("RC.userService.list.add"))
+                    <a href="#" onclick="showAuthAdd('OLQ_APP')">服务授权</a>
+                    #end
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    #end
+
+</div>
+
+<script type="text/javascript">
+    /**
+     * 按需加载资源文件
+     */
+    require(['jquery', 'nui'], function ($, nui) {
+        nui.parse();
+    });
+
+    // ------------------------------交互建模START-----------------------------------
+    function showIMDsList() {
+        nui.open({
+            url: "${basePath}/goframe/p/com.ds.list?model=IM",
+            title: "交互建模-数据源配置",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIMDsAdd() {
+        nui.open({
+            url: "${basePath}/goframe/p/com.ds.add?model=IM",
+            title: "交互建模-添加数据源",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIMMdList() {
+        nui.open({
+            url: "${basePath}/goframe/p/im.cm.md.list",
+            title: "交互建模-元数据配置",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIMMdAdd() {
+        nui.open({
+            url: "${basePath}/goframe/p/im.cm.md.add",
+            title: "交互建模-添加元数据",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIMModelList() {
+        nui.open({
+            url: "${basePath}/goframe/p/im.cm.model.list",
+            title: "交互建模-模型配置",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIMModelAdd() {
+        nui.open({
+            url: "${basePath}/goframe/p/im.cm.model.add",
+            title: "交互建模-添加模型",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+    // ------------------------------交互建模END-----------------------------------
+
+    // ------------------------------交互查询START-----------------------------------
+    function showIQDsList() {
+        nui.open({
+            url: "${basePath}/goframe/p/com.ds.list?model=IQ",
+            title: "交互查询-数据源配置",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIQDsAdd() {
+        nui.open({
+            url: "${basePath}/goframe/p/com.ds.add?model=IQ",
+            title: "交互查询-添加数据源",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIQMdList() {
+        nui.open({
+            url: "${basePath}/goframe/p/iq.cm.md.list",
+            title: "交互查询-元数据配置",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIQMdAdd() {
+        nui.open({
+            url: "${basePath}/goframe/p/iq.cm.md.add",
+            title: "交互查询-添加元数据",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIQAppList() {
+        nui.open({
+            url: "${basePath}/goframe/p/iq.cm.app.list",
+            title: "交互查询-应用配置",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIQAppAdd() {
+        nui.open({
+            url: "${basePath}/goframe/p/iq.cm.app.add",
+            title: "交互查询-添加应用",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showIQTest() {
+        nui.open({
+            url: "${basePath}/goframe/p/iq.qm.test",
+            title: "交互查询-应用测试",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+    // ------------------------------交互查询END-----------------------------------
+
+    // ------------------------------联机查询START-----------------------------------
+    function showOLQDsList() {
+        nui.open({
+            url: "${basePath}/goframe/p/com.ds.list?model=OLQ",
+            title: "联机查询-数据源配置",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showOLQDsAdd() {
+        nui.open({
+            url: "${basePath}/goframe/p/com.ds.add?model=OLQ",
+            title: "联机查询-添加数据源",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showOLQAppList() {
+        nui.open({
+            url: "${basePath}/goframe/p/olq.cm.app.list",
+            title: "联机查询-应用配置",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showOLQAppAdd() {
+        nui.open({
+            url: "${basePath}/goframe/p/olq.cm.app.add",
+            title: "联机查询-添加应用",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showOLQDsTest() {
+        nui.open({
+            url: "${basePath}/goframe/p/olq.qm.test",
+            title: "联机查询-数据源测试",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showOLQAppTest() {
+        nui.open({
+            url: "${basePath}/goframe/p/olq.qm.olqApps",
+            title: "联机查询-应用测试",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+    // ------------------------------联机查询END-----------------------------------
+
+    // ------------------------------注册中心START-----------------------------------
+    function showServiceList() {
+        nui.open({
+            url: "${basePath}/goframe/p/rc.service.list",
+            title: "服务注册列表",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    function showServiceAdd(serviceType) {
+        nui.open({
+            url: "${basePath}/goframe/p/rc.service.add?serviceType=" + serviceType,
+            title: "添加服务",
+            width: 800,
+            height: 320,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    /**
+     * 显示服务授权列表页面
+     */
+    function showAuthList() {
+        nui.open({
+            url: "${basePath}/goframe/p/rc.auth.list",
+            title: "服务授权列表",
+            width: 1000,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+
+    /**
+     * 显示服务授权添加页面
+     */
+    function showAuthAdd(serviceType) {
+        nui.open({
+            url: "${basePath}/goframe/p/rc.auth.add?serviceType=" + serviceType,
+            title: "服务授权",
+            width: 800,
+            height: 600,
+            onload: function () {
+            },
+            ondestroy: function (action) {
+            }
+        });
+    }
+    // ------------------------------注册中心END-----------------------------------
+
+</script>
+<!--#end-->

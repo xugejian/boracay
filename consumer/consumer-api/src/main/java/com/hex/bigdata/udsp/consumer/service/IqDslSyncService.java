@@ -4,7 +4,6 @@ import com.hex.bigdata.udsp.common.constant.ErrorCode;
 import com.hex.bigdata.udsp.common.constant.ServiceStatus;
 import com.hex.bigdata.udsp.common.constant.ServiceType;
 import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
-import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.consumer.util.Util;
 import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
@@ -53,7 +52,7 @@ public class IqDslSyncService {
     @Autowired
     private IqProviderService iqProviderService;
     @Autowired
-    private LoggingService loggingService;
+    private ConsumeLogService consumeLogService;
 
     /**
      * 运行（添加了超时机制）
@@ -84,10 +83,10 @@ public class IqDslSyncService {
                 response = futureTask.get (rcUserService.getMaxSyncExecuteTimeout (), TimeUnit.SECONDS);
             }
         } catch (TimeoutException e) {
-            loggingService.writeResponseLog (response, consumeRequest, bef, runBef, ErrorCode.ERROR_000015, e.toString ());
+            consumeLogService.writeResponseLog (response, consumeRequest, bef, runBef, ErrorCode.ERROR_000015, e.toString ());
         } catch (Exception e) {
             e.printStackTrace ();
-            loggingService.writeResponseLog (response, consumeRequest, bef, runBef, ErrorCode.ERROR_000007, e.toString ());
+            consumeLogService.writeResponseLog (response, consumeRequest, bef, runBef, ErrorCode.ERROR_000007, e.toString ());
         }
         return response;
     }

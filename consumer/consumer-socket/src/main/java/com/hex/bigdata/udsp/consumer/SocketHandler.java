@@ -7,7 +7,7 @@ import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.model.Response;
 import com.hex.bigdata.udsp.consumer.service.ExternalConsumerService;
-import com.hex.bigdata.udsp.consumer.service.LoggingService;
+import com.hex.bigdata.udsp.consumer.service.ConsumeLogService;
 import com.hex.bigdata.udsp.consumer.util.Util;
 import com.hex.bigdata.udsp.dsl.AppDslAdaptor;
 import com.hex.bigdata.udsp.dsl.DslSqlAdaptor;
@@ -20,7 +20,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -38,11 +37,11 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
     private static Logger logger = Logger.getLogger (SocketHandler.class);
 
     private ExternalConsumerService consumerService;
-    private LoggingService loggingService;
+    private ConsumeLogService consumeLogService;
 
     public SocketHandler() {
         this.consumerService = (ExternalConsumerService) WebApplicationContextUtil.getBean ("externalConsumerService");
-        this.loggingService = (LoggingService) WebApplicationContextUtil.getBean ("loggingService");
+        this.consumeLogService = (ConsumeLogService) WebApplicationContextUtil.getBean ("consumeLogService");
     }
 
     /**
@@ -146,9 +145,9 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
                     DSLSQLParser.ShowCachesStatementContext showCachesStatementContext = (DSLSQLParser.ShowCachesStatementContext) parse;
                     if (showCachesStatementContext.serviceName () != null) { // show caches <service_name>
                         String serviceName = showCachesStatementContext.serviceName ().getText ();
-                        logger.debug ("show caches "+serviceName);
+                        logger.debug ("show caches " + serviceName);
                         response = consumerService.showCachesService (serviceName);
-                    }else { // show caches
+                    } else { // show caches
                         logger.debug ("show caches");
                         response = consumerService.showCaches ();
                     }
@@ -160,7 +159,7 @@ public class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
             }
         } catch (Exception e) {
             e.printStackTrace ();
-            loggingService.writeResponseLog (response, new ConsumeRequest (request), bef, 0, ErrorCode.ERROR_000005, e.toString ());
+            consumeLogService.writeResponseLog (response, new ConsumeRequest (request), bef, 0, ErrorCode.ERROR_000005, e.toString ());
         }
         return JSONUtil.parseObj2JSON (response);
     }

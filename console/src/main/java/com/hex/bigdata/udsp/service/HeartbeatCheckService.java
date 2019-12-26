@@ -11,7 +11,7 @@ import com.hex.bigdata.udsp.consumer.model.ConsumeRequest;
 import com.hex.bigdata.udsp.consumer.model.Request;
 import com.hex.bigdata.udsp.consumer.service.ConsumerService;
 import com.hex.bigdata.udsp.consumer.service.IqAsyncService;
-import com.hex.bigdata.udsp.consumer.service.LoggingService;
+import com.hex.bigdata.udsp.consumer.service.ConsumeLogService;
 import com.hex.bigdata.udsp.consumer.service.OlqAsyncService;
 import com.hex.bigdata.udsp.consumer.util.Util;
 import com.hex.bigdata.udsp.mc.model.Current;
@@ -60,7 +60,7 @@ public class HeartbeatCheckService {
     @Autowired
     private ConsumerService consumerService;
     @Autowired
-    private LoggingService loggingService;
+    private ConsumeLogService consumeLogService;
 
 
     /**
@@ -178,7 +178,7 @@ public class HeartbeatCheckService {
             if (!runQueueService.addCurrent (mcCurrent)) { // 队列已满
                 ConsumeRequest consumeRequest = new ConsumeRequest ();
                 consumeRequest.setRequest (request);
-                loggingService.writeResponseLog (null, consumeRequest,
+                consumeLogService.writeResponseLog (null, consumeRequest,
                         DateUtil.getDataTimestamp (mcCurrent.getStartTime ()), 0,
                         ErrorCode.ERROR_000003, ErrorCode.ERROR_000003.getName ());
             }

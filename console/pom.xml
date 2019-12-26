@@ -6,35 +6,65 @@
         <artifactId>udsp</artifactId>
         <groupId>com.hex.bigdata</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hex.bigdata.udsp</groupId>
     <artifactId>udsp-console</artifactId>
     <packaging>war</packaging>
-    <version>${project.parent.version}</version>
+    <version>${projectVersion}</version>
 
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>com.hex.bigdata.udsp</groupId>-->
-            <!--<artifactId>udsp-consumer-api</artifactId>-->
-            <!--<version>${project.parent.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-consumer-http</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-consumer-socket</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-consumer-restful</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>udsp</finalName>
+        <plugins>
+            <!-- 编译java -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- 打war -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${project.basedir}/../olq/olq-provider-db2/lib/</directory>
+                            <targetPath>WEB-INF/lib</targetPath>
+                            <includes>
+                                <include>db2jcc4.jar</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
