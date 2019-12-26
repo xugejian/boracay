@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- *
+ * 消费日志
  */
 @Repository
 public class McConsumeLogMapper extends AsyncInsertMapper<McConsumeLog> {
@@ -49,7 +49,7 @@ public class McConsumeLogMapper extends AsyncInsertMapper<McConsumeLog> {
     }
 
     /**
-     * 清空某天和其之前的消费日志数据
+     * 清空某天和其之前的消费日志
      *
      * @param date
      * @return

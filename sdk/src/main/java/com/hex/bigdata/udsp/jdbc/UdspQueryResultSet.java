@@ -59,7 +59,7 @@ public class UdspQueryResultSet implements ResultSet {
 
     @Override
     public void close() throws SQLException {
-        if (!isClosed()) {
+        if (!isClosed ()) {
             // 不做任何操作
         }
     }
@@ -411,9 +411,15 @@ public class UdspQueryResultSet implements ResultSet {
         String columnType = columnTypes.get (columnIndex - 1);
         String columnName = columnNames.get (columnIndex - 1);
 
+        String value = null;
         try {
-            Object evaluated = evaluate (columnType, row.get (columnName));
-            wasNull = evaluated == null;
+            value = row.get (columnName);
+        } catch (Exception e) {
+            // java.lang.ClassCastException: net.sf.json.JSONNull cannot be cast to java.lang.String
+        }
+        try {
+            Object evaluated = evaluate (columnType, value);
+            wasNull = (evaluated == null);
             return evaluated;
         } catch (Exception e) {
             e.printStackTrace ();

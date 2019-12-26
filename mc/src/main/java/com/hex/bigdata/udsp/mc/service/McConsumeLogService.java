@@ -17,7 +17,7 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Created by junjiem on 2017-2-23.
+ * 消费日志服务
  */
 @Service
 public class McConsumeLogService extends BaseService {
@@ -32,15 +32,12 @@ public class McConsumeLogService extends BaseService {
     /**
      * 保留最近N天的消费日志
      */
-    @Value("${keep.consume.log.period:30}")
+    @Value("${keep.consume.log.period:15}")
     private int keepConsumeLogPeriod;
 
     @Transactional
-    public String insert(McConsumeLog mcConsumeLog) {
-        if (mcConsumeLogMapper.insert(mcConsumeLog.getPkId(), mcConsumeLog)) {
-            return mcConsumeLog.getPkId();
-        }
-        return "";
+    public boolean insert(McConsumeLog mcConsumeLog) {
+        return mcConsumeLogMapper.insert(mcConsumeLog);
     }
 
     public McConsumeLog select(String pkId) {
