@@ -6,25 +6,33 @@
         <artifactId>udsp</artifactId>
         <groupId>com.hex.bigdata</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hex.bigdata.udsp</groupId>
     <artifactId>udsp-olq-provider-db2</artifactId>
     <packaging>jar</packaging>
-    <version>${project.parent.version}</version>
+    <version>${projectVersion}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-olq-provider-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.ibm.db2.jcc/db2jcc4 -->
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.ibm.db2.jcc/db2jcc4 &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.ibm.db2.jcc</groupId>-->
+            <!--<artifactId>db2jcc4</artifactId>-->
+            <!--<version>10.1</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.ibm.db2.jcc</groupId>
             <artifactId>db2jcc4</artifactId>
             <version>10.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/db2jcc4.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

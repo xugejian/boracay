@@ -11,10 +11,32 @@ import com.hex.bigdata.udsp.olq.model.OlqApplication;
 public class OlqApplicationView extends OlqApplication {
 
     private String dsId;
+    /**
+     * 数据源名称
+     */
     private String dsName;
+
+    /**
+     * 创建时间-开始时间
+     */
     private String crtTimeStart;
+
+
+    /**
+     * 创建时间-结束时间
+     */
     private String crtTimeEnd;
+
+
+    /**
+     * 更新时间-开始时间
+     */
     private String uptTimeStart;
+
+
+    /**
+     * 更新时间-结束时间
+     */
     private String uptTimeEnd;
 
     public String getDsId() {
