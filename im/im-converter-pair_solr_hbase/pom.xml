@@ -6,29 +6,30 @@
         <artifactId>udsp</artifactId>
         <groupId>com.hex.bigdata</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hex.bigdata.udsp</groupId>
     <artifactId>udsp-im-converter-pair_solr_hbase</artifactId>
     <packaging>jar</packaging>
-    <version>${project.parent.version}</version>
+    <version>${projectVersion}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-im-converter-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-im-converter-pair_hbase</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-im-converter-pair_solr</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
     </dependencies>
 

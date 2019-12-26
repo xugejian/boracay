@@ -6,24 +6,25 @@
         <artifactId>udsp</artifactId>
         <groupId>com.hex.bigdata</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hex.bigdata.udsp</groupId>
     <artifactId>udsp-im-converter-api</artifactId>
     <packaging>jar</packaging>
-    <version>${project.parent.version}</version>
+    <version>${projectVersion}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-common</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-md</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.hive/hive-jdbc -->
         <dependency>

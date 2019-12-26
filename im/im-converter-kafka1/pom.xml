@@ -6,18 +6,19 @@
         <artifactId>udsp</artifactId>
         <groupId>com.hex.bigdata</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hex.bigdata.udsp</groupId>
     <artifactId>udsp-im-converter-kafka1</artifactId>
-    <version>${project.parent.version}</version>
+    <version>${projectVersion}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.hex.bigdata.udsp</groupId>
             <artifactId>udsp-im-converter-api</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${projectVersion}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
         <dependency>
