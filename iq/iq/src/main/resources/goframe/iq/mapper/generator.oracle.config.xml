@@ -17,7 +17,7 @@
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="false" />
         </javaModelGenerator>
-        <sqlMapGenerator targetPackage="goframe.iq.mapper.general" targetProject="resources">
+        <sqlMapGenerator targetPackage="goframe.iq-provider-es.mapper.general" targetProject="resources">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
         <javaClientGenerator targetPackage="com.hex.bigdata.udsp.iq.dao" targetProject="src" type="XMLMAPPER">
