@@ -1,5 +1,6 @@
 package com.hex.bigdata.udsp.rc.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.util.JSONUtil;
 import com.hex.bigdata.udsp.rc.dto.RcServiceView;
 import com.hex.bigdata.udsp.rc.model.RcService;
@@ -392,11 +393,12 @@ public class RcServiceController extends BaseController {
      */
     @RequestMapping({"/checkAppUsed/{model}"})
     @ResponseBody
-    public MessageResult checkAppUsed(@PathVariable String model, @RequestBody Map<String, String>[] applications) {
+    public MessageResult checkAppUsed(@PathVariable String model, @RequestBody JSONObject[] applications) {
         boolean status = false;
         String message = "";
-        for (Map<String, String> application : applications) {
-            if (rcServiceService.checkAppUsedAndStart (model, application.get ("pkId"))) {
+        for (Map<String, Object> application : applications) {
+            String appId = (String) application.get ("pkId");
+            if (rcServiceService.checkAppUsedAndStart (model, appId)) {
                 status = true;
                 message += "名称为：【" + application.get ("name") + "】";
                 if ("OLQ".equals (model)) {
