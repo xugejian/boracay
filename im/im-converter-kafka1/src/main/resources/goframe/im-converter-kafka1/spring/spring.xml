@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="imConverterKafka1SqlInit" class="com.hex.goframe.engine.das.GFDbSchemaUpdate" init-method="init">
+        <property name="enabled" value="${jdbc.dbschema.check}" />
+        <property name="databaseType" value="${jdbc.dbType}" />
+        <property name="dsName" value="${jdbc.dsName}" />
+        <property name="checkSql" value="select 1 from T_GF_DICT where dict_type_id='IM_DS_TYPE' and dict_id='KAFKA1'"/>
+        <property name="schemaSqlResources">
+            <list>
+                <value>classpath:goframe/im-converter-kafka1/sql/${jdbc.dbType}.sql</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>
