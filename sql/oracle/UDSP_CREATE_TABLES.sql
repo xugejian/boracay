@@ -26,6 +26,8 @@ create table COM_DATASOURCE
   model      VARCHAR2(32) not null
 )
 ;
+comment on table COM_DATASOURCE
+  is '数据源表';
 comment on column COM_DATASOURCE.pk_id
   is '主键';
 comment on column COM_DATASOURCE.name
@@ -69,6 +71,8 @@ create table COM_OPERATION_LOG
   action_content VARCHAR2(1024)
 )
 ;
+comment on table COM_OPERATION_LOG
+  is '操作日志表';
 comment on column COM_OPERATION_LOG.pk_id
   is '主键';
 comment on column COM_OPERATION_LOG.action_type
@@ -97,6 +101,8 @@ create table COM_PROPERTIES
   describe VARCHAR2(4000)
 )
 ;
+comment on table COM_PROPERTIES
+  is '属性信息表';
 comment on column COM_PROPERTIES.pk_id
   is '主键';
 comment on column COM_PROPERTIES.fk_id

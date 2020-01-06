@@ -1,18 +1,3 @@
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_TYPE', '交互建模-数据源类型', 'default');
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_SOURCE_BATCH_TYPE', '交互建模-数据源类型（源）', 'default');
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_SOURCE_REALTIME_TYPE', '交互建模-数据源类型（源、实时）', 'default');
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_TARGET_TYPE', '交互建模-数据源类型（目标）', 'default');
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_TARGET_BATCH_TYPE', '交互建模-数据源类型（目标、批量）', 'default');
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_DS_TARGET_REALTIME_TYPE', '交互建模-数据源类型（目标、实时）', 'default');
-
-insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
-values ('IM_MD_TYPE', '交互建模-元数据类型', 'default');
 
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IM_MD_STATUS', '交互建模-元数据状态', 'default');
@@ -20,6 +5,13 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_MD_STATUS', '1', '未建', null, 1, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_MD_STATUS', '2', '已建', null, 2, null, null, 'default', null);
+
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('IM_MD_TYPE', '交互建模-元数据类型', 'default');
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MD_TYPE', '0', '内表', null, 1, null, null, 'default', null);
+insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
+values ('IM_MD_TYPE', '1', '外表', null, 2, null, null, 'default', null);
 
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IM_MODEL_TYPE', '交互建模-源数据源类型', 'default');
@@ -108,6 +100,19 @@ insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent
 values ('IM_REALTIME_JOB_STATUS', 'STOP_FAIL', '停止失败', null, 8, null, null, 'default', null);
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
 values ('IM_REALTIME_JOB_STATUS', 'RUN_FAIL', '运行失败', null, 9, null, null, 'default', null);
+
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('IM_DS_TYPE', '交互建模-数据源类型', 'default');
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('IM_DS_SOURCE_BATCH_TYPE', '交互建模-数据源类型（源）', 'default');
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('IM_DS_SOURCE_REALTIME_TYPE', '交互建模-数据源类型（源、实时）', 'default');
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('IM_DS_TARGET_TYPE', '交互建模-数据源类型（目标）', 'default');
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('IM_DS_TARGET_BATCH_TYPE', '交互建模-数据源类型（目标、批量）', 'default');
+insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
+values ('IM_DS_TARGET_REALTIME_TYPE', '交互建模-数据源类型（目标、实时）', 'default');
 
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('IM_IMPL_CLASS', '交互建模-接口实现类', 'default');

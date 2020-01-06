@@ -37,7 +37,7 @@ INDEX `IDX_COM_DS_DELFLG_MODEL_NAME` (`MODEL`, `NAME`, `DEL_FLG`) USING BTREE
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-
+COMMENT='数据源表'
 ;
 
 -- ----------------------------
@@ -54,7 +54,7 @@ PRIMARY KEY (`PK_ID`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-
+COMMENT='操作日志表'
 ;
 
 -- ----------------------------
@@ -70,7 +70,7 @@ PRIMARY KEY (`PK_ID`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-
+COMMENT='属性信息表'
 ;
 
 -- ----------------------------
