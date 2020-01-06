@@ -551,7 +551,7 @@ PRIMARY KEY (`PK_ID`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-
+COMMENT='交互查询-排序参数'
 ;
 
 -- ----------------------------
@@ -569,7 +569,7 @@ PRIMARY KEY (`PK_ID`)
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-
+COMMENT='联机查询-应用参数表'
 ;
 
 -- ----------------------------

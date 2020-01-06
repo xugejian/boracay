@@ -1005,6 +1005,8 @@ create table OLQ_APPLICATION
   olq_sql   CLOB not null
 )
 ;
+comment on table OLQ_APPLICATION
+  is '联机查询-应用信息表';
 comment on column OLQ_APPLICATION.pk_id
   is '主键';
 comment on column OLQ_APPLICATION.olq_ds_id
@@ -1047,6 +1049,8 @@ create table OLQ_APPLICATION_PARAM
   seq           NUMBER(3)
 )
 ;
+comment on table OLQ_APPLICATION_PARAM
+  is '联机查询-应用参数表';
 comment on column OLQ_APPLICATION_PARAM.pk_id
   is '主键';
 comment on column OLQ_APPLICATION_PARAM.param_name
