@@ -759,7 +759,7 @@ CREATE TABLE `mc_consume_data` (
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-COMMENT='消费数据表'
+COMMENT='监控中心-消费数据'
 ;
 
 -- 往服务注册信息表中添加备注字段

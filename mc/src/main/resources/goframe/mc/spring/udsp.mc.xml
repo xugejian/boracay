@@ -18,4 +18,16 @@
 
     <context:component-scan base-package="com.hex.bigdata.udsp.mc" />
 
+    <bean id="mcDDLSqlInit" class="com.hex.goframe.engine.das.GFDbSchemaUpdate" init-method="init">
+        <property name="enabled" value="${jdbc.dbschema.check}" />
+        <property name="databaseType" value="${jdbc.dbType}" />
+        <property name="dsName" value="${jdbc.dsName}" />
+        <property name="checkTable" value="MC_CONSUME_LOG"/>
+        <property name="schemaSqlResources">
+            <list>
+                <value>classpath:goframe/mc/sql/${jdbc.dbType}.ddl.sql</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>

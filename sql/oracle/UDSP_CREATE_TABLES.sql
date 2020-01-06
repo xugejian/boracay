@@ -1455,6 +1455,8 @@ create table MC_CONSUME_DATA
   app_name         VARCHAR2(64) not null
 )
 ;
+comment on table MC_CONSUME_DATA
+  is '监控中心-消费数据';
 comment on column MC_CONSUME_DATA.user_name
   is '用户名';
 comment on column MC_CONSUME_DATA.service_name
