@@ -34,7 +34,7 @@
     <!-- ==================================== EhCache =====================================-->
     <!-- cacheManager工厂类，指定ehcache.xml的位置 -->
     <bean id="cacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation" value="classpath:goframe/common/ehcache.xml"/>
+        <property name="configLocation" value="classpath:goframe/common/spring.ehcache.xml"/>
     </bean>
     <!-- 声明cacheManager -->
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
@@ -44,8 +44,7 @@
     <!--<cache:annotation-driven cache-manager="cacheManager"/>-->
 
     <!-- ==================================== Redis =====================================-->
-    <import resource="classpath:goframe/common/spring-redis.xml"/>
-    <!--<import resource="classpath:goframe/common/spring-redis-cluster.xml"/>-->
+    <import resource="${redis.config}"/>
 
     <!-- ==================================== Task =====================================-->
     <task:annotation-driven/>

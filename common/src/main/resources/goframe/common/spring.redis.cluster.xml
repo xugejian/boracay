@@ -22,7 +22,7 @@
     </bean>
 
     <bean name="jedisPropertySource" class="org.springframework.core.io.support.ResourcePropertySource">
-        <constructor-arg name="location" value="classpath:goframe/common/spring-redis-cluster.properties"/>
+        <constructor-arg name="location" value="${redis.cluster.properties}"/>
     </bean>
 
     <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
