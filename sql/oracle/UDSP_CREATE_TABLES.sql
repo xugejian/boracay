@@ -1141,6 +1141,8 @@ create table RC_USER_SERVICE
   alarm_type                VARCHAR2(32) default 'NONE' not null
 )
 ;
+comment on table RC_USER_SERVICE
+  is '注册中心-服务授权表';
 comment on column RC_USER_SERVICE.pk_id
   is '主键';
 comment on column RC_USER_SERVICE.user_id

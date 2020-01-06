@@ -21,4 +21,28 @@
 
     <context:component-scan base-package="com.hex.bigdata.udsp.rc"/>
 
+    <bean id="rcDDLSqlInit" class="com.hex.goframe.engine.das.GFDbSchemaUpdate" init-method="init">
+        <property name="enabled" value="${jdbc.dbschema.check}" />
+        <property name="databaseType" value="${jdbc.dbType}" />
+        <property name="dsName" value="${jdbc.dsName}" />
+        <property name="checkTable" value="RC_SERVICE"/>
+        <property name="schemaSqlResources">
+            <list>
+                <value>classpath:goframe/rc/sql/${jdbc.dbType}.ddl.sql</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="rcDMLSqlInit" class="com.hex.goframe.engine.das.GFDbSchemaUpdate" init-method="init">
+        <property name="enabled" value="${jdbc.dbschema.check}" />
+        <property name="databaseType" value="${jdbc.dbType}" />
+        <property name="dsName" value="${jdbc.dsName}" />
+        <property name="checkSql" value="select 1 from T_GF_DICT_TYPE where dict_type_id='UDSP_SERVICE_TYPE'"/>
+        <property name="schemaSqlResources">
+            <list>
+                <value>classpath:goframe/rc/sql/${jdbc.dbType}.dml.sql</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>

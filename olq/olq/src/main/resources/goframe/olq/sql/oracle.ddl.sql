@@ -42,10 +42,6 @@ comment on column OLQ_APPLICATION.olq_sql
 alter table OLQ_APPLICATION
   add constraint OLQ_APPLICATION_PKID primary key (PK_ID);
 
-prompt
-prompt Creating table OLQ_APPLICATION_PARAM
-prompt ====================================
-prompt
 create table OLQ_APPLICATION_PARAM
 (
   pk_id         VARCHAR2(32) not null,
