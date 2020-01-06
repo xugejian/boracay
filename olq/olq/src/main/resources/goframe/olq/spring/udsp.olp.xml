@@ -18,4 +18,28 @@
 
     <context:component-scan base-package="com.hex.bigdata.udsp.olq"/>
 
+    <bean id="olqDDLSqlInit" class="com.hex.goframe.engine.das.GFDbSchemaUpdate" init-method="init">
+        <property name="enabled" value="${jdbc.dbschema.check}" />
+        <property name="databaseType" value="${jdbc.dbType}" />
+        <property name="dsName" value="${jdbc.dsName}" />
+        <property name="checkTable" value="OLQ_APPLICATION"/>
+        <property name="schemaSqlResources">
+            <list>
+                <value>classpath:goframe/olq/sql/${jdbc.dbType}.ddl.sql</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="olqDMLSqlInit" class="com.hex.goframe.engine.das.GFDbSchemaUpdate" init-method="init">
+        <property name="enabled" value="${jdbc.dbschema.check}" />
+        <property name="databaseType" value="${jdbc.dbType}" />
+        <property name="dsName" value="${jdbc.dsName}" />
+        <property name="checkSql" value="select 1 from T_GF_DICT_TYPE where dict_type_id='OLQ_DS_TYPE'"/>
+        <property name="schemaSqlResources">
+            <list>
+                <value>classpath:goframe/olq/sql/${jdbc.dbType}.dml.sql</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>
