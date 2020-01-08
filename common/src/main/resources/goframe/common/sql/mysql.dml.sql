@@ -1,3 +1,5 @@
+alter table T_GF_DICT modify column DICT_NAME VARCHAR(256), column FILTER VARCHAR(256);
+
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('YES_OR_NO', '是或否', 'default');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
