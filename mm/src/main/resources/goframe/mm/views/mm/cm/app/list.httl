@@ -230,7 +230,7 @@ ${extends("/goframe/function_layout.httl")}
             url: "${basePath}/goframe/p/mm.cm.app.add",
             title: "添加",
             width: 800,
-            height: 600,
+            height: 550,
             onload: function () {
             },
             ondestroy: function (action) {

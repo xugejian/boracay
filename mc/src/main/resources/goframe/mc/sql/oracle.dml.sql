@@ -27,6 +27,14 @@ values ('115051', '等待队列', null, 'mc.queue.wait', '1', null, 2, 'default'
 
 commit;
 
+-- 功能信息
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('18041', 'MC.current.list.empty', '监控中心>队列监控>运行队列>清空队列', null, null, null, null, 'default');
+insert into T_GF_FUNCATION (func_id, func_code, func_name, is_func, displayorder, url_acction, parent_func_id, appid)
+values ('18051', 'MC.wait.list.empty', '监控中心>队列监控>等待队列>清空队列', null, null, null, null, 'default');
+
+commit;
+
 -- 字典信息
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('MC_OPERATION_LOG_TYPE', '监控中心-操作日志-操作类型', 'default');
