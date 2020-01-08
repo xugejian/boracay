@@ -9,4 +9,16 @@
 
     <context:component-scan base-package="com.hex.bigdata.udsp"/>
 
+    <bean id="udspDMLSqlInit" class="com.hex.goframe.engine.das.GFDbSchemaUpdate" init-method="init">
+        <property name="enabled" value="${jdbc.dbschema.check}" />
+        <property name="databaseType" value="${jdbc.dbType}" />
+        <property name="dsName" value="${jdbc.dsName}" />
+        <property name="checkSql" value="select 1 from T_GF_MENU where menuname='操作导航'"/>
+        <property name="schemaSqlResources">
+            <list>
+                <value>classpath:goframe/udsp/sql/${jdbc.dbType}.dml.sql</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>
