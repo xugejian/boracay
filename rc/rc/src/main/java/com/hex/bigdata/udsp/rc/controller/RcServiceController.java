@@ -55,8 +55,14 @@ public class RcServiceController extends BaseController {
     @RequestMapping({"/page"})
     @ResponseBody
     public PageListResult queryRtsDatasources(RcServiceView rcServiceView, Page page) {
-        List<RcServiceView> list = rcServiceService.select (rcServiceView, page);
-        logger.debug ("selectPage search=" + JSONUtil.parseObj2JSON (rcServiceView) + " page=" + JSONUtil.parseObj2JSON (page));
+        logger.debug("select search=" + JSONUtil.parseObj2JSON(rcServiceView) + " page=" + JSONUtil.parseObj2JSON(page));
+        List<RcServiceView> list = null;
+        try {
+            list = rcServiceService.select(rcServiceView, page);
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("系统异常：" + e);
+        }
         return new PageListResult (list, page);
     }
 

@@ -45,7 +45,7 @@ public class RcUserServiceController extends BaseController {
     /**
      * 日志记录
      */
-    private static Logger logger = LogManager.getLogger (RcServiceController.class);
+    private static Logger logger = LogManager.getLogger(RcServiceController.class);
 
     /**
      * 用户服务关系-用户服务关系管理服务
@@ -69,9 +69,15 @@ public class RcUserServiceController extends BaseController {
     @RequestMapping({"/page"})
     @ResponseBody
     public PageListResult queryRtsDatasources(RcUserServiceView rcServiceView, Page page) {
-        List<RcUserServiceView> list = rcUserServiceService.select (rcServiceView, page);
-        logger.debug ("selectPage search=" + JSONUtil.parseObj2JSON (rcServiceView) + " page=" + JSONUtil.parseObj2JSON (page));
-        return new PageListResult (list, page);
+        logger.debug("select search=" + JSONUtil.parseObj2JSON(rcServiceView) + " page=" + JSONUtil.parseObj2JSON(page));
+        List<RcUserServiceView> list = null;
+        try {
+            list = rcUserServiceService.select(rcServiceView, page);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("系统异常：" + e);
+        }
+        return new PageListResult(list, page);
     }
 
     /**
@@ -90,22 +96,22 @@ public class RcUserServiceController extends BaseController {
             message = "请求参数为空";
         } else {
             try {
-                if (StringUtils.isBlank (rcUserServiceService.insert (rcUserServiceDto))) {
+                if (StringUtils.isBlank(rcUserServiceService.insert(rcUserServiceDto))) {
                     status = false;
                     message = "添加失败";
                 }
             } catch (Exception e) {
-                e.printStackTrace ();
+                e.printStackTrace();
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message);
+        return new MessageResult(status, message);
     }
 
     @RequestMapping({"/insertBatch"})
@@ -118,22 +124,22 @@ public class RcUserServiceController extends BaseController {
             message = "请求参数为空";
         } else {
             try {
-                if (!rcUserServiceService.insertBatch (rcUserServiceBatchDto)) {
+                if (!rcUserServiceService.insertBatch(rcUserServiceBatchDto)) {
                     status = false;
                     message = "添加失败";
                 }
             } catch (Exception e) {
-                e.printStackTrace ();
+                e.printStackTrace();
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message);
+        return new MessageResult(status, message);
     }
 
 
@@ -143,23 +149,23 @@ public class RcUserServiceController extends BaseController {
         boolean status = true;
         String message = "查询成功";
         RcUserServiceView rtsMetadata = null;
-        if (StringUtils.isBlank (pkId)) {
+        if (StringUtils.isBlank(pkId)) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
-                rtsMetadata = this.rcUserServiceService.selectFullResultMap (pkId);
+                rtsMetadata = this.rcUserServiceService.selectFullResultMap(pkId);
             } catch (Exception e) {
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message, rtsMetadata);
+        return new MessageResult(status, message, rtsMetadata);
     }
 
     @RequestMapping({"/update"})
@@ -172,21 +178,21 @@ public class RcUserServiceController extends BaseController {
             message = "请求参数为空";
         } else {
             try {
-                if (!rcUserServiceService.update (rcUserServiceDto)) {
+                if (!rcUserServiceService.update(rcUserServiceDto)) {
                     status = false;
                     message = "更新失败";
                 }
             } catch (Exception e) {
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message);
+        return new MessageResult(status, message);
     }
 
     @RequestMapping("/delete")
@@ -199,21 +205,21 @@ public class RcUserServiceController extends BaseController {
             message = "请求参数为空";
         } else {
             try {
-                if (!rcUserServiceService.delete (rcServices)) {
+                if (!rcUserServiceService.delete(rcServices)) {
                     status = false;
                     message = "删除失败";
                 }
             } catch (Exception e) {
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message);
+        return new MessageResult(status, message);
     }
 
     @RequestMapping("/checkExists/{userId}/{serviceId}")
@@ -222,25 +228,25 @@ public class RcUserServiceController extends BaseController {
         boolean status = true;
         String message = "删除成功";
         boolean flg = false;
-        if (StringUtils.isBlank (userId) || StringUtils.isBlank (serviceId)) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(serviceId)) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
                 status = true;
                 message = "删除失败";
-                flg = rcUserServiceService.checkExists (userId, serviceId);
+                flg = rcUserServiceService.checkExists(userId, serviceId);
             } catch (Exception e) {
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message, flg);
+        return new MessageResult(status, message, flg);
     }
 
     @RequestMapping("/checkExistsBatch/{userIds}/{serviceIds}")
@@ -249,25 +255,25 @@ public class RcUserServiceController extends BaseController {
         boolean status = true;
         String message = "检查成功";
         boolean flg = false;
-        if (StringUtils.isBlank (userIds) || StringUtils.isBlank (serviceIds)) {
+        if (StringUtils.isBlank(userIds) || StringUtils.isBlank(serviceIds)) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
                 status = true;
                 message = "检查失败";
-                flg = rcUserServiceService.checkExistsBatch (userIds, serviceIds);
+                flg = rcUserServiceService.checkExistsBatch(userIds, serviceIds);
             } catch (Exception e) {
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message, flg);
+        return new MessageResult(status, message, flg);
     }
 
     @RequestMapping({"/checkStatus"})
@@ -276,17 +282,17 @@ public class RcUserServiceController extends BaseController {
         boolean status = false;
         String message = "";
         for (RcUserService rcUserService : rcUserServices) {
-            rcUserService = rcUserServiceService.select (rcUserService.getPkId ());
+            rcUserService = rcUserServiceService.select(rcUserService.getPkId());
             if (rcUserService != null) {
-                RcService rcService = rcServiceService.select (rcUserService.getServiceId ());
-                if ("0".equals (rcService.getStatus ())) {
+                RcService rcService = rcServiceService.select(rcUserService.getServiceId());
+                if ("0".equals(rcService.getStatus())) {
                     status = true;
-                    message += "请停用" + rcService.getName () + "服务再进行编辑或删除操作！";
+                    message += "请停用" + rcService.getName() + "服务再进行编辑或删除操作！";
                 }
             }
         }
-        logger.debug (message);
-        return new MessageResult (status, message);
+        logger.debug(message);
+        return new MessageResult(status, message);
     }
 
     /**
@@ -302,26 +308,26 @@ public class RcUserServiceController extends BaseController {
     public MessageResult selectUsers(RcUserServiceView rcUserServiceView, Page page) {
         boolean status = true;
         String message = "查询成功";
-        List<GFUser> users = new ArrayList<> ();
+        List<GFUser> users = new ArrayList<>();
         if (rcUserServiceView == null) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
                 status = true;
-                users = rcUserServiceService.selectNotRelationUsers (rcUserServiceView, page);
+                users = rcUserServiceService.selectNotRelationUsers(rcUserServiceView, page);
             } catch (Exception e) {
-                e.printStackTrace ();
+                e.printStackTrace();
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message, users);
+        return new MessageResult(status, message, users);
     }
 
 
@@ -337,26 +343,26 @@ public class RcUserServiceController extends BaseController {
     public MessageResult selectRelationUsers(@RequestBody RcUserServiceView rcUserServiceView) {
         boolean status = true;
         String message = "查询成功";
-        List<GFUser> users = new ArrayList<> ();
+        List<GFUser> users = new ArrayList<>();
         if (rcUserServiceView == null) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
                 status = true;
-                users = rcUserServiceService.selectRelationUsers (rcUserServiceView);
+                users = rcUserServiceService.selectRelationUsers(rcUserServiceView);
             } catch (Exception e) {
-                e.printStackTrace ();
+                e.printStackTrace();
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message, users);
+        return new MessageResult(status, message, users);
     }
 
     /**
@@ -371,26 +377,26 @@ public class RcUserServiceController extends BaseController {
     public MessageResult selectUsersByServiceName(@RequestBody RcUserServiceView rcUserServiceView) {
         boolean status = true;
         String message = "查询成功";
-        List<GFUser> users = new ArrayList<> ();
+        List<GFUser> users = new ArrayList<>();
         if (rcUserServiceView == null) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
                 status = true;
-                users = rcUserServiceService.selectUsersByServiceName (rcUserServiceView);
+                users = rcUserServiceService.selectUsersByServiceName(rcUserServiceView);
             } catch (Exception e) {
-                e.printStackTrace ();
+                e.printStackTrace();
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message, users);
+        return new MessageResult(status, message, users);
     }
 
     @RequestMapping("/selectServicesByUserName")
@@ -398,26 +404,26 @@ public class RcUserServiceController extends BaseController {
     public MessageResult selectServicesByUserName(@RequestBody RcUserServiceView rcUserServiceView) {
         boolean status = true;
         String message = "查询成功";
-        List<RcUserServiceView> users = new ArrayList<> ();
+        List<RcUserServiceView> users = new ArrayList<>();
         if (rcUserServiceView == null) {
             status = false;
             message = "请求参数为空";
         } else {
             try {
                 status = true;
-                users = rcUserServiceService.selectServicesByUserId (rcUserServiceView);
+                users = rcUserServiceService.selectServicesByUserId(rcUserServiceView);
             } catch (Exception e) {
-                e.printStackTrace ();
+                e.printStackTrace();
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message, users);
+        return new MessageResult(status, message, users);
     }
 
     /**
@@ -441,19 +447,19 @@ public class RcUserServiceController extends BaseController {
             message = "请求参数为空";
         } else {
             try {
-                result = IpAddressUtil.isIpSection (rcUserServiceView.getIpSection ());
+                result = IpAddressUtil.isIpSection(rcUserServiceView.getIpSection());
             } catch (Exception e) {
-                e.printStackTrace ();
+                e.printStackTrace();
                 status = false;
-                message = "系统异常：" + e.getMessage ();
+                message = "系统异常：" + e.getMessage();
             }
         }
         if (status) {
-            logger.debug (message);
+            logger.debug(message);
         } else {
-            logger.warn (message);
+            logger.warn(message);
         }
-        return new MessageResult (status, message, result);
+        return new MessageResult(status, message, result);
     }
 
     @RequestMapping("upload")
@@ -463,21 +469,21 @@ public class RcUserServiceController extends BaseController {
         String message = "上传成功";
 
         //判断结尾是否为xl或者xlsx
-        if (((CommonsMultipartFile) excelFile).getFileItem ().getName ().endsWith (".xls")
-                || ((CommonsMultipartFile) excelFile).getFileItem ().getName ().endsWith (".xlsx")) {
+        if (((CommonsMultipartFile) excelFile).getFileItem().getName().endsWith(".xls")
+                || ((CommonsMultipartFile) excelFile).getFileItem().getName().endsWith(".xlsx")) {
             //将文件放到项目上传文件目录中
-            String uploadFilePath = FileUtil.uploadFile (FileUtil
-                    .getRealUploadPath ("EXCEL_UPLOAD"), excelFile);
-            Map<String, String> result = rcUserServiceService.uploadExcel (uploadFilePath);
-            if ("false".equals (result.get ("status"))) {
+            String uploadFilePath = FileUtil.uploadFile(FileUtil
+                    .getRealUploadPath("EXCEL_UPLOAD"), excelFile);
+            Map<String, String> result = rcUserServiceService.uploadExcel(uploadFilePath);
+            if ("false".equals(result.get("status"))) {
                 status = false;
-                message = result.get ("message");
+                message = result.get("message");
             }
         } else {
             status = false;
             message = "请上传正确格式的文件！";
         }
-        return new MessageResult (status, message);
+        return new MessageResult(status, message);
     }
 
     @ResponseBody
@@ -486,9 +492,9 @@ public class RcUserServiceController extends BaseController {
         // 写入Excel文件
         String filePath = "";
         try {
-            filePath = rcUserServiceService.createExcel (rcServices);
+            filePath = rcUserServiceService.createExcel(rcServices);
         } catch (Exception e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
         return filePath;
     }
@@ -499,9 +505,9 @@ public class RcUserServiceController extends BaseController {
         // 写入Excel文件
         String filePath = "";
         try {
-            filePath = rcUserServiceService.downStreamInfoDownload (rcServices);
+            filePath = rcUserServiceService.downStreamInfoDownload(rcServices);
         } catch (Exception e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
         return filePath;
     }

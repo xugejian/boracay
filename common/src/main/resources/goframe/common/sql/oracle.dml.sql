@@ -1,7 +1,3 @@
--- 修改字段长度
-alter table udsp2.T_GF_DICT modify (DICT_NAME VARCHAR2(256), FILTER VARCHAR2(256));
-
--- 字典信息
 insert into T_GF_DICT_TYPE (dict_type_id, dict_type_name, appid)
 values ('YES_OR_NO', '是或否', 'default');
 insert into T_GF_DICT (dict_type_id, dict_id, dict_name, status, sort_no, parent_id, seqno, appid, filter)
