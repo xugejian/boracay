@@ -9,7 +9,7 @@ public class RcUserService implements Serializable {
     private String ipSection; // IP段
     private int maxSyncNum; // 执行队列大小（同步）
     private int maxAsyncNum; // 执行队列大小（异步）
-    private int maxSyncWaitNum; //等待队列大小（同步）
+    private int maxSyncWaitNum; // 等待队列大小（同步）
     private int maxAsyncWaitNum; // 等待队列大小（异步）
     private long maxSyncWaitTimeout = 0; // 最大等待时间（同步/毫秒）
     private long maxAsyncWaitTimeout = 0; // 最大等待时间（异步/毫秒）
