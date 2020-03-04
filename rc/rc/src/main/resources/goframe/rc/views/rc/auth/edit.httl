@@ -111,12 +111,12 @@ ${extends("/goframe/function_layout.httl")}
                     <th class="nui-form-label"><label for="maxSyncExecuteTimeout">运行超时时间（同步/单位：秒）：</label></th>
                     <td>
                         <input id="maxSyncExecuteTimeout" name="maxSyncExecuteTimeout" class="nui-textbox"
-                               style="width:97%" vtype="range:0,9999999999" emptyText="0或空：表示使用系统默认的运行超时时间"/>
+                               style="width:97%" vtype="range:0,9999999999" emptyText="0或空：表示永不超时"/>
                     </td>
                     <th class="nui-form-label"><label for="maxAsyncExecuteTimeout">运行超时时间（异步/单位：秒）：</label></th>
                     <td>
                         <input id="maxAsyncExecuteTimeout" name="maxAsyncExecuteTimeout" class="nui-textbox"
-                               style="width:97%" vtype="range:0,9999999999" emptyText="0或空：表示使用系统默认的运行超时时间"/>
+                               style="width:97%" vtype="range:0,9999999999" emptyText="0或空：表示永不超时"/>
                     </td>
                 </tr>
                 <tr>
