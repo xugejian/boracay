@@ -1,3 +1,5 @@
+-- 修改字段长度
+alter table T_GF_DICT modify (DICT_NAME VARCHAR2(4000), FILTER VARCHAR2(4000));
 
 create table COM_DATASOURCE
 (

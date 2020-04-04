@@ -52,13 +52,13 @@ DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 CREATE TABLE `t_gf_dict` (
 `DICT_TYPE_ID`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 `DICT_ID`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`DICT_NAME`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+`DICT_NAME`  varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
 `STATUS`  int(65) NULL DEFAULT NULL ,
 `SORT_NO`  int(65) NULL DEFAULT NULL ,
 `PARENT_ID`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
-`SEQNO`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+`SEQNO`  varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
 `APPID`  varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`FILTER`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+`FILTER`  varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
 PRIMARY KEY (`DICT_TYPE_ID`, `DICT_ID`)
 )
 ENGINE=InnoDB

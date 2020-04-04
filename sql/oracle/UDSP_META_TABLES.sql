@@ -45,13 +45,13 @@ create table T_GF_DICT
 (
   dict_type_id VARCHAR2(64) not null,
   dict_id      VARCHAR2(64) not null,
-  dict_name    VARCHAR2(512),
+  dict_name    VARCHAR2(4000),
   status       INTEGER,
   sort_no      INTEGER,
   parent_id    VARCHAR2(64),
   seqno        VARCHAR2(256),
   appid        VARCHAR2(32) not null,
-  filter       VARCHAR2(512)
+  filter       VARCHAR2(4000)
 )
 ;
 alter table T_GF_DICT

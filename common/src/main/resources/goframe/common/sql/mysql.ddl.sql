@@ -1,3 +1,7 @@
+-- 修改字段长度
+alter table T_GF_DICT modify column DICT_NAME VARCHAR(4000);
+alter table T_GF_DICT modify column FILTER VARCHAR(4000);
+
 -- ----------------------------
 -- Table structure for com_datasource
 -- ----------------------------
