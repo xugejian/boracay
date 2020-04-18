@@ -21,11 +21,10 @@
             <artifactId>udsp-im-converter-api</artifactId>
             <version>${projectVersion}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-client -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.0-cdh5.14.0</version>
         </dependency>
     </dependencies>
 
