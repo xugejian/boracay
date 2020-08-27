@@ -6,7 +6,7 @@ import com.hex.bigdata.udsp.iq.provider.impl.model.HBaseMetadata;
 import com.hex.bigdata.udsp.iq.provider.impl.model.HBasePage;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
+//import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
 import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
@@ -42,19 +42,21 @@ public class HBaseUtil {
         }
     }
 
-    public static long count(Table table, AggregationClient client, String startRow, String stopRow) throws Exception {
+    public static long count(Table table, String startRow, String stopRow) throws Exception {
         Scan scan = new Scan ();
         setRowScan (scan, startRow, stopRow);
         /*
         使用聚合协处理器获取总行数，如果该表没有注册聚合协处理器则使用scan的方式获取总行数
          */
-        try {
-            return client.rowCount (table, new LongColumnInterpreter (), scan);
-        } catch (Throwable throwable) {
-            //logger.warn(throwable.getMessage());
-            logger.warn ("HBase表" + table.toString () + "没有注册集合协处理器，无法使用协处理器方式获取总行数！");
-            return count (table, scan);
-        }
+//        try {
+//            return client.rowCount (table, new LongColumnInterpreter (), scan);
+//        } catch (Throwable throwable) {
+//            //logger.warn(throwable.getMessage());
+//            logger.warn ("HBase表" + table.toString () + "没有注册集合协处理器，无法使用协处理器方式获取总行数！");
+//            return count (table, scan);
+//        }
+        logger.warn ("HBase client 2.1.0-cdh6.3.2.jar" + table.toString () + "没有注册集合协处理器，无法使用协处理器方式获取总行数！使用scan的方式获取总行数");
+        return count (table, scan);
     }
 
     public static long count(Table table, Scan scan) throws Exception {
@@ -81,12 +83,12 @@ public class HBaseUtil {
         List<Map<String, String>> list = null;
         Connection conn = null;
         Table table = null;
-        AggregationClient client = null;
+//        AggregationClient client = null;
         try {
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
-            client = HBaseAggregationClientPool.getAggregationClient (datasource);
-            list = scan (table, client, startRow, stopRow, colMap, metadata.gainFamilyName (),
+//            client = HBaseAggregationClientPool.getAggregationClient (datasource);
+            list = scan (table, startRow, stopRow, colMap, metadata.gainFamilyName (),
                     metadata.gainQualifierName (), metadata.gainDsvSeparator (), metadata.gainFqDataType (),
                     datasource.gainMaxSize (), datasource.gainMaxSizeAlarm ());
         } finally {
@@ -105,12 +107,12 @@ public class HBaseUtil {
         return scan (table, scan, colMap, family, qualifier, separator, dataType);
     }
 
-    public static List<Map<String, String>> scan(Table table, AggregationClient client,
+    public static List<Map<String, String>> scan(Table table,
                                                  String startRow, String stopRow, Map<Integer, String> colMap,
                                                  byte[] family, byte[] qualifier, String separator, String dataType,
                                                  long maxSize, boolean maxSizeAlarm) throws Exception {
         if (maxSizeAlarm) {
-            long totalCount = count (table, client, startRow, stopRow);
+            long totalCount = count (table, startRow, stopRow);
             if (totalCount > maxSize) {
                 throw new RuntimeException ("返回结果集大小超过了最大返回数据条数的限制");
             }
@@ -118,7 +120,7 @@ public class HBaseUtil {
         return scan (table, startRow, stopRow, colMap, family, qualifier, separator, dataType, maxSize);
     }
 
-    public static List<Map<String, String>> scanPage(Table table, HBasePage page,
+    public static List<Map<String, String>> scanPageList(Table table, HBasePage page,
                                                      Map<Integer, String> colMap, byte[] family, byte[] qualifier,
                                                      String separator, String dataType) throws Exception {
         Scan scan = new Scan ();
@@ -144,12 +146,12 @@ public class HBaseUtil {
         }
         Connection conn = null;
         Table table = null;
-        AggregationClient client = null;
+//        AggregationClient client = null;
         try {
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
-            client = HBaseAggregationClientPool.getAggregationClient (datasource);
-            page = scanPage (table, client, page, colMap, metadata.gainFamilyName (),
+//            client = HBaseAggregationClientPool.getAggregationClient (datasource);
+            page = scanPage (table, page, colMap, metadata.gainFamilyName (),
                     metadata.gainQualifierName (), metadata.gainDsvSeparator (), metadata.gainFqDataType ());
         } finally {
             close (table);
@@ -157,10 +159,10 @@ public class HBaseUtil {
         return page;
     }
 
-    public static HBasePage scanPage(Table table, AggregationClient client, HBasePage page, Map<Integer, String> colMap,
+    public static HBasePage scanPage(Table table, HBasePage page, Map<Integer, String> colMap,
                                      byte[] family, byte[] qualifier, String separator, String dataType) throws Exception {
-        page.setRecords (scanPage (table, page, colMap, family, qualifier, separator, dataType));
-        page.setTotalCount (count (table, client, page.getStartRow (), page.getStopRow ()));
+        page.setRecords (scanPageList (table, page, colMap, family, qualifier, separator, dataType));
+        page.setTotalCount (count (table, page.getStartRow (), page.getStopRow ()));
         return page;
     }
 

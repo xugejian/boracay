@@ -2,9 +2,9 @@ package com.hex.bigdata.udsp;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CloudSolrServer;
+import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.HttpClientUtil;
-import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
+//import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -33,7 +33,7 @@ public class SolrJavaKerberosTest {
         /*
         CloudSolrServer
          */
-        CloudSolrServer solrServer = new CloudSolrServer ("172.18.21.61:2181/solr");
+        CloudSolrClient solrServer = new CloudSolrClient.Builder().withZkHost ("172.18.21.61:2181/solr").build();
         solrServer.setDefaultCollection ("TEST");
         solrServer.connect ();
 
@@ -77,7 +77,7 @@ public class SolrJavaKerberosTest {
             for (SolrDocument doc : docs) {
                 System.out.println (doc.get ("id"));
             }
-        } catch (SolrServerException e) {
+        } catch (SolrServerException | IOException e) {
             e.printStackTrace ();
         }
     }

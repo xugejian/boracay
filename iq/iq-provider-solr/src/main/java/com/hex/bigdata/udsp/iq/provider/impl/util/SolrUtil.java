@@ -20,13 +20,18 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.impl.CloudSolrServer;
-import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
-import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
+//import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
+//import org.apache.solr.client.solrj.impl.CloudSolrServer;
+import org.apache.solr.client.solrj.impl.CloudSolrClient;
+//import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
+import org.apache.solr.client.solrj.impl.Krb5HttpClientBuilder;
+//import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
+import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 
@@ -100,7 +105,7 @@ public class SolrUtil {
     public static QueryResponse getQueryResponse(SolrDatasource datasource, String collectionName, SolrQuery query) {
         QueryResponse res = null;
         try {
-            SolrServer solrServer = getSolrServer (datasource, collectionName);
+            SolrClient solrServer = getSolrServer (datasource, collectionName);
             res = solrServer.query (query);
         } catch (Exception e) {
             e.printStackTrace ();
@@ -511,7 +516,7 @@ public class SolrUtil {
      * @param collectionName
      * @return
      */
-    public static SolrServer getSolrServer(SolrDatasource datasource, String collectionName) {
+    public static SolrClient getSolrServer(SolrDatasource datasource, String collectionName) {
         return getLBHttpSolrServer (datasource.gainSolrServers (), collectionName);
 //        return getCloudSolrServer (datasource.gainSolrZkHost (), collectionName);
     }
@@ -523,7 +528,7 @@ public class SolrUtil {
      * @param collectionName
      * @return
      */
-    public static LBHttpSolrServer getLBHttpSolrServer(String solrServices, String collectionName) {
+    public static LBHttpSolrClient getLBHttpSolrServer(String solrServices, String collectionName) {
         if (StringUtils.isBlank (collectionName)) {
             throw new IllegalArgumentException ("collection name不能为空");
         }
@@ -532,12 +537,9 @@ public class SolrUtil {
         for (int i = 0; i < tempServers.length; i++) {
             servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
         }
-        LBHttpSolrServer solrServer = null;
-        try {
-            solrServer = new LBHttpSolrServer (servers);
-        } catch (MalformedURLException e) {
-            e.printStackTrace ();
-        }
+        LBHttpSolrClient solrServer = null;
+        SystemDefaultHttpClient httpClient = new SystemDefaultHttpClient();
+        solrServer = new LBHttpSolrClient.Builder().withBaseSolrUrls(servers).withHttpClient(httpClient).build();
         return solrServer;
     }
 
@@ -548,11 +550,11 @@ public class SolrUtil {
      * @param collectionName
      * @return
      */
-    public static CloudSolrServer getCloudSolrServer(String zkHost, String collectionName) {
+    public static CloudSolrClient getCloudSolrServer(String zkHost, String collectionName) {
         if (StringUtils.isBlank (collectionName)) {
             throw new IllegalArgumentException ("collection name不能为空");
         }
-        CloudSolrServer solrServer = new CloudSolrServer (zkHost);
+        CloudSolrClient solrServer = new CloudSolrClient.Builder().withZkHost(zkHost).build();
         solrServer.setDefaultCollection (collectionName);
         solrServer.connect ();
         return solrServer;
@@ -639,7 +641,8 @@ public class SolrUtil {
             DefaultHttpClient client = new DefaultHttpClient ();
 
             // ----------------------支持Kerberos需要如下设置---------------------------
-            Krb5HttpClientConfigurer.setSPNegoAuth (client);
+//            Krb5HttpClientConfigurer.setSPNegoAuth (client);
+//            Krb5HttpClientBuilder krb5HttpClientBuilder = new Krb5HttpClientBuilder();    //暂不确定
             // --------------------------------------------------------------------------
 
             HttpResponse response = client.execute (request);

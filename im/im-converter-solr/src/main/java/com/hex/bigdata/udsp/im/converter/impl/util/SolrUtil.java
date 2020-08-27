@@ -1,5 +1,7 @@
 package com.hex.bigdata.udsp.im.converter.impl.util;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hex.bigdata.udsp.common.constant.DataType;
 import com.hex.bigdata.udsp.common.constant.Operator;
 import com.hex.bigdata.udsp.im.converter.impl.model.SolrDatasource;
@@ -17,11 +19,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
+//import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CloudSolrServer;
-import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
-import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
+//import org.apache.solr.client.solrj.impl.CloudSolrServer;
+import org.apache.solr.client.solrj.impl.CloudSolrClient;
+//import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
+import org.apache.solr.client.solrj.impl.Krb5HttpClientBuilder;
+//import org.apache.solr.client.solrj.impl.LBHttpSolrServer;
+import org.apache.solr.client.solrj.impl.LBHttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -109,15 +115,30 @@ public class SolrUtil {
             }
             break;
         }
-        Document document = DocumentHelper.parseText (response);
-        Element root = document.getRootElement ();
-        Element arr = root.element ("arr");
-        List<Element> collections = arr.elements ("str");
         boolean exists = false;
-        for (Element e : collections) {
-            if (e.getData ().equals (collectionName)) {
-                exists = true;
-                break;
+        if (response.startsWith("{") && response.endsWith("}")){
+            //solr7 返回为json
+            JSONObject responseJson = JSONObject.parseObject(response);
+            JSONArray collections = responseJson.getJSONArray("collections");
+            if (collections != null){
+                for (Object e : collections) {
+                    if (e.equals (collectionName)) {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+        } else {
+            // solr4 返回为xml，按原方法解析
+            Document document = DocumentHelper.parseText (response);
+            Element root = document.getRootElement ();
+            Element arr = root.element ("arr");
+            List<Element> collections = arr.elements ("str");
+            for (Element e : collections) {
+                if (e.getData ().equals (collectionName)) {
+                    exists = true;
+                    break;
+                }
             }
         }
         return exists;
@@ -172,24 +193,36 @@ public class SolrUtil {
             String param = "action=DELETE&name=" + collectionName;
             try {
                 String response = sendGet (url, param);
-                Document document = DocumentHelper.parseText (response);
-                Element root = document.getRootElement ();
-                List<Element> lstElts = root.elements ("lst");
-                Attribute att = null;
-                for (Element lstElt : lstElts) {
-                    att = lstElt.attribute ("name");
-                    if ("responseHeader".equals (att.getValue ())) {
-                        List<Element> intElts = lstElt.elements ("int");
-                        for (Element intElt : intElts) {
-                            att = intElt.attribute ("name");
-                            if ("status".equals (att.getValue ())) {
-                                if ("0".equals (intElt.getText ())) {
-                                    return true;
+
+                if (response.startsWith("{") && response.endsWith("}")){
+                    //solr7 返回为json
+                    JSONObject responseJson = JSONObject.parseObject(response);
+                    JSONObject success = responseJson.getJSONObject("success");
+                    if (success != null){
+                        return true;
+                    }
+                } else {
+                    // solr4 返回为xml，按原方法解析
+                    Document document = DocumentHelper.parseText (response);
+                    Element root = document.getRootElement ();
+                    List<Element> lstElts = root.elements ("lst");
+                    Attribute att = null;
+                    for (Element lstElt : lstElts) {
+                        att = lstElt.attribute ("name");
+                        if ("responseHeader".equals (att.getValue ())) {
+                            List<Element> intElts = lstElt.elements ("int");
+                            for (Element intElt : intElts) {
+                                att = intElt.attribute ("name");
+                                if ("status".equals (att.getValue ())) {
+                                    if ("0".equals (intElt.getText ())) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
             } catch (Exception e) {
                 e.printStackTrace ();
                 if (count == solrServerStrings.length) {
@@ -261,23 +294,36 @@ public class SolrUtil {
             count++;
             String url = getSolrAdminCollectionsUrl (solrServer);
             String param = "action=CREATE" + "&name=" + collectionName + "&replicationFactor=" + replicas +
-                    "&numShards=" + shards + "&maxShardsPerNode=" + maxShardsPerNode +
-                    "&collection.configName=" + collectionName;
+                    "&numShards=" + shards + "&maxShardsPerNode=" + maxShardsPerNode;
+//            String param = "action=CREATE" + "&name=" + collectionName + "&replicationFactor=" + replicas +
+//                    "&numShards=" + shards + "&maxShardsPerNode=" + maxShardsPerNode +
+//                    "&collection.configName=" + collectionName;
             try {
                 response = sendGet (url, param);
-                Document document = DocumentHelper.parseText (response);
-                Element root = document.getRootElement ();
-                List<Element> lstElts = root.elements ("lst");
-                Attribute att = null;
-                for (Element lstElt : lstElts) {
-                    att = lstElt.attribute ("name");
-                    if ("responseHeader".equals (att.getValue ())) {
-                        List<Element> intElts = lstElt.elements ("int");
-                        for (Element intElt : intElts) {
-                            att = intElt.attribute ("name");
-                            if ("status".equals (att.getValue ())) {
-                                if ("0".equals (intElt.getText ())) {
-                                    return true;
+
+                if (response.startsWith("{") && response.endsWith("}")){
+                    //solr7 返回为json
+                    JSONObject responseJson = JSONObject.parseObject(response);
+                    JSONObject success = responseJson.getJSONObject("success");
+                    if (success != null){
+                        return true;
+                    }
+                } else {
+                    // solr4 返回为xml，按原方法解析
+                    Document document = DocumentHelper.parseText (response);
+                    Element root = document.getRootElement ();
+                    List<Element> lstElts = root.elements ("lst");
+                    Attribute att = null;
+                    for (Element lstElt : lstElts) {
+                        att = lstElt.attribute ("name");
+                        if ("responseHeader".equals (att.getValue ())) {
+                            List<Element> intElts = lstElt.elements ("int");
+                            for (Element intElt : intElts) {
+                                att = intElt.attribute ("name");
+                                if ("status".equals (att.getValue ())) {
+                                    if ("0".equals (intElt.getText ())) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -347,19 +393,30 @@ public class SolrUtil {
             String param = "action=RELOAD&name=" + collectionName;
             try {
                 response = sendGet (url, param);
-                Document document = DocumentHelper.parseText (response);
-                Element root = document.getRootElement ();
-                List<Element> lstElts = root.elements ("lst");
-                Attribute att = null;
-                for (Element lstElt : lstElts) {
-                    att = lstElt.attribute ("name");
-                    if ("responseHeader".equals (att.getValue ())) {
-                        List<Element> intElts = lstElt.elements ("int");
-                        for (Element intElt : intElts) {
-                            att = intElt.attribute ("name");
-                            if ("status".equals (att.getValue ())) {
-                                if ("0".equals (intElt.getText ())) {
-                                    return true;
+
+                if (response.startsWith("{") && response.endsWith("}")){
+                    //solr7 返回为json
+                    JSONObject responseJson = JSONObject.parseObject(response);
+                    JSONObject success = responseJson.getJSONObject("success");
+                    if (success != null){
+                        return true;
+                    }
+                } else {
+                    // solr4 返回为xml，按原方法解析
+                    Document document = DocumentHelper.parseText (response);
+                    Element root = document.getRootElement ();
+                    List<Element> lstElts = root.elements ("lst");
+                    Attribute att = null;
+                    for (Element lstElt : lstElts) {
+                        att = lstElt.attribute ("name");
+                        if ("responseHeader".equals (att.getValue ())) {
+                            List<Element> intElts = lstElt.elements ("int");
+                            for (Element intElt : intElts) {
+                                att = intElt.attribute ("name");
+                                if ("status".equals (att.getValue ())) {
+                                    if ("0".equals (intElt.getText ())) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -707,7 +764,8 @@ public class SolrUtil {
             DefaultHttpClient client = new DefaultHttpClient ();
 
             // ----------------------支持Kerberos需要如下设置---------------------------
-            Krb5HttpClientConfigurer.setSPNegoAuth (client);
+//            Krb5HttpClientConfigurer.setSPNegoAuth (client);
+//            Krb5HttpClientBuilder krb5HttpClientBuilder = new Krb5HttpClientBuilder();     //暂不确定
             // --------------------------------------------------------------------------
 
             HttpResponse response = client.execute (request);
@@ -795,10 +853,14 @@ public class SolrUtil {
      * @param collectionName
      * @return
      */
-    public static SolrServer getSolrServer(SolrDatasource datasource, String collectionName) {
+    public static SolrClient getSolrServer(SolrDatasource datasource, String collectionName) {
         return getLBHttpSolrServer (datasource.gainSolrServers (), collectionName);
 //        return getCloudSolrServer (datasource.gainSolrZkHost (), collectionName);
     }
+//    public static SolrServer getSolrServer(SolrDatasource datasource, String collectionName) {
+//        return getLBHttpSolrServer (datasource.gainSolrServers (), collectionName);
+////        return getCloudSolrServer (datasource.gainSolrZkHost (), collectionName);
+//    }
 
     /**
      * 获取LBHttpSolrServer
@@ -807,7 +869,7 @@ public class SolrUtil {
      * @param collectionName
      * @return
      */
-    public static LBHttpSolrServer getLBHttpSolrServer(String solrServices, String collectionName) {
+    public static LBHttpSolrClient getLBHttpSolrServer(String solrServices, String collectionName) {
         if (StringUtils.isBlank (collectionName)) {
             throw new IllegalArgumentException ("collection name不能为空");
         }
@@ -816,27 +878,26 @@ public class SolrUtil {
         for (int i = 0; i < tempServers.length; i++) {
             servers[i] = "http://" + tempServers[i] + "/solr/" + collectionName;
         }
-        LBHttpSolrServer solrServer = null;
-        try {
-            solrServer = new LBHttpSolrServer (servers);
-        } catch (MalformedURLException e) {
-            e.printStackTrace ();
-        }
+        LBHttpSolrClient solrServer = null;
+        //            solrServer = new LBHttpSolrClient (servers);
+        solrServer = new LBHttpSolrClient.Builder().withBaseSolrUrls(servers).build();
         return solrServer;
     }
 
     /**
-     * 获取CloudSolrServer
+     * 获取CloudSolrClient
+     * 原获取CloudSolrServer
      *
      * @param zkHost
      * @param collectionName
      * @return
      */
-    public static CloudSolrServer getCloudSolrServer(String zkHost, String collectionName) {
+    public static CloudSolrClient getCloudSolrServer(String zkHost, String collectionName) {
         if (StringUtils.isBlank (collectionName)) {
             throw new IllegalArgumentException ("collection name不能为空");
         }
-        CloudSolrServer solrServer = new CloudSolrServer (zkHost);
+//        CloudSolrClient solrServer = new CloudSolrClient (zkHost);
+        CloudSolrClient solrServer = new CloudSolrClient.Builder().withZkHost(zkHost).build();
         solrServer.setDefaultCollection (collectionName);
         solrServer.connect ();
         return solrServer;
@@ -851,7 +912,7 @@ public class SolrUtil {
      * @throws SolrServerException
      */
     public static void deleteAll(SolrDatasource datasource, String collectionName) throws IOException, SolrServerException {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         solrServer.deleteByQuery ("*:*");
         solrServer.commit ();
     }
@@ -864,7 +925,7 @@ public class SolrUtil {
      * @param map
      */
     public static void addDocument(SolrDatasource datasource, String collectionName, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         SolrInputDocument doc = new SolrInputDocument ();
         for (Map.Entry<String, String> entry : map.entrySet ()) {
             doc.addField (entry.getKey (), entry.getValue ());
@@ -882,7 +943,7 @@ public class SolrUtil {
      * @param map
      */
     public static void addDocument(SolrDatasource datasource, String collectionName, String idName, String idValue, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         SolrInputDocument doc = new SolrInputDocument ();
         doc.addField (idName, idValue);
         for (Map.Entry<String, String> entry : map.entrySet ()) {
@@ -901,7 +962,7 @@ public class SolrUtil {
      * @param map
      */
     public static void addDocument(SolrDatasource datasource, String collectionName, String idName, List<String> idValues, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         List<SolrInputDocument> docs = new ArrayList<> ();
         SolrInputDocument doc = null;
         for (String idValue : idValues) {
@@ -923,7 +984,7 @@ public class SolrUtil {
      * @param maps
      */
     public static void addDocument(SolrDatasource datasource, String collectionName, List<Map<String, String>> maps) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         List<SolrInputDocument> docs = new ArrayList<> ();
         SolrInputDocument doc = null;
         for (Map<String, String> map : maps) {
@@ -945,7 +1006,7 @@ public class SolrUtil {
      * @param <T>
      */
     public static <T> void addDocumentBean(SolrDatasource datasource, String collectionName, T bean) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         try {
             solrServer.addBean (bean);
             solrServer.commit ();
@@ -955,7 +1016,12 @@ public class SolrUtil {
             e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown ();
+//                solrServer.shutdown ();
+                try {
+                    solrServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -969,7 +1035,7 @@ public class SolrUtil {
      * @param <T>
      */
     public static <T> void addDocumentBean(SolrDatasource datasource, String collectionName, List<T> beans) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         try {
             solrServer.addBeans (beans);
             solrServer.commit ();
@@ -979,7 +1045,12 @@ public class SolrUtil {
             e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown ();
+//                solrServer.shutdown ();
+                try {
+                    solrServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -994,7 +1065,7 @@ public class SolrUtil {
      * @param map
      */
     public static void updateDocument(SolrDatasource datasource, String collectionName, String idName, String idValue, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         SolrInputDocument doc = new SolrInputDocument ();
         doc.addField (idName, idValue);
         Map<String, String> obj = null;
@@ -1012,7 +1083,7 @@ public class SolrUtil {
      * @param solrServer
      * @param doc
      */
-    public static void addDocument(SolrServer solrServer, SolrInputDocument doc) {
+    public static void addDocument(SolrClient solrServer, SolrInputDocument doc) {
         try {
             solrServer.add (doc);
         } catch (SolrServerException e) {
@@ -1021,7 +1092,12 @@ public class SolrUtil {
             e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown ();
+//                solrServer.shutdown ();
+                try {
+                    solrServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1036,7 +1112,7 @@ public class SolrUtil {
      * @param map
      */
     public static void updateDocument(SolrDatasource datasource, String collectionName, String idName, List<String> idValues, Map<String, String> map) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         List<SolrInputDocument> docs = new ArrayList<> ();
         SolrInputDocument doc = null;
         Map<String, String> obj = null;
@@ -1059,7 +1135,7 @@ public class SolrUtil {
      * @param solrServer
      * @param docs
      */
-    public static void addDocument(SolrServer solrServer, List<SolrInputDocument> docs) {
+    public static void addDocument(SolrClient solrServer, List<SolrInputDocument> docs) {
         try {
             solrServer.add (docs);
             solrServer.commit ();
@@ -1069,7 +1145,12 @@ public class SolrUtil {
             e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown ();
+//                solrServer.shutdown ();
+                try {
+                    solrServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1082,7 +1163,7 @@ public class SolrUtil {
      * @param ids
      */
     public static void deleteDocument(SolrDatasource datasource, String collectionName, List<String> ids) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         try {
             solrServer.deleteById (ids);
             solrServer.commit ();
@@ -1092,7 +1173,12 @@ public class SolrUtil {
             e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown ();
+//                solrServer.shutdown ();
+                try {
+                    solrServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1105,7 +1191,7 @@ public class SolrUtil {
      * @param id
      */
     public static void deleteDocument(SolrDatasource datasource, String collectionName, String id) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         try {
             solrServer.deleteById (id);
             solrServer.commit ();
@@ -1115,7 +1201,12 @@ public class SolrUtil {
             e.printStackTrace ();
         } finally {
             if (solrServer != null) {
-                solrServer.shutdown ();
+//                solrServer.shutdown ();
+                try {
+                    solrServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1178,7 +1269,7 @@ public class SolrUtil {
     }
 
     public static QueryResponse getQueryResponse(SolrDatasource datasource, String collectionName, SolrQuery query) {
-        SolrServer solrServer = getSolrServer (datasource, collectionName);
+        SolrClient solrServer = getSolrServer (datasource, collectionName);
         if (solrServer == null) {
             return null;
         }
@@ -1188,6 +1279,8 @@ public class SolrUtil {
         } catch (SolrServerException e) {
             e.printStackTrace ();
             res = null;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return res;
     }

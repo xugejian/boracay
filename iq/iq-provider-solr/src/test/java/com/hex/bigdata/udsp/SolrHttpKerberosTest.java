@@ -7,7 +7,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
+//import org.apache.solr.client.solrj.impl.Krb5HttpClientConfigurer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -116,7 +116,7 @@ public class SolrHttpKerberosTest {
 
             // ----------------------支持Kerberos需要如下设置---------------------------
 //            Krb5HttpClientConfigurer krb5HttpClientConfigurer = new Krb5HttpClientConfigurer ();
-            Krb5HttpClientConfigurer.setSPNegoAuth (client);
+//            Krb5HttpClientConfigurer.setSPNegoAuth (client);
 //            HttpClientUtil.setConfigurer (krb5HttpClientConfigurer);
             // --------------------------------------------------------------------------
 

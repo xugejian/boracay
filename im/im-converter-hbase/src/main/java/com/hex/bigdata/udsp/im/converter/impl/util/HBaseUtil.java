@@ -361,7 +361,8 @@ public class HBaseUtil {
             conn = HBaseConnectionPool.getConnection (datasource);
             table = conn.getTable (TableName.valueOf (tableName));
             Put put = new Put (Bytes.toBytes (rowkey));
-            put.add (Bytes.toBytes (family), Bytes.toBytes (qualifier), Bytes.toBytes (value));
+//            put.add (Bytes.toBytes (family), Bytes.toBytes (qualifier), Bytes.toBytes (value));
+            put.addColumn (Bytes.toBytes (family), Bytes.toBytes (qualifier), Bytes.toBytes (value));
             table.put (put);
             logger.debug ("添加数据成功！");
         } catch (IOException e) {
@@ -394,7 +395,8 @@ public class HBaseUtil {
             for (Map.Entry<String, String> entry : map.entrySet ()) {
                 byte[] qualifier = Bytes.toBytes (entry.getKey ());
                 byte[] value = Bytes.toBytes (entry.getValue ());
-                put.add (Bytes.toBytes (family), qualifier, value);
+//                put.add (Bytes.toBytes (family), qualifier, value);
+                put.addColumn (Bytes.toBytes (family), qualifier, value);
             }
             table.put (put);
             logger.debug ("添加数据成功！");
